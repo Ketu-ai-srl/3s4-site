@@ -1,0 +1,306 @@
+/* Fereastra si piesele ei (functionalitati__sablon.md §5.1). Textul de citit pe `ardezie-9` nu coboara
+   sub alb .5 (5,23:1): la referinta orele aveau .4 (3,81:1). */
+
+.fereastra {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-fereastra);
+  text-align: left;
+}
+
+.mare {
+  box-shadow: var(--shadow-fereastra-mare);
+}
+
+.bara {
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  min-height: 37px;
+  padding: 8.8px 15.2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  box-sizing: border-box;
+}
+
+.punct {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.punct-albastru {
+  background: var(--color-albastru);
+}
+
+.punct-chihlimbar {
+  background: var(--color-chihlimbar-clar);
+}
+
+.punct-rosu {
+  background: var(--color-rosu-clar);
+}
+
+.punct-verde {
+  background: var(--color-verde);
+}
+
+.punct-neutru {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.titlu {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 400;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.55);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dreapta {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 400;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+/* --- patratul de tip --------------------------------------------------------------------------- */
+
+.tip {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 2px;
+}
+
+.tip-pdf {
+  background: var(--color-rosu);
+}
+
+.tip-imagine {
+  background: var(--color-ardezie-4);
+}
+
+.tip-tabel {
+  background: var(--color-verde);
+}
+
+.tip-document {
+  background: var(--color-albastru);
+}
+
+.tip-email {
+  background: var(--color-chihlimbar);
+}
+
+.tip-neutru {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* --- cipul ------------------------------------------------------------------------------------- */
+
+.cip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  padding: 1.6px 6.4px;
+  border-radius: 4px;
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 13.888px;
+  white-space: nowrap;
+}
+
+.cipMono {
+  font-family: var(--font-mono);
+}
+
+.cip-neutru {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cip-alerta {
+  background: rgba(239, 68, 68, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.cip-succes {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.cip-activ {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
+
+.cipPunct {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-verde);
+  animation: clipireCip 1.2s ease-in-out infinite;
+}
+
+@keyframes clipireCip {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* --- pastila de stare -------------------------------------------------------------------------- */
+
+.pastila {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6.4px;
+  padding: 4.8px 8.8px;
+  border-radius: 6px;
+  font-size: 11.2px;
+  font-weight: 600;
+  line-height: 17.92px;
+  letter-spacing: 0.224px;
+  white-space: nowrap;
+}
+
+.pastilaRotunda {
+  border-radius: 9999px;
+}
+
+.pastilaPunct {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pastila-rosu {
+  background: rgba(239, 68, 68, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.pastila-verde {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.pastila-chihlimbar {
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--color-chihlimbar-clar);
+}
+
+/* --- cutia de iconita, nodul ------------------------------------------------------------------- */
+
+.cutie {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  box-sizing: border-box;
+}
+
+.cutieRosie {
+  background: rgba(239, 68, 68, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.nod {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+}
+
+/* --- randul de fisier -------------------------------------------------------------------------- */
+
+.rand {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  padding: 8.32px 15.2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.numeFisier {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.84px;
+  font-weight: 500;
+  line-height: 15.392px;
+  color: rgba(255, 255, 255, 0.8);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.randTinta .numeFisier {
+  color: var(--color-albastru-clar);
+}
+
+.ora {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+  font-weight: 500;
+  line-height: 15.872px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .rand {
+    gap: 8px;
+    padding: 7.2px 12px;
+  }
+
+  /* `compactMobil` */
+  .compact .bara {
+    gap: 7.2px;
+    min-height: 33px;
+    padding: 8px 12px;
+  }
+
+  .compact .titlu,
+  .compact .dreapta {
+    font-size: 9.92px;
+    line-height: 15.872px;
+  }
+
+  .compact .numeFisier {
+    font-size: 10.88px;
+    line-height: 14.144px;
+  }
+
+  .compact .ora {
+    font-size: 8.96px;
+    line-height: 14.336px;
+  }
+}

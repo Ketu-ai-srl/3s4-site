@@ -1,0 +1,193 @@
+/* Macheta stratului (platforma.md §1). Panou 452 x 251 la 1440, 358 x 357 la 390. */
+
+.macheta {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 25.6px;
+  margin: 0;
+  padding: 38.4px 33.6px 51.2px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+}
+
+.intrare,
+.iesire {
+  display: flex;
+  flex-direction: column;
+  gap: 8.8px;
+}
+
+/* Jetoanele: mono, fundal ardezie-0, chenar ardezie-2, raza 8, 6,4 x 11,2. */
+.fisier,
+.camp {
+  padding: 6.4px 11.2px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-ardezie-0);
+  font-family: var(--font-mono);
+  animation-duration: 3.6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* 11,52/600 ardezie-6 pe ardezie-0: 7,24:1. */
+.fisier {
+  color: var(--color-ardezie-6);
+  font-size: 11.52px;
+  font-weight: 600;
+  line-height: 18.432px;
+  text-align: center;
+  animation-name: intrareJeton;
+}
+
+/* 11,2/500 ardezie-9. */
+.camp {
+  color: var(--color-ardezie-9);
+  font-size: 11.2px;
+  font-weight: 500;
+  line-height: 17.92px;
+  white-space: nowrap;
+  animation-name: iesireJeton;
+}
+
+.acolada {
+  margin-right: 4px;
+  color: var(--color-albastru);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Miezul 96 x 98: bara de 3 px albastru sus, straturi 26, numele 14,4/600. Latimea minima tine
+   cardul la 96 px si cu un nume scurt ("3S"), ca panoul sa ramana la 452. */
+.miez {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5.6px;
+  min-width: 96px;
+  padding: 20.8px 24px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  color: var(--color-albastru);
+  overflow: hidden;
+}
+
+.miez::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-albastru);
+}
+
+.miezNume {
+  color: var(--color-ardezie-9);
+  font-size: 14.4px;
+  font-weight: 600;
+  line-height: 23.04px;
+}
+
+/* Eticheta D9, vizibila: in coltul din dreapta sus, in spatiul de deasupra jetoanelor (padding-ul
+   de sus al panoului), 11/500 ardezie-5 pe alb (4,76:1): 11 px e marimea minima ceruta de decizia
+   D11 pentru eticheta "exemplu" a machetelor (11-12 px). */
+.eticheta {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  color: var(--color-ardezie-5);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+/* Insignele: absolute la 16,8 de baza, 10,56/600 ardezie-5 pe ardezie-0 (4,55:1). */
+.insigne {
+  position: absolute;
+  bottom: 16.8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 7.2px;
+}
+
+.insigne > span {
+  padding: 3.2px 9.6px;
+  border: 1px solid var(--color-ardezie-1);
+  border-radius: 9999px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-size: 10.56px;
+  font-weight: 600;
+  line-height: 16.896px;
+  letter-spacing: 0.2112px;
+}
+
+/* Cheia comuna: 0 % si 100 % pe loc; la 45 % cu 9 px spre dreapta, opacitate .85 / .75.
+   Abatere de la forma masurata (COMPONENTE §5.1, contrast corectat prin opacitate): la referinta
+   jetoanele de fisier coboara la .55, adica textul lor (ardezie-6 pe ardezie-0, peste panoul alb)
+   ajunge la 2,5:1 la fiecare bucla. La .85 ramane la 4,91:1 in cel mai slab cadru (axe, la 390, cu
+   animatiile oprite la 45 %); jetoanele JSON (ardezie-9) au la .75 inca 7,67:1, deci raman ca la
+   referinta. Proba: tests/browser/produs.spec.ts, "contrastul machetei in miscare". */
+@keyframes intrareJeton {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  45% {
+    transform: translateX(9px);
+    opacity: 0.85;
+  }
+}
+
+@keyframes iesireJeton {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  45% {
+    transform: translateX(9px);
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fisier,
+  .camp {
+    animation: none;
+  }
+}
+
+/* Sub 520: o coloana centrata, gap 16, 28 / 20 / 48; fisierele pe un rand. */
+@media (max-width: 520px) {
+  .eticheta {
+    top: 8px;
+  }
+
+  .macheta {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 28px 20px 48px;
+  }
+
+  .intrare {
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+
+  .iesire {
+    align-items: center;
+  }
+}

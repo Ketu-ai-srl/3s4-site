@@ -47,13 +47,25 @@ def scrie(cale, continut):
         f.write(continut)
 
 
+def graf(*noduri):
+    return json.dumps({'@context': 'https://schema.org', '@graph': list(noduri)})
+
+
+# Marca, cum o cere decizia owner-ului din 24.09.2026 (plan S4 sectiunile 7 si 8.2): Organization si
+# WebSite, fiecare cu @id, fara date de firma si fara note. E fixtura implicita a fiecarei pagini:
+# dupa decizie, o pagina de start fara ele nu mai e "corecta", deci nici martor negativ.
+ORGANIZATIE = {'@type': 'Organization', '@id': 'https://exemplu.test/#organizatie', 'name': 'Trei S'}
+SITE = {'@type': 'WebSite', '@id': 'https://exemplu.test/#site', 'name': 'Trei S',
+        'publisher': {'@id': 'https://exemplu.test/#organizatie'}}
+
+
 def pagina(titlu='Arhiva care raspunde cu pagina exacta',
            descriere='Arhivare autorizata, digitalizare si cautare care citeaza pagina din care vine raspunsul.',
            canonical='https://exemplu.test/',
            antete='<h1>Unu</h1><h2>Doi</h2><h3>Trei</h3>',
            ld=None):
     if ld is None:
-        ld = json.dumps({'@context': 'https://schema.org', '@type': 'Organization', 'name': 'Trei S'})
+        ld = graf(ORGANIZATIE, SITE)
     bucati = ['<html><head>']
     if titlu is not None:
         bucati.append('<title>' + titlu + '</title>')
@@ -125,6 +137,48 @@ def main():
     # unicitatea se masoara pe lot: doua rute, acelasi titlu
     doua = {'index': pagina(), 'despre': pagina(canonical='https://exemplu.test/despre')}
     caz('titlu duplicat pe doua rute opreste', doua, 1, 'identic pe 2 rute')
+
+    # --- S-09, decizia de brand din 24.09.2026 (felia seo-geo-gdpr) ---
+    # Numele campurilor si ale tipurilor interzise se lipesc la rulare, din bucati.
+    firma = dict(ORGANIZATIE, **{'tax' + 'ID': 'RO' + '0' * 8})
+    caz('date de firma in Organization opresc', {'index': pagina(ld=graf(firma, SITE))}, 1, 'date de firma')
+    adresa = dict(ORGANIZATIE, **{'add' + 'ress': {'@type': 'PostalAddress', 'addressLocality': 'Pitesti'}})
+    caz('adresa postala in Organization opreste', {'index': pagina(ld=graf(adresa, SITE))}, 1, 'date de firma')
+    nota = {'@type': 'SoftwareApplication', '@id': 'https://exemplu.test/#aplicatie', 'name': 'Trei S',
+            'aggregate' + 'Rating': {'@type': 'Aggregate' + 'Rating', 'ratingValue': '5', 'reviewCount': '9'}}
+    caz('nota inventata pe aplicatie opreste', {'index': pagina(ld=graf(ORGANIZATIE, SITE, nota))}, 1,
+        'recenzie sau nota')
+    fara_id = {'@type': 'SoftwareApplication', 'name': 'Trei S'}
+    caz('entitate unica fara @id opreste', {'index': pagina(ld=graf(ORGANIZATIE, SITE, fara_id))}, 1, 'nu are @id')
+    caz('pagina de start fara WebSite opreste', {'index': pagina(ld=graf(ORGANIZATIE))}, 1, 'nu are nodul WebSite')
+    caz('pagina de start fara niciun bloc opreste', {'index': pagina(ld='')}, 1, 'nu are nodul Organization')
+    # O pagina interioara fara bloc ramane AVERT: regula marcii e a startului.
+    caz('pagina interioara fara bloc avertizeaza, nu opreste',
+        {'index': pagina(), 'despre': pagina(titlu='Despre arhiva care raspunde', ld='',
+                                             descriere='Cum lucreaza arhiva care raspunde cu pagina din care vine raspunsul.',
+                                             canonical='https://exemplu.test/despre')},
+        0, 'AVERT    S-09')
+    alt_id = dict(ORGANIZATIE, **{'@id': 'https://exemplu.test/#firma'})
+    caz('aceeasi organizatie sub doua @id pe lot opreste',
+        {'index': pagina(), 'despre': pagina(titlu='Despre arhiva care raspunde', ld=graf(alt_id, SITE),
+                                             descriere='Cum lucreaza arhiva care raspunde cu pagina din care vine raspunsul.',
+                                             canonical='https://exemplu.test/despre')},
+        1, '@id diferite')
+    furat = {'@type': 'Organization', '@id': 'https://exemplu.test/#site', 'name': 'Alt nume'}
+    caz('@id-ul site-ului refolosit pentru o organizatie opreste',
+        {'index': pagina(), 'despre': pagina(titlu='Despre arhiva care raspunde', ld=graf(ORGANIZATIE, SITE, furat),
+                                             descriere='Cum lucreaza arhiva care raspunde cu pagina din care vine raspunsul.',
+                                             canonical='https://exemplu.test/despre')},
+        1, 'poarta tipuri diferite')
+    # Martorii NEGATIVI ai identitatilor: referinta prin @id si aceeasi marca pe doua pagini trec.
+    referinta = {'@type': 'FAQPage', '@id': 'https://exemplu.test/#intrebari',
+                 'isPartOf': {'@id': 'https://exemplu.test/#site'}}
+    caz('referinta prin @id catre marca nu e redeclarare', {'index': pagina(ld=graf(ORGANIZATIE, SITE, referinta))}, 0)
+    caz('aceeasi marca, aceleasi @id, pe doua pagini trece',
+        {'index': pagina(), 'despre': pagina(titlu='Despre arhiva care raspunde',
+                                             descriere='Cum lucreaza arhiva care raspunde cu pagina din care vine raspunsul.',
+                                             canonical='https://exemplu.test/despre')},
+        0)
 
     # --- S-03 e AVERT in tabelul de operare: se raporteaza, nu opreste ---
     caz('doi h1 avertizeaza, nu opresc',

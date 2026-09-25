@@ -1,5 +1,46 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import {
+  CALE_EVIDENTA,
+  MARIME_MAXIMA,
+  prefixRetea,
+  randEvidenta,
+  valideazaEvidenta,
+} from '@/components/consimtamant/evidenta'
+import { stareAnalitica } from '@/lib/analitica'
+
+// EVIDENTA CONSIMTAMANTULUI (felia seo-geo-gdpr, planul valului S4, §9). Site-ul nu are baza de date,
+// deci alegerea din banner ajunge ca UN rand JSON in jurnalul serverului, scris de aici. Calea exista
+// numai cand analitica e pornita (operator numit + ID GA4, `src/lib/analitica.ts`); altfel cererea
+// merge mai departe si primeste 404, ca orice adresa fara pagina. Validarea e stricta si inchisa
+// (`src/components/consimtamant/evidenta.ts`): o cerere care nu are exact forma asteptata nu ajunge
+// in jurnal. Se scrie prefixul de retea, niciodata adresa IP completa.
+async function evidentaConsimtamant(request: NextRequest): Promise<NextResponse> {
+  if (request.method !== 'POST') {
+    return new NextResponse(null, { status: 405, headers: { Allow: 'POST' } })
+  }
+  const lungime = Number(request.headers.get('content-length') ?? '0')
+  if (lungime > MARIME_MAXIMA) {
+    return new NextResponse(null, { status: 413 })
+  }
+  const text = await request.text()
+  if (text.length > MARIME_MAXIMA) {
+    return new NextResponse(null, { status: 413 })
+  }
+  let corp: unknown
+  try {
+    corp = JSON.parse(text)
+  } catch {
+    return new NextResponse(null, { status: 400 })
+  }
+  const cerere = valideazaEvidenta(corp)
+  if (cerere === null) {
+    return new NextResponse(null, { status: 400 })
+  }
+  const retea = prefixRetea(request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip'))
+  console.log(randEvidenta(cerere, new Date().toISOString(), retea))
+  return new NextResponse(null, { status: 204, headers: { 'Cache-Control': 'no-store' } })
+}
 
 // Antetul de neindexare se pune peste tot IN AFARA de productie, nu doar cand mediul se
 // numeste exact `staging`.
@@ -19,9 +60,11 @@ import type { NextRequest } from 'next/server'
 //
 // Regula, scrisa in directia asta deliberat: implicitul e NEindexarea. O variabila uitata
 // trebuie sa lase site-ul in afara indexului, nu in el.
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const evidenta = request.nextUrl.pathname === CALE_EVIDENTA && stareAnalitica().activa
+
   if (process.env.SITE_ENV === 'productie') {
-    return NextResponse.next()
+    return evidenta ? evidentaConsimtamant(request) : NextResponse.next()
   }
 
   // Autentificarea de baza ramane optionala si separata: e o poarta de ACCES, nu de
@@ -43,7 +86,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const raspuns = NextResponse.next()
+  // Evidenta trece si ea prin autentificarea de mai sus: pe un mediu cu acces restrans, o cerere
+  // neautentificata nu are voie sa scrie in jurnal.
+  const raspuns = evidenta ? await evidentaConsimtamant(request) : NextResponse.next()
   raspuns.headers.set('X-Robots-Tag', 'noindex, nofollow')
   return raspuns
 }

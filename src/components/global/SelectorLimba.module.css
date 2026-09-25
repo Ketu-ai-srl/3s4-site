@@ -1,0 +1,159 @@
+/* Selectorul de limba (componente-globale.md §3.4): buton 14/500 cu codul limbii si chevron 10 la
+   opacitate 0,7; panou de 360 (280 sub 480), grila de 2 coloane; optiunea activa albastru pe
+   ceata-albastra (4,70:1) cu bifa. Se deschide DOAR la clic; Escape inchide. In subsol se deschide
+   in sus. */
+
+.zona {
+  position: relative;
+  display: inline-flex;
+}
+
+.buton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color var(--durata-rapida) ease,
+    background-color var(--durata-rapida) ease;
+}
+
+.buton:hover,
+.deschis {
+  color: var(--color-cerneala);
+  background: var(--color-ardezie-1);
+}
+
+.cod {
+  line-height: 14px;
+  letter-spacing: 0.28px;
+}
+
+.chevron {
+  opacity: 0.7;
+  transition: transform var(--durata-rapida) ease;
+}
+
+.deschis .chevron {
+  transform: rotate(180deg);
+}
+
+.panou {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 100;
+  width: 360px;
+  padding: 8px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+  animation: intrareJos 0.12s ease-out;
+}
+
+.panouSus {
+  top: auto;
+  bottom: calc(100% + 6px);
+  animation-name: intrareSus;
+}
+
+@keyframes intrareJos {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intrareSus {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.optiune {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--color-cerneala);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+}
+
+.optiune:hover {
+  background: var(--color-gri-card);
+}
+
+.optiuneActiva,
+.optiuneActiva:hover {
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+}
+
+@media (max-width: 480px) {
+  .panou {
+    width: 280px;
+  }
+}
+
+/* in subsol butonul are conturul propriu (2 px albastru, decalaj 2) - acelasi cu regula globala */
+.subsol .buton {
+  padding: 6px 10px;
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .buton {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .buton:hover,
+:global(html:has([data-tema-pagina="inchisa"])) .deschis {
+  color: var(--color-alb);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .subsol .buton {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .panou {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(12, 12, 16, 0.96);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .optiune {
+  color: var(--color-alb);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .optiuneActiva {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
