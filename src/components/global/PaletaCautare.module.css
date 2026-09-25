@@ -1,0 +1,186 @@
+/* Paleta de cautare (componente-globale.md §4). Aparitie instanta; fundal rgba(15,23,42,.4) fara
+   blur, sus la 16vh; panou min(560px, 100%), inaltime maxima min(430px, 64vh), raza 16.
+   ABATERI (contrast, DIRECTIA.md): etichetele de grup, rutele, textul-exemplu si subsolul sunt la
+   referinta ardezie-4 (2,56:1); aici ardezie-5 (4,76:1), iar ruta randului selectat (pe
+   ardezie-1, unde ardezie-5 are 4,34:1) trece pe ardezie-6. */
+
+.fundal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--strat-paleta);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16vh 16px 16px;
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.panou {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: min(430px, 64vh);
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-paleta);
+}
+
+.intrare {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.lupa {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+}
+
+.camp {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ardezie-9);
+  font-family: inherit;
+  font-size: 15.2px;
+  font-weight: 500;
+  line-height: 22px;
+  outline: none;
+}
+
+.camp::placeholder {
+  color: var(--color-ardezie-5);
+}
+
+.campInvelis:focus-within {
+  outline: none;
+}
+
+.tastaEsc {
+  flex-shrink: 0;
+  padding: 2px 5px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 4px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 10.56px;
+  font-weight: 500;
+  line-height: 14px;
+  cursor: pointer;
+}
+
+.lista {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.grupEticheta {
+  padding: 8px 10px 4px;
+  color: var(--color-ardezie-5);
+  font-size: 10.88px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.22px;
+}
+
+.grupLista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.element {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.elementSelectat {
+  background: var(--color-ardezie-1);
+}
+
+.elementTitlu {
+  overflow: hidden;
+  color: var(--color-ardezie-9);
+  font-size: 14.08px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.elementCale {
+  flex-shrink: 0;
+  max-width: 46%;
+  overflow: hidden;
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 11.2px;
+  line-height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.elementSelectat .elementCale {
+  color: var(--color-ardezie-6);
+}
+
+.gol {
+  padding: 26px 10px;
+  color: var(--color-ardezie-5);
+  font-size: 13.76px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.subsol {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--color-ardezie-1);
+  color: var(--color-ardezie-5);
+  font-size: 11.2px;
+  line-height: 16px;
+}
+
+.taste {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tasta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 1px 4px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 4px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-size: 10.56px;
+}
+
+.scurtatura {
+  margin-left: auto;
+  font-weight: 500;
+}

@@ -1,0 +1,49 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei juridic din src/content/rute.ts. Forma si regulile: config/seo/fundatie.json si tests/browser/ajutor/raspunsuri.ts. In raspuns_autonom stau numai rutele publicate azi (harta site-ului si declaratia de accesibilitate). Cele opt pagini juridice intra in RUTE abia cu operatorul de date numit (src/content/juridic/publicare.ts), iar cititorul declaratiilor refuza o ruta care nu e in RUTE, asa ca declaratiile lor stau separat, in raspuns_autonom_cu_operator: tests/browser/juridic-comutator.spec.ts le masoara pe copia cu operator sintetic, iar in ziua operatorului se muta in raspuns_autonom (docs/ziua-operatorului.md).",
+  "raspuns_autonom": {
+    "/harta-site": {
+      "intrebare": "Ce pagini are site-ul 3S și unde găsesc fiecare pagină?",
+      "entitati": ["3S", "Harta site-ului"],
+      "fara_regula_paragrafului": "Harta are forma masurata a sablonului ingust: dupa titlu vine un subtitlu de doua randuri (19 cuvinte), apoi grupele de legaturi; nu exista paragraf de raspuns de 30-80 de cuvinte. Raspunsul paginii e titlul impreuna cu subtitlul si cu lista generata a paginilor."
+    },
+    "/accesibilitate": {
+      "intrebare": "Cât de accesibil este site-ul 3S și ce nu s-a verificat încă?",
+      "entitati": ["3S", "WCAG 2.2", "AA"]
+    }
+  },
+  "raspuns_autonom_cu_operator": {
+    "/juridic": {
+      "intrebare": "Unde găsesc condițiile de folosire și politicile platformei 3S?",
+      "entitati": ["3S", "Documentele juridice"],
+      "fara_regula_paragrafului": "Indexul are forma masurata a sablonului juridic: dupa titlu vine un subtitlu de un rand (12 cuvinte), apoi cardurile celor sapte documente; nu exista paragraf de raspuns de 30-80 de cuvinte. Raspunsul paginii e titlul impreuna cu subtitlul si cu titlurile cardurilor."
+    },
+    "/juridic/informatii-legale": {
+      "intrebare": "Cine furnizează serviciul 3S și cum îl contactez?",
+      "entitati": ["3S", "furnizorul serviciului", "comerțul electronic"]
+    },
+    "/juridic/confidentialitate": {
+      "intrebare": "Ce date personale prelucrează site-ul 3S și ce drepturi am?",
+      "entitati": ["3S", "date personale", "drepturi"]
+    },
+    "/juridic/termeni": {
+      "intrebare": "În ce condiții folosesc platforma 3S și cine răspunde de datele din documentele mele?",
+      "entitati": ["3S", "Termeni și condiții", "Anexa A"]
+    },
+    "/juridic/cookies": {
+      "intrebare": "Ce cookie-uri folosește site-ul și cum îmi retrag acordul?",
+      "entitati": ["cookie-uri", "browserul", "politica de confidențialitate"]
+    },
+    "/juridic/politici-publice": {
+      "intrebare": "Pe ce legi și standarde se sprijină documentele juridice ale 3S?",
+      "entitati": ["3S", "actele normative", "WCAG 2.2"]
+    },
+    "/juridic/licenta-software": {
+      "intrebare": "Ce drept de folosire primesc pentru aplicația 3S și ce nu am voie să fac?",
+      "entitati": ["3S", "dreptul de autor", "Licența aplicației"]
+    },
+    "/juridic/subimputerniciti": {
+      "intrebare": "Ce furnizori folosește 3S pentru datele din documentele încărcate?",
+      "entitati": ["3S", "Anexa A", "furnizorul serviciului"]
+    }
+  }
+}

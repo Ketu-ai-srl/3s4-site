@@ -1,0 +1,10 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei fundatie din src/content/rute.ts. Un fisier pe felie, cu numele marcajului: config/seo/<felia>.json. Feliile paralele scriu fiecare in fisierul ei, deci nu se ciocnesc la pliere. Proba tests/browser/geo.spec.ts le aduna (tests/browser/ajutor/raspunsuri.ts) si cere fiecarei rute din RUTE exact o declaratie, in fisierul feliei ei: intrebarea la care raspunde pagina, entitatile care trebuie sa apara in primele 400 de cuvinte din <main>, titlul <h1> in aceeasi fereastra si primul <p> de 30-80 de cuvinte, care nu incepe cu un pronume de reluare sau cu o formula de brosura. Regula paragrafului se ridica pentru o ruta numai cu motivul scris in fara_regula_paragrafului; entitatile si titlul nu se ridica niciodata.",
+  "raspuns_autonom": {
+    "/": {
+      "intrebare": "Ce face 3S cu actele unei firme?",
+      "entitati": ["3S", "arhiva digitala", "WhatsApp", "0 RON"],
+      "fara_regula_paragrafului": "Startul are forma masurata a eroului: sub titlu sta un subtitlu scurt (17 cuvinte la masurarea din 24.09.2026), nu un paragraf de raspuns de 30-80. Raspunsul startului e titlul impreuna cu subtitlul, iar entitatile lui se verifica in fereastra de 400 de cuvinte, ca pe orice ruta."
+    }
+  }
+}
