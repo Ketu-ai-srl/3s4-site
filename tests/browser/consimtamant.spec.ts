@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { masoaraTerti } from './ajutor/detectori'
+import { STOCARE_ALEGERE, masoaraTerti, stocareNedeclarata } from './ajutor/detectori'
 import {
   GAZDA_STRAINA_PIXEL,
   GAZDA_STRAINA_SCRIPT,
@@ -19,6 +19,13 @@ import { rutePublice } from './ajutor/proiect'
  *
  * Ramura de banner nu e cod mort chiar daca site-ul nu are banner azi: martorii o executa
  * la fiecare rulare, deci nu poate putrezi in tacere pana la prima campanie platita.
+ *
+ * ALEGEREA PASTRATA DUPA REFUZ (decizia owner-ului din 24.09, planul valului S4 §8-§10): bannerul
+ * real intra pe drumul cu GA4 in ziua operatorului, iar un refuz respectat lasa in stocarea locala
+ * o singura cheie, alegerea insasi (`STOCARE_ALEGERE`, strict necesara, declarata in politica de
+ * cookie-uri). Pragul "zero stocare" ramane intreg INAINTE de orice interactiune; dupa refuz se
+ * accepta numai cheia aceea. Martorii de mai jos prind si o cheie in plus, si cheia scrisa la
+ * incarcare. Masuratoarea pe drumul cu GA4, pe copia cu operator, e in `comutator.spec.ts`.
  */
 
 let fixturi: ServerFixturi
@@ -61,10 +68,44 @@ test.describe('C-01 zero terti', () => {
       // cere macar propriul document.
       expect(masura.totalCereri, 'nu s-a inregistrat nicio cerere pe ' + ruta).toBeGreaterThan(0)
       expect(masura.gazdeStraine, 'cereri catre terti pe ' + ruta).toEqual([])
+      expect(masura.cookiesInainte, 'cookie-uri inainte de orice interactiune pe ' + ruta).toEqual([])
+      expect(masura.cheiStocareInainte, 'stocare inainte de orice interactiune pe ' + ruta).toEqual([])
       expect(masura.cookies, 'cookie-uri scrise fara consimtamant pe ' + ruta).toEqual([])
-      expect(masura.cheiStocare, 'stocare locala scrisa fara consimtamant pe ' + ruta).toEqual([])
+      expect(stocareNedeclarata(masura), 'stocare locala scrisa fara consimtamant pe ' + ruta).toEqual([])
     })
   }
+
+  test('martor NEGATIV: refuzul care lasa NUMAI alegerea, sub cheia declarata, NU trebuie prins', async ({
+    browser,
+  }) => {
+    const masura = await masoaraTerti(browser, fixturi.baza + '/terti/bun-banner-alegere')
+    console.log(
+      '[C-01 martor negativ, alegere] refuz apasat: ' + masura.refuzApasat + ' | stocare: ' +
+        (masura.cheiStocare.join(', ') || '(niciuna)'),
+    )
+    // Controlul: cheia chiar s-a scris, deci exceptia a fost pusa la lucru, nu ocolita.
+    expect(masura.refuzApasat).toBe(true)
+    expect(masura.cheiStocare).toEqual([STOCARE_ALEGERE])
+    expect(masura.cheiStocareInainte).toEqual([])
+    expect(stocareNedeclarata(masura)).toEqual([])
+  })
+
+  test('martor POZITIV: refuzul care lasa si o cheie nedeclarata TREBUIE prins', async ({ browser }) => {
+    const masura = await masoaraTerti(browser, fixturi.baza + '/terti/rau-banner-stocare')
+    console.log('[C-01 martor pozitiv, stocare in plus] ' + stocareNedeclarata(masura).join(', '))
+    expect(masura.refuzApasat).toBe(true)
+    expect(stocareNedeclarata(masura).length).toBe(1)
+  })
+
+  test('martor POZITIV: cheia alegerii scrisa la incarcare, inainte de clic, TREBUIE prinsa', async ({
+    browser,
+  }) => {
+    const masura = await masoaraTerti(browser, fixturi.baza + '/terti/rau-alegere-la-incarcare')
+    console.log('[C-01 martor pozitiv, la incarcare] inainte: ' + masura.cheiStocareInainte.join(', '))
+    // Dupa refuz, pagina arata exact ca cea corecta: numai citirea de dinaintea clicului o prinde.
+    expect(stocareNedeclarata(masura)).toEqual([])
+    expect(masura.cheiStocareInainte).toEqual([STOCARE_ALEGERE])
+  })
 
   test('martor POZITIV: script si pixel catre gazde straine TREBUIE sa o inroseasca', async ({
     browser,

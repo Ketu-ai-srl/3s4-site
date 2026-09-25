@@ -1,0 +1,101 @@
+[
+  {
+    "id": "cinema-functii-in-productie",
+    "text": "Căutarea cu sursa citată, regulile automate și portalul pentru clienți există azi în produs",
+    "unde": "src/content/functionalitati/cautare-ai.ts, src/content/functionalitati/automatizari-ai.ts, src/content/functionalitati/portal-clienti.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-functii-in-productie: declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind deja în producție); semnătura calificată e exclusă (integrare în curs, D4c) și nu apare pe aceste pagini",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema-cautare-raspuns-cu-pagina",
+    "text": "Căutarea AI înțelege întrebarea scrisă în cuvinte obișnuite și răspunde cu fraza căutată, cu documentul și cu pagina din care vine",
+    "unde": "src/content/functionalitati/cautare-ai.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-raspuns-cu-pagina; citarea frazei exacte, cu pagina și articolul, e un detaliu al funcționalității declarate existente prin decizia D4b",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-cautare-web-si-whatsapp",
+    "text": "Arhiva se întreabă pe web sau pe WhatsApp",
+    "unde": "src/content/functionalitati/cautare-ai.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-integrari-si-whatsapp: decizia D4c din planul valului S4 (pe WhatsApp răspunde la întrebări)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema-reguli-scrise-de-firma",
+    "text": "Regulile automate „când / atunci” le scrie cineva din firmă, iar fiecare regulă pornește la intrarea unui act care îi corespunde",
+    "unde": "src/content/functionalitati/automatizari-ai.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: regulile automate sunt declarate existente prin decizia D4b; scrierea lor de către firmă și pornirea la intrarea actului sunt detalii neconfirmate",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-reguli-trimit-si-cer-aprobare",
+    "text": "O regulă trimite actul nou omului care trebuie să-l înregistreze, să-l verifice sau să-l aprobe, iar un tip de act ales de firmă (în exemplu, contractul-cadru) așteaptă aprobarea conducerii",
+    "unde": "src/content/functionalitati/automatizari-ai.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-flux-aprobare; condiția din exemplu (tipul de act) e fictivă",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-reguli-in-jurnal",
+    "text": "Fiecare pas făcut de o regulă se trece în jurnal, cu ziua și ora",
+    "unde": "src/content/functionalitati/automatizari-ai.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: jurnalul pașilor unei reguli nu e numit în decizia D4b; jurnalul de acces stă neconfirmat și în acasa-jurnal-de-acces",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-portal-acces-pe-persoana",
+    "text": "Actele clientului stau în dosarul lui din portal; accesul se dă pe persoană și pe dosar, iar documentul se arată pe zone, după rol: clientul actele, contabilul cifrele, echipa notele interne",
+    "unde": "src/content/functionalitati/portal-clienti.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-acces-pe-persoana-si-dosar; notele interne vizibile doar echipei și împărțirea documentului pe roluri sunt detalii neconfirmate",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-portal-jurnal-deschideri",
+    "text": "Jurnalul portalului arată cine a deschis fiecare fișier, la ce oră și de pe ce aparat",
+    "unde": "src/content/functionalitati/portal-clienti.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-jurnal-de-acces; aparatul de pe care s-a deschis fișierul e un detaliu în plus, neconfirmat",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-portal-o-singura-copie",
+    "text": "În portal actul stă într-o singură copie, într-un dosar, în loc de copii trimise pe e-mail",
+    "unde": "src/content/functionalitati/portal-clienti.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: consecință a portalului declarat existent prin decizia D4b; nu e confirmată separat",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema-pret-0-ron",
+    "text": "Astăzi toate pachetele costă 0 RON",
+    "unde": "src/content/functionalitati/cautare-ai.ts, src/content/functionalitati/automatizari-ai.ts, src/content/functionalitati/portal-clienti.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-pret-0-ron: deciziile D3 și D4c din planul valului S4",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema-cont-fara-card",
+    "text": "Contul se deschide fără card de plată",
+    "unde": "src/content/functionalitati/cautare-ai.ts, src/content/functionalitati/automatizari-ai.ts, src/content/functionalitati/portal-clienti.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași afirmație ca acasa-cont-fara-card",
+    "confirmat_de": "",
+    "data": ""
+  }
+]
