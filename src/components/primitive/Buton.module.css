@@ -1,0 +1,195 @@
+/* Butonul (componente-globale.md §8.1, DIRECTIA.md). Masura: 14/600, pastila, 0,3 s ease.
+   Starile de hover sunt scrise pe `a` si `button`: varianta inerta (un `span`, vezi Tinta.tsx)
+   are acelasi aspect si nu reactioneaza. */
+
+.buton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: all var(--durata-normala) ease;
+}
+
+span.buton {
+  cursor: default;
+}
+
+/* --- marimi --------------------------------------------------------------------------------- */
+
+.mare {
+  padding: 16px 32px;
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.antet {
+  padding: 8px 14px;
+  font-size: 14px;
+  line-height: 22.4px;
+  gap: 6.4px;
+}
+
+/* plin-plat: 13 x 32, 16/600, 52-54 inaltime; hover doar culoarea, in 0,15 s (sectoare, cutiile CTA). */
+.plat {
+  padding: 13px 32px;
+  font-size: 16px;
+  line-height: 25.6px;
+  letter-spacing: -0.08px;
+  transition:
+    background-color var(--durata-rapida) ease,
+    border-color var(--durata-rapida) ease;
+}
+
+.latimePlina {
+  width: 100%;
+}
+
+/* --- variante ------------------------------------------------------------------------------- */
+
+.plin {
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+.plin:is(a, button):hover {
+  background: var(--color-albastru-apasat);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medie);
+}
+
+.plin.plat:is(a, button):hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.contur {
+  background: transparent;
+  border: 1.5px solid var(--color-ardezie-2);
+  color: var(--color-cerneala);
+}
+
+/* Textul pe albastru-pal e albastru-apasat: 5,49:1. La referinta e albastru, 4,24:1, sub AA
+   (abaterea din COMPONENTE.md §5.1). Proba: tests/browser/fundatie-antet-intreg.spec.ts. */
+.contur:is(a, button):hover {
+  border-color: var(--color-albastru);
+  color: var(--color-albastru-apasat);
+  background: var(--color-albastru-pal);
+}
+
+.fantoma {
+  background: transparent;
+  border: 1px solid var(--color-ardezie-2);
+  color: var(--color-ardezie-9);
+  transition:
+    background-color var(--durata-rapida) ease,
+    border-color var(--durata-rapida) ease;
+}
+
+.fantoma:is(a, button):hover {
+  border-color: var(--color-ardezie-3);
+  background: var(--color-ardezie-0);
+}
+
+/* Varianta de pe eroul de sector: chenarul porneste de la ardezie-3. */
+.fantomaSector {
+  background: transparent;
+  border: 1px solid var(--color-ardezie-3);
+  color: var(--color-ardezie-9);
+  transition:
+    background-color var(--durata-rapida) ease,
+    border-color var(--durata-rapida) ease;
+}
+
+.fantomaSector:is(a, button):hover {
+  border-color: var(--color-ardezie-4);
+  background: var(--color-ardezie-0);
+}
+
+.albPeInchis {
+  background: var(--color-alb);
+  color: var(--color-noapte);
+}
+
+.albPeInchis:is(a, button):hover {
+  background: var(--color-ardezie-1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover-alb);
+}
+
+.conturPeInchis {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: var(--color-alb);
+}
+
+.conturPeInchis:is(a, button):hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* contur-albastru (butonul de sub functionalitatile startului): 313 x 55,6 la referinta. */
+.conturAlbastru {
+  background: var(--color-alb);
+  border: 1.5px solid var(--color-albastru);
+  color: var(--color-albastru);
+  padding: 14px 32px;
+  font-size: 16px;
+  line-height: 25.6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.conturAlbastru:is(a, button):hover {
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover-contur-albastru);
+}
+
+/* --- iconite ------------------------------------------------------------------------------- */
+
+.iconita {
+  flex-shrink: 0;
+}
+
+.sageata {
+  flex-shrink: 0;
+  transition: transform var(--durata-rapida) ease;
+}
+
+.antet:is(a, button):hover .sageata {
+  transform: translateX(3px);
+}
+
+/* Dunga de lumina care traverseaza butonul plin al eroului la hover (0,5 s). */
+.stralucire::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform var(--durata-lenta) ease;
+  pointer-events: none;
+}
+
+.stralucire:is(a, button):hover::after {
+  transform: translateX(100%);
+}

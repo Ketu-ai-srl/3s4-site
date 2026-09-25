@@ -1,0 +1,1684 @@
+/* Scenele panoului (acasa-constructor.md §6.4, §7, §14). Culorile scenei sunt `--sc-*`, puse pe
+   sectiune si schimbate de tema (Constructor.module.css). Sub 900 px toate grilele orizontale
+   trec pe o coloana. */
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.ok {
+  color: var(--sc-ok) !important;
+  font-weight: 600;
+}
+
+/* --- tiparul comun (§6.4) ------------------------------------------------------------------ */
+
+.obiect {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--sc-line);
+  border-radius: 12px;
+  background: var(--sc-bg2);
+  color: var(--sc-text);
+  opacity: 0;
+  transition:
+    opacity 0.4s ease,
+    background-color 0.5s ease,
+    border-color 0.4s ease,
+    color 0.5s ease 0.2s;
+}
+
+.obiect.in {
+  opacity: 1;
+}
+
+.capObiect {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+}
+
+/* Numele obiectului (plansa, firul contractului) mosteneste randul paginii, 1,6 (25,6 px),
+   ca la referinta. */
+.numeObiect {
+  color: var(--sc-text);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* Pastila de propunere (§6.4): patru variante, cate una pe scena care o are. Baza e a Logisticii
+   (12,8 px, chenar `--sc-line`, padding 2 10); randul e 1,6 la toate (masurat pe referinta: 26,5 /
+   25,8 / 29,8 / 26,5 px inaltime la Logistica / IT / Imobiliare / Consultanta). */
+.pastila {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--sc-line);
+  border-radius: 9999px;
+  color: var(--sc-muted);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 1.6;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.pastila.in {
+  opacity: 1;
+}
+
+.pastilaIt {
+  padding: 1px 10px;
+  font-size: 13.6px;
+  white-space: nowrap;
+}
+
+.pastilaImobiliare {
+  padding: 3px 10px;
+  border-color: var(--sc-line2);
+  font-size: 13.6px;
+}
+
+.pastilaConsultanta {
+  margin-top: 2px;
+  border-color: var(--sc-line2);
+}
+
+/* Linia de sub obiect: cate lipsesc, ce s-a gasit, starea (15,2 px). */
+.linieStare {
+  color: var(--sc-muted);
+  font-size: 15.2px;
+  font-weight: 500;
+  line-height: 1.6;
+  opacity: 0;
+  transition:
+    opacity 0.4s ease,
+    color 0.35s ease;
+}
+
+.linieStare.in {
+  opacity: 1;
+}
+
+.avertisment {
+  color: var(--sc-warn);
+  font-weight: 600;
+}
+
+/* --- 7.1 Constructii ----------------------------------------------------------------------- */
+
+.plansa {
+  gap: 16px;
+}
+
+.cod {
+  color: var(--sc-muted);
+  font-size: 15.2px;
+}
+
+.revizii {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.revizie {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--sc-line);
+  border-radius: 8px;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    border-color 0.4s ease;
+}
+
+/* Randul de 1,6 (ca restul textului) da cardul reviziei de 158 px din fisa (masurat: 153,3 cu 1,4). */
+.numarRevizie {
+  color: var(--sc-text);
+  font-size: 21.6px;
+  line-height: 1.6;
+}
+
+.dataRevizie {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+}
+
+.stareRevizie {
+  margin-top: 4px;
+  color: var(--sc-muted);
+  font-size: 14.72px;
+  font-weight: 500;
+}
+
+.stareRevizie.actuala {
+  color: var(--sc-accent);
+  font-weight: 600;
+}
+
+.notaRevizie {
+  color: var(--sc-faint);
+  font-size: 12.8px;
+}
+
+/* Revizia retrasa: chenar punctat, numarul si data taiate. La referinta si opacitate 0,6; la 3S
+   culoarea `--sc-faint`, fara opacitate, ca textul sa ramana peste 4,5:1. */
+.revizie.retrasa {
+  border-style: dashed;
+}
+
+.retrasa .numarRevizie,
+.retrasa .dataRevizie {
+  color: var(--sc-faint);
+  text-decoration: line-through;
+}
+
+.retrasa .stareRevizie {
+  color: var(--sc-faint);
+}
+
+.revizie.noua {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.revizie.noua.in {
+  border-color: var(--sc-accent);
+  opacity: 1;
+  transform: none;
+}
+
+.bara {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.bara.in {
+  opacity: 1;
+}
+
+.numeBara {
+  color: var(--sc-text);
+  font-size: 15.2px;
+  font-weight: 600;
+}
+
+.segmente {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.segment {
+  width: 22px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--sc-line);
+  transition: background-color 0.3s ease;
+}
+
+.segment.aprins {
+  background: var(--sc-ok-grafic);
+}
+
+.contor {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+}
+
+/* --- 7.2 Contabilitate --------------------------------------------------------------------- */
+
+.dosarLunar {
+  gap: 18px;
+}
+
+.numeClient {
+  color: var(--sc-text);
+  font-size: 16.8px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.perioada {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+}
+
+.celule {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.celula {
+  display: flex;
+  min-width: 0;
+  min-height: 102px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 12px;
+  border: 1px solid var(--sc-line);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.celula.in {
+  opacity: 1;
+  transform: none;
+}
+
+.celula.scurta {
+  border-color: var(--sc-accent);
+}
+
+.etichetaCelula {
+  color: var(--sc-muted);
+  font-size: 13.6px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.valoareLoc {
+  position: relative;
+  min-height: 25.6px;
+}
+
+.pastilaGoala {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 34px;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--sc-line);
+  transition: opacity 0.3s ease;
+}
+
+.valoareLoc:has(.valoare.in) .pastilaGoala {
+  opacity: 0;
+}
+
+.valoare {
+  position: relative;
+  display: block;
+  color: var(--sc-text);
+  font-size: 25.6px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.512px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.valoare.in {
+  opacity: 1;
+  transform: none;
+}
+
+.scurta .valoare {
+  color: var(--sc-accent);
+}
+
+/* Randul 1,35 sta pe container, ca nota de propunere de dedesubt sa-l mosteneasca (masurat pe
+   referinta: 17,3 px la 12,8 px). */
+.lipsa {
+  grid-column: 3 / span 3;
+  line-height: 1.35;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.lipsa.in {
+  opacity: 1;
+  transform: none;
+}
+
+.lipsaText {
+  display: block;
+  color: var(--sc-text);
+  font-size: 16.8px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.propunereText {
+  display: block;
+  margin-top: 6px;
+  color: var(--sc-faint);
+  font-size: 12.8px;
+  font-weight: 500;
+}
+
+/* --- 7.3 Logistica ------------------------------------------------------------------------- */
+
+.cursa {
+  gap: 16px;
+}
+
+.capCursa {
+  color: var(--sc-text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.lant {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.veriga {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 118px;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 14px;
+  border: 1px dashed var(--sc-line);
+  border-radius: 8px;
+  transition:
+    opacity 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.veriga:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: -13px;
+  width: 12px;
+  height: 2px;
+  background: var(--sc-line);
+  content: "";
+  transition: background-color 0.35s ease;
+}
+
+.numeVeriga {
+  color: var(--sc-faint);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: color 0.35s ease;
+}
+
+.notaVeriga {
+  color: var(--sc-muted);
+  font-size: 13.6px;
+  font-weight: 500;
+  line-height: 1.35;
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    color 0.35s ease;
+}
+
+.notaVeriga.in {
+  opacity: 1;
+}
+
+.activa,
+.fierbinte,
+.rezolvata {
+  border-style: solid;
+}
+
+.activa {
+  border-color: var(--sc-line2);
+}
+
+.activa::after {
+  background: var(--sc-line2) !important;
+}
+
+.activa .numeVeriga,
+.fierbinte .numeVeriga,
+.rezolvata .numeVeriga {
+  color: var(--sc-text);
+}
+
+.fierbinte {
+  border-color: var(--sc-accent);
+}
+
+.fierbinte .notaVeriga {
+  color: var(--sc-accent);
+}
+
+/* Nota verigii fierbinti exista doar cat veriga e fierbinte: la T4 veriga „revine normala" si nu
+   isi mai pastreaza locul (masurat pe capturile referintei: la 390 verigile 1-4 au 49 px in starea
+   finala, fara spatiu pentru o nota ascunsa). Apare prin opacitate, ca celelalte note. */
+.notaFierbinte {
+  opacity: 1;
+  animation: aparitieNota 0.35s ease both;
+}
+
+@keyframes aparitieNota {
+  from {
+    opacity: 0;
+  }
+}
+
+.rezolvata {
+  border-color: var(--sc-ok-grafic);
+}
+
+.coada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.coada.in {
+  opacity: 1;
+}
+
+.asteptareCoada {
+  color: var(--sc-warn);
+  font-size: 15.2px;
+  font-weight: 500;
+}
+
+.fisierCoada {
+  color: var(--sc-text);
+  font-size: 14.72px;
+}
+
+/* --- 7.4 IT -------------------------------------------------------------------------------- */
+
+.contract {
+  gap: 20px;
+  padding: 22px 24px;
+}
+
+.dataContract {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+  transition: color 0.4s ease;
+}
+
+.axa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 26px;
+}
+
+.azi {
+  position: absolute;
+  top: 0;
+  left: 66%;
+  color: var(--sc-text);
+  font-size: 13.6px;
+  font-weight: 500;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 0.35s ease;
+}
+
+.azi.in {
+  opacity: 1;
+}
+
+.pistaAxa {
+  position: relative;
+  height: 18px;
+}
+
+.pistaAxa::before {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--sc-line2);
+  content: "";
+}
+
+.segmentVechi {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 96%;
+  height: 18px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  background: var(--sc-muted);
+  transition:
+    width 0.35s ease,
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.segmentVechi.gol {
+  width: 38%;
+  border: 1px dashed var(--sc-line);
+  background: transparent;
+}
+
+.segmentNou {
+  position: absolute;
+  top: 0;
+  left: 40%;
+  width: 56%;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--sc-accent);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.segmentNou.in {
+  opacity: 1;
+}
+
+.linieAzi {
+  position: absolute;
+  top: -6px;
+  left: 66%;
+  width: 2px;
+  height: 30px;
+  background: var(--sc-text);
+  opacity: 0;
+  transform: scaleY(0.3);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.linieAzi.in {
+  opacity: 0.55;
+  transform: none;
+}
+
+.legenda {
+  display: grid;
+  grid-template-columns: 40% minmax(0, 1fr);
+  gap: 12px;
+  font-size: 14.4px;
+  line-height: 1.6;
+}
+
+.etichetaVeche {
+  color: var(--sc-text);
+  font-weight: 500;
+  transition: color 0.35s ease;
+}
+
+.etichetaVeche.inlocuit {
+  color: var(--sc-faint);
+}
+
+.etichetaNoua {
+  color: var(--sc-accent);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.etichetaNoua.in {
+  opacity: 1;
+}
+
+.set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.cuvant {
+  color: var(--sc-text);
+  font-size: 18.4px;
+  font-weight: 600;
+  transition: color 0.35s ease;
+}
+
+.cuvantLipsa {
+  color: var(--sc-faint);
+  text-decoration: underline dotted;
+  text-underline-offset: 5px;
+}
+
+.cuvantLipsa.ok {
+  text-decoration: none;
+}
+
+/* --- 7.5 Avocatura ------------------------------------------------------------------------- */
+
+.cauza {
+  gap: 18px;
+}
+
+.capSpatiat {
+  justify-content: space-between;
+}
+
+.idCauza {
+  color: var(--sc-text);
+  font-size: 15.2px;
+}
+
+.stampila {
+  color: var(--sc-ok);
+  font-size: 14.4px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.stampila.in {
+  opacity: 1;
+  transform: none;
+}
+
+.pistaTermen {
+  position: relative;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--sc-line);
+}
+
+.umplereTermen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 64%;
+  border-radius: 9999px;
+  background: var(--sc-line2);
+  transition: width 0.5s ease;
+}
+
+.zid {
+  position: absolute;
+  top: -7px;
+  left: calc(64% - 2.5px);
+  width: 5px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--sc-line2);
+  transition:
+    left 0.5s ease,
+    background-color 0.4s ease;
+}
+
+.plina .umplereTermen {
+  width: 100%;
+}
+
+.plina .zid {
+  left: calc(100% - 5px);
+  background: var(--sc-accent);
+}
+
+/* Aliniat pe linia de baza: data-limita sta pe aceeasi linie de baza cu zilele, iar nota coboara
+   sub ea (captura referintei; cu aliniere sus obiectul iesea 281,5 px in loc de 297). */
+.numaratoare {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zile {
+  color: var(--sc-muted);
+  font-size: 35.2px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  transition: color 0.35s ease;
+}
+
+.zile.corect {
+  color: var(--sc-accent);
+}
+
+.dreaptaNumaratoare {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  text-align: right;
+}
+
+.dataLimita {
+  color: var(--sc-text);
+  font-size: 15.2px;
+  font-weight: 600;
+}
+
+.notaLimita {
+  max-width: 28ch;
+  color: var(--sc-faint);
+  font-size: 12.8px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.notaLimita.in {
+  opacity: 1;
+}
+
+.acte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.act {
+  color: var(--sc-muted);
+  font-size: 15.2px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    color 0.35s ease;
+}
+
+.act.in {
+  opacity: 1;
+  transform: none;
+}
+
+.act.ancora {
+  color: var(--sc-text);
+  font-weight: 600;
+}
+
+.notaAncora {
+  max-width: 42ch;
+  color: var(--sc-muted);
+  font-size: 13.6px;
+  line-height: 1.5;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.notaAncora.in {
+  opacity: 1;
+}
+
+/* --- 7.6 Imobiliare ------------------------------------------------------------------------ */
+
+.proprietate {
+  gap: 14px;
+}
+
+.proprietate.chenarOk {
+  border-color: var(--sc-ok-grafic);
+}
+
+.programare {
+  color: var(--sc-accent);
+  font-size: 21.6px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.adresa {
+  color: var(--sc-text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.listaActe {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.randAct {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--sc-line);
+}
+
+.numeAct {
+  color: var(--sc-text);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.stareAct {
+  font-size: 14.4px;
+  font-weight: 500;
+  transition: color 0.35s ease;
+}
+
+.complet .stareAct {
+  color: var(--sc-muted);
+}
+
+.asteptare .stareAct {
+  color: var(--sc-faint);
+}
+
+.invechit .stareAct {
+  color: var(--sc-warn);
+}
+
+.notaInvechit {
+  flex-basis: 100%;
+  color: var(--sc-muted);
+  font-size: 12.8px;
+  line-height: 1.4;
+}
+
+/* --- 7.7 Asigurari ------------------------------------------------------------------------- */
+
+.dauna {
+  gap: 18px;
+}
+
+.idDauna {
+  color: var(--sc-text);
+  font-size: 16.8px;
+}
+
+.returnat {
+  color: var(--sc-warn);
+  font-size: 14.4px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.returnat.in {
+  opacity: 1;
+}
+
+.propunereDreapta {
+  margin-left: auto;
+  color: var(--sc-faint);
+  font-size: 12.8px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.propunereDreapta.in {
+  opacity: 1;
+}
+
+.sloturi {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.slot {
+  display: flex;
+  min-width: 0;
+  min-height: 125px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--sc-line);
+  border-radius: 8px;
+  transition:
+    border-color 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.baraSlot {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--sc-line);
+  transition: background-color 0.35s ease;
+}
+
+.slot-complet .baraSlot {
+  background: var(--sc-ok-grafic);
+}
+
+.numeSlot {
+  color: var(--sc-text);
+  font-size: 14.4px;
+  font-weight: 500;
+  line-height: 1.35;
+  transition:
+    color 0.35s ease,
+    font-size 0.35s ease;
+}
+
+.stareSlot {
+  margin-top: auto;
+  color: var(--sc-faint);
+  font-size: 13.6px;
+  transition: color 0.35s ease;
+}
+
+.slot-lipsa {
+  border: 1px dashed var(--sc-accent);
+}
+
+.slot-lipsa .numeSlot {
+  color: var(--sc-accent);
+  font-size: 18.4px;
+  font-weight: 600;
+}
+
+.slot-lipsa .stareSlot {
+  color: var(--sc-muted);
+  font-weight: 600;
+}
+
+.subsolDauna {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.subsolDauna.in {
+  opacity: 1;
+}
+
+.zileDeschis {
+  color: var(--sc-muted);
+  font-size: 15.2px;
+  font-weight: 500;
+}
+
+.fotografii {
+  padding: 4px 12px;
+  border: 1px solid var(--sc-line2);
+  border-radius: 9999px;
+  background: var(--sc-bg2);
+  color: var(--sc-muted);
+  font-size: 13.6px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.fotografii.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- 7.8 Notariat -------------------------------------------------------------------------- */
+
+.registru {
+  gap: 16px;
+}
+
+.caseta {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--sc-line);
+  border-radius: 8px;
+  transition: border-color 0.35s ease;
+}
+
+.caseta.cautare {
+  border-color: var(--sc-text);
+}
+
+.textCautare {
+  color: var(--sc-text);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.substituent {
+  color: var(--sc-faint);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Cursorul nu clipeste (masurat, critic 24.09): e aprins de la T1 la T5 si doar apare / se stinge. */
+.cursor {
+  width: 2px;
+  height: 18px;
+  margin-left: -6px;
+  background: var(--sc-text);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cursor.in {
+  opacity: 1;
+}
+
+.randuri {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.randRegistru {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--sc-line);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.randRegistru.in {
+  opacity: 1;
+  transform: none;
+}
+
+.randRegistru.potrivit {
+  border-color: var(--sc-accent);
+}
+
+.numarRegistru {
+  color: var(--sc-muted);
+  font-size: 15.2px;
+  transition: color 0.35s ease;
+}
+
+.parti {
+  color: var(--sc-text);
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.35s ease;
+}
+
+.pastrare {
+  color: var(--sc-faint);
+  font-size: 13.6px;
+}
+
+/* Randurile nepotrivite: la referinta opacitate 0,35 pe tot randul; la 3S chenarul trece pe
+   `--sc-line2` si textul pe `--sc-faint`, fara opacitate pe text. */
+.randRegistru.estompat {
+  border-color: var(--sc-line2);
+}
+
+.estompat .numarRegistru,
+.estompat .parti {
+  color: var(--sc-faint);
+}
+
+/* --- 7.9 Consultanta ----------------------------------------------------------------------- */
+
+.fir {
+  gap: 18px;
+}
+
+.firInterior {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Coloana firului e desenata PESTE cutia facturii (pozitionata absolut), ca la referinta. */
+.coloanaFir {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 2;
+  width: 1px;
+  background: var(--sc-line);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.35s ease;
+}
+
+.coloanaFir.in {
+  transform: none;
+}
+
+.pereche {
+  display: grid;
+  min-height: 96px;
+  grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.nod {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px;
+  border: 1px solid var(--sc-line);
+  border-radius: 8px;
+  background: var(--sc-bg);
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* Pastila de propunere are latimea textului ei, nu a nodului (la 390 nodul ia toata latimea). */
+.nodIntors {
+  align-items: flex-start;
+  justify-self: end;
+  border-color: var(--sc-ok-grafic);
+  transform: translateX(-12px);
+}
+
+.nodTrimis {
+  justify-self: start;
+  transform: translateX(10px);
+}
+
+.nod.in {
+  opacity: 1;
+  transform: none;
+}
+
+.nod.chenarOk {
+  border-color: var(--sc-ok-grafic);
+}
+
+.linieIntors {
+  color: var(--sc-ok);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.numeNod {
+  color: var(--sc-text);
+  font-size: 16.8px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.metaNod {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+}
+
+.fisierNod {
+  overflow: hidden;
+  color: var(--sc-faint);
+  font-size: 14.4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.asteptareNod {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+  font-weight: 500;
+  transition: color 0.35s ease;
+}
+
+.asteptareNod.fierbinte {
+  color: var(--sc-warn);
+}
+
+.axaNod {
+  position: relative;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.punctFir {
+  position: relative;
+  z-index: 3;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--sc-line);
+  border-radius: 9999px;
+  background: var(--sc-bg2);
+  transition:
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+}
+
+.punctFir.trimis {
+  border-color: var(--sc-line2);
+}
+
+.punctFir.fierbinte {
+  border-color: var(--sc-warn);
+}
+
+.punctFir.inchis {
+  border-color: var(--sc-ok-grafic);
+  background: var(--sc-ok-grafic);
+}
+
+.bratStanga,
+.bratDreapta {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 1px;
+  background: var(--sc-line2);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.bratStanga {
+  right: 50%;
+  transform-origin: right;
+}
+
+.bratDreapta {
+  left: 50%;
+  transform-origin: left;
+}
+
+.bratStanga.in,
+.bratDreapta.in {
+  transform: none;
+}
+
+.randFactura {
+  display: flex;
+  justify-content: center;
+}
+
+.factura {
+  display: flex;
+  width: min(100%, 320px);
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px dashed var(--sc-line);
+  border-radius: 12px;
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+}
+
+.factura.in {
+  opacity: 1;
+}
+
+.factura.activa {
+  border-style: solid;
+  border-color: var(--sc-accent);
+  background: var(--sc-bg2);
+}
+
+.numeFactura {
+  color: var(--sc-faint);
+  font-size: 16px;
+  font-weight: 600;
+  transition: color 0.4s ease;
+}
+
+.activa .numeFactura {
+  color: var(--sc-accent);
+}
+
+.subFactura {
+  color: var(--sc-faint);
+  font-size: 14.4px;
+}
+
+.stareFir {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.numeStare {
+  color: var(--sc-text);
+  font-size: 15.2px;
+  font-weight: 600;
+}
+
+.etichetaStare {
+  color: var(--sc-muted);
+  font-size: 14.4px;
+}
+
+/* --- sub 900 px (§7, coloana "390"; §14) --------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .obiect {
+    gap: 14px;
+    padding: 14px;
+  }
+
+  /* plansa isi pastreaza cei 16 px dintre cap si revizii si la 390 (masurat pe referinta) */
+  .plansa {
+    gap: 16px;
+  }
+
+  .contract {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  /* Capetele care la 390 trec pe randuri (7.1, 7.4, 7.5, 7.6, 7.7): codul sub nume, pastila sub
+     programare, eticheta si nota de propunere sub identificator, aliniate la stanga. Avocatura are
+     gap 6 (fisa, 7.5); celelalte pastreaza cei 12 px ai capului (masurat pe capturile referintei:
+     5-8 px mai mult decat cu 6 intre randurile capului, la toate patru). */
+  .capSpatiat,
+  .capColoana {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .capSpatiat {
+    gap: 6px;
+  }
+
+  /* Constructii */
+  .revizii {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .revizie {
+    padding: 12px 14px;
+  }
+
+  .numarRevizie {
+    font-size: 19.2px;
+  }
+
+  .segment {
+    width: 18px;
+  }
+
+  .contor {
+    flex-basis: 100%;
+  }
+
+  /* Contabilitate */
+  .celule {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .celula {
+    min-height: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  /* Locul valorii are inaltimea valorii de 21,6 px: cu cei 25,6 de la 1440 randul iesea 51,6 px
+     in loc de ~47,6 (captura referintei). */
+  .valoareLoc {
+    display: flex;
+    min-width: 34px;
+    min-height: 21.6px;
+    justify-content: flex-end;
+  }
+
+  .pastilaGoala {
+    top: calc(50% - 5px);
+    right: 0;
+    left: auto;
+  }
+
+  .valoare {
+    font-size: 21.6px;
+  }
+
+  .lipsa {
+    grid-column: 1;
+    padding-top: 2px;
+  }
+
+  .lipsaText {
+    font-size: 16px;
+  }
+
+  /* Logistica: lantul vertical, legatura de 2 x 10 sub fiecare veriga */
+  .lant {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Pe coloana verigile au inaltimea continutului: `flex: 1 1 0%` le-ar egaliza (masurat: toate la
+     61 px, iar nota verigii finale iesea din chenar), la referinta 49 px si ultima mai inalta. */
+  .veriga {
+    min-height: 0;
+    flex: none;
+    padding: 14px;
+  }
+
+  .veriga:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -11px;
+    left: 18px;
+    width: 2px;
+    height: 10px;
+  }
+
+  .numeVeriga {
+    font-size: 15.2px;
+  }
+
+  /* IT */
+  .axa {
+    gap: 8px;
+  }
+
+  .legenda {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .set {
+    gap: 6px 14px;
+  }
+
+  .cuvant {
+    font-size: 16.8px;
+  }
+
+  .numeClient {
+    font-size: 16px;
+  }
+
+  /* Avocatura */
+  .numaratoare {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .zile {
+    font-size: 27.2px;
+  }
+
+  .dreaptaNumaratoare {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .notaLimita,
+  .notaAncora {
+    max-width: none;
+  }
+
+  /* Imobiliare */
+  .proprietate {
+    gap: 12px;
+  }
+
+  .programare {
+    font-size: 19.2px;
+  }
+
+  .randAct {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 0;
+  }
+
+  /* Asigurari: sloturile ca randuri, bara verticala la stanga */
+  .propunereDreapta {
+    margin-left: 0;
+  }
+
+  .sloturi {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .slot {
+    min-height: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .baraSlot {
+    width: 6px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  .stareSlot {
+    margin-top: 0;
+    margin-left: auto;
+  }
+
+  .slot-lipsa .numeSlot {
+    font-size: 16.8px;
+  }
+
+  /* Notariat */
+  .caseta {
+    padding: 8px 12px;
+  }
+
+  .randRegistru {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 12px 14px;
+  }
+
+  /* Consultanta: firul la stanga, nodul trimis deasupra celui intors */
+  .firInterior {
+    gap: 14px;
+  }
+
+  .coloanaFir {
+    left: 8.5px;
+  }
+
+  /* Axa (punctul) e aliniata sus IN cutia ei, cu padding sus 18 (fisa), dar cutia, de inaltimea
+     continutului, sta centrata pe toata perechea: masurat pe captura referintei, punctul la
+     701-709 px intr-o pereche de 595-797 px, bratul la jumatatea cutiei, deasupra punctului. */
+  .pereche {
+    min-height: 0;
+    grid-template-areas:
+      "axa trimis"
+      "axa intors";
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .axaNod {
+    height: auto;
+    grid-area: axa;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 18px;
+    padding-left: 4px;
+  }
+
+  .nodTrimis {
+    grid-area: trimis;
+    justify-self: stretch;
+  }
+
+  .nodIntors {
+    grid-area: intors;
+    justify-self: stretch;
+  }
+
+  .bratStanga {
+    display: none;
+  }
+
+  .bratDreapta {
+    left: 13px;
+    width: 10px;
+  }
+
+  .nod {
+    padding: 12px 14px;
+  }
+
+  .numeNod {
+    font-size: 16px;
+  }
+
+  .randFactura {
+    justify-content: flex-start;
+    padding-left: 28px;
+  }
+
+  .factura {
+    padding: 12px 14px;
+  }
+}

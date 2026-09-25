@@ -1,6 +1,6 @@
 # ADR-0006: direcția REF-S pentru 3s4
 
-Data: 2026-09-18. Stare: implementată la cererea utilizatorului.
+Data: 2026-09-18. Stare: înlocuită de [ADR-0007](ADR-0007-directie-ref-n.md) pe 2026-09-24 (direcția REF-N); REF-S s-a retras din cod în valul S4-1. Textul de mai jos rămâne ca istoric.
 
 3s4 folosește o referință vizuală nouă. Specificațiile REF-A moștenite din 3s2 (pastile, container de 980 px, titluri 600, interdicția gradientelor și fotografii înaintea titlului) nu mai descriu produsul cerut. Le înlocuim cu REF-S: alb, cerneală marină, violet, antet editorial, artă abstractă și secțiuni modulare.
 

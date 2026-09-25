@@ -1,0 +1,35 @@
+{
+  "_nota": "Configurarea SEO si GEO a site-ului (planul valului S4, sectiunea 8). Din ea se genereaza robots.txt (src/lib/roboti.ts); proba tests/seo-geo-gdpr.test.ts o citeste cu un parser de reguli, nu cu o cautare de text. Decizia pe roboti e E5 D4: toti botii AI permisi, inclusiv cei de antrenare, fiindca pentru o marca noua a fi invatat e obiectivul; se blocheaza doar Bytespider si scraperele comerciale. Semnalul de continut (Content Signals, sintaxa Cloudflare) spune acelasi lucru ca declaratie: cautare, raspunsuri generate si antrenare, toate da. Pe staging robots.txt interzice tot, ca azi, si nu poarta niciun semnal. Lista roboti_permisi e un esantion pentru proba, nu o lista de acces: orice robot care nu e in roboti_blocati intra prin grupul *, deci si cei nenumiti aici. Declaratiile de raspuns ale rutelor (poarta G-AI-02) nu stau aici: sunt pe felie, in config/seo/<felia>.json, ca feliile paralele sa nu scrie in acelasi fisier.",
+  "semnal_continut": {
+    "search": "yes",
+    "ai-input": "yes",
+    "ai-train": "yes"
+  },
+  "roboti_permisi": [
+    "OAI-SearchBot",
+    "ChatGPT-User",
+    "GPTBot",
+    "OAI-AdsBot",
+    "Claude-SearchBot",
+    "Claude-User",
+    "ClaudeBot",
+    "PerplexityBot",
+    "Perplexity-User",
+    "Googlebot",
+    "Google-Extended",
+    "Bingbot",
+    "meta-webindexer",
+    "meta-externalagent",
+    "meta-externalfetcher",
+    "CCBot",
+    "Amazonbot"
+  ],
+  "roboti_blocati": [
+    "Bytespider",
+    "Diffbot",
+    "Scrapy",
+    "ApifyBot",
+    "FirecrawlAgent",
+    "Crawl4AI"
+  ]
+}
