@@ -1,0 +1,1107 @@
+/* Machetele paginii /functionalitati/aplicatie-mobila (fisa functionalitati__aplicatie-mobila.md).
+   Cifrele: 1440 / 390. Pe pagina asta accentul albastru al textelor e `albastru-clar-2` #5b8def (fisa, antet). */
+
+.titluSectiune {
+  margin: 0 0 16px;
+}
+
+.titluLat {
+  max-width: 740px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.titluUmbra {
+  margin: 0 0 16px;
+  color: var(--color-ardezie-0);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+
+.paragraf {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.punctAlbastru {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+/* --- S1: contorul si ziua ---------------------------------------------------------------------- */
+
+.contor {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10.4px;
+  margin: 28.8px 0 0;
+  padding: 9.6px 15.2px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  opacity: clamp(0, calc(2 * (var(--p) - 0.025)), 1);
+  transition: opacity 0.4s ease;
+}
+
+.cutieCeas {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(248, 113, 113, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.contorEticheta {
+  font-size: 11.2px;
+  font-weight: 600;
+  letter-spacing: 0.224px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.contorValoare {
+  font-family: var(--font-mono);
+  font-size: 22.4px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.448px;
+  color: var(--color-rosu-clar);
+}
+
+.lant {
+  padding-left: 10.4px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 11.2px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cardZi {
+  margin: 40px 0 0;
+  padding: 17.6px 19.2px 19.2px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  text-align: left;
+  opacity: clamp(0, calc(2.5 * var(--p) - 0.1), 1);
+  transform: translateY(max(0px, calc(20px - 40px * var(--p))));
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.capZi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.titluZi {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.48px;
+  font-weight: 600;
+  letter-spacing: 0.125px;
+  color: #e6ecf5;
+}
+
+.subtitluZi {
+  font-size: 11.52px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.bara {
+  display: flex;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  list-style: none;
+}
+
+/* Segmentul i: scaleX si opacitate max(.2, min(1, 6 (p - s_i))), din stanga (antetul componentei). */
+.segment {
+  display: flex;
+  min-width: 0;
+  flex-basis: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 5.6px 8px;
+  overflow: hidden;
+  border-right: 1px solid var(--color-ardezie-9);
+  white-space: nowrap;
+  transform-origin: left center;
+  opacity: max(0.2, clamp(0, calc(6 * (var(--p) - var(--s))), 1));
+  transform: scaleX(max(0.2, clamp(0, calc(6 * (var(--p) - var(--s))), 1)));
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.segment:last-child {
+  border-right: 0;
+}
+
+.segClient {
+  background: rgba(22, 163, 74, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.segActe {
+  background: rgba(220, 38, 38, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.segPierdut {
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 4px, transparent 4px 8px),
+    rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.etichetaSeg {
+  overflow: hidden;
+  font-size: 9.28px;
+  font-weight: 600;
+  letter-spacing: 0.186px;
+  text-overflow: ellipsis;
+}
+
+.durataSeg {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 10.88px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+
+.ore {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 10.4px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.statistici {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10.4px;
+  margin: 22.4px 0 0;
+}
+
+.statistica {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 13.6px 16px 13.6px 34.8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.statistica::before {
+  position: absolute;
+  top: 19.2px;
+  left: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--punct);
+  content: "";
+}
+
+.punctClient {
+  --punct: var(--color-verde);
+}
+
+.punctActe {
+  --punct: var(--color-rosu);
+}
+
+.punctPierdut {
+  --punct: rgba(255, 255, 255, 0.4);
+}
+
+.etichetaStat {
+  font-size: 10.88px;
+  font-weight: 600;
+  letter-spacing: 0.218px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.valoareStat {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 22.4px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: -0.448px;
+}
+
+.valClient {
+  color: var(--color-verde-clar);
+}
+
+.valActe {
+  color: var(--color-rosu-clar);
+}
+
+.valPierdut {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- S4: telefonul ----------------------------------------------------------------------------- */
+
+.telefonLoc {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  opacity: clamp(0, calc(2.5 * var(--p) - 0.1), 1);
+  transform: translateY(max(0px, calc(24px - 50px * var(--p))));
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.telefon {
+  position: relative;
+  display: flex;
+  width: 360px;
+  max-width: 100%;
+  margin: 0;
+  aspect-ratio: 9 / 19;
+  overflow: hidden;
+  border: 12px solid #1e1e28;
+  border-radius: 36px;
+  background: var(--color-ardezie-9);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.decupaj {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: 90px;
+  height: 24px;
+  border-radius: 0 0 14px 14px;
+  background: #1e1e28;
+  transform: translateX(-50%);
+}
+
+.home {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  width: 100px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-50%);
+}
+
+.ecranTelefon {
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  flex-direction: column;
+  padding: 36px 14px 18px;
+  box-sizing: border-box;
+}
+
+.stareTelefon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.numeAplicatie,
+.oraTelefon {
+  font-family: var(--font-mono);
+  font-size: 10.4px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.oraTelefon {
+  margin-left: auto;
+}
+
+.indicator {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 10px 0 12px;
+}
+
+.pas {
+  width: 5px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.4s ease;
+}
+
+.pasActiv {
+  width: 18px;
+  background: var(--color-albastru);
+}
+
+.pasTelefon {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8.8px;
+  animation: intraEcran 0.5s ease both;
+}
+
+@keyframes intraEcran {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.randTitlu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.numarPas {
+  padding: 2.4px 5.6px;
+  border-radius: 4px;
+  background: rgba(37, 99, 235, 0.14);
+  font-family: var(--font-mono);
+  font-size: 9.28px;
+  font-weight: 700;
+  letter-spacing: 0.186px;
+  color: var(--color-albastru-clar-2);
+}
+
+.numePas {
+  font-size: 11.52px;
+  font-weight: 600;
+  color: #e6ecf5;
+}
+
+.continutPas {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+
+.legenda {
+  margin: 0;
+  font-size: 9.92px;
+  line-height: 13.39px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+/* ecranul 1 */
+.vizor {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.colt {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 0 solid var(--color-albastru);
+}
+
+.colt-ss {
+  top: 7px;
+  left: 7px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 4px;
+}
+
+.colt-sd {
+  top: 7px;
+  right: 7px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-top-right-radius: 4px;
+}
+
+.colt-js {
+  bottom: 7px;
+  left: 7px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.colt-jd {
+  right: 7px;
+  bottom: 7px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  border-bottom-right-radius: 4px;
+}
+
+.foaie {
+  display: flex;
+  width: 81%;
+  height: 93%;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  transform: rotate(-2deg);
+}
+
+.randFoaie {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.liniaSemnaturii {
+  margin-top: auto;
+  overflow: hidden;
+  font-size: 8.8px;
+  letter-spacing: 1.056px;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.baraScanare {
+  position: absolute;
+  top: 8%;
+  left: 3%;
+  width: 94%;
+  height: 2px;
+  background: var(--color-albastru);
+  animation: scanare 2.4s ease-in-out infinite;
+}
+
+@keyframes scanare {
+  0%,
+  100% {
+    top: 8%;
+    opacity: 0.6;
+  }
+  50% {
+    top: 92%;
+    opacity: 1;
+  }
+}
+
+/* ecranul 2 */
+.panouEtichete {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  box-sizing: border-box;
+}
+
+.cipDoc {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  background: var(--color-ardezie-9);
+}
+
+.etPdf {
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgba(220, 38, 38, 0.14);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16px;
+  color: var(--color-rosu-clar);
+}
+
+.numeDoc {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 10.88px;
+  font-weight: 600;
+  color: #e6ecf5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.etichete {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5.6px;
+}
+
+.eticheta {
+  display: inline-flex;
+  height: 26.4px;
+  align-items: center;
+  gap: 4px;
+  padding: 0 9px;
+  border-radius: 9999px;
+  font-size: 9.28px;
+  font-weight: 600;
+  box-sizing: border-box;
+  animation: apareEticheta 0.5s cubic-bezier(0.34, 1.5, 0.55, 1) calc(0.15s + 0.3s * var(--i, 0)) both;
+}
+
+@keyframes apareEticheta {
+  from {
+    opacity: 0;
+    transform: scale(0.4) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.etFirma {
+  background: rgba(37, 99, 235, 0.14);
+  color: var(--color-albastru-clar-2);
+}
+
+.etStare {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.etNeutru {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ecranul 3 */
+.zonaTrimis {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.cercTrimis {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-verde);
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.14);
+  color: #ffffff;
+  animation: izbucnire 0.6s cubic-bezier(0.34, 1.4, 0.55, 1) both;
+}
+
+@keyframes izbucnire {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.textTrimis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.numeTrimis {
+  font-family: var(--font-mono);
+  font-size: 10.88px;
+  font-weight: 700;
+  color: #e6ecf5;
+}
+
+.destinatie {
+  font-size: 9.28px;
+  font-weight: 600;
+  letter-spacing: 0.186px;
+  color: var(--color-verde-clar);
+}
+
+.marca {
+  font-family: var(--font-mono);
+  font-size: 9.28px;
+  letter-spacing: 0.186px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* --- S5: perechea ------------------------------------------------------------------------------ */
+
+.pereche {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) 28px minmax(0, 380px);
+  gap: 16px;
+  justify-content: center;
+  margin: 40px 0 0;
+  text-align: left;
+}
+
+.cardSync {
+  display: flex;
+  min-height: 196px;
+  flex-direction: column;
+  padding: 24px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  transition: opacity 0.5s ease;
+}
+
+.cardTeren {
+  opacity: clamp(0, calc(2 * var(--p)), 1);
+}
+
+.cardBirou {
+  opacity: clamp(0, calc(2.86 * (var(--p) - 0.1)), 1);
+}
+
+.capSync {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.pastilaOra {
+  padding: 4.8px 8.8px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 11.2px;
+  font-weight: 600;
+}
+
+.oraTeren {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.oraBirou {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.cutieMare {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  box-sizing: border-box;
+}
+
+.docSync {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 600;
+  color: #e6ecf5;
+}
+
+.marcaSync {
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: 10.4px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.actiune {
+  margin: 0;
+  font-size: 14.4px;
+  line-height: 20.88px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.coloanaSync {
+  position: relative;
+}
+
+.coloanaSync::before {
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  content: "";
+}
+
+.punctSync {
+  position: absolute;
+  top: 12%;
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-albastru);
+  animation: coboara 2.4s ease-in-out infinite;
+}
+
+@keyframes coboara {
+  from {
+    top: 12%;
+  }
+  to {
+    top: calc(88% - 8px);
+  }
+}
+
+@keyframes curgeOrizontal {
+  from {
+    left: 12%;
+  }
+  to {
+    left: calc(88% - 8px);
+  }
+}
+
+/* --- S6: machetele contrastului ---------------------------------------------------------------- */
+
+.foaieAviz {
+  margin: 0;
+  padding: 11.2px 12px 10.4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  transform: rotate(-1.5deg);
+}
+
+.antetAviz {
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 9.28px;
+  font-weight: 700;
+  letter-spacing: 1.11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.bareAviz {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bareAviz span {
+  height: 5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.semnaturaAviz {
+  display: block;
+  width: 70%;
+  height: 34px;
+  margin: 8px auto 4px;
+}
+
+.josAviz {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+}
+
+.locAviz {
+  font-size: 9.92px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.avertismentAviz {
+  font-size: 9.92px;
+  font-weight: 600;
+  color: var(--color-rosu-clar);
+}
+
+.telefonMini {
+  margin: 0;
+  padding: 8.8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: var(--color-negru-cinema);
+}
+
+.cardMini {
+  display: flex;
+  flex-direction: column;
+  gap: 6.4px;
+  padding: 8px 9.6px 9.6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.baraMini {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aplicatieMini,
+.oraMini {
+  font-family: var(--font-mono);
+  font-size: 8.8px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.oraMini {
+  margin-left: auto;
+}
+
+.cipMini {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  padding: 4px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+}
+
+.etPdfMini {
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: rgba(220, 38, 38, 0.14);
+  font-family: var(--font-mono);
+  font-size: 7.2px;
+  font-weight: 700;
+  color: var(--color-rosu-clar);
+}
+
+.numeMini {
+  font-family: var(--font-mono);
+  font-size: 9.6px;
+  font-weight: 600;
+  color: #e6ecf5;
+}
+
+.pasiMini {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pasMini {
+  display: flex;
+  min-height: 26px;
+  align-items: center;
+  gap: 6px;
+  padding: 4.8px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 9.28px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  box-sizing: border-box;
+}
+
+.punctPasMini {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.pasGata {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.14);
+  font-weight: 600;
+  color: var(--color-verde-clar);
+}
+
+.pasGata .punctPasMini {
+  background: var(--color-verde);
+}
+
+.josMini {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 2px 0;
+}
+
+.locMini {
+  font-size: 8.8px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.confirmareMini {
+  font-size: 8.8px;
+  font-weight: 600;
+  color: var(--color-verde-clar);
+}
+
+@media (max-width: 767px) {
+  .contor {
+    max-width: 350px;
+  }
+
+  .lant {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .cardZi {
+    padding: 14.4px 16px 16px;
+  }
+
+  .bara {
+    height: 48px;
+  }
+
+  .segment {
+    padding: 4px 4px;
+  }
+
+  .etichetaSeg {
+    font-size: 8px;
+  }
+
+  .durataSeg {
+    font-size: 9px;
+  }
+
+  .statistici {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .telefon {
+    width: 280px;
+    border-radius: 30px;
+  }
+
+  .ecranTelefon {
+    padding: 32px 10px 16px;
+  }
+
+  .pereche {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .cardSync {
+    min-height: 142px;
+  }
+
+  .cardBirou {
+    min-height: 196px;
+  }
+
+  .coloanaSync {
+    height: 56px;
+  }
+
+  .coloanaSync::before {
+    top: 28px;
+    right: 42px;
+    bottom: 27px;
+    left: 42px;
+    width: auto;
+    height: 1px;
+  }
+
+  .punctSync {
+    top: 24px;
+    left: 12%;
+    animation-name: curgeOrizontal;
+  }
+}
+
+/* Eticheta VIZIBILA "exemplu" a machetelor cu date de firma (decizia D11): 11 px, alb .7 pe ardezie, AA. */
+.exemplu {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 15px;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: rgba(255, 255, 255, 0.7);
+}

@@ -1,0 +1,354 @@
+/* Blocurile de pagina interioara: cutia CTA de 880, proza, tabelul de date, eroul interior. */
+
+/* --- CutieCta880: sectiune 64 / 80 (40 / 56); cutie 880 ardezie-9, raza 16, padding 40 (28) -- */
+
+.ctaSectiune {
+  padding: 64px 0 80px;
+}
+
+.ctaCutie {
+  max-width: 880px;
+  margin-inline: auto;
+  padding: 40px;
+  border-radius: 16px;
+  background: var(--color-ardezie-9);
+  color: var(--color-alb);
+}
+
+.ctaTitlu {
+  margin-bottom: 10px;
+  color: var(--color-alb);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 35px;
+  letter-spacing: -0.56px;
+}
+
+/* ardezie-3 pe ardezie-9: 12,02:1 */
+.ctaText {
+  margin-bottom: 24px;
+  color: var(--color-ardezie-3);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+@media (max-width: 767px) {
+  .ctaSectiune {
+    padding: 40px 0 56px;
+  }
+
+  .ctaCutie {
+    padding: 28px;
+  }
+
+  .ctaTitlu {
+    font-size: 21.6px;
+    line-height: 27px;
+    letter-spacing: -0.432px;
+  }
+}
+
+/* --- Proza (juridic A, articole): identica la 1440 si 390 --------------------------------- */
+
+.proza {
+  padding-bottom: 32px;
+  color: var(--color-ardezie-6);
+}
+
+.proza p {
+  margin: 0 0 20px;
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.proza h2 {
+  margin: 44px 0 14px;
+  color: var(--color-ardezie-9);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 31.2px;
+  letter-spacing: -0.48px;
+}
+
+.proza h3 {
+  margin: 32px 0 10px;
+  color: var(--color-ardezie-9);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.2px;
+}
+
+.proza h4 {
+  margin: 24px 0 8px;
+  color: var(--color-ardezie-9);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.proza ul,
+.proza ol {
+  margin: 0 0 20px;
+  padding-left: 24px;
+}
+
+.proza ul {
+  list-style: disc;
+}
+
+.proza ol {
+  list-style: decimal;
+}
+
+.proza li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.proza li::marker {
+  color: var(--color-ardezie-4);
+}
+
+.proza a {
+  color: var(--color-albastru);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--durata-rapida) ease;
+}
+
+.proza a:hover {
+  color: var(--color-albastru-apasat);
+}
+
+.proza strong {
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+}
+
+.proza hr {
+  margin: 40px 0;
+  border: 0;
+  border-top: 1px solid var(--color-ardezie-2);
+}
+
+.proza blockquote {
+  margin: 28px 0;
+  padding: 16px 20px;
+  border-left: 2px solid var(--color-albastru);
+  border-radius: 0 12px 12px 0;
+  background: var(--color-ardezie-0);
+}
+
+.proza img {
+  width: 100%;
+  margin: 28px 0;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+}
+
+/* --- TabelDate: chenar ardezie-2, raza 12, randuri de 47 px -------------------------------- */
+
+.tabelInvelis {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 28px 0;
+}
+
+.tabel {
+  width: 100%;
+  border: 1px solid var(--color-ardezie-2);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.tabel th,
+.tabel td {
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* ardezie-5 pe ardezie-0: 4,55:1 */
+.tabel th {
+  border-bottom: 1px solid var(--color-ardezie-2);
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.07px;
+}
+
+.tabel td {
+  border-bottom: 1px solid var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+  line-height: 22.4px;
+}
+
+.tabel tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabel td strong {
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+}
+
+.tabel td small {
+  display: block;
+  color: var(--color-ardezie-6);
+  font-size: 11.67px;
+  line-height: 18.67px;
+}
+
+@media (max-width: 768px) {
+  .tabel {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* --- EroulInterior: padding 120 / 0 / 40 (88 / 0 / 24), bloc 880 -------------------------- */
+
+.erou {
+  padding: 120px 0 40px;
+}
+
+.erouSector {
+  padding: 120px 0 24px;
+}
+
+.erouFaraJos {
+  padding: 120px 0 0;
+}
+
+.erouBloc {
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+.erouCentrat {
+  max-width: 600px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.erouTitlu {
+  margin: 20px 0 14px;
+}
+
+.erouTitluEnterprise {
+  max-width: 20ch;
+  margin: 14px 0;
+}
+
+.erouSubtitlu {
+  font-size: 18px;
+  line-height: 28.8px;
+  color: var(--color-ardezie-5);
+  max-width: 640px;
+}
+
+.erouCentrat .erouSubtitlu {
+  margin-inline: auto;
+}
+
+.erouSubtitluSector {
+  margin-bottom: 28px;
+}
+
+.erouSubtitluHub {
+  margin-bottom: 12px;
+}
+
+.erouDovada {
+  margin-bottom: 28px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+}
+
+.erouActiuni {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.erouActiuniEnterprise {
+  margin-top: 28px;
+  gap: 24px;
+}
+
+.erouNota {
+  margin-top: 14px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.erouInapoi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  margin-top: 20px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color var(--durata-rapida) ease;
+}
+
+a.erouInapoi:hover {
+  color: var(--color-ardezie-9);
+}
+
+.erouIncredere {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6.4px 13.6px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.erouIncredere li {
+  display: inline-flex;
+  align-items: center;
+  gap: 13.6px;
+}
+
+.erouIncredere li + li::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-ardezie-3);
+}
+
+@media (max-width: 767px) {
+  .erou {
+    padding: 88px 0 24px;
+  }
+
+  .erouSector {
+    padding: 88px 0 16px;
+  }
+
+  .erouFaraJos {
+    padding: 88px 0 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .erouCentrat {
+    text-align: left;
+  }
+}

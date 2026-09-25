@@ -1,20 +1,15 @@
-import type { Metadata } from "next";
-import PaginaDeSegment from "@/components/PaginaDeSegment";
-import { LOGISTICA } from "@/content/segmente";
+import PaginaSector from "@/components/solutii/PaginaSector";
+import { metadataPagina } from "@/components/seo/metadata";
+import { LOGISTICA } from "@/content/solutii/logistica";
 
-// Al saselea segment. Vezi nota din `solutii/notari/page.tsx`: tot ce e continut sta in
-// `segmente.ts`, iar forma paginii intr-o singura componenta, pentru toate segmentele.
-//
-// Canonical auto-referential: fara el, pagina ar mosteni canonical-ul layout-ului si
-// ar arata spre pagina de start, ceea ce scoate ruta asta din index.
-export const metadata: Metadata = {
-  title: LOGISTICA.titluMeta,
-  description: LOGISTICA.descriereMeta,
-  alternates: { canonical: "/solutii/logistica" },
-};
+// Pagina de sector pe sablonul comun (`PaginaSector`); continutul e in `src/content/solutii/logistica.ts`.
 
-export default function Logistica() {
-  return (
-    <PaginaDeSegment segment={LOGISTICA} nume="Transport și logistică" slug="logistica" />
-  );
+export const metadata = metadataPagina({
+  titlu: LOGISTICA.meta.titlu,
+  descriere: LOGISTICA.meta.descriere,
+  cale: LOGISTICA.cale,
+});
+
+export default function Pagina() {
+  return <PaginaSector sector={LOGISTICA} />;
 }

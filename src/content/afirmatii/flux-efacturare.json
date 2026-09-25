@@ -1,0 +1,137 @@
+[
+  {
+    "id": "flux-functii-in-productie",
+    "text": "3S primește acte pe e-mail, pe WhatsApp, prin scanare și prin încărcare din browser, le recunoaște, le clasează după reguli, le trimite persoanei responsabile cu termenul alături și păstrează jurnalul fiecărei deschideri",
+    "unde": "src/content/flux.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4b din planul valului S4: funcționalitățile referinței vizuale se prezintă ca existente, produsul fiind deja în producție",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "flux-integrari-hub",
+    "text": "3S se leagă de Gmail și Outlook, de SAP Business One, de Peppol și de asistenții Claude și ChatGPT",
+    "unde": "src/content/flux.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: aceleași integrări ca pe referința vizuală, plus WhatsApp",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "efacturare-canale-3s",
+    "text": "3S primește facturi prin Peppol și Storecove, pe e-mail, pe WhatsApp și ca fișiere XML descărcate din RO e-Factura și încărcate în arhivă",
+    "unde": "src/content/efacturare/pagina.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, deciziile D4b și D4c din planul valului S4 (integrările referinței plus WhatsApp); încărcarea de fișiere e funcție de bază; nicio integrare directă cu sistemul ANAF nu se afirmă",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "flux-gazduire-germania",
+    "text": "Fișierele din 3S stau criptate pe servere Amazon din Germania, într-o singură regiune a Uniunii Europene",
+    "unde": "src/content/flux.ts, src/content/efacturare/pagina.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: găzduire Amazon, Germania, o singură regiune",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "efacturare-criptare-aes-256",
+    "text": "Macheta de pe /e-facturare afișează insigna AES-256 pentru arhiva 3S",
+    "unde": "src/content/efacturare/pagina.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: varianta aleasă în decizia D4c a planului valului S4; configurarea reală o confirmă dezvoltatorul platformei",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "efacturare-pret-0-ron",
+    "text": "Contul 3S costă 0 RON astăzi și se deschide fără card",
+    "unde": "src/content/flux.ts",
+    "stare": "confirmat",
+    "sursa": "decizia D3 a owner-ului din planul valului S4: toate pachetele costă 0 RON astăzi",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "efacturare-ro-etape-2024",
+    "text": "Raportarea în RO e-Factura a facturilor B2B dintre firmele stabilite în România e obligatorie din 1 ianuarie 2024; din 1 iulie 2024, între aceste firme sunt considerate facturi doar cele trecute prin RO e-Factura, care îndeplinesc condițiile OUG 120/2021",
+    "unde": "src/content/efacturare/pagina.ts, src/content/efacturare/piete.ts",
+    "stare": "confirmat",
+    "sursa": "ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. I (etapele I și II): https://static.anaf.ro/static/10/Anaf/AsistentaContribuabili_r/Ghid_RO_eFactura.pdf",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-ro-60-zile",
+    "text": "Fișierele XML ale facturilor sunt disponibile pentru descărcare din RO e-Factura 60 de zile de la publicare, apoi sunt arhivate de ANAF și eliberate la cerere",
+    "unde": "src/content/efacturare/pagina.ts",
+    "stare": "confirmat",
+    "sursa": "ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. III pct. 5 (Arhivarea fișierelor XML): https://static.anaf.ro/static/10/Anaf/AsistentaContribuabili_r/Ghid_RO_eFactura.pdf",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-ro-format",
+    "text": "E-factura românească este un fișier XML pe standardul european EN 16931, cu cerințele naționale RO_CIUS",
+    "unde": "src/content/efacturare/pagina.ts, src/content/efacturare/piete.ts",
+    "stare": "confirmat",
+    "sursa": "ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. IV, întrebarea 2: https://static.anaf.ro/static/10/Anaf/AsistentaContribuabili_r/Ghid_RO_eFactura.pdf",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-ro-saft",
+    "text": "D406 (SAF-T) se depune de marii contribuabili din 1 ianuarie 2022, de cei mijlocii din 1 ianuarie 2023 și de cei mici din 1 ianuarie 2025, lunar sau trimestrial, până în ultima zi calendaristică a lunii următoare perioadei de raportare",
+    "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
+    "stare": "confirmat",
+    "sursa": "ANAF, Ghidul declarației informative D406 (SAF-T): https://static.anaf.ro/static/10/Anaf/Informatii_R/SAF_T_Ghidul_D406_1712021.pdf",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-de-calendar",
+    "text": "Germania: primirea e-facturilor din 1 ianuarie 2025; emiterea pe hârtie sau PDF permisă până la 31 decembrie 2026, iar la cel mult 800.000 EUR cifră de afaceri până la finalul lui 2027; XRechnung și ZUGFeRD 2.0.1+ pe EN 16931",
+    "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
+    "stare": "confirmat",
+    "sursa": "Bundesministerium der Finanzen, FAQ E-Rechnung (stand martie 2026): https://www.bundesfinanzministerium.de/Content/DE/FAQ/e-rechnung.html",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-fr-calendar",
+    "text": "Franța: firmele mari și intermediare emit e-facturi din 1 septembrie 2026, dată de la care toate firmele vizate trebuie să le poată primi; IMM-urile și microîntreprinderile emit din 1 septembrie 2027, prin platforme agreate",
+    "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
+    "stare": "confirmat",
+    "sursa": "DGFiP, Guide pratique de la réforme de la facturation électronique: https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/guide_pratique_facturation_electronique.pdf",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-pl-calendar",
+    "text": "Polonia: KSeF obligatoriu din 1 februarie 2026 pentru vânzări de peste 200 mil. PLN în 2024 și din 1 aprilie 2026 pentru ceilalți; facilități până la finalul lui 2026; structura FA(3)",
+    "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
+    "stare": "confirmat",
+    "sursa": "Ministerstwo Finansów, Podstawy prawne oraz kluczowe terminy KSeF: https://ksef.podatki.gov.pl/informacje-ogolne-ksef-20/podstawy-prawne-oraz-kluczowe-terminy",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-be-calendar",
+    "text": "Belgia: din 1 ianuarie 2026 e-facturi structurate obligatorii între firmele belgiene plătitoare de TVA, prin rețeaua Peppol; toleranța generală a ținut primele trei luni ale lui 2026, cea pentru autofacturare până la 30 iunie 2026",
+    "unde": "src/content/efacturare/piete.ts",
+    "stare": "confirmat",
+    "sursa": "SPF Stratégie et Appui: https://efacture.belgium.be/fr/article/les-factures-electroniques-structurees-entre-entreprises-sont-obligatoires-depuis-2026 și https://efacture.belgium.be/fr/news/fin-de-la-periode-de-tolerance-pour-le-facturation",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "efacturare-ue-vida",
+    "text": "Directiva (UE) 2025/516: statele membre aplică regulile de facturare electronică și raportare digitală pentru livrările dintre state de la 1 iulie 2030",
+    "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
+    "stare": "confirmat",
+    "sursa": "EUR-Lex, Directiva (UE) 2025/516, art. 5 și art. 6 alin. (5): https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX:32025L0516",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
+    "data": "2026-09-25"
+  }
+]

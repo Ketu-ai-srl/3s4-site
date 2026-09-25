@@ -1,0 +1,92 @@
+/* Capul lumii (acasa-constructor.md §4.2): randul de control si fraza industriei. Titlul si
+   subtitlul sunt ale sectiunii (Constructor.module.css), cu marginile starii de lume. */
+
+.lume {
+  display: block;
+}
+
+/* Randul de control: industria aleasa si legatura de schimbare. Flex centrat, 14 x 22. */
+.control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 22px;
+  margin-bottom: 8px;
+}
+
+.ales {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--k-text);
+  font-size: 14.4px;
+  font-weight: 600;
+  line-height: 23.04px;
+  letter-spacing: -0.144px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.iconitaAleasa {
+  flex-shrink: 0;
+  color: var(--k-text);
+  transition: color 0.5s ease 0.2s;
+}
+
+.schimba {
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--k-text-2);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20.48px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.5s ease 0.2s;
+}
+
+.schimba:hover {
+  color: var(--k-text);
+}
+
+.schimba:focus-visible {
+  outline: 2px solid var(--k-focus);
+  outline-offset: 2px;
+}
+
+.fraza {
+  min-height: 1.3em;
+  margin-bottom: 16px;
+  color: var(--k-text-2);
+  font-size: 14.4px;
+  font-weight: 500;
+  line-height: 23.04px;
+  letter-spacing: -0.144px;
+  text-align: center;
+  transition: color 0.5s ease 0.2s;
+}
+
+/* Locul panoului in prima treapta a lumii (Lume.tsx): inalt cat fereastra, ca sectiunea urmatoare
+   sa nu urce in cadru pana sosesc panoul si chestionarul. Nu are nimic de citit sau de aratat. */
+.locPanou {
+  min-height: 100lvh;
+}
+
+@media (max-width: 900px) {
+  .control {
+    flex-flow: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .ales {
+    justify-content: center;
+  }
+
+  .fraza {
+    text-align: left;
+  }
+}

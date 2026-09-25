@@ -15,7 +15,9 @@ Site public de vanzare pentru **3S - Scan Store Solve**: arhivare fizica autoriz
 | `pnpm verifica` | poarta locala completa: lint, tipuri, tipografie, build, teste |
 | `pnpm porti` | portile sursei, build si verificarea SEO/juridic |
 
-Directia REF-S foloseste opt imagini originale generate pentru acest site, o demonstratie ilustrativa interactiva si 22 de pagini. Fotografiile nu reprezinta depozitul sau echipa clientului. Detalii: `docs/design/DIRECTIA.md` si `docs/adr/ADR-0006-directie-ref-s.md`.
+Directia vizuala e REF-N: forma unei referinte externe, reprodusa din masuratori, cu textele,
+sigla si iconitele 3S. Site-ul se construieste pe valuri; navigatia arata numai paginile care exista
+deja. Detalii: `docs/design/DIRECTIA.md`, `docs/design/ACTIVE.md` si `docs/adr/ADR-0007-directie-ref-n.md`.
 
 ## Marcajul de livrare
 

@@ -1,0 +1,73 @@
+/* Buclele mici ale machetelor cinema (functionalitati__sablon.md §5.3), ca clase de folosit oriunde:
+     .clipire12 / .clipire14   opacitate 1 -> 0,4 -> 1, 1,2 / 1,4 s
+     .clipire16                opacitate 1 -> 0,55 -> 1, 1,6 s
+     .treiPuncte               trei puncte care se scriu: latime 0 -> 1,4 em in 4 trepte, 1,6 s
+     .cursor                   cursor de text, clipire in trepte, 1 s
+   La miscare redusa, regula globala le opreste (o singura iteratie de 0,001 ms). */
+
+.clipire12 {
+  animation: clipire 1.2s ease-in-out infinite;
+}
+
+.clipire14 {
+  animation: clipire 1.4s ease-in-out infinite;
+}
+
+.clipire16 {
+  animation: clipireBlanda 1.6s ease-in-out infinite;
+}
+
+@keyframes clipire {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes clipireBlanda {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Textul "..." sta in pagina intreg; animatia doar il taie, deci cititorul il vede o data. */
+.treiPuncte {
+  display: inline-block;
+  width: 1.4em;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  animation: scrieTreiPuncte 1.6s steps(4) infinite;
+}
+
+@keyframes scrieTreiPuncte {
+  from {
+    width: 0;
+  }
+  to {
+    width: 1.4em;
+  }
+}
+
+.cursor {
+  animation: cursorPas 1s steps(1) infinite;
+}
+
+@keyframes cursorPas {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .treiPuncte {
+    width: auto;
+  }
+}

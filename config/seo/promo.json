@@ -1,0 +1,14 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei promo din src/content/rute.ts: cele doua pagini pe sablonul cinema-promo. Forma si regulile: config/seo/fundatie.json si tests/browser/ajutor/raspunsuri.ts. Pe pagina de scanare primul paragraf din <main> e paragraful eroului, de 30-80 de cuvinte, deci regula paragrafului se aplica; pe /promo nu, cu motivul scris.",
+  "raspuns_autonom": {
+    "/promo": {
+      "intrebare": "Cum găsește o firmă un act pe care nu mai știe unde l-a pus?",
+      "entitati": ["3S", "arhivă", "WhatsApp"],
+      "fara_regula_paragrafului": "Primul ecran are forma masurata a sablonului cinema-promo: eticheta, titlul pe 4 randuri si un paragraf de 2 randuri (fisa promo.md §0), deci primul <p> din <main> are sub 30 de cuvinte prin constructie. Raspunsul paginii e titlul impreuna cu sectiunea solutiei (a treia), care numeste arhiva, clasarea si intrebarile pe web si pe WhatsApp, in primele 400 de cuvinte."
+    },
+    "/promo/scanare-cu-telefonul": {
+      "intrebare": "Cum ajunge un bon fotografiat cu telefonul în arhiva firmei?",
+      "entitati": ["3S", "bonul", "WhatsApp"]
+    }
+  }
+}

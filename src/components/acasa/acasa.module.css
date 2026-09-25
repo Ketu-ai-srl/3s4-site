@@ -1,0 +1,568 @@
+/* Sectiunile statice ale paginii de start (acasa.md §3, §6-§12). Valorile sunt cele masurate pe
+   referinta la 1440 si 390; unde sunt ridicate pentru contrast, motivul e scris langa regula. */
+
+/* --- 3. Banda de integrari (900 / 313; 390: 925 / 468) ------------------------------------ */
+
+.integrari {
+  padding: 38.4px 0 48px;
+}
+
+.integrariFraza {
+  margin-bottom: 24px;
+  color: var(--color-cerneala-2);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20.8px;
+  letter-spacing: -0.13px;
+  text-align: center;
+}
+
+.integrariGrupuri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px clamp(2.4rem, 5vw, 4.4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.integrariGrup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13.6px;
+}
+
+/* Eticheta de grup: la referinta #8b93a1 (3,09:1). La 3S `ardezie-5` (4,76:1), fiindca e text de
+   11,52 px (COMPONENTE.md §5.1). */
+.integrariEticheta {
+  margin: 0;
+  color: var(--color-ardezie-5);
+  font-size: 11.52px;
+  font-weight: 700;
+  line-height: 18.4px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.integrariRand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14.4px clamp(1.6rem, 4vw, 3.2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.integrariRandAi {
+  gap: 11.2px 25.6px;
+}
+
+/* Numele: la referinta #98a1ad (2,61:1). La 3S `gri-meta` (4,83:1): textul de 17 px la 600 nu e
+   "text mare" (pragul e 18,66 px), deci cere 4,5:1. Hover-ul ramane cel masurat (#4b5563). */
+.integrariElement {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  color: var(--color-gri-meta);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 27.2px;
+  letter-spacing: -0.17px;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.integrariElement:hover {
+  color: var(--color-gri-eticheta);
+}
+
+.integrariElement > svg {
+  flex-shrink: 0;
+}
+
+.integrariNota {
+  margin: -1.6px 0 0;
+  color: var(--color-cerneala-2);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 19.2px;
+}
+
+@media (max-width: 640px) {
+  .integrari {
+    padding: 28.8px 0 35.2px;
+  }
+
+  .integrariGrupuri {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .integrariRand:not(.integrariRandAi) {
+    column-gap: 22.4px;
+  }
+
+  /* Grupa a treia ramane la 17 px si pe mobil, ca la referinta (regula de 640 n-o atinge). */
+  .integrariRand:not(.integrariRandAi) .integrariElement {
+    font-size: 14px;
+    line-height: 22.4px;
+    letter-spacing: -0.14px;
+  }
+}
+
+/* --- 6. Banda de cifre (4898 / 140; 390: 5381 / 199) ---------------------------------------- */
+
+.cifre {
+  padding: 36px 0;
+}
+
+.cifreRand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px 14.4px;
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-linie-fina);
+  border-bottom: 1px solid var(--color-linie-fina);
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 25.6px;
+}
+
+.cifra {
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.16px;
+}
+
+/* Punctul median dintre perechi e continut CSS, nu text: e decorativ (`ardezie-3`, 1,48:1), iar
+   un caracter in pagina ar fi citit si masurat ca text. */
+.cifreSeparator::before {
+  color: var(--color-ardezie-3);
+  content: "\00B7";
+}
+
+@media (max-width: 767px) {
+  .cifreRand {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6.4px;
+    padding: 17.6px;
+  }
+
+  .cifreSeparator {
+    display: none;
+  }
+}
+
+/* --- 7. Industrii (5038 / 431; 390: 5580 / 694) ---------------------------------------------- */
+
+.industrii {
+  padding: 72px 0 16px;
+}
+
+.industriiTitlu {
+  margin-bottom: 24px;
+  color: var(--color-cerneala);
+}
+
+.industriiGrila {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.industriiGrila > li {
+  display: flex;
+}
+
+.industrie {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: 12.8px;
+  padding: 16px 17.6px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  transition: border-color 0.15s ease;
+}
+
+a.industrie:hover {
+  border-color: var(--color-albastru);
+}
+
+.industrieCutie {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+}
+
+.industrieText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.industrieNume {
+  margin-bottom: 3.2px;
+  color: var(--color-cerneala);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.industrieDescriere {
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  font-weight: 400;
+  line-height: 18.1px;
+}
+
+.industrieChevron {
+  display: none;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--color-ardezie-4);
+}
+
+.industrieToate {
+  align-items: center;
+  justify-content: space-between;
+  border-color: transparent;
+  background: var(--color-ceata-albastra);
+  box-shadow: none;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+a.industrieToate:hover {
+  border-color: transparent;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+}
+
+@media (max-width: 1100px) {
+  .industriiGrila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .industrii {
+    padding: 56px 0 12px;
+  }
+
+  .industriiGrila {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .industrie {
+    align-items: center;
+    padding: 12.8px 16px;
+  }
+
+  .industrieNume {
+    margin-bottom: 0;
+  }
+
+  .industrieDescriere {
+    display: none;
+  }
+
+  .industrieChevron {
+    display: block;
+  }
+}
+
+/* --- 8. Testimonialul (5468 / 395; 390: 6274 / 466) ------------------------------------------ */
+
+.testimonial {
+  padding: 24px 0 72px;
+}
+
+.testimonialCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  align-items: end;
+  gap: 32px 72px;
+  margin: 0;
+  padding: 48px 56px;
+  border-radius: 24px;
+  background: var(--color-ardezie-9);
+  color: var(--color-alb);
+}
+
+/* Semnul de deasupra frazei: ghilimeaua masurata (44/600, rand 26,4) numai cand fraza e un citat
+   cu acord scris; altfel o iconita de aceeasi inaltime, ca fraza sa nu para spusa de cineva. */
+.testimonialSemn {
+  display: block;
+  height: 26.4px;
+  margin-bottom: 16px;
+  color: var(--color-albastru-clar);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 0.6;
+}
+
+.testimonialFraza {
+  font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.testimonialContinuare {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.testimonialAtribuire {
+  padding-left: 16px;
+  border-left: 2px solid var(--color-albastru-clar);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.testimonialRol {
+  display: block;
+  font-weight: 600;
+}
+
+.testimonialFirma {
+  display: block;
+  margin-top: 3.2px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 900px) {
+  .testimonialCard {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .testimonialFraza {
+    font-size: 18px;
+    line-height: 26.1px;
+    letter-spacing: -0.18px;
+  }
+
+  .testimonialContinuare {
+    font-size: 14px;
+    line-height: 23.1px;
+  }
+}
+
+@media (max-width: 767px) {
+  .testimonialCard {
+    padding: 36px 28px;
+  }
+}
+
+/* --- 9-10. Cardurile de securitate si enterprise (1100 x 123) ------------------------------- */
+
+.securitate {
+  padding: 40px 0 16px;
+}
+
+.enterprise {
+  padding: 0 0 40px;
+}
+
+.cardOrizontal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 24px 28px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.cardStanga {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.cardCutie {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.cardTitlu {
+  margin-bottom: 4px;
+}
+
+.cardText {
+  max-width: 560px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 21.7px;
+}
+
+.cardLegatura {
+  flex-shrink: 0;
+}
+
+.enterpriseCard {
+  justify-content: flex-start;
+  gap: 16px;
+  transition: border-color 0.18s ease;
+}
+
+a.enterpriseCard:hover {
+  border-color: var(--color-ardezie-3);
+}
+
+.enterpriseCorp {
+  flex: 1;
+  min-width: 0;
+}
+
+.enterpriseCap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.enterpriseDescriere {
+  display: block;
+  max-width: 760px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 21.7px;
+}
+
+.enterpriseChevron {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+  transition:
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+a.enterpriseCard:hover .enterpriseChevron {
+  color: var(--color-albastru);
+  transform: translateX(2px);
+}
+
+@media (max-width: 767px) {
+  .securitateCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .securitateCard .cardStanga {
+    align-items: flex-start;
+  }
+
+  .securitateCard .cardLegatura {
+    align-self: stretch;
+  }
+
+  .enterpriseCard {
+    align-items: flex-start;
+    gap: 13.6px;
+    padding: 20px;
+  }
+
+  .enterpriseChevron {
+    display: none;
+  }
+}
+
+/* --- 11. Banda de pret (6206 / 215; 390: 7306 / 225) ---------------------------------------- */
+
+.pret {
+  padding: 40px 0 64px;
+}
+
+.pretBloc {
+  max-width: 640px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.pretTitlu {
+  margin-bottom: 8px;
+  color: var(--color-ardezie-9);
+}
+
+.pretFraza {
+  margin-bottom: 20px;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+@media (max-width: 767px) {
+  .pret {
+    padding: 32px 0 56px;
+  }
+}
+
+/* --- 12. Intrebarile (6421 / 688; 390: 7531 / 762) ------------------------------------------- */
+
+.intrebariTitlu {
+  margin-bottom: 40px;
+  color: var(--color-cerneala);
+  text-align: center;
+}
+
+.intrebariSubsol {
+  max-width: 780px;
+  margin: 24px auto 0;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+  text-align: center;
+}
+
+.intrebariPosta {
+  color: var(--color-albastru);
+  font-weight: 600;
+}
+
+.intrebariPosta:hover {
+  text-decoration: underline;
+}

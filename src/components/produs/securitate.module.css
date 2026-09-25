@@ -1,0 +1,973 @@
+/* Pagina `/securitate` (fisa securitate.md, sectiunile 2-12). Seiful si verificarea din browser au
+   foile lor. Blocurile folosesc `sectiune-standard` (80 / 0; 48 / 0 sub 768) din globals.css.
+   Textul de card: titlu 16/600 -0,16; paragraf 14,08 rand 21,82, -0,07, ardezie-5. */
+
+.card {
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.cardTitlu {
+  margin: 0 0 8px;
+  color: var(--color-ardezie-9);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+}
+
+.cardText {
+  color: var(--color-ardezie-5);
+  font-size: 14.08px;
+  line-height: 21.82px;
+  letter-spacing: -0.07px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* --- 2. Pilonii: 16 / 0 / 80, grila 4 x 1fr, gap 20, max 1100 ---------------------------------- */
+
+.piloni {
+  padding: 16px 0 80px;
+}
+
+.piloniGrila {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pilon {
+  padding: 24px;
+}
+
+.pilonIconita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.pilonTitlu {
+  margin-bottom: 6.4px;
+}
+
+@media (max-width: 900px) {
+  .piloniGrila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .piloni {
+    padding-bottom: 48px;
+  }
+}
+
+@media (max-width: 560px) {
+  .piloniGrila {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- 3. Bloc 01: harta si tabelul de specificatii ------------------------------------------------ */
+
+.harta {
+  max-width: 880px;
+  margin: 0 auto 40px;
+}
+
+.hartaCadru {
+  position: relative;
+  padding: 24px;
+}
+
+/* Harta: imaginea statica (conturul, fara text) si, peste ea, reperul si eticheta in HTML, ca
+   eticheta sa ramana de 11 px la orice latime (la referinta ajungea la ~4 px la 390). */
+.hartaSuprafata {
+  position: relative;
+}
+
+.hartaImagine {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.reper {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+.reper::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: var(--color-alb);
+}
+
+/* Eticheta: in dreapta reperului, centrata pe el, la 15 px de centru; 28 de fiecare parte. */
+.reperEticheta {
+  position: absolute;
+  padding: 2px 28px;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.9);
+  color: var(--color-alb);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+  transform: translate(15px, -50%);
+}
+
+.hartaLegenda {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 9.6px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-ardezie-1);
+  color: var(--color-ardezie-9);
+  font-size: 14.08px;
+  line-height: 22.53px;
+  letter-spacing: -0.07px;
+}
+
+.hartaRegiune {
+  font-family: var(--font-mono);
+  font-size: 12.95px;
+}
+
+.hartaNota {
+  margin-left: 8px;
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+}
+
+.specificatii {
+  max-width: 880px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.specRand {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 24px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.specRand:first-child {
+  border-top: 0;
+}
+
+.specTermen {
+  color: var(--color-ardezie-5);
+  font-size: 14.08px;
+  font-weight: 500;
+  line-height: 22.53px;
+  letter-spacing: -0.07px;
+}
+
+.specValoare {
+  margin: 0;
+  color: var(--color-ardezie-9);
+  font-size: 14.72px;
+  line-height: 22.82px;
+  letter-spacing: -0.07px;
+}
+
+@media (max-width: 900px) {
+  .specRand {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
+/* --- 4. Verificarea din browser: sectiune fara padding sus, jos 56 ----------------------------- */
+
+.verificare {
+  padding: 0 0 56px;
+}
+
+/* --- 5. Bloc 02: stocarea proprie ------------------------------------------------------------- */
+
+.stocare {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.stocareDiagrama {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 16px 16px 28px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.stocareNod {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.stocareNodIconita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.stocareNodFirma .stocareNodIconita {
+  background: var(--color-ardezie-1);
+  color: var(--color-violet);
+}
+
+.nodEticheta {
+  color: var(--color-ardezie-9);
+  font-size: 14.72px;
+  font-weight: 600;
+  line-height: 23.55px;
+  letter-spacing: -0.07px;
+}
+
+/* Sub-etichetele: ardezie-5, nu ardezie-4 ca la referinta (2,56:1, text de citit). */
+.nodSub {
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  line-height: 19.97px;
+}
+
+.nodSubMono {
+  font-family: var(--font-mono);
+}
+
+.legatura {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 0 12px;
+}
+
+.legaturaLinie {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-ardezie-2);
+}
+
+.insignaLegatura {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4.8px;
+  padding: 4px 8.8px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 4px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  color: var(--color-ardezie-9);
+  font-family: var(--font-mono);
+  font-size: 10.89px;
+  font-weight: 600;
+  line-height: 17.42px;
+}
+
+.insignaLegatura > svg {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.beneficii {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  margin-bottom: 28px;
+}
+
+.beneficiu {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  gap: 11.2px;
+}
+
+.beneficiuBifa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--color-verde-nuanta);
+  color: var(--color-verde);
+}
+
+.beneficiuText {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4px;
+}
+
+.beneficiuTitlu {
+  margin: 0;
+  color: var(--color-ardezie-9);
+  font-size: 14.72px;
+  font-weight: 600;
+  line-height: 23.55px;
+  letter-spacing: -0.07px;
+}
+
+.beneficiuDescriere {
+  color: var(--color-ardezie-5);
+  font-size: 14.08px;
+  line-height: 21.12px;
+  letter-spacing: -0.07px;
+}
+
+.stocareCta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9.6px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.notaMica {
+  margin: 0;
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  line-height: 19.97px;
+  letter-spacing: -0.06px;
+}
+
+/* La referinta diagrama si beneficiile pastrau 3 si 2 coloane la 390 (textul rupt la 1-2 cuvinte
+   pe rand): aici trec pe o coloana sub 640. */
+@media (max-width: 640px) {
+  .stocare {
+    padding: 24px 20px;
+  }
+
+  .stocareDiagrama {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .stocareDiagrama .legatura {
+    min-width: 0;
+    padding: 8px 0;
+  }
+
+  .stocareDiagrama .legaturaLinie {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .beneficii {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- 6. Bloc 03: fluxul criptarii si cardurile cu eticheta ------------------------------------ */
+
+.flux {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  max-width: 880px;
+  margin: 0 auto 32px;
+  padding: 32px 24px;
+}
+
+.fluxNod {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.fluxIconita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.fluxEticheta {
+  color: var(--color-ardezie-9);
+  font-size: 14.08px;
+  font-weight: 600;
+  line-height: 22.53px;
+  letter-spacing: -0.07px;
+}
+
+.fluxSub {
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 14.72px;
+  line-height: 23.55px;
+}
+
+.fluxLegatura {
+  min-width: 110px;
+  padding: 0 8px;
+}
+
+.carduri3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.carduri2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cardSimplu {
+  padding: 24px;
+}
+
+/* Eticheta de card: albastru-apasat pe albastru-pal (5,49:1); la referinta albastru, 4,24:1. */
+.eticheta {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 2.88px 8px;
+  border-radius: 4px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+  font-size: 11.52px;
+  font-weight: 600;
+  line-height: 18.43px;
+  letter-spacing: -0.06px;
+}
+
+@media (max-width: 900px) {
+  .flux {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .fluxLegatura {
+    width: 100%;
+    min-width: 0;
+    padding: 8px 0;
+  }
+
+  .fluxLegatura .legaturaLinie {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .carduri3,
+  .carduri2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- 7. Bloc 04: matricea roluri x drepturi (min 640, derulare) si controalele ------------------ */
+
+/* Pozitionat: textul pentru cititoare din celule e `position: absolute`, iar fara un bloc care il
+   contine aici scapa din derulare si latea pagina la 616 px la 390 (masurat). */
+.matriceInvelis {
+  position: relative;
+  max-width: 880px;
+  margin: 0 auto 32px;
+  overflow-x: auto;
+}
+
+.matrice {
+  width: 100%;
+  min-width: 640px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  overflow: hidden;
+}
+
+.matrice thead th {
+  padding: 13.6px 12px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  font-weight: 600;
+  line-height: 19.97px;
+  letter-spacing: -0.06px;
+  text-align: center;
+}
+
+.matrice thead th.matriceRol {
+  padding-left: 20px;
+  text-align: left;
+}
+
+.matrice tbody tr + tr > * {
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.matrice td {
+  padding: 14.4px 12px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.matrice tbody th {
+  padding: 14.4px 12px 14.4px 20px;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: inherit;
+}
+
+.rolNume {
+  display: block;
+  color: var(--color-ardezie-9);
+  font-size: 14.08px;
+  font-weight: 600;
+  line-height: 22.53px;
+  letter-spacing: -0.07px;
+}
+
+.rolDescriere {
+  display: block;
+  margin-top: 2.4px;
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  font-weight: 400;
+  line-height: 19.97px;
+}
+
+.drDa {
+  display: inline-flex;
+  color: var(--color-verde);
+  vertical-align: middle;
+}
+
+/* "Nu": liniuta desenata, 8 px, de latimea glifului masurat. Nuanta: gri-icon (3,36:1), ca un semn
+   grafic care poarta sens sa treaca de 3:1; la referinta ardezie-3, 1,48:1. */
+.drNu {
+  display: inline-block;
+  width: 8px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--color-gri-icon);
+  vertical-align: middle;
+}
+
+.drLimitat {
+  display: inline-flex;
+  padding: 2.88px 8px;
+  border-radius: 4px;
+  background: #fffbeb;
+  color: var(--color-chihlimbar);
+  font-size: 11.52px;
+  font-weight: 600;
+  line-height: 18.43px;
+  letter-spacing: -0.06px;
+}
+
+.matriceNota {
+  margin: 12px 0 0;
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  line-height: 19.97px;
+  text-align: center;
+}
+
+.controale {
+  display: grid;
+  gap: 12px;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.control {
+  display: grid;
+  gap: 4px;
+  padding: 16px 20px;
+}
+
+.controlTitlu {
+  margin: 0;
+  color: var(--color-ardezie-9);
+  font-size: 14.72px;
+  font-weight: 600;
+  line-height: 23.55px;
+  letter-spacing: -0.07px;
+}
+
+/* --- 8. Bloc 05: cronologia in 5 pasi ------------------------------------------------------- */
+
+.cronologie {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 0 16px;
+  list-style: none;
+}
+
+/* Linia: 1 px ardezie-2, la 49 px de sus (32 + jumatatea cercului), de la 10% la 90%. */
+.cronologie::before {
+  content: "";
+  position: absolute;
+  top: 49px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: var(--color-ardezie-2);
+}
+
+.cronologiePas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 12px;
+  text-align: center;
+}
+
+.cronologieCerc {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 50%;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+/* Numarul pasului: decor (lista e ordonata), 11,84/600 ardezie-4. */
+.cronologieCerc::before {
+  content: attr(data-numar);
+  color: var(--color-ardezie-4);
+  font-size: 11.84px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.06px;
+}
+
+.cronologieContinut {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cronologieIconita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.cronologieTitlu {
+  margin: 0;
+  color: var(--color-ardezie-9);
+  font-size: 14.72px;
+  font-weight: 600;
+  line-height: 23.55px;
+  letter-spacing: -0.07px;
+}
+
+.cronologieText {
+  color: var(--color-ardezie-5);
+  font-size: 13.12px;
+  line-height: 19.68px;
+  letter-spacing: -0.06px;
+}
+
+@media (max-width: 900px) {
+  .cronologie {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .cronologie::before {
+    display: none;
+  }
+
+  .cronologiePas {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0;
+    text-align: left;
+  }
+
+  .cronologieCerc {
+    margin-bottom: 0;
+  }
+
+  .cronologieContinut {
+    align-items: flex-start;
+  }
+}
+
+/* --- 9. Bloc 06: insignele si cardurile ------------------------------------------------------ */
+
+.insigne {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding: 0;
+  list-style: none;
+}
+
+.insigna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6.4px;
+  padding: 17.6px 12px;
+  text-align: center;
+}
+
+.insignaMarca {
+  color: var(--color-albastru);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.16px;
+}
+
+.insignaNume {
+  color: var(--color-ardezie-9);
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 20.99px;
+  letter-spacing: -0.06px;
+}
+
+.insignaNota {
+  color: var(--color-ardezie-5);
+  font-size: 11.84px;
+  line-height: 16.58px;
+  letter-spacing: -0.06px;
+}
+
+@media (max-width: 1024px) {
+  .insigne {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .insigne {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --- 11. Bloc 08: raportarea vulnerabilitatilor --------------------------------------------- */
+
+.raportare {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 40px;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px;
+}
+
+.raportareNumar::before {
+  content: attr(data-numar);
+  color: var(--color-ardezie-3);
+  font-size: 14.72px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.15px;
+}
+
+.raportareTitlu {
+  margin: 8px 0 12px;
+  color: var(--color-ardezie-9);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 38.4px;
+  letter-spacing: -0.48px;
+}
+
+.raportareText {
+  margin: 0 0 16px;
+  color: var(--color-ardezie-5);
+  font-size: 15.2px;
+  line-height: 24.32px;
+  letter-spacing: -0.08px;
+}
+
+.raportareLista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-ardezie-6);
+}
+
+.raportareLista > li {
+  position: relative;
+  margin-bottom: 8px;
+  padding-left: 17.6px;
+  font-size: 14.08px;
+  line-height: 21.12px;
+  letter-spacing: -0.07px;
+}
+
+.raportareLista > li:last-child {
+  margin-bottom: 0;
+}
+
+.raportareLista > li::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+.raportareActiune {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.raportareNota {
+  margin: 0;
+  color: var(--color-ardezie-5);
+  font-size: 15.2px;
+  line-height: 24.32px;
+  letter-spacing: -0.08px;
+}
+
+@media (max-width: 900px) {
+  .raportare {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 28px;
+  }
+}
+
+@media (max-width: 560px) {
+  .raportareNumar::before {
+    font-size: 25.6px;
+  }
+}
+
+/* --- Randurile textului: numai pe clasele feliei -------------------------------------------- */
+
+/* Titlurile se echilibreaza, paragrafele nu lasa un cuvant singur pe ultimul rand. Pe clasele
+   acestei foi, nu pe <main>: `text-wrap` se mosteneste, iar eroul interior, butoanele si acordeonul
+   sunt piese inghetate, care trebuie sa se rupa la fel pe tot site-ul. */
+.cardTitlu,
+.pilonTitlu,
+.beneficiuTitlu,
+.controlTitlu,
+.cronologieTitlu,
+.raportareTitlu {
+  text-wrap: balance;
+}
+
+.cardText,
+.specValoare,
+.nodEticheta,
+.nodSub,
+.beneficiuDescriere,
+.notaMica,
+.fluxEticheta,
+.fluxSub,
+.hartaNota,
+.rolDescriere,
+.matriceNota,
+.cronologieText,
+.raportareText,
+.raportareLista,
+.raportareNota {
+  text-wrap: pretty;
+}

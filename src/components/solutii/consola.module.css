@@ -1,0 +1,356 @@
+/* Consola cu toti clientii (solutii__contabilitate.md S3b): macheta 880 x 587,4 (358 x ~1013 la 390),
+   alb, chenar ardezie-2, raza 16, umbra de panou in trei straturi (singura din grup). */
+
+.macheta {
+  margin: 0;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+  overflow: hidden;
+}
+
+/* Bara: 44, 9,6 x 17,6, gap 8, linie jos. Iconita 15 ardezie-5, eticheta 11,84/600 ardezie-6,
+   pastila impinsa la dreapta: 3,2 x 8,8, albastru-apasat pe albastru-pal (5,49:1). Pastila e eticheta
+   vizibila „exemplu” a machetei (decizia D11: 11-12 px), deci textul are 11 px, nu 10,88 ca la
+   referinta; bara are inaltime fixa, deci nimic nu se muta. */
+.bara {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 9.6px 17.6px;
+  border-bottom: 1px solid var(--color-ardezie-2);
+  background: var(--color-alb);
+}
+
+.baraIconita {
+  flex-shrink: 0;
+  color: var(--color-ardezie-5);
+}
+
+.baraEticheta {
+  overflow: hidden;
+  color: var(--color-ardezie-6);
+  font-size: 11.84px;
+  font-weight: 600;
+  line-height: 18.94px;
+  letter-spacing: -0.06px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pastila {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 3.2px 8.8px;
+  border-radius: 9999px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 17.41px;
+  white-space: nowrap;
+}
+
+.zona {
+  padding: 17.6px;
+  background: var(--color-ardezie-0);
+}
+
+/* Tiglele: 4 x 202,9, gap 10,4 (2 coloane la 390); tigla 70,4: 12, gap 9,6, alb, chenar, raza 8. */
+.tigle {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10.4px;
+}
+
+.tigla {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+}
+
+.tiglaCutie,
+.tiglaCutieActiune {
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.tiglaCutie {
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+}
+
+.tiglaCutieActiune {
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.tiglaText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tiglaValoare {
+  color: var(--color-ardezie-9);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.48px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tiglaEticheta {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--color-ardezie-5);
+  font-size: 10.88px;
+  line-height: 17.41px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Randul de cautare: margine 14,4; campul max 340 x 32, raza 4, lupa 14; contorul 10,88. */
+.randCautare {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14.4px 0;
+}
+
+.camp {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  max-width: 340px;
+  height: 32px;
+  padding: 0 9.6px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 4px;
+  background: var(--color-alb);
+  min-width: 0;
+}
+
+.campLupa {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+}
+
+.campText {
+  overflow: hidden;
+  color: var(--color-ardezie-5);
+  font-size: 11.84px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contor {
+  flex-shrink: 0;
+  color: var(--color-ardezie-5);
+  font-size: 10.88px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Clientii: 2 x 416,6, gap 9,6 (o coloana la 390); card 108,6: 12,8, alb, chenar, raza 8. */
+.clienti {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9.6px;
+}
+
+.client {
+  min-width: 0;
+  padding: 12.8px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+}
+
+.clientCap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10.4px;
+}
+
+.punctActiv,
+.punctLaZi {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 9999px;
+}
+
+.punctActiv {
+  background: var(--color-albastru);
+}
+
+.punctLaZi {
+  background: var(--color-ardezie-3);
+}
+
+.clientNume {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.numeFirma {
+  overflow: hidden;
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.07px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cui {
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+  line-height: 15.87px;
+}
+
+.indicatori {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14.4px;
+  padding-top: 10.4px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.indicatorIconita {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+}
+
+.valoare,
+.valoareZero {
+  font-size: 11.84px;
+  font-variant-numeric: tabular-nums;
+}
+
+.valoare {
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+}
+
+.valoareZero {
+  color: var(--color-ardezie-5);
+  font-weight: 500;
+}
+
+.indicatorEticheta {
+  color: var(--color-ardezie-5);
+  font-size: 10.88px;
+}
+
+.maiMulti {
+  margin-top: 12.8px;
+  color: var(--color-ardezie-5);
+  font-size: 10.88px;
+  line-height: 17.41px;
+}
+
+/* Capabilitatile: 2 x 424, gap 24 x 32 (o coloana, gap 20, la 390); iconita 18 albastru coborata 1. */
+.capabilitati {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 32px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capabilitate {
+  display: flex;
+  gap: 12px;
+}
+
+.capIconita {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--color-albastru);
+}
+
+.capTitlu {
+  margin-bottom: 4px;
+}
+
+.capText {
+  color: var(--color-ardezie-6);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+/* Nota: margine 28, padding 20, linie sus; 14/400/22,4 ardezie-5. */
+.nota {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-ardezie-2);
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+/* Legatura: inline-flex, gap 6,4, margine 12, 14/600 albastru, sageata 14; hover albastru-apasat. */
+.legatura {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  margin-top: 12px;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  transition: color var(--durata-rapida) ease;
+}
+
+.legatura > svg {
+  flex-shrink: 0;
+}
+
+a.legatura:hover {
+  color: var(--color-albastru-apasat);
+}
+
+@media (max-width: 767px) {
+  .zona {
+    padding: 12.8px;
+  }
+
+  .tigle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .clienti {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .capabilitati {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+}
