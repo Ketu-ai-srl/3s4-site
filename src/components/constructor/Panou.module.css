@@ -1,0 +1,583 @@
+/* Panoul constructorului (acasa-constructor.md §5, §14). Culorile vin din variabilele temei,
+   puse pe sectiune (Constructor.module.css).
+
+   TRANZITIILE: la referinta lista comuna a cutiilor (fundal, chenar, culoare, opacitate,
+   transformare, umbra, toate 0,5 s) suprascrie duratele proprii de intrare, deci valorile
+   calculate sunt 0,5 s; aici se scriu direct cele calculate. */
+
+.card {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--k-card-chenar);
+  border-radius: 16px;
+  background: var(--k-card-fundal);
+  box-shadow: var(--k-card-umbra);
+  opacity: 0;
+  transform: translateY(12px) scale(0.985);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    color 0.5s ease,
+    opacity 0.5s ease,
+    transform 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.card.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- capul cardului (§5.2) ----------------------------------------------------------------- */
+
+.capCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--k-separator);
+  transition: border-color 0.5s ease;
+}
+
+.marca {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--k-marca-fundal);
+  box-shadow: 0 0 0 1px var(--k-marca-inel);
+  color: var(--color-alb);
+  transition:
+    background-color 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.titluri {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+.numeSpatiu {
+  overflow: hidden;
+  color: var(--k-text);
+  font-size: 15.2px;
+  font-weight: 700;
+  line-height: 24.32px;
+  letter-spacing: -0.228px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: color 0.5s ease 0.2s;
+}
+
+.meta {
+  margin-top: 1px;
+  color: var(--k-text-2);
+  font-size: 12.16px;
+  font-weight: 500;
+  line-height: 19.456px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.progres {
+  flex-shrink: 0;
+  width: 190px;
+}
+
+.progresSus {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  color: var(--k-text-2);
+  font-size: 11.84px;
+  font-weight: 600;
+  line-height: 18.9px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.progresSus span:last-child {
+  color: var(--k-text);
+}
+
+.pista {
+  overflow: hidden;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--k-pista);
+  transition: background-color 0.5s ease;
+}
+
+.umplere {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--k-umplere);
+}
+
+.reluare {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--k-reluare-chenar);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--k-reluare-iconita);
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.reluare:hover {
+  border-color: var(--k-reluare-chenar-hover);
+  color: var(--k-reluare-hover);
+}
+
+.reluare:focus-visible {
+  outline: 2px solid var(--k-focus);
+  outline-offset: 2px;
+}
+
+/* --- corpul (§5.3) ------------------------------------------------------------------------- */
+
+.corp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px 14px;
+}
+
+.cutie {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 285px;
+  overflow: hidden;
+  border: 1px solid var(--k-cutie-chenar);
+  border-radius: 12px;
+  background: var(--k-cutie-fundal);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.principal {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 14px 16px 12px;
+}
+
+.scena {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 22px;
+  padding: 6px 2px 2px;
+}
+
+.durere {
+  max-width: 30ch;
+  color: var(--sc-text);
+  font-size: 23.2px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    color 0.5s ease 0.2s;
+}
+
+.durereLata {
+  max-width: 32ch;
+}
+
+.durere.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Blocul de automatizari: apare cu prima banda. */
+.automatizari {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--k-separator);
+  opacity: 0;
+  transition:
+    opacity 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.automatizari.in {
+  opacity: 1;
+}
+
+/* Eticheta: la referinta `ardezie-4` pe ambele teme; pe deschis 2,56:1, deci la 3S `--k-eticheta`. */
+.etichetaAuto {
+  color: var(--k-eticheta);
+  font-size: 11.84px;
+  font-weight: 600;
+  line-height: 18.9px;
+  letter-spacing: 0.24px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.benzi {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.banda {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14px minmax(0, 1.6fr) 20px;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border: 1px solid var(--k-banda-chenar);
+  border-left: 3px solid var(--k-banda-stanga);
+  border-radius: 10px;
+  font-size: 15.2px;
+  line-height: 24.3px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.banda.in {
+  opacity: 1;
+  transform: none;
+}
+
+.banda.gata {
+  border-left-color: var(--k-banda-gata);
+}
+
+.declansator {
+  min-width: 0;
+  color: var(--k-text);
+  font-weight: 600;
+  letter-spacing: -0.152px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.sageata {
+  color: var(--k-chevron);
+}
+
+.actiune {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  color: var(--k-text-2);
+  font-weight: 500;
+  transition: color 0.5s ease 0.2s;
+}
+
+.iconitaActiune {
+  flex-shrink: 0;
+  color: var(--k-decor);
+}
+
+.locBifa {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bifa {
+  color: var(--k-bifa);
+}
+
+.banda .bifa {
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.banda.gata .bifa {
+  opacity: 1;
+  transform: none;
+}
+
+.concluzie {
+  display: flex;
+  max-width: 46ch;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 16px 0 2px;
+  color: var(--k-text);
+  font-size: 17.6px;
+  font-weight: 600;
+  /* relative, ca la referinta: la 390 fontul coboara la 16 px si randul la 22,4 */
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.5s ease 0.2s,
+    transform 0.5s ease 0.2s,
+    color 0.5s ease 0.2s;
+}
+
+.concluzie.in {
+  opacity: 1;
+  transform: none;
+}
+
+.bifaConcluzie {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--k-bifa);
+}
+
+/* Randul de integrari: eticheta, doua elemente si punctul dintre ele. */
+.integrari {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 0 2px;
+  font-size: 12.16px;
+  line-height: 19.4px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.integrari.in {
+  opacity: 1;
+}
+
+.etichetaIntegrari {
+  color: var(--k-eticheta);
+  font-size: 11.2px;
+  font-weight: 600;
+  transition: color 0.5s ease 0.2s;
+}
+
+.elementIntegrare {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--k-integrari-text);
+  font-weight: 500;
+  transition: color 0.5s ease 0.2s;
+}
+
+/* Separatorul: element al randului (gap 10 de o parte si de alta), fara margine proprie. */
+.punct {
+  color: var(--k-punct);
+}
+
+.iconitaIntegrare {
+  flex-shrink: 0;
+  color: var(--k-decor);
+}
+
+/* --- randul final (§5.4) ------------------------------------------------------------------- */
+
+.final {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--k-separator);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    border-color 0.5s ease;
+}
+
+.final.in {
+  opacity: 1;
+  transform: none;
+}
+
+.cerc {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--k-card-chenar);
+  border-radius: 9999px;
+  transition: border-color 0.5s ease;
+}
+
+.finalText {
+  display: flex;
+  flex: 1 1 0%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.finalTitlu {
+  color: var(--k-text);
+  font-size: 14.4px;
+  font-weight: 700;
+  line-height: 23.04px;
+  letter-spacing: -0.216px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.finalSub {
+  color: var(--k-text-2);
+  font-size: 12.16px;
+  font-weight: 500;
+  line-height: 19.456px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.cta {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+a.cta:hover {
+  background: var(--color-albastru-apasat);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+a.cta:focus-visible {
+  outline: 2px solid var(--k-focus);
+  outline-offset: 2px;
+}
+
+.anunt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- sub 900 px (§14) ---------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .capCard {
+    flex-wrap: wrap;
+    padding: 14px;
+  }
+
+  .progres {
+    order: 4;
+    width: 100%;
+  }
+
+  .corp {
+    gap: 12px;
+    padding: 14px 14px 12px;
+  }
+
+  .cutie {
+    min-height: 0;
+  }
+
+  .principal {
+    padding: 12px 12px 10px;
+  }
+
+  .scena {
+    gap: 18px;
+  }
+
+  .durere,
+  .durereLata {
+    max-width: none;
+    font-size: 19.2px;
+  }
+
+  .automatizari {
+    margin-top: 12px;
+  }
+
+  .banda {
+    grid-template-columns: minmax(0, 1fr) 20px;
+    grid-template-rows: auto auto;
+    gap: 4px 10px;
+    padding: 10px 12px;
+  }
+
+  .sageata {
+    display: none;
+  }
+
+  .declansator {
+    grid-area: 1 / 1;
+  }
+
+  .actiune {
+    grid-area: 2 / 1;
+  }
+
+  .locBifa {
+    grid-area: 1 / 2 / span 2;
+    align-self: center;
+  }
+
+  .concluzie {
+    max-width: none;
+    font-size: 16px;
+  }
+
+  .final {
+    flex-wrap: wrap;
+    padding: 14px;
+  }
+
+  .cta {
+    width: 100%;
+  }
+}
+
+/* --- gazda scenei si arborele lateral (§5, §8) --------------------------------------------- */
+
+.gazdaScena {
+  position: relative;
+}
+
+/* Arborele: strat absolut, sub card, cu 150 px in afara lui pe fiecare parte; ascuns sub 1341 px. */
+.arbore {
+  position: absolute;
+  inset: -20px -150px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 1340px) {
+  .arbore {
+    display: none;
+  }
+}

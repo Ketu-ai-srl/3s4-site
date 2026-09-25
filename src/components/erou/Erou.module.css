@@ -1,0 +1,810 @@
+/* Eroul paginii de start (acasa-erou.md §1). 1440: 0 / 900, blocul de continut 450,8 la y 256,6;
+   390: 0 / 925,4 (aici ~930: pastilele de 11 px, nu 9,6). Starea fara JavaScript si cea de
+   miscare redusa sunt aceeasi: cea statica, cu dimensiunile de mai jos. */
+
+.erou {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100lvh;
+  padding: 104px 0 40px;
+  overflow: hidden;
+}
+
+/* Fundalul: pata de lumina (doua gradiente radiale) si grila fina de 60 px, stinsa spre margini. */
+.fundal {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(80% 50% at 50% -20%, rgba(37, 99, 235, 0.08) 0%, transparent 60%),
+    radial-gradient(60% 40% at 80% 0%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.fundal::after {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  content: "";
+  mask-image: radial-gradient(80% 60% at 50% 30%, #000 0%, transparent 70%);
+}
+
+.container {
+  position: relative;
+  z-index: 5;
+}
+
+.grila {
+  display: grid;
+  grid-template-columns: minmax(300px, 560px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 4vw, 4.5rem);
+}
+
+.stanga {
+  position: relative;
+  z-index: 3;
+}
+
+/* --- intrarea coloanei (§1.3.1) ------------------------------------------------------------ */
+
+/* La referinta coloana e ascunsa in HTML si intra din JavaScript la montare + 100 ms: 600 ms,
+   `ease`, trepte de 100 ms (pastile, titlu, butoane). Aici intra din CSS, cu aceleasi durate si
+   aceeasi secventa (bucla intai, coloana dupa), iar fara JavaScript se termina tot vizibila.
+
+   Abatere: blocul titlului (h1 + subtitlu) nu are intrare. E elementul LCP (plan §8.4: LCP <=
+   2,5 s), iar cu opacitate 0 pana la 0,46 + 0,6 s h1-ul se picta la ~1 s dupa prima pictura.
+   Masurat la 390, procesor incetinit x4, 4G lent, cate 6 rulari: cu intrare pe titlu, LCP peste
+   2,5 s in 4 din 6 (2828-3696 ms); fara, 0 din 6 (1912-2392 ms), cu LCP egal cu prima pictura in
+   toate. Pastilele si butoanele isi pastreaza treptele (0,36 si 0,56 s). */
+@keyframes intrareColoana {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pastile,
+.actiuni {
+  animation: intrareColoana 0.6s ease both;
+}
+
+.pastile {
+  animation-delay: 0.36s;
+}
+
+.actiuni {
+  animation-delay: 0.56s;
+}
+
+/* --- coloana stanga ------------------------------------------------------------------------ */
+
+.pastile {
+  position: relative;
+  z-index: 7;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.pastila {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  margin: 0;
+  padding: 5.6px 12.8px 5.6px 9.6px;
+  border: 1px solid var(--color-linie);
+  border-radius: var(--radius-pastila);
+  background: var(--color-alb);
+  color: var(--color-cerneala-2);
+  font-family: inherit;
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20.48px;
+  text-align: start;
+  transition: border-color 0.2s ease;
+}
+
+button.pastila {
+  cursor: pointer;
+}
+
+a.pastila:hover,
+button.pastila:hover,
+button.pastila[aria-expanded="true"] {
+  border-color: var(--color-chenar-pastila-hover);
+}
+
+.pastilaIconita {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.pastilaSageata {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+a.pastila:hover .pastilaSageata {
+  transform: translateX(2px);
+}
+
+/* --- popover-ul primei pastile (§1.6.2) ----------------------------------------------------- */
+
+.ancoraPopover {
+  position: relative;
+  display: inline-flex;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  min-width: 320px;
+  max-width: min(380px, 88vw);
+  padding: 14.4px 16px 13.6px;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+  text-align: start;
+  opacity: 0;
+  transform: translateY(4px);
+  visibility: hidden;
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease,
+    visibility 0s linear 0.14s;
+}
+
+/* Puntea invizibila de 12 px: hover-ul nu se rupe la coborarea din pastila in popover. */
+.popover::before {
+  position: absolute;
+  top: -12px;
+  right: 0;
+  left: 0;
+  height: 12px;
+  content: "";
+}
+
+.popoverDeschis {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease,
+    visibility 0s;
+}
+
+.popoverLista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.popoverRand {
+  display: flex;
+  align-items: flex-start;
+  gap: 9.6px;
+  padding: 4.8px 0;
+  color: var(--color-gri-eticheta);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20.3px;
+}
+
+.popoverIconita {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--color-albastru);
+}
+
+.popoverLegatura {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+  margin-top: 8.8px;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  text-underline-offset: 3px;
+}
+
+a.popoverLegatura:hover {
+  text-decoration: underline;
+}
+
+.titlu {
+  margin-bottom: 20px;
+  color: var(--color-cerneala);
+}
+
+.accent {
+  color: var(--color-albastru);
+}
+
+.subtitlu {
+  margin-bottom: 28px;
+  color: var(--color-cerneala-2);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.butoane {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.nota {
+  margin-top: 12px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+/* --- bucla ----------------------------------------------------------------------------------- */
+
+/* Scena sta absolut peste TOT containerul (1320 x 450,8 la 1440), sub coloana de text; numai
+   centrul buclei (si, dupa lansare, macheta) primeste evenimente. */
+.scenaGazda {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.spatiu {
+  position: absolute;
+  right: -3%;
+  bottom: -9%;
+  width: 68%;
+  height: 112%;
+  perspective: 1600px;
+  perspective-origin: 60% 40%;
+}
+
+.bucla {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6.4px;
+  transform: translateX(4%);
+  transition:
+    opacity 0.32s ease,
+    transform 0.32s ease;
+}
+
+/* Lansarea (§1.6.3): bucla se stinge si se strange la 0,94 in 320 ms; translatia de 4% ramane. */
+.buclaIesire {
+  opacity: 0;
+  transform: translateX(4%) scale(0.94);
+}
+
+/* Cat se vede macheta, bucla ramane in pagina, asezata dar nevazuta (ScenaErou.tsx): la intoarcere
+   nu se mai aseaza nimic de la zero, doar se picteaza. Pe loc, fara tranzitie, ca la referinta: clasa
+   de iesire pleaca odata cu intrarea machetei, deci intoarcerea gaseste deja opacitatea plina. */
+.buclaAscunsa {
+  visibility: hidden;
+}
+
+/* Scena e container: regulile scenei inguste (la final) si distanta pastilei centrului se masoara
+   pe latimea ei, nu pe a ferestrei (la 1440 are 790, la 390 are 358). */
+.scena {
+  position: relative;
+  flex-shrink: 0;
+  width: min(790px, 100%);
+  aspect-ratio: 640 / 420;
+  container-type: inline-size;
+}
+
+.desen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.desen path {
+  fill: none;
+}
+
+.fantoma {
+  stroke: var(--color-drum-fantoma);
+  stroke-width: 5;
+}
+
+.halou {
+  stroke: rgba(37, 99, 235, 0.07);
+  stroke-linecap: round;
+  stroke-width: 13;
+}
+
+.baza {
+  stroke: var(--color-drum-baza);
+  stroke-width: 2.5;
+}
+
+.cometa {
+  opacity: 0.85;
+  stroke: var(--color-albastru);
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+/* Punctele: cap, mijloc si coada ale fiecarui grup (§1.4.4). Exista numai cu JavaScript. */
+.punct-cap {
+  fill: var(--color-albastru);
+}
+
+.punct-mijloc {
+  fill: rgba(37, 99, 235, 0.4);
+}
+
+.punct-coada {
+  fill: rgba(37, 99, 235, 0.18);
+}
+
+.lob {
+  position: absolute;
+  top: 47%;
+  color: var(--color-gri-meta);
+  font-size: 11.52px;
+  font-weight: 600;
+  line-height: 18.4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+.lobStanga {
+  left: 26%;
+}
+
+.lobDreapta {
+  left: 74%;
+}
+
+.nod {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform: translate(-50%, -50%);
+}
+
+.disc {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 50%;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-ridicata);
+  color: var(--color-albastru);
+}
+
+/* Pulsul nodului (§1.4.5): un inel de 2 px care creste la 1,5 si se stinge, 700 ms. */
+@keyframes inel {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.discPuls::after {
+  position: absolute;
+  inset: -1px;
+  border: 2px solid rgba(37, 99, 235, 0.45);
+  border-radius: 50%;
+  content: "";
+  animation: inel 0.7s ease-out forwards;
+  pointer-events: none;
+}
+
+.eticheta {
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(250, 251, 252, 0.85);
+  color: var(--color-gri-eticheta);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20.8px;
+  letter-spacing: -0.13px;
+  white-space: nowrap;
+}
+
+.centru {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 108px;
+  height: 108px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 50%;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-macheta-erou);
+  color: inherit;
+  font: inherit;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  transition: transform 0.25s ease;
+}
+
+button.centru {
+  cursor: pointer;
+}
+
+button.centru:focus-visible {
+  outline: 3px solid var(--color-albastru);
+  outline-offset: 4px;
+}
+
+/* Respiratia (§1.4.7): pe proprietatea `scale`, 3000 ms, infinita; la hover se opreste pe loc si
+   butonul creste la 1,04 peste valoarea inghetata. Numai cu JavaScript si fara miscare redusa. */
+@keyframes respiratie {
+  0%,
+  100% {
+    scale: 1;
+    box-shadow: var(--shadow-macheta-erou);
+  }
+  50% {
+    scale: 1.045;
+    box-shadow:
+      0 14px 30px -8px rgba(15, 23, 42, 0.2),
+      0 40px 80px -28px rgba(15, 23, 42, 0.32);
+  }
+}
+
+.spatiu[data-viu] .centru {
+  animation: respiratie 3s ease-in-out infinite;
+}
+
+.spatiu[data-viu] button.centru:hover {
+  animation-play-state: paused;
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+/* Pulsul centrului: inel de 2 px la -2 px, 800 ms, la fiecare trecere prin 0 si 0,5. */
+.centruPuls::before {
+  position: absolute;
+  inset: -2px;
+  border: 2px solid rgba(37, 99, 235, 0.4);
+  border-radius: 50%;
+  content: "";
+  animation: inel 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+.centruPastila {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 4.8px;
+  padding: 5.6px 12.8px;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 99px;
+  background: var(--color-alb);
+  box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.2);
+  color: var(--color-albastru);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16.4px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.legenda {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 17.6px;
+}
+
+.coloana {
+  flex-shrink: 0;
+  width: 19.4px;
+  height: 84px;
+  opacity: 0.85;
+}
+
+.legendaText {
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  text-align: start;
+}
+
+/* Podeaua in perspectiva si umbra de sub bucla (numai peste 1180 px). Apar dupa bucla: podeaua in
+   1,2 s, umbra in 1 s (§1.4.8); la referinta le porneste un observator, aici CSS-ul, ca starea
+   fara JavaScript sa ajunga in acelasi loc. */
+@keyframes aparitie {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.podea {
+  position: absolute;
+  right: -30%;
+  bottom: 2%;
+  left: -30%;
+  height: 64%;
+  background-image:
+    linear-gradient(to right, var(--color-podea) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-podea) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(120% 90% at 50% 100%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 78%);
+  transform: rotateX(75deg);
+  transform-origin: bottom;
+  animation: aparitie 1.2s ease 0.8s both;
+}
+
+.umbra {
+  position: absolute;
+  right: 6%;
+  bottom: 8%;
+  left: 20%;
+  height: 120px;
+  background: radial-gradient(60% 100% at 55% 50%, rgba(15, 23, 42, 0.13) 0%, transparent 72%);
+  filter: blur(8px);
+  animation: aparitie 1s ease 0.9s both;
+}
+
+/* --- o coloana (pragul 1180) ----------------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .erou {
+    display: block;
+    min-height: 0;
+    padding: 80px 0 24px;
+  }
+
+  .grila {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+  }
+
+  .stanga {
+    display: contents;
+  }
+
+  .pastile {
+    order: 1;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .titluBloc {
+    order: 2;
+  }
+
+  .scenaGazda {
+    position: relative;
+    inset: auto;
+    order: 3;
+    width: 100%;
+  }
+
+  .actiuni {
+    order: 4;
+  }
+
+  .titlu {
+    margin-bottom: 12px;
+  }
+
+  .subtitlu {
+    margin-bottom: 24px;
+    font-size: 14px;
+    line-height: 22.4px;
+  }
+
+  .spatiu {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: auto;
+    perspective: none;
+  }
+
+  .bucla {
+    position: relative;
+    inset: auto;
+    margin-bottom: 28px;
+    padding: 8px 0 12.8px;
+    transform: none;
+  }
+
+  .buclaIesire {
+    transform: scale(0.94);
+  }
+
+  /* In scena plana bucla sta in flux: ascunsa, iese din flux ca macheta sa-i ia locul, la aceeasi
+     latime, ca asezarea ei sa ramana valabila. */
+  .buclaAscunsa {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .legenda {
+    width: 100%;
+  }
+
+  .legendaText {
+    flex: 1;
+  }
+
+  .podea,
+  .umbra {
+    display: none;
+  }
+
+  .butoane {
+    flex-direction: column;
+  }
+}
+
+/* Sub 768 referinta coboara pastilele la 9,6 px; la 3S raman la 11 px (COMPONENTE.md §5.2). */
+@media (max-width: 767px) {
+  .pastila {
+    font-size: 11px;
+    line-height: 17.6px;
+  }
+
+  /* Popover-ul nu iese din fereastra: centrat sub pastila, cel mult cat ecranul minus marginile
+     (la referinta: 320 aliniat la stanga pastilei, 33,9 px taiati la 390). */
+  .popover {
+    left: 50%;
+    min-width: 0;
+    width: min(320px, calc(100vw - 32px));
+    max-width: none;
+    translate: -50% 0;
+  }
+}
+
+/* --- scena ingusta ---------------------------------------------------------------------------- */
+
+/* Discurile (46), centrul (108), pastila lui si etichetele NU scaleaza odata cu drumul (fisa §1.7),
+   deci pe o scena ingusta se ating: la referinta, la 390, centrul acopera etichetele nodurilor, iar
+   pastila CTA pe cele de jos. Masurat cu pastila la locul referintei si centrul la scala maxima a
+   respiratiei: pastila intra in discurile de jos cand scena are sub ~671 px (0,6 px la 668, adica
+   700 de fereastra; 10,7 px la 608), fiindca discurile se apropie de mijloc odata cu drumul, iar
+   pastila ramane de 172,9 px. Cat scena are cel mult 700 px:
+   - eticheta nodului trece langa disc, spre exteriorul buclei; discul ramane unde il pune referinta
+     (13,4 px deasupra drumului: cutia nodului isi pastreaza inaltimea);
+   - pastila centrului coboara sub discurile de jos, la o distanta derivata din latimea scenei.
+   Peste 700 px pastila incape intre discuri, ca la referinta (5,7 px liberi la 704, la respiratia
+   maxima). Forma buclei, marimea discurilor si a centrului raman. */
+@container (max-width: 700px) {
+  .nod {
+    display: block;
+    width: 46px;
+    height: 72.8px;
+  }
+
+  .nod .eticheta {
+    position: absolute;
+    top: 23px;
+    padding: 0 3px;
+    transform: translateY(-50%);
+  }
+
+  .nod[data-pozitie$="stanga"] .eticheta {
+    right: calc(100% + 4px);
+  }
+
+  .nod[data-pozitie$="dreapta"] .eticheta {
+    left: calc(100% + 4px);
+  }
+
+  /* `top` se masoara de la marginea de sus a cutiei de umplere a centrului, 53 px deasupra
+     mijlocului lui (108 / 2, minus chenarul). Discul de jos se termina la 74,96% din inaltimea
+     scenei + 9,6 px (nodul, plus 23 - 13,4), inaltimea e 65,625% din latime (L), iar pastila creste
+     cu respiratia (1,045, in jurul mijlocului). Deci top >= 53 + (0,7496 - 0,5) x 0,65625 x L /
+     1,045 + (9,6 + g) / 1,045; cu 67 px + 15,675% din L raman g = 5 px liberi (masurat: 5,0 px
+     de la 328 la 508 px de scena; mai sus distanta creste, discurile ies de sub colturile
+     pastilei). Sub ~340 px de scena ramane distanta referintei (12 px sub centru). */
+  .centruPastila {
+    top: max(calc(100% + 12px), calc(67px + 15.675cqw));
+  }
+}
+
+/* Eticheta lobului stang (65,7 px, 11,52 px cu spatiere 0,08 em) nu mai incape la 26% cand scena
+   scade sub ~372 px (din geometrie: 0,26 L + 32,9 > 0,5 L - 56,4): intra sub centru, masurat
+   3,3 px la 390 de fereastra si 20,1 la 320; cea dreapta, mai scurta, de la 360. Sub 400 px de
+   scena eticheta se centreaza in partea libera a lobului, intre drum si centrul care respira
+   (59,5 px de la mijloc = 56,4 la 1,045 plus 3 px); unde nici acolo nu incape, se lipeste de
+   centru si iese spre capatul buclei, pe o placuta ca a etichetelor de nod (text peste linie, nu
+   linie peste text). Marginea automata face centrarea: cu spatiu negativ devine 0, iar articolul
+   sta la inceputul axei - la dreapta pentru lobul stang (`row-reverse`), la stanga pentru cel
+   drept. */
+@container (max-width: 400px) {
+  .lob {
+    display: flex;
+    transform: translateY(-50%);
+  }
+
+  .lobStanga {
+    right: calc(50% + 59.5px);
+    left: calc(14.0625% + 2px);
+    flex-direction: row-reverse;
+  }
+
+  .lobDreapta {
+    right: calc(14.0625% + 2px);
+    left: calc(50% + 59.5px);
+  }
+
+  .lobText {
+    margin-inline: auto;
+    padding: 0 3px;
+    border-radius: 4px;
+    background: rgba(250, 251, 252, 0.85);
+  }
+}
+
+/* --- miscarea redusa --------------------------------------------------------------------------- */
+
+/* Globalele opresc duratele, dar nu si intarzierile: fara regula asta coloana ar sta ascunsa
+   0,6 s si la miscare redusa (defect al referintei, COMPONENTE.md §5.5). */
+@media (prefers-reduced-motion: reduce) {
+  .pastile,
+  .actiuni,
+  .podea,
+  .umbra,
+  .spatiu[data-viu] .centru {
+    animation: none;
+  }
+
+  .bucla,
+  .centru,
+  .popover {
+    transition: none;
+  }
+}

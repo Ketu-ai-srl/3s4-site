@@ -1,20 +1,15 @@
-import type { Metadata } from "next";
-import PaginaDeSegment from "@/components/PaginaDeSegment";
-import { AVOCATURA } from "@/content/segmente";
+import PaginaSector from "@/components/solutii/PaginaSector";
+import { metadataPagina } from "@/components/seo/metadata";
+import { AVOCATURA } from "@/content/solutii/avocatura";
 
-// Al patrulea segment, si singurul care se sprijina pe un rand GOL din `termene.ts`:
-// termenul dosarelor de cabinet nu are norma citabila cu articol, iar pagina o spune.
-//
-// Canonical auto-referential: fara el, pagina ar mosteni canonical-ul layout-ului si
-// ar arata spre pagina de start, ceea ce scoate ruta asta din index.
-export const metadata: Metadata = {
-  title: AVOCATURA.titluMeta,
-  description: AVOCATURA.descriereMeta,
-  alternates: { canonical: "/solutii/avocatura" },
-};
+// Pagina de sector pe sablonul comun (`PaginaSector`); continutul e in `src/content/solutii/avocatura.ts`.
 
-export default function Avocatura() {
-  return (
-    <PaginaDeSegment segment={AVOCATURA} nume="Case de avocatură" slug="avocatura" />
-  );
+export const metadata = metadataPagina({
+  titlu: AVOCATURA.meta.titlu,
+  descriere: AVOCATURA.meta.descriere,
+  cale: AVOCATURA.cale,
+});
+
+export default function Pagina() {
+  return <PaginaSector sector={AVOCATURA} />;
 }
