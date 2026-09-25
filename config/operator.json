@@ -1,0 +1,14 @@
+{
+  "_nota": "Comutatorul operatorului de date (planul valului S4, sectiunile 9-10). Decizia owner-ului din 24.09.2026: niciun operator numit pana la infiintarea firmei 3S, deci operator = null. Cat timp e null, site-ul arata doar brandul si poarta juridica nu cere datele de identificare (L-01, .claude/scripts/porti/poarta-juridic.py). In ziua operatorului, null devine un obiect cu campurile din _forma, completate dintr-un certificat, nu din memorie; din clipa aceea L-01 le cere complete si prezente pe fiecare pagina livrata.",
+  "_forma": {
+    "denumire": "",
+    "sediu": "",
+    "email": "",
+    "telefon": "",
+    "numar_orc": "",
+    "cod_fiscal": "",
+    "tara": "",
+    "dpo": ""
+  },
+  "operator": null
+}

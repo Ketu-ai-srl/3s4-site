@@ -1,0 +1,180 @@
+/* CTA-ul final inchis (acasa.md §13): aceeasi componenta pe 14 pagini.
+   Sectiune 48 / 80; card ardezie-9, raza 24, padding 64 x 56 (48 x 24 sub 768); grila 1,2fr / 0,8fr,
+   gap 48; sub 768 o coloana, fara vizual. Randul de credit al referintei NU se reproduce, deci
+   cardul are ~399 px la 1440 in loc de 456,8 (calculat: 456,8 minus 36 de margine si 22 de rand). */
+
+.sectiune {
+  padding: 48px 0 80px;
+}
+
+.card {
+  border-radius: 24px;
+  background: var(--color-ardezie-9);
+  color: var(--color-alb);
+  padding: 64px 56px;
+}
+
+.grila {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.stanga {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.titlu {
+  margin-bottom: 12px;
+  color: var(--color-alb);
+}
+
+/* Subtitlul prin opacitatea elementului (nu culoare rgba), ca la referinta: alb .7 = 9,10:1. */
+.subtitlu {
+  margin-bottom: 32px;
+  font-size: 18px;
+  line-height: 28.8px;
+  opacity: 0.7;
+}
+
+.butoane {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Referinta: opacitate .45 (4,46:1, sub AA la 12 px). La 3S .5 = 5,23:1. */
+.microtext {
+  margin: 13.6px 0 0 4px;
+  font-size: 12px;
+  line-height: 19.2px;
+  opacity: 0.5;
+}
+
+.vizual {
+  display: flex;
+  flex-direction: column;
+  gap: 10.4px;
+  margin: 0;
+  min-width: 0;
+}
+
+.pas {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  min-width: 0;
+  padding: 9.6px 14.4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.pasIconita {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pasText {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 22.4px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Ora: la referinta alb .35 (3,18:1); la 3S .5 (5,07:1 pe fundalul pasului). */
+.pasOra {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10.4px;
+  line-height: 16.6px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.rezultat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 13.6px 16px;
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-rezultat-cta);
+  color: var(--color-cerneala);
+}
+
+.rezultatCutie {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.rezultatText {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4px;
+  min-width: 0;
+}
+
+.rezultatFisier {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 500;
+  line-height: 18.4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rezultatStare {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+  font-size: 10.88px;
+  line-height: 17.4px;
+  color: var(--color-cerneala-2);
+}
+
+.punctVerde {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-verde);
+}
+
+.rezultatOra {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10.4px;
+  color: var(--color-cerneala-2);
+}
+
+@media (max-width: 767px) {
+  .card {
+    padding: 48px 24px;
+  }
+
+  .grila {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vizual {
+    display: none;
+  }
+}

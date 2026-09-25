@@ -1,0 +1,83 @@
+[
+  {
+    "id": "enterprise-functii-in-productie",
+    "text": "3S recunoaște textul actelor scanate, le detectează tipul, citește câmpurile din ele, caută cu sursa citată, aplică reguli automate, le livrează în portalul clienților și prin export și API",
+    "unde": "src/content/enterprise.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind în producție) și D1b (aceeași listă de funcționalități ca referința vizuală)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "enterprise-gazduire-amazon-germania",
+    "text": "Implicit, fișierele stau în Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene",
+    "unde": "src/content/enterprise.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: găzduire Amazon, Germania, o singură regiune",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "enterprise-criptare-aes-256-tls",
+    "text": "Criptare AES-256 la stocare și TLS 1.2 sau mai nou în tranzit",
+    "unde": "src/content/enterprise.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: varianta aleasă în decizia D4c a planului valului S4; configurarea reală o confirmă dezvoltatorul platformei",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "enterprise-integrari-si-whatsapp",
+    "text": "Actele intră în 3S din Gmail și Outlook, din Microsoft 365 și Google Workspace, din interfața web și de pe WhatsApp, iar răspunsul poate pleca pe WhatsApp",
+    "unde": "src/content/enterprise.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: aceleași integrări ca referința vizuală, plus WhatsApp",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "enterprise-digitizare-3s",
+    "text": "Dosarele de hârtie le scanează și le indexează echipa 3S",
+    "unde": "src/content/enterprise.ts",
+    "stare": "confirmat",
+    "sursa": "planul valului S4, deciziile D4 (digitizarea și arhivarea fizică sunt servicii dovedite) și D10 (se descriu ca servicii ale mărcii 3S, fără nume de firmă)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "enterprise-servicii-echipa",
+    "text": "La nivelul enterprise, echipa 3S fixează cu firma termenele de păstrare pe tipuri de acte, alocă un coleg 3S firmei, aduce în căutare arhiva de hârtie scanată de echipa 3S, răspunde pe WhatsApp cu actul și pagina din care vine răspunsul și poate păstra originalele în arhiva fizică 3S după scanare",
+    "unde": "src/content/enterprise.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner: forma ofertei enterprise 3S (livrabilele sunt scrise din serviciile 3S din deciziile D4 și D10: digitizare, arhivă fizică, căutare cu sursa citată, WhatsApp)",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "enterprise-exemplu-fictiv",
+    "text": "Documentul din banda paginii (pv_receptie_0147.pdf, 4.750,00 RON, termen de 10 ani, 2026-2036) e fictiv și e declarat ca exemplu",
+    "unde": "src/content/enterprise.ts",
+    "stare": "confirmat",
+    "sursa": "decizia D9 din planul valului S4: date fictive în machete, declarate ca exemplu; nota de sub axă spune pe pagină că e un exemplu fictiv",
+    "confirmat_de": "dispecerul fabricii, planul valului S4, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "formular-temei-precontractual",
+    "text": "Temeiul prelucrării datelor din formular îl constituie demersurile precontractuale făcute la cererea persoanei (GDPR, art. 6 alin. (1) lit. b)); bifa de noutăți are temei consimțământul",
+    "unde": "src/content/formular.ts",
+    "stare": "confirmat",
+    "sursa": "Regulamentul (UE) 2016/679, art. 6 alin. (1) lit. a) (consimțământul) și lit. b) (demersuri la cererea persoanei vizate înainte de încheierea unui contract), textul oficial în limba română: https://eur-lex.europa.eu/legal-content/RO/TXT/HTML/?uri=CELEX:32016R0679",
+    "confirmat_de": "citit la sursa primară, EUR-Lex, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "formular-inactiv-fara-operator",
+    "text": "Cât timp nu există un operator de date numit, formularul nu trimite și nu salvează nimic din ce se scrie în el",
+    "unde": "src/content/formular.ts, src/components/formular/FormularContact.tsx, src/app/api/formular/logica.ts",
+    "stare": "confirmat",
+    "sursa": "decizia owner-ului din 2026-09-24 („Nimeni deocamdată”, planul valului S4 §9); comportamentul e măsurat de tests/browser/enterprise-formular.spec.ts (zero cereri de trimitere) și tests/enterprise-formular.test.ts (punctul de trimitere răspunde „inactiv” fără să citească cererea)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  }
+]

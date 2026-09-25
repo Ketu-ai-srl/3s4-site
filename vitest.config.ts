@@ -9,8 +9,14 @@ import { defineConfig } from 'vitest/config'
 // directorul exista de la rularea anterioara, iar in CI `typecheck` (care ruleaza INAINTEA
 // probelor, cand copia nu exista inca) a picat cu TS2307 pe lot/s2-b0. Setarea de aici e
 // citita doar de Vite/vitest; Next si tsc nu o vad.
+// CSS IN PROBE: componentele importa module CSS, iar Vite le trece prin PostCSS cu configurarea
+// proiectului (`postcss.config.mjs`, pluginul Tailwind scris ca nume de pachet), pe care Vite nu
+// o poate incarca: suita pica la import, inainte de orice caz. Probele citesc HTML randat pe
+// server, nu stiluri, asa ca aici PostCSS primeste o configurare goala, scrisa pe loc; Next si
+// build-ul raman pe `postcss.config.mjs`.
 export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
+  css: { postcss: { plugins: [] } },
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   test: {
     environment: 'node',

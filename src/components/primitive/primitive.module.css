@@ -1,0 +1,330 @@
+/* Primitivele mici: legaturi, pastile, fir de pagina, capete, carduri, casete, cutii de iconita.
+   Valorile: componente-globale.md §8, DIRECTIA.md (tabelul primitivelor). */
+
+/* --- LegaturaSageata: 14/600/22,4, -0,07, albastru, sageata 15 dupa text, gap 6,4 ------------ */
+
+.sageataLeg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.07px;
+  color: var(--color-albastru);
+  white-space: nowrap;
+}
+
+.sageataLeg > svg {
+  flex-shrink: 0;
+}
+
+a.sageataLeg:hover {
+  color: var(--color-albastru-apasat);
+}
+
+@media (max-width: 767px) {
+  .sageataLegRupe {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+/* --- LegaturaInText: inline-flex, 16/500 albastru, sageata 14, gap 5,6 ------------------------ */
+
+.inText {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-albastru);
+}
+
+.inText > svg {
+  flex-shrink: 0;
+}
+
+a.inText:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.inText168 {
+  font-size: 16.8px;
+}
+
+.inText14 {
+  font-size: 14px;
+}
+
+.inText1408 {
+  font-size: 14.08px;
+}
+
+/* --- Pastila --------------------------------------------------------------------------------- */
+
+.pastila {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* categorie ("Enterprise"): 12/500, rand 16,8, violet, chenar ardezie-2, 1,6 x 8,8 (86 x 22) */
+.pastilaCategorie {
+  padding: 1.6px 8.8px;
+  border: 1px solid var(--color-ardezie-2);
+  color: var(--color-violet);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16.8px;
+}
+
+/* erou: 12,8/500/20,48 cerneala-2, chenar linie, 33,7 px, 5,6/12,8/5,6/9,6, gap 6,4, iconita 14 */
+.pastilaErou {
+  gap: 6.4px;
+  padding: 5.6px 12.8px 5.6px 9.6px;
+  border: 1px solid var(--color-linie);
+  background: var(--color-alb);
+  color: var(--color-cerneala-2);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20.48px;
+  transition: border-color 0.2s ease;
+}
+
+.pastilaErou > svg {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+:is(a, button).pastilaErou:hover {
+  border-color: var(--color-chenar-pastila-hover);
+}
+
+/* La referinta textul coboara la 9,6 px sub 768 px; la 3S minimul de lizibilitate e 11 px. */
+@media (max-width: 767px) {
+  .pastilaErou {
+    padding: 4.4px 12px 4.4px 9px;
+    font-size: 11px;
+    line-height: 18px;
+  }
+}
+
+/* insigna: 12,8/500 ardezie-6 pe alb, 34 px; varianta mare 14/500, 32 px */
+.pastilaInsigna {
+  gap: 6.4px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-ardezie-2);
+  background: var(--color-alb);
+  color: var(--color-ardezie-6);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.pastilaInsignaMare {
+  padding: 4px 12px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* de stare: punct de 6 px plin / jumatate / gol */
+.pastilaStare {
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid var(--color-ardezie-2);
+  color: var(--color-ardezie-6);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.punct {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+}
+
+.punctPlin {
+  background: currentColor;
+}
+
+.punctJumatate {
+  background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+}
+
+/* --- FirPagina ------------------------------------------------------------------------------- */
+
+.fir {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5.6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.firCentru {
+  justify-content: center;
+}
+
+.firElement {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+}
+
+.firLegatura {
+  color: var(--color-cerneala-2);
+  font-weight: 400;
+  transition: color var(--durata-rapida) ease;
+}
+
+a.firLegatura:hover {
+  color: var(--color-albastru);
+}
+
+.firSeparator {
+  flex-shrink: 0;
+  color: var(--color-cerneala-3);
+}
+
+.firCurent {
+  color: var(--color-cerneala);
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .firAscunsMic {
+    display: none;
+  }
+}
+
+/* --- CapSectiune: eticheta 12/600 albastru (mb 12) + h2 40 (30) + subtitlu 18/28,8 ----------- */
+
+.capSectiune {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.capEticheta {
+  margin-bottom: 12px;
+}
+
+.capSubtitlu {
+  margin-top: 16px;
+}
+
+/* --- CapBloc: h2 28 (21,6) ardezie-9 mb 10 + paragraf ardezie-5 max 640 ----------------------- */
+
+.capBloc {
+  display: block;
+}
+
+.capBlocTitlu {
+  margin-bottom: 10px;
+}
+
+.capBlocText {
+  max-width: 640px;
+  color: var(--color-ardezie-5);
+}
+
+.capBlocText16 {
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.capBlocText18 {
+  font-size: 18px;
+  line-height: 28.8px;
+}
+
+/* --- Card, CasetaGri --------------------------------------------------------------------------- */
+
+.card {
+  display: block;
+  padding: 24px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.cardEvidentiat {
+  border-color: var(--color-albastru);
+}
+
+.cardGri {
+  background: var(--color-ardezie-0);
+  box-shadow: none;
+}
+
+.cardHover {
+  transition: border-color 0.18s ease;
+}
+
+a.cardHover:hover {
+  border-color: var(--color-ardezie-3);
+}
+
+a.cardHoverAlbastru:hover {
+  border-color: var(--color-albastru);
+}
+
+.caseta {
+  padding: 24px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-ardezie-0);
+}
+
+.casetaMare {
+  padding: 32px;
+}
+
+.casetaRezolvare {
+  border-left: 3px solid var(--color-albastru);
+}
+
+/* --- CutieIconita ---------------------------------------------------------------------------- */
+
+.cutie {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.cutieCeata {
+  background: var(--color-ceata-albastra);
+}
+
+.cutiePal {
+  background: var(--color-albastru-pal);
+}
+
+.cutieArdezie {
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+}
+
+.cutieCerc {
+  border-radius: 50%;
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font-size: 13px;
+  font-weight: 600;
+}

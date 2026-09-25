@@ -1,0 +1,106 @@
+/* Cardurile-citat (functionalitati__sablon.md §5.2) si fantomele (portal-clienti S4). */
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  box-sizing: border-box;
+  /* Sectiunile gazda centreaza textul; replica se citeste de la stanga, ca la referinta. */
+  text-align: left;
+  rotate: var(--inclinare, 0deg);
+  animation: plutire var(--plutire, 8s) ease-in-out var(--intarziere-plutire, 0s) infinite;
+}
+
+.citat {
+  max-width: 360px;
+  padding: 14.4px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-citat);
+  /* La referinta 2 (p - 0,075 k): al cincilea card intreg abia la p 0,8, iar cu sectiunea centrata (p 0,5)
+     ultimele trei ieseau 4,0 / 2,9 / 2,0:1 (contrast calculat, 25.09; axe le lasa "incomplete", fundal
+     cu imagine). ABATERE: aceeasi scara, stransa - cardul k intreg la p 0,25 + 0,05 k, ultimul la 0,45. */
+  opacity: clamp(0, calc(4 * (var(--p, 1) - 0.05 * var(--k, 0))), 1);
+  transition: opacity 0.4s ease;
+}
+
+/* Fantomele isi centreaza textul (la referinta il mostenesc de la bloc). */
+.fantoma {
+  text-align: center;
+  max-width: 240px;
+  padding: 10.4px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  opacity: var(--opacitate-fixa, 1);
+}
+
+.ghilimea::before {
+  content: '"';
+}
+
+.ghilimea {
+  flex: none;
+  margin-top: 0.8px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--color-ardezie-4);
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-italic);
+  font-size: 16.8px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 24.36px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.fantoma .ghilimea {
+  font-size: 19.2px;
+  line-height: 19.2px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.fantoma .text {
+  font-size: 14.4px;
+  line-height: 20.16px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@keyframes plutire {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .citat {
+    max-width: 78%;
+    padding: 8.8px 12px;
+  }
+
+  .citat .ghilimea {
+    font-size: 16.8px;
+    line-height: 16.8px;
+  }
+
+  .citat .text {
+    font-size: 12.48px;
+    line-height: 18.096px;
+  }
+
+  .fantoma {
+    max-width: 80%;
+    padding: 8px 12px;
+  }
+}

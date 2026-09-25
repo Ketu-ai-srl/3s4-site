@@ -1,0 +1,1280 @@
+/* Machetele unice ale paginii portal-clienti (functionalitati__portal-clienti.md). Cifrele: 1440 / 390.
+   Efectele legate de derulare citesc `--p`, progresul sectiunii (SectiuneScena), in ambele sensuri.
+
+   CONTRASTUL (abateri de la referinta, toate in sus): orele din inbox si stampila actului .35 -> .5; in
+   zonele stinse ale documentului zona are .65 (nu .55), iar textul mic din ele .7 (nu .5), ca sa ramana
+   peste 4,5:1 si stinse (4,55:1 masurat). Ce e decor (randurile stinse ale machetei, punctele,
+   "(...)") se deseneaza din CSS si nu poarta informatie; sensul e in text pentru cititor. */
+
+/* --- piese comune ------------------------------------------------------------------------------ */
+
+.figura {
+  margin: 0;
+}
+
+.titluSectiune {
+  margin: 0 0 16px;
+}
+
+.patratEmail {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 2px;
+  background: var(--color-chihlimbar);
+}
+
+/* --- S1, arborele din inbox --------------------------------------------------------------------- */
+
+.arboreBloc {
+  text-align: left;
+}
+
+.contor {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8.8px;
+  margin: 0 0 32px;
+  padding: 9.6px 17.6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.contorPunct {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--color-rosu);
+}
+
+.contorEticheta {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.contorValoare {
+  font-family: var(--font-mono);
+  font-size: 20.8px;
+  font-weight: 600;
+  line-height: 33.28px;
+  letter-spacing: -0.416px;
+  color: var(--color-rosu-clar);
+}
+
+/* Dublat: bate bara de baza a ferestrei (37 px) oricare ar fi ordinea foilor; aici 39 px. */
+.baraArbore.baraArbore {
+  gap: 8px;
+  min-height: 39px;
+  padding: 10px 14px;
+}
+
+.caleArbore {
+  font-weight: 500;
+}
+
+/* Corpul: 540 px, cu voalul de jos (ultimii 151 px) peste randurile care se sting. */
+.corpArbore {
+  position: relative;
+  height: 540px;
+  box-sizing: border-box;
+  margin: 0;
+  overflow: hidden;
+  padding: 10.4px 0;
+  list-style: none;
+}
+
+.corpArbore::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 151px;
+  background: linear-gradient(transparent, var(--color-ardezie-9));
+  content: "";
+  pointer-events: none;
+}
+
+/* Randul i: se aprinde cu panta 6 de la pragul lui (`--s`), apoi aluneca spre dreapta. */
+.randArbore {
+  display: grid;
+  grid-template-columns: 15px 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8.8px;
+  padding: 6.72px 16px 6.72px calc(38px + 22px * (var(--nivel, 1) - 1));
+  opacity: max(0.12, min(1, calc(6 * (var(--p) - var(--s, 0)))));
+  transform: translateX(max(0px, calc(84px * (var(--p) - var(--s, 0) - 0.119))));
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.randRadacina {
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  padding: 10.4px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(220, 38, 38, 0.14);
+}
+
+/* Ramura: un cot desenat din doua linii (vertical si orizontal), .25; pe ultimul rand, cotul de capat. */
+.ramura {
+  position: relative;
+  width: 15px;
+  height: 18px;
+}
+
+.ramura::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  content: "";
+}
+
+.ramura::after {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 3px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  content: "";
+}
+
+.ramuraCapat::before {
+  bottom: 50%;
+}
+
+.iconitaArbore {
+  display: flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.iconitaRadacina {
+  background: rgba(220, 38, 38, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.numeArbore {
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 13.12px;
+  font-weight: 500;
+  line-height: 20.992px;
+  color: #e6ecf5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.numeRadacina {
+  font-weight: 600;
+}
+
+.numeFisier {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.numeInfinit {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.numarArbore {
+  justify-self: end;
+  padding: 2.4px 7.2px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 700;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* La radacina contorul umple restul randului (un al doilea strat rosu), ca la referinta. */
+.numarRadacina {
+  justify-self: stretch;
+  background: rgba(220, 38, 38, 0.14);
+  font-size: 12.48px;
+  line-height: 19.968px;
+  color: var(--color-rosu-clar);
+}
+
+.numarInfinit {
+  font-style: italic;
+}
+
+/* --- S2, recunoasterea: inboxul in trepte ------------------------------------------------------- */
+
+.titluLuminos {
+  margin: 0 0 16px;
+  color: var(--color-ardezie-0);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.7);
+}
+
+.paragrafRecunoastere {
+  margin: 24px 0 0;
+  font-size: 22.4px;
+  font-weight: 400;
+  line-height: 34.72px;
+  color: rgba(255, 255, 255, 0.62);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
+}
+
+.inbox {
+  max-width: 460px;
+  margin: 40px auto 0;
+}
+
+.baraInbox.baraInbox {
+  gap: 8.8px;
+  min-height: 40px;
+  padding: 8.8px 12.8px;
+}
+
+.caleInbox {
+  font-size: 10.56px;
+  line-height: 16.896px;
+}
+
+.cipRosu {
+  padding: 2.88px 8px;
+  border-radius: 4px;
+  background: rgba(220, 38, 38, 0.14);
+  font-family: var(--font-sans);
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  letter-spacing: 0.0992px;
+  color: var(--color-rosu-clar);
+}
+
+.corpInbox {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+
+/* Randul i: la referinta max(.15, min(1, 2 (p - 0,07 i))), deci ultimul se aprindea abia la p 0,78 si, cu
+   sectiunea centrata (p 0,5, unde se citeste), orele stateau la 2,0-4,2:1 (axe cu miscare, critic 25.09).
+   ABATERE: aceeasi scara, stransa - randul i intreg la p 0,25 + 0,05 i, ultimul la 0,45. Alunecarea spre
+   dreapta ramane a referintei: 36 (p - 0,389 - 0,07 i).
+   A DOUA ABATERE (a11y, critic 25.09 runda 2): opacitatea NU mai urmeaza derularea continuu. Oprita pe o
+   pozitie intermediara, o treapta la .2-.6 lasa text vizibil sub 4,5:1 (axe cu miscare, 1,1-3,5:1). Acum
+   randul e 0 sau 1 dupa cum p a trecut pragul lui (panta 1000), iar trecerea se face in timp, prin
+   tranzitie; pragul e punctul in care scara de mai sus ajungea la jumatate. Ca avalansa din cautare-ai. */
+.mesaj {
+  display: flex;
+  align-items: flex-start;
+  gap: 8.8px;
+  padding: 8.8px 12.8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: clamp(0, calc(1000 * (var(--p) - 0.125 - 0.05 * var(--i, 0))), 1);
+  transform: translateX(max(0px, calc(36px * (var(--p) - 0.389 - 0.07 * var(--i, 0)))));
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.mesaj:last-child {
+  border-bottom: 0;
+}
+
+.mesaj > .patratEmail {
+  margin-top: 3.2px;
+}
+
+.corpMesaj {
+  min-width: 0;
+  flex: 1;
+}
+
+.susMesaj {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subiect {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 11.52px;
+  font-weight: 500;
+  line-height: 18.432px;
+  color: #e6ecf5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subiectUrgent {
+  font-weight: 600;
+  color: var(--color-rosu-clar);
+}
+
+.cipMesaj {
+  padding: 1.6px 6.4px;
+  border-radius: 4px;
+  background: rgba(220, 38, 38, 0.14);
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  color: var(--color-rosu-clar);
+}
+
+.ora {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9.6px;
+  font-weight: 400;
+  line-height: 15.36px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+.schelet {
+  display: block;
+  max-width: 100%;
+  height: 6px;
+  margin-top: 6.4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- S3, etichetele ----------------------------------------------------------------------------- */
+
+.blocEtichete {
+  opacity: clamp(0, calc(2 * var(--p)), 1);
+  transition: opacity 0.5s ease;
+}
+
+.teanc {
+  position: relative;
+  width: 320px;
+  max-width: 100%;
+  height: 130px;
+  margin: 0 auto 40px;
+}
+
+.actEtichetat {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: 13.6px 14.4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  text-align: left;
+}
+
+.capActEtichetat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9.6px;
+}
+
+.numeActEtichetat {
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 500;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.8);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linieAct {
+  display: block;
+  height: 7px;
+  margin-bottom: 7.2px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.linieAct2 {
+  width: 202px;
+  max-width: 70%;
+}
+
+.stampila {
+  margin-top: 8.8px;
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+  font-weight: 400;
+  line-height: 15.872px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.etichete {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eticheta {
+  position: absolute;
+  top: var(--sus);
+  left: var(--stanga);
+  padding: 2.88px 8px;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  letter-spacing: 0.0992px;
+  white-space: nowrap;
+  transform: rotate(var(--rotire));
+}
+
+.etichetaRosie {
+  background: rgba(220, 38, 38, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+/* ABATERE de contrast (critic 25.09 runda 2, axe cu miscare la 1440): textul alb .55 peste act iesea
+   4,39:1 pe eticheta a patra; .62 il trece de 4,5:1, fara sa schimbe tonul "neutru" fata de cele rosii. */
+.etichetaNeutra {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Lipirea: la intrarea sectiunii in fereastra (propunerea fisei; la referinta rula la incarcare, nevazuta),
+   0,6 s cu depasire, eticheta k la 0,2 + 0,3 k s. Inainte de intrare, cu miscare, etichetele asteapta. */
+.teanc[data-lipire="asteapta"] .eticheta {
+  opacity: 0;
+}
+
+.teanc[data-lipire="lipeste"] .eticheta {
+  animation: lipire 0.6s cubic-bezier(0.34, 1.42, 0.55, 1) var(--intarziere, 0s) backwards;
+}
+
+@keyframes lipire {
+  from {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.linieEtichete {
+  margin: 24px 0 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 31px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.intrebareEtichete {
+  margin: 8px 0 0;
+  font-family: var(--font-italic);
+  font-size: 28.8px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 37.44px;
+  letter-spacing: -0.288px;
+  color: var(--color-ardezie-1);
+}
+
+.filet {
+  width: 80px;
+  height: 1px;
+  margin: 32px auto;
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.6), transparent);
+}
+
+.inchidere {
+  margin: 0;
+  font-size: 21.6px;
+  font-weight: 600;
+  line-height: 28.08px;
+  color: var(--color-albastru-clar);
+}
+
+/* --- S4, anxietatea: praful si fantomele -------------------------------------------------------- */
+
+.praf {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  opacity: clamp(0, calc(1.5 * var(--p)), 1);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.fir {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.fantoma {
+  position: absolute;
+}
+
+.fantoma1 {
+  top: 0;
+  left: 0;
+}
+
+.fantoma2 {
+  top: 22px;
+  right: 0;
+}
+
+.fantoma3 {
+  bottom: 0;
+  left: 18px;
+}
+
+.fantoma4 {
+  right: 0;
+  bottom: 0;
+}
+
+/* --- S6, portalul: comutatorul, documentul pe zone, grila de drepturi --------------------------- */
+
+.paragrafPortal {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.comutator {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8.8px;
+  margin-top: 32px;
+  padding: 7.2px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  opacity: clamp(0, calc(2 * var(--p)), 1);
+  transition: opacity 0.4s ease;
+}
+
+.etichetaComutator {
+  padding-right: 4px;
+  font-size: 10.88px;
+  font-weight: 600;
+  line-height: 17.408px;
+  letter-spacing: 0.1088px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.butonRol {
+  display: flex;
+  align-items: center;
+  gap: 6.4px;
+  padding: 5.6px 11.2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.04);
+  font: inherit;
+  font-size: 12.16px;
+  font-weight: 600;
+  line-height: normal;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.butonRol:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.butonRol[aria-pressed="true"] {
+  border-color: rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
+
+.punctRol {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.35s ease;
+}
+
+.butonRol[aria-pressed="true"] .punctRol {
+  background: var(--color-albastru-clar);
+}
+
+/* Documentul: opacitate min(1, 2p - 0,1), coborat cu max(0, 22 - 45 p), tranzitie 0,6 s. */
+.document {
+  max-width: 620px;
+  margin: 32px auto 0;
+  opacity: clamp(0, calc(2 * var(--p) - 0.1), 1);
+  transform: translateY(max(0px, calc((22 - 45 * var(--p)) * 1px)));
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.corpDocument {
+  display: flex;
+  flex-direction: column;
+}
+
+.zona {
+  position: relative;
+  padding: 17.6px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0.65;
+  transition:
+    background 0.5s ease,
+    opacity 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.zona:last-child {
+  border-bottom: 0;
+}
+
+.zona::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--color-albastru);
+  opacity: 0.25;
+  content: "";
+  transition: opacity 0.5s ease;
+}
+
+.zona[data-activa="da"] {
+  background: rgba(37, 99, 235, 0.15);
+  opacity: 1;
+}
+
+.zona[data-activa="da"]::before {
+  opacity: 1;
+}
+
+.etichetaZona {
+  margin: 0 0 8.8px;
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  letter-spacing: 0.0992px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.5s ease;
+}
+
+.zona[data-activa="da"] .etichetaZona {
+  color: var(--color-albastru-clar);
+}
+
+.titluZona {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 14.72px;
+  font-weight: 600;
+  line-height: 23.552px;
+  color: #e6ecf5;
+}
+
+.metaZona {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 400;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.randuriZona {
+  display: flex;
+  flex-direction: column;
+  gap: 5.6px;
+  margin: 0;
+}
+
+.randZona {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2.4px 0;
+}
+
+.cheieZona {
+  font-size: 13.12px;
+  font-weight: 400;
+  line-height: 20.992px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.valoareZona {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 20.992px;
+  letter-spacing: -0.1312px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+}
+
+.cipVerde {
+  padding: 2.24px 7.2px;
+  border-radius: 4px;
+  background: rgba(22, 163, 74, 0.14);
+  font-family: var(--font-sans);
+  font-size: 10.88px;
+  font-weight: 600;
+  line-height: 17.408px;
+  letter-spacing: 0.1088px;
+  color: var(--color-verde-clar);
+}
+
+.aprobari {
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  margin: 0 0 10.4px;
+  font-size: 11.52px;
+  font-weight: 400;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.linieAprobare {
+  display: block;
+  width: 110px;
+  max-width: 110px;
+  height: 1px;
+  flex: 1 1 auto;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.notaInterna {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 8.8px 11.2px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.etichetaInterna {
+  flex: none;
+  padding: 2.4px 5.6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 9.6px;
+  font-weight: 600;
+  line-height: 11.52px;
+  letter-spacing: 0.096px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Nota interna sta pe fundalul ei (alb .04) intr-o zona stinsa la .65: cu alb .7, cum au celelalte
+   texte ale zonelor, iesea 4,47:1 (axe). Cu .75: ~4,9:1. */
+.textIntern {
+  font-family: var(--font-italic);
+  font-size: 11.84px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 16.576px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Grila: la referinta opacitate min(1, 2 (p - 0,1)), intreaga abia la p 0,6; la p 0,5 cheile randurilor
+   ieseau 4,36:1 (axe cu miscare, critic 25.09). ABATERE: aceeasi aparitie, intreaga la p 0,45. */
+.grila {
+  max-width: 720px;
+  margin: 24px auto 0;
+  opacity: clamp(0, calc(2.5 * (var(--p) - 0.05)), 1);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.corpGrila {
+  padding: 16px;
+}
+
+.tabel {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabel th,
+.tabel td {
+  padding: 13.6px 14.4px;
+}
+
+.capColoana {
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 400;
+  vertical-align: top;
+  transition:
+    background 0.35s ease,
+    opacity 0.35s ease;
+}
+
+/* Bara de sus a coloanei: 2 px, retrasa 12% la fiecare capat; .25 inactiv, 1 activ. */
+.capColoana::before {
+  position: absolute;
+  top: 0;
+  right: 12%;
+  left: 12%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-albastru);
+  opacity: 0.25;
+  content: "";
+  transition: opacity 0.35s ease;
+}
+
+.capColoana[data-activa="da"]::before {
+  opacity: 1;
+}
+
+.capGol::before {
+  background: transparent;
+}
+
+.numeColoana {
+  display: block;
+  font-size: 13.6px;
+  font-weight: 600;
+  line-height: 21.76px;
+  color: #e6ecf5;
+  transition: color 0.35s ease;
+}
+
+.capColoana[data-activa="da"] .numeColoana {
+  color: var(--color-albastru-clar);
+}
+
+.firmaColoana {
+  display: block;
+  margin-top: 2.4px;
+  font-size: 10.88px;
+  font-weight: 700;
+  line-height: 17.408px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.randGrila {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.randGrila:last-child {
+  border-bottom: 0;
+}
+
+.cheieGrila {
+  font-size: 13.12px;
+  font-weight: 500;
+  text-align: left;
+  line-height: 20.992px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.celula {
+  height: 54px;
+  box-sizing: border-box;
+  vertical-align: middle;
+  transition: background 0.35s ease;
+}
+
+.celula[data-activa="da"] {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+.da {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(22, 163, 74, 0.14);
+  color: var(--color-verde-clar);
+}
+
+/* "Nu": trei puncte intre paranteze, desenate din CSS; sensul il da textul pentru cititor. */
+.nu::before {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  color: rgba(255, 255, 255, 0.35);
+  content: "(...)";
+}
+
+/* --- S7, jurnalul ------------------------------------------------------------------------------- */
+
+.paragrafJurnal {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.fereastraJurnal {
+  max-width: 620px;
+  margin: 40px auto 0;
+}
+
+.inDirect {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+  font-family: var(--font-sans);
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  color: var(--color-verde-clar);
+}
+
+.punctViu {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-verde);
+}
+
+.corpJurnal {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Randul i: la referinta max(.2, min(1, 2 (p - 0,06 - 0,06 i))), ultimul intreg abia la p 0,74; la p 0,5
+   randul "cand" iesea 2,3-4,3:1 (axe cu miscare, critic 25.09). ABATERE: aceeasi scara, stransa - randul i
+   intreg la p 0,3 + 0,05 i, ultimul la 0,45. Alunecarea ramane a referintei: 40 (p - 0,46 - 0,06 i).
+   A DOUA ABATERE (a11y, critic 25.09 runda 2): opacitatea NU mai urmeaza derularea continuu. Oprita pe o
+   pozitie intermediara, o treapta la .2-.6 lasa text vizibil sub 4,5:1 (axe cu miscare, 1,1-3,5:1). Acum
+   randul e 0 sau 1 dupa cum p a trecut pragul lui (panta 1000), iar trecerea se face in timp, prin
+   tranzitie; pragul e punctul in care scara de mai sus ajungea la jumatate. Ca avalansa din cautare-ai. */
+.intrare {
+  display: flex;
+  align-items: center;
+  gap: 12.8px;
+  padding: 13.6px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: clamp(0, calc(1000 * (var(--p) - 0.175 - 0.05 * var(--i, 0))), 1);
+  transform: translateX(max(0px, calc(40px * (var(--p) - 0.46 - 0.06 * var(--i, 0)))));
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.intrare:last-child {
+  border-bottom: 0;
+}
+
+.punctIntrare {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-verde);
+}
+
+.textIntrare {
+  min-width: 0;
+}
+
+.eveniment {
+  display: block;
+  margin: 0;
+  font-size: 13.6px;
+  font-weight: 400;
+  line-height: 19.04px;
+  color: #e6ecf5;
+}
+
+.cand {
+  display: block;
+  margin: 2.4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10.88px;
+  font-weight: 400;
+  line-height: 17.408px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- S8, machetele contrastului ----------------------------------------------------------------- */
+
+.barMini {
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  padding: 7.2px 10.4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pastilaMini {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+  font-size: 9.6px;
+  font-weight: 600;
+  line-height: 15.36px;
+}
+
+.pastilaRea {
+  padding: 3.2px 7.2px;
+  border-radius: 4px;
+  background: rgba(220, 38, 38, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.pastilaBuna {
+  color: var(--color-verde-clar);
+}
+
+.punctMini {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.pastilaRea .punctMini {
+  background: var(--color-rosu);
+}
+
+.pastilaBuna .punctMini {
+  background: var(--color-verde);
+}
+
+.caleMini {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9.28px;
+  font-weight: 400;
+  line-height: 14.848px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.randuriMini {
+  margin: 0;
+  padding: 5.6px 0;
+  list-style: none;
+}
+
+.randMini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5.6px 10.4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.randMini:last-child {
+  border-bottom: 0;
+}
+
+.textMini {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.subiectMini {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 10.4px;
+  font-weight: 400;
+  line-height: 13.52px;
+  color: #e6ecf5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subiectUrgentMini {
+  font-weight: 600;
+  color: var(--color-rosu-clar);
+}
+
+.delaMini {
+  font-size: 8.96px;
+  font-weight: 500;
+  line-height: 11.648px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.numarMini {
+  padding: 1.92px 6.4px;
+  border-radius: 4px;
+  background: rgba(220, 38, 38, 0.14);
+  font-size: 9.28px;
+  font-weight: 700;
+  line-height: 12.064px;
+  color: var(--color-rosu-clar);
+}
+
+/* Randurile stinse si randul de puncte: decor, desenat din CSS (`data-text`), fara informatie. */
+.randStins {
+  opacity: 0.55;
+}
+
+.randStins2 {
+  opacity: 0.38;
+}
+
+.randStins .subiectMini::before,
+.randStins2 .subiectMini::before {
+  color: rgba(255, 255, 255, 0.55);
+  content: attr(data-text);
+}
+
+.puncteMini {
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.puncteMini::before {
+  font-size: 12.8px;
+  line-height: 16.64px;
+  letter-spacing: 3.2px;
+  color: rgba(255, 255, 255, 0.35);
+  content: "\00b7  \00b7  \00b7";
+}
+
+.randPortalMini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5.6px 10.4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.randPortalMini:last-child {
+  border-bottom: 0;
+}
+
+.punctRolMini {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+.rolMini {
+  width: 70px;
+  flex: none;
+  font-size: 10.4px;
+  font-weight: 700;
+  line-height: 13.52px;
+  color: #e6ecf5;
+}
+
+.actiuneMini {
+  min-width: 0;
+  flex: 1;
+  font-size: 10.4px;
+  font-weight: 400;
+  line-height: 13.52px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.bifaMini {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(22, 163, 74, 0.14);
+  color: var(--color-verde-clar);
+}
+
+@media (max-width: 767px) {
+  .corpArbore {
+    height: 507px;
+  }
+
+  .paragrafRecunoastere {
+    font-size: 17.6px;
+    line-height: 27.28px;
+  }
+
+  .linieEtichete {
+    font-size: 16.8px;
+    line-height: 26.04px;
+  }
+
+  .intrebareEtichete {
+    font-size: 20.8px;
+    line-height: 27.04px;
+    letter-spacing: -0.208px;
+  }
+
+  .inchidere {
+    font-size: 17.6px;
+    line-height: 22.88px;
+  }
+
+  .fantoma2 {
+    top: 22.4px;
+  }
+
+  .fantoma3 {
+    left: 0;
+  }
+
+  .tabel th,
+  .tabel td {
+    padding: 8.8px 5.6px;
+  }
+
+  .cheieGrila {
+    font-size: 11.52px;
+    line-height: 18.432px;
+  }
+
+  .numeColoana {
+    font-size: 11.52px;
+    line-height: 18.432px;
+  }
+
+  .firmaColoana {
+    font-size: 9.28px;
+    line-height: 14.848px;
+  }
+
+  .celula {
+    height: 45px;
+  }
+}
