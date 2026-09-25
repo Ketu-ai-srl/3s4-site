@@ -1,0 +1,557 @@
+/* Bannerul de consimtamant si panoul de setari: forma masurata a sursei (componente-globale.md §7).
+   1440: banner 864 x 201,4, jos-centru la 16 px, 3 butoane de 249,3 x 42; panou 688 x 600, centrat.
+   390 (sub 640): banner 374 lat, la 8 px de margini, butoanele pe toata latimea; panoul pe tot ecranul.
+   Culorile proprii ale bibliotecii sursei (COMPONENTE.md §2.1, "doar in consimtamant") stau ca
+   variabile locale; restul vin din tokenii site-ului. Contraste calculate: #5e6266 pe alb 6,15:1,
+   pe #f0f4f7 5,56:1, pe ceata-albastra 5,59:1; alb pe albastru 5,17:1; comutatorul oprit #667481
+   fata de #f0f4f7 4,33:1 (element de interfata, prag 3:1).
+   ABATERE DE LA SURSA: acceptul si refuzul poarta amandoua `.butonPlin` (albastru, 5,17:1 fata de
+   banner), in banner si in panou; `.butonDeschis` (ceata-albastra, 1,10:1 fata de alb) ramane numai
+   pe "Setari cookie-uri" si "Salvati setarile". Motivul, in Consimtamant.tsx. */
+
+.banner,
+.panou {
+  --c-text: #2c2f31;
+  --c-desc: #5e6266;
+  --c-linie: #f0f4f7;
+  --c-linie-2: #e4eaed;
+  --c-chenar: #d4dae0;
+  --c-blocat: #d5dee2;
+  --c-oprit: #667481;
+  font-family: var(--fnt-jakarta), system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--c-text);
+}
+
+/* ------------------------------------------------------------------ bannerul */
+
+.banner {
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  margin: 0 auto;
+  width: calc(100% - 32px);
+  max-width: 54em;
+  background: var(--color-alb);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(1.6em);
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease,
+    transform 0.25s ease;
+}
+
+.banner[hidden] {
+  display: none;
+}
+
+.aparut {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.corp {
+  display: flex;
+}
+
+.texte {
+  flex: 1;
+  align-self: center;
+  /* Jos fara spatiu: il da descrierea (1em = 14,4), ca la sursa; 16 aici facea blocul cu 1,6 mai inalt. */
+  padding: 16px 1.3em 0;
+}
+
+.titlu {
+  margin: 0;
+  font-size: 1.05em;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--c-text);
+}
+
+.descriere {
+  margin: 1.1em 0 0;
+  padding-bottom: 1em;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: var(--c-desc);
+}
+
+.butoane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  max-width: 23em;
+  padding: 16px 1.3em;
+  border-left: 1px solid var(--c-linie);
+}
+
+.buton {
+  min-width: 19em;
+  min-height: 42px;
+  padding: 0.5em 1em;
+  border: 1px solid transparent;
+  border-radius: 6.4px;
+  font-family: inherit;
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.15;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.buton:focus-visible,
+.inchide:focus-visible,
+.categorieButon:focus-visible,
+.comutator:focus-visible,
+.legatura:focus-visible,
+.legaturaText:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+.butonPlin {
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+.butonPlin:hover {
+  background: var(--color-albastru-apasat);
+}
+
+.butonDeschis {
+  background: var(--color-ceata-albastra);
+  color: var(--c-text);
+}
+
+.butonDeschis:hover {
+  background: var(--color-albastru-pal);
+  border-color: var(--c-chenar);
+  color: #000000;
+}
+
+.picior {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 1.3em;
+  padding: 6.4px 1.3em 8px;
+  background: var(--color-ceata-albastra);
+  border-top: 1px solid var(--c-linie-2);
+}
+
+/* `line-height: normal`, ca la sursa: randul legaturilor are 16 px si piciorul 31,4, deci bannerul
+   201,4 la 1440. Cu 1,6 piciorul crestea la 35,9 si bannerul la 205,9 (masurat pe copia cu operator,
+   25.09.2026). */
+.legatura {
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--c-desc);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size 0.25s ease;
+}
+
+a.legatura:hover {
+  background-size: 100% 1px;
+}
+
+@media (max-width: 640px) {
+  .banner {
+    bottom: 8px;
+    width: calc(100% - 16px);
+  }
+
+  .corp {
+    flex-direction: column;
+  }
+
+  .texte {
+    padding: 16px 1.1em 0;
+  }
+
+  .butoane {
+    max-width: none;
+    padding: 16px 1.1em;
+    border-left: 0;
+    border-top: 1px solid var(--c-linie);
+  }
+
+  .butoane .buton {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .picior {
+    justify-content: center;
+  }
+}
+
+/* ------------------------------------------------------------------ panoul de setari */
+
+/* La sursa, la 1440 x 900: 688 x 600, centrat, cu varful la 150. Doua randuri o dau:
+   - `margin: auto` e al foii implicite a browserului pentru `dialog`, si el il centreaza in ecran;
+     baza Tailwind pune insa `margin: 0` pe orice element, iar fara randul de aici panoul sta lipit
+     in coltul stanga-sus (688 x 600 la 0,0);
+   - inaltimea e FIXA, ca la sursa (`height: calc(100% - 2em)` cu `max-height: 37.5em`), nu data de
+     continut: cu doua categorii in loc de trei, panoul nostru avea circa 554 px si varful la circa
+     173. Ambele masurate pe copia cu operator, 25.09.2026; corpul se intinde si deruleaza. */
+.panou {
+  width: calc(100% - 32px);
+  max-width: 43em;
+  height: min(37.5em, calc(100dvh - 32px));
+  max-height: min(37.5em, calc(100dvh - 32px));
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-alb);
+  box-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  overflow: hidden;
+}
+
+.panou[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.panou::backdrop {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.panouCap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 1.4em;
+  border-bottom: 1px solid var(--c-linie);
+}
+
+.panouTitlu {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.inchide {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border: 1px solid transparent;
+  border-radius: 6.4px;
+  background: var(--color-ceata-albastra);
+  color: var(--c-text);
+  cursor: pointer;
+}
+
+.inchide:hover {
+  background: var(--color-albastru-pal);
+  border-color: var(--c-chenar);
+}
+
+/* Corpul, sectiunile si blocul de informatii pe masurile sursei la 1440 (corp 16 x 22,4; sectiune de
+   72,9 cu 32 sub ea; titlu cu randul de 1,15; descrierea la 0,85em sub titlu; informatii 32 deasupra si
+   8 dedesubt). Masurat pe copia cu operator, 25.09.2026: intrarea statea cu 8 px mai jos. */
+.panouCorp {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 1.4em;
+}
+
+.sectiune {
+  margin-bottom: 32px;
+}
+
+.sectiuneTitlu {
+  margin: 0;
+  font-size: 0.94em;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.sectiuneText {
+  margin: 0.85em 0 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: var(--c-desc);
+}
+
+.categorii {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.categorie {
+  border-radius: 6.4px;
+  background: var(--c-linie);
+}
+
+.categorieCap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 0 16px;
+}
+
+.categorieButon {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 14px;
+  min-height: 58px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chevron {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--c-chenar);
+  color: var(--c-text);
+  transition: transform 0.15s ease;
+}
+
+.categorieButon[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.categorieTitlu {
+  font-size: 1em;
+  font-weight: 500;
+}
+
+.insignaText {
+  font-size: 0.8em;
+  color: var(--c-desc);
+  white-space: nowrap;
+}
+
+.insignaPastila {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font-size: 0.75em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.comutator,
+.comutatorBlocat {
+  position: relative;
+  width: 50px;
+  height: 23px;
+  flex: none;
+  margin: 0;
+  border-radius: 23px;
+}
+
+.comutator {
+  appearance: none;
+  background: var(--c-oprit);
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.comutator:checked {
+  background: var(--color-albastru);
+}
+
+.comutatorBlocat {
+  display: inline-block;
+  background: var(--c-blocat);
+}
+
+.comutator::after,
+.comutatorBlocat::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--color-alb);
+  transition: transform 0.25s ease;
+}
+
+.comutator:checked::after,
+.comutatorBlocat::after {
+  transform: translateX(27px);
+}
+
+.categorieDetalii {
+  padding: 0 16px 16px 50px;
+}
+
+.categorieDetalii[hidden] {
+  display: none;
+}
+
+.categorieText {
+  margin: 0 0 10px;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: var(--c-desc);
+}
+
+.tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82em;
+  line-height: 1.45;
+}
+
+.tabelTitlu {
+  padding-bottom: 6px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.tabel th,
+.tabel td {
+  padding: 6px 8px 6px 0;
+  border-top: 1px solid var(--c-linie-2);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabel th {
+  font-weight: 600;
+}
+
+.tabel td {
+  color: var(--c-desc);
+}
+
+.numeCookie {
+  font-family: var(--fnt-mono), ui-monospace, monospace;
+  white-space: nowrap;
+}
+
+.informatii {
+  margin: 32px 0 8px;
+  padding: 16px;
+  border: 1px solid var(--c-linie);
+  border-radius: 6.4px;
+}
+
+.informatiiTitlu {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.informatiiText {
+  margin: 0.85em 0 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: var(--c-desc);
+}
+
+.legaturaText {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+a.legaturaText:hover {
+  color: var(--color-albastru-apasat);
+}
+
+.panouPicior {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 16px 1.4em;
+  border-top: 1px solid var(--c-linie);
+}
+
+.piciorStanga {
+  display: flex;
+  gap: 6px;
+}
+
+/* In panou butoanele au 1,5em in laterale (sursa: 19,68 px la 13,12), in banner 1em. */
+.panouPicior .buton {
+  min-width: 0;
+  padding: 0.5em 1.5em;
+}
+
+@media (max-width: 640px) {
+  .panou {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .panouPicior,
+  .piciorStanga {
+    flex-direction: column;
+  }
+
+  .panouPicior .buton {
+    width: 100%;
+  }
+
+  /* Ca la sursa sub 640 px: capul, corpul si piciorul cu 0,9em de jur imprejur, iar insignele
+     categoriilor nu se vad. Raman pentru cititoarele de ecran: indicatorul blocat e aria-hidden, deci
+     "Mereu active" e singurul care spune starea categoriei strict necesare. */
+  .panouCap,
+  .panouCorp,
+  .panouPicior {
+    padding: 0.9em;
+  }
+
+  .insignaText,
+  .insignaPastila {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner,
+  .buton,
+  .chevron,
+  .comutator,
+  .comutator::after,
+  .comutatorBlocat::after,
+  .legatura {
+    transition-duration: 0s;
+  }
+}
