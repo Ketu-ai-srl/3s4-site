@@ -1,10 +1,10 @@
 {
-  "fisiere": 14,
-  "teste": 125,
-  "asertiuni": 286,
+  "fisiere": 13,
+  "teste": 119,
+  "asertiuni": 282,
   "sarite_maxim": 0,
-  "masurat_la": "2026-09-18",
-  "masurat_pe": "3s4 lot/s4: REF-S; cifre copiate din poarta de regresie, 14 fisiere / 125 cazuri / 286 asertiuni / zero sarite.",
-  "de_ce": "Coborare DECLARATA: specificatiile REF-A inlocuite de noua directie ceruta de utilizator. 38 teste de gramatica veche sunt inlocuite de 19 teste semantice, de contrast si randare reala; 3 teste browser noi verifica demonstratia, meniul la 5 latimi si miscarea redusa. Verificarea provenientei Pexels este inlocuita cu registrul generarii originale. Portile generice raman intacte. Motive si limite: docs/adr/ADR-0006-directie-ref-s.md.",
+  "masurat_la": "2026-09-24",
+  "masurat_pe": "3s4 felie/41 (fundatie, val S4-1, directia REF-N), dupa cazurile de contrast ale antetului intreg: 13 fisiere / 119 cazuri / 282 asertiuni / zero sarite, cifre copiate din poarta de regresie pe arborele feliei.",
+  "de_ce": "Ridicare la cifra masurata, ca poarta sa apere cele doua cazuri de contrast adaugate in tests/browser/fundatie-antet-intreg.spec.ts (Descarca deschis si hover pe butonul contur, axe pe copia cu toate caile existente; pe regula veche amandoua picau pe color-contrast). Inainte: ridicare la 13/117/278 pentru proba antetului intreg (1 fisier, 9 cazuri scrise, 49 de asertiuni; meniul mare, Descarca si sertarul, masurate pe o copie cu toate caile existente). Inainte, in commit-ul retragerii REF-S: coborare DECLARATA (plan S4-SITE-3S4 §5.1 regula 7, §5.7) de la 14/125/286 la 12/108/229. Au plecat, odata cu paginile si componentele pe care le probau, 6 fisiere de probe unitare REF-S (directia, felie-juridic, felie-juridic-referinte, felie6-bara-acte, fotografii, interior-felie4) si 2 spec-uri de browser REF-S (directie-s4, meniu: meniul pliabil cu markup-ul vechi). Au venit 4 fisiere de probe unitare ale fundatiei (tokeni si contrast recalculat din hex, navigatia filtrata, paleta, subsolul, Tinta, startul randat pe server, cioturile, marcajele din rute.ts, registrul blogului, Scena3D, segmentele dinamice din ajutorul probelor) si 2 spec-uri de browser (antetul in doua stari, paleta Ctrl K, sertarul la 390, limba, structura servita fara JavaScript; inaltimile cioturilor, ordinea sectiunilor, acordeonul, aparitia la derulare), fiecare cu martor pozitiv si negativ. Portile generice si spec-urile lor raman neatinse. Pragul se ridica din nou la livrarea valului (S4-5), cand feliile S4-2..S4-4 isi adauga probele.",
   "cum_se_coboara": "Stergerea unui test invechit e legitima. Se scade cifra de aici IN ACELASI COMMIT cu stergerea, si poarta o lasa sa treaca, marcand-o 'coborare DECLARATA'. Fara modificarea acestui fisier, scaderea fata de HEAD opreste lotul."
 }

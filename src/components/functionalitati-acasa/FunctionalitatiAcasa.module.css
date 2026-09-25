@@ -1,0 +1,486 @@
+/* Functionalitatile de pe start (acasa-functionalitati.md §1-§12). Machetele au foaia lor,
+   `Machete.module.css`.
+
+   INALTIMILE STATICE sunt ale ciotului pe care il inlocuieste piesa, aparate de
+   `tests/browser/fundatie-start.spec.ts`:
+     1440 x 900: 80 + cap 148,4 + 48 + grila 2160 (3 x 80vh) + 64 + final 97,2 + 80 = 2677,6;
+     390 (fara pista): 48 + cap 229 + 32 + carduri 593,7 / 572,1 / 572,1 + 64 + final 154,8.
+   Fiecare cutie cu text (capul, blocul de text al fiecarui card, fraza de iesire) are ca minim
+   inaltimea masurata pe referinta, acolo unde fisa o are: la desktop capul 148,4 si finalul 97,2;
+   pana la 400 px capul 229, blocurile 264,1 / 242,5 / 242,5, finalul 154,8. Intre 401 si 900 px
+   fisa nu are masuratori, deci cutiile au inaltimea continutului lor. Un text mai scurt lasa loc
+   gol in cutia lui; unul mai lung o creste si proba de inaltime il prinde.
+
+   PISTA (pana la 900 px, pe ecrane mai inalte de 600 px, cu JavaScript si fara miscare redusa,
+   marcajul `data-pista`): 300lvh, fereastra lipita de 100svh, banda de 3 carduri pe tot ecranul.
+   La 390 x 844: 48 + 229 + 32 + 2532 + 64 + 154,8 = 3059,8, cat pe referinta. Pe un telefon culcat
+   (cel mult 600 px inaltime) cardurile raman unul sub altul, cu vizualul de cel mult 60vh (fisa §12).
+
+   DERAPAJUL ORIZONTAL. Panza 3D iese cu 150 px la dreapta cardului; intre 1341 si 1439 px trece de
+   marginea ferestrei (la 1366 x 768, cu 17 px) si toata pagina s-ar derula lateral. Sectiunea taie pe
+   orizontala cu `overflow-x: clip`, care NU face din ea o zona de derulare, deci cardul ramane lipit
+   (masurat la 1366 x 768: cu `hidden`, `overflow-y` devine `auto` si cardul pleaca la -349 in loc sa
+   stea la 108). Pe verticala nu taie nimic. Un browser fara `clip` (Safari sub 16) ignora regula si
+   pastreaza derapajul. */
+
+.sectiune {
+  padding: 80px 0;
+  overflow-x: clip;
+}
+
+.cap {
+  display: flex;
+  min-height: 148.4px;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+.titlu {
+  margin-bottom: 16px;
+  color: var(--color-cerneala);
+}
+
+.subtitlu {
+  margin-inline: auto;
+}
+
+/* --- grila de desktop ------------------------------------------------------------------------ */
+
+.grila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 64px;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.pasi {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pas {
+  display: flex;
+  min-height: 80vh;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+/* Macheta din card e a pistei si a cardurilor de mobil; peste 900 px o arata cardul lipit. */
+.pas > .vizualMobil {
+  display: none;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.numar,
+.eticheta {
+  color: var(--color-albastru);
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 20.99px;
+}
+
+.numar {
+  margin-bottom: 13.6px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.eticheta {
+  margin-bottom: 12px;
+  letter-spacing: -0.066px;
+}
+
+.titluPas {
+  margin-bottom: 16px;
+  color: var(--color-cerneala);
+}
+
+.paragraf {
+  margin-bottom: 24px;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 27.2px;
+  letter-spacing: -0.08px;
+}
+
+.sina {
+  display: flex;
+  gap: 6.4px;
+}
+
+.liniuta {
+  display: block;
+  width: 18px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-gri-2);
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.liniutaParcursa {
+  background: var(--color-albastru);
+}
+
+.liniutaCurenta {
+  width: 32px;
+}
+
+/* PASII INACTIVI (fisa §3, §14.1). La referinta tot blocul coboara la opacitate 0,45: titlul ajunge
+   la ~2,9:1 si paragraful la ~1,8:1. Aici culori pline: titlul pe #8f8f8f (3,23:1, text mare: h3
+   are cel putin 24 px peste 900 px), numarul si eticheta pe `ardezie-5` (4,76), paragraful ramane
+   pe `ardezie-5`. `ardezie-4` (#94a3b8, 2,56:1) NU trece nici pragul de text mare (3:1), deci nu se
+   foloseste pe titlu. Sina, decorativa, ramane la 0,45 ca pe referinta. Numarul si eticheta se
+   schimba instantaneu, restul in 350 ms (sina 300 ms). */
+@media (min-width: 900.02px) {
+  .grila[data-js] .titluPas {
+    transition: color 0.35s ease;
+  }
+
+  .grila[data-js] .sina {
+    transition: opacity 0.35s ease;
+  }
+
+  .grila[data-js] .pas:not([data-activ]) .numar,
+  .grila[data-js] .pas:not([data-activ]) .eticheta {
+    color: var(--color-ardezie-5);
+  }
+
+  .grila[data-js] .pas:not([data-activ]) .titluPas {
+    color: #8f8f8f;
+  }
+
+  .grila[data-js] .pas:not([data-activ]) .sina {
+    opacity: 0.45;
+  }
+}
+
+/* --- coloana vizuala: cardul lipit, sloturile, panza 3D -------------------------------------- */
+
+.coloanaVizuala {
+  position: relative;
+}
+
+/* 518 x 414,4 la 1440 (raport 5:4), lipit la 14% din fereastra (126 px la vh 900). */
+.lipit {
+  position: sticky;
+  top: 14%;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+}
+
+/* `clip`, nu doar `hidden`: sloturile inactive, coborate cu 8 px si micsorate, ies cu ~5 px sub card
+   (masurat: 417 fata de 412), deci cu `hidden` cardul are ce derula, iar focusul de tastatura dintr-o
+   macheta il deruleaza si il lasa asa. `hidden` ramane pentru un browser fara `clip`. */
+.card {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  overflow: clip;
+  inset: 0;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 14px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-card-lipit);
+}
+
+/* Crossfade de 450 ms, cu o mica ridicare (fisa §4, §9). */
+.slot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(8px) scale(0.985);
+  pointer-events: none;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.slot[data-activ] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.slot > .umple {
+  position: absolute;
+  inset: 0;
+}
+
+/* Panza 3D: in spatele cardului, largita cu 56 sus si jos si 150 in stanga si in dreapta
+   (818 x 526,4 la 1440). Doar peste 1340 px (fisa §8). */
+.gazda3d {
+  position: absolute;
+  z-index: 0;
+  inset: -56px -150px;
+  pointer-events: none;
+}
+
+.gazda3d[hidden] {
+  display: none;
+}
+
+@media (max-width: 1340px) {
+  .gazda3d {
+    display: none;
+  }
+}
+
+/* Punctele pistei: numai pe pista (mai jos). */
+.puncte {
+  display: none;
+}
+
+/* --- fraza si butonul de iesire -------------------------------------------------------------- */
+
+.final {
+  display: flex;
+  min-height: 97.2px;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 64px;
+  text-align: center;
+}
+
+.fraza {
+  margin-bottom: 16px;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+/* --- pana la 900 px: cardurile unul sub altul (forma statica, miscare redusa) ----------------- */
+
+@media (max-width: 900px) {
+  .sectiune {
+    padding: 48px 0 0;
+  }
+
+  /* Inaltimea continutului: minimul de desktop nu se aplica aici. */
+  .cap {
+    min-height: auto;
+    margin-bottom: 32px;
+  }
+
+  .grila {
+    display: block;
+  }
+
+  .pas {
+    min-height: 0;
+    justify-content: flex-start;
+    gap: 11.2px;
+    padding: 16px 0;
+  }
+
+  .text {
+    gap: 5.6px;
+  }
+
+  /* Pe mobil nu exista starea albastra (fisa §11). */
+  .numar,
+  .eticheta {
+    color: var(--color-ardezie-5);
+  }
+
+  .titluPas {
+    margin-bottom: 4px;
+    font-size: clamp(1.2rem, 4.5vw, 1.4rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .paragraf {
+    margin-bottom: 0;
+    font-size: 14.4px;
+    line-height: 21.6px;
+    letter-spacing: -0.07px;
+  }
+
+  .sina,
+  .coloanaVizuala {
+    display: none;
+  }
+
+  /* Vizualul cardului: 358 x 286,4 la 390 (fisa §12, miscare redusa). Macheta are marimea ei
+     fireasca si e taiata, nu scalata. `min-height: 0` tine raportul 5:4: macheta taie cu
+     `overflow: clip`, care nu face din ea o zona de derulare, iar atunci minimul automat al unui
+     element cu `aspect-ratio` devine inaltimea continutului (masurat: vizualul crestea la 473 px,
+     cat plafonul de 56vh, in loc de 280). */
+  .pas > .vizualMobil {
+    display: flex;
+    width: 100%;
+    min-height: 0;
+    flex-shrink: 0;
+    aspect-ratio: 5 / 4;
+    border: 1px solid var(--color-gri-2);
+    border-radius: 14px;
+    box-shadow:
+      0 6px 20px rgba(15, 23, 42, 0.06),
+      0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Inaltimea continutului: minimul de desktop nu se aplica aici. */
+  .final {
+    min-height: auto;
+    padding-top: 32px;
+  }
+}
+
+/* Ecran scund culcat: fara pista, cardurile unul sub altul, vizualul cel mult 60vh (fisa §12). */
+@media (max-width: 900px) and (max-height: 600px) {
+  .pas > .vizualMobil {
+    max-height: 60vh;
+  }
+}
+
+/* --- pista orizontala lipita (fisa §11): pana la 900 px, pe ecrane mai inalte de 600 px -------- */
+
+@media (max-width: 900px) and (min-height: 600.02px) {
+  /* 300lvh, pe toata latimea ecranului (marginile containerului se anuleaza). */
+  .grila[data-pista] .pista {
+    position: relative;
+    height: 300vh;
+    height: 300lvh;
+    margin-inline: -24px;
+  }
+
+  /* Fereastra lipita: 100svh. `overflow: clip`, nu `hidden`: nu devine zona de derulare, deci un
+     focus pe un card din afara ei nu o poate derula si nu strica pozitia benzii. */
+  .grila[data-pista] .fereastra {
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 100vh;
+    height: 100svh;
+    flex-direction: column;
+    overflow: hidden;
+    overflow: clip;
+    background: var(--color-alb);
+  }
+
+  /* Banda: 3 ferestre; translatia vine din derulare, fara easing (fisa §11). */
+  .grila[data-pista] .pasi {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    will-change: transform;
+  }
+
+  /* Cardul: pe toata fereastra, continutul aliniat jos, padding 24 / 20 / 68 / 20. */
+  .grila[data-pista] .pas {
+    width: calc(100% / 3);
+    height: 100%;
+    flex: 0 0 calc(100% / 3);
+    justify-content: flex-end;
+    padding: 24px 20px 68px;
+  }
+
+  /* Vizualul: 350 x 280 la 390, cel mult 56vh. */
+  .grila[data-pista] .pas > .vizualMobil {
+    max-height: 56vh;
+  }
+
+  /* Punctele: pastila la 20 px de jos, centrata; doar punctul curent e albastru si lat de 34.
+     Butonul are 22 (34) x 4 vizibil si o zona de atingere de 24 px pe inaltime. */
+  .grila[data-pista] .puncte {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 8.8px;
+    padding: 5.6px 8.8px;
+    border: 1px solid #f0f1f3;
+    border-radius: 999px;
+    background: rgba(248, 250, 252, 0.96);
+    transform: translateX(-50%);
+  }
+
+  .punct {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 24px;
+    margin: -10px 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transition: width 0.25s ease;
+  }
+
+  /* Liniuta vizibila, 4 px, in mijlocul zonei de atingere. */
+  .punct::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: 0;
+    left: 0;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-gri-2);
+    transition: background-color 0.25s ease;
+  }
+
+  .punct:hover::before {
+    background: var(--color-ardezie-3);
+  }
+
+  .punct[data-curent] {
+    width: 34px;
+  }
+
+  .punct[data-curent]::before {
+    background: var(--color-albastru);
+  }
+
+  /* Focusul de tastatura inconjoara liniuta, nu zona de atingere (fisa §11: contur 2, decalaj 3). */
+  .punct:focus-visible {
+    outline: none;
+  }
+
+  .punct:focus-visible::before {
+    outline: 2px solid var(--color-albastru);
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 768px) and (min-height: 600.02px) {
+  .grila[data-pista] .pista {
+    margin-inline: -16px;
+  }
+}
+
+/* --- pana la 400 px: minimele masurate la 390 (fisa §2, §10, §11) ---------------------------- */
+
+@media (max-width: 400px) {
+  .cap {
+    min-height: 229px;
+  }
+
+  .text {
+    min-height: 242.5px;
+  }
+
+  /* Primul card are, la referinta, paragraful pe 6 randuri, celelalte doua pe 5. */
+  .pas:first-child .text {
+    min-height: 264.1px;
+  }
+
+  .final {
+    min-height: 154.8px;
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei blog. Blogul nu are rute in RUTE: paginile lui se nasc din registrul articolelor (src/content/blog/registru.ts), ca rute dinamice, iar cu registrul gol nu exista niciuna. Deci raspuns_autonom e gol, fiindca cititorul declaratiilor (tests/browser/ajutor/raspunsuri.ts) refuza o ruta care nu e in RUTE. Declaratia pentru listare sta pregatita in la_primul_articol: proba tests/browser/blog.spec.ts o masoara pe copia cu articole sintetice, iar ziua in care /blog intra in RUTE ea se muta in raspuns_autonom, neschimbata.",
+  "raspuns_autonom": {},
+  "la_primul_articol": {
+    "/blog": {
+      "intrebare": "Unde găsesc ghiduri despre termenele de păstrare și arhiva firmei?",
+      "entitati": ["arhiva firmei", "termene de păstrare"],
+      "fara_regula_paragrafului": "Antetul listarii are forma masurata a referintei (blog.md A2): sub titlu sta un subtitlu de o fraza, de ~87 de caractere, nu un paragraf de 30-80 de cuvinte. Raspunsul paginii e titlul impreuna cu subtitlul si cu titlurile articolelor din grila."
+    }
+  }
+}

@@ -1,0 +1,166 @@
+/* Anxietatea si pivotul (functionalitati__sablon.md §3, §4.3-§4.4). Cifrele: 1440 / 390. */
+
+.sectiuneAnxietate {
+  overflow: hidden;
+}
+
+.anxietate {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  opacity: clamp(0, calc(2 * var(--p)), 1);
+  transition: opacity 0.4s ease;
+}
+
+.rand {
+  margin: 0 0 13.6px;
+  font-family: var(--font-italic);
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.emfaza {
+  margin: 19.2px 0 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: -0.64px;
+  color: var(--color-roz);
+}
+
+/* Cutia fantomelor (portal-clienti): opacitatea blocului o poarta ea; fantomele ies 19 px deasupra si
+   dedesubtul textului; textul (580, padding 32 0) sta deasupra lor. */
+.blocFantome {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  opacity: clamp(0, calc(2 * var(--p)), 1);
+  transition: opacity 0.4s ease;
+}
+
+.fantome {
+  position: absolute;
+  inset: -19px 0;
+  z-index: 1;
+}
+
+.anxietate.textPesteFantome {
+  z-index: 3;
+  margin: 0 auto;
+  padding: 32px 0;
+  opacity: 1;
+  transition: none;
+}
+
+.anxietatePortal .rand {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.anxietatePortal .emfaza {
+  max-width: 540px;
+  margin: 22.4px auto 0;
+  font-size: 29.6px;
+  line-height: 37px;
+  letter-spacing: -0.592px;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* --- pivotul ----------------------------------------------------------------------------------- */
+
+/* La referinta min(1, 2 (p - 0,05)): la p 0,5 blocul sta la .9 si intrebarea (alb .5) iese 4,45:1
+   (contrast calculat, 25.09). ABATERE: aceeasi aparitie, intreaga la p 0,45. */
+.pivot {
+  opacity: clamp(0, calc(2.5 * (var(--p) - 0.05)), 1);
+  transition: opacity 0.4s ease;
+}
+
+.intrebare {
+  margin: 0 0 24px;
+  font-size: 22.4px;
+  font-weight: 400;
+  line-height: 33.6px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.raspuns {
+  margin: 0 0 16px;
+  font-size: 38.4px;
+  font-weight: 600;
+  line-height: 48px;
+  letter-spacing: -0.768px;
+  color: var(--color-ardezie-1);
+}
+
+.linie {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 38.4px;
+  color: var(--color-albastru-clar);
+}
+
+.pivotCautare .raspuns {
+  color: #e6ecf5;
+}
+
+.pivotPortal .intrebare {
+  margin-bottom: 22.4px;
+}
+
+.pivotAutomatizari .intrebare {
+  margin-bottom: 22.4px;
+  font-size: 20px;
+  line-height: 32px;
+}
+
+.pivotAutomatizari .raspuns {
+  font-size: 36.8px;
+  line-height: 46px;
+  letter-spacing: -0.736px;
+}
+
+@media (max-width: 767px) {
+  .rand {
+    font-size: 16.8px;
+    line-height: 26.88px;
+  }
+
+  .emfaza {
+    font-size: 22.4px;
+    line-height: 28px;
+    letter-spacing: -0.448px;
+  }
+
+  .anxietatePortal .emfaza {
+    font-size: 20.8px;
+    line-height: 26px;
+    letter-spacing: -0.416px;
+  }
+
+  .intrebare,
+  .pivotAutomatizari .intrebare {
+    font-size: 17.6px;
+    line-height: 26.4px;
+  }
+
+  .pivotAutomatizari .intrebare {
+    font-size: 16px;
+    line-height: 25.6px;
+  }
+
+  .raspuns,
+  .pivotAutomatizari .raspuns {
+    font-size: 25.6px;
+    line-height: 32px;
+    letter-spacing: -0.512px;
+  }
+
+  .linie {
+    font-size: 22.4px;
+    line-height: 26.88px;
+  }
+}
