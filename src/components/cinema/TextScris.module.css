@@ -1,0 +1,75 @@
+/* Textul scris litera cu litera (vezi TextScris.tsx). */
+
+.scris {
+  position: relative;
+  margin: 0;
+}
+
+.copie {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.scris[data-scriere="scrie"] .baza,
+.scris[data-scriere="gata"] .baza {
+  color: transparent;
+}
+
+/* `rezervaLoc={false}`: in timpul scrierii copia sta in flux (elementul creste cu textul), iar baza
+   ramane in pagina doar pentru cititori, ascunsa vizual (nu `display: none`, care ar scoate-o si din
+   arborele de accesibilitate). */
+.creste[data-scriere="scrie"] .baza,
+.creste[data-scriere="gata"] .baza {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.creste[data-scriere="scrie"] .copie,
+.creste[data-scriere="gata"] .copie {
+  position: static;
+}
+
+/* Iconita din fata textului se vede o singura data, din copie. */
+.scris[data-scriere="scrie"] .baza > svg,
+.scris[data-scriere="gata"] .baza > svg {
+  visibility: hidden;
+}
+
+/* Cursorul: bara subtire in culoarea textului, clipire in trepte de 1 s (sablon §5.3). */
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.16em;
+  background: currentColor;
+  animation: clipireCursor 1s steps(1) infinite;
+}
+
+@keyframes clipireCursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* INAINTE DE HIDRATARE, cu scripturile pornite si miscarea permisa: textul inca nescris nu se arata,
+   ca sa nu clipeasca intreg si apoi sa dispara. Daca scriptul nu porneste in 6 s, textul apare
+   oricum. Fara scripturi (robotii, cititorii fara JavaScript) regula nu se aplica si textul se vede
+   de la inceput; la miscare redusa, la fel. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .scris[data-scriere="static"] .baza {
+    animation: rezervaScriere 0.01s linear 6s both;
+  }
+}
+
+@keyframes rezervaScriere {
+  from {
+    color: transparent;
+  }
+}

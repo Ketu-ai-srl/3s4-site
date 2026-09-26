@@ -10,7 +10,12 @@ on:
     # inainte ca el sa atinga `main`. Fara asta, `promoveaza.sh` refuza corect cu "zero
     # rulari CI", iar singurul drum ramas ar fi sa impingi direct in `main` si sa afli
     # dupa. Un lot pe zi inseamna o rulare in plus, pe un depozit public.
-    branches: [main, 'lot/**']
+    #
+    # `ci/**` (25.09.2026): verdictul de test al feliilor si loturilor vine de aici, nu de pe statia de
+    # lucru (depozit public: minutele sunt gratuite, iar poarta locala ocupa masina agentilor). Pe
+    # `ci/<nume>` se impinge un INSTANTANEU - acelasi arbore ca felia, parinte `main` - prin
+    # `ci-instantaneu.sh` al fabricii, ca istoricul de lucru sa nu devina public.
+    branches: [main, 'lot/**', 'ci/**']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -25,8 +30,33 @@ permissions:
 jobs:
   verdict:
     name: Verdict CI
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # WINDOWS, nu Linux (25.09.2026). Masuratorile referintei si probele de browser care le cer la
+    # ±3 px au fost facute pe Windows. Prima rulare pe ubuntu-latest (36159283064) a picat 4 din 287,
+    # toate pe geometrie si interactiuni: randul de integrari al constructorului 1598 fata de 1569 la
+    # 390 (un rand de text rupt altfel), inaltimile lumilor si ale chestionarului, turul eroului la
+    # 390 tactil. Aceleasi probe trec pe statia Windows. CI verifica deci pe acelasi sistem pe care
+    # s-au luat cifrele; depozitul e public, deci si runner-ele Windows sunt gratuite.
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    # Limita e ~2x durata proiectata pentru ~60 de rute (planul valului S4, P4 si §6.11), nu
+    # pentru azi. Masurat pe 2026-09-24, pe masina de lucru a feliei `fundatie` (Windows), cu o
+    # singura ruta: `pnpm verifica` = 104 s, din care portile de browser 49 s pentru 37 de probe.
+    # Portile care trec prin fiecare ruta costa ~9,6 s pe ruta (accesibilitate 2,6 + terti 3,9 +
+    # derapaj 1,0 + HTML brut 1,2 + legaturi 0,9). Proiectie la ~60 de rute: ~9,6 min pentru ele,
+    # ~5 min restul lantului (build mai mare, probele feliilor S4-2..S4-4), ~2 min instalarea si
+    # Chromium in CI = ~17 min; limita 35. Viteza masinii de CI fata de cea locala NU e masurata:
+    # la primul verdict cu peste 40 de rute se compara durata reala cu proiectia si se reface cifra.
+    # Alternativa lasata deocamdata: portile de browser impartite pe joburi paralele. Cere build-ul
+    # repetat in fiecare job si o verificare ca promovarea citeste toate joburile, nu doar acesta;
+    # se reia daca durata reala trece de jumatatea limitei.
+    # Masurat 25.09 pe ubuntu-latest, 22 de rute: 1062 s in total, din care 15,6 min probele de browser
+    # (287). Runner-ul Windows e mai lent, iar valul S4 aduce ~40 de rute: limita 60.
+    # Masurat 26.09 pe windows-latest, lotul de proba S4-3 (39 de pagini statice, 582 unit + 753 browser):
+    # 41,3 min in total, din care `pnpm verifica` 37,6 min. S4-4a aduce inca ~13 rute, deci ~55 min, prea
+    # aproape de 60: limita 120. Impartirea portilor de browser pe joburi ramane alternativa de mai sus.
+    timeout-minutes: 120
     env:
       BUILD_STANDALONE: '1'
     steps:
@@ -38,6 +68,13 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+      # TEMP pe acelasi disc cu depozitul. Pe runner-ul Windows depozitul sta pe D: si TEMP pe C:;
+      # probele care construiesc o COPIE a site-ului in TEMP (comutatorul operatorului, antetul)
+      # au picat cu `Can't resolve './D:/a/3s4-site/...next/dist/client/next.js'`: webpack nu poate
+      # scrie o cale relativa intre doua discuri (rularea 36161321352). Pe statie totul e pe C:.
+      - run: |
+          echo "TEMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
       - run: pnpm install --frozen-lockfile
       # Probele de browser fac parte din `pnpm verifica`, deci si din poarta locala:
       # poarta.sh isi citeste pasii din acelasi script. Fara pasul asta, CI a picat

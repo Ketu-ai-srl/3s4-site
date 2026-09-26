@@ -1,0 +1,295 @@
+/* Eroul cinema (functionalitati__sablon.md §4.1). Cifrele: 1440 / 390. */
+
+.erou {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 64px 32px;
+  box-sizing: border-box;
+}
+
+/* Gazda formei din hartii: toata sectiunea, sub text, fara evenimente. */
+.forma {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Blocul: element flex, ia latimea continutului pana la 720 (la referinta 492 pe automatizari-ai).
+   ABATEREA DE CONTRAST: forma din hartii trece pe sub text, iar unde se suprapun doua-trei foi fundalul
+   ajunge la ~(75, 86, 106); acolo eticheta iesea 2,9:1 si subtitlurile 3,0-3,6:1 (masurat pe pixeli,
+   25.09; axe nu masoara peste panza 3D si raporteaza "incomplet"). Haloul inchis, in `negru-cinema`,
+   nu se vede pe negru si intuneca foile numai in jurul literelor. Se mosteneste. */
+.bloc {
+  position: relative;
+  z-index: 1;
+  /* Element flex: fara `min-width: 0`, latimea ceruta de terminal (600 / 660) devine minimul blocului
+     si, la 390, blocul iesea din ecran cu terminalul cu tot (masurat: x -105 si -135, 25.09). */
+  min-width: 0;
+  max-width: 720px;
+  text-align: center;
+  text-shadow:
+    0 0 2px rgba(5, 5, 7, 0.95),
+    0 0 6px rgba(5, 5, 7, 0.9),
+    0 0 14px rgba(5, 5, 7, 0.85),
+    0 0 26px rgba(5, 5, 7, 0.8);
+}
+
+.eticheta {
+  display: block;
+  margin: 0 0 24px;
+}
+
+.titlu {
+  margin: 0 0 16px;
+}
+
+.titluStrans {
+  letter-spacing: -0.02em;
+}
+
+/* --- terminalul ------------------------------------------------------------------------------ */
+
+/* LATIME FIXA, ca la referinta: 600 (660 pe varianta lata), niciodata latimea textului. Cu `max-width`
+   singur, blocul eroului (element flex, cat continutul) se strangea la latimea titlului si terminalul
+   cu el: 510 px pe portal-clienti, cu o cerere scurta (masurat de critic, 25.09). Latimea ceruta
+   (600 + marginile 120 = 720) intinde si blocul la 720, ca la referinta (x 420); sub latimea blocului,
+   `max-width: 100%` il tine in el (350 la 390). */
+.terminal {
+  box-sizing: border-box;
+  width: 600px;
+  max-width: 100%;
+  margin: 24px 60px 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-fereastra);
+  text-align: left;
+  /* Pe fundalul propriu haloul blocului nu are ce apara si s-ar vedea ca o pata. */
+  text-shadow: none;
+}
+
+.terminalLat {
+  width: 660px;
+  margin: 0 30px;
+}
+
+.bara {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15.2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.punct {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+.marca {
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 500;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.corpTerminal {
+  padding: 19.2px 22.4px;
+}
+
+.intrebare {
+  min-height: 26.4px;
+  font-size: 17.6px;
+  font-weight: 500;
+  line-height: 26.4px;
+  color: #e6ecf5;
+}
+
+.intrebareMare {
+  min-height: 27.6px;
+  font-size: 18.4px;
+  line-height: 27.6px;
+}
+
+.lupa {
+  display: inline-block;
+  margin-right: 11.2px;
+  vertical-align: -4px;
+  color: var(--color-albastru);
+}
+
+/* --- subtitlurile ------------------------------------------------------------------------------ */
+
+/* ABATEREA DE CONTRAST (a doua, dupa halou): textele secundare ale eroului stau peste forma din hartii,
+   deci pragul cadrului (alb .5) nu ajunge. La referinta: .55 / .5 / .35. Aici .6, randul intai .65 (ca
+   ierarhia sa ramana), tacerea de pe automatizari-ai .65: masurat pe pixeli langa litere, cu haloul,
+   cel mai slab ramane 4,58:1 la 1440 si ~4,9:1 la 390 (25.09). */
+
+.subtitlu {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.subtitluItalic {
+  margin-top: 24px;
+  font-family: var(--font-italic);
+  font-style: italic;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.subtitluRand1 {
+  margin-top: 32px;
+  line-height: 30px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.subtitluRand2 {
+  margin-top: 12.8px;
+  font-family: var(--font-italic);
+  font-style: italic;
+  line-height: 30px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.subtitluLiniste {
+  margin-top: 32px;
+  font-family: var(--font-italic);
+  font-style: italic;
+  line-height: 32px;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Dublat: bate `margin: 0` al textului scris (TextScris) oricare ar fi ordinea foilor. */
+.subtitluScris.subtitluScris {
+  max-width: 600px;
+  min-height: 25.76px;
+  margin: 16px auto 40px;
+  font-size: 18.4px;
+  font-weight: 500;
+  line-height: 29.44px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Intrarea dupa scriere: `fadeUp` (opacitate 0 -> 1, 12 px -> 0), cu durata si intarzierea date. */
+.subtitlu[data-intrare="asteapta"] {
+  opacity: 0;
+}
+
+.subtitlu[data-intrare="intra"] {
+  animation: intrareSubtitlu var(--durata, 0.6s) ease var(--intarziere, 0s) both;
+}
+
+@keyframes intrareSubtitlu {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Inainte de hidratare, cu scripturile pornite si miscarea permisa, subtitlul care vine dupa scriere
+   nu se arata; daca scriptul nu porneste in 6 s, intra singur. Fara scripturi se vede de la inceput. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .subtitlu[data-intrare="static"] {
+    animation: intrareSubtitlu 0.6s ease 6s both;
+  }
+}
+
+/* --- indiciul de derulare ---------------------------------------------------------------------- */
+
+.indiciu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 48px;
+  font-size: 12.8px;
+  font-weight: 400;
+  line-height: 20.48px;
+  letter-spacing: 0.256px;
+  color: rgba(255, 255, 255, 0.6);
+  animation: bob 2.5s ease-in-out infinite;
+}
+
+.indiciuStrans {
+  letter-spacing: 0.128px;
+}
+
+/* automatizari-ai: numai chevronul, contur .15, 40 px deasupra, bloc pe toata latimea. */
+.indiciuChevron {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  color: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 767px) {
+  .erou {
+    padding: 48px 20px;
+  }
+
+  .terminal,
+  .terminalLat {
+    max-width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .intrebare,
+  .intrebareMare {
+    min-height: 22.8px;
+    font-size: 15.2px;
+    line-height: 22.8px;
+  }
+
+  .subtitlu {
+    font-size: 16px;
+  }
+
+  .subtitluItalic {
+    line-height: 25.6px;
+  }
+
+  .subtitluRand1,
+  .subtitluRand2 {
+    line-height: 24px;
+  }
+
+  .subtitluLiniste {
+    line-height: 25.6px;
+    letter-spacing: 0.64px;
+  }
+
+  .subtitluScris.subtitluScris {
+    min-height: 21.28px;
+    font-size: 15.2px;
+    line-height: 24.32px;
+  }
+}
