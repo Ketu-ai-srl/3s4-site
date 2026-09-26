@@ -73,13 +73,39 @@ def fisiere():
     return sorted(gasite)
 
 
+# LINIA DE COMANDA ARE PLAFON. Pe Windows, CreateProcess primeste cel mult 32.767 de caractere,
+# iar lista de fisiere cu cai absolute a trecut de el pe 25.09.2026: 34.048 de caractere pe 323
+# de fisiere (lot/s4-3a + felia 53), `WinError 206`, poarta rosie pe fiecare felie care adauga
+# fisiere, oricat de curata. Detectorul se cheama deci pe TRANSE sub prag. Pragul are rezerva
+# fata de plafon, fiindca lungimea masurata cu list2cmdline nu e garantat cea pe care o vede
+# sistemul (ghilimele, calea interpretorului).
+PRAG_LINIE = 24000
+
+
+def transe(lista, lungime_baza):
+    transa, lungime = [], lungime_baza
+    for cale in lista:
+        cost = len(subprocess.list2cmdline([cale])) + 1
+        if transa and lungime + cost > PRAG_LINIE:
+            yield transa
+            transa, lungime = [], lungime_baza
+        transa.append(cale)
+        lungime += cost
+    if transa:
+        yield transa
+
+
 def main():
     lista = fisiere()
     if not lista:
         print('poarta-tipografie: NICIUN fisier de verificat - masuratoarea e invalida, nu curata', file=sys.stderr)
         return 3
-    rezultat = subprocess.run([sys.executable, DETECTOR, '--fisiere'] + lista)
-    return rezultat.returncode
+    baza = [sys.executable, DETECTOR, '--fisiere']
+    coduri = [subprocess.run(baza + t).returncode for t in transe(lista, len(subprocess.list2cmdline(baza)))]
+    print('poarta-tipografie: %d fisiere in %d transe, coduri %s' % (len(lista), len(coduri), coduri))
+    # Verdictul e cel mai GRAV dintre transe: o transa NEMASURATA (3) sau folosita gresit (2) nu
+    # se inghite sub un 0 al celorlalte, iar o liniuta gasita (1) nu dispare intr-o transa curata.
+    return max(coduri)
 
 
 if __name__ == '__main__':

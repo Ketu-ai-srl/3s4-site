@@ -1,0 +1,20 @@
+[
+  {
+    "id": "functionalitati-termen-factura-extras-5-ani",
+    "text": "În registrul arhivei din exemplul de pe pagina de start, factura și extrasul de cont au termen de păstrare de 5 ani",
+    "unde": "src/content/acasa-functionalitati.ts",
+    "stare": "neconfirmat",
+    "sursa": "relatare neverificată: termenul vine din cercetarea proiectului, după Legea contabilității nr. 82/1991, art. 25, în forma dată de Legea nr. 36/2023; textul legii nu a fost confruntat pe legislatie.just.ro, iar o schimbare legislativă din 2026, semnalată în evidența proiectului, nu a fost verificată",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "functionalitati-termen-bilant-10-ani",
+    "text": "În registrul arhivei din exemplul de pe pagina de start, bilanțul (situațiile financiare anuale) are termen de păstrare de 10 ani",
+    "unde": "src/content/acasa-functionalitati.ts",
+    "stare": "neconfirmat",
+    "sursa": "relatare neverificată: termenul e atribuit Legii contabilității nr. 82/1991, art. 35 alin. (3), de un blog de consultanță, nu de textul legii; nu a fost confruntat pe legislatie.just.ro",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

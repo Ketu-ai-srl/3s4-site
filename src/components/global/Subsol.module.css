@@ -1,0 +1,293 @@
+/* Subsolul (componente-globale.md §6; inchis: functionalitati__sablon.md §1.5).
+   Padding 80 / 32 (56 / 24 sub 768); grila 1,8fr + 5 x 1fr, gap 48 / 40 (sub 1024: 1,5fr + 3 x 1fr
+   cu brandul pe tot randul; sub 768: 2 coloane; sub 480: una); banda de 5 insigne; randul de jos
+   cu drepturile, limba si retelele. Randul de credit al referintei nu se reproduce. */
+
+.subsol {
+  padding: 80px 0 32px;
+  border-top: 1px solid var(--color-linie-fina);
+  background: var(--color-alb);
+}
+
+.grila {
+  display: grid;
+  grid-template-columns: 1.8fr repeat(5, 1fr);
+  gap: 48px 40px;
+  margin-bottom: 56px;
+}
+
+.brand {
+  max-width: 320px;
+}
+
+.brandSigla {
+  display: inline-flex;
+  margin-bottom: 16px;
+}
+
+.slogan {
+  margin-bottom: 8px;
+  color: var(--color-cerneala);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.descriere {
+  margin-bottom: 20px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.posta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+  transition: color var(--durata-rapida) ease;
+}
+
+.posta:hover {
+  color: var(--color-cerneala);
+}
+
+.coloanaTitlu {
+  margin: 0 0 20px;
+  color: var(--color-cerneala);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20.8px;
+  letter-spacing: -0.13px;
+}
+
+/* Elementul de lista mosteneste 16/1,6 din corp, deci randul are 25,6 px si pasul intre legaturi
+   35,6 (masurat); legatura in el e 14/1,5. Ritmul se pastreaza asa, deliberat. */
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legatura {
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: color var(--durata-rapida) ease;
+}
+
+.legatura:hover {
+  color: var(--color-cerneala);
+}
+
+.insigne {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 20px;
+  margin: 0;
+  padding: 24px 0;
+  border-top: 1px solid var(--color-linie-fina);
+  border-bottom: 1px solid var(--color-linie-fina);
+  list-style: none;
+}
+
+.insigna {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-cerneala-2);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 19.2px;
+  letter-spacing: 0.12px;
+}
+
+.insignaIconita {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.jos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 28px;
+}
+
+.drepturi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-cerneala-3);
+  font-size: 12px;
+  line-height: 19.2px;
+}
+
+/* "Setari cookie-uri" (felia seo-geo-gdpr): un buton cu aspect de legatura, in randul drepturilor,
+   12 px `cerneala-3` (4,74:1), subliniat la hover; exista numai cand analitica e pornita. */
+.setariCookie {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.setariCookie:hover {
+  text-decoration-color: currentColor;
+}
+
+.setariCookie:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+.dreapta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.urmariti {
+  color: var(--color-cerneala-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.12px;
+}
+
+.retele {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retea {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--color-cerneala-2);
+  transition:
+    color var(--durata-rapida) ease,
+    background-color var(--durata-rapida) ease;
+}
+
+.retea:hover {
+  background: var(--color-linie-fina);
+  color: var(--color-cerneala);
+}
+
+@media (max-width: 1024px) {
+  .grila {
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 40px 32px;
+  }
+
+  .brand {
+    grid-column: 1 / -1;
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 768px) {
+  .subsol {
+    padding: 56px 0 24px;
+  }
+
+  .grila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+  }
+
+  .jos {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .grila {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- varianta inchisa ------------------------------------------------------------------------ */
+
+:global(html:has([data-tema-pagina="inchisa"])) .subsol {
+  border-top-color: rgba(255, 255, 255, 0.06);
+  background: var(--color-negru-cinema);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .brandSigla {
+  opacity: 0.85;
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .slogan {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .descriere,
+:global(html:has([data-tema-pagina="inchisa"])) .posta,
+:global(html:has([data-tema-pagina="inchisa"])) .legatura,
+:global(html:has([data-tema-pagina="inchisa"])) .insigna {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .posta:hover,
+:global(html:has([data-tema-pagina="inchisa"])) .legatura:hover {
+  color: var(--color-alb);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .coloanaTitlu {
+  color: var(--color-alb);
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .insigne {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .drepturi,
+:global(html:has([data-tema-pagina="inchisa"])) .urmariti,
+:global(html:has([data-tema-pagina="inchisa"])) .retea {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* La referinta hover-ul iconitelor sociale pe inchis ramanea cel de pe alb (scapare); la 3S: */
+:global(html:has([data-tema-pagina="inchisa"])) .retea:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-alb);
+}
+
+.siglaInchisa {
+  display: none;
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .siglaDeschisa {
+  display: none;
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .siglaInchisa {
+  display: inline-flex;
+}
