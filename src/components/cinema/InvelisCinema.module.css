@@ -1,0 +1,41 @@
+/* Invelisul si fundalul paginilor cinema (functionalitati__sablon.md §1.1). */
+
+.invelis {
+  position: relative;
+  overflow: clip;
+  background: var(--color-negru-cinema);
+  color: var(--color-ardezie-1);
+}
+
+/* Stratul lipit: inalt cat fereastra, fara loc in flux (margin-bottom negativ), sub sectiuni. */
+.fundal {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
+  margin-bottom: -100vh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lumina {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(80% 50% at 50% 30%, rgba(37, 99, 235, 0.06), rgba(0, 0, 0, 0) 70%);
+}
+
+/* O celula in plus sus: deplasarea intoarsa de `decalajGrila` e in (0, 72], deci stratul acopera
+   mereu fereastra. Liniile de 1 px stau la inceputul fiecarei celule, ca la referinta. */
+.grila {
+  position: absolute;
+  top: -72px;
+  right: 0;
+  left: 0;
+  height: calc(100% + 72px);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, rgba(0, 0, 0, 0) 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, rgba(0, 0, 0, 0) 1px);
+  background-size: 72px 72px;
+  transform: translate3d(0, 72px, 0);
+  will-change: transform;
+}

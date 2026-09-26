@@ -1,0 +1,53 @@
+/* Pagina de 404: bloc centrat, sub antetul fix (padding sus 160 / 120). */
+
+.pagina {
+  padding: 160px 0 96px;
+}
+
+.bloc {
+  display: flex;
+  max-width: 640px;
+  flex-direction: column;
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eticheta {
+  margin-bottom: 12px;
+}
+
+.titlu {
+  margin-bottom: 16px;
+}
+
+.text {
+  margin-bottom: 32px;
+}
+
+.drumuri {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drum {
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.drum:hover {
+  color: var(--color-albastru-apasat);
+}
+
+@media (max-width: 767px) {
+  .pagina {
+    padding: 120px 0 64px;
+  }
+}

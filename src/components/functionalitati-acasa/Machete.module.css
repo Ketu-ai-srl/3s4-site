@@ -1,0 +1,788 @@
+/* Cele 3 machete ale functionalitatilor de pe start (acasa-functionalitati.md §5-§7, §11).
+   Cifrele sunt cele masurate la 1440 (stil calculat); pana la 900 px, ce se schimba e in blocul de
+   la final. Culorile folosesc tokenii din `globals.css`; valorile fara token sunt cele din tabelul
+   "Valori noi" al fisei.
+
+   ABATERI DE LA REFERINTA, toate pentru contrast AA pe text (COMPONENTE.md §5.1, DIRECTIA.md):
+     - data actului, numarul dosarului, numarul de rand si capul tabelului: la referinta
+       #94a3b8 (2,56:1), #b6bdc9 (1,89:1), #8b93a1 (2,99:1 pe #fafbfc) -> `ardezie-5` (4,76 / 4,59);
+     - rolul persoanei, pe tabul activ (#f5f8ff): `ardezie-5` ar da 4,48 -> `gri-meta` (4,55);
+     - textele verzi ("gasite", subsolul portalului): `verde` 3,30 -> `verde-text` 5,02;
+     - initialele avatarelor, pe fundalul lor de 12%: albastru 4,37 si chihlimbar 4,25 -> nuante mai
+       inchise (5,66 / 6,00); teal-ul trece (4,53), dar se inchide la fel, sa nu stea pe muchie.
+   Dosarele fara acces raman ca la referinta (opacitate 0,4, nume taiat): sunt elemente INACTIVE ale
+   interfetei, marcate `aria-disabled`, iar WCAG 1.4.3 nu cere contrast pentru ele. */
+
+/* --- comune ------------------------------------------------------------------------------- */
+
+/* Macheta e TAIATA de rama, nu derulata: `overflow: clip`. Cu `hidden` ar fi o zona de derulare,
+   iar focusul de tastatura pe un rand de jos o derula si o lasa asa (eticheta si bara plecau din
+   rama, estomparea urca peste randuri). Randul focalizat il aduce in rama macheta insasi, controlat
+   (`MachetaCautare.tsx`). `hidden` ramane pentru un browser fara `clip`. */
+.macheta {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  overflow: hidden;
+  overflow: clip;
+  background: var(--color-alb);
+  color: var(--color-ardezie-8);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* Macheta are marimea ei fireasca si e TAIATA de rama, nu comprimata: fara asta, tabelul si lista
+   de verificari (cu `overflow: hidden`, deci fara minim de continut) se strang in rama de 278 px de
+   pe mobil si se suprapun. */
+.macheta > * {
+  flex-shrink: 0;
+}
+
+/* Macheta mai inalta decat rama e taiata jos; taietura devine o estompare intentionata (fisa §14.7:
+   la referinta fraza de subsol a portalului se taia la jumatatea randului).
+
+   ESTOMPAREA ACOPERA NUMAI RANDUL TAIAT, NICIODATA CEVA INTREG. Inaltimea o tine `estompare.ts` in
+   `--estompare`, din asezarea de acum a machetei: zero cand niciun rand de text nu e taiat, altfel
+   cel mult 12 px si cel mult spatiul liber de sub cel mai de jos rand de text intreg (si de sub
+   butoanele intregi, cu conturul lor de focus). O inaltime fixa nu poate: rama urmeaza latimea
+   (raport 5:4), iar la unele latimi un rand intreg cade chiar pe margine (masurat pe pixeli: cu 40 px,
+   data randului 2 al cautarii la 390 iesea la 1,1:1; cu 5 px fixi, primul rand al registrului la
+   360 iesea la 1,08:1). Fara JavaScript estomparea lipseste: taietura ramane cea a referintei. */
+.estompat::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  height: var(--estompare, 0px);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--color-alb) 88%);
+  pointer-events: none;
+}
+
+.etichetaMacheta {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+  color: var(--color-albastru);
+  font-size: 15.2px;
+  font-weight: 700;
+  line-height: 24.32px;
+  letter-spacing: -0.15px;
+}
+
+.etichetaMacheta svg {
+  flex-shrink: 0;
+}
+
+/* Eticheta de tip a unui act: factura, albastru (contract / extras), raport. */
+.tip {
+  display: inline-block;
+  padding: 3.2px 8px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 11.84px;
+  font-weight: 600;
+  line-height: 18.944px;
+  letter-spacing: -0.06px;
+  white-space: nowrap;
+}
+
+.tip[data-tip="factura"] {
+  border-color: #f5e3c2;
+  background: #fdf5e8;
+  color: var(--color-chihlimbar);
+}
+
+.tip[data-tip="albastru"] {
+  border-color: var(--color-albastru-chenar);
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru);
+}
+
+.tip[data-tip="raport"] {
+  border-color: var(--color-ardezie-2);
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+}
+
+/* --- 1. cautarea (fisa §5): padding 16 x 18,4 ---------------------------------------------- */
+
+.cautare {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18.4px;
+}
+
+.cautareSus {
+  margin-bottom: 12px;
+}
+
+.cautareSus .etichetaMacheta {
+  margin-bottom: 9.6px;
+}
+
+.bara {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9.6px 13.6px;
+  border: 2px solid var(--color-albastru-chenar);
+  border-radius: 10px;
+  background: var(--color-alb);
+  box-shadow: 0 3px 10px -6px rgba(37, 99, 235, 0.25);
+  color: var(--color-ardezie-6);
+  font-size: 14.08px;
+  font-weight: 500;
+  line-height: 22.53px;
+}
+
+.bara svg {
+  flex-shrink: 0;
+  color: var(--color-ardezie-5);
+}
+
+.bara span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gasite {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+  margin-top: 8.8px;
+  color: var(--color-verde-text);
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 20.99px;
+}
+
+.gasite svg {
+  flex-shrink: 0;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Deplasarea de tastatura (`MachetaCautare.tsx`): cat focusul e pe un rand care nu incape in rama,
+   continutul urca exact cat trebuie; cand focusul pleaca, revine. Aceeasi durata si curba ca
+   deschiderea randului, ca sa se miste impreuna. */
+.cautareSus,
+.lista {
+  transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Randul: 77,7 inchis; deschis, fundal `ardezie-0`, raza 8, chenar transparent (200 ms ease). */
+.rand {
+  border-bottom: 1px solid var(--color-ardezie-1);
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rand:last-child {
+  border-bottom: 0;
+}
+
+.rand[data-deschis] {
+  border-color: transparent;
+  border-radius: 8px;
+  background: var(--color-ardezie-0);
+}
+
+.randCap {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 11.2px;
+  padding: 11.2px 8.8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.placuta {
+  display: grid;
+  width: 36px;
+  height: 30px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 7px;
+  font-size: 8.96px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.36px;
+}
+
+.placuta[data-format="pdf"] {
+  background: #fdecec;
+  color: var(--color-rosu-inchis);
+}
+
+.placuta[data-format="xls"] {
+  background: #e9f7ef;
+  color: var(--color-verde-calm);
+}
+
+.info {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.fisier {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-ardezie-8);
+  font-size: 14.4px;
+  font-weight: 700;
+  line-height: 23.04px;
+  letter-spacing: -0.14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.data {
+  color: var(--color-ardezie-5);
+  font-size: 12.16px;
+  line-height: 19.46px;
+  white-space: nowrap;
+}
+
+.insigne {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5.6px;
+}
+
+/* Iconitele stau pe linia de baza a textului, ca la referinta: fiecare `span` are inaltimea randului
+   de text (20,8), iar iconita e `inline` pe linia de baza (preflight-ul face SVG-urile `block`).
+   Masurat la 1440: bifa la 1 px sub marginea `span`-ului, fulgerul la 4, ca la referinta; cu `span`
+   centrat si SVG `block`, bifa cobora cu ~2 px. */
+.insigne > span {
+  display: block;
+}
+
+.insigne svg {
+  display: inline;
+  vertical-align: baseline;
+}
+
+.fulger {
+  color: var(--color-albastru);
+}
+
+/* Rezumatul se deschide pe inaltime in 200 ms ease-out cubic; opacitatea e plina de la inceput. */
+.rezumatRand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.rand[data-deschis] .rezumatRand {
+  grid-template-rows: 1fr;
+}
+
+.rezumatTaiat {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rezumatInterior {
+  padding: 0 8px 8px;
+}
+
+.rezumatCutie {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 9.6px 12px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.rezumatTitlu {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 5.6px;
+  color: var(--color-albastru);
+  font-size: 12.8px;
+  font-weight: 700;
+  line-height: 20.48px;
+  letter-spacing: -0.064px;
+}
+
+.rezumatText {
+  color: var(--color-ardezie-6);
+  font-size: 13.44px;
+  line-height: 20.83px;
+}
+
+.rezumatInsigne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6.4px;
+  margin-top: 5.6px;
+}
+
+.insignaVerde,
+.insignaAlbastra {
+  padding: 3.2px 8px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 11.52px;
+  font-weight: 600;
+  line-height: 18.43px;
+  white-space: nowrap;
+}
+
+.insignaVerde {
+  border-color: #cbebd9;
+  background: #e9f7ef;
+  color: var(--color-verde-calm);
+}
+
+.insignaAlbastra {
+  border-color: var(--color-albastru-chenar);
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru);
+}
+
+/* --- 2. portalul (fisa §6): padding 20 ------------------------------------------------------ */
+
+.portal {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.portal .etichetaMacheta {
+  margin-bottom: 12.8px;
+}
+
+.taburi {
+  display: flex;
+  align-items: stretch;
+  gap: 6.4px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  align-items: center;
+  gap: 6.4px;
+  padding: 7.2px 9.6px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tab:not([aria-pressed="true"]):hover {
+  border-color: var(--color-albastru-chenar-2);
+}
+
+.tab[aria-pressed="true"] {
+  border-color: var(--color-albastru-chenar-2-activ);
+  background: var(--color-ceata-albastra-2);
+  box-shadow: 0 0 0 1px var(--color-albastru-chenar-2-activ);
+}
+
+.avatar {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 9.92px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.avatar[data-culoare="albastru"] {
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--color-albastru-apasat);
+}
+
+.avatar[data-culoare="chihlimbar"] {
+  background: rgba(180, 83, 9, 0.12);
+  color: #92400e;
+}
+
+.avatar[data-culoare="teal"] {
+  background: rgba(14, 116, 144, 0.12);
+  color: #155e75;
+}
+
+.tInfo {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.tNume {
+  color: var(--color-ardezie-9);
+  font-size: 12.8px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.13px;
+}
+
+.tRol {
+  color: var(--color-gri-meta);
+  font-size: 11.2px;
+  line-height: normal;
+}
+
+.panou {
+  padding: 13.6px;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 12px;
+  background: var(--color-alb);
+}
+
+.vizibilPentru {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 11.2px;
+  color: var(--color-ardezie-5);
+  font-size: 14.08px;
+  line-height: 22.53px;
+  letter-spacing: -0.07px;
+}
+
+.vizibilPentru strong {
+  color: var(--color-ardezie-9);
+  font-weight: 700;
+}
+
+.cip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 3.84px 8.8px;
+  border: 1px solid var(--color-albastru-chenar);
+  border-radius: 6px;
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru);
+  font-size: 12.16px;
+  font-weight: 600;
+  line-height: 19.46px;
+  white-space: nowrap;
+}
+
+.foldere {
+  display: flex;
+  flex-direction: column;
+  gap: 4.8px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.folder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10.4px;
+  border: 1px solid var(--color-linie-erou-2);
+  border-radius: 8px;
+  background: var(--color-fundal-bara);
+  transition: opacity 0.3s ease;
+}
+
+.folder svg {
+  flex-shrink: 0;
+}
+
+.fNume {
+  color: var(--color-ardezie-8);
+  font-size: 13.6px;
+  font-weight: 600;
+  line-height: 21.76px;
+  letter-spacing: -0.14px;
+}
+
+.fNumar {
+  color: var(--color-ardezie-5);
+  font-size: 11.84px;
+  line-height: 18.94px;
+  font-variant-numeric: tabular-nums;
+}
+
+.folder[data-interzis] {
+  opacity: 0.4;
+}
+
+.folder[data-interzis] .fNume {
+  color: var(--color-ardezie-4);
+  text-decoration: line-through;
+}
+
+/* Fraza din dreapta e centrata pe verticala fata de textul din stanga, ca la referinta. Acolo textul
+   avea doua randuri si al doilea era taiat de rama; aici e dimensionat pe un rand la 1440 (fisa §14.7,
+   `acasa-functionalitati.ts`), deci tot subsolul se vede. */
+.subsolPanou {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-ardezie-2);
+  font-size: 12.8px;
+  line-height: 18.56px;
+  letter-spacing: -0.064px;
+}
+
+.subsolStanga {
+  max-width: 300px;
+  color: var(--color-ardezie-6);
+}
+
+.subsolDreapta {
+  flex-shrink: 0;
+  color: var(--color-verde-text);
+  font-weight: 600;
+  line-height: 20.48px;
+}
+
+/* --- 3. registrul (fisa §7): padding 16 x 18,4, numere si fisiere in JetBrains Mono ---------- */
+
+.registru {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18.4px;
+  color: var(--color-cerneala);
+}
+
+.capRegistru {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10.4px;
+}
+
+.insignaCap {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 3.84px 9.6px;
+  border: 1px solid #cbebd9;
+  border-radius: 6px;
+  background: #e9f7ef;
+  color: var(--color-verde-calm);
+  font-size: 12.16px;
+  font-weight: 600;
+  line-height: 19.46px;
+  white-space: nowrap;
+}
+
+.tabel {
+  overflow: hidden;
+  margin-bottom: 10.4px;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.tRandCap,
+.tRand {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) 5.4rem 5rem 2.6rem;
+  align-items: center;
+}
+
+.tRandCap {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f1f3;
+  background: var(--color-fundal-bara);
+  color: var(--color-ardezie-5);
+  font-size: 10.88px;
+  font-weight: 700;
+  line-height: 17.41px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tRandCap > :last-child {
+  text-align: center;
+}
+
+.tRand {
+  padding: 8.8px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.tRand:last-child {
+  border-bottom: 0;
+}
+
+.nr {
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 11.84px;
+  font-weight: 500;
+}
+
+.doc {
+  overflow: hidden;
+  padding-right: 8px;
+  color: var(--color-cerneala);
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.termen {
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stareCelula {
+  display: flex;
+  justify-content: center;
+  color: var(--color-verde);
+}
+
+.verificari {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 8px;
+  box-shadow: var(--shadow-fir);
+  list-style: none;
+}
+
+.verificare {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  animation: apare 0.25s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+.verificare:last-child {
+  border-bottom: 0;
+}
+
+.vIconita {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  place-items: center;
+  color: var(--color-ardezie-4);
+}
+
+.vText {
+  flex: 1;
+  color: var(--color-cerneala);
+  font-size: 13.6px;
+  font-weight: 500;
+  line-height: 21.76px;
+}
+
+.vBifa {
+  flex-shrink: 0;
+  color: var(--color-verde);
+}
+
+/* Randul de verificare urca 6 px si apare din transparent (250 ms ease-out cubic). */
+@keyframes apare {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- pana la 900 px: machetele din cardurile pistei (fisa §11) ------------------------------ */
+
+@media (max-width: 900px) {
+  .cautare,
+  .portal,
+  .registru {
+    padding: 16px;
+  }
+
+  /* Tab 101 x 49,2, padding 5,6 x 6,4. Numele: la referinta 9 px, sub pragul de lizibilitate
+     (fisa §14.8); aici 11 px, minimul de text al site-ului. */
+  .tab {
+    padding: 5.6px 6.4px;
+  }
+
+  .tNume {
+    font-size: 11px;
+    letter-spacing: -0.09px;
+  }
+
+  /* Registrul: coloane 32 / flexibil / 60 / 60 / 32 la referinta, unde capetele "pastrare" si
+     "stare" se lipeau (fisa §14.6). Aici coloana termenului primeste loc pentru capul ei. */
+  .tRandCap,
+  .tRand {
+    grid-template-columns: 30px minmax(0, 1fr) 58px 68px 30px;
+  }
+
+  .tRandCap {
+    letter-spacing: 0.04em;
+  }
+
+  .doc {
+    font-size: 10.88px;
+  }
+
+  .tRand .tip {
+    padding: 1.92px 5.6px;
+    font-size: 9.92px;
+    line-height: 15.87px;
+  }
+}
