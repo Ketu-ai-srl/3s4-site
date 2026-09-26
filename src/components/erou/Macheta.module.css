@@ -1,0 +1,2290 @@
+/* Macheta din erou (acasa-erou.md §1.6.3-§1.6.5, §1.7): cadrul 3D, turul si aplicatia
+   demonstrativa. Se incarca odata cu macheta, la clic, nu cu pagina.
+
+   Culorile de macheta vin din fisa. Abatere, deliberata (COMPONENTE.md §5.1): textul de citit nu
+   coboara sub 4,5:1, deci orele, metadatele si randurile "inca N", care la referinta erau #94a3b8
+   (2,56:1), sunt aici #64748b (4,76:1); #94a3b8 ramane pe iconite si pe starea de asteptare. */
+
+/* ============================================================================================
+   CADRUL SI SCENA 3D (peste 1180 px)
+   ============================================================================================ */
+
+.macheta {
+  position: relative;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Figura sta intre spatiu (care are perspectiva) si plutitor. Cu `transform-style: flat`, implicit,
+   perspectiva nu trecea de ea: cadrul se picta plat (dreptunghi, marginea stanga la x 582 in loc de
+   ~640), iar `getBoundingClientRect` raporta totusi cutia 3D pana pornea plutirea. Masurat pe
+   pixeli; proba din `erou.spec.ts` citeste captura, nu geometria. */
+.macheta3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+@keyframes plutire {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.macheta3d .plutitor {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: plutire 6s ease-in-out 4.6s infinite;
+}
+
+/* Unghiurile si deplasarea paralaxei, scrise de mouse pe stratul ei (Macheta.tsx). Inregistrate
+   NEMOSTENITE: o variabila obisnuita se mosteneste, deci fiecare miscare a mouse-ului recalcula
+   stilul intregului cadru (turul si aplicatia construita dinainte, ~350 de elemente). Masurat la
+   1440, CPU x4, in cadrul de dupa clicul care aduce aplicatia: 55,5 ms de stil pe 356 de elemente;
+   cu inregistrarea, 2,8-4,1 ms pe 8. Valorile de rezerva din `var()` raman pentru navigatoarele
+   fara `@property`: acolo variabila nesetata ar anula toata transformarea, deci si rotirea de baza. */
+@property --paralaxa-ry {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --paralaxa-rx {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --paralaxa-tx {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --paralaxa-ty {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.macheta3d .paralaxa {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(-14deg + var(--paralaxa-ry, 0deg))) rotateX(calc(5deg + var(--paralaxa-rx, 0deg)))
+    translate3d(var(--paralaxa-tx, 0px), var(--paralaxa-ty, 0px), 0);
+  transition: transform 0.3s cubic-bezier(0.22, 0.68, 0.28, 1);
+}
+
+.fantoma,
+.reflexie {
+  display: none;
+}
+
+.macheta3d .fantoma {
+  position: absolute;
+  top: 12%;
+  left: 2%;
+  display: block;
+  width: 96%;
+  height: 68%;
+  border: 1px solid #eef0f4;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 30px 60px -24px rgba(15, 23, 42, 0.16);
+  transform: translateZ(-230px) translateY(-30px) scale(0.965);
+}
+
+.macheta3d .reflexie {
+  position: absolute;
+  top: 83%;
+  left: 2%;
+  display: block;
+  width: 96%;
+  height: 120px;
+  border-radius: 0 0 16px 16px;
+  background: linear-gradient(rgba(240, 242, 247, 0.9), transparent);
+  mask-image: linear-gradient(#000, transparent 80%);
+  transform: translateZ(-140px) scaleY(-1);
+  transform-origin: top;
+}
+
+/* Cadrul: intra in 800 ms, dupa 100 ms, din adancime (§1.6.3). */
+@keyframes intrareCadru {
+  from {
+    opacity: 0;
+    transform: translateZ(-240px) translateY(30px) rotate(0.6deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(-140px);
+  }
+}
+
+@keyframes intrareCadruPlan {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(0.6deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cadru {
+  position: relative;
+  border-radius: 24px;
+  pointer-events: auto;
+  animation: intrareCadruPlan 0.8s cubic-bezier(0.22, 0.68, 0.28, 1) 0.1s both;
+}
+
+.cadru:focus {
+  outline: none;
+}
+
+.cadru:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 4px;
+}
+
+.macheta3d .cadru {
+  position: absolute;
+  top: 12%;
+  left: 2%;
+  width: 96%;
+  box-shadow:
+    0 30px 60px -18px rgba(15, 23, 42, 0.14),
+    0 70px 130px -34px rgba(15, 23, 42, 0.2);
+  transform: translateZ(-140px);
+  animation-name: intrareCadru;
+}
+
+/* Butonul "inapoi la bucla": 145,7 x 35,6, in coltul din stanga-jos al spatiului. */
+.inapoi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  margin: 12px auto 0;
+  padding: 6.4px 12.8px;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 99px;
+  background: #fff;
+  box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.18);
+  color: var(--color-gri-eticheta);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20.8px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.inapoi:hover {
+  border-color: var(--color-chenar-rama-hover);
+  color: var(--color-cerneala);
+}
+
+.macheta3d .inapoi {
+  position: absolute;
+  bottom: 3%;
+  left: 5%;
+  margin: 0;
+}
+
+/* Sub 1180 butonul sta centrat sub cadru. */
+.macheta:not(.macheta3d) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.macheta:not(.macheta3d) .plutitor,
+.macheta:not(.macheta3d) .paralaxa,
+.macheta:not(.macheta3d) .cadru {
+  width: 100%;
+}
+
+/* Foile zburatoare: stratul acopera latimea ferestrei, de la 60 px deasupra spatiului. */
+.stratFoi {
+  position: absolute;
+  top: -60px;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  width: 100vw;
+  pointer-events: none;
+}
+
+.foaieZburatoare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46px;
+  height: 58px;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.foaieZburatoare svg {
+  display: block;
+}
+
+/* ============================================================================================
+   FAZA 1: TURUL
+   ============================================================================================ */
+
+.tur {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 24px;
+  background: #fff;
+}
+
+.baraTur {
+  display: flex;
+  justify-content: center;
+  padding: 9.6px 16px;
+  border-bottom: 1px solid var(--color-linie-erou-2);
+  background: var(--color-fundal-bara);
+}
+
+.pastilaAdresa {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+  padding: 4px 12.8px;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--color-gri-meta);
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  line-height: 18.4px;
+  white-space: nowrap;
+}
+
+.lacat {
+  flex-shrink: 0;
+  color: var(--color-verde);
+}
+
+.corpTur {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.2rem, 3vw, 2.2rem);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ridicare {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bunVenit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  transition: opacity 0.6s ease;
+}
+
+.bunVenitStins {
+  opacity: 0;
+}
+
+.bunVenitSigla {
+  display: block;
+  line-height: 0;
+  animation: pop 0.7s cubic-bezier(0.22, 0.68, 0.28, 1) both;
+}
+
+.bunVenitTitlu {
+  color: var(--color-cerneala);
+  font-size: 32.8px;
+  font-weight: 800;
+  line-height: 52.5px;
+  letter-spacing: -0.02em;
+  animation: ridicare 0.7s cubic-bezier(0.22, 0.68, 0.28, 1) both;
+}
+
+@keyframes intrareScena {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.scenaTur {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2.4rem);
+  text-align: start;
+  animation: intrareScena 0.5s ease both;
+}
+
+.scenaText {
+  flex: 1 1 240px;
+  min-width: 220px;
+}
+
+.scenaTitlu {
+  margin: 0 0 9.6px;
+  color: var(--color-cerneala);
+  font-size: 28.8px;
+  font-weight: 800;
+  line-height: 46.1px;
+  letter-spacing: -0.02em;
+}
+
+.scenaParagraf {
+  margin: 0;
+  color: var(--color-gri-eticheta);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 28.05px;
+}
+
+.scenaIlustratie {
+  flex: 0 1 300px;
+}
+
+.ilustratie {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  overflow: visible;
+}
+
+.navigareTur {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14.4px;
+  margin-top: 17.6px;
+}
+
+.sageataTur {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--color-linie-erou);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--color-gri-meta);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sageataTur:hover {
+  border-color: var(--color-chenar-rama-hover);
+  color: var(--color-cerneala);
+}
+
+/* Punctele: vizual 8 px (#d7dce6; activ `albastru`, 1,25), ca la referinta. Tinta de clic are
+   30 x 30, cat sagetile: WCAG 2.5.8 cere 24 x 24 pe ecran, iar in scena 3D (peste 1180 px) cadrul
+   e proiectat mai mic (rotateY -14, translateZ -140), cu paralaxa inca pana la 4 grade. Masurat la
+   1440, marimea pe care o socoteste axe (target-size): tinta de 24 = 21,8 x 22,9 in repaus (prinsa);
+   de 28 = 24,8 in repaus si 24,1 cu mouse-ul in coltul stanga-jos (la 0,1 px de prag); de 30 =
+   26,6 in repaus si 25,8 in cel mai rau colt. De aceea centrele stau la 30 px, nu la 16 (abatere
+   deliberata). */
+.puncteTur {
+  display: flex;
+}
+
+.punctTur {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.punctTur::before {
+  position: absolute;
+  top: 11px;
+  left: 11px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-drum-baza);
+  content: "";
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.punctTur[aria-current]::before {
+  background: var(--color-albastru);
+  transform: scale(1.25);
+}
+
+/* --- ilustratiile (duratele si curbele din fisa) --- */
+
+@keyframes calatorie {
+  0%,
+  12% {
+    opacity: 0;
+    transform: translate(52px, 70px);
+  }
+  22% {
+    opacity: 1;
+  }
+  58% {
+    opacity: 1;
+    transform: translate(196px, 70px) rotate(6deg);
+  }
+  72%,
+  100% {
+    opacity: 0;
+    transform: translate(232px, 84px) scale(0.5);
+  }
+}
+
+.foaieCalatoare {
+  animation: calatorie 3.2s ease-in-out infinite;
+}
+
+@keyframes rotire {
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+.scanteie {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotire 5s linear infinite;
+}
+
+@keyframes semneaza {
+  0% {
+    stroke-dashoffset: 130;
+  }
+  45%,
+  80% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+.semnatura {
+  stroke-dasharray: 130;
+  animation: semneaza 3.4s ease-in-out infinite;
+}
+
+@keyframes stampileaza {
+  0%,
+  40% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+  52%,
+  92% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.stampila {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: stampileaza 3.4s ease-in-out infinite;
+}
+
+@keyframes impulsSus {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate(100px, 75px);
+  }
+  14% {
+    opacity: 1;
+  }
+  26% {
+    transform: translate(150px, 66px);
+  }
+  38% {
+    opacity: 1;
+    transform: translate(204px, 32px);
+  }
+  44%,
+  100% {
+    opacity: 0;
+    transform: translate(210px, 30px);
+  }
+}
+
+@keyframes impulsMijloc {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate(100px, 75px);
+  }
+  14% {
+    opacity: 1;
+  }
+  38% {
+    opacity: 1;
+    transform: translate(204px, 75px);
+  }
+  44%,
+  100% {
+    opacity: 0;
+    transform: translate(210px, 75px);
+  }
+}
+
+@keyframes impulsJos {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translate(100px, 75px);
+  }
+  14% {
+    opacity: 1;
+  }
+  26% {
+    transform: translate(150px, 84px);
+  }
+  38% {
+    opacity: 1;
+    transform: translate(204px, 118px);
+  }
+  44%,
+  100% {
+    opacity: 0;
+    transform: translate(210px, 120px);
+  }
+}
+
+.impuls {
+  opacity: 0;
+}
+
+.impuls1 {
+  animation: impulsSus 3.6s ease-in-out infinite;
+}
+
+.impuls2 {
+  animation: impulsMijloc 3.6s ease-in-out 0.25s infinite;
+}
+
+.impuls3 {
+  animation: impulsJos 3.6s ease-in-out 0.5s infinite;
+}
+
+@keyframes toast {
+  0%,
+  48% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  58%,
+  94% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.notificareIlustratie {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: toast 3.6s ease-in-out infinite;
+}
+
+@keyframes deschis {
+  0%,
+  62% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  72%,
+  94% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.deschis {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: deschis 3.6s ease-in-out infinite;
+}
+
+/* ============================================================================================
+   FAZA 2: APLICATIA DEMONSTRATIVA
+   ============================================================================================ */
+
+@keyframes aparitieAplicatie {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.aplicatie {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  text-align: start;
+  animation: aparitieAplicatie 0.3s ease both;
+}
+
+/* Aplicatia construita dinainte, cat ruleaza turul (Aplicatie.tsx): asezata la latimea cadrului, ca
+   trecerea sa nu mai aseze nimic de la zero, dar scoasa din flux si nevazuta (`visibility` o scoate
+   si din focus, din tinta mouse-ului si din arborele de accesibilitate). Fara `pointer-events: none`:
+   schimbarea lui la trecere recalcula stilul intregii aplicatii (masurat la 1440, CPU x4: 329 de
+   elemente, 43 ms; fara el, 131 de elemente, 8,4 ms). Intrarea ei (0,3 s) porneste abia cand clasa
+   pleaca. */
+.aplicatie.aplicatiePregatita {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  animation: none;
+}
+
+.baraNavigator {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 9.6px 16px;
+  border-bottom: 1px solid var(--color-ardezie-2);
+  background: var(--color-ardezie-0);
+}
+
+.casetaAdresa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  width: 260px;
+  max-width: 100%;
+  height: 31.9px;
+  padding: 0 12px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--color-ardezie-5);
+  font-size: 13.12px;
+  white-space: nowrap;
+}
+
+.corpAplicatie {
+  display: flex;
+  height: 424px;
+}
+
+.baraLaterala {
+  display: flex;
+  flex: 0 0 182px;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  padding: 8px;
+  border-right: 1px solid var(--color-gri-2);
+  background: #f8f9fa;
+}
+
+.elementLateral {
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  width: 100%;
+  padding: 9.92px 11.2px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-gri-eticheta);
+  font-family: inherit;
+  font-size: 14.4px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: -0.144px;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.elementLateral:hover {
+  background: rgba(37, 99, 235, 0.06);
+  color: var(--color-gri-374);
+}
+
+/* Activul: la referinta `albastru` pe albastru 10% (4,4:1); aici `albastru-apasat` (5,7:1). */
+.elementLateralActiv,
+.elementLateralActiv:hover {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--color-albastru-apasat);
+  font-weight: 700;
+}
+
+.zonaContinut {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--color-fundal-bara);
+}
+
+/* Ecranele stau unul peste altul, pe toata zona; cel afisat se vede, celelalte raman asezate si
+   ascunse (Aplicatie.tsx: reafisarea unui ecran asezat nu mai aseaza nimic de la zero). */
+.stratEcran {
+  position: absolute;
+  inset: 0;
+}
+
+.stratAscuns {
+  visibility: hidden;
+}
+
+/* --- ecranele: bara de sus si corpul --- */
+
+.ecran {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ecranBara {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 8px 14.4px;
+  border-bottom: 1px solid var(--color-linie-app);
+  background: #fff;
+}
+
+.ecranTitlu {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-ardezie-9);
+  font-size: 16.8px;
+  font-weight: 700;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.ecranCorp {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 12px 14.4px;
+}
+
+.etichetaSectiune {
+  margin: 4px 0 8px;
+  color: var(--color-gri-meta);
+  font-size: 12.48px;
+  font-weight: 600;
+  letter-spacing: 0.624px;
+  text-transform: uppercase;
+}
+
+/* Pe `ardezie-1`, `ardezie-5` are 4,34:1 (sub AA); textul rolului e `ardezie-6` (6,9:1). */
+.rolMic {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+  font-size: 11.84px;
+  font-weight: 600;
+}
+
+.iconitaAlbastra {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.bifaVerde {
+  flex-shrink: 0;
+  color: var(--color-verde);
+}
+
+/* --- ecranul 1: acte primite --- */
+
+.adresaPrimire {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 60%;
+  padding: 3.2px 8px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 5px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.adresaPrimireText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listaPrimite {
+  overflow: hidden;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 12px;
+  background: #fff;
+}
+
+@keyframes intrareRand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.randPrimit {
+  display: flex;
+  gap: 11.2px;
+  padding: 10.4px 12.8px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+  box-shadow: inset 3px 0 0 transparent;
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.randPrimit:last-child {
+  border-bottom: 0;
+}
+
+.randNou {
+  animation: intrareRand 0.45s ease both;
+}
+
+.rand-citire {
+  background: rgba(37, 99, 235, 0.043);
+  box-shadow: inset 3px 0 0 var(--color-albastru);
+}
+
+.rand-arhivare {
+  background: rgba(245, 158, 11, 0.06);
+  box-shadow: inset 3px 0 0 var(--color-chihlimbar-mediu);
+}
+
+/* Randurile vechi, arhivate: la referinta tot randul coboara la opacitate 0,78, iar textul ajunge
+   sub 4,5:1 (masurat cu axe pe macheta: expeditorul, ora, atasamentul, eticheta dosarului). Aici
+   se sting numai avatarul si culorile textului, pe trepte care raman peste 4,5:1. */
+.rand-arhivat .avatar {
+  opacity: 0.78;
+}
+
+.rand-arhivat .expeditor {
+  color: var(--color-ardezie-6);
+  font-weight: 600;
+}
+
+.rand-arhivat .subiect {
+  color: var(--color-ardezie-7);
+}
+
+.avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+.ton-factura {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--color-albastru);
+}
+
+.ton-contract {
+  background: rgba(14, 116, 144, 0.1);
+  color: var(--color-teal);
+}
+
+.ton-aviz {
+  background: rgba(180, 83, 9, 0.1);
+  color: var(--color-chihlimbar);
+}
+
+.ton-raport {
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-7);
+}
+
+.randContinut {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.randSus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.necitit {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+.expeditor {
+  overflow: hidden;
+  color: var(--color-ardezie-9);
+  font-size: 15.2px;
+  font-weight: 700;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ora {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--color-ardezie-5);
+  font-size: 11.52px;
+}
+
+.subiect {
+  overflow: hidden;
+  color: var(--color-ardezie-8);
+  font-size: 13.44px;
+  font-weight: 600;
+  line-height: 19px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.randJos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 26px;
+}
+
+.atasament {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 2.88px 8px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 6px;
+  background: var(--color-fundal-bara);
+  color: var(--color-ardezie-6);
+  font-family: var(--font-mono);
+  font-size: 12.16px;
+}
+
+.atasament span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes aparitieEticheta {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Eticheta "se citeste" si tipul recunoscut: aceeasi pastila, se schimba doar textul. Textul e
+   `albastru-apasat` pe #eff4ff (6,2:1); la referinta `albastru` (4,7:1, la limita). */
+.etichetaTip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 4.48px 9.6px;
+  border: 1px solid var(--color-albastru-chenar);
+  border-radius: 7px;
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru-apasat);
+  font-size: 12.48px;
+  font-weight: 600;
+  line-height: 1;
+  animation: aparitieEticheta 0.3s ease both;
+}
+
+.etichetaArhivat {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 4.16px 8.8px;
+  border: 1px solid;
+  border-radius: 7px;
+  font-size: 12.16px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.dosar-factura {
+  border-color: #f5e3c2;
+  background: #fdf5e8;
+  color: var(--color-chihlimbar);
+}
+
+.dosar-contract {
+  border-color: var(--color-albastru-chenar);
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru-apasat);
+}
+
+.dosar-aviz {
+  border-color: #cbebd9;
+  background: #eaf7f0;
+  color: var(--color-verde-calm);
+}
+
+.dosar-raport {
+  border-color: var(--color-ardezie-2);
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+}
+
+@keyframes intrareNotificare {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.notificare {
+  position: absolute;
+  right: 14.4px;
+  bottom: 12px;
+  left: 14.4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9.6px 12.8px;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  color: var(--color-ardezie-6);
+  font-size: 13.12px;
+  animation: intrareNotificare 0.35s ease both;
+}
+
+.notificare strong {
+  color: var(--color-ardezie-9);
+  font-weight: 700;
+}
+
+.notificareClopotel {
+  flex-shrink: 0;
+  color: var(--color-chihlimbar-mediu);
+}
+
+.notificareBifa {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--color-verde);
+}
+
+.dosareDestinatie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dosarDestinatie {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-albastru-chenar-2);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-ardezie-7);
+  font-size: 13.6px;
+  font-weight: 600;
+  transition: box-shadow 0.3s ease;
+}
+
+.dosarAtins {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.contor {
+  color: var(--color-albastru-apasat);
+  font-size: 11.84px;
+  font-weight: 700;
+}
+
+/* --- ecranul 2: documente si regula --- */
+
+.spatiuLucru {
+  font-size: 15.04px;
+}
+
+.fir {
+  display: flex;
+  align-items: center;
+  margin: 0 0 10px;
+  color: var(--color-ardezie-5);
+}
+
+.grilaDosare {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9.6px;
+  margin-bottom: 12px;
+}
+
+.cardDosar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4.8px;
+  padding: 13.6px 8px 11.2px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-ardezie-9);
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.cardDosar:hover {
+  border-color: #bfdbfe;
+  background: var(--color-ceata-albastra);
+  transform: translateY(-1px);
+}
+
+.cardDosarActiv,
+.cardDosarActiv:hover {
+  border-color: var(--color-albastru-chenar-2-activ);
+  background: var(--color-ceata-albastra-2);
+  box-shadow: inset 0 0 0 1px var(--color-albastru-chenar-2-activ);
+  transform: none;
+}
+
+.reguliDosar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 5px;
+  border: 1px solid var(--color-albastru-chenar);
+  border-radius: 6px;
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru-apasat);
+  font-size: 11.84px;
+  font-weight: 700;
+}
+
+.iconitaDosar {
+  color: #5b8def;
+  fill: rgba(91, 141, 239, 0.9);
+}
+
+.numeDosar {
+  font-size: 14.08px;
+  font-weight: 700;
+}
+
+/* Pe cardul activ (#f5f8ff) `ardezie-5` are 4,48:1: metadatele sunt `ardezie-6`. */
+.metaDosar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-ardezie-6);
+  font-size: 11.52px;
+}
+
+.acces {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+  font-size: 10.88px;
+  font-weight: 600;
+}
+
+.panouRegula {
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow-fir);
+}
+
+.capRegula {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 46.8px;
+  padding: 0 12.8px;
+  border-bottom: 1px solid var(--color-gri-2);
+  background: var(--color-fundal-bara);
+}
+
+.titluRegula {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ardezie-9);
+  font-size: 14.4px;
+  font-weight: 700;
+}
+
+.dosarRegula {
+  color: var(--color-ardezie-5);
+  font-weight: 500;
+}
+
+.butonRegula {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5.12px 11.2px;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--color-ardezie-6);
+  font-size: 12.48px;
+  font-weight: 600;
+}
+
+.fluxRegula {
+  display: flex;
+  flex-direction: column;
+  gap: 9.6px;
+  padding: 11.2px 12.8px 12.8px;
+}
+
+.randRegula {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.randAtunci {
+  align-items: flex-start;
+}
+
+.etichetaCand,
+.etichetaAtunci {
+  flex-shrink: 0;
+  padding: 5px 8px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 10.88px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.etichetaCand {
+  border-color: #f5e3c2;
+  background: #fdf5e8;
+  color: var(--color-chihlimbar);
+}
+
+.etichetaAtunci {
+  border-color: var(--color-albastru-chenar);
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru-apasat);
+}
+
+.fisierRegula {
+  padding: 5px 10px;
+  border: 1px solid var(--color-albastru-chenar-2);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-ardezie-9);
+  font-family: var(--font-mono);
+  font-size: 13.44px;
+  font-weight: 500;
+  transition: box-shadow 0.3s ease;
+}
+
+.sageataRegula {
+  flex-shrink: 0;
+  color: var(--color-ardezie-3);
+}
+
+.dosarTinta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-albastru-chenar-2);
+  border-radius: 8px;
+  background: var(--color-fundal-bara);
+  color: var(--color-ardezie-9);
+  font-size: 13.6px;
+  font-weight: 600;
+  transition: box-shadow 0.3s ease;
+}
+
+.dosarTinta svg {
+  color: #5b8def;
+}
+
+.aprins {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.destinatari {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.destinatar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8.8px;
+  padding: 7.2px 10.4px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: #fff;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.destinatar + .destinatar {
+  transition-delay: 0.18s;
+}
+
+.placa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+}
+
+.placa-email {
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru);
+}
+
+.placa-notificare {
+  background: #fef3c7;
+  color: var(--color-chihlimbar);
+}
+
+.initiale {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+  font-size: 6.72px;
+  font-weight: 700;
+}
+
+.numeDest {
+  color: var(--color-ardezie-9);
+  font-size: 13.6px;
+  font-weight: 700;
+}
+
+.stareDest {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  font-size: 11.84px;
+  font-weight: 500;
+}
+
+.punctStare {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+@keyframes clipire {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.dest-asteptare {
+  opacity: 0.45;
+  transform: translateX(-6px);
+}
+
+.dest-asteptare .stareDest {
+  color: var(--color-ardezie-4);
+}
+
+.dest-asteptare .punctStare {
+  opacity: 0.45;
+}
+
+.dest-pornit {
+  border-color: var(--color-albastru-chenar-2);
+}
+
+.dest-pornit .stareDest {
+  color: var(--color-albastru-apasat);
+}
+
+.dest-pornit .punctStare {
+  animation: clipire 1s ease-in-out infinite;
+}
+
+.dest-livrat .stareDest {
+  color: var(--color-ardezie-5);
+}
+
+.grilaRecente {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10.4px;
+}
+
+.cardRecent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8.8px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.previzualizare {
+  position: relative;
+  height: 88px;
+  border-radius: 8px;
+  background:
+    linear-gradient(var(--color-ardezie-2), var(--color-ardezie-2)) 12px 18px / 45% 5px no-repeat,
+    linear-gradient(var(--color-ardezie-1), var(--color-ardezie-1)) 12px 32px / 70% 4px no-repeat,
+    linear-gradient(var(--color-ardezie-1), var(--color-ardezie-1)) 12px 44px / 62% 4px no-repeat,
+    linear-gradient(var(--color-ardezie-1), var(--color-ardezie-1)) 12px 56px / 66% 4px no-repeat,
+    var(--color-ardezie-0);
+}
+
+.previzualizareTabel {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 15px, var(--color-ardezie-2) 15px 16px) 10px 14px / calc(100% - 20px) 64px no-repeat,
+    repeating-linear-gradient(to right, transparent 0 39px, var(--color-ardezie-2) 39px 40px) 10px 14px / calc(100% - 20px) 64px no-repeat,
+    var(--color-ardezie-0);
+}
+
+.insigna {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 9.28px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.previzualizare .insigna {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 3px 6px;
+}
+
+.insignaPdf {
+  background: #fdecec;
+  color: var(--color-rosu-inchis);
+}
+
+.insignaXls {
+  background: #e9f7ef;
+  color: var(--color-verde-calm);
+}
+
+.numeRecent {
+  overflow: hidden;
+  color: var(--color-ardezie-8);
+  font-family: var(--font-mono);
+  font-size: 12.16px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaRecent {
+  color: var(--color-ardezie-5);
+  font-size: 11.52px;
+}
+
+/* --- ecranul 3: cautarea --- */
+
+.corpCautare {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 18px;
+}
+
+.casetaCautare {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  min-height: 50.7px;
+  padding: 11.2px 16px;
+  border: 2px solid var(--color-albastru-chenar);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 14px -8px rgba(37, 99, 235, 0.25);
+}
+
+.cerere {
+  color: var(--color-ardezie-9);
+  font-size: 15.2px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+@keyframes cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+.cursor {
+  display: inline-block;
+  width: 1.5px;
+  height: 17px;
+  margin-left: 1px;
+  background: var(--color-cursor-macheta);
+  vertical-align: -3px;
+  animation: cursor 1s steps(1) infinite;
+}
+
+@keyframes intrareRezultate {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Rezultatele sunt in pagina de la inceput, asezate si ascunse; apar (0,4 s) cand se termina
+   scrierea cererii (EcranCautare.tsx). Aparitia doar ridica ascunderea, nu scrie `visible`: un
+   `visibility: visible` explicit strapunge ascunderea ecranului si a aplicatiei pregatite (vazut,
+   cu miscare redusa: rezultatele se vedeau peste tur). */
+.rezultate {
+  width: 92%;
+  max-width: 480px;
+  margin-top: 12px;
+}
+
+.rezultate:not(.rezultateVazute) {
+  visibility: hidden;
+}
+
+.rezultateVazute {
+  animation: intrareRezultate 0.4s ease both;
+}
+
+.numarRezultate {
+  display: flex;
+  align-items: center;
+  gap: 7.2px;
+  margin: 0 0 8px;
+  color: var(--color-ardezie-7);
+  font-size: 14.08px;
+  font-weight: 600;
+}
+
+.listaRezultate {
+  overflow: hidden;
+  margin-bottom: 9.6px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.randRezultat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8.8px 12.8px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.randRezultat:last-child {
+  border-bottom: 0;
+}
+
+.fisierRezultat {
+  overflow: hidden;
+  color: var(--color-ardezie-8);
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.locRezultat {
+  flex-shrink: 0;
+  color: var(--color-ardezie-5);
+  font-size: 11.84px;
+  font-weight: 500;
+}
+
+.incaRezultate {
+  color: var(--color-ardezie-5);
+  font-size: 12.8px;
+}
+
+.actiuniRezultat {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8.8px;
+  margin-bottom: 11.2px;
+}
+
+.butonMacheta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14.4px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-ardezie-6);
+  font-size: 13.12px;
+  font-weight: 600;
+}
+
+.butonMachetaPlin {
+  border-color: var(--color-albastru);
+  background: var(--color-albastru);
+  color: #fff;
+}
+
+.cardAutomatizare {
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.capAutomatizare {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8.8px 13.6px;
+  border-bottom: 1px solid #e3ecfd;
+  background: #f8faff;
+  color: var(--color-albastru-apasat);
+  font-size: 13.6px;
+  font-weight: 700;
+}
+
+.corpAutomatizare {
+  padding: 11.2px 13.6px;
+}
+
+.randAutomatizare {
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  margin-bottom: 7.2px;
+}
+
+.etichetaAutomatizare {
+  min-width: 56px;
+  color: var(--color-gri-meta);
+  font-size: 13.44px;
+  font-weight: 600;
+}
+
+.valoareAutomatizare {
+  flex: 1;
+  padding: 5px 9px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 7px;
+  background: var(--color-fundal-bara);
+  color: var(--color-ardezie-8);
+  font-size: 13.12px;
+  font-weight: 500;
+}
+
+.butonCreeaza {
+  display: inline-block;
+  padding: 7.2px 16px;
+  border-radius: 8px;
+  background: var(--color-albastru);
+  color: #fff;
+  font-size: 13.12px;
+  font-weight: 600;
+}
+
+/* --- ecranul 4: portalul --- */
+
+.vizitator {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11.2px 4px 4.8px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 99px;
+  background: #fff;
+}
+
+.avatarVizitator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+  font-size: 8.8px;
+  font-weight: 700;
+}
+
+.numeVizitator {
+  color: var(--color-ardezie-7);
+  font-size: 13.6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rolVizitator {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru-apasat);
+  font-size: 11.52px;
+  font-weight: 600;
+}
+
+.cardFirma {
+  display: flex;
+  align-items: center;
+  gap: 10.4px;
+  margin-bottom: 12px;
+  padding: 11.2px 13.6px;
+  border: 1px solid var(--color-albastru-chenar);
+  border-radius: 12px;
+  background: var(--color-ceata-albastra-2);
+}
+
+.siglaFirma {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(14, 116, 144, 0.1);
+  color: var(--color-teal);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.textFirma {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.numeFirma {
+  color: var(--color-ardezie-9);
+  font-size: 15.2px;
+  font-weight: 700;
+}
+
+.subtitluFirma {
+  color: var(--color-ardezie-6);
+  font-size: 12.48px;
+  font-weight: 500;
+}
+
+.dosarPortal {
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.capDosarPortal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 43.2px;
+  padding: 0 12.8px;
+  border-bottom: 1px solid var(--color-gri-2);
+  background: var(--color-fundal-bara);
+}
+
+.titluDosarPortal {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-ardezie-9);
+  font-size: 14.4px;
+  font-weight: 700;
+}
+
+.numarDosarPortal {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+  font-size: 11.84px;
+  font-weight: 600;
+}
+
+.randPortal {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  min-height: 44.6px;
+  padding: 8.8px 12.8px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.insignaRand {
+  width: 34px;
+  height: 21.9px;
+}
+
+.fisierPortal {
+  flex: 1;
+  overflow: hidden;
+  color: var(--color-ardezie-8);
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.etichetaNou {
+  padding: 2px 7px;
+  border: 1px solid #cbebd9;
+  border-radius: 5px;
+  background: #e9f7ef;
+  color: var(--color-verde-calm);
+  font-size: 10.88px;
+  font-weight: 700;
+}
+
+.dataPortal {
+  color: var(--color-ardezie-5);
+  font-size: 12.16px;
+}
+
+.butonDescarca {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--color-linie-app);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--color-ardezie-6);
+}
+
+.incaPortal {
+  padding: 9px;
+  color: var(--color-ardezie-5);
+  font-size: 12.48px;
+  text-align: center;
+}
+
+.notaPortal {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 4px;
+  color: var(--color-ardezie-5);
+  font-size: 12.8px;
+  font-weight: 500;
+}
+
+/* ============================================================================================
+   RAMA DE TELEFON (sub 768 px, faza 2): 358 x 484,5 la 390
+   ============================================================================================ */
+
+/* Rama se centreaza in cadru cu margini automate, nu cu un cadru flex: cadrul ramane bloc si in tur si
+   in aplicatie. Un `display` schimbat la trecere reasezare tot cadrul (masurat la 390, CPU x4, in clicul
+   de pe scena 3: 438 de obiecte, 37 ms; cu cadrul bloc, 21 de obiecte, 0,3 ms). */
+.telefon {
+  width: 100%;
+  max-width: 358px;
+  margin-inline: auto;
+  box-sizing: border-box;
+  border: 3px solid #1e1e2e;
+  border-radius: 32px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.baraStare {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 28px;
+  padding: 4px 19.2px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.oraTelefon {
+  color: var(--color-ardezie-8);
+  font-size: 12.48px;
+  font-weight: 600;
+}
+
+.decupaj {
+  width: 76px;
+  height: 20px;
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+}
+
+.exempluTelefon {
+  color: var(--color-ardezie-5);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.ecranTelefon {
+  position: relative;
+  height: 380px;
+  overflow: hidden;
+  background: var(--color-fundal-bara);
+}
+
+.telefon .ecranBara {
+  min-height: 38px;
+  padding: 8px 12.8px;
+}
+
+.telefon .ecranTitlu {
+  font-size: 14.72px;
+}
+
+.telefon .ecranCorp {
+  padding: 10px 10.4px;
+}
+
+.telefon .adresaPrimire {
+  max-width: 150px;
+  font-size: 10.56px;
+}
+
+.telefon .vizitator {
+  display: none;
+}
+
+.baraFile {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  box-sizing: border-box;
+  height: 52.1px;
+  padding: 6.4px 0 4px;
+  border-top: 1px solid var(--color-linie-app);
+  background: #fff;
+}
+
+.fila {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.92px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ardezie-5);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  cursor: pointer;
+}
+
+.filaActiva {
+  color: var(--color-albastru-apasat);
+}
+
+.indicatorAcasa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18.4px;
+  border-radius: 0 0 32px 32px;
+  background: #fff;
+}
+
+.indicatorAcasa span {
+  width: 100px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-gri-3);
+}
+
+/* ============================================================================================
+   LATIMI INGUSTE: turul pe verticala (390: titlu 22,4, paragraf 15,2, ilustratia sub text)
+   ============================================================================================ */
+
+@media (max-width: 767px) {
+  .bunVenitTitlu {
+    font-size: 24px;
+    line-height: 38.4px;
+  }
+
+  .scenaTur {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .scenaText {
+    flex: none;
+    min-width: 0;
+  }
+
+  .scenaTitlu {
+    font-size: 22.4px;
+    line-height: 35.84px;
+  }
+
+  .scenaParagraf {
+    font-size: 15.2px;
+    line-height: 25.08px;
+  }
+
+  .scenaIlustratie {
+    flex: none;
+    align-self: center;
+    width: 300px;
+    max-width: 100%;
+  }
+}
+
+/* ============================================================================================
+   MISCAREA REDUSA: nicio intrare, nicio bucla; ilustratiile raman in starea care spune povestea
+   ============================================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .plutitor,
+  .cadru,
+  .macheta3d .cadru,
+  .scenaTur,
+  .aplicatie,
+  .randNou,
+  .etichetaTip,
+  .notificare,
+  .rezultateVazute,
+  .cursor,
+  .dest-pornit .punctStare,
+  .bunVenitSigla,
+  .bunVenitTitlu,
+  .foaieCalatoare,
+  .scanteie,
+  .impuls,
+  .impuls1,
+  .impuls2,
+  .impuls3 {
+    animation: none;
+  }
+
+  .macheta3d .paralaxa,
+  .bunVenit,
+  .destinatar,
+  .randPrimit {
+    transition: none;
+  }
+
+  .foaieCalatoare {
+    opacity: 1;
+    transform: translate(196px, 70px) rotate(6deg);
+  }
+
+  .semnatura {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .stampila,
+  .notificareIlustratie,
+  .deschis {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+/* Pe telefon dosarele stau cate doua pe rand, compacte, iar randul regulii se poate rupe: in
+   ecranul de 352 px, patru carduri de 76 px nu-si mai incap numele si metadatele. */
+.telefon .grilaDosare {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.telefon .cardDosar {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 7px 8px;
+}
+
+.telefon .iconitaDosar {
+  width: 18px;
+  height: 18px;
+}
+
+.telefon .numeDosar {
+  font-size: 12.8px;
+}
+
+.telefon .metaDosar {
+  display: none;
+}
+
+.telefon .reguliDosar {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.telefon .randRegula {
+  flex-wrap: wrap;
+}

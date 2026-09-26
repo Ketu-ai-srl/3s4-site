@@ -1,0 +1,203 @@
+/* Meniul mare (componente-globale.md §3.1-§3.2): un singur card de 600, centrat pe legaturi, cu doua
+   foi. Punte de hover de 20 px deasupra cardului; intrare 0,15 s (opacitate + 4 px), iesire fara
+   animatie; trecerea intre foi: inaltimea instant, opacitatea in 0,15 s. */
+
+.zona {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 100;
+  width: 600px;
+  padding-top: 20px;
+  transform: translateX(-50%);
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+  animation: intrare var(--durata-rapida) ease;
+}
+
+@keyframes intrare {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.foaie {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--durata-rapida) ease;
+}
+
+.foaieAscunsa {
+  position: absolute;
+  inset: 0 0 auto;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--durata-rapida) ease,
+    visibility 0s linear var(--durata-rapida);
+}
+
+.lider {
+  margin: 8px 8px 0;
+}
+
+.grila {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  padding: 8px;
+}
+
+.element {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: var(--color-cerneala);
+  transition: background-color var(--durata-rapida) ease;
+}
+
+.element:hover,
+.element:focus-visible {
+  background: var(--color-gri-card);
+}
+
+.elementLider {
+  align-items: center;
+  background: var(--color-gri-card);
+}
+
+.elementLider:hover,
+.elementLider:focus-visible {
+  background: var(--color-ceata-albastra);
+}
+
+.elementCurent,
+.elementCurent:hover {
+  background: var(--color-ceata-albastra);
+}
+
+.cutie {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+  transition:
+    background-color var(--durata-rapida) ease,
+    color var(--durata-rapida) ease;
+}
+
+.element:hover .cutie,
+.element:focus-visible .cutie {
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.titlu {
+  margin-bottom: 3.2px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.marcajAi {
+  margin-left: 5.6px;
+  color: var(--color-albastru);
+  font-size: 10.4px;
+  font-weight: 600;
+}
+
+.descriere {
+  color: var(--color-cerneala-2);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.sageataLider {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.subsol {
+  padding: 10px 20px;
+  border-top: 1px solid var(--color-ardezie-2);
+  background: var(--color-gri-card);
+}
+
+/* albastru pe gri-card: 4,74:1 */
+.subsolLegatura {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.subsolLegatura:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- varianta inchisa (doar CSS la referinta) ------------------------------------------------- */
+
+:global(html:has([data-tema-pagina="inchisa"])) .card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(12, 12, 16, 0.96);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .element {
+  color: var(--color-alb);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .element:hover,
+:global(html:has([data-tema-pagina="inchisa"])) .elementLider {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .descriere {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .cutie {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .subsol {
+  border-top-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global(html:has([data-tema-pagina="inchisa"])) .subsolLegatura {
+  color: var(--color-albastru-clar);
+}

@@ -1,0 +1,121 @@
+/* Panoul Descarca (componente-globale.md §3.3): 340x752 la referinta, aliniat la dreapta
+   butonului, punte de 18 px sub buton, 5 grupuri despartite de linii ardezie-2. Masurat pe
+   referinta (stil calculat): titlul de grup 11,2/600/17,92 majuscule, 31,5 inaltime; lista cu
+   padding 2,4 8 8 si 2 px intre elemente; elementul 66,4 (83,2 cu descrierea pe doua randuri),
+   cu titlul la margine jos 3,2, ca in meniul mare. */
+
+.zona {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  width: 340px;
+  padding-top: 18px;
+}
+
+.card {
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+  animation: intrare var(--durata-rapida) ease;
+}
+
+@keyframes intrare {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.grup + .grup {
+  border-top: 1px solid var(--color-ardezie-2);
+}
+
+.grupTitlu {
+  margin: 0;
+  padding: 9.6px 16px 4px;
+  color: var(--color-cerneala-2);
+  font-size: 11.2px;
+  font-weight: 600;
+  line-height: 17.92px;
+  letter-spacing: 0.56px;
+  text-transform: uppercase;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 2.4px 8px 8px;
+  list-style: none;
+}
+
+.element {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: var(--color-cerneala);
+  transition: background-color var(--durata-rapida) ease;
+}
+
+.element:hover,
+.element:focus-visible {
+  background: var(--color-gri-card);
+}
+
+.cutie {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.titlu {
+  margin-bottom: 3.2px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.recomandat {
+  margin-left: 4px;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.descriere {
+  color: var(--color-cerneala-2);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.nota {
+  margin: 0;
+  padding: 8.8px 20px;
+  border-top: 1px solid var(--color-ardezie-2);
+  background: var(--color-gri-card);
+  color: var(--color-cerneala-2);
+  font-size: 11.2px;
+  line-height: 15.68px;
+}

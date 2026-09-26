@@ -1,0 +1,11 @@
+{
+  "_nota": "Ce arata site-ul despre MARCA 3S, dintr-un singur loc: numele, sigla si adresa de e-mail. Decizia owner-ului din 24.09.2026 (planul valului S4, sectiunea 7): pe site apare doar brandul, fara date de firma - fara denumire, sediu, cod fiscal, numar de registru sau telefon. Datele unei firme sunt ale operatorului de date, in config/operator.json, si nu se afiseaza cat timp acela e null. Cititorul: src/content/entitate.ts.",
+  "_email": "Adresa de e-mail a marcii, numai daca owner-ul a CONFIRMAT ca primeste posta. Gol = nicio adresa pe site: intrebarile de pe start si subsolul se randeaza fara ea, fara sa promita alt canal. Masurat 24.09.2026: domeniul 3s.ro nu are inregistrare MX, deci adresa folosita pana atunci nu primea posta.",
+  "nume": "3S Scan Store Solve",
+  "sigla": {
+    "completa": "/brand/sigla-3s.svg",
+    "completaPeInchis": "/brand/sigla-3s-inchis.svg",
+    "compacta": "/brand/sigla-3s-compacta.svg"
+  },
+  "email": ""
+}
