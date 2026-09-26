@@ -312,12 +312,12 @@ describe('mentiunile legale', () => {
       'Sediul',
       'Țara',
       'Nr. de ordine în registrul comerțului',
-      'Cod de identificare fiscală',
-      'E-mail',
-      'Telefon',
+      'Codul de identificare fiscală',
+      'Adresa de e-mail',
+      'Telefonul',
     ])
     const partial = randuriIdentificare(operatorPartial())
-    expect(partial.map((r) => r[0])).toEqual(['Denumirea', 'Sediul', 'Țara', 'E-mail'])
+    expect(partial.map((r) => r[0])).toEqual(['Denumirea', 'Sediul', 'Țara', 'Adresa de e-mail'])
     for (const rand of [...complet, ...partial]) expect(String(rand[1]).trim()).not.toBe('')
   })
 

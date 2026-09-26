@@ -1,0 +1,918 @@
+/* Blogul (sabloanele blog-L, blog-C, blog-articol): valorile din fisele blog.md si
+   blog__articol-sablon.md, la 1440 / 390. Culorile, umbrele si razele sunt tokenii din globals.css;
+   niciun hex nou. Stilurile ating numai elementele feliei: primitivele (FirPagina, Proza, TabelDate,
+   Buton) primesc cel mult o clasa pe elementul lor, prin proprietatea `className`. */
+
+/* ============================================================================================
+   ANTETUL LISTARII SI AL CATEGORIILOR (blog.md §A2, §B2): 128 / 48 la ambele latimi
+   ============================================================================================ */
+
+.pagina {
+  padding-bottom: 0;
+}
+
+.antet {
+  padding: 128px 0 48px;
+  text-align: center;
+}
+
+.antetFir {
+  margin-bottom: 24px;
+}
+
+.antetText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: aparitieAntet var(--durata-aparitie) ease-out both;
+}
+
+@keyframes aparitieAntet {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Randul de 16 / 25,6 in care eticheta sta inline-block: ea coboara ~5 px, iar h1 incepe la y 211 (§B2). */
+.etichetaRand {
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.eticheta {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--color-albastru);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.2px;
+}
+
+.antetTitlu {
+  margin-bottom: 16px;
+  color: var(--color-cerneala);
+}
+
+.antetSubtitlu {
+  margin-inline: auto;
+}
+
+/* ============================================================================================
+   LISTA (blog.md §A3): 0 sus, 80 jos (48 la 390)
+   ============================================================================================ */
+
+.sectiuneLista {
+  padding: 0 0 80px;
+}
+
+@media (max-width: 767px) {
+  .sectiuneLista {
+    padding-bottom: 48px;
+  }
+}
+
+/* --- cautarea: pastila 480 x 44, lupa 18 la 16 px de margine -------------------------------- */
+
+.cautare {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 24px;
+}
+
+.cautareLupa {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  color: var(--color-ardezie-4);
+  pointer-events: none;
+}
+
+.cautareCamp {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  padding: 12px 16px 12px 44px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 9999px;
+  background: var(--color-alb);
+  color: var(--color-ardezie-9);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  transition: border-color var(--durata-rapida) ease;
+  appearance: none;
+}
+
+/* Textul-exemplu: `ardezie-5` (4,76:1), nu `ardezie-4` (2,56:1) ca la referinta - e text de citit. */
+.cautareCamp::placeholder {
+  color: var(--color-ardezie-5);
+  opacity: 1;
+}
+
+.cautareCamp:focus {
+  border-color: var(--color-albastru);
+}
+
+.cautareCamp::-webkit-search-decoration,
+.cautareCamp::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* --- pastilele de filtru L: centrate, gap 8 (6), 40 inaltime (34 la 390) --------------------- */
+
+.pastileL,
+.pastileC {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pastileL {
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.pastilaL {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 8px 20px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--color-ardezie-6);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  white-space: nowrap;
+  transition:
+    border-color var(--durata-rapida) ease,
+    color var(--durata-rapida) ease,
+    background-color var(--durata-rapida) ease;
+}
+
+.pastilaL:hover {
+  border-color: var(--color-ardezie-4);
+  color: var(--color-ardezie-9);
+}
+
+.pastilaL[aria-current] {
+  border-color: var(--color-ardezie-9);
+  background: var(--color-ardezie-9);
+  color: var(--color-alb);
+}
+
+@media (max-width: 767px) {
+  .pastileL {
+    gap: 6px;
+  }
+
+  .pastilaL {
+    height: 34px;
+    padding: 6.4px 14.4px;
+    font-size: 12px;
+    line-height: 19.2px;
+  }
+}
+
+/* --- contorul: 14 / 22,4 ardezie-5; pe L doar cand lista e filtrata -------------------------- */
+
+.contorL {
+  margin: 0 0 24px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+  text-align: center;
+}
+
+.contorAscuns {
+  margin: 0;
+}
+
+/* --- grila L: 3 x 1fr, gap 20; de la 900 in jos o coloana de cel mult 500 -------------------- */
+
+.grilaL {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .grilaL {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 500px;
+    margin-inline: auto;
+  }
+}
+
+/* --- starea goala: 16 / 25,6 ardezie-5, 48 sus si jos --------------------------------------- */
+
+.gol {
+  margin: 0;
+  padding: 48px 0;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+  text-align: center;
+}
+
+/* --- „mai multe articole": centrat, 40 deasupra; forma e varianta `contur` a Butonului ------- */
+
+.maiMulte {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+/* Pastila de 44 (blog.md 3f): 12 + 18 + 12 plus chenarul de 1 px randat. Butonul comun, varianta
+   contur, are linia de 22,4 si iese 48,4; aici se strange doar linia, pe clasa acestui buton. */
+.maiMulte .butonMaiMulte {
+  line-height: 18px;
+}
+
+/* ============================================================================================
+   CARDURILE (blog.md 3e si §B3; articol §8)
+   ============================================================================================ */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--color-alb);
+}
+
+/* L si inrudit: chenar ardezie-2, umbra de fir; hover chenar ardezie-3 + umbra de card (0,15 s). */
+.cardL {
+  border: 1px solid var(--color-ardezie-2);
+  box-shadow: var(--shadow-fir);
+  transition:
+    border-color var(--durata-rapida) ease,
+    box-shadow var(--durata-rapida) ease;
+}
+
+.cardL:hover {
+  border-color: var(--color-ardezie-3);
+  box-shadow: var(--shadow-card);
+}
+
+/* C: chenar gri-2, fara umbra; hover -4 px si umbra albastruie (0,25 s). */
+.cardC {
+  border: 1px solid var(--color-gri-2);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.cardC:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-ridicare-albastra);
+}
+
+/* Imaginea L: 16:9 cu decupare si linie jos ardezie-1; fara fundal propriu. */
+.cardImagineL {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+/* Imaginea C: la proportia ei (1200 x 630), fara linie. */
+.cardImagineC {
+  aspect-ratio: 1200 / 630;
+  overflow: hidden;
+}
+
+.cardCorp {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* L si inrudit: corpul e un bloc cu linia de text 16 / 25,6, ca la referinta. Legatura „citeste" e
+   inline-flex intr-un rand al acestui bloc, deci randul ei are 25,6 (linia blocului), nu 22,4 (linia
+   ei proprie); de aici 417 pe cardul L si 387 pe inrudit (blog.md 3e). In flex, randul lipsea. */
+.cardL .cardCorp {
+  display: block;
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.cardC .cardCorp {
+  gap: 8px;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0 0 12px;
+  color: var(--color-ardezie-5);
+  font-size: 12px;
+  line-height: 19.2px;
+}
+
+/* Meta C: 13,12 / 20,99, `ardezie-5` (la referinta `ardezie-4`, 2,56:1), gap 12. */
+.cardC .cardMeta {
+  gap: 12px;
+  margin: 0;
+  font-size: 13.12px;
+  line-height: 20.99px;
+}
+
+.cardTitlu {
+  margin: 0 0 8px;
+  color: var(--color-ardezie-9);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.16px;
+}
+
+.cardL .cardTitlu {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.cardC .cardTitlu {
+  margin: 0;
+  font-size: 16.8px;
+  line-height: 22.68px;
+}
+
+/* Legatura e titlul; pseudo-elementul ei acopera tot cardul, deci clicul oriunde deschide articolul. */
+.cardLegatura::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 16px;
+}
+
+.cardLegatura:focus-visible {
+  outline: none;
+}
+
+.cardLegatura:focus-visible::after {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+.cardExtras {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 16px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 21px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.cardC .cardExtras {
+  margin: 0;
+  font-size: 14.4px;
+  line-height: 22.32px;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.cardCiteste {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  transition: gap var(--durata-normala) ease;
+}
+
+.cardL:hover .cardCiteste {
+  gap: 9.6px;
+}
+
+.cardC .cardCiteste {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 14.4px;
+  line-height: 23.04px;
+}
+
+.cardCiteste > svg {
+  flex-shrink: 0;
+}
+
+/* ============================================================================================
+   CATEGORIA (blog.md §B3): pastile la stanga, contor mereu, grila 3 / 2 / 1
+   ============================================================================================ */
+
+.pastileC {
+  margin-bottom: 20px;
+}
+
+.pastilaC {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 7.2px 16px;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 999px;
+  background: var(--color-alb);
+  color: var(--color-ardezie-6);
+  font-size: 14.72px;
+  font-weight: 500;
+  line-height: 23.55px;
+  white-space: nowrap;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.pastilaC:hover {
+  border-color: var(--color-indigo-2);
+  color: var(--color-albastru);
+}
+
+.pastilaC[aria-current] {
+  border-color: var(--color-albastru);
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+.contorC {
+  margin: 0 0 24px;
+  color: var(--color-ardezie-5);
+  font-size: 14.72px;
+  line-height: 23.55px;
+}
+
+.grilaC {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 980px) {
+  .grilaC {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .grilaC {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================================================
+   ARTICOLUL (blog__articol-sablon.md): coloana de 720, padding sus 120 (88 sub 768)
+   ============================================================================================ */
+
+.paginaArticol {
+  padding-bottom: 0;
+}
+
+/* --- bara de progres: fixa, 2,5 px, strat 1300, aparitie 0,25 s ----------------------------- */
+
+.progres {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--strat-progres);
+  height: 2.5px;
+  background: var(--color-albastru);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.progres[data-vizibila="da"] {
+  opacity: 1;
+}
+
+.articol {
+  padding-top: 120px;
+}
+
+@media (max-width: 767px) {
+  .articol {
+    padding-top: 88px;
+  }
+}
+
+.coloana {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.titluArticol {
+  margin: 20px 0 14px;
+}
+
+.sapou {
+  margin: 0;
+  color: var(--color-ardezie-5);
+  font-size: 18px;
+  line-height: 28.8px;
+}
+
+/* Randul meta: linie sus ardezie-1, 16 deasupra textului, 24 fata de sapou; puncte de 3 x 3. */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--color-ardezie-1);
+  list-style: none;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.meta li + li::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-ardezie-3);
+}
+
+/* Coperta: 720, 40 sus / 48 jos, chenar ardezie-2, raza 16, 16:9 cu decupare. */
+.coperta {
+  aspect-ratio: 16 / 9;
+  margin: 40px 0 48px;
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+}
+
+/* Caseta de fapte: ardezie-0, chenar linie-fina pe trei laturi si 3 albastru la stanga, raza 0 14 14 0.
+   32 sus se contopeste cu cei 48 de sub coperta. */
+.fapte {
+  margin: 32px 0 0;
+  padding: 22.4px 25.6px;
+  border: 1px solid var(--color-linie-fina);
+  border-left: 3px solid var(--color-albastru);
+  border-radius: 0 14px 14px 0;
+  background: var(--color-ardezie-0);
+}
+
+/* albastru pe ardezie-0: 4,95:1 (calculat). */
+.fapteTitlu {
+  margin: 0 0 11.2px;
+  color: var(--color-albastru);
+  font-size: 12.48px;
+  font-weight: 600;
+  line-height: 19.97px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fapteLista {
+  display: flex;
+  flex-direction: column;
+  gap: 7.2px;
+  margin: 0;
+  padding-left: 18.4px;
+  list-style: none;
+  color: var(--color-ardezie-7);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+/* Corpul: primul titlu isi scoate marginea prin contopire (48 sub coperta, 44 sub caseta); un
+   paragraf de inceput nu se lipeste de caseta, fiindca ramane marginea de 32. Padding jos 48 in total
+   (Proza are 32). */
+.corp {
+  margin-top: 32px;
+  padding-bottom: 16px;
+}
+
+.codInline {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-8);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.cod {
+  margin: 0 0 20px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: var(--color-ardezie-8);
+  color: var(--color-ardezie-0);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+/* Sursele (adaos 3S): lista numerotata, 14 / 22,4 ardezie-6, legaturi albastre subliniate. */
+.surse {
+  padding: 0 0 48px;
+}
+
+.surseTitlu {
+  margin: 0 0 12px;
+  color: var(--color-ardezie-9);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.2px;
+}
+
+.surseLista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+  list-style: decimal;
+  color: var(--color-ardezie-6);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.surseLista li::marker {
+  color: var(--color-ardezie-4);
+}
+
+.sursaLegatura {
+  color: var(--color-albastru);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+  transition: color var(--durata-rapida) ease;
+}
+
+.sursaLegatura:hover {
+  color: var(--color-albastru-apasat);
+}
+
+.sursaGazda {
+  color: var(--color-ardezie-5);
+  overflow-wrap: anywhere;
+}
+
+/* --- caseta CTA: 720 ardezie-9, raza 16, padding 40 (28) ------------------------------------- */
+
+.cta {
+  max-width: 720px;
+  margin-inline: auto;
+  padding: 40px;
+  border-radius: 16px;
+  background: var(--color-ardezie-9);
+}
+
+/* ardezie-4 pe ardezie-9: 6,96:1. */
+.ctaSupratitlu {
+  margin: 0 0 8px;
+  color: var(--color-ardezie-4);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+}
+
+.ctaTitlu {
+  margin: 0 0 10px;
+  color: var(--color-alb);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 35px;
+  letter-spacing: -0.56px;
+}
+
+/* ardezie-3 pe ardezie-9: 12,02:1. */
+.ctaText {
+  margin: 0 0 24px;
+  color: var(--color-ardezie-3);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.ctaText strong {
+  color: var(--color-alb);
+  font-weight: 600;
+}
+
+.ctaText a {
+  color: var(--color-alb);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ctaActiuni {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+
+.ctaSecundara {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.6px;
+  color: var(--color-ardezie-3);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  transition: color var(--durata-rapida) ease;
+}
+
+a.ctaSecundara:hover {
+  color: var(--color-alb);
+}
+
+.ctaSecundara > svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+  .cta {
+    padding: 28px;
+  }
+
+  .ctaTitlu {
+    font-size: 21.6px;
+    line-height: 27px;
+    letter-spacing: -0.432px;
+  }
+}
+
+/* --- articolele inrudite: linie sus ardezie-1, 64 / 80 (40 / 56), 16 sub caseta CTA ---------- */
+
+.inrudite {
+  margin-top: 16px;
+  padding: 64px 0 80px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.inruditeTitlu {
+  margin: 0 0 24px;
+}
+
+.grilaInrudite {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .grilaInrudite {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 767px) {
+  .inrudite {
+    padding: 40px 0 56px;
+  }
+}
+
+/* ============================================================================================
+   COPERTA (SVG 1200 x 630): culorile din tokeni, textul in fonturile site-ului
+   ============================================================================================ */
+
+.copertaSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.copFundal {
+  fill: var(--color-ardezie-0);
+}
+
+.copUmbra {
+  fill: var(--color-ardezie-9);
+  opacity: 0.04;
+}
+
+.copCard {
+  fill: var(--color-alb);
+  stroke: var(--color-ardezie-2);
+  stroke-width: 2;
+}
+
+.copLinie {
+  fill: none;
+  stroke: var(--color-ardezie-2);
+  stroke-width: 2;
+}
+
+.copLinieFina {
+  fill: none;
+  stroke: var(--color-ardezie-1);
+  stroke-width: 2;
+}
+
+.copLinieAxa {
+  fill: none;
+  stroke: var(--color-ardezie-3);
+  stroke-width: 3;
+}
+
+.copBara {
+  fill: var(--color-ardezie-2);
+}
+
+.copAccent {
+  fill: var(--color-albastru);
+}
+
+.copPunct {
+  fill: var(--color-ardezie-3);
+}
+
+.copPunctGol {
+  fill: var(--color-alb);
+  stroke: var(--color-ardezie-2);
+  stroke-width: 3;
+}
+
+.copTitlu {
+  fill: var(--color-ardezie-9);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.copMono {
+  fill: var(--color-ardezie-9);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.copMonoStins {
+  fill: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.copMonoAccent {
+  fill: var(--color-albastru);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.copIconita {
+  color: var(--color-albastru);
+}
+
+.copIconitaStinsa {
+  color: var(--color-ardezie-5);
+}
+
+.copEticheta {
+  fill: var(--color-alb);
+  stroke: var(--color-ardezie-2);
+  stroke-width: 2;
+}
+
+.copSageata {
+  fill: none;
+  stroke: var(--color-ardezie-3);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.copBifa {
+  fill: none;
+  stroke: var(--color-albastru);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

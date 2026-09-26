@@ -23,12 +23,12 @@ export const FIR_EFACTURARE = [
 
 export const EROU_EFACTURARE = {
   // Rol: titlul-teza, 3 randuri pe coloana de 580.
-  titlu: "În RO e-Factura, XML-ul se descarcă 60 de zile. În 3S rămâne cât hotărâți.",
+  titlu: "În RO e-Factura, XML-ul se poate descărca 60 de zile. În 3S rămâne cât hotărăști tu.",
   // Rol: contextul legal si ce face produsul, 5 randuri.
   subtitlu:
     "Firmele stabilite în România raportează în RO e-Factura facturile dintre ele din ianuarie 2024, iar din 1 iulie 2024 contează ca factură doar XML-ul trecut prin sistem. După 60 de zile, fișierul nu se mai descarcă direct, ci se cere la ANAF. 3S adună facturile emise și primite și le ține în arhiva firmei, gata de căutat.",
-  butonPlin: { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
-  butonContur: { text: "Cereți o demonstrație", href: "/contact", ruta: "/contact" } satisfies Legatura,
+  butonPlin: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
+  butonContur: { text: "Cere o demonstrație", href: "/contact", ruta: "/contact" } satisfies Legatura,
 };
 
 export const MACHETA_DRUM = {
@@ -45,14 +45,14 @@ export const MACHETA_DRUM = {
 
 // Rol: fraza-ancora, o idee, 3 randuri centrate.
 export const FRAZA_ANCORA =
-  "RO e-Factura vă ține XML-ul 60 de zile. Arhiva firmei o deschideți ani la rând, ori de câte ori cereți o factură.";
+  "RO e-Factura îți ține XML-ul 60 de zile. Arhiva firmei o deschizi ani la rând, ori de câte ori ceri o factură.";
 
 export const MANDATE = {
   // Rol: titlul cutiei despre diversitatea mandatelor, 1 rand.
-  titlu: "Șase piețe, șase calendare diferite.",
-  text: "Fiecare stat își alege sistemul, formatul și datele de start. O firmă care vinde în trei țări urmărește trei calendare, fiecare cu regulile lui tehnice. Tabelul de mai jos le pune alături, cu documentul oficial al fiecăreia.",
+  titlu: "Șase piețe, șase calendare diferite",
+  text: "Fiecare stat își alege sistemul, formatul și datele de intrare în vigoare. O firmă care vinde în trei țări urmărește trei calendare, fiecare cu regulile lui tehnice. Tabelul de mai jos le pune alături, cu documentul oficial al fiecăreia.",
   batai: [
-    "Polonia trimite facturile prin KSeF, Belgia prin rețeaua Peppol, România prin RO e-Factura, iar Franța prin platforme agreate de fisc. Germania cere din 2025 ca firmele să poată primi e-facturi în XRechnung sau ZUGFeRD. Directiva (UE) 2025/516 adaugă din 1 iulie 2030 reguli comune pentru livrările dintre statele membre.",
+    "Polonia trimite facturile prin KSeF, Belgia prin rețeaua Peppol, România prin RO e-Factura, iar Franța prin platforme autorizate de fisc. Germania cere din 2025 ca firmele să poată primi e-facturi în XRechnung sau ZUGFeRD. Directiva (UE) 2025/516 adaugă din 1 iulie 2030 reguli comune pentru livrările dintre statele membre.",
     "Oricare ar fi canalul, facturile ajung la final în același loc: în arhiva firmei. În 3S, o factură sosită prin Peppol stă lângă una descărcată din RO e-Factura, fiecare cu data, canalul și regula ei de păstrare. Contabilul le caută pe amândouă cu aceeași întrebare, termenul de păstrare se stabilește o dată pe categorie, iar jurnalul arată cine le-a deschis și când.",
   ],
 };
@@ -63,9 +63,9 @@ export const TABEL = {
   capete: ["Țara", "Ce se aplică", "De când", "Format și canal"],
   titluModificari: "Schimbări recente",
   calendar: {
-    titlu: "Termenele, în calendarul dumneavoastră",
-    text: "17 termene: 12 depuneri lunare D406, cu alarmă la 7 zile, și 5 date europene, cu alarmă la 30.",
-    buton: "Descărcați calendarul (.ics)",
+    titlu: "Termenele, în calendarul tău",
+    text: "17 termene: 12 depuneri lunare D406, cu alarmă cu 7 zile înainte, și 5 date europene, cu alarmă cu 30 de zile înainte.",
+    buton: "Descarcă calendarul (.ics)",
   },
   verificare: "Date verificate la sursa oficială pe",
   nota: "Facturile către persoane fizice nu apar în tabel. Italia și Spania lipsesc până le putem verifica la sursa oficială. Ghidurile pe țări apar pe blog.",
@@ -92,7 +92,7 @@ export const TREI_REGULI = {
     {
       iconita: "file-code",
       titlu: "Un singur format",
-      text: "Factura este un fișier XML pe standardul european EN 16931, cu regulile naționale RO_CIUS. Programul destinatarului o citește direct, iar 3S păstrează XML-ul așa cum a sosit. PDF-ul rămâne o vedere a ei, bună de citit, dar documentul este XML-ul.",
+      text: "Factura este un fișier XML conform standardului european EN 16931, cu regulile naționale RO_CIUS. Programul destinatarului o citește direct, iar 3S păstrează XML-ul așa cum a sosit. PDF-ul rămâne o reprezentare lizibilă a ei, dar documentul este XML-ul.",
     },
     {
       iconita: "archive",
@@ -106,7 +106,7 @@ export const EMITEREA = {
   titlu: "Anii de după transmitere: unde stă factura când o cer contabilul, auditorul sau un partener",
   text: "Termenul de păstrare depinde de categoria actului și se întinde pe ani. În tot acest timp, factura trebuie să poată fi găsită, citită și arătată în forma în care a intrat în firmă.",
   paragrafe: [
-    "O verificare fiscală, un litigiu cu un furnizor sau o întrebare de la bancă pot readuce în discuție o factură de acum câțiva ani. Atunci contează dacă o găsiți în câteva secunde, cu XML-ul original și cu data la care a sosit. O copie tipărită sau un PDF redenumit nu mai spune de unde vine și dacă a fost schimbat între timp.",
+    "O verificare fiscală, un litigiu cu un furnizor sau o întrebare de la bancă pot readuce în discuție o factură de acum câțiva ani. Atunci contează dacă o găsești în câteva secunde, cu XML-ul original și cu data la care a sosit. O copie tipărită sau un PDF redenumit nu mai spune de unde vine și dacă a fost schimbat între timp.",
     "RO e-Factura nu ține loc de arhivă: potrivit ghidului ANAF din 2023, fișierele se descarcă direct 60 de zile, apoi se cer la ANAF. În multe firme, copiile ajung pe mai multe calculatoare, în atașamente trimise mai departe și în foldere cu nume diferite. Unele se pierd, altele se dublează, iar la control nimeni nu mai știe care e originalul. Iar când omul care le-a descărcat pleacă din firmă, dosarul lui poate pleca odată cu el, rămas pe un laptop pe care nu-l mai deschide nimeni.",
   ],
   rezolvare:
@@ -120,7 +120,7 @@ export const RIGLA = {
   fisier: "F-2026-0412.xml",
   eticheta: "primită în octombrie 2026",
   banda: "după 8 ani: ștergere, cu evidența ei în jurnal",
-  nota: "Termenul pentru fiecare categorie îl stabiliți cu contabilul. 3S îl aplică tuturor documentelor din categoria respectivă.",
+  nota: "Termenul pentru fiecare categorie îl stabilești cu contabilul. 3S îl aplică tuturor documentelor din categoria respectivă.",
   /** Anul emiterii si numarul de ani ai scalei (gradatii anuale). */
   anStart: 2026,
   aniScala: 11,
@@ -129,22 +129,22 @@ export const RIGLA = {
 
 export const CASA = {
   titlu: "Ce face 3S cu facturile firmei",
-  text: "Trei lucruri pe care le faceți cu facturile în 3S, oricare ar fi programul care le emite.",
+  text: "Trei lucruri pe care le faci cu facturile în 3S, oricare ar fi programul care le emite.",
   pasi: [
     {
-      titlu: "Întrebați în cuvintele dumneavoastră",
-      text: "Scrieți „facturile de energie din martie” și primiți lista, fiecare rezultat cu sursa citată. Răspunsul e același dacă factura a venit pe e-mail, prin Peppol sau ca XML din RO e-Factura.",
+      titlu: "Întreabă în cuvintele tale",
+      text: "Scrie „facturile de energie din martie” și primești lista, fiecare rezultat cu sursa citată. Răspunsul e același dacă factura a venit pe e-mail, prin Peppol sau ca XML din RO e-Factura.",
     },
     {
-      titlu: "Deschideți accesul contabilului",
-      text: "Contabilul intră prin portalul clienților doar în categoriile pe care i le deschideți. Fiecare căutare și fiecare document deschis de el apar în jurnal, cu numele și ora.",
+      titlu: "Deschide accesul contabilului",
+      text: "Contabilul intră prin portalul clienților doar în categoriile pe care i le deschizi. Fiecare căutare și fiecare document deschis de el apar în jurnal, cu numele și ora.",
     },
     {
-      titlu: "Lăsați regulile să le așeze",
+      titlu: "Lasă regulile să le așeze",
       text: "Facturile sosite pe e-mail, pe WhatsApp, prin Peppol sau Storecove își primesc categoria după regulile firmei, iar termenul de păstrare vine din categorie.",
     },
   ],
-  legatura: { text: "Vedeți platforma 3S", href: "/platforma", ruta: "/platforma" } satisfies Legatura,
+  legatura: { text: "Vezi platforma 3S", href: "/platforma", ruta: "/platforma" } satisfies Legatura,
 };
 
 export const STANDARDE = {
@@ -174,12 +174,12 @@ export const INTREBARI_EFACTURARE = {
     {
       intrebare: "Pot urca în 3S XML-urile descărcate din SPV?",
       raspuns:
-        "Da. Le încărcați din browser ca fișiere XML, iar regulile firmei le așază în categoria lor. Originalul rămâne neschimbat și se caută alături de facturile primite pe e-mail sau prin Peppol.",
+        "Da. Le încarci din browser ca fișiere XML, iar regulile firmei le așază în categoria lor. Originalul rămâne neschimbat și se caută alături de facturile primite pe e-mail sau prin Peppol.",
     },
     {
       intrebare: "Cine vede facturile firmei în 3S?",
       raspuns:
-        "Doar persoanele cărora le dați acces, nominal, pe persoană și pe dosar. Contabilul extern intră prin portal numai în categoriile deschise lui, iar fiecare document deschis se trece în jurnal, cu numele și ora.",
+        "Doar persoanele cărora le dai acces, nominal, pe persoană și pe dosar. Contabilul extern intră prin portal numai în categoriile deschise lui, iar fiecare document deschis se trece în jurnal, cu numele și ora.",
     },
   ],
 };

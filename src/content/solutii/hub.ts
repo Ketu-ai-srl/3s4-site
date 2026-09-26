@@ -31,10 +31,10 @@ export type Banda = { titlu: string; elemente: ElementMeniu[] };
 const DESCRIERI_HUB: Record<string, string> = {
   // Lungime: 159. 4 randuri la 390 (cardul mare al referintei: 291 px).
   "/solutii/contabilitate":
-    "Actele fiecărui client, oricum ar sosi, se adună într-un dosar pe lună. Ce lipsește la închidere vedeți din timp, iar arhiva tuturor firmelor se caută deodată.",
+    "Actele fiecărui client, oricum ar sosi, se adună într-un dosar pe lună. Ce lipsește la închidere vezi din timp, iar arhiva tuturor firmelor se caută deodată.",
   // Lungime: 208. 4 randuri la 1440, 5 la 390 (titlul pe 2 randuri: 305 px).
   "/solutii/imobiliare":
-    "Țineți portofoliul organizat pe clădiri și pe unități, de la titlul de proprietate la ultimul contract de închiriere semnat. Vedeți din timp ce contract expiră și ce act mai lipsește din dosarul unei clădiri.",
+    "Ține portofoliul organizat pe clădiri și pe unități, de la titlul de proprietate la ultimul contract de închiriere semnat. Vezi din timp ce contract expiră și ce act mai lipsește din dosarul unei clădiri.",
   // Lungime: 200. 4 randuri la 1440, 5 la 390 (279 px).
   "/solutii/avocatura":
     "Dosarul fiecărei cauze adună actele primite cu data sosirii și termenele procedurale. Accesul se dă pe dosar, iar orice document deschis se trece în jurnal, cu numele celui care l-a deschis și cu ora.",
@@ -76,12 +76,12 @@ export const HUB: {
     // Rol: h1, doua randuri (trei la 390, ca la referinta). Lungime: 57.
     titlu: "De la planșe la procuri, orice act vine cu pagina din care e luat",
     // Rol: subtitlul (2 randuri, margine jos 12). Lungime: 105.
-    subtitlu: "Constructori, contabili, avocați sau notari: 3S citește actele fiecărei meserii și vă răspunde cu documentul potrivit.",
+    subtitlu: "Constructori, contabili, avocați sau notari: 3S citește actele fiecărei meserii și îți răspunde cu documentul potrivit.",
     // Rol: randul de dovada (14/500 ardezie-5, un rand). Lungime: 102. Fapte ale produsului (canalele
     // pe care se intreaba arhiva si gazduirea), fara nicio cifra de clienti.
     dovada: "Aceeași arhivă pe web, pe desktop, pe telefon și pe WhatsApp, cu găzduire Amazon în Germania.",
     // Rol: butonul plin. Lungime: 17. Tinta: formularul (cont gratuit).
-    butonPrincipal: { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+    butonPrincipal: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
     // Rol: butonul-fantoma, spre pagina care explica stratul AI. Tinta 3S echivalenta (plan §6.6):
     // platforma. Textul numeste tinta si drumul unui act prin 3S; lungimea e aleasa pe LATIMEA
     // butonului, nu pe caractere: 333,9 px masurat pe buton (padding inclus), fata de 324,7 la
@@ -108,7 +108,7 @@ export const HUB: {
   legaturaCard: "Mai multe detalii",
   cautare: {
     // Rol: h2. Lungime: 42.
-    titlu: "Întrebați arhiva, primiți pagina exactă",
+    titlu: "Întreabă arhiva, primești pagina exactă",
     // Rol: subtitlul (2 randuri; 3 la 390, ca la referinta). Lungime: 104. Declara exemplele (plan D9):
     // o singura fraza, cu cele 4 domenii ale filelor si pagina citata.
     subtitlu:
@@ -169,7 +169,7 @@ export const HUB: {
     // (caseta 145 / 283 px). Masurat pe pagina: cu textele lungi ieseau 4 + 4 si 8 randuri (352 px).
     insigne: [
       "Găzduire Amazon, în Germania",
-      "Regiune unică UE",
+      "O singură regiune UE",
       "Stocare proprie",
       "Portal clienți",
       "Reguli automate",
@@ -188,12 +188,12 @@ export const HUB: {
         // stau datele, aplicatia, pretul), nu a referintei.
         intrebare: "Prin ce diferă 3S de un drive de fișiere obișnuit?",
         raspuns:
-          "Un drive păstrează fișierele în folderele în care le puneți. 3S le citește: recunoaște tipul fiecărui act, îl așază în dosarul potrivit, îi calculează termenul de păstrare și vă răspunde la întrebări cu pagina din care vine răspunsul.",
+          "Un drive păstrează fișierele în folderele în care le pui. 3S le citește: recunoaște tipul fiecărui act, îl așază în dosarul potrivit, îi calculează termenul de păstrare și îți răspunde la întrebări cu pagina din care vine răspunsul.",
       },
       {
         intrebare: "Pot întreba arhiva pe WhatsApp?",
         raspuns:
-          "Da. Pe lângă aplicația web și cea de pe telefon, 3S vă răspunde și pe WhatsApp: scrieți întrebarea ca într-o conversație obișnuită și primiți răspunsul, cu documentul și pagina din care vine, fără să deschideți alt program.",
+          "Da. Pe lângă aplicația web și cea de pe telefon, 3S îți răspunde și pe WhatsApp: scrii întrebarea ca într-o conversație obișnuită și primești răspunsul, cu documentul și pagina din care vine, fără să deschizi alt program.",
       },
       {
         intrebare: "Ce fel de fișiere pot încărca?",
@@ -204,19 +204,19 @@ export const HUB: {
         // Pleaca de la hartie (scanarea) si de la contul fara card; fara promisiunea de continuitate.
         intrebare: "Cât durează până lucrăm în 3S?",
         raspuns:
-          "Depinde mai ales de hârtie. Dosarele fizice se predau la scanat, iar timpul ține de câte volume aveți. Actele deja electronice nu așteaptă după ele: deschideți contul fără card de plată și le încărcați din browser în aceeași zi.",
+          "Depinde mai ales de hârtie. Dosarele fizice se predau la scanat, iar timpul ține de câte volume ai. Actele deja electronice nu le așteaptă: deschizi contul fără card de plată și le încarci din browser în aceeași zi.",
       },
       {
         // Alegerea locului (stocarea firmei sau Amazon), apoi accesul, apoi criptarea de pe Amazon.
         intrebare: "Unde stau datele firmei?",
         raspuns:
-          "Acolo unde alegeți: pe stocarea firmei, dacă o aveți deja, fiindcă 3S poate lucra direct pe ea, sau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene. În ambele cazuri, accesul se dă pe persoană și pe dosar. Pe serverele Amazon, fișierele sunt criptate AES-256 pe disc și circulă numai prin TLS, versiunea 1.2 sau una mai nouă.",
+          "Acolo unde alegi: pe stocarea firmei, dacă o ai deja, fiindcă 3S poate lucra direct pe ea, sau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene. În ambele cazuri, accesul se dă pe persoană și pe dosar. Pe serverele Amazon, fișierele sunt criptate AES-256 pe disc și circulă numai prin TLS, versiunea 1.2 sau una mai nouă.",
       },
       {
         // Pleaca de la WhatsApp si de la browserul fara instalare; aplicatia vine la urma.
-        intrebare: "Aveți aplicație pentru telefon?",
+        intrebare: "Ai aplicație pentru telefon?",
         raspuns:
-          "Pentru o întrebare rapidă nici nu aveți nevoie de ea: scrieți arhivei pe WhatsApp sau deschideți 3S în browserul telefonului, fără nimic de instalat. Pentru lucrul de zi cu zi există și aplicația 3S, pe toate platformele, cu aceleași dosare pe care le vedeți pe calculator.",
+          "Pentru o întrebare rapidă nici nu ai nevoie de ea: scrie arhivei pe WhatsApp sau deschide 3S în browserul telefonului, fără nimic de instalat. Pentru lucrul de zi cu zi există și aplicația 3S, pe toate platformele, cu aceleași dosare pe care le vezi pe calculator.",
       },
       {
         intrebare: "Cât costă 3S?",

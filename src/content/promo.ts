@@ -25,7 +25,7 @@ export const CALE_PROMO_SCANARE = "/promo/scanare-cu-telefonul";
 export const META_PROMO = {
   titlu: "Actele firmei într-o arhivă care răspunde | 3S",
   descriere:
-    "3S strânge actele firmei într-o singură arhivă, le așază în dosare și vă răspunde pe web sau pe WhatsApp cu documentul și pagina. Azi costă 0 RON.",
+    "3S strânge actele firmei într-o singură arhivă, le așază în dosare și îți răspunde pe web sau pe WhatsApp cu documentul și pagina. Azi costă 0 RON.",
 } as const;
 
 export const META_SCANARE = {
@@ -69,7 +69,7 @@ export const EROU_PROMO = {
   } satisfies TitluCuAccent,
   // Rol: paragraful de sub titlu, 2 randuri.
   paragraf: "Colegul care l-a scanat e în concediu, iar căutarea prin e-mail dă sute de rezultate, niciunul cel bun.",
-  indiciu: "Derulați",
+  indiciu: "Derulează",
 } as const;
 
 export type NumeIconitaHaos = "dosare" | "poza" | "atasament" | "cutie" | "laptop";
@@ -97,22 +97,22 @@ export const SOLUTIE = {
   // Rol: titlul mare al solutiei: subiectul (alb, 2 randuri), apoi predicatul in albastru.
   titlu: {
     inainte: "3S adună actele firmei într-o singură arhivă",
-    accent: "care vă răspunde.",
+    accent: "care îți răspunde",
   } satisfies TitluCuAccent,
   // Rol: paragraful mare, 2 randuri: ce face produsul.
   paragraf:
-    "Hârtia se scanează, fiecare act e citit și pus în dosarul lui. Întrebați pe web sau pe WhatsApp.",
+    "Hârtia se scanează, fiecare act e citit și pus în dosarul lui. Întreabă pe web sau pe WhatsApp.",
 } as const;
 
 export const PRIMIRE = {
   rama: "3S · primire",
   // Rol: indemnul din zona de depunere.
-  depunere: "Lăsați actul aici sau fotografiați-l",
+  depunere: "Lasă actul aici sau fotografiază-l",
   fisier: "contract_chirie_beta_exemplu.pdf",
   // Rol: unde l-a asezat clasarea automata (tip si dosar).
   traseu: "contract · Beta Exemplu / Contracte",
   // Rol: titlul cardului, 1 rand.
-  titlu: "Actul nou își găsește singur dosarul.",
+  titlu: "Actul nou își găsește singur dosarul",
   // Rol: paragraful cardului, 1 rand.
   paragraf: "Contractul merge la contracte, factura la luna ei.",
 } as const;
@@ -129,7 +129,7 @@ export const CAUTARE = {
     { fisier: "contract_curatenie_beta.pdf", eticheta: "prelungit", ton: "verde", stins: true },
   ] as RezultatCautare[],
   // Rol: titlul cardului, 2 randuri.
-  titlu: "Scrieți întrebarea cum v-ar veni s-o spuneți.",
+  titlu: "Scrie întrebarea cum ți-ar veni s-o spui",
   // Rol: paragraful cardului, 1 rand.
   paragraf: "Răspunsul vine cu documentul și cu pagina din care e luat.",
 } as const;
@@ -144,7 +144,7 @@ export const AUTOMATIZARE = {
   ],
   eticheteAuto: "Auto",
   // Rol: titlul cardului, 1 rand.
-  titlu: "Scrieți regula. 3S o ține minte.",
+  titlu: "Scrie regula. 3S o ține minte.",
   // Rol: paragraful cardului, 1 rand.
   paragraf: "Fiecare pas al facturii rămâne în jurnal, cu ora lui.",
 } as const;
@@ -156,9 +156,9 @@ export const SISTEM_NATIONAL = {
   // Rol: ultimul pas, "ok" (verde-deschis).
   final: "Primită în RO e-Factura",
   // Rol: titlul cardului, 2 randuri.
-  titlu: "Facturile pleacă spre RO e-Factura din aceeași arhivă.",
+  titlu: "Facturile pleacă spre RO e-Factura din aceeași arhivă",
   // Rol: paragraful cardului, 1 rand.
-  paragraf: "Fără XML-uri descărcate ca să le urcați în altă parte.",
+  paragraf: "Fără XML-uri descărcate ca să le urci în altă parte.",
   /** Sursa primara a numelui sistemului national (ANAF, proiectele de digitalizare). */
   sursaSistem: "https://www.anaf.ro/anaf/internet/ANAF/despre_anaf/strategii_anaf/proiecte_digitalizare/e.factura/",
 } as const;
@@ -193,9 +193,9 @@ export type TextCta = { titlu: TitluCuAccent; paragraf: string; buton: string; n
 
 export const CTA_PROMO: TextCta = {
   // Rol: titlul CTA-ului, 2 randuri.
-  titlu: { inainte: "Deschideți arhiva azi.", accent: "Costă 0 RON." },
+  titlu: { inainte: "Deschide arhiva azi.", accent: "Costă 0 RON." },
   paragraf: "Aplicația 3S merge pe web și pe orice telefon al echipei.",
-  buton: "Creați contul",
+  buton: "Testează gratuit",
   nota: "Prețul de azi: 0 RON pentru toate pachetele",
 };
 
@@ -208,18 +208,18 @@ export const EROU_SCANARE = {
   eticheta: "Bonuri, chitanțe, facturi",
   // Rol: titlul mare, 4 randuri: prima fraza alba, a doua in albastru-promo.
   titlu: {
-    inainte: "Bonurile firmei, citite de pe telefon.",
-    accent: "Și ordonate în arhivă pe luni.",
+    inainte: "Bonurile firmei, citite de pe telefon",
+    accent: "și ordonate în arhivă pe luni",
   } satisfies TitluCuAccent,
   // Rol: paragraful mare, 5 randuri; primul paragraf al paginii, deci raspunsul ei (30-80 de cuvinte).
   paragraf:
     "Bonul fotografiat cu aplicația 3S intră în arhiva comună a firmei, criptat, pe serverele Amazon din Germania. Oricine din echipă îl găsește apoi întrebând pe web sau pe WhatsApp, iar răspunsul vine cu documentul, nu cu o listă de fișiere de răsfoit.",
-  indiciu: "Derulați",
+  indiciu: "Derulează",
 } as const;
 
 export const AFIRMATIE_SCANARE = {
   // Rol: titlul mare, 3 randuri, tot in albastru.
-  titlu: "Fiecare coleg scanează de pe telefonul lui.",
+  titlu: "Fiecare coleg scanează de pe telefonul lui",
   // Rol: paragraful mare, 3 randuri.
   paragraf:
     "Aceeași aplicație rulează pe toate platformele, iar ce fotografiază un coleg ajunge în arhiva comună. Poza devine o scanare curată, cu marginile îndreptate.",
@@ -283,7 +283,7 @@ export const RAND_FISIER = {
 
 export const CARD_SCANARE = {
   // Rol: titlul cardului, 1 rand.
-  titlu: "Poza de pe orice telefon devine date.",
+  titlu: "Poza de pe orice telefon devine date",
   // Rol: paragraful cardului, 4 randuri.
   paragraf:
     "Din fotografie, 3S scoate furnizorul, codul fiscal, suma, data și numărul bonului, apoi pune fișierul în dosarul lunii. Chiar dacă bonul e mototolit sau decolorat, textul lui se citește și poate fi căutat.",
@@ -296,10 +296,10 @@ export const CARD_OCR = {
     { cheie: "Data", valoare: BON.data },
   ] as RandCitit[],
   // Rol: titlul cardului, 1 rand.
-  titlu: "Fiecare aprobare lasă o urmă.",
+  titlu: "Fiecare aprobare lasă o urmă",
   // Rol: paragraful cardului, 4 randuri.
   paragraf:
-    "O regulă automată cere aprobarea șefului de echipă pentru bonurile peste o sumă aleasă de dumneavoastră. Cine a aprobat și la ce oră rămâne în jurnal, iar filtrul pe lună arată doar bonurile încă neaprobate.",
+    "O regulă automată cere aprobarea șefului de echipă pentru bonurile peste o sumă aleasă de tine. Cine a aprobat și la ce oră rămâne în jurnal, iar filtrul pe lună arată doar bonurile încă neaprobate.",
 } as const;
 
 export type CifraCard = { valoare: string; eticheta: string };
@@ -312,10 +312,10 @@ export const CARD_CIFRE = {
     { valoare: "TLS 1.2+", eticheta: "la transfer" },
   ] as CifraCard[],
   // Rol: titlul cardului, 1 rand.
-  titlu: "Arhiva lunii se face cât lucrați.",
+  titlu: "Arhiva lunii se face cât lucrezi",
   // Rol: paragraful cardului, 4 randuri.
   paragraf:
-    "Fișierele stau criptate pe serverele Amazon din Germania, într-o singură regiune a UE. Le găsiți apoi după furnizor sau după lună, iar toate pachetele, cu aplicația de telefon cu tot, costă azi 0 RON.",
+    "Fișierele stau criptate pe serverele Amazon din Germania, într-o singură regiune a UE. Le găsești apoi după furnizor sau după lună, iar toate pachetele, cu aplicația de telefon cu tot, costă azi 0 RON.",
 } as const;
 
 export const DECLARATIE_SCANARE = {
@@ -326,8 +326,8 @@ export const DECLARATIE_SCANARE = {
 } as const;
 
 export const CTA_SCANARE = {
-  titlu: "Fotografiați primul bon chiar azi.",
+  titlu: "Fotografiază primul bon chiar azi",
   paragraf: "Aplicația 3S merge pe web și pe orice telefon al echipei.",
-  buton: "Creați contul",
+  buton: "Testează gratuit",
   nota: "Prețul de azi: 0 RON pentru toate pachetele",
 } as const;

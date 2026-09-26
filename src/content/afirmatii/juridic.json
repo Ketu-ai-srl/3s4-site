@@ -28,7 +28,7 @@
   },
   {
     "id": "juridic-accesibilitate-implementat",
-    "text": "Site-ul are legătura „Săriți la conținut” prima pe pagină, un contur albastru de 2 pixeli pentru focusul de la tastatură, oprește tranzițiile, animațiile din foile de stil și derularea lină la mișcare redusă, marchează pagina curentă în firul de navigare și își declară limba română",
+    "text": "Site-ul are legătura „Sari la conținut” prima pe pagină, un contur albastru de 2 pixeli pentru focusul de la tastatură, oprește tranzițiile, animațiile din foile de stil și derularea lină la mișcare redusă, marchează pagina curentă în firul de navigare și își declară limba română",
     "unde": "src/app/accesibilitate/page.tsx, src/content/juridic/pagini.ts",
     "stare": "confirmat",
     "sursa": "măsurat în cod: src/app/layout.tsx (lang ro, legătura de salt înaintea antetului), src/app/globals.css (:focus-visible și blocul prefers-reduced-motion), src/components/primitive/FirPagina.tsx (aria-current); tests/juridic.test.ts se înroșește dacă layout-ul sau foaia globală se schimbă",

@@ -20,7 +20,7 @@ export const LOGISTICA: Sector = {
   },
   erou: {
     // Rol: h1, un rand (doua la 390). Lungime: 35. Scris pe canalul 3S (intrebarea pe WhatsApp).
-    titlu: "Cereți pe WhatsApp CMR-ul unei curse",
+    titlu: "Cere pe WhatsApp CMR-ul unei curse",
     // Rol: subtitlul (3 randuri). Lungime: 177.
     subtitlu:
       "CMR-urile, avizele și dovezile de livrare ajung în 3S din aplicația de telefon sau de la scanat. Dispecerul găsește orice act după cursă sau după client, iar pe drum îl poate cere pe WhatsApp.",
@@ -58,7 +58,7 @@ export const LOGISTICA: Sector = {
   schimbare: {
     // Rol: paragraful-punte. Lungime: 159.
     punte:
-      "Întrebați de oriunde, pe web, pe telefon sau pe WhatsApp, și primiți actul cu pagina lui. 3S îl găsește pentru că fiecare act de transport stă legat de cursa și de clientul lui.",
+      "Întrebi de oriunde, pe web, pe telefon sau pe WhatsApp, și primești actul cu pagina lui. 3S îl găsește pentru că fiecare act de transport stă legat de cursa și de clientul lui.",
     // Lungimi: 38 / 43 / 45.
     buline: [
       "Răspunsuri pe WhatsApp, oriunde",
@@ -74,12 +74,12 @@ export const LOGISTICA: Sector = {
     lista: [
       {
         // Lungimi: titlul 18, textul 109.
-        titlu: "Întrebați pe WhatsApp",
+        titlu: "Întreabă pe WhatsApp",
         text: "Dispecerul scrie numărul cursei și ce act caută, iar 3S îi răspunde cu documentul, din orice loc.",
       },
       {
         // Lungimi: titlul 27, textul 102.
-        titlu: "Verificați pe act",
+        titlu: "Verifică pe act",
         text: "Răspunsul vine cu actul și pagina din care e luat, deci ora sau semnătura se văd pe original.",
       },
       {
@@ -121,13 +121,13 @@ export const LOGISTICA: Sector = {
       // Lungimi: intrebarea 40, raspunsul 161.
       intrebare: "Poate dispecerul să întrebe arhiva pe WhatsApp?",
       raspuns:
-        "Da. Scrie numărul cursei sau numele clientului și ce act caută, iar 3S îi răspunde pe WhatsApp cu documentul și cu pagina din care vine informația, fără să deschidă calculatorul.",
+        "Da. Scrie numărul cursei sau numele clientului și ce act caută, iar 3S îi răspunde pe WhatsApp cu documentul și cu pagina din care vine informația, fără ca dispecerul să deschidă calculatorul.",
     },
     {
       // Lungimi: intrebarea 50, raspunsul 177.
       intrebare: "Putem căuta și în CMR-urile din anii trecuți?",
       raspuns:
-        "Da. Mapele vechi se predau la scanat, iar textul fiecărui CMR intră în index, așa că îl găsiți după cursă, client sau dată, cu pagina din care vine răspunsul.",
+        "Da. Mapele vechi se predau la scanat, iar textul fiecărui CMR intră în index, așa că îl găsești după cursă, client sau dată, cu pagina din care vine răspunsul.",
     },
   ],
 };

@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "arhivarea-externalizata",
+    "titlu": "Arhivarea externalizată: cum alegi prestatorul",
+    "extras": "Ce servicii poate presta un operator autorizat de Arhivele Naționale, ce condiții are depozitul, ce clauze ceri în contract și cum verifici autorizația.",
+    "categorie": "management",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "cat-timp-se-pastreaza-documentele-firmei",
+    "titlu": "Cât timp se păstrează documentele firmei",
+    "extras": "Termenele de păstrare pe tipuri de acte (contabile, fiscale, salarii, contracte), de când curg, excepțiile și riscurile unei eliminări înainte de termen.",
+    "categorie": "contabilitate",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "cautarea-in-documente-dupa-sens",
+    "titlu": "Căutarea în documente după sens, pe înțeles",
+    "extras": "De ce căutarea după cuvinte exacte ratează actele scanate, cum lucrează căutarea după sens și de ce un răspuns bun arată documentul și pagina.",
+    "categorie": "it",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "digitizarea-arhivei-de-hartie",
+    "titlu": "Digitizarea arhivei de hârtie, pas cu pas",
+    "extras": "Cum scanezi dosarele firmei ca să le găsești ușor și să le arăți la control, ce valoare are copia și de ce originalul rămâne până la selecționare.",
+    "categorie": "management",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "distrugerea-legala-a-documentelor",
+    "titlu": "Distrugerea legală a documentelor expirate",
+    "extras": "Cum elimină o firmă dosarele cu termen expirat: comisia de selecționare, procesul-verbal, aprobarea Arhivelor Naționale, recuperarea hârtiei și amenzile.",
+    "categorie": "juridic",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "document-electronic-sau-document-scanat",
+    "titlu": "Document electronic sau scanat: ce valoare au",
+    "extras": "Ce valoare are un document semnat electronic față de unul scanat de pe hârtie, când e suficientă copia și când trebuie să păstrezi originalul.",
+    "categorie": "juridic",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "inchiderea-firmei-si-arhiva",
+    "titlu": "Ce se întâmplă cu arhiva când firma se închide",
+    "extras": "Cine preia actele la dizolvare, lichidare, faliment și radiere, cât timp se păstrează, ce se face cu actele de personal și ce rămâne în grija foștilor asociați.",
+    "categorie": "juridic",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "persoana-desemnata-cu-arhiva-firmei",
+    "titlu": "Persoana responsabilă cu arhiva firmei: cine și cum",
+    "extras": "Ce cere art. 31 din Legea 16/1996, cine poate primi sarcinile de arhivă, ce acte cere avizul Arhivelor Naționale și ce riscă firma fără responsabil.",
+    "categorie": "juridic",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "registrul-de-evidenta-a-arhivei",
+    "titlu": "Registrul de evidență al arhivei, pas cu pas",
+    "extras": "Cine ține registrul de evidență curentă, ce coloane are, cum se leagă de nomenclator și inventare, ce se predă la Arhivele Naționale și ce amenzi riscă firma.",
+    "categorie": "juridic",
+    "data": "2026-09-26"
+  },
+  {
+    "slug": "spv-nu-este-arhiva-e-factura",
+    "titlu": "e-Factura: cât stau facturile în SPV și ce arhivezi",
+    "extras": "Fișierele din RO e-Factura se pot descărca 60 de zile. Ce păstrează firma 5 ani, de când curge termenul și cum arată o rutină de arhivare a XML-ului semnat.",
+    "categorie": "contabilitate",
+    "data": "2026-09-26"
+  }
+]

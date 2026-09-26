@@ -22,7 +22,7 @@ implicitul de azi, sau cere dispecerului o schimbare; nu schimba sensul unei pro
     <TitluErou>...</TitluErou>               // singurul h1 al paginii
     <TerminalErou text="..." />
     <SubtitluErou dupaScriere>...</SubtitluErou>
-    <IndiciuDerulare text="derulați" />
+    <IndiciuDerulare text="derulează" />
   </EroulCinema>
   <SectiuneScena ...>macheta paginii</SectiuneScena>
   <Pivot ... />

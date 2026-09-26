@@ -146,10 +146,10 @@ describe('pragurile machetelor, contra masuratorilor', () => {
     expect(PRAGURI_AVALANSA[12]).toBeGreaterThan(0.8)
   })
 
-  it('contoarele din cautare se scriu "Xh Ym"', () => {
-    expect(formatTimp(0)).toBe('0h 0m')
-    expect(formatTimp(98)).toBe('1h 38m')
-    expect(formatTimp(59.6)).toBe('1h 0m')
+  it('contoarele din cautare se scriu "X h Y min" (SI, decizia D15)', () => {
+    expect(formatTimp(0)).toBe('0 h 0 min')
+    expect(formatTimp(98)).toBe('1 h 38 min')
+    expect(formatTimp(59.6)).toBe('1 h 0 min')
   })
 
   it('asteptarea: ziua 2 la p 0,167, ziua 7 la 0,9; starea "uitat" intre 0,367 si 0,433', () => {

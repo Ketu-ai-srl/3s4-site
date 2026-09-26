@@ -82,7 +82,7 @@
   },
   {
     "id": "efacturare-ro-format",
-    "text": "E-factura românească este un fișier XML pe standardul european EN 16931, cu cerințele naționale RO_CIUS",
+    "text": "E-factura românească este un fișier XML conform standardului european EN 16931, cu cerințele naționale RO_CIUS",
     "unde": "src/content/efacturare/pagina.ts, src/content/efacturare/piete.ts",
     "stare": "confirmat",
     "sursa": "ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. IV, întrebarea 2: https://static.anaf.ro/static/10/Anaf/AsistentaContribuabili_r/Ghid_RO_eFactura.pdf",
@@ -103,13 +103,13 @@
     "text": "Germania: primirea e-facturilor din 1 ianuarie 2025; emiterea pe hârtie sau PDF permisă până la 31 decembrie 2026, iar la cel mult 800.000 EUR cifră de afaceri până la finalul lui 2027; XRechnung și ZUGFeRD 2.0.1+ pe EN 16931",
     "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
     "stare": "confirmat",
-    "sursa": "Bundesministerium der Finanzen, FAQ E-Rechnung (stand martie 2026): https://www.bundesfinanzministerium.de/Content/DE/FAQ/e-rechnung.html",
+    "sursa": "Bundesministerium der Finanzen, FAQ E-Rechnung (Stand: März 2026): https://www.bundesfinanzministerium.de/Content/DE/FAQ/e-rechnung.html",
     "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25",
     "data": "2026-09-25"
   },
   {
     "id": "efacturare-fr-calendar",
-    "text": "Franța: firmele mari și intermediare emit e-facturi din 1 septembrie 2026, dată de la care toate firmele vizate trebuie să le poată primi; IMM-urile și microîntreprinderile emit din 1 septembrie 2027, prin platforme agreate",
+    "text": "Franța: firmele mari și intermediare emit e-facturi din 1 septembrie 2026, dată de la care toate firmele vizate trebuie să le poată primi; IMM-urile și microîntreprinderile emit din 1 septembrie 2027, prin platforme autorizate",
     "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
     "stare": "confirmat",
     "sursa": "DGFiP, Guide pratique de la réforme de la facturation électronique: https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/guide_pratique_facturation_electronique.pdf",
@@ -118,7 +118,7 @@
   },
   {
     "id": "efacturare-pl-calendar",
-    "text": "Polonia: KSeF obligatoriu din 1 februarie 2026 pentru vânzări de peste 200 mil. PLN în 2024 și din 1 aprilie 2026 pentru ceilalți; facilități până la finalul lui 2026; structura FA(3)",
+    "text": "Polonia: KSeF obligatoriu din 1 februarie 2026 pentru vânzări de peste 200 mil. PLN în 2024 și din 1 aprilie 2026 pentru celelalte firme; facilități până la finalul lui 2026; structura FA(3)",
     "unde": "src/content/efacturare/piete.ts, src/content/efacturare/calendar.ts",
     "stare": "confirmat",
     "sursa": "Ministerstwo Finansów, Podstawy prawne oraz kluczowe terminy KSeF: https://ksef.podatki.gov.pl/informacje-ogolne-ksef-20/podstawy-prawne-oraz-kluczowe-terminy",

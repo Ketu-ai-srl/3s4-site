@@ -31,12 +31,12 @@ export const EROU_E_FACTURI = {
   // Rol: eticheta paginii (13,6/600).
   eticheta: "Funcționalitate 06 · E-facturi și avize",
   // Rol: titlul eroului, 2 randuri (72/600). Lungime: ~26 [fisa].
-  titlu: "Un aviz, o factură, un loc.",
+  titlu: "Un aviz, o factură, un loc",
   // Rol: cererea scrisa in terminal (17,6/500). Lungime: ~37 [fisa].
   cerere: "Facturează avizul 118 pentru Beta Exemplu",
   // Rol: subtitlul italic, 1 rand. Lungime: ~54 [fisa].
   subtitlu: "Azi, până pleacă, trece prin mâinile a trei colegi.",
-  indiciu: "derulați",
+  indiciu: "derulează",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ export type NodHarta = { eticheta: string; rol: string; iconita: IconitaUnealta 
 
 export const HARTA = {
   // Rol: titlul sectiunii, 1 rand (40/600). Lungime: ~38 [fisa].
-  titlu: "Drumul unei facturi, azi.",
+  titlu: "Drumul unei facturi, azi",
   // Rol: paragraful, 2 randuri la max 580.
   paragraf: "Avizul e într-un dosar, prețurile în altul, factura în programul ei. Între ele, cineva copiază de mână.",
   // Cele 5 noduri, in ordinea pozitiilor: stanga-sus, dreapta-sus, centru, stanga-jos, dreapta-jos.
@@ -74,7 +74,7 @@ export const ANXIETATE_E_FACTURI = {
   // Rol: doua intrebari italice despre greselile de copiere.
   randuri: ["Suma de pe aviz e aceeași cu cea din factură?", "Cine a mutat ultimul fișierul, și unde?"] as const,
   // Rol: emfaza in roz, riscul numit.
-  emfaza: "Clientul vede greșeala înaintea voastră.",
+  emfaza: "Clientul vede greșeala înaintea ta.",
 } as const;
 
 export const PIVOT_E_FACTURI = {
@@ -91,7 +91,7 @@ export type RandMeta = { cheie: string; valoare: string; fel?: "pastila" | "cod"
 
 export const GENERATOR = {
   // Rol: titlul sectiunii, 1 rand (40/600).
-  titlu: "Căutați avizul, găsiți factura.",
+  titlu: "Cauți avizul, găsești factura",
   // Rol: paragraful, 4 randuri la max 580. Porneste de la cautarea de la inchiderea lunii, nu de la pasii facturii.
   paragraf:
     "La închiderea lunii, contabila caută în 3S după client sau după numărul avizului și le găsește împreună: avizul semnat și factura făcută din el, cu integrarea de e-facturare prin care a plecat. Nimic nu se mai adună din trei dosare diferite.",
@@ -162,10 +162,10 @@ export const CONTRAST_E_FACTURI = {
 
 export const CTA_E_FACTURI = {
   // Rol: titlul CTA, 2 randuri. Lungime: ~36 [fisa].
-  titlu: "Avizul de azi, facturat până diseară.",
+  titlu: "Avizul de azi, facturat până diseară",
   // Rol: paragraful mare, 2 randuri.
   paragraf: "Șablonul se face o dată. De acolo, fiecare aviz nou devine factură, pleacă la client și intră în arhivă.",
-  buton: "Deschideți un cont",
+  buton: "Testează gratuit",
   nota: "Contul e gratuit azi, la 0 RON, și nu cere card.",
 } as const;
 

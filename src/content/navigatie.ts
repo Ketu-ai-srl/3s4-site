@@ -25,7 +25,7 @@
 // LUNGIMILE din comentarii sunt ale referintei, pe acelasi rol: `[fisa]` = scrisa in fisa de
 // masurare (`componente-globale.md`, `descarca.md`); `[numarat]` = numarata de dispecer pe
 // textul referintei, pentru lungime si rol, niciodata pentru cuvinte. Textul de aici e cel al
-// feliei `text-acasa`, scris pentru 3S, cu adresarea dumneavoastra; fiecare afirmatie
+// feliei `text-acasa`, scris pentru 3S, cu adresarea „tu” (decizia D15); fiecare afirmatie
 // verificabila are intrare in `src/content/afirmatii/acasa.json`.
 
 import { postaMarcii } from "./entitate";
@@ -164,7 +164,7 @@ export const FOAIE_FUNCTIONALITATI: FoaieMeniu = {
       text: "Căutare cu sursa citată",
       // Rol: cautati dupa sens, nu prin dosare; primiti actul. Lungime: 118 [numarat].
       descriere:
-        "Întrebați arhiva cu vorbele dumneavoastră și primiți actul căutat, deschis la pagina din care vine răspunsul.",
+        "Întreabă arhiva cu vorbele tale și primești actul căutat, deschis la pagina din care vine răspunsul.",
       href: "/functionalitati/cautare-ai",
       ruta: "/functionalitati/cautare-ai",
       iconita: "search",
@@ -175,7 +175,7 @@ export const FOAIE_FUNCTIONALITATI: FoaieMeniu = {
       text: "Reguli automate",
       // Rol: notificari, sortare si aprobari fara munca de mana. Lungime: 125 [numarat].
       descriere:
-        "O factură nouă ajunge singură în dosarul ei și îl anunță pe contabil, după regulile pe care le stabiliți dumneavoastră.",
+        "O factură nouă ajunge singură în dosarul ei și îl anunță pe contabil, după regulile pe care le stabilești tu.",
       href: "/functionalitati/automatizari-ai",
       ruta: "/functionalitati/automatizari-ai",
       iconita: "zap",
@@ -186,7 +186,7 @@ export const FOAIE_FUNCTIONALITATI: FoaieMeniu = {
       text: "Arhiva pe telefon",
       // Rol: acte create, scanate si trimise de pe teren, fara drum la birou. Lungime: 112 [numarat].
       descriere:
-        "Fotografiați avizul sau contractul pe teren. Aplicația face din fotografie o scanare curată și trimite actul în dosarul lui.",
+        "Fotografiază avizul sau contractul pe teren. Aplicația face din fotografie o scanare curată și trimite actul în dosarul lui.",
       href: "/functionalitati/aplicatie-mobila",
       ruta: "/functionalitati/aplicatie-mobila",
       iconita: "smartphone",
@@ -197,7 +197,7 @@ export const FOAIE_FUNCTIONALITATI: FoaieMeniu = {
       text: "Clienții își văd actele",
       // Rol: acces pentru clienti si contabil in locul atasamentelor pe e-mail. Lungime: 114 [numarat].
       descriere:
-        "Facturile și contractele sunt în portal, iar clientul și le ia singur, fără să vă mai sune pentru ele.",
+        "Facturile și contractele sunt în portal, iar clientul și le ia singur, fără să te mai sune pentru ele.",
       href: "/functionalitati/portal-clienti",
       ruta: "/functionalitati/portal-clienti",
       iconita: "users",
@@ -206,7 +206,7 @@ export const FOAIE_FUNCTIONALITATI: FoaieMeniu = {
   ],
   subsol: {
     // Rol: spre comparatia cu un drive obisnuit. Lungime: 26 + sageata [numarat].
-    text: "Comparați 3S cu un drive",
+    text: "Compară 3S cu un drive",
     href: "/comparatie-drive",
     ruta: "/comparatie-drive",
   },
@@ -222,7 +222,7 @@ export const FOAIE_SOLUTII: FoaieMeniu = {
       text: "Constructori și proiectanți",
       // Rol: actele tipice imprastiate pe proiecte + un singur loc de cautare. Lungime: 221 [numarat].
       descriere:
-        "Pe un șantier, planșele și procesele-verbale se adună lună de lună, până la recepția finală. Le țineți pe proiect și puneți o întrebare când vă trebuie un act: îl primiți deschis direct la pagina potrivită.",
+        "Pe un șantier, planșele și procesele-verbale se adună lună de lună, până la recepția finală. Le ții pe proiect și pui o întrebare când îți trebuie un act: îl primești deschis direct la pagina potrivită.",
       href: "/solutii/constructii",
       ruta: "/solutii/constructii",
       iconita: "building-2",
@@ -233,7 +233,7 @@ export const FOAIE_SOLUTII: FoaieMeniu = {
       text: "Contabili și experți fiscali",
       // Rol: actele vin pe toate canalele; un singur loc pentru toti clientii. Lungime: 122 [numarat].
       descriere:
-        "Actele fiecărui client, oricum ar sosi, se adună într-un dosar pe lună. Ce lipsește la închidere vedeți din timp.",
+        "Actele fiecărui client, oricum ar sosi, se adună într-un dosar pe lună. Ce lipsește la închidere vezi din timp.",
       href: "/solutii/contabilitate",
       ruta: "/solutii/contabilitate",
       iconita: "calculator",
@@ -244,7 +244,7 @@ export const FOAIE_SOLUTII: FoaieMeniu = {
       text: "Agenții imobiliare și administratori de clădiri",
       // Rol: contracte si acte pe sisteme diferite; gasite repede. Lungime: 200 [numarat].
       descriere:
-        "Țineți portofoliul organizat pe clădiri, de la titlul de proprietate la ultimul contract de închiriere. Vedeți din timp ce contract expiră și ce act mai lipsește înainte de o vânzare.",
+        "Ține portofoliul organizat pe clădiri, de la titlul de proprietate la ultimul contract de închiriere. Vezi din timp ce contract expiră și ce act mai lipsește înainte de o vânzare.",
       href: "/solutii/imobiliare",
       ruta: "/solutii/imobiliare",
       iconita: "building",
@@ -266,7 +266,7 @@ export const FOAIE_SOLUTII: FoaieMeniu = {
       text: "Transportatori și expeditori",
       // Rol: actele de transport, gasite repede, pentru echipe pe drum. Lungime: 117 [numarat].
       descriere:
-        "Comenzile și CMR-urile semnate stau legate de cursa lor, ca facturarea să nu mai aștepte după o hârtie.",
+        "Comenzile și CMR-urile semnate stau legate de cursa lor, ca facturarea să nu mai aștepte un document.",
       href: "/solutii/logistica",
       ruta: "/solutii/logistica",
       iconita: "truck",
@@ -277,7 +277,7 @@ export const FOAIE_SOLUTII: FoaieMeniu = {
       text: "Notari publici și arhivele lor",
       // Rol: registre si acte vechi, regasite dupa mai multe criterii. Lungime: 175 [numarat].
       descriere:
-        "Arhiva biroului se preia cu proces-verbal și inventar, apoi se scanează. La o întrebare, primiți actul cu pagina citată, iar originalul pe hârtie vi-l aducem înapoi la cerere.",
+        "Arhiva biroului se preia cu proces-verbal și inventar, apoi se scanează. La o întrebare, primești actul cu pagina citată, iar originalul pe hârtie ți-l aducem înapoi la cerere.",
       href: "/solutii/notariate",
       ruta: "/solutii/notariate",
       iconita: "stamp",
@@ -290,7 +290,7 @@ export const FOAIE_SOLUTII: FoaieMeniu = {
       // Scris din faptele 3S (acasa-alerte-acte-lipsa-si-expirari, acasa-text-din-scanari), fara
       // nicio generalizare despre piata asigurarilor.
       descriere:
-        "În fiecare dosar de daună, 3S vă semnalează din timp actele care mai lipsesc. Polițele le căutați după numele asiguratului sau după dată, inclusiv pe cele vechi, scanate de pe hârtie.",
+        "În fiecare dosar de daună, 3S îți semnalează din timp actele care mai lipsesc. Polițele le cauți după numele asiguratului sau după dată, inclusiv pe cele vechi, scanate de pe hârtie.",
       href: "/solutii/asigurari",
       ruta: "/solutii/asigurari",
       iconita: "shield-check",
@@ -341,7 +341,7 @@ export const PANOU_DESCARCA: {
   inapoi: string;
 } = {
   // Rol: eticheta accesibila a panoului.
-  eticheta: "Descărcați aplicația 3S",
+  eticheta: "Descarcă aplicația 3S",
   grupuri: [
     {
       // Lungime: 7 [numarat].
@@ -441,7 +441,7 @@ export const PANOU_DESCARCA: {
   // Rol: marcajul platformei detectate, dupa titlu (14/700 `albastru`). Lungime: 3 [fisa].
   marcajRecomandat: "(*)",
   // Rol: explica marcajul, in subsolul panoului. Lungime: 46 [numarat].
-  nota: "(*) recomandată pentru sistemul dumneavoastră",
+  nota: "(*) recomandată pentru sistemul tău",
   // Rol: butonul "inapoi" din sub-vederea Descarca a sertarului mobil (16/600).
   inapoi: "Înapoi la meniu",
 };
@@ -486,20 +486,20 @@ export const ANTET: {
   ],
   cautare: {
     // Rol: eticheta accesibila a butonului de cautare (vizibil sunt doar lupa si tasta).
-    eticheta: "Deschideți căutarea",
+    eticheta: "Deschide căutarea",
     // Rol: tasta afisata in butonul de cautare (JetBrains Mono 9,92). Lungime: 6 [fisa].
     tasta: "Ctrl K",
   },
   // Rol: intrarea in cont. Lungime: 13 [numarat]. Tinta: formularul, pana la adresa aplicatiei (D4c).
-  autentificare: { text: "Conectați-vă", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+  autentificare: { text: "Conectează-te", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
   // Rol: butonul care deschide panoul de descarcare (nu navigheaza). Lungime: 8 [numarat].
   descarca: { text: "Aplicația" },
   // Rol: butonul plin din dreapta, incercarea gratuita. Lungime: 16 [numarat].
-  cta: { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+  cta: { text: "Deschide un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
   hamburger: {
     // Rol: etichetele accesibile ale butonului de meniu sub 1200 px.
-    deschide: "Deschideți meniul",
-    inchide: "Închideți meniul",
+    deschide: "Deschide meniul",
+    inchide: "Închide meniul",
   },
 };
 
@@ -527,7 +527,7 @@ export const PALETA: {
   // Rol: eticheta accesibila a ferestrei de cautare.
   eticheta: "Căutare pe site",
   // Rol: textul-exemplu din camp. Lungime: 15 [numarat].
-  campExemplu: "Scrieți un cuvânt",
+  campExemplu: "Scrie un cuvânt",
   // Rol: tasta de inchidere din dreapta campului. Lungime: 3 [numarat].
   tastaInchidere: "esc",
   grupuri: [
@@ -553,9 +553,9 @@ export const PALETA: {
       titlu: "Acțiuni",
       elemente: [
         // Rol: incercarea gratuita. Lungime: 16 [numarat].
-        { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+        { text: "Deschide un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
         // Rol: cererea unei oferte / un mesaj. Lungime: 19 [numarat].
-        { text: "Scrieți-ne un mesaj", href: "/contact", ruta: "/contact" },
+        { text: "Scrie-ne un mesaj", href: "/contact", ruta: "/contact" },
       ],
     },
   ],
@@ -581,7 +581,7 @@ export const SERTAR = {
   // Rol: eticheta accesibila a sertarului.
   eticheta: "Meniul site-ului",
   // Rol: eticheta accesibila a butonului X din capul sertarului.
-  inchide: "Închideți meniul",
+  inchide: "Închide meniul",
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -646,7 +646,7 @@ export const SUBSOL: {
         { text: "Prețuri", href: "/preturi", ruta: "/preturi" },
         // Ancora starii de pachete de pe pagina de preturi (preturi.md, antet).
         { text: "Pachete", href: "/preturi#pachete", ruta: "/preturi" },
-        { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+        { text: "Deschide un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
         { text: "3S comparat cu un drive", href: "/comparatie-drive", ruta: "/comparatie-drive" },
         { text: "Securitate", href: "/securitate", ruta: "/securitate" },
         { text: "Integrări", href: "/integrari", ruta: "/integrari" },
@@ -708,7 +708,7 @@ export const SUBSOL: {
           href: "/blog/actele-firmei-si-gdpr",
           ruta: "/blog/actele-firmei-si-gdpr",
         },
-        { text: "Ce trebuie să știți", href: "/#intrebari", ruta: "/" },
+        { text: "Ce trebuie să știi", href: "/#intrebari", ruta: "/" },
       ],
     },
     {
@@ -755,7 +755,7 @@ export const SUBSOL: {
           href: "/juridic/licenta-software",
           ruta: "/juridic/licenta-software",
         },
-        { text: "Harta site", href: "/harta-site", ruta: "/harta-site" },
+        { text: "Harta site-ului", href: "/harta-site", ruta: "/harta-site" },
         { text: "Accesibilitate", href: "/accesibilitate", ruta: "/accesibilitate" },
       ],
     },
@@ -792,7 +792,7 @@ export const SUBSOL: {
     { retea: "linkedin", text: "3S pe LinkedIn", href: null, ruta: null },
     { retea: "youtube", text: "3S pe YouTube", href: null, ruta: null },
     { retea: "x", text: "3S pe X", href: null, ruta: null },
-    { retea: "email", text: "Scrieți-ne pe e-mail", href: POSTA.href, ruta: null },
+    { retea: "email", text: "Scrie-ne pe e-mail", href: POSTA.href, ruta: null },
   ],
 };
 

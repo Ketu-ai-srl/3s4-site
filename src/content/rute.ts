@@ -85,7 +85,7 @@ export const RUTE: Ruta[] = [
     cale: "/functionalitati/cautare-ai",
     scurt: "Căutare cu sursa citată",
     descriere:
-      "Întrebați arhiva cu vorbele dumneavoastră și primiți răspunsul cu documentul și pagina din care vine.",
+      "Întreabă arhiva cu vorbele tale și primești răspunsul cu documentul și pagina din care vine.",
     inHarta: true,
   },
   {
@@ -113,7 +113,7 @@ export const RUTE: Ruta[] = [
   {
     cale: "/functionalitati/aplicatie-mobila",
     scurt: "Arhiva pe telefon",
-    descriere: "Fotografiați avizul la client, etichetați-l și trimiteți-l în dosarul lui, fără drum la birou.",
+    descriere: "Fotografiază avizul la client, etichetează-l și trimite-l în dosarul lui, fără drum la birou.",
     inHarta: true,
   },
   {
@@ -139,7 +139,7 @@ export const RUTE: Ruta[] = [
   {
     cale: "/solutii/contabilitate",
     scurt: "Contabili și experți fiscali",
-    descriere: "Portal pentru fiecare client, acte clasate pe firmă și pe lună, căutare în toți clienții.",
+    descriere: "Portal pentru fiecare client, acte clasate pe firmă și pe lună, căutare în actele tuturor clienților.",
     inHarta: true,
   },
   {
@@ -183,7 +183,40 @@ export const RUTE: Ruta[] = [
   },
 
   // <<felie:blog>>
-  // Articolele NU intra aici: stau in registrul blogului (`src/content/blog/registru.ts`).
+  // Listarea si categoriile (pagini statice, de cand registrul are articole); articolele raman in
+  // registrul blogului (`src/content/blog/registru.ts`), rute dinamice. Categoriile, in ordinea
+  // pastilelor (`ORDINE_CATEGORII`); `tests/blog-articole.test.ts` cere exact caile deschise de registru.
+  {
+    cale: "/blog",
+    scurt: "Blog",
+    descriere:
+      "Ghiduri despre termenele de păstrare, registrul arhivei, digitizare și căutare, cu sursele oficiale la final.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/contabilitate",
+    scurt: "Blog: contabilitate și fisc",
+    descriere: "Articole despre actele contabile și fiscale: ce se păstrează, cât timp și unde.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/juridic",
+    scurt: "Blog: legi și obligații",
+    descriere: "Articole despre ce cer legile pentru arhiva firmei: registre, termene, predare și distrugere.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/it",
+    scurt: "Blog: tehnologie",
+    descriere: "Articole despre scanare, căutarea în documente după sens și păstrarea digitală a actelor.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/management",
+    scurt: "Blog: organizarea firmei",
+    descriere: "Articole despre digitizarea hârtiei, arhivarea la un prestator și rutina care ține dosarele la zi.",
+    inHarta: true,
+  },
 
   // <<felie:produs>>
   {
@@ -213,7 +246,7 @@ export const RUTE: Ruta[] = [
     cale: "/enterprise",
     scurt: "Enterprise",
     descriere:
-      "Pentru arhive mari: digitizare, mutarea dosarelor, legături cu programele firmei și contract cu nivel de serviciu.",
+      "Pentru arhive mari: digitizare, mutarea dosarelor, legături cu programele firmei și contract cu nivel de serviciu garantat (SLA).",
     inHarta: true,
   },
 
@@ -256,7 +289,7 @@ export const RUTE: Ruta[] = [
   {
     cale: "/promo/scanare-cu-telefonul",
     scurt: "Bonuri scanate cu telefonul",
-    descriere: "Fotografiați bonul, iar 3S îi citește datele și îl pune în dosarul lunii, gata de căutat.",
+    descriere: "Fotografiază bonul, iar 3S îi citește datele și îl pune în dosarul lunii, gata de căutat.",
     inHarta: true,
   },
 
@@ -264,13 +297,13 @@ export const RUTE: Ruta[] = [
   {
     cale: "/inregistrare",
     scurt: "Cont gratuit",
-    descriere: "Deschiderea contului 3S: toate pachetele costă 0 RON astăzi, iar cardul nu vi se cere.",
+    descriere: "Deschiderea contului 3S: toate pachetele costă 0 RON astăzi, iar cardul nu ți se cere.",
     inHarta: true,
   },
   {
     cale: "/descarca",
     scurt: "Aplicația 3S",
-    descriere: "Aplicația 3S pentru Windows, macOS, Linux, telefon și browser, cu varianta potrivită recunoscută.",
+    descriere: "Aplicația 3S pentru Windows, Mac, Linux, telefon și browser; pagina îți recunoaște dispozitivul și îți propune varianta potrivită.",
     inHarta: true,
   },
   {
@@ -292,7 +325,7 @@ export const RUTE: Ruta[] = [
   ...ruteJuridice(),
   {
     cale: "/harta-site",
-    scurt: "Harta site",
+    scurt: "Harta site-ului",
     descriere: "Toate paginile site-ului 3S, grupate pe secțiuni și generate din lista rutelor.",
     inHarta: true,
   },

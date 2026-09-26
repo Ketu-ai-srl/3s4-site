@@ -23,7 +23,7 @@ export const NOTARIATE: Sector = {
   },
   erou: {
     // Rol: h1, un rand (doua la 390). Lungime: 41.
-    titlu: "Căutați în registre după numele părților",
+    titlu: "Caută în registre după numele părților",
     // Rol: subtitlul (3 randuri la 1440, 5 la 390, ca la referinta). Lungime: 195.
     subtitlu:
       "Volumele biroului se scanează, iar textul fiecărei pagini intră în 3S. O procură sau un contract vechi se găsește apoi după numele părților, chiar fără numărul actului, cu volumul și pagina lui.",
@@ -82,13 +82,13 @@ export const NOTARIATE: Sector = {
       },
       {
         // Lungimi: titlul 21, textul 90.
-        titlu: "Întrebați și de pe telefon",
-        text: "Din fața clientului, notarul întreabă pe telefon și primește actul, cu pagina lui din volum.",
+        titlu: "Întreabă și de pe telefon",
+        text: "Din fața clientului, notarul întreabă de pe telefon și primește actul, cu pagina lui din volum.",
       },
       {
         // Lungimi: titlul 21, textul 95.
         titlu: "Accesul, pe persoană",
-        text: "Stabiliți cine din birou caută în arhivă: accesul se dă pe persoană și pe dosar, nu pe tot biroul.",
+        text: "Stabilește cine din birou caută în arhivă: accesul se dă pe persoană și pe dosar, nu pe tot biroul.",
       },
     ],
     demo: {
@@ -126,13 +126,13 @@ export const NOTARIATE: Sector = {
       // Lungimi: intrebarea 52, raspunsul 212. O intrebare a sectorului, pe cautarea fara numar.
       intrebare: "Pot căuta un act dacă nu știu numărul lui?",
       raspuns:
-        "Da. Textul fiecărei pagini scanate intră în 3S, așa că un act se găsește după numele celor care l-au semnat sau după o frază din el. Răspunsul vine cu volumul și pagina, ca să verificați pe original.",
+        "Da. Textul fiecărei pagini scanate intră în 3S, așa că un act se găsește după numele celor care l-au semnat sau după o frază din el. Răspunsul vine cu volumul și pagina, ca să verifici pe original.",
     },
     {
       // Lungimi: intrebarea 43, raspunsul 216. Ce contine rezultatul unei cautari.
       intrebare: "Ce primește notarul când 3S găsește un act?",
       raspuns:
-        "Fișierul actului, volumul și pagina lui, plus fragmentul în care apar numele sau fraza căutată. Cu trimiterea la volum și pagină, actul se verifică repede pe original, înainte să eliberați copia sau duplicatul cerut.",
+        "Fișierul actului, volumul și pagina lui, plus fragmentul în care apar numele sau fraza căutată. Cu trimiterea la volum și pagină, actul se verifică repede pe original, înainte să eliberezi copia sau duplicatul cerut.",
     },
   ],
 };

@@ -19,7 +19,7 @@
 // masurare (`acasa.md`, `acasa-erou.md`, `acasa-constructor.md`, `acasa-functionalitati.md`);
 // `[numarat]` = numarata de dispecer pe textul referintei, pentru lungime si rol, niciodata
 // pentru cuvinte. Textul de aici e cel al feliei `text-acasa`, scris pentru 3S din faptele
-// marcii: o singura forma de adresare (dumneavoastra, scris intreg, niciodata prescurtat),
+// marcii: o singura forma de adresare (persoana a II-a singular, decizia D15),
 // diacritice complete, doar cratima. Fiecare valoare sta in +/-15% din lungimea rolului ei.
 //
 // AFIRMATIILE. Orice fraza verificabila de aici are intrare in `src/content/afirmatii/acasa.json`.
@@ -52,7 +52,7 @@ export const META_ACASA = {
   titlu: "3S Scan Store Solve: arhiva firmei care răspunde",
   // Rol: descrierea pentru motoarele de cautare. Prag de poarta: 50-160 caractere.
   descriere:
-    "Arhiva firmei, scanată și ținută în ordine, vă răspunde cu pagina citată, pe web sau pe WhatsApp. Toate pachetele costă 0 RON astăzi.",
+    "Arhiva firmei, scanată și ținută în ordine, îți răspunde cu pagina citată, pe web sau pe WhatsApp. Toate pachetele costă 0 RON astăzi.",
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ export type Erou = {
 export const EROU: Erou = {
   pastile: {
     // Rol: de ce aleg firmele produsul (deschide popover-ul). Lungime: 30 [fisa].
-    intrebare: { text: "De ce să vă mutați actele în 3S?", iconita: "check" },
+    intrebare: { text: "De ce să-ți muți actele în 3S?", iconita: "check" },
     // Rol: invitatie la modulul de automatizari. Lungime: 27 [fisa].
     legatura: {
       text: "Reguli care sortează singure",
@@ -115,26 +115,28 @@ export const EROU: Erou = {
         text: "Fișierele sunt criptate AES-256 pe disc și circulă doar prin conexiuni TLS 1.2 sau mai noi.",
       },
       { iconita: "globe", text: "Documentele stau la Amazon, în Germania." },
-      { iconita: "code", text: "Se leagă de e-mail și de facturare, iar pe WhatsApp vă răspunde." },
+      { iconita: "code", text: "Se leagă de e-mail și de facturare, iar pe WhatsApp îți răspunde." },
     ],
     // Rol: spre pagina de securitate. Lungime: 29 [fisa].
-    legatura: { text: "Citiți pagina de securitate", href: "/securitate", ruta: "/securitate" },
+    legatura: { text: "Citește pagina de securitate", href: "/securitate", ruta: "/securitate" },
   },
   titlu: {
     // Rol: documentele isi stiu locul. Lungime: 38 [numarat]; h1 intreg 72, 13 cuvinte [fisa].
     // La 3S: hartia devine arhiva (Scan, Store); a doua propozitie e raspunsul (Solve).
-    primaPropozitie: "Hârtiile firmei devin o arhivă digitală.",
+    primaPropozitie: "Documentele care îți răspund.",
     // Rol: inceputul propozitiei a doua, inainte de accent. Lungime: 11 [numarat].
-    aDouaInainteDeAccent: "Întrebați-o",
+    // Numeste arhiva digitala: entitatea declarata a startului (config/seo/fundatie.json, G-AI-02)
+    // sta in h1, ca inainte de vocea marcii. Lungime: 15, abatere declarata de la 11.
+    aDouaInainteDeAccent: "Arhiva digitală",
     // Rol: finalul accentuat (in referinta, momentul de dinaintea cautarii). Lungime: 22 [fisa].
-    accent: "și vă răspunde cu sursa.",
+    accent: "arată și pagina citată.",
   },
   // Rol: locul in care documentele stau in ordine, pe masura firmei. Lungime: 97, 14 cuvinte [fisa].
   subtitlu:
-    "Predați-ne dosarele de hârtie sau încărcați fișierele. Orice pagină o găsiți apoi pe web sau pe WhatsApp.",
+    "Tu ne dai documentele. Noi le facem să vorbească cu tine: organizate, ușor de găsit, gata de livrat.",
   // Rol: incercarea gratuita (butonul plin). Lungime: 25 [fisa].
   butonPrincipal: {
-    text: "Deschideți arhiva firmei",
+    text: "Testează gratuit",
     href: CALE_INREGISTRARE,
     ruta: CALE_INREGISTRARE,
   },
@@ -142,7 +144,7 @@ export const EROU: Erou = {
   // web externa. Lungime: 21 [fisa]. Tinta 3S: formularul, dupa regula tintelor externe (plan
   // §6.6, D4c); de aceea textul spune intrarea in aplicatie, nu o demonstratie. INTREBARE
   // DESCHISA pentru dispecer: rolul are la 3S echivalent intern, `/incepe` (plan §6.9).
-  butonSecundar: { text: "Intrați în aplicație", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+  butonSecundar: { text: "Întreabă documentele", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
   // Rol: fara card si fara obligatie (sub butoane, 14/400). Lungime: 26 [fisa].
   nota: "0 RON astăzi, fără card",
   bucla: {
@@ -161,9 +163,9 @@ export const EROU: Erou = {
     ],
     centru: {
       // Rol: eticheta accesibila a butonului central (lanseaza macheta, felia `erou`).
-      eticheta: "Porniți demonstrația 3S",
+      eticheta: "Pornește demonstrația 3S",
       // Rol: pastila de sub sigla din centru (13/600 `albastru`). Lungime: 17 [fisa].
-      pastila: "Vedeți demonstrația",
+      pastila: "Vezi demonstrația",
     },
     // Rol: legenda dintre cele doua coloane desenate (14/500). Lungime: 65, 11 cuvinte [fisa].
     legenda: "Hârtia intră pe o parte, răspunsul cu pagina citată iese pe cealaltă.",
@@ -193,7 +195,7 @@ export type GrupIntegrari = {
 
 export const INTEGRARI: { fraza: string; grupuri: GrupIntegrari[] } = {
   // Rol: produsul nu inlocuieste uneltele firmei, lucreaza langa ele. Lungime: 91, 13 cuvinte [fisa].
-  fraza: "Păstrați-vă programele de lucru. Actele din ele ajung, toate, în aceeași arhivă 3S.",
+  fraza: "Păstrează-ți programele de lucru. Actele din ele ajung, toate, în aceeași arhivă 3S.",
   grupuri: [
     {
       // Rol: uneltele de birou ale clientului. Lungime: 18 [fisa].
@@ -226,7 +228,7 @@ export const INTEGRARI: { fraza: string; grupuri: GrupIntegrari[] } = {
         { nume: "ChatGPT", sigla: "chatgpt" },
       ],
       // Rol: produsul se leaga de contul asistentului. Lungime: 32 [fisa].
-      nota: "Întrebați arhiva direct din asistent",
+      nota: "Întreabă arhiva direct din asistent",
     },
   ],
 };
@@ -382,12 +384,12 @@ export type CapConstructor = {
 
 export const CONSTRUCTOR: CapConstructor = {
   // Rol: cum ar arata firma vizitatorului in produs (h2 40/600, un rand). Lungime: 34 [numarat].
-  titlu: "Arhiva unei firme ca a dumneavoastră",
+  titlu: "Cum arată în 3S arhiva firmei tale",
   // Rol: o singura intrebare si spatiul de lucru se construieste singur. Lungime: 94 [numarat].
   subtitlu:
-    "Un clic pe domeniul firmei și 3S vă arată dosarele și regulile pe care le-ar avea arhiva ei.",
+    "Un clic pe domeniul firmei și 3S îți arată dosarele și regulile pe care le-ar avea arhiva ei.",
   // Rol: intrebarea de deasupra grilei (16/600). Lungime: 24 [numarat].
-  intrebare: "În ce domeniu lucrați?",
+  intrebare: "În ce domeniu lucrezi?",
   // Ordinea si iconitele, ca in acasa-constructor.md §2.1. Lungimi la referinta: 11, 13, 9, 8, 9,
   // 10, 9, 8, 11 [numarat].
   industrii: [
@@ -425,50 +427,48 @@ export type SectiuneFunctionalitati = {
 };
 
 export const FUNCTIONALITATI: SectiuneFunctionalitati = {
-  // Rol: stocarea obisnuita face dezordine, produsul o rezolva (h2, doua propozitii scurte, fara
-  // accent). Lungime: 49 [fisa].
-  titlu: "Un drive ține fișiere. Arhiva 3S le și citește.",
-  // Rol: stocarea obisnuita e facuta pentru fisiere, nu pentru actele firmei; de aici unelte in
-  // plus; produsul le inlocuieste. Lungime: 180, 25 de cuvinte [fisa].
-  subtitlu:
-    "Folderele păstrează ce puneți în ele și nimic mai mult. Ca să găsiți un act la timp, cineva trebuie să-l citească și să-i țină evidența. În 3S, treaba asta o face arhiva.",
-  // In paragrafele pasilor, comparatia cu un drive spune doar ce e adevarat despre orice drive si
-  // nu generalizeaza obiceiurile firmelor (fara "de obicei" nesustinut de o sursa). Unele drive-uri
-  // cauta si in textul scanarilor, deci nu se scrie ca un drive cauta doar dupa numele fisierului.
+  // Rol: inainte si dupa produs (h2, doua propozitii scurte, fara accent). Lungime: 49 [fisa].
+  // Textul e vocea marcii aleasa de owner (plan D15 e), pastrata intreaga: 62 de caractere,
+  // peste marja rolului, abatere declarata.
+  titlu: "Până acum, documentele doar se păstrau. Cu 3S, îți și răspund.",
+  // Rol: cei trei pasi ai marcii. Lungime: 180, 25 de cuvinte [fisa]. Aici 104, abatere declarata:
+  // fraza marcii din plan D15 (e) si numele pasilor; titlul vocii are 62 de caractere, un rand in
+  // plus la 390, iar subtitlul mai scurt tine antetul in inaltimea ciotului (proba fundatie-start):
+  // 3 randuri la 390, 2 la 1440.
+  subtitlu: "Scan. Store. Solve. De la dosar la răspunsul pe care îl cauți, în trei pași: scanare, păstrare, răspuns.",
+  // Pasii sunt cei trei ai marcii (Scan, Store, Solve, plan D15 e), in ordinea machetelor: 01
+  // scanarea si etichetarea (macheta cautarii cu actele scanate), 02 pastrarea in spatiul firmei,
+  // cu accesul pe categorii (macheta portalului), 03 raspunsul si evidenta (macheta registrului).
   pasi: [
     {
       numar: "01",
       // Rol: beneficiul, 2-5 cuvinte (13,12/600). Lungime: 24 [numarat]; 21-26 [fisa].
-      eticheta: "Clasare fără muncă de mână",
-      // Rol: dosarele unui drive fata de un sistem care isi stie continutul. Lungime: 80 [numarat].
-      titlu: "Fiecare act nou e citit și așezat singur în dosarul potrivit, cu eticheta lui.",
-      // Rol: stocarea obisnuita n-are etichete, tipuri, termene, cautare AI; produsul le face
-      // singur, intr-un loc. Lungime: 254 [numarat]; 225-254 [fisa].
+      eticheta: "Scan: preluare și scanare",
+      // Rol: intrarea actelor in sistem. Lungime: 80 [numarat].
+      titlu: "Preluăm și scanăm documentele fizice, iar pe cele deja scanate le încarci direct",
+      // Rol: ce se intampla cu un act la intrare. Lungime: 254 [numarat]; 225-254 [fisa].
       paragraf:
-        "Într-un drive, un contract scanat rămâne în folderul ales, cu numele dat la salvare. La noi, textul din scanări se citește, iar actul primește tipul și etichetele potrivite. Căutați apoi după ce scrie în act, de pildă suma sau numele clientului.",
+        "Scanăm dosarele pagină cu pagină, iar fișierele pe care le ai deja le încarci direct în platforma 3S. Din fiecare scanare se citește textul, iar documentul primește singur tipul și etichetele potrivite. Cauți apoi după ce scrie în el, de pildă suma sau numele clientului.",
     },
     {
       numar: "02",
-      // Rol: partajarea fara batai de cap. Lungime: 26 [numarat].
-      eticheta: "Acces pe categorii de acte",
-      // Rol: gata cu legaturile trimise si cu drepturile date de mana. Lungime: 62 [numarat].
-      // Scris din portalul 3S (plan D4b), fara perechea de actori a referintei.
-      titlu: "O factură pusă în portal nu mai trebuie trimisă nimănui.",
-      // Rol: pe un drive dai acces om cu om; produsul are portal pe categorii, fara e-mailuri.
-      // Lungime: 240 [numarat].
+      // Rol: pastrarea in ordine. Lungime: 26 [numarat].
+      eticheta: "Store: păstrare în ordine",
+      // Rol: unde stau actele si cine le vede. Lungime: 62 [numarat].
+      titlu: "Fiecare document stă în spațiul dedicat organizației tale",
+      // Rol: pregatirea automata si accesul pe categorii, prin portal. Lungime: 240 [numarat].
       paragraf:
-        "Pe un drive, fiecare om primește acces separat, altfel actele pleacă pe e-mail, ca atașamente. În 3S deschideți o categorie o singură dată, iar documentele noi din ea apar singure în portal, la cei cărora le-ați dat acces.",
+        "3S pregătește automat fiecare document încărcat, ca să-l găsești repede, pe el sau informația din el. Accesul îl dai pe categorii: deschizi o categorie o singură dată, iar documentele noi din ea apar singure în portal, la cei cărora le-ai dat acces.",
     },
     {
       numar: "03",
-      // Rol: conformitatea care se face singura. Lungime: 21 [numarat].
-      eticheta: "Evidența se ține singură",
-      // Rol: stocarea obisnuita nu tine evidenta arhivei si nu stie legea. Lungime: 60 [numarat].
-      titlu: "Pentru fiecare act se știe cât se păstrează și până când.",
-      // Rol: nicio stocare obisnuita nu tine evidenta, termenele si actele cerute; produsul da,
-      // de la inceput. Lungime: 225 [numarat].
+      // Rol: raspunsul. Lungime: 21 [numarat].
+      eticheta: "Solve: răspuns cu sursa",
+      // Rol: intrebarea si raspunsul, cu actul din care vine. Lungime: 60 [numarat].
+      titlu: "Întrebi în română. Primești răspunsul și documentul din care vine.",
+      // Rol: raspunsul la cerere si evidenta tinuta de produs. Lungime: 225 [numarat].
       paragraf:
-        "Un drive nu cunoaște legea arhivelor, așa că registrul și termenele de păstrare rămân în grija cuiva din firmă. 3S trece fiecare document în registru, îi calculează termenul după categorie și vă arată din timp ce poate fi scos din arhivă.",
+        "Îi ceri lui 3S informația sau documentul de care ai nevoie, iar el îți răspunde pe loc. Tot 3S ține registrul arhivei: trece fiecare document, îi calculează termenul de păstrare și îți arată din timp ce poate fi scos din arhivă.",
     },
   ],
   final: {
@@ -476,7 +476,7 @@ export const FUNCTIONALITATI: SectiuneFunctionalitati = {
     // rand). Lungime: 59 [fisa].
     fraza: "Pentru câteva zeci de acte, un drive poate fi destul.",
     // Rol: spre comparatia completa (buton contur albastru). Lungime: 26 [numarat].
-    buton: { text: "Comparați 3S cu un drive", href: "/comparatie-drive", ruta: "/comparatie-drive" },
+    buton: { text: "Compară 3S cu un drive", href: "/comparatie-drive", ruta: "/comparatie-drive" },
   },
 };
 
@@ -525,7 +525,7 @@ export type SectiuneIndustrii = {
 export const INDUSTRII: SectiuneIndustrii = {
   // Rol: fiecare industrie are actele ei si produsul le stie (h2 27,2/600, un rand). Lungime:
   // 58 [numarat]. La 3S scris din faptul marcii (raspunsul cu pagina citata), nu din fraza rolului.
-  titlu: "De la planșe la CMR-uri, fiecare răspuns vine cu pagina citată.",
+  titlu: "De la planșe la CMR-uri, fiecare răspuns vine cu pagina citată",
   // Ordinea si tintele din acasa.md §7. Numele 28-41 si descrierile 51-112 de caractere, pe
   // carduri [numarat]. Pe card, in ordine, la referinta: 31/112, 29/51, 41/93, 28/67, 29/73,
   // 33/71, 34/61.
@@ -548,7 +548,7 @@ export const INDUSTRII: SectiuneIndustrii = {
     {
       text: "Agenții imobiliare și administratori de clădiri",
       descriere:
-        "Scrieți adresa unei clădiri și primiți contractele de închiriere și actele ei de proprietate.",
+        "Scrie adresa unei clădiri și primești contractele de închiriere și actele ei de proprietate.",
       href: "/solutii/imobiliare",
       ruta: "/solutii/imobiliare",
       iconita: "building",
@@ -647,10 +647,10 @@ export const CARD_SECURITATE: CardSecuritate = {
   // [numarat].
   // Accesul e spus ca mecanism al aplicatiei (acasa-acces-pe-persoana-si-dosar), nu ca promisiune
   // ca nimeni altcineva nu deschide dosarele: vezi raspunsul 2 de la intrebari.
-  text: "Găzduirea e la Amazon, în Germania, cu fișierele criptate AES-256 și transferul prin TLS 1.2+. În aplicație, accesul la fiecare dosar îl dați dumneavoastră.",
+  text: "Găzduirea e la Amazon, în Germania, cu fișierele criptate AES-256 și transferul prin TLS 1.2+. În aplicație, accesul la fiecare dosar îl dai tu.",
   // Rol: spre comparatia modurilor de stocare (legatura-sageata). Lungime: 42 [numarat].
   legatura: {
-    text: "Vedeți unde pot sta documentele firmei",
+    text: "Vezi unde pot sta documentele firmei",
     href: "/comparatie-stocare",
     ruta: "/comparatie-stocare",
   },
@@ -658,7 +658,7 @@ export const CARD_SECURITATE: CardSecuritate = {
 
 export const CARD_ENTERPRISE: CardEnterprise = {
   // Rol: cautati o solutie pentru infrastructura proprie? Lungime: 29 [numarat].
-  titlu: "Aveți deja stocare proprie?",
+  titlu: "Ai deja stocare proprie?",
   // Rol: pastila nivelului. Lungime: 11 [numarat].
   pastila: "Enterprise",
   // Rol: produsul se leaga de stocarea clientului ca strat de ordine, AI si automatizari;
@@ -686,7 +686,7 @@ export const BANDA_PRET: BandaPret = {
   // Rol: preturi publice (h2 20/600, centrat). Lungime: 26 [numarat].
   titlu: "Prețul 3S, spus pe față",
   // Rol: cum se plateste si de la cat pornesti (16/400, un rand la 1440). Lungime: 85 [numarat].
-  fraza: "Astăzi, toate pachetele costă 0 RON. Alegeți-l pe cel potrivit din pagina de prețuri.",
+  fraza: "Astăzi, toate pachetele costă 0 RON. Alege-l pe cel potrivit din pagina de prețuri.",
   // Rol: spre pachete si preturi (legatura-sageata). Lungime: 29 [numarat].
   legatura: { text: "Ce include fiecare pachet", href: "/preturi", ruta: "/preturi" },
 };
@@ -713,7 +713,7 @@ const POSTA_ACASA = postaMarcii();
 
 export const INTREBARI: SectiuneIntrebari = {
   // Rol: titlul sectiunii (h2 40/600). Lungime: 19 [numarat].
-  titlu: "Ce trebuie să știți",
+  titlu: "Ce trebuie să știi",
   // Intrebarile sunt cu vocea clientului (persoana intai), raspunsurile i se adreseaza lui.
   intrebari: [
     {
@@ -722,7 +722,7 @@ export const INTREBARI: SectiuneIntrebari = {
       // Rol: furnizorul si locul, criptarea automata (4 randuri la 1440). Lungime: 307 [numarat].
       // Pe faptele din plan D4c: o singura regiune, in Germania.
       raspuns:
-        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc, fișierele sunt criptate AES-256, iar între calculatorul dumneavoastră și server circulă prin conexiuni TLS 1.2 sau mai noi. Dacă ne predați și originalele pe hârtie, acestea stau într-un depozit, pe bază de proces-verbal.",
+        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc, fișierele sunt criptate AES-256, iar între calculatorul tău și server circulă prin conexiuni TLS 1.2 sau mai noi. Dacă ne predai și originalele pe hârtie, acestea stau într-un depozit, pe bază de proces-verbal.",
     },
     {
       // Rol: intrebarea despre cine altcineva ajunge la documente. Lungime: 48 [numarat].
@@ -736,7 +736,7 @@ export const INTREBARI: SectiuneIntrebari = {
       // nu promite ca nimeni altcineva nu vede actele: scanarea si depozitul inseamna oameni
       // care le deschid (raspunsurile 1 si 4). Depozitul nu e numit al marcii: nu e un bun al ei.
       raspuns:
-        "Accesul în aplicație îl hotărâți dumneavoastră. Arhiva fiecărei firme stă separat, pe raft și în format digital, iar căutarea nu trece în arhiva altei firme. În firmă, accesul se dă nominal și pe dosar: colegul de la achiziții nu vede contractele de muncă dacă nu i le deschideți. Clienții intră prin portal și găsesc acolo numai categoriile lor. Un original din depozit îl poate cere doar cine e trecut în scris pe lista dumneavoastră. Orice căutare și orice document deschis se trec în jurnal, cu nume și oră, iar jurnalul vă stă la dispoziție.",
+        "Accesul în aplicație îl hotărăști tu. Arhiva fiecărei firme stă separat, pe raft și în format digital, iar căutarea nu trece în arhiva altei firme. În firmă, accesul se dă nominal și pe dosar: colegul de la achiziții nu vede contractele de muncă dacă nu i le deschizi tu. Clienții intră prin portal și găsesc acolo numai categoriile lor. Un original din depozit îl poate cere doar cine e trecut în scris pe lista ta. Orice căutare și orice document deschis se trec în jurnal, cu nume și oră, iar jurnalul îți stă la dispoziție.",
     },
     {
       // Rol: ce face AI-ul in produs. Lungime: 43 [numarat].
@@ -744,7 +744,7 @@ export const INTREBARI: SectiuneIntrebari = {
       // Rol: indexeaza fiecare document si raspunde la cereri in limbaj firesc, cu un exemplu
       // (3 randuri la 1440). Lungime: 323 [numarat].
       raspuns:
-        "La fiecare act încărcat, AI-ul scoate textul, chiar și dintr-o poză sau dintr-o scanare veche, și îl pune în index. Întrebați apoi în română, cum ați întreba un coleg: ce termen de plată are contractul cu firma X? Răspunsul vine cu documentul și cu pagina din care e luat, ca să-l verificați pe loc.",
+        "La fiecare act încărcat, AI-ul scoate textul, chiar și dintr-o poză sau dintr-o scanare veche, și îl pune în index. Întrebi apoi în română, cum ai întreba un coleg: a fost plătită factura nr. 1873? Răspunsul vine cu documentul și cu pagina din care e luat, ca să-l verifici pe loc.",
     },
     {
       // Rol: e usor de folosit. Lungime: 60 [numarat]. La 3S o singura intrebare, pusa din
@@ -754,7 +754,7 @@ export const INTREBARI: SectiuneIntrebari = {
       // Rol: raspuns scurt, apoi cum se lucreaza in cativa pasi simpli (3 randuri la 1440).
       // Lungime: 247 [numarat].
       raspuns:
-        "Întâi actele: fișierele le încărcați din browser, iar dosarele de hârtie ni le predați la scanat. Apoi scrieți întrebarea pe web sau pe WhatsApp și primiți răspunsul cu pagina citată. Contul se deschide fără card, iar astăzi toate pachetele costă 0 RON.",
+        "Întâi actele: fișierele le încarci din browser, iar dosarele de hârtie ni le predai la scanat. Apoi scrii întrebarea pe web sau pe WhatsApp și primești răspunsul cu pagina citată. Contul se deschide fără card, iar astăzi toate pachetele costă 0 RON.",
     },
   ],
   // Rol: n-ati gasit raspunsul, scrieti-ne (14/400). Lungime: 54 cu adresa [numarat]; partea de
@@ -795,14 +795,14 @@ export type CtaFinal = {
 export const CTA_FINAL: CtaFinal = {
   // Rol: documentele "prind viata" si circula singure (h2 32/600 alb, doua randuri). Lungime:
   // 49 [numarat].
-  titlu: "Faceți din dulapul cu dosare o arhivă care răspunde.",
+  titlu: "Fă din dulapul cu dosare o arhivă care îți răspunde",
   // Rol: un flux automat de documente, disponibil oricand (18/400, doua randuri). Lungime: 99
   // [numarat].
   subtitlu:
-    "După ce actele ajung în arhivă, scanate de noi sau încărcate de dumneavoastră, puteți întreba arhiva orice.",
+    "După ce actele ajung în arhivă, scanate de noi sau încărcate de tine, poți întreba arhiva orice.",
   // Rol: incercarea gratuita (buton alb). Lungime: 25 [numarat].
   butonPrincipal: {
-    text: "Deschideți arhiva firmei",
+    text: "Testează gratuit",
     href: CALE_INREGISTRARE,
     ruta: CALE_INREGISTRARE,
   },

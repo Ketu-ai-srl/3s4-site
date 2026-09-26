@@ -329,8 +329,8 @@ describe('contractul de continut', () => {
     expect([BIROU.initial, BIROU.maxim]).toEqual([5, 36])
     expect(BIROU.scena(5, 2)).toBe('Desen: un birou cu 5 dispozitive pe 2 mese')
     expect(BIROU.scena(36, 9)).toBe('Desen: un birou cu 36 de dispozitive pe 9 mese')
-    expect(BIROU.locuri(20)).toBe('20 de conturi, câte unul de coleg')
-    expect(BIROU.locuri(5)).toBe('5 conturi, câte unul de coleg')
+    expect(BIROU.locuri(20)).toBe('20 de conturi, câte unul pentru fiecare coleg')
+    expect(BIROU.locuri(5)).toBe('5 conturi, câte unul pentru fiecare coleg')
   })
 
   it('textele vizibile ale componentelor vin din contract: niciun sir cu diacritice in src/components/preturi', () => {

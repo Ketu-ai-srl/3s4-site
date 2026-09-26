@@ -75,7 +75,7 @@ export const INSTRUMENT = {
   // Numele accesibil al sectiunii instrumentului.
   etichetaSectiune: "Termenele, țară cu țară",
   // Rol: eticheta accesibila a grupului de pastile.
-  etichetaSelector: "Alegeți țara",
+  etichetaSelector: "Alege țara",
   /**
    * Contorul din capul panoului: "Termen confirmat pentru 5 din 7 acte". ~233 px la 13,6/400, cat
    * al referintei: la 1440 sta langa titlu, la 390 trece sub el (cap de 114 px) [fisa].
@@ -124,7 +124,7 @@ export const IESIRI_TERMENE: IesireTermene[] = [
 export const TIPAR = {
   inapoi: { text: "Înapoi la verificator", href: CALE_TERMENE, ruta: CALE_TERMENE } as Legatura,
   // Rol: butonul inchis de tiparire. Lungime: 8 [fisa].
-  buton: "Tipăriți",
+  buton: "Tipărește",
   titlu: "Termene de păstrare în România și în Republica Moldova",
   // Rol: ce e documentul si pentru ce (3 randuri la 1440, max 68ch). E si primul paragraf din <main>.
   paragraf:

@@ -77,7 +77,7 @@ export const ROLURI: readonly Rol[] = [
 
 export const ASTEPTARE = {
   // Rol: titlul asteptarii (40/600, alb .5). Lungime: 29 [numarat].
-  titlu: "Patru birouri, patru sarcini.",
+  titlu: "Patru birouri, patru sarcini",
   // Rol: paragraful asteptarii (16/400, 2 randuri). Lungime: 85 [numarat].
   paragraf: "Fiecare birou are partea lui din contract. Fără ordine scrisă, plata pleacă înaintea avizului.",
   // Contorul de zile (mono 9,92/600) si cele doua stari ale actului (9,92/600).
@@ -108,7 +108,7 @@ export type Eveniment = {
 
 export const PRET = {
   // Rol: titlul cronologiei, 1 rand (40/600). Lungime: 15 [numarat].
-  titlu: "Jurnalul unei întârzieri.",
+  titlu: "Jurnalul unei întârzieri",
   // Rol: subtitlul care fixeaza ce se povesteste (19,2/400, alb .45 -> .5). Lungime: 42 [numarat].
   paragraf: "Același contract, prins între două birouri.",
   // Rol: 5 randuri, fiecare cu costul lui. Scenariul: fara regula, acelasi contract e inregistrat de doua
@@ -134,7 +134,7 @@ export const PRET = {
 
 export const INTREBARE_AUTOMATIZARI = {
   // Rol: prima intrebare a pivotului (20/400). Lungime: 47 [numarat]. Cine lucreaza e regula.
-  intrebare: "Și dacă regula ar face anunțul în locul vostru?",
+  intrebare: "Și dacă regula ar face anunțul în locul tău?",
   // Rol: a doua fraza, emfaza (36,8/600, 2 randuri). Lungime: 53 [numarat].
   emfaza: "Juridicul primește clauzele, contabilitatea scadența.",
   // Rol: linia albastra care numeste functionalitatea 3S (32/600). Lungime: 40 [numarat].
@@ -171,7 +171,7 @@ export type RandRegula = {
 export const REGULA = {
   // Rol: titlul regulii (40/600, 2 randuri la 1440, 3 la 390). Lungime: 52 [numarat]. Spune ce arata
   // fereastra de dedesubt (exemplul).
-  titlu: "Trei reguli pentru contractele cu furnizorii, fiecare cu pasul ei.",
+  titlu: "Trei reguli pentru contractele cu furnizorii, fiecare cu pasul ei",
   // Rol: paragraful regulii (2 randuri la 1440, 3 la 390). Lungime: 98. Doua fapte 3S: jurnalul pasilor si
   // aprobarea ceruta pentru contractul-cadru.
   paragraf: "Un contract-cadru așteaptă aprobarea conducerii, iar pașii făcuți de reguli intră în jurnal, cu ora lor.",
@@ -186,7 +186,7 @@ export const REGULA = {
     { tip: "cand", inainte: "tip act = ", accent: "contract-cadru" },
     { tip: "atunci", inainte: "îl ține pentru aprobarea ", accent: "conducerii" },
     { tip: "cand", inainte: "zile până la scadență < ", accent: "10" },
-    { tip: "atunci", inainte: "îl urcă primul la ", accent: "contabilitate" },
+    { tip: "atunci", inainte: "îl trimite primul la ", accent: "contabilitate" },
   ] as readonly RandRegula[],
   declaratie: "Exemplu cu date fictive: trei reguli scrise de firmă pentru contractele cu furnizorii",
 } as const;
@@ -238,7 +238,7 @@ export const SAPTAMANA = {
     ],
   },
   // Rol: eticheta puntii, doua cuvinte legate prin sageata (9,92/700). Lungime: 13 [numarat].
-  punte: "vineri -> luni",
+  punte: "vineri → luni",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -249,11 +249,11 @@ export const CTA_AUTOMATIZARI = {
   // Rol: titlul CTA, 3 randuri la 1440. Lungime: 46 [numarat]. La 390 fisa cere 4 randuri, aici 3
   // (masurat): randurile depind de latimea cuvintelor, iar un titlu cu 4 randuri la 390 ar trece pe 4 si
   // la 1440. Inaltimea sectiunii e aceeasi (80vh).
-  titlu: "Fiecare om află la timp ce are de făcut.",
+  titlu: "Fiecare om află la timp ce are de făcut",
   // Rol: paragraful CTA (20,8/400, 2 randuri la 1440, 3 la 390). Lungime: 85. Doua fapte 3S: regula
   // porneste la intrarea actului, iar pasii ei intra in jurnal.
   paragraf: "O regulă „când / atunci” pornește la intrarea actului, iar jurnalul păstrează fiecare pas.",
-  buton: "Deschideți un cont",
+  buton: "Testează gratuit",
   nota: "Toate pachetele costă azi 0 RON, iar contul nu cere card.",
 } as const;
 

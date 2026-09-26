@@ -6,7 +6,7 @@
 Lista de mai jos e ce trebuie sa bifeze cineva care stie afacerea, inainte de publicare.
 Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 
-**De confirmat: 19 din 31**
+**De confirmat: 19 din 32**
 
 | # | Afirmatia, asa cum apare pe site | Unde |
 |---|---|---|
@@ -26,7 +26,7 @@ Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 | 14 | Arhiva unui birou notarial se preia cu proces-verbal și inventar, apoi se scanează; originalele rămân ale biroului, răspunsurile vin din copia scanată, iar originalul pe hârtie se aduce înapoi la cerere | `src/content/acasa.ts, src/content/navigatie.ts` |
 | 15 | Actele unei clădiri se găsesc după adresa ei | `src/content/acasa.ts` |
 | 16 | Dosarul fiecărei cauze adună actele primite cu dată certă și termenele procedurale | `src/content/acasa.ts, src/content/navigatie.ts` |
-| 17 | Comenzile, CMR-urile semnate și dovezile de livrare stau legate de cursa lor și se găsesc după cursă sau după client, ca facturarea să nu mai aștepte după o hârtie | `src/content/acasa.ts, src/content/navigatie.ts` |
+| 17 | Comenzile, CMR-urile semnate și dovezile de livrare stau legate de cursa lor și se găsesc după cursă sau după client, ca facturarea să nu mai aștepte un document | `src/content/acasa.ts, src/content/navigatie.ts` |
 | 18 | Aplicația de telefon face din fotografia unui act o scanare curată și trimite actul în dosarul lui | `src/content/navigatie.ts` |
 | 19 | În 3S, un act nou pleacă singur spre omul care trebuie să-l aprobe sau să-l plătească | `src/content/navigatie.ts` |
 

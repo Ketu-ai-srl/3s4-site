@@ -17,10 +17,10 @@ export const ASIGURARI: Sector = {
   },
   erou: {
     // Rol: h1, un rand (doua la 390). Lungime: 41.
-    titlu: "Întrebați dosarul daunei, nu colegii",
+    titlu: "Întreabă dosarul daunei, nu colegii",
     // Rol: subtitlul (3 randuri la 1440, 5 la 390, ca la referinta). Lungime: 178.
     subtitlu:
-      "3S ține polițele vechi scanate și actele fiecărei daune în dosarul ei, vă arată ce act mai lipsește și răspunde inspectorilor direct pe WhatsApp, cu pagina exactă din care vine informația.",
+      "3S ține polițele vechi scanate și actele fiecărei daune în dosarul ei, îți arată ce act mai lipsește și răspunde inspectorilor direct pe WhatsApp, cu pagina exactă din care vine informația.",
   },
   momente: {
     // Rol: subtitlul sinei. Lungime: 55.
@@ -55,7 +55,7 @@ export const ASIGURARI: Sector = {
   schimbare: {
     // Rol: paragraful-punte. Lungime: 167.
     punte:
-      "Inspectorul întreabă de pe teren și primește actul cu pagina lui. 3S pune fiecare act în dosarul daunei, oricum ar fi sosit, și vă arată ce mai lipsește.",
+      "Inspectorul întreabă de pe teren și primește actul cu pagina lui. 3S pune fiecare act în dosarul daunei, oricum ar fi sosit, și îți arată ce mai lipsește.",
     // Lungimi: 54 / 55 / 41.
     buline: [
       "Polițele vechi, scanate și căutabile pe pagină",
@@ -77,8 +77,8 @@ export const ASIGURARI: Sector = {
       },
       {
         // Lungimi: titlul 26, textul 114.
-        titlu: "Întrebați de pe teren, pe WhatsApp",
-        text: "Inspectorul scrie pe WhatsApp numărul daunei și ce caută, iar 3S îi răspunde din dosarul ei, fără să deschidă laptopul.",
+        titlu: "Întreabă de pe teren, pe WhatsApp",
+        text: "Inspectorul scrie pe WhatsApp numărul daunei și ce caută, iar 3S îi răspunde din dosarul ei, fără ca inspectorul să deschidă laptopul.",
       },
       {
         // Lungimi: titlul 35, textul 110.
@@ -104,7 +104,7 @@ export const ASIGURARI: Sector = {
     // Lungimi: 48 / 49 / 41.
     inainte: [
       "Inspectorul sună la birou ca să afle ce e în dosar",
-      "Actele predate la agenții ajung cu zile întârziere",
+      "Actele predate la agenții ajung cu zile de întârziere",
       "Asiguratul așteaptă la telefon un răspuns clar",
     ],
     // Lungimi: 43 / 39 / 43.
@@ -119,13 +119,13 @@ export const ASIGURARI: Sector = {
       // Lungimi: intrebarea 54, raspunsul 262. O intrebare a sectorului, pe arhiva de hartie.
       intrebare: "Ce facem cu dosarele de daună vechi, pe hârtie?",
       raspuns:
-        "Le predați la scanat, cutie cu cutie. Fiecare dosar intră în 3S cu textul tuturor paginilor, legat de numărul daunei și de numele asiguratului, așa că o poliță de acum zece ani se găsește la fel de ușor ca una semnată ieri.",
+        "Le predai la scanat, cutie cu cutie. Fiecare dosar intră în 3S cu textul tuturor paginilor, legat de numărul daunei și de numele asiguratului, așa că o poliță de acum zece ani se găsește la fel de ușor ca una semnată ieri.",
     },
     {
       // Lungimi: intrebarea 48, raspunsul 321.
       intrebare: "Cine poate deschide dosarele de daună?",
       raspuns:
-        "Accesul se dă pe persoană și pe dosar: un inspector vede dosarele lui, iar echipa de audit vede ce îi deschideți. Fiecare căutare și fiecare document deschis se trec în jurnal, cu numele și ora, iar jurnalul vă stă la dispoziție.",
+        "Accesul se dă pe persoană și pe dosar: un inspector vede dosarele lui, iar echipa de audit vede ce îi deschizi tu. Fiecare căutare și fiecare document deschis se trec în jurnal, cu numele și ora, iar jurnalul îți stă la dispoziție.",
     },
   ],
 };

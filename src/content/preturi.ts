@@ -17,10 +17,11 @@
 //
 // LUNGIMILE din comentarii sunt ale referintei, pe acelasi rol: `[fisa]` = scrisa in fisa;
 // `[numarat]` = numarata pe textul referintei, pentru lungime si rol, niciodata pentru cuvinte.
-// Textul de aici e scris pentru 3S: adresarea dumneavoastra, scrisa intreg; diacritice complete;
+// Textul de aici e scris pentru 3S: adresarea "tu" (decizia D15); diacritice complete;
 // doar cratima.
 
 import { CALE_INREGISTRARE, type Legatura } from "./navigatie";
+import { cereDe } from "./limba";
 
 // ---------------------------------------------------------------------------------------------
 // Ruta, metadatele si ancorele
@@ -63,14 +64,14 @@ export const ANTET_PRETURI = {
     { text: "Prețuri", cale: CALE_PRETURI },
   ],
   // Rol: numele celor doua linii de produs, legate prin "si", cu punct. Lungime: 39 [fisa].
-  titlu: "3S Business și 3S Enterprise.",
+  titlu: "3S Business și 3S Enterprise",
   // Rol: cele doua linii, pe scurt: cea de baza si pretul ei, cea enterprise si cand se alege.
   // Lungime: 212, 2 propozitii [fisa].
   // E primul paragraf din <main>: raspunsul paginii, 30-80 de cuvinte (poarta G-AI-02).
   // Nu fixeaza conditii comerciale pentru Enterprise (niciun contract, niciun prag): registrul le
   // da drept nestabilite (`preturi-enterprise-contract`).
   subtitlu:
-    "Astăzi cele trei pachete 3S, cu 5, 10 sau 20 de conturi, costă 0\u00a0RON și au aceleași funcții. Când arhiva trebuie să rămână pe serverele firmei sau să fie legată de aplicațiile pe care le folosiți, lucrați cu 3S Enterprise.",
+    "Astăzi cele trei pachete 3S, cu 5, 10 sau 20 de conturi, costă 0\u00a0RON și au aceleași funcții. Când arhiva trebuie să rămână pe serverele firmei sau să fie legată de aplicațiile pe care le folosești, lucrezi cu 3S Enterprise.",
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -93,19 +94,19 @@ export const POARTA_BAZA: CardPoarta = {
   // Lungime: 16 [numarat].
   nume: "3S Business",
   // Rol: titlul de beneficiu al liniei de baza (24/600, un rand la 1440). Lungime: 34 [numarat].
-  titlu: "Toate funcțiile, la 0\u00a0RON.",
+  titlu: "Toate funcțiile, la 0\u00a0RON",
   // Rol: textul cardului de baza (14/400, 2 randuri la 1440, 3 la 390). Lungime: 105 [numarat].
   // Scris din functiile 3S (D4b): accesul pe persoana si pe dosar, clasarea automata.
   text: "Cu 5, 10 sau 20 de conturi, fiecare coleg lucrează în dosarele lui, iar actele noi se clasează singure.",
   // Lungime: 14 [numarat].
-  mergi: "Alegeți un pachet",
+  mergi: "Alege un pachet",
 };
 
 export const POARTA_ENTERPRISE: CardPoarta & { tinta: Legatura } = {
   // Lungime: 18 [numarat].
   nume: "3S Enterprise",
   // Rol: titlul cardului enterprise (24/600, doua randuri la 1440). Lungime: 52 [numarat].
-  titlu: "Arhiva poate rămâne pe serverele firmei.",
+  titlu: "Arhiva poate rămâne pe serverele firmei",
   // Rol: textul cardului enterprise (14/400). Lungime: 108 [numarat]. Scris din faptul declarat
   // de owner (D4b): 3S lucreaza pe stocarea proprie a firmei si se leaga de aplicatiile ei.
   text: "3S lucrează direct pe fișierele de acolo și se leagă de aplicațiile pe care firma le folosește deja.",
@@ -158,7 +159,7 @@ export const CALCULATOR = {
     // Rol: rezultatul teaserului (14/600). Lungime: 23 [numarat].
     rezultat: (ore: string) => "se adună " + ore + " lunar",
     // Rol: CTA-ul teaserului (14/600). Lungime: 27 [numarat].
-    cta: "Încercați cu cifrele firmei",
+    cta: "Încearcă cu cifrele firmei",
   },
   // Rol: numele accesibil al calculatorului deschis.
   eticheta: "Calculul timpului pierdut căutând acte",
@@ -202,7 +203,7 @@ export const CALCULATOR = {
   // Rol: iesirea stanga (16/400): banii si timpul de acum, in ordinea asta. Cifrele ingrosate vin
   // din calcul. 3 randuri la 1440 si 5 la 390 cu valorile de pornire (masurat pe pagina vie).
   timpAcum: {
-    inainte: "Acum plătiți ",
+    inainte: "Acum plătești ",
     dupaBani: "\u00a0RON lunar pentru cele ",
     dupaOre: " h în care echipa caută acte prin dosare.",
   },
@@ -213,19 +214,19 @@ export const CALCULATOR = {
   pretInOre: {
     inainte: "Se potrivește pachetul ",
     dupaPlan: ": ",
-    dupaPret: "\u00a0RON pe lună, cât ",
+    dupaPret: "\u00a0RON pe lună, adică ",
     dupaOre: " h plătite la tariful ales.",
   },
   // Rol: iesirea dreapta cand echipa trece de conturile celui mai mare pachet. Nu fixeaza un prag
   // comercial: spune doar ca pachetele nu ajung si cu cine se discuta.
   pesteConturi: {
-    inainte: (persoane: string) => "Pentru " + persoane + " persoane, pachetele nu ajung: discutați cu echipa 3S despre ",
+    inainte: (persoane: string) => "Pentru " + persoane + " persoane, pachetele nu ajung: discută cu echipa 3S despre ",
     dupa: ".",
   },
   // Rol: nota de sub iesire (12/400, centrata, un rand): presupunerea de calcul. Lungime: 88
   // [numarat]. Cele 22 de zile sunt o PRESUPUNERE a formulei (fisa §6b), spusa ca atare, nu o
   // valoare legala. La 3S spune si ce masoara calculul: timpul pierdut acum.
-  nota: "Presupunem 22 de zile lucrătoare pe lună. Rezultatul arată timpul pe care îl pierdeți acum.",
+  nota: "Presupunem 22 de zile lucrătoare pe lună. Rezultatul arată timpul pe care îl pierzi acum.",
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -311,20 +312,19 @@ export const GRILA = {
   // Rol: unitatea de langa suma (13/500). Aceeasi in ambele moduri, ca la referinta.
   unitate: "RON / lună",
   // Rol: butonul fiecarui plan. Tinta: formularul de cont (plan D4c).
-  buton: { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
+  buton: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
   /** Eticheta accesibila a iconitei "i". */
   detalii: (rand: string) => "Ce înseamnă: " + rand,
 };
 
-/** Forma romaneasca a numeralului: "5 conturi", "20 de conturi", "101 conturi". */
+/** Forma romaneasca a numeralului: "5 conturi", "20 de conturi", "101 conturi", "0 ore" (regula in `limba.ts`). */
 export function cuDe(n: number): string {
-  const rest = Math.abs(n) % 100;
-  return rest === 0 || rest >= 20 ? " de" : "";
+  return cereDe(n) ? " de" : "";
 }
 
 /**
  * Valoarea unui cursor, spusa cititorului de ecran (`aria-valuetext`): singular la 1, apoi numeralul
- * romanesc, "4 persoane", "25 de minute pe zi", "210 lei pe oră". Sirul se compune la rulare, deci
+ * romanesc, "4 persoane", "25 de minute pe zi", "210 de lei pe oră". Sirul se compune la rulare, deci
  * poarta de limba nu il vede: forma lui o tine proba din `tests/preturi.test.ts`.
  */
 export function valoareSpusa(cursor: Cursor, n: number): string {
@@ -352,7 +352,7 @@ export function randuriPlan(plan: Plan): RandPlan[] {
       text: "Termene de păstrare calculate",
       // Rol: explicatia termenului din rand (12/400, 260 de pixeli). Lungime: 40 de cuvinte [fisa].
       explicatie:
-        "3S trece fiecare act în registrul arhivei și îi calculează termenul de păstrare după categoria lui. Așa vedeți din timp ce documente pot fi scoase din arhivă și ce trebuie păstrat mai departe.",
+        "3S trece fiecare act în registrul arhivei și îi calculează termenul de păstrare după categoria lui. Așa vezi din timp ce documente pot fi scoase din arhivă și ce trebuie păstrat mai departe.",
     },
     { cifra: null, text: "Portal pentru clienți", explicatie: null },
     { cifra: null, text: "Găzduire în Germania, UE", explicatie: null },
@@ -366,7 +366,7 @@ export function randuriPlan(plan: Plan): RandPlan[] {
 
 export const LISTA_PDF = {
   // Rol: buton-text cu imprimanta (14/500, subliniat). Lungime: 34 [numarat].
-  buton: "Tipăriți oferta sau păstrați-o în PDF",
+  buton: "Tipărește oferta sau păstreaz-o în PDF",
   foaie: {
     // Numele marcii, cum il scrie configurarea (`config/brand.json`); nu sigla retiparita.
     marca: "3S Scan Store Solve",
@@ -405,7 +405,7 @@ export const BIROU = {
   planuri: "Pachetul arătat",
   // Rol: eticheta locurilor (14/500). La 390 coboara pe al doilea rand al benzii, ca la referinta
   // (banda de 52 px); masurat pe pagina vie cu 5 locuri.
-  locuri: (n: number) => n + cuDe(n) + " conturi, câte unul de coleg",
+  locuri: (n: number) => n + cuDe(n) + " conturi, câte unul pentru fiecare coleg",
   scena: (dispozitive: number, mese: number) =>
     "Desen: un birou cu " + dispozitive + cuDe(dispozitive) + " dispozitive pe " + mese + cuDe(mese) + (mese === 1 ? " masă" : " mese"),
 };
@@ -427,7 +427,7 @@ export const COMPARATIE = {
   // Rol: titlul pliului (16/600). Lungime: 33 [numarat].
   titlu: "Pachetele, față în față",
   // Rol: legenda tabelului (14/400). Lungime: 34 [numarat].
-  paragraf: "Ce primiți în fiecare pachet, rând cu rând",
+  paragraf: "Ce primești în fiecare pachet, rând cu rând",
   functie: "Funcție",
   inclus: "inclus",
   derulare: "Tabelul pachetelor; pe ecran îngust se derulează orizontal",
@@ -468,7 +468,7 @@ export const COMPARATIE = {
       // Primele doua valori rup randul in coloanele de 120 (110 la 390), ca la referinta in aceeasi
       // categorie: 3 randuri (94 px la 1440) si 2 randuri (72); masurat pe pagina vie.
       randuri: [
-        { functie: "Unde primiți răspunsuri", celule: toate(valoare("Web, aplicație și WhatsApp")) },
+        { functie: "Unde primești răspunsuri", celule: toate(valoare("Web, aplicație și WhatsApp")) },
         { functie: "Aplicația 3S", celule: toate(valoare("Toate platformele")) },
         { functie: "Prețul astăzi", celule: toate(valoare("0\u00a0RON")) },
       ],
@@ -486,29 +486,29 @@ export const INTREBARI_PRETURI: { titlu: string; subtitlu: string; intrebari: In
   // Rol: h2 de bloc (28/600). Lungime: 18 [numarat].
   titlu: "Plata și pachetele, pe scurt",
   // Rol: subtitlul (16/400). Lungime: 55 [numarat].
-  subtitlu: "Ce primiți în pachet, cât plătiți și unde stau fișierele",
+  subtitlu: "Ce primești în pachet, cât plătești și unde stau fișierele",
   // Lungimile raspunsurilor la referinta: 53 / 36 / 42 / 41 / 40 / 30 / 48 de cuvinte [fisa].
   // Intrebarile sunt alese din faptele 3S: fiecare are un raspuns adevarat astazi.
   intrebari: [
     {
-      intrebare: "Plătim în plus pentru căutare sau WhatsApp?",
+      intrebare: "Plătesc în plus pentru căutare sau WhatsApp?",
       raspuns:
-        "Nu. Căutarea cu sursa citată, răspunsurile pe WhatsApp, clasarea automată în dosare și termenele de păstrare calculate vin în fiecare pachet, fără vreo taxă adăugată. Ce alegeți între Start, Plus și Pro e doar numărul de conturi, iar astăzi oricare dintre ele costă 0\u00a0RON.",
+        "Nu. Căutarea cu sursa citată, răspunsurile pe WhatsApp, clasarea automată în dosare și termenele de păstrare calculate vin în fiecare pachet, fără vreo taxă adăugată. Ce alegi între Start, Plus și Pro e doar numărul de conturi, iar astăzi oricare dintre ele costă 0\u00a0RON.",
     },
     {
       intrebare: "Ce pachet să aleg?",
       raspuns:
-        "Numărați oamenii care lucrează cu actele firmei: până la 5, Start; până la 10, Plus; până la 20, Pro. Dacă aveți nevoie de mai multe conturi, discutați cu echipa 3S. Funcțiile sunt aceleași în toate trei.",
+        "Numără oamenii care lucrează cu actele firmei: până la 5, Start; până la 10, Plus; până la 20, Pro. Dacă ai nevoie de mai multe conturi, discută cu echipa 3S. Funcțiile sunt aceleași în toate trei.",
     },
     {
       intrebare: "Cât costă pachetele astăzi?",
       raspuns:
-        "Astăzi toate cele trei pachete costă 0\u00a0RON, la plata lunară și la cea anuală. În preț intră toate funcțiile de pe această pagină. Lista de prețuri o puteți salva oricând ca PDF, din butonul de sub pachete.",
+        "Astăzi toate cele trei pachete costă 0\u00a0RON, la plata lunară și la cea anuală. În preț intră toate funcțiile de pe această pagină. Lista de prețuri o poți salva oricând ca PDF, din butonul de sub pachete.",
     },
     {
       intrebare: "Am nevoie de un card de plată ca să deschid contul 3S?",
       raspuns:
-        "Nu. Contul se deschide fără card de plată. Cât timp prețul este 0\u00a0RON, nu aveți nimic de plătit și nu vi se cere nicio metodă de plată.",
+        "Nu. Contul se deschide fără card de plată. Cât timp prețul este 0\u00a0RON, nu ai nimic de plătit și nu ți se cere nicio metodă de plată.",
     },
     {
       intrebare: "Unde sunt păstrate fișierele?",
@@ -518,12 +518,12 @@ export const INTREBARI_PRETURI: { titlu: string; subtitlu: string; intrebari: In
     {
       intrebare: "Pot folosi 3S de pe telefon?",
       raspuns:
-        "Da. Aplicația 3S există pentru Windows, Mac, Linux, iOS și iPadOS, Android și în browser, iar întrebările le puteți pune și pe WhatsApp. Toate intră în fiecare pachet.",
+        "Da. Aplicația 3S există pentru Windows, Mac, Linux, iOS, iPadOS și Android, precum și în browser, iar întrebările le poți pune și pe WhatsApp. Toate intră în fiecare pachet.",
     },
     {
       intrebare: "Cum arată un răspuns cu sursa citată?",
       raspuns:
-        "La fiecare întrebare, 3S vă răspunde cu documentul și cu pagina din care e luat răspunsul. Deschideți pagina cu un clic și citiți fraza exactă, fără să căutați prin dosare, așa că știți mereu de unde vine informația. Funcția e inclusă în toate pachetele.",
+        "La fiecare întrebare, 3S îți răspunde cu documentul și cu pagina din care e luat răspunsul. Deschizi pagina cu un clic și citești fraza exactă, fără să cauți prin dosare, așa că știi mereu de unde vine informația. Funcția e inclusă în toate pachetele.",
     },
   ],
 };

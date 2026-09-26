@@ -7,7 +7,7 @@
 // e confirmata, nu numim o firma (decizia owner-ului din 24.09, doar brandul) si nu descriem un
 // clip care nu exista: `/incepe` arata o demonstratie in HTML, declarata ca demonstratie.
 //
-// Adresarea e "dumneavoastra", ca pe tot site-ul. Lungimile din comentarii sunt ale rolului masurat
+// Adresarea e "tu" (decizia D15), ca pe tot site-ul in afara documentelor juridice. Lungimile din comentarii sunt ale rolului masurat
 // in fise (numar de randuri la latimea masurata), nu ale unui text anume.
 
 import type { Legatura } from "./navigatie";
@@ -30,7 +30,7 @@ export type MetaPagina = { titlu: string; descriere: string };
 export const META_CONTACT: MetaPagina = {
   titlu: "Contact 3S: întrebări despre arhiva firmei",
   descriere:
-    "Scrieți echipei 3S despre actele firmei, găsiți pagina care vă răspunde deja sau vedeți ce canale sunt deschise astăzi.",
+    "Scrie echipei 3S despre actele firmei, găsește pagina care îți răspunde deja sau vezi ce canale sunt deschise astăzi.",
 };
 
 export type CardSubiect = {
@@ -52,7 +52,7 @@ export const CONTACT = {
   fir: { acasa: "Acasă", pagina: "Contact" },
   erou: {
     // Rol: titlul paginii, doua randuri la 1440.
-    titlu: "Spuneți-ne ce acte are firma și unde se pierd ele azi",
+    titlu: "Spune-ne ce acte are firma și unde se pierd ele azi",
     // Rol: ce se intampla cu mesajul, doua randuri la 1440.
     subtitlu:
       "Întrebările despre arhiva firmei ajung la echipa 3S prin formularul de mai jos, după ce e pornit. Multe au deja răspuns pe site.",
@@ -61,9 +61,9 @@ export const CONTACT = {
     // Rol: casuta pentru orice intrebare, h2 bloc.
     titlu: "Orice întrebare despre 3S",
     // Rol: ce fel de intrebari intra aici, doua randuri.
-    text: "Contul gratuit, digitizarea dosarelor de hârtie, căutarea cu sursa citată sau legătura cu programele pe care le folosiți deja.",
+    text: "Contul gratuit, digitizarea dosarelor de hârtie, căutarea cu sursa citată sau legătura cu programele pe care le folosești deja.",
     // Rol: butonul, cand exista o adresa confirmata a marcii (se pune adresa insasi).
-    butonFormular: "Scrieți-ne prin formular",
+    butonFormular: "Scrie-ne prin formular",
     // Rol: nota de langa buton.
     nota: "Toate pachetele 3S costă 0 RON astăzi.",
   },
@@ -74,7 +74,7 @@ export const CONTACT = {
       {
         iconita: "building-2",
         titlu: "Arhive mari și digitizare",
-        descriere: "Dosare de hârtie de scanat, mutarea arhivei vechi și contract cu nivel de serviciu.",
+        descriere: "Dosare de hârtie de scanat, mutarea arhivei vechi și contract cu nivel de serviciu garantat (SLA).",
         legatura: { text: "/enterprise", href: "/enterprise", ruta: "/enterprise" },
       },
       {
@@ -113,18 +113,18 @@ export const CONTACT = {
       },
       {
         iconita: "compass",
-        titlu: "3S pe domeniul dumneavoastră",
+        titlu: "3S în domeniul tău",
         descriere: "Construcții, contabilitate, avocatură, notariate, logistică, imobiliare și asigurări.",
         legatura: { text: "/solutii", href: "/solutii", ruta: "/solutii" },
       },
     ] satisfies CardSubiect[],
   },
   canale: {
-    titlu: "Pe unde ajungeți la noi astăzi",
+    titlu: "Pe unde ajungi la noi astăzi",
     text: "Canalele mărcii 3S și starea fiecăruia în ziua de azi, fără promisiuni de termen pe care nu le-am asumat.",
     formular: {
       nume: "Formularul de pe această pagină",
-      legatura: { text: "Mergeți la formular", href: "#contact-form", ruta: "/contact" },
+      legatura: { text: "Mergi la formular", href: "#contact-form", ruta: "/contact" },
     },
     cont: {
       nume: "Contul gratuit 3S",
@@ -145,12 +145,12 @@ export const CONTACT = {
     postaFaraAdresa: "încă nepublicată",
     notaEticheta: "De reținut:",
     notaInchis:
-      "cât timp formularul nu e pornit, nimic din ce scrieți în el nu pleacă de pe pagină și nu se salvează nicăieri.",
-    notaDeschis: "ce trimiteți prin formular ajunge la echipa 3S și se păstrează cât scrie în politica de confidențialitate.",
+      "cât timp formularul nu e pornit, nimic din ce scrii în el nu pleacă de pe pagină și nu se salvează nicăieri.",
+    notaDeschis: "ce trimiți prin formular ajunge la echipa 3S și se păstrează cât timp prevede politica de confidențialitate.",
   },
   marca: {
     titlu: "Ce se află în spatele numelui 3S",
-    text: "Pe site apar doar datele mărcii. Firma care prelucrează ce trimiteți se numește în politica de confidențialitate, odată cu publicarea ei.",
+    text: "Pe site apar doar datele mărcii. Firma care prelucrează ce trimiți se numește în politica de confidențialitate, odată cu publicarea ei.",
     carduri: [
       {
         titlu: "Marca 3S",
@@ -178,7 +178,7 @@ export const CONTACT = {
     // Rol: titlul sectiunii formularului, h2 40, un rand.
     titlu: "Câteva rânduri ajung",
     // Rol: ce sa scrie vizitatorul, doua randuri.
-    subtitlu: "Spuneți-ne cum arată arhiva firmei și ce ați vrea să găsiți mai repede în ea.",
+    subtitlu: "Spune-ne cum arată arhiva firmei și ce ai vrea să găsești mai repede în ea.",
     // Rol: textul-exemplu din mesaj; o intrebare posibila, nu una a unui client.
     exempluMesaj: "De exemplu: avem dosare de hârtie din ultimii ani și vrem să le căutăm după client.",
     subiect: "Mesaj de pe pagina de contact 3S",
@@ -190,17 +190,17 @@ export const CONTACT = {
 // ---------------------------------------------------------------------------------------------
 
 export const META_INREGISTRARE: MetaPagina = {
-  titlu: "Cont gratuit 3S: deschideți arhiva firmei",
+  titlu: "Cont gratuit 3S: deschide arhiva firmei",
   descriere:
-    "Deschideți contul 3S: toate pachetele costă 0 RON astăzi, fără card. Alegeți utilizatorul și parola, apoi aduceți actele firmei.",
+    "Deschide contul 3S: toate pachetele costă 0 RON astăzi, fără card. Alege utilizatorul și parola, apoi adu actele firmei.",
 };
 
 export const INREGISTRARE = {
   fir: { acasa: "Acasă", pagina: "Cont gratuit" },
   // Rol: titlul, doua randuri centrate la 1440 (cinci cuvinte).
-  titlu: "Deschideți contul 3S, gratuit astăzi",
+  titlu: "Deschide contul 3S, gratuit astăzi",
   // Rol: sub titlu, un rand la 1440.
-  subtitlu: "Toate pachetele costă 0 RON astăzi și nu vă cerem cardul.",
+  subtitlu: "Toate pachetele costă 0 RON astăzi și nu îți cerem cardul.",
   campuri: {
     prenume: { eticheta: "Prenume", exemplu: "Ion", autocomplete: "given-name" },
     nume: { eticheta: "Nume", exemplu: "Exemplu", autocomplete: "family-name" },
@@ -211,31 +211,31 @@ export const INREGISTRARE = {
   },
   // Rol: indiciul de sub parola; devine eroare cand parola nu trece.
   indiciuParola: "Între 8 și 72 de caractere.",
-  arataParola: "Arătați parola",
-  ascundeParola: "Ascundeți parola",
+  arataParola: "Arată parola",
+  ascundeParola: "Ascunde parola",
   // Bifa obligatorie: termenii contului. Legatura trece prin Tinta (termenii nu sunt publicati azi).
   termeniInainte: "Sunt de acord cu",
   termeni: { text: "termenii de utilizare 3S", href: "/juridic/termeni", ruta: "/juridic/termeni" } satisfies Legatura,
   // Bifa separata, neobligatorie, nebifata: noutatile (FORM-01..03).
-  marketing: "Vreau să primesc pe e-mail noutăți despre 3S. Opțional, mă pot dezabona oricând.",
+  marketing: "Vreau să primesc pe e-mail noutăți despre 3S. Pot renunța oricând.",
   // Rol: butonul de trimitere.
-  buton: "Deschideți contul",
+  buton: "Deschide contul",
   trimitere: "Se trimite...",
   // Rol: nota de sub buton.
-  nota: "0 RON astăzi pentru toate pachetele. Nu vă cerem cardul.",
+  nota: "0 RON astăzi pentru toate pachetele. Nu îți cerem cardul.",
   // Rol: legatura de sub nota (parola uitata la referinta). Pe pagina asta ar fi o legatura spre ea
   // insasi, deci duce la formularul de contact.
-  ajutor: { text: "Nu mai aveți acces la cont? Scrieți-ne", href: "/contact#contact-form", ruta: "/contact" } satisfies Legatura,
+  ajutor: { text: "Nu mai ai acces la cont? Scrie-ne", href: "/contact#contact-form", ruta: "/contact" } satisfies Legatura,
   erori: {
-    prenume: "Scrieți prenumele.",
-    nume: "Scrieți numele de familie.",
-    emailLipsa: "Scrieți adresa de e-mail a contului.",
+    prenume: "Scrie prenumele.",
+    nume: "Scrie numele de familie.",
+    emailLipsa: "Scrie adresa de e-mail a contului.",
     emailForma: "Adresa nu are forma nume@domeniu.",
     telefon: "Numărul poate avea doar cifre, spații și semnul plus.",
-    utilizatorLipsa: "Alegeți un nume de utilizator.",
-    utilizatorForma: "Între 3 și 40 de caractere: litere fără diacritice, cifre, punct, cratimă sau linie jos.",
+    utilizatorLipsa: "Alege un nume de utilizator.",
+    utilizatorForma: "Între 3 și 40 de caractere: litere fără diacritice, cifre, punct, cratimă sau liniuță de subliniere (_).",
     parola: "Parola trebuie să aibă între 8 și 72 de caractere.",
-    termeni: "Bifați acordul cu termenii ca să deschidem contul.",
+    termeni: "Bifează acordul cu termenii ca să deschidem contul.",
     lung: "Textul e prea lung.",
   },
   // Rol: mesajul cinstit de langa buton cat timp operatorul e null (plan §9).
@@ -243,13 +243,13 @@ export const INREGISTRARE = {
     "Deschiderea conturilor din această pagină nu e pornită încă: ce ați scris nu a plecat nicăieri și nu a fost salvat. O pornim odată cu publicarea politicii de confidențialitate.",
   succes: {
     titlu: "Cererea de cont a ajuns",
-    text: "Un om din echipa 3S vă scrie la adresa lăsată, cu pașii de intrare în cont.",
+    text: "Un om din echipa 3S îți scrie la adresa lăsată, cu pașii de intrare în cont.",
   },
-  eroareTrimitere: "Cererea nu a putut fi trimisă. Încercați din nou peste câteva minute sau scrieți-ne din pagina de contact.",
+  eroareTrimitere: "Cererea nu a putut fi trimisă. Încearcă din nou peste câteva minute sau scrie-ne din pagina de contact.",
   informare: {
-    scop: "Folosim datele ca să vă deschidem contul 3S și să vă scriem despre el.",
+    scop: "Folosim datele ca să îți deschidem contul 3S și să îți scriem despre el.",
     temei:
-      "Temeiul îl constituie contractul pe care îl cereți (GDPR, art. 6 alin. (1) lit. b)); bifa de noutăți e separată și are temei consimțământul.",
+      "Temeiul îl constituie încheierea contractului pe care o ceri (GDPR, art. 6 alin. (1) lit. b)); bifa de noutăți e separată și are ca temei consimțământul.",
     politicaInainte: "Detalii în",
     politica: { text: "politica de confidențialitate", href: "/juridic/confidentialitate", ruta: "/juridic/confidentialitate" } satisfies Legatura,
     operatorInainte: "Operatorul datelor:",
@@ -293,7 +293,7 @@ export const DESCARCA = {
     // Rol: titlul cardului inainte de detectie (si fara JavaScript).
     generic: "Aplicația 3S",
     // Rol: butonul mare, acelasi text pe orice platforma (inaltime stabila la hidratare).
-    buton: "Începeți cu contul gratuit",
+    buton: "Testează gratuit",
     // Rol: randul ajutator de sub buton.
     ajutor: "Primul pas e contul 3S, la 0 RON astăzi.",
     detectie: "Se recunoaște dispozitivul",
@@ -309,15 +309,15 @@ export const DESCARCA = {
     web: "browser",
   },
   platforme: {
-    titlu: "Alegeți sistemul pe care lucrați",
+    titlu: "Alege sistemul pe care lucrezi",
     text: "Fiecare variantă pornește de la același cont gratuit și vede aceeași arhivă.",
     pastila: "estimat",
   },
   // Rol: nota de sub grila.
-  nota: "Recunoașterea după browser e o estimare; puteți alege oricare variantă.",
+  nota: "Recunoașterea după browser e o estimare; poți alege oricare variantă.",
   banda: {
-    titlu: "Contul gratuit e primul pas, oriunde lucrați.",
-    buton: "Deschideți contul",
+    titlu: "Contul gratuit e primul pas, oriunde lucrezi",
+    buton: "Deschide contul",
   },
 } as const;
 
@@ -343,17 +343,17 @@ export const INCEPE = {
   // Rol: titlul, un rand.
   titlu: "Primii pași în 3S",
   // Rol: un rand la 1440.
-  paragraf: "Vedeți pe scurt cum ajunge un act de la scanare la răspuns.",
+  paragraf: "Vezi pe scurt cum ajunge un act de la scanare la răspuns.",
   demo: {
     // Rol: declaratia vizibila si pentru cititorul de ecran: e o demonstratie, nu un clip.
     eticheta: "Demonstrație",
     declaratie:
-      "Demonstrație animată a interfeței 3S, cu date fictive date ca exemplu: un act intră, primește dosarul și e găsit cu o întrebare.",
+      "Demonstrație animată a interfeței 3S, cu date fictive, puse ca exemplu: un act intră, primește dosarul și e găsit cu o întrebare.",
     exemplu: "exemplu",
-    porneste: "Porniți demonstrația",
+    porneste: "Pornește demonstrația",
     pauza: "Pauză",
-    continua: "Continuați",
-    reia: "Reluați de la început",
+    continua: "Continuă",
+    reia: "Reia de la început",
     repetare: "Repetare continuă",
     progres: "Progresul demonstrației",
     scene: [
@@ -379,7 +379,7 @@ export const INCEPE = {
         eticheta: "aviz",
       },
       intrebare: {
-        camp: "Întrebați arhiva",
+        camp: "Întreabă documentele",
         text: "Ce a livrat Beta Exemplu în martie?",
       },
       raspuns: {
@@ -391,8 +391,8 @@ export const INCEPE = {
   },
   final: {
     // Rol: titlul blocului de la final.
-    titlu: "Acesta a fost drumul unui act. Îl încercați pe actele firmei?",
-    buton: "Deschideți contul",
-    legatura: { text: "Vedeți aplicația pe dispozitive", href: "/descarca", ruta: "/descarca" } satisfies Legatura,
+    titlu: "Acesta a fost drumul unui act. Vrei să încerci 3S cu actele firmei?",
+    buton: "Deschide contul",
+    legatura: { text: "Vezi aplicația pe dispozitive", href: "/descarca", ruta: "/descarca" } satisfies Legatura,
   },
 } as const;

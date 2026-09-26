@@ -9,7 +9,7 @@
 // Tab (cel ales), sagetile si Home / End muta si aleg. La referinta ambele butoane erau in ordinea
 // Tab si sagetile nu faceau nimic; diferenta nu se vede, se simte doar la tastatura.
 //
-// Adresa bucket-ului e un exemplu, declarat pentru cititoarele de ecran (plan D9).
+// Adresa bucketului e un exemplu, declarat pentru cititoarele de ecran (plan D9).
 
 import { Archive, Database, FileText } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";

@@ -209,11 +209,14 @@ describe('subsolul', () => {
     // confirmata, iconita si legaturile duc numai la ea (ambele forme, pe copii injectate, in
     // tests/fundatie-brand.test.ts).
     const posta = [...html.matchAll(/href="(mailto:[^"]*)"/g)].map((m) => m[1])
+    // Eticheta legaturii de posta vine din continut, nu scrisa de mana: textul ei s-a schimbat la D15.
+    const etichetaPosta = 'aria-label="' + SUBSOL.retele.find((r) => r.retea === 'email')!.text + '"'
+    expect(etichetaPosta).not.toBe('aria-label="undefined"')
     if (BRAND.email === '') {
-      expect(html).not.toContain('aria-label="Scrieți-ne pe e-mail"')
+      expect(html).not.toContain(etichetaPosta)
       expect(posta).toEqual([])
     } else {
-      expect(html).toContain('aria-label="Scrieți-ne pe e-mail"')
+      expect(html).toContain(etichetaPosta)
       expect(posta.length).toBeGreaterThan(0)
       expect(posta.filter((p) => p !== 'mailto:' + BRAND.email)).toEqual([])
     }

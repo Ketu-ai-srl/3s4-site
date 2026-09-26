@@ -28,7 +28,7 @@ export function CardOcr() {
 
 export function CardCifre() {
   return (
-    <CardMacheta nume="cifre" scanare centrat exemplu={false} declaratie="Trei fapte despre 3S: prețul de azi și criptarea fișierelor.">
+    <CardMacheta nume="cifre" scanare centrat exemplu={false} declaratie="Trei fapte despre 3S: prețul de azi, criptarea fișierelor la stocare și cea la transfer.">
       <ul className={s.cifre}>
         {CARD_CIFRE.cifre.flatMap((c, i) => {
           const el = (

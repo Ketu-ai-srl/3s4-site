@@ -77,12 +77,12 @@ export const DOCUMENTE_JURIDICE: readonly IntrareJuridica[] = [
   {
     slug: "cookies",
     scurt: "Cookie-uri",
-    descriere: "Ce se stochează în browser, pentru ce, cât timp, și cum vă dați sau vă retrageți acordul.",
+    descriere: "Ce se stochează în browser, pentru ce, cât timp și cum vă dați sau vă retrageți acordul.",
   },
   {
     slug: "politici-publice",
     scurt: "Reguli publice",
-    descriere: "Actele normative și standardele pe care se sprijină documentele juridice ale site-ului.",
+    descriere: "Actele normative și standardul pe care se sprijină documentele juridice ale site-ului.",
   },
   {
     slug: "licenta-software",

@@ -259,7 +259,7 @@ describe('formularul randat pe server (FORM-01..07, G-MD-06/07)', () => {
     const html = randeaza()
     const form = html.slice(html.indexOf('<form'), html.indexOf('</form>'))
     expect(form).toContain('data-informare-formular')
-    expect(form).toContain('demersuri precontractuale')
+    expect(form).toContain('demersurile precontractuale')
     expect(form).toContain('cel mult 12 luni')
     expect(form).toContain('politica de confidențialitate')
     // Politica nu e publicata: legatura e inerta, cu tinta ei asteptata.

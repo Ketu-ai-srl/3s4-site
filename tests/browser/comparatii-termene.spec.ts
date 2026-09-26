@@ -1,5 +1,6 @@
 import { expect, test, type Browser, type Page } from '@playwright/test'
 import { COMPARATIE_STOCARE } from '../../src/content/comparatii'
+import { TIPAR as TEXTE_TIPAR } from '../../src/content/termene/date'
 import { IMPACTURI_BLOCANTE, masoaraAccesibilitatea } from './ajutor/detectori'
 
 /**
@@ -178,7 +179,7 @@ test.describe('subpagina de tiparit', () => {
         ;(window as unknown as { __tiparit: number }).__tiparit++
       }
     })
-    await page.getByRole('button', { name: 'Tipăriți' }).click()
+    await page.getByRole('button', { name: TEXTE_TIPAR.buton }).click()
     expect(await page.evaluate(() => (window as unknown as { __tiparit: number }).__tiparit)).toBe(1)
 
     await page.emulateMedia({ media: 'print' })

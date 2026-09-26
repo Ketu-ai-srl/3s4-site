@@ -75,7 +75,9 @@ const TEXTE = [...siruri(platforma), ...siruri(integrari), ...siruri(securitate)
 // --- detectori, cu martori -------------------------------------------------------------------------
 
 const LINIUTE_LUNGI = new RegExp('[' + String.fromCharCode(0x2013) + String.fromCharCode(0x2014) + ']')
-const PRONUME_INFORMALE = /(^|[^\p{L}])(tu|ta|tău|tăi|tale|ție|ţie)(?=$|[^\p{L}])/iu
+// Adresarea e "tu" pe paginile de prezentare (decizia D15, 26.09); formele de politete raman doar
+// in documentele juridice, care nu sunt printre paginile acestei probe.
+const PRONUME_FORMALE = /(^|[^\p{L}])(dumneavoastr\p{L}*|vă|vi)(?=$|[^\p{L}])/iu
 const NUME_INTERZISE = new RegExp('\\b(' + ['mac' + 'OS', 'i' + 'OS', 'App ' + 'Store'].join('|') + ')\\b')
 const ORASE = /\b(Frankfurt|Berlin|München|Munchen|Hamburg|Dublin|Paris|Amsterdam|Stockholm|Milano)\b/
 const CERTIFICARI = /\b(SOC ?[123]|ISO ?\d{4,5}|PCI DSS|99[.,]9)/
@@ -110,9 +112,9 @@ describe('detectorii probei, pe martori', () => {
   it('prind ce trebuie si lasa ce nu trebuie', () => {
     expect(LINIUTE_LUNGI.test('a ' + String.fromCharCode(0x2014) + ' b')).toBe(true)
     expect(LINIUTE_LUNGI.test('proces-verbal')).toBe(false)
-    expect(PRONUME_INFORMALE.test('Ce face pentru ' + 't' + 'u?')).toBe(true)
-    expect(PRONUME_INFORMALE.test('aplicația ' + 't' + 'a')).toBe(true)
-    expect(PRONUME_INFORMALE.test('dumneavoastră, tabel, taxa, totale')).toBe(false)
+    expect(PRONUME_FORMALE.test('Ce face pentru ' + 'dumnea' + 'voastră?')).toBe(true)
+    expect(PRONUME_FORMALE.test('arhiva ' + 'v' + 'ă răspunde')).toBe(true)
+    expect(PRONUME_FORMALE.test('tu, tabel, taxa, totale, văzut, vie')).toBe(false)
     expect(NUME_INTERZISE.test('aplicația pentru ' + 'i' + 'OS')).toBe(true)
     expect(NUME_INTERZISE.test('Windows, Linux, Android')).toBe(false)
     expect(ORASE.test('regiunea ' + 'Frank' + 'furt')).toBe(true)
@@ -185,10 +187,10 @@ describe('metadata, rute si declaratiile de raspuns', () => {
 })
 
 describe('textul paginilor', () => {
-  it('fara liniute lungi, fara pronume informale, fara numele interzise', () => {
+  it('fara liniute lungi, fara pronume de politete, fara numele interzise', () => {
     expect(TEXTE.length).toBeGreaterThan(200)
     expect(TEXTE.filter((t) => LINIUTE_LUNGI.test(t))).toEqual([])
-    expect(TEXTE.filter((t) => PRONUME_INFORMALE.test(t))).toEqual([])
+    expect(TEXTE.filter((t) => PRONUME_FORMALE.test(t))).toEqual([])
     for (const [nume, h] of Object.entries(html)) {
       expect(LINIUTE_LUNGI.test(h), nume).toBe(false)
       expect(NUME_INTERZISE.test(text(h)), nume).toBe(false)

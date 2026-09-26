@@ -48,7 +48,7 @@ export function licentaAplicatiei(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "Codul, interfața, bazele de date și documentația platformei 3S sunt protejate de dreptul de autor. Clientul primește numai dreptul de folosire descris pe această pagină, pentru contul lui și cât timp contul e activ; toate celelalte drepturi rămân ale titularilor lor.",
+              "Codul, interfața, bazele de date și documentația platformei 3S sunt protejate de dreptul de autor. Primiți numai dreptul de folosire descris pe această pagină, pentru contul dumneavoastră și cât timp contul e activ; toate celelalte drepturi rămân ale titularilor lor.",
             ],
           },
         ],
@@ -73,7 +73,7 @@ export function licentaAplicatiei(operator: Operator): DocumentJuridic {
       },
       {
         cheie: "interzis",
-        titlu: "Ce nu aveți voie",
+        titlu: "Ce nu aveți voie să faceți",
         nivel: 3,
         blocuri: [
           {

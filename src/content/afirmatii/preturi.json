@@ -82,7 +82,7 @@
   },
   {
     "id": "preturi-aplicatie-pe-toate-platformele",
-    "text": "Aplicația 3S există pentru Windows, Mac, Linux, iOS și iPadOS, Android și în browser",
+    "text": "Aplicația 3S există pentru Windows, Mac, Linux, iOS, iPadOS și Android, precum și în browser",
     "unde": "src/content/preturi.ts",
     "stare": "confirmat",
     "sursa": "declarația owner-ului, decizia D4c din planul valului S4 (aplicația: toate platformele)",

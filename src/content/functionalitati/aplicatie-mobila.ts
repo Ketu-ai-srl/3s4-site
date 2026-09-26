@@ -16,7 +16,7 @@ export const CALE_APLICATIE_MOBILA = "/functionalitati/aplicatie-mobila";
 export const META_APLICATIE_MOBILA = {
   titlu: "Aplicația 3S pe telefon: actele pleacă din teren | 3S",
   descriere:
-    "Fotografiați avizul la client, puneți etichetele și trimiteți-l: actul ajunge în dosarul lui, iar biroul lucrează pe el fără hârtii duse înapoi.",
+    "Fotografiază avizul la client, pune etichetele și trimite-l: actul ajunge în dosarul lui, iar biroul se ocupă de el fără documente duse înapoi.",
 } as const;
 
 /** Declaratia de raspuns a paginii (G-AI-02). */
@@ -29,12 +29,12 @@ export const INTREBARE_PAGINA_MOBILA = "Cum ajunge un aviz semnat la client în 
 export const EROU_MOBILA = {
   eticheta: "Funcționalitate 05 · Arhiva pe telefon",
   // Rol: titlul, 1 rand (72/600).
-  titlu: "Arhiva vine pe teren.",
+  titlu: "Arhiva vine pe teren",
   // Rol: cererea din terminal (~51 de caractere).
   cerere: "Trimite avizul semnat de Gama Exemplu la contabilitate",
   // Rol: subtitlul italic, 1 rand (~43).
   subtitlu: "Fotografiat la client, găsit de contabilă în dosar.",
-  indiciu: "derulați",
+  indiciu: "derulează",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -45,40 +45,40 @@ export type FelSegment = "client" | "acte" | "pierdut";
 export type Segment = { fel: FelSegment; eticheta: string; durata: string };
 
 export const ZIUA = {
-  titlu: "O zi obișnuită pe drum.",
+  titlu: "O zi obișnuită pe drum",
   paragraf:
-    "Hârtiile stau în torpedou până seara. Cine a fost pe teren le predă, cine a rămas la birou le tastează, iar factura așteaptă după amândoi.",
+    "Documentele stau în torpedou până seara. Cine a fost pe teren le predă, cine a rămas la birou le tastează, iar factura îi așteaptă pe amândoi.",
   // Contorul: eticheta, valoarea (suma segmentelor "acte") si lantul cauzei.
   contorEticheta: "Zi dusă pe acte",
-  contorValoare: "3h 35m",
+  contorValoare: "3 h 35 min",
   lant: ["torpedou", "predare", "tastare"] as const,
   // Cardul.
   titluCard: "Ziua unui agent de teren",
   subtitluCard: "zi inventată, trei opriri la clienți",
   // 8 segmente; latimile lor urmeaza duratele (610 minute, 06:50-17:00; mijlocul barei la 11:55).
   segmente: [
-    { fel: "acte", eticheta: "Avize", durata: "40m" },
-    { fel: "client", eticheta: "Client A", durata: "1h 55m" },
-    { fel: "pierdut", eticheta: "Rampă", durata: "50m" },
-    { fel: "client", eticheta: "Client B", durata: "1h 30m" },
-    { fel: "acte", eticheta: "Note", durata: "40m" },
-    { fel: "client", eticheta: "Client C", durata: "2h 20m" },
-    { fel: "acte", eticheta: "Predare", durata: "1h 10m" },
-    { fel: "acte", eticheta: "Tastare", durata: "1h 05m" },
+    { fel: "acte", eticheta: "Avize", durata: "40 min" },
+    { fel: "client", eticheta: "Client A", durata: "1 h 55 min" },
+    { fel: "pierdut", eticheta: "Rampă", durata: "50 min" },
+    { fel: "client", eticheta: "Client B", durata: "1 h 30 min" },
+    { fel: "acte", eticheta: "Note", durata: "40 min" },
+    { fel: "client", eticheta: "Client C", durata: "2 h 20 min" },
+    { fel: "acte", eticheta: "Predare", durata: "1 h 10 min" },
+    { fel: "acte", eticheta: "Tastare", durata: "1 h 5 min" },
   ] as readonly Segment[],
   ore: ["06:50", "11:55", "17:00"] as const,
   statistici: [
-    { fel: "client", eticheta: "La clienți", valoare: "5h 45m" },
-    { fel: "acte", eticheta: "Pe acte și drum", valoare: "3h 35m" },
-    { fel: "pierdut", eticheta: "La rampă", valoare: "50m" },
+    { fel: "client", eticheta: "La clienți", valoare: "5 h 45 min" },
+    { fel: "acte", eticheta: "Pe acte și drum", valoare: "3 h 35 min" },
+    { fel: "pierdut", eticheta: "La rampă", valoare: "50 min" },
   ] as readonly { fel: FelSegment; eticheta: string; valoare: string }[],
-  declaratie: "Exemplu cu date fictive: ziua unui agent de teren, cu trei clienți, o coadă la rampă și timpul dus pe hârtii",
+  declaratie: "Exemplu cu date fictive: ziua unui agent de teren, cu trei clienți, o coadă la rampă și timpul dus pe documente",
 } as const;
 
-/** Minutele unei durate scrise "1h 35m" / "55m". */
+/** Minutele unei durate scrise "1 h 35 min" / "55 min" (SI, decizia D15). */
 export function minuteDin(durata: string): number {
-  const ore = /(\d+)h/.exec(durata);
-  const min = /(\d+)m/.exec(durata);
+  const ore = /(\d+)\s*h\b/.exec(durata);
+  const min = /(\d+)\s*min\b/.exec(durata);
   return (ore ? Number(ore[1]) * 60 : 0) + (min ? Number(min[1]) : 0);
 }
 
@@ -93,7 +93,7 @@ export const ANXIETATE_MOBILA = {
 
 export const PIVOT_MOBILA = {
   intrebare: "Și dacă actul ar intra în arhivă chiar la client?",
-  emfaza: "Hârtia rămâne la client, actul vine la voi.",
+  emfaza: "Hârtia rămâne la client, actul vine la tine.",
   linie: "Pentru asta există aplicația 3S.",
 } as const;
 
@@ -102,7 +102,7 @@ export const PIVOT_MOBILA = {
 // ---------------------------------------------------------------------------------------------
 
 export const TELEFON = {
-  titlu: "Un act, trei etichete.",
+  titlu: "Un act, trei etichete",
   paragraf: "Etichetele spun unde stă actul, deci nu-l mai caută nimeni.",
   aplicatie: "3S",
   ora: "11:20",
@@ -129,7 +129,7 @@ export const ECRAN_MS = 3500;
 // ---------------------------------------------------------------------------------------------
 
 export const SINCRONIZARE = {
-  titlu: "Etichetele puse pe teren fac ordinea la birou.",
+  titlu: "Etichetele puse pe teren fac ordinea la birou",
   paragraf: "Clientul, felul actului și luna, alese pe telefon, așază avizul în dosarul potrivit. Contabila îl găsește acolo.",
   teren: { ora: "Teren · 3 etichete", actiune: "Agentul alege clientul și felul actului" },
   exemplu: "exemplu",
@@ -183,10 +183,10 @@ export const CONTRAST_MOBILA = {
 // ---------------------------------------------------------------------------------------------
 
 export const CTA_MOBILA = {
-  titlu: "Actele ajung la birou fără voi.",
+  titlu: "Actele ajung la birou fără tine",
   paragraf:
-    "Instalați aplicația pe telefoanele echipei. Fiecare aviz fotografiat la client e etichetat, trimis și pus în dosarul lui, iar biroul lucrează pe el imediat.",
-  buton: "Deschideți un cont",
+    "Instalează aplicația pe telefoanele echipei. Fiecare aviz fotografiat la client e etichetat, trimis și pus în dosarul lui, iar biroul se ocupă de el imediat.",
+  buton: "Testează gratuit",
   nota: "Pe telefon, tabletă, calculator și în browser; 0 RON azi.",
 } as const;
 

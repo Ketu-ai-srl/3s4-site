@@ -37,6 +37,6 @@ export function stareFormular(
     adresa: emailMarca ?? (complet ? operator.email : null),
     operator: complet ? operator.denumire : null,
     analitica,
-    pastrare: PASTRARE.formulareFaraOferta + "; " + PASTRARE.formulareCuOferta + " dacă primiți o ofertă",
+    pastrare: PASTRARE.formulareFaraOferta + "; " + PASTRARE.formulareCuOferta + " dacă primești o ofertă",
   };
 }

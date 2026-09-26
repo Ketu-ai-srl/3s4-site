@@ -65,7 +65,7 @@ export const SURSE = {
     id: "de-bmf-e-rechnung",
     eticheta: "BMF",
     autoritate: "Bundesministerium der Finanzen",
-    titlu: "Fragen und Antworten zur Einführung der obligatorischen E-Rechnung (stand martie 2026)",
+    titlu: "Fragen und Antworten zur Einführung der obligatorischen (verpflichtenden) E-Rechnung zum 1. Januar 2025 (Stand: März 2026)",
     url: "https://www.bundesfinanzministerium.de/Content/DE/FAQ/e-rechnung.html",
     ce: "definiția e-facturii, formatele admise și întrebarea 11 (tranziția): primirea din 1 ianuarie 2025, tranziția până la 31 decembrie 2026, respectiv finalul lui 2027 la cel mult 800.000 EUR cifră de afaceri; XRechnung și ZUGFeRD de la 2.0.1",
   },
@@ -75,7 +75,7 @@ export const SURSE = {
     autoritate: "Direction générale des Finances publiques (impots.gouv.fr)",
     titlu: "Guide pratique pour accompagner la mise en œuvre de la réforme de la facturation électronique",
     url: "https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/guide_pratique_facturation_electronique.pdf",
-    ce: "primirea pentru toate firmele vizate și emiterea pentru firmele mari și intermediare de la 1 septembrie 2026; emiterea pentru IMM-uri și microîntreprinderi de la 1 septembrie 2027; platformele agreate",
+    ce: "primirea pentru toate firmele vizate și emiterea pentru firmele mari și intermediare de la 1 septembrie 2026; emiterea pentru IMM-uri și microîntreprinderi de la 1 septembrie 2027; platformele autorizate",
   },
   pl: {
     id: "pl-ksef-terminy",

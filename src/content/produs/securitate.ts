@@ -55,7 +55,7 @@ export const PILONI_SECURITATE: { iconita: IconitaProdus; titlu: string; text: s
   {
     iconita: "cheie",
     titlu: "Originalele pe hârtie",
-    text: "Actele pe hârtie predate spre arhivare stau în depozitul 3S, pe bază de proces-verbal, până le cereți înapoi.",
+    text: "Actele pe hârtie predate spre arhivare stau în depozitul 3S, pe bază de proces-verbal, până le ceri înapoi.",
   },
   {
     iconita: "scut",
@@ -70,7 +70,7 @@ export const PILONI_SECURITATE: { iconita: IconitaProdus; titlu: string; text: s
   {
     iconita: "lacat",
     titlu: "AES-256 și TLS 1.2+",
-    text: "Pe servere, fișierele stau criptate AES-256, iar între dumneavoastră și 3S trec numai prin conexiuni TLS 1.2 sau mai noi.",
+    text: "Pe servere, fișierele stau criptate AES-256, iar între tine și 3S trec numai prin conexiuni TLS 1.2 sau mai noi.",
   },
 ];
 
@@ -78,9 +78,9 @@ export const PILONI_SECURITATE: { iconita: IconitaProdus; titlu: string; text: s
 
 export const BLOC_INFRASTRUCTURA = {
   numar: "01",
-  titlu: "Actele stau în Germania, pe serverele Amazon.",
+  titlu: "Actele stau în Germania, pe serverele Amazon",
   subtitlu:
-    "Arhiva 3S are o singură casă: o regiune Amazon din Germania, în Uniunea Europeană. Acolo stau fișierele păstrate de 3S, criptate AES-256, și de acolo pleacă spre dumneavoastră numai prin conexiuni TLS 1.2 sau mai noi.",
+    "Arhiva 3S are o singură casă: o regiune Amazon din Germania, în Uniunea Europeană. Acolo stau fișierele păstrate de 3S, criptate AES-256, și de acolo pleacă spre tine numai prin conexiuni TLS 1.2 sau mai noi.",
   harta: {
     descriere: "Harta Europei cu o singură regiune de găzduire, în Germania.",
     eticheta: "Germania",
@@ -107,7 +107,7 @@ export const BLOC_INFRASTRUCTURA = {
     },
     {
       termen: "Criptare în tranzit",
-      valoare: " sau mai nou, pe conexiunile dintre dumneavoastră și 3S.",
+      valoare: " sau mai nou, pe conexiunile dintre tine și 3S.",
       mono: "TLS 1.2",
     },
   ] as { termen: string; valoare: string; mono: string | null }[],
@@ -120,21 +120,21 @@ export const CALE_SANATATE = "/api/sanatate";
 
 export const VERIFICARE_BROWSER = {
   titlu: "Conexiunea la acest site, măsurată din browser",
-  reia: "Măsurați din nou",
+  reia: "Măsoară din nou",
   chei: { server: "Server", criptare: "Conexiune criptată", timp: "Timp de răspuns" },
   // Starea din HTML-ul servit, inainte ca browserul sa masoare ceva.
   asteptare: { server: "se citește", criptare: "se verifică", timp: "se măsoară" },
   criptareDa: "Da, HTTPS",
   criptareNu: "Nu, HTTP",
   indisponibil: "indisponibil",
-  nota: "Browserul dumneavoastră trimite trei cereri spre serverul care servește această pagină; timpul afișat e mediana celor trei, în milisecunde.",
+  nota: "Browserul tău trimite trei cereri spre serverul care servește această pagină; timpul afișat e mediana celor trei, în milisecunde.",
 };
 
 // --- 02 Stocarea proprie -------------------------------------------------------------------------
 
 export const BLOC_STOCARE_PROPRIE = {
   numar: "02",
-  titlu: "Actele pot rămâne în stocarea firmei.",
+  titlu: "Actele pot rămâne în stocarea firmei",
   subtitlu:
     "În planul Enterprise, 3S se leagă de stocarea pe care firma o are deja, compatibilă S3 sau Azure Blob, iar colegii lucrează pe web și pe WhatsApp ca până atunci.",
   noduri: {
@@ -145,7 +145,7 @@ export const BLOC_STOCARE_PROPRIE = {
   beneficii: [
     {
       titlu: "Arhiva nu se mută",
-      text: "Actele rămân în stocarea pe care firma o folosește deja; nu le copiați nicăieri ca să lucrați cu ele în 3S, nici acum, nici mai târziu, când arhiva crește.",
+      text: "Actele rămân în stocarea pe care firma o folosește deja; nu le copiezi nicăieri ca să lucrezi cu ele în 3S, nici acum, nici mai târziu, când arhiva crește.",
     },
     {
       titlu: "WhatsApp, ca înainte",
@@ -160,7 +160,7 @@ export const BLOC_STOCARE_PROPRIE = {
       text: "Accesul pe persoană și pe dosar și jurnalul deschiderilor rămân în 3S, oriunde stau fișierele.",
     },
   ],
-  buton: { text: "Scrieți-ne despre planul Enterprise", href: "/enterprise#contact-form", ruta: "/enterprise" } as Legatura,
+  buton: { text: "Scrie-ne despre planul Enterprise", href: "/enterprise#contact-form", ruta: "/enterprise" } as Legatura,
   nota: "Varianta face parte din planul Enterprise.",
 };
 
@@ -168,9 +168,9 @@ export const BLOC_STOCARE_PROPRIE = {
 
 export const BLOC_CRIPTARE = {
   numar: "03",
-  titlu: "Actele circulă criptat și stau criptate.",
+  titlu: "Actele circulă criptat și stau criptate",
   subtitlu:
-    "Între dumneavoastră și 3S, actele trec prin conexiuni TLS 1.2 sau mai noi, iar pe serverele Amazon din Germania stau criptate AES-256, până la termen.",
+    "Între tine și 3S, actele trec prin conexiuni TLS 1.2 sau mai noi, iar pe serverele Amazon din Germania stau criptate AES-256, până la termen.",
   flux: {
     noduri: [
       { iconita: "ecran" as IconitaProdus, eticheta: "Calculator și telefon", sub: null as string | null },
@@ -183,7 +183,7 @@ export const BLOC_CRIPTARE = {
     {
       eticheta: "Pe drum",
       titlu: "TLS 1.2 sau mai nou",
-      text: "Pe o rețea Wi-Fi publică, la hotel, în gară sau în aeroport, cine ascultă rețeaua vede doar date criptate: între dispozitivul dumneavoastră și serverele 3S, actele trec numai prin TLS 1.2 sau mai nou.",
+      text: "Pe o rețea Wi-Fi publică, la hotel, în gară sau în aeroport, cine ascultă rețeaua vede doar date criptate: între dispozitivul tău și serverele 3S, actele trec numai prin TLS 1.2 sau mai nou.",
     },
     {
       eticheta: "Pe disc",
@@ -204,9 +204,9 @@ export type DreptMatrice = "da" | "nu" | "limitat";
 
 export const BLOC_ACCES = {
   numar: "04",
-  titlu: "Fiecare dosar are lista lui de oameni care îl pot deschide.",
+  titlu: "Fiecare dosar are lista lui de oameni care îl pot deschide",
   subtitlu:
-    "Accesul la acte se dă pe persoană și pe dosar, nu pe toată arhiva deodată. Fiecare deschidere lasă o urmă în jurnal, cu numele și ora, deci știți oricând cine a văzut un act.",
+    "Accesul la acte se dă pe persoană și pe dosar, nu pe toată arhiva deodată. Fiecare deschidere lasă o urmă în jurnal, cu numele și ora, deci știi oricând cine a văzut un act.",
   matrice: {
     titlu: "Exemplu de drepturi pe roluri",
     capRol: "Rol",
@@ -226,7 +226,7 @@ export const BLOC_ACCES = {
   controale: [
     {
       titlu: "Portal pentru clienți",
-      text: "Fiecare client intră doar în categoriile pe care i le deschideți, iar o categorie deschisă primește singură actele noi, fără să le trimită cineva pe e-mail și fără să le caute clientul prin mesajele primite de la firmă.",
+      text: "Fiecare client intră doar în categoriile pe care i le deschizi, iar o categorie deschisă primește singură actele noi, fără să le trimită cineva pe e-mail și fără să le caute clientul prin mesajele primite de la firmă.",
     },
     {
       titlu: "Intrare cu contul firmei",
@@ -247,15 +247,15 @@ export const BLOC_ACCES = {
 
 export const BLOC_CICLU = {
   numar: "05",
-  titlu: "Fiecare act are un drum clar, de la preluare până la ieșirea din arhivă.",
+  titlu: "Fiecare act are un drum clar, de la preluare până la ieșirea din arhivă",
   subtitlu:
-    "Știți în fiecare clipă unde e un act, cât mai stă în arhivă și cine hotărăște când iese. Hotărârea de a scoate un act rămâne întotdeauna a firmei, nu a 3S.",
+    "Știi în fiecare clipă unde e un act, cât mai stă în arhivă și cine hotărăște când iese. Hotărârea de a scoate un act rămâne întotdeauna a firmei, nu a 3S.",
   pasi: [
     { numar: "01", iconita: "incarcare" as IconitaProdus, titlu: "Preluare", text: "Hârtia, pe bază de proces-verbal; fișierele, prin TLS 1.2 sau mai nou." },
     { numar: "02", iconita: "cilindru" as IconitaProdus, titlu: "Păstrare", text: "Criptat AES-256, pe serverele din Germania." },
     { numar: "03", iconita: "arhiva" as IconitaProdus, titlu: "Evidență", text: "Trecut în registrul arhivei, cu categoria și dosarul lui." },
     { numar: "04", iconita: "ceas" as IconitaProdus, titlu: "Termen", text: "Păstrat atât cât cere categoria în care a intrat actul." },
-    { numar: "05", iconita: "iesire" as IconitaProdus, titlu: "Ieșire din arhivă", text: "Ce a trecut de termen apare din timp, iar hotărârea vă aparține." },
+    { numar: "05", iconita: "iesire" as IconitaProdus, titlu: "Ieșire din arhivă", text: "Ce a trecut de termen apare din timp, iar hotărârea îți aparține." },
   ],
 };
 
@@ -263,9 +263,9 @@ export const BLOC_CICLU = {
 
 export const BLOC_REGLEMENTARE = {
   numar: "06",
-  titlu: "Registrul, jurnalul și locul datelor, gata de arătat.",
+  titlu: "Registrul, jurnalul și locul datelor, gata de arătat",
   subtitlu:
-    "Când cineva din afara firmei întreabă de acte, un auditor sau un client, răspunsul se scoate din 3S, nu din sertare.",
+    "Când cineva din afara firmei, un auditor sau un client, întreabă de acte, răspunsul se scoate din 3S, nu din sertare.",
   insigne: [
     { marca: "UE", nume: "Germania", nota: "o singură regiune" },
     { marca: "AES-256", nume: "La stocare", nota: "fișiere criptate" },
@@ -277,7 +277,7 @@ export const BLOC_REGLEMENTARE = {
   carduri: [
     {
       titlu: "Țara actelor, știută dinainte",
-      text: "Fișierele stau în Germania, într-o singură regiune a Uniunii Europene, pe infrastructura Amazon. Știți dinainte, și puteți spune oricui întreabă, în ce țară sunt actele firmei.",
+      text: "Fișierele stau în Germania, într-o singură regiune a Uniunii Europene, pe infrastructura Amazon. Știi dinainte, și poți spune oricui întreabă, în ce țară sunt actele firmei.",
     },
     {
       titlu: "Registrul arhivei, la zi",
@@ -285,11 +285,11 @@ export const BLOC_REGLEMENTARE = {
     },
     {
       titlu: "Jurnalul, pus la dispoziție",
-      text: "Cine a căutat și cine a deschis fiecare act se vede în jurnal, cu numele și ora, iar jurnalul e al firmei, așa că îl puteți da mai departe unui auditor când vi se cere, fără alte pregătiri sau exporturi.",
+      text: "Cine a căutat și cine a deschis fiecare act se vede în jurnal, cu numele și ora, iar jurnalul e al firmei, așa că îl poți da mai departe unui auditor când ți se cere, fără alte pregătiri sau exporturi.",
     },
     {
       titlu: "Originalele, în custodie",
-      text: "Actele pe hârtie predate spre arhivare se preiau pe bază de proces-verbal și stau în depozitul 3S până le cereți, iar în arhiva digitală lucrați între timp cu copia scanată, citită și clasată.",
+      text: "Actele pe hârtie predate spre arhivare se preiau pe bază de proces-verbal și stau în depozitul 3S până le ceri, iar în arhiva digitală lucrezi între timp cu copia scanată, citită și clasată.",
     },
   ],
 };
@@ -298,21 +298,21 @@ export const BLOC_REGLEMENTARE = {
 
 export const BLOC_ORIGINALE = {
   numar: "07",
-  titlu: "Și originalele pe hârtie, predate spre arhivare, au regulile lor.",
+  titlu: "Și originalele pe hârtie, predate spre arhivare, au regulile lor",
   subtitlu:
     "O arhivă sigură nu se oprește la fișiere. Actele pe hârtie predate spre arhivare în depozitul 3S au propriul drum, de la preluare până la restituire, cu un proces-verbal la predare și o listă scrisă cu cine poate cere originalul înapoi.",
   controale: [
     {
       titlu: "Preluare cu proces-verbal",
-      text: "Fiecare lot de acte predat spre arhivare se preia pe bază de proces-verbal, ca să știți oricând ce ați predat și când.",
+      text: "Fiecare lot de acte predat spre arhivare se preia pe bază de proces-verbal, ca să știi oricând ce ai predat și când.",
     },
     {
       titlu: "Păstrare în depozit",
-      text: "Originalele stau pe rafturi, în depozitul 3S, până când le cereți înapoi, iar în arhiva digitală lucrați între timp cu copia lor scanată.",
+      text: "Originalele stau pe rafturi, în depozitul 3S, până când le ceri înapoi, iar în arhiva digitală lucrezi între timp cu copia lor scanată.",
     },
     {
       titlu: "Restituire la cerere",
-      text: "Un original scanat vă rămâne oricând la dispoziție: îl cereți, iar dosarul se întoarce la firmă.",
+      text: "Un original scanat îți rămâne oricând la dispoziție: îl ceri, iar dosarul se întoarce la firmă.",
     },
     {
       titlu: "Listă nominală de solicitanți",
@@ -328,14 +328,14 @@ export const BLOC_ORIGINALE = {
 export const BLOC_RAPORTARE = {
   numar: "08",
   titlu: "Raportarea responsabilă a unei vulnerabilități în 3S",
-  text: "Ca să putem reproduce problema, scrieți-ne pe pagina de contact un mesaj cu cele trei lucruri de mai jos. Dacă e vorba de un act anume, dați-ne numele fișierului, nu conținutul lui. Până la reparare, vă rugăm să păstrați detaliile între noi, ca alte conturi să nu rămână expuse.",
+  text: "Ca să putem reproduce problema, scrie-ne pe pagina de contact un mesaj cu cele trei lucruri de mai jos. Dacă e vorba de un act anume, dă-ne numele fișierului, nu conținutul lui. Până la reparare, te rugăm să păstrezi detaliile între noi, ca alte conturi să nu rămână expuse.",
   lista: [
     "Adresa exactă a paginii afectate și ora la care ați observat problema.",
     "Pașii, în ordine, prin care putem vedea și noi problema pe ecranul nostru.",
-    "Contul folosit la test: lucrați numai pe contul și pe actele propriei firme.",
+    "Contul folosit la test: lucrează numai pe contul și pe actele propriei firme.",
   ],
   buton: { text: "Pagina de contact", href: "/contact", ruta: "/contact" } as Legatura,
-  nota: "Menționați „securitate” în subiectul mesajului.",
+  nota: "Menționează „securitate” în subiectul mesajului.",
 };
 
 // --- 09 Intrebari frecvente ----------------------------------------------------------------------
@@ -347,17 +347,17 @@ export const INTREBARI_SECURITATE: BlocIntrebari & { numar: string } = {
     {
       intrebare: "În ce țară și la ce furnizor stau fișierele?",
       raspuns:
-        "Pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, cea marcată pe harta de mai sus. Fișierele sunt criptate AES-256 pe disc și circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predați spre arhivare, stau în depozitul 3S.",
+        "Pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, cea marcată pe harta de mai sus. Fișierele sunt criptate AES-256 pe disc și circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predai spre arhivare, stau în depozitul 3S.",
     },
     {
       intrebare: "Cum sunt criptate fișierele?",
       raspuns:
-        "Pe serverele din Germania, fișierele stau criptate AES-256 cât timp sunt în arhivă. Între dispozitivul dumneavoastră și 3S circulă numai prin TLS 1.2 sau o versiune mai nouă.",
+        "Pe serverele din Germania, fișierele stau criptate AES-256 cât timp sunt în arhivă. Între dispozitivul tău și 3S circulă numai prin TLS 1.2 sau o versiune mai nouă.",
     },
     {
       intrebare: "Cine poate vedea un dosar?",
       raspuns:
-        "Doar cine are acces nominal la el. Accesul se dă pe persoană și pe dosar, clienții intră prin portal numai în categoriile pe care le deschideți, iar fiecare document deschis rămâne în jurnal, cu numele și ora.",
+        "Doar cine are acces nominal la el. Accesul se dă pe persoană și pe dosar, clienții intră prin portal numai în categoriile pe care le deschizi tu, iar fiecare document deschis rămâne în jurnal, cu numele și ora.",
     },
     {
       intrebare: "Putem folosi stocarea proprie a firmei?",
@@ -367,7 +367,7 @@ export const INTREBARI_SECURITATE: BlocIntrebari & { numar: string } = {
     {
       intrebare: "Ce se întâmplă cu originalele pe hârtie?",
       raspuns:
-        "Se preiau pe bază de proces-verbal și stau pe rafturi, în depozitul 3S, până când le cereți înapoi. Un original îl poate cere doar cine e trecut în scris pe lista firmei.",
+        "Se preiau pe bază de proces-verbal și stau pe rafturi, în depozitul 3S, până când le ceri înapoi. Un original îl poate cere doar cine e trecut în scris pe lista firmei.",
     },
     {
       intrebare: "Ce se întâmplă când un act ajunge la termenul de păstrare?",
@@ -383,10 +383,10 @@ export const SEIF = {
   // Titlul pe un rand si subtitlul pe doua, si la 390 (forma masurata: 1 + 2 randuri la ambele
   // latimi), ca varianta statica sa aiba inaltimea referintei plus doar camera crescuta dupa continut.
   titlu: "Trei acte sub cheie",
-  subtitlu: "Derulați mai departe: zăvoarele se trag pe rând, roata se învârte și apoi ușa se deschide.",
+  subtitlu: "Derulează mai departe: zăvoarele se trag pe rând, roata se învârte și apoi ușa se deschide.",
   // Varianta pentru miscare redusa: usa lipseste, deci textul nu descrie animatia. Tot pe 2 randuri
   // (masurat: 93 de caractere = 2 randuri la 640 px si la 358 px; 84 incapeau pe unul si scadeau inaltimea).
-  subtitluStatic: "Cu mișcarea redusă, camera seifului rămâne deschisă, iar cele trei acte se văd de la început.",
+  subtitluStatic: "Când animațiile sunt reduse din setări, camera seifului rămâne deschisă, iar cele trei acte se văd de la început.",
   declaratie: "Exemplu cu nume de fișiere fictive.",
   // Eticheta vizibila din coltul camerei (decizia D11): un rand numeste o factura.
   etichetaExemplu: "exemplu",
@@ -396,7 +396,7 @@ export const SEIF = {
     { fisier: "Dosar_personal_exemplu.pdf", pastrat: "accesul, doar pe nume" },
   ],
   nota: "Pentru fiecare act, 3S ține hârtia în depozit, copia criptată și lista celor care o pot deschide.",
-  buton: { text: "Deschideți un cont gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } as Legatura,
+  buton: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } as Legatura,
   stare: { inchis: "Încuiat", deschis: "Descuiat" },
 };
 

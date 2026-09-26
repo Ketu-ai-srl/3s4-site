@@ -32,13 +32,13 @@ export const FIR_PLATFORMA = [
 
 export const EROU_PLATFORMA = {
   // Rol: ce este produsul, intr-o fraza (2 randuri la 1440). Lungime: ~57.
-  titlu: "Actele firmei, scanate, păstrate și gata să răspundă.",
+  titlu: "Actele firmei, scanate, păstrate și gata să răspundă",
   // Rol: unde stau actele azi si ce face 3S cu ele (4 randuri la 1440, 7 la 390). Primul paragraf
   // din <main>: 30-80 de cuvinte (poarta G-AI-02).
   subtitlu:
     "Actele unei firme stau de obicei împrăștiate: bibliorafturi, un folder comun, e-mailuri și poze de pe telefon. 3S le adună într-o singură arhivă, le citește, le păstrează criptat în Germania și răspunde la întrebări cu pagina citată, pe web, pe WhatsApp și prin API.",
-  butonPrincipal: { text: "Deschideți un cont gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } as Legatura,
-  butonSecundar: { text: "Cereți o demonstrație", href: "/contact", ruta: "/contact" } as Legatura,
+  butonPrincipal: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } as Legatura,
+  butonSecundar: { text: "Cere o demonstrație", href: "/contact", ruta: "/contact" } as Legatura,
 };
 
 /**
@@ -60,7 +60,7 @@ export const MACHETA_STRAT = {
 
 export const PILONI_PLATFORMA = {
   // Rol: fraza-ancora de deasupra pilonilor (un rand la 1440). Lungime: 48.
-  fraza: "Scanați o dată, întrebați ori de câte ori vreți.",
+  fraza: "Scanezi o dată, întrebi ori de câte ori vrei.",
   piloni: [
     {
       numar: "01",
@@ -78,7 +78,7 @@ export const PILONI_PLATFORMA = {
       numar: "03",
       iconita: "scantei" as IconitaProdus,
       titlu: "Răspuns cu pagina citată",
-      text: "O întrebare pusă pe web, pe WhatsApp sau prin API primește răspuns din acte, cu documentul și pagina de unde vine, ca să îl verificați.",
+      text: "O întrebare pusă pe web, pe WhatsApp sau prin API primește răspuns din acte, cu documentul și pagina de unde vine, ca să îl verifici.",
     },
   ],
 };
@@ -87,12 +87,12 @@ export const PILONI_PLATFORMA = {
 
 export const PROBLEMA_PLATFORMA = {
   // Rol: titlul cardului cu antet lipit (3 randuri la 1440). Lungime: 51.
-  titlu: "Jumătate din acte pe hârtie, jumătate prin e-mailuri.",
+  titlu: "Jumătate din acte pe hârtie, jumătate prin e-mailuri",
   // Rol: fraza-cheie de sub titlu. Lungime: 47.
   cheie: "Două arhive paralele, și niciuna nu e completă.",
   batai: [
     "Originalele stau în bibliorafturi și în cutii, uneori în alt oraș decât biroul, iar termenul de păstrare al fiecărui dosar îl știe, de obicei, un singur om. Nimeni nu are o listă la zi cu ce e în fiecare cutie. Când omul acela lipsește, o cerere de la un client sau de la un inspector așteaptă până se întoarce, iar uneori nici atunci dosarul nu mai e întreg.",
-    "În paralel, aceleași acte circulă în format digital: o factură primită pe e-mail, trimisă mai departe, salvată în două foldere și fotografiată de pe telefon. Circulă mai multe copii ale aceluiași act, iar nimeni nu mai poate spune care e cea bună. Când cineva are nevoie de el, îl caută în trei locuri.",
+    "În paralel, aceleași acte circulă în format digital: o factură primită pe e-mail, trimisă mai departe, salvată în două foldere și fotografiată cu telefonul. Circulă mai multe copii ale aceluiași act, iar nimeni nu mai poate spune care e cea bună. Când cineva are nevoie de el, îl caută în trei locuri.",
     "3S le leagă: originalul intră în depozitul 3S, iar copia scanată și fișierele digitale ajung în aceeași arhivă, cu un singur termen de păstrare și cu răspunsuri care citează pagina, pe web și pe WhatsApp.",
   ],
 };
@@ -100,7 +100,7 @@ export const PROBLEMA_PLATFORMA = {
 // --- 4. Modelul: diagrama cu trei noduri ---------------------------------------------------------
 
 export const MODEL_PLATFORMA = {
-  titlu: "Cum ajunge o întrebare a echipei la actul potrivit.",
+  titlu: "Cum ajunge o întrebare a echipei la actul potrivit",
   metafora: "Un singur ghișeu pentru toate actele firmei.",
   subtitlu:
     "Oamenii lucrează mai departe cum sunt obișnuiți, pe web, pe WhatsApp sau în programele lor. Actele intră în 3S pe orice cale, iar înapoi pleacă răspunsuri cu sursa citată și termene anunțate din timp.",
@@ -118,13 +118,13 @@ export const MODEL_PLATFORMA = {
 
 export const BLOC_DATE = {
   numar: "01",
-  titlu: "Drumul unui dosar pe hârtie.",
+  titlu: "Drumul unui dosar pe hârtie",
   subtitlu:
-    "Un lot de acte pe hârtie, predat cu proces-verbal, trece prin patru etape până devine o arhivă în care puteți pune întrebări.",
+    "Un lot de acte pe hârtie, predat cu proces-verbal, trece prin patru etape până devine o arhivă în care poți pune întrebări.",
   pasi: [
     {
       titlu: "Predarea, cu proces-verbal",
-      text: "Lotul se predă pe bază de proces-verbal, iar originalele rămân apoi pe rafturi, în depozitul 3S, până în ziua în care le cereți înapoi.",
+      text: "Lotul se predă pe bază de proces-verbal, iar originalele rămân apoi pe rafturi, în depozitul 3S, până în ziua în care le ceri înapoi.",
     },
     {
       titlu: "Scanarea, filă cu filă",
@@ -143,7 +143,7 @@ export const BLOC_DATE = {
 
 export const BLOC_ARHIVA = {
   numar: "02",
-  titlu: "Unde stă fiecare act, cât stă acolo și cine l-a văzut.",
+  titlu: "Unde stă fiecare act, cât stă acolo și cine l-a văzut",
   subtitlu:
     "Copia scanată și originalul din depozit au aceeași evidență, oricare ar fi drumul pe care a intrat actul în 3S.",
   // Randurile pornesc de la hartie (originalul, cine il poate cere) si abia apoi trec la copia
@@ -151,7 +151,7 @@ export const BLOC_ARHIVA = {
   randuri: [
     {
       eticheta: "Originalul pe hârtie",
-      valoare: "Actele predate spre arhivare stau în depozitul 3S, pe bază de proces-verbal, până le cereți înapoi; în arhiva digitală lucrați cu copia lor.",
+      valoare: "Actele predate spre arhivare stau în depozitul 3S, pe bază de proces-verbal, până le ceri înapoi; în arhiva digitală lucrezi cu copia lor.",
     },
     {
       eticheta: "Cine îl poate cere",
@@ -159,7 +159,7 @@ export const BLOC_ARHIVA = {
     },
     {
       eticheta: "Copia scanată",
-      valoare: "Stă pe serverele Amazon din Germania, într-o singură regiune a UE, criptată AES-256, și vă ajunge pe ecran doar prin TLS 1.2 sau mai nou.",
+      valoare: "Stă pe serverele Amazon din Germania, într-o singură regiune a UE, criptată AES-256, și îți ajunge pe ecran doar prin TLS 1.2 sau mai nou.",
     },
     {
       eticheta: "Termen de păstrare",
@@ -167,7 +167,7 @@ export const BLOC_ARHIVA = {
     },
     {
       eticheta: "Jurnal de acces",
-      valoare: "Fiecare căutare și fiecare document deschis se trec în jurnal, cu numele și ora, iar jurnalul vă stă la dispoziție oricând îl cereți.",
+      valoare: "Fiecare căutare și fiecare document deschis se trec în jurnal, cu numele și ora, iar jurnalul îți stă la dispoziție oricând îl ceri.",
     },
   ],
   legatura: { text: "Totul despre securitatea arhivei", href: "/securitate", ruta: "/securitate" } as Legatura,
@@ -175,14 +175,14 @@ export const BLOC_ARHIVA = {
 
 export const BLOC_INTREBARI = {
   numar: "03",
-  titlu: "Tot ce scrie în actele firmei, la o întrebare distanță.",
+  titlu: "Tot ce scrie în actele firmei, aflat dintr-o singură întrebare",
   subtitlu:
-    "Arhiva citită nu se mai răsfoiește: întrebați, iar 3S vă arată răspunsul împreună cu actul și pagina lui.",
+    "Arhiva citită nu se mai răsfoiește: întrebi, iar 3S îți arată răspunsul împreună cu actul și pagina lui.",
   carduri: [
     {
       iconita: "balon" as IconitaProdus,
       titlu: "Răspuns cu sursa la vedere",
-      text: "Întrebați ca pe un coleg, de pildă „cât am plătit chiria în martie?”, și vedeți răspunsul lângă pagina din care l-a luat 3S, ca să îl puteți verifica pe loc.",
+      text: "Întrebi ca pe un coleg, de pildă „cât am plătit chiria în martie?”, și vezi răspunsul lângă pagina din care l-a luat 3S, ca să îl poți verifica pe loc.",
     },
     {
       iconita: "lupa" as IconitaProdus,
@@ -197,7 +197,7 @@ export const BLOC_INTREBARI = {
     {
       iconita: "randuri" as IconitaProdus,
       titlu: "Registrul arhivei",
-      text: "Fiecare act are un rând în registru, cu categoria și termenul lui, așa că știți ce conține arhiva fără s-o deschideți.",
+      text: "Fiecare act are un rând în registru, cu categoria și termenul lui, așa că știi ce conține arhiva fără s-o deschizi.",
     },
   ],
 };
@@ -207,7 +207,7 @@ export const BLOC_INTREBARI = {
 // Randurile sunt lucrurile de zi cu zi ale unei arhive 3S (hartia, evidenta, locul copiei,
 // WhatsApp, portalul), puse fata in fata cu o scanare simpla.
 export const COMPARATIE_PLATFORMA = {
-  titlu: "Un teanc de PDF-uri scanate nu e încă o arhivă a firmei.",
+  titlu: "Un teanc de PDF-uri scanate nu e încă o arhivă a firmei",
   subtitlu:
     "Cinci lucruri de care o firmă are nevoie zi de zi, puse alături: ce rămâne după o scanare simplă și ce face 3S.",
   coloane: ["Doar scanare", "Arhiva 3S"],
@@ -227,18 +227,18 @@ export const COMPARATIE_PLATFORMA = {
 export const SUVERANITATE_PLATFORMA = {
   eticheta: "Locul datelor",
   titlu: "Copia, în Germania. Originalul, în depozitul 3S.",
-  subtitlu: "Un act predat spre arhivare are două locuri, iar pe amândouă le puteți numi oricui vă întreabă.",
+  subtitlu: "Un act predat spre arhivare are două locuri, iar pe amândouă le poți numi oricui te întreabă.",
   proza: [
-    "Hârtia predată spre arhivare se preia pe bază de proces-verbal și stă în depozitul 3S până o cereți înapoi. Copia ei scanată intră în arhiva digitală, unde textul și datele actului se citesc o singură dată, apoi stă pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, criptată AES-256.",
-    "Între dispozitivul dumneavoastră și server, fișierul circulă numai prin conexiuni TLS 1.2 sau mai noi. Serverele sunt ale Amazon, o firmă cu sediul în Statele Unite. Legea americană cunoscută drept CLOUD Act poate obliga un astfel de furnizor să păstreze și să predea datele pe care le are în grijă, chiar dacă serverele lui sunt în afara SUA. Originalul pe hârtie nu trece prin niciun server: rămâne pe raft, în depozitul 3S, până când îl cereți.",
+    "Hârtia predată spre arhivare se preia pe bază de proces-verbal și stă în depozitul 3S până o ceri înapoi. Copia ei scanată intră în arhiva digitală, unde textul și datele actului se citesc o singură dată, apoi stă pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, criptată AES-256.",
+    "Între dispozitivul tău și server, fișierul circulă numai prin conexiuni TLS 1.2 sau mai noi. Serverele sunt ale companiei Amazon, o firmă cu sediul în Statele Unite. Legea americană cunoscută drept CLOUD Act poate obliga un astfel de furnizor să păstreze și să predea datele pe care le are în grijă, chiar dacă serverele lui sunt în afara SUA. Originalul pe hârtie nu trece prin niciun server: rămâne pe raft, în depozitul 3S, până când îl ceri.",
   ],
   evidentiat:
     "Fiecare act are un rând în registrul arhivei, cu categoria și termenul lui de păstrare, iar jurnalul arată cine a deschis copia digitală și la ce oră. Dacă un client, un auditor sau un inspector întreabă unde se află un act, răspunsul e același de fiecare dată: copia în Germania, originalul, dacă l-ați predat, în depozitul 3S.",
-  legatura: { text: "Citiți pagina de securitate", href: "/securitate", ruta: "/securitate" } as Legatura,
+  legatura: { text: "Citește pagina de securitate", href: "/securitate", ruta: "/securitate" } as Legatura,
   carduri: [
     {
       titlu: "Hârtia, cu proces-verbal",
-      text: "Fiecare lot predat spre arhivare are propriul proces-verbal, așa că știți oricând ce anume ați lăsat în depozitul 3S și în ce zi.",
+      text: "Fiecare lot predat spre arhivare are propriul proces-verbal, așa că știi oricând ce anume ai lăsat în depozitul 3S și în ce zi.",
     },
     {
       titlu: "Acces pe persoană, cu jurnal",
@@ -279,7 +279,7 @@ export const APELURI_PLATFORMA = {
       eticheta: "Exemplu de cerere care trimite un act",
       cod: [
         "POST https://" + GAZDA_EXEMPLU + "/v1/acte",
-        "Authorization: Bearer <cheia dumneavoastră>",
+        "Authorization: Bearer <cheia API a firmei tale>",
         "Content-Type: multipart/form-data",
         "",
         "fisier: proces-verbal-0914.pdf",
@@ -296,7 +296,7 @@ export const APELURI_PLATFORMA = {
       eticheta: "Exemplu de cerere care citește câmpurile unui act",
       cod: [
         "GET https://" + GAZDA_EXEMPLU + "/v1/acte/act_exemplu_42?campuri=toate",
-        "Authorization: Bearer <cheia dumneavoastră>",
+        "Authorization: Bearer <cheia API a firmei tale>",
         "",
         "200 OK",
         "{",
@@ -313,8 +313,8 @@ export const APELURI_PLATFORMA = {
     "Exemplu ilustrativ, cu date fictive. Adresa " + GAZDA_EXEMPLU + " e rezervată pentru exemple și nu răspunde.",
   // Eticheta vizibila din coltul fiecarui bloc (decizia D11): codul are o suma si un furnizor.
   etichetaExemplu: "exemplu",
-  nota: "Zapier, Make și n8n pot porni fluxuri din aceleași evenimente ale arhivei, fără să scrieți cod.",
-  legatura: { text: "Vedeți cu ce se leagă", href: "/integrari", ruta: "/integrari" } as Legatura,
+  nota: "Zapier, Make și n8n pot porni fluxuri din aceleași evenimente ale arhivei, fără să scrii cod.",
+  legatura: { text: "Vezi cu ce se leagă", href: "/integrari", ruta: "/integrari" } as Legatura,
 };
 
 // --- 11. Cazurile --------------------------------------------------------------------------------
@@ -326,7 +326,7 @@ export const CAZURI_PLATFORMA = {
   cazuri: [
     {
       titlu: "Logistică",
-      text: "Comenzile, CMR-urile semnate și dovezile de livrare stau legate de cursa lor, ca facturarea să nu mai aștepte după o hârtie rămasă în cabina șoferului.",
+      text: "Comenzile, CMR-urile semnate și dovezile de livrare stau legate de cursa lor, ca facturarea să nu mai aștepte un document rămas în cabina șoferului.",
     },
     {
       titlu: "Construcții",
@@ -334,7 +334,7 @@ export const CAZURI_PLATFORMA = {
     },
     {
       titlu: "Contabilitate",
-      text: "Actele fiecărui client se strâng pe lună, fără e-mailuri de tipul „mai trimiteți o dată factura”, iar clientul își vede prin portal doar dosarele care sunt ale lui.",
+      text: "Actele fiecărui client se strâng pe lună, fără e-mailuri de tipul „mai trimite-mi o dată factura”, iar clientul își vede prin portal doar dosarele care sunt ale lui.",
     },
     {
       titlu: "Școli și universități",
@@ -345,13 +345,13 @@ export const CAZURI_PLATFORMA = {
       text: "Inspectorul ajuns la locul daunei întreabă pe WhatsApp ce acoperă polița și primește răspunsul cu pagina din poliță, fără să sune la birou. Dosarul de daună arată ce acte mai lipsesc, iar clientul își urmărește dosarul prin portal, doar pe al lui, fără un drum la ghișeu și fără un șir lung de e-mailuri.",
     },
   ],
-  legatura: { text: "Vedeți soluțiile pe domenii", href: "/solutii", ruta: "/solutii" } as Legatura,
+  legatura: { text: "Vezi soluțiile pe domenii", href: "/solutii", ruta: "/solutii" } as Legatura,
 };
 
 // --- 12. Cardul de conformitate ------------------------------------------------------------------
 
 export const CONFORMITATE_PLATFORMA = {
-  titlu: "Ce întreabă un auditor, 3S poate arăta pe loc.",
+  titlu: "Ce întreabă un auditor, 3S poate arăta pe loc",
   text: "Registrul actelor și termenul fiecăruia se văd din 3S oricând, la zi, fără pregătiri înaintea unui control.",
   insigne: ["AES-256", "TLS 1.2+", "UE", "Germania", "Amazon", "Jurnal"],
 };
@@ -364,22 +364,22 @@ export const INTREBARI_PLATFORMA: BlocIntrebari = {
     {
       intrebare: "Putem începe doar cu actele pe hârtie?",
       raspuns:
-        "Da. 3S preia dosarele pe hârtie, le scanează și le citește, iar originalele stau în depozitul 3S, pe bază de proces-verbal, până le cereți înapoi. În arhivă lucrați cu copia scanată.",
+        "Da. 3S preia dosarele pe hârtie, le scanează și le citește, iar originalele stau în depozitul 3S, pe bază de proces-verbal, până le ceri înapoi. În arhivă lucrezi cu copia scanată.",
     },
     {
       intrebare: "Putem pune întrebări și pe WhatsApp, de pe telefon?",
       raspuns:
-        "Da. Pe WhatsApp, ca și pe web, întrebați în cuvintele dumneavoastră și primiți răspunsul din acte, cu documentul și pagina din care vine.",
+        "Da. Pe WhatsApp, ca și pe web, întrebi în cuvintele tale și primești răspunsul din acte, cu documentul și pagina din care vine.",
     },
     {
       intrebare: "În ce țară și la ce furnizor stau fișierele noastre?",
       raspuns:
-        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc sunt criptate AES-256, iar pe drum circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predați, stau în depozitul 3S.",
+        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc sunt criptate AES-256, iar pe drum circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predai, stau în depozitul 3S.",
     },
     {
       intrebare: "De unde știm că un răspuns e corect?",
       raspuns:
-        "Fiecare răspuns vine cu documentul și pagina din care e luat, așa că îl puteți deschide și verifica pe loc, înainte să vă bazați pe el.",
+        "Fiecare răspuns vine cu documentul și pagina din care e luat, așa că îl poți deschide și verifica pe loc, înainte să te bazezi pe el.",
     },
     {
       intrebare: "Cum aflăm din timp că un act ajunge la termen?",

@@ -26,9 +26,9 @@ export const SECTOR_COMUN: {
 } = {
   firSolutii: { text: "Soluții", cale: "/solutii" },
   // Rol: incercarea gratuita (buton plin, 16/600). Lungime: 25. Tinta: formularul (cont gratuit).
-  butonPrincipal: { text: "Deschideți un cont gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
+  butonPrincipal: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
   // Rol: un mesaj catre echipa (buton fantoma). Lungime: 19. Tinta: pagina de contact.
-  butonSecundar: { text: "Scrieți-ne un mesaj", href: "/contact", ruta: "/contact" },
+  butonSecundar: { text: "Scrie-ne un mesaj", href: "/contact", ruta: "/contact" },
   // Rol: fara card, fara obligatii (14/400 ardezie-5). Lungime: 26. Afirmatiile: cont fara card
   // (neconfirmat) si pretul de 0 RON (confirmat, D3).
   nota: "Fără card de plată, 0 RON astăzi",
@@ -42,10 +42,10 @@ export const SECTOR_COMUN: {
     // Rol: cipul in starea ordine (verde). Lungime: 27.
     ordine: "Toate actele, puse în ordine",
     // Rol: butonul care asaza foile (pastila albastra, cu sageata). Lungime: 15.
-    buton: "Puneți-le în ordine",
+    buton: "Pune-le în ordine",
   },
   // Rol: h2 al pasilor. Lungime: 28.
-  titluPasi: "Cum lucrați cu 3S, pas cu pas",
+  titluPasi: "Cum lucrezi cu 3S, pas cu pas",
   // Rol: eticheta cardului de cautare (14/600). Lungime: 26. Declara exemplul (plan D9).
   etichetaDemo: "Exemplu de căutare în arhivă",
   // Rol: h2 al cardurilor inainte / dupa. Lungime: 27.
@@ -60,7 +60,7 @@ export const SECTOR_COMUN: {
     {
       // Rol: unde stau documentele. Lungime: 35; un rand la 1440, doua la 390, ca la referinta
       // (masurat: randul inchis 55 / 76 px).
-      intrebare: "Unde stau fișierele pe care le încărcați în 3S?",
+      intrebare: "Unde stau fișierele pe care le încarci în 3S?",
       // Rol: furnizorul, locul, criptarea (4 randuri la 1440). Lungime: 357. Faptele: D4c (o singura
       // regiune, Germania), criptarea aleasa in D4c (neconfirmata), stocarea proprie (D4b).
       raspuns:
@@ -73,7 +73,7 @@ export const SECTOR_COMUN: {
       // canalele si pagina citata, fara exemplul de interogare.
       intrebare: "Cum citește 3S un act scanat sau o poză?",
       raspuns:
-        "Scoate textul din imagine, chiar dacă actul vine ca poză sau ca scanare veche, apoi recunoaște ce fel de act este și îl pune în dosarul potrivit. Când îi puneți o întrebare, pe web, pe telefon sau pe WhatsApp, răspunde cu actul și cu pagina din care a luat informația, ca să o puteți verifica pe original.",
+        "Scoate textul din imagine, chiar dacă actul vine ca poză sau ca scanare veche, apoi recunoaște ce fel de act este și îl pune în dosarul potrivit. Când îi pui o întrebare, pe web, pe telefon sau pe WhatsApp, răspunde cu actul și cu pagina din care a luat informația, ca să o poți verifica pe original.",
     },
   ],
 };

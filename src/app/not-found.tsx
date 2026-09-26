@@ -24,11 +24,11 @@ export default function PaginaNegasita() {
           <p className={"t-eticheta-sectiune " + s.eticheta}>Eroare 404</p>
           <h1 className={"t-h1-interior " + s.titlu}>Pagina nu există</h1>
           <p className={"t-subtitlu-interior " + s.text}>
-            Adresa poate fi greșită sau pagina a fost mutată. De pe pagina de start ajungeți la tot ce
+            Adresa poate fi greșită sau pagina a fost mutată. De pe pagina de start ajungi la tot ce
             face 3S.
           </p>
           <Buton marime="mare" sageata legatura={{ text: "Pagina de start", href: "/", ruta: "/" }}>
-            Mergeți la pagina de start
+            Mergi la pagina de start
           </Buton>
           {drumuri.length > 0 ? (
             <ul className={s.drumuri}>
