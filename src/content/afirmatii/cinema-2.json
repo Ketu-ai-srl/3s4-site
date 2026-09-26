@@ -1,0 +1,92 @@
+[
+  {
+    "id": "cinema2-functii-in-productie",
+    "text": "Facturile făcute din aviz și aplicația de telefon există azi în produs",
+    "unde": "src/content/functionalitati/e-facturi-si-avize.ts, src/content/functionalitati/aplicatie-mobila.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-functii-in-productie: declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind deja în producție)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema2-semnatura-in-curs",
+    "text": "Semnătura electronică calificată nu se poate face azi prin 3S: integrarea cu furnizorii acreditați e în curs",
+    "unde": "src/content/functionalitati/semnatura-calificata.ts",
+    "stare": "confirmat",
+    "sursa": "decizia D4c din planul valului S4: semnătura calificată e „în proces cu toate”, deci nu e disponibilă azi; formularea impusă este „integrare în curs cu furnizorii acreditați”",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema2-eidas-efect-juridic",
+    "text": "Semnătura electronică calificată are efectul juridic echivalent al semnăturii olografe (Regulamentul (UE) nr. 910/2014, art. 25 alin. (2)) și se bazează pe un certificat calificat (art. 3 pct. 12)",
+    "unde": "src/content/functionalitati/semnatura-calificata.ts",
+    "stare": "confirmat",
+    "sursa": "textul în română al Regulamentului (UE) nr. 910/2014 pe EUR-Lex, https://eur-lex.europa.eu/legal-content/RO/TXT/HTML/?uri=CELEX:32014R0910, citit la construirea paginii: art. 3 pct. 12 și art. 25 alin. (2), cu formularea citată",
+    "confirmat_de": "felia cinema-2, citire la sursa primară, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "cinema2-arhivare-acte-semnate",
+    "text": "Actele semnate de mână sau cu alte unelte se arhivează și se caută în 3S, iar termenele actelor stau în registrul arhivei",
+    "unde": "src/content/functionalitati/semnatura-calificata.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-functii-in-productie: căutarea cu sursa citată și evidența arhivei cu termene de păstrare există azi în produs (decizia D4b)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema2-factura-din-aviz",
+    "text": "Factura se generează din avizul deja încărcat, cu clientul și prețurile dintr-un șablon salvat, rămâne legată de aviz în registrul arhivei, se pune în dosarul clientului, pe luna ei, și se găsește prin căutare după client sau după numărul avizului",
+    "unde": "src/content/functionalitati/e-facturi-si-avize.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: funcționalitatea e-facturilor e declarată existentă prin decizia D4b; generarea din aviz, șabloanele salvate, legătura aviz-factură în registru, căutarea după numărul avizului și așezarea în dosarul lunii sunt detalii neconfirmate",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema2-factura-prin-peppol-storecove",
+    "text": "Factura pleacă prin integrarea de e-facturare a 3S, cu Peppol și Storecove",
+    "unde": "src/content/functionalitati/e-facturi-si-avize.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: Peppol și Storecove sunt integrări confirmate (acasa-integrari-si-whatsapp, decizia D4c); trimiterea facturilor generate din aviz prin ele e un detaliu neconfirmat",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema2-aplicatie-toate-platformele",
+    "text": "Aplicația 3S merge pe telefon, pe tabletă, pe calculator și în browser",
+    "unde": "src/content/functionalitati/aplicatie-mobila.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-aplicatie-pe-toate-platformele: decizia D4c din planul valului S4 (aplicația: toate platformele)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema2-scanare-etichetare-trimitere",
+    "text": "Aplicația de telefon face din fotografia unui act o scanare curată, îi pune etichete (client, stare, loc, oră, agent) și îl trimite în dosarul clientului, unde biroul îl vede imediat",
+    "unde": "src/content/functionalitati/aplicatie-mobila.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-scanare-pe-telefon; etichetele și apariția la birou sunt detalii ale funcționalității declarate existente prin decizia D4b",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "cinema2-pret-0-ron",
+    "text": "Astăzi toate pachetele costă 0 RON",
+    "unde": "src/content/functionalitati/e-facturi-si-avize.ts, src/content/functionalitati/aplicatie-mobila.ts, src/content/functionalitati/semnatura-calificata.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-pret-0-ron: decizia D3 din planul valului S4",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "cinema2-cont-fara-card",
+    "text": "Contul se deschide fără card de plată",
+    "unde": "src/content/functionalitati/e-facturi-si-avize.ts, src/content/functionalitati/semnatura-calificata.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași afirmație ca acasa-cont-fara-card",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

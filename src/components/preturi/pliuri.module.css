@@ -1,0 +1,374 @@
+/* Pliurile (preturi.md §7): biroul cu dispozitive si comparatia pachetelor. Doua pliuri
+   independente, deschise pe loc; se roteste doar chevronul (0,3 s). */
+
+.pliuri {
+  padding: 56px 0 0;
+  background: var(--color-alb);
+}
+
+.bloc {
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+.pliu {
+  border-bottom: 1px solid var(--color-ardezie-2);
+}
+
+.pliu:first-child {
+  border-top: 1px solid var(--color-ardezie-2);
+}
+
+.rezumat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+  color: var(--color-ardezie-9);
+  font-size: 16px;
+  font-weight: 600;
+  /* referinta: 16 / 600 / normal, rand de 61 (cu 20,8 iesea 60,8) */
+  line-height: normal;
+  letter-spacing: -0.16px;
+  list-style: none;
+  cursor: pointer;
+  transition: color var(--durata-rapida) ease;
+}
+
+.rezumat::-webkit-details-marker {
+  display: none;
+}
+
+.rezumat::marker {
+  content: "";
+}
+
+.rezumat:hover {
+  color: var(--color-albastru);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+  transition: transform var(--durata-normala) ease;
+}
+
+.pliu[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.corp {
+  padding: 0 0 28px;
+}
+
+.paragraf {
+  max-width: 640px;
+  margin-bottom: 20px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+@media (max-width: 768px) {
+  .pliuri {
+    padding-top: 40px;
+  }
+}
+
+/* =============================================================================================
+   Pliul 1: biroul. Card 880, raza 16, taiat; scena 320 (240 la <= 768).
+   ============================================================================================= */
+
+.cardBirou {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.scena {
+  position: relative;
+  height: 320px;
+}
+
+.panza {
+  position: absolute;
+  inset: 0;
+}
+
+.contor {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 6.4px;
+  margin: 0;
+}
+
+.contorEticheta {
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.contorValoare {
+  color: var(--color-ardezie-9);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.4px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La referinta verde (#16a34a, 3,30:1) pe text de 12 px; la 3S verde-text (5,02:1), ca insigna. */
+.contorNota {
+  color: var(--color-verde-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.adauga {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  height: 36px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-albastru);
+  border-radius: 9999px;
+  background: var(--color-alb);
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  cursor: pointer;
+  transition:
+    background-color var(--durata-rapida) ease,
+    color var(--durata-rapida) ease;
+}
+
+.adauga:hover:not([aria-disabled="true"]) {
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+/* Dezactivat la plafon, dar focalizabil: tastatura nu pierde locul dupa ultimul clic. */
+.adauga[aria-disabled="true"] {
+  border-color: var(--color-ardezie-2);
+  color: var(--color-ardezie-4);
+  cursor: default;
+}
+
+.conturi {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.capConturi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.conturiEticheta {
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.segmente {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 9999px;
+  background: var(--color-ardezie-1);
+}
+
+/* La referinta textul inactiv e ardezie-5 pe ardezie-1 (4,34:1, sub AA); la 3S ardezie-6. */
+.segment {
+  height: 26px;
+  padding: 4.8px 12.8px;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  color: var(--color-ardezie-6);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16.4px;
+  cursor: pointer;
+  transition:
+    color var(--durata-rapida) ease,
+    background-color var(--durata-rapida) ease;
+}
+
+.segmentActiv {
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+}
+
+.locuri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.loc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 9999px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+}
+
+.etichetaLocuri {
+  margin-left: 8px;
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .scena {
+    height: 240px;
+  }
+
+  .capConturi {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* =============================================================================================
+   Pliul 2: comparatia. Panou 880, raza 16, taiat; tabel min 560 cu derulare orizontala.
+   ============================================================================================= */
+
+.panouTabel {
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+/* `position: relative` face din panou blocul continator al textelor pentru cititor din celule
+   (`.doar-cititor`, pozitionate absolut). Fara el, ele se asezau fata de pagina, scapau de taietura
+   panoului si lateau pagina la 390: `scrollWidth` 522 cu tabelul deschis (masurat). */
+.derulare {
+  position: relative;
+  overflow-x: auto;
+}
+
+.tabel {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+.tabel thead th {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-ardezie-2);
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.07px;
+  text-align: left;
+}
+
+.tabel thead th.coloanaPlan {
+  width: 7.5rem;
+  text-align: center;
+}
+
+.tabel thead th.coloanaRecomandata {
+  color: var(--color-albastru);
+}
+
+.tabel tbody tr {
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.tabel tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.tabel td,
+.tabel tbody th.celulaFunctie {
+  padding: 13px 20px;
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.tabel tbody tr.randCategorie {
+  border-bottom: 1px solid var(--color-ardezie-2);
+}
+
+.randCategorie th {
+  padding: 10px 20px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.2px;
+  letter-spacing: -0.06px;
+  text-align: left;
+}
+
+.celulaFunctie {
+  color: var(--color-ardezie-9);
+  font-weight: 500;
+  letter-spacing: -0.07px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.celulaValoare {
+  text-align: center;
+}
+
+.valoareTabel {
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+  letter-spacing: -0.14px;
+}
+
+.marcaj {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ardezie-4);
+  vertical-align: middle;
+}
+
+.marcajAccent {
+  color: var(--color-albastru);
+}
+
+@media (max-width: 768px) {
+  .tabel thead th,
+  .tabel td,
+  .tabel tbody th.celulaFunctie {
+    padding: 12px 14px;
+  }
+
+  .randCategorie th {
+    padding: 8px 14px;
+  }
+}

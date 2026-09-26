@@ -1,0 +1,96 @@
+/* Linia de baza (preturi.md §5) si intrebarile despre preturi (§8), pe blocul de 880. */
+
+.bloc {
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+/* --- Linia de baza: padding 72 sus (48 la <= 768). Eroul interior lasa deja 40 (24 sub 768). --- */
+
+.linia {
+  padding: 32px 0 0;
+  background: var(--color-alb);
+}
+
+.inapoi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  margin-bottom: 20px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 500;
+  /* referinta: 14 / 500 / normal, cutie de 18; cu 22,4 h2 cadea cu 2,6 px mai jos */
+  line-height: normal;
+  transition: color var(--durata-rapida) ease;
+}
+
+.inapoi:hover {
+  color: var(--color-ardezie-9);
+}
+
+.titlu {
+  margin-bottom: 12px;
+  color: var(--color-ardezie-9);
+}
+
+/* Titlul primeste focus programatic la deschiderea lumii; conturul ramane doar la tastatura. */
+.titlu:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.promisiune {
+  max-width: 34ch;
+  margin-bottom: 12px;
+  color: var(--color-ardezie-9);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 25.2px;
+  letter-spacing: -0.18px;
+}
+
+.paragraf {
+  max-width: 62ch;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+/* --- Intrebarile: padding 64 / 88 (40 sus la <= 768) ------------------------------------------- */
+
+.intrebari {
+  padding: 64px 0 88px;
+  background: var(--color-alb);
+}
+
+.intrebariTitlu {
+  margin-bottom: 10px;
+}
+
+.intrebariSubtitlu {
+  max-width: 640px;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.intrebariLista {
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  /* La exact 768 eroul interior lasa inca 40: 48 - 40. */
+  .linia {
+    padding-top: 8px;
+  }
+
+  .intrebari {
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .linia {
+    padding-top: 24px;
+  }
+}

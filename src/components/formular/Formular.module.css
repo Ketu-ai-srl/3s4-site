@@ -1,0 +1,451 @@
+/* Formularul de contact (enterprise.md §4, contact.md §7, COMPONENTE §4.7). Valorile masurate la
+   1440 si 390; pragul formularului e 600 (o coloana, padding 24). */
+
+.sectiune {
+  padding: 64px 0;
+  scroll-margin-top: 88px;
+}
+
+.invelis {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+/* --- Cardul: alb, chenar 1,5 linie (randat 1), raza 24, padding 40 (24), umbra-mare --------- */
+
+.card {
+  padding: 40px;
+  border: 1.5px solid var(--color-linie);
+  border-radius: var(--radius-24);
+  background: var(--color-alb);
+  box-shadow: var(--shadow-mare);
+}
+
+.formular {
+  display: block;
+}
+
+.rand {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.grup {
+  margin-bottom: 20px;
+  min-width: 0;
+}
+
+.grupLat {
+  grid-column: 1 / -1;
+}
+
+.eticheta {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-cerneala);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+.camp {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--color-linie);
+  border-radius: var(--radius-12);
+  background: var(--color-alb);
+  color: var(--color-cerneala);
+  font: inherit;
+  font-size: 16px;
+  line-height: 20px;
+  transition:
+    border-color var(--durata-rapida) ease,
+    box-shadow var(--durata-rapida) ease;
+}
+
+.camp::placeholder {
+  color: var(--color-cerneala-3);
+  opacity: 1;
+}
+
+.camp:focus,
+.camp:focus-visible {
+  outline: none;
+  border-color: var(--color-albastru);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.zona {
+  min-height: 100px;
+  height: 110px;
+  resize: vertical;
+}
+
+.campEroare {
+  border-color: var(--color-rosu);
+}
+
+.eroare {
+  margin-top: 4px;
+  color: var(--color-rosu);
+  font-size: 12px;
+  line-height: 19.2px;
+}
+
+/* --- Corectorul de e-mail: role=status, coloana gap 4, margine sus 6 --------------------- */
+
+.corector {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.corectorAvertisment {
+  color: var(--color-chihlimbar);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 19.2px;
+}
+
+.corectorPropunere {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-ardezie-6);
+  font: inherit;
+  font-size: 12px;
+  line-height: 19.2px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.corectorAdresa {
+  color: var(--color-albastru);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.corectorPropunere:focus-visible,
+.inapoi:focus-visible,
+.politica:focus-visible,
+.directAdresa:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Bifa de noutati: separata, nebifata, neobligatorie (FORM-01..03, G-MD-07) ------------- */
+
+.bifa {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: -4px 0 20px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.bifa input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 1.5px 0 0;
+  accent-color: var(--color-albastru);
+}
+
+.bifa input:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+/* --- Butonul de trimitere: pastila pe toata latimea, 53 px ---------------------------------- */
+
+.trimite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px 32px;
+  border: 0;
+  border-radius: var(--radius-pastila);
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 21px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.trimite:hover {
+  background: var(--color-albastru-apasat);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medie);
+}
+
+.trimite:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 3px;
+}
+
+.trimite:disabled {
+  opacity: 0.65;
+  cursor: default;
+  transform: none;
+}
+
+.inactiv {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-12);
+  background: var(--color-ardezie-0);
+  border: 1px solid var(--color-ardezie-2);
+  color: var(--color-ardezie-7);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.inactiv:empty {
+  display: none;
+}
+
+/* --- Nota de informare: in containerul formularului, langa buton (G-FORM-01, FORM-05/06) ---- */
+
+.informare {
+  margin-top: 16px;
+  color: var(--color-cerneala-2);
+  font-size: 12px;
+  line-height: 19.2px;
+}
+
+.informare p + p {
+  margin-top: 4px;
+}
+
+.politica {
+  color: var(--color-cerneala);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a.politica:hover {
+  color: var(--color-albastru);
+}
+
+/* --- Starea de succes: bloc centrat, cerc 56 verde-nuanta cu bifa 28 verde ------------------ */
+
+.succes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 0 0;
+}
+
+.succesCerc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--color-verde-nuanta);
+  color: var(--color-verde);
+}
+
+.succesTitlu {
+  margin-bottom: 8px;
+  color: var(--color-cerneala);
+  font-size: 20.8px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.succesText {
+  color: var(--color-cerneala-2);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.direct {
+  margin-top: 20px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+  text-align: center;
+}
+
+.directAdresa {
+  color: var(--color-cerneala);
+  font-family: var(--font-mono);
+  font-size: 12.6px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --- Starea de rezerva: previzualizarea mesajului si iesirea prin e-mail ------------------- */
+
+.rezerva {
+  display: block;
+}
+
+.inapoi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-cerneala-2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.inapoi:hover {
+  color: var(--color-cerneala);
+}
+
+.rezervaExplicatie {
+  margin-bottom: 12px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.previzualizare {
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  border: 1px solid var(--color-linie);
+  border-radius: var(--radius-16);
+  background: var(--color-gri-card);
+}
+
+.previzualizareSubiect {
+  margin-bottom: 12px;
+  color: var(--color-cerneala);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+}
+
+/* cerneala-2 pe gri-card: 5,27:1 */
+.previzualizareCorp {
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.rezervaButoane {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.rezervaUnButon {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.butonPlin,
+.butonContur {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  border-radius: var(--radius-pastila);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.butonPlin {
+  border: 1px solid var(--color-albastru);
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+.butonPlin:hover {
+  background: var(--color-albastru-apasat);
+  border-color: var(--color-albastru-apasat);
+}
+
+.butonContur {
+  border: 1px solid var(--color-ardezie-2);
+  background: transparent;
+  color: var(--color-cerneala);
+}
+
+.butonContur:hover {
+  border-color: var(--color-ardezie-3);
+  background: var(--color-ardezie-0);
+}
+
+.butonPlin:focus-visible,
+.butonContur:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 3px;
+}
+
+.indiciu {
+  margin-top: 16px;
+  color: var(--color-cerneala-2);
+  font-size: 14px;
+  line-height: 22.4px;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .sectiune {
+    padding: 64px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 24px;
+  }
+
+  .rand {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .rezervaButoane {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camp,
+  .trimite,
+  .inapoi,
+  .butonPlin,
+  .butonContur {
+    transition: none;
+  }
+
+  .trimite:hover {
+    transform: none;
+  }
+}

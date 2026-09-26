@@ -1,0 +1,38 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei solutii din src/content/rute.ts: hubul si cele 7 sectoare. Un fisier pe felie, cu numele marcajului, ca feliile paralele sa nu scrie in acelasi fisier (tests/browser/ajutor/raspunsuri.ts). Sectoarele au primul paragraf din <main> (subtitlul eroului) de 30-80 de cuvinte, deci regula paragrafului li se aplica intreaga; hubul o ridica, cu motivul scris.",
+  "raspuns_autonom": {
+    "/solutii": {
+      "intrebare": "Ce variante are 3S pentru fiecare domeniu de activitate?",
+      "entitati": ["3S", "constructori", "contabili"],
+      "fara_regula_paragrafului": "Hubul are forma masurata a eroului cu rand de dovada: sub titlu sta un subtitlu de doua randuri (105 caractere la masurarea din 24.09.2026), nu un paragraf de raspuns de 30-80 de cuvinte. Raspunsul hubului e titlul impreuna cu subtitlul si randul de dovada, iar entitatile lui se verifica in fereastra de 400 de cuvinte, ca pe orice ruta."
+    },
+    "/solutii/constructii": {
+      "intrebare": "Cum găsește 3S actele unui șantier?",
+      "entitati": ["3S", "șantier", "planșă"]
+    },
+    "/solutii/contabilitate": {
+      "intrebare": "Cum primește și ordonează 3S actele clienților unui contabil?",
+      "entitati": ["3S", "portalul", "clienții"]
+    },
+    "/solutii/imobiliare": {
+      "intrebare": "Cum găsește 3S actele unei clădiri?",
+      "entitati": ["3S", "contract", "clădiri"]
+    },
+    "/solutii/avocatura": {
+      "intrebare": "Cum caută 3S în dosarele unui cabinet de avocatură?",
+      "entitati": ["3S", "dosar", "după sens"]
+    },
+    "/solutii/logistica": {
+      "intrebare": "Cum găsește 3S un CMR sau un aviz de transport?",
+      "entitati": ["3S", "CMR", "cursa"]
+    },
+    "/solutii/notariate": {
+      "intrebare": "Cum găsește 3S un act din arhiva unui birou notarial?",
+      "entitati": ["3S", "registrele", "numele părților"]
+    },
+    "/solutii/asigurari": {
+      "intrebare": "Cum ține 3S dosarele de daună complete?",
+      "entitati": ["3S", "daune", "polițele"]
+    }
+  }
+}

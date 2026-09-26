@@ -1,0 +1,260 @@
+/* Lumea preturilor (preturi.md §3 si §5): poarta cu doua carduri (starea 1) si lumea pachetelor
+   (starea 2), pe aceeasi ruta. Valorile sunt ale fisei; clasele si structura sunt ale noastre. */
+
+/* --- Vederea ----------------------------------------------------------------------------------
+   HTML-ul servit are AMBELE stari: poarta vizibila, lumea ascunsa din CSS (textul ei ramane in
+   pagina, pentru cititorii fara JavaScript). Fara JavaScript, ancora `#pachete` deschide lumea
+   prin `:target`; dupa hidratare decide numai starea componentei (`data-vedere`), altfel o ancora
+   ramasa in adresa ar tine lumea deschisa peste butonul "inapoi". */
+
+.lume {
+  display: none;
+}
+
+.stare[data-vedere="pachete"] .lume {
+  display: block;
+}
+
+.stare[data-vedere="pachete"] .poarta {
+  display: none;
+}
+
+.stare:not([data-hidratat]):has([id="pachete"]:target) .lume {
+  display: block;
+}
+
+.stare:not([data-hidratat]):has([id="pachete"]:target) .poarta {
+  display: none;
+}
+
+/* Intrarea lumii dupa clic: 0,3 s ease-out, opacitate si 10 px (fisa §3). */
+.lumeIntrare {
+  animation: intrareLume 0.3s ease-out;
+}
+
+@keyframes intrareLume {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Poarta: padding 44 / 96 (28 / 56 la <= 768), taiata ------------------------------------------
+   Eroul interior de deasupra lasa deja 40 px jos (24 sub 768), deci aici sta numai restul: cardurile
+   incep la aceeasi inaltime ca la referinta (357 la 1440, 415 la 390). */
+
+.poarta {
+  padding: 4px 0 96px;
+  overflow: hidden;
+  background: var(--color-alb);
+}
+
+.grila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+/* Cardul intreg e legatura. Continutul e centrat pe verticala, ca in butonul referintei: cardul de
+   baza (mai scund) sta cu 16 px mai jos decat cel enterprise, intins pe toata inaltimea. */
+.panou {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 28px 30px;
+  border-radius: 16px;
+  text-align: left;
+  transition:
+    transform 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color var(--durata-rapida) ease;
+}
+
+.panouBaza {
+  border: 1px solid var(--color-ardezie-2);
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.panouEnterprise {
+  border: 1px solid var(--color-ardezie-9);
+  background: var(--color-ardezie-9);
+}
+
+.interior {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  transition: transform 0.52s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover numai pe legatura: cardul enterprise ramane inert (element `span`) pana exista ruta lui. */
+a.panou:hover {
+  transform: translateY(-2px);
+}
+
+a.panou:hover .interior {
+  transform: translateY(-3px);
+}
+
+a.panouBaza:hover {
+  border-color: var(--color-ardezie-3);
+}
+
+/* Eticheta si legatura-sageata au inaltimea randului `normal` (masurat pe referinta: 14 / 600 /
+   normal, cutii de 18 px). Cu 22,4 cardurile ieseau cu 9 px mai inalte (254 fata de 245). */
+.nume {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.07px;
+}
+
+.panouBaza .nume {
+  color: var(--color-albastru);
+}
+
+/* ardezie-4 pe ardezie-9: 6,96:1 */
+.panouEnterprise .nume {
+  color: var(--color-ardezie-4);
+}
+
+.titlu {
+  font-size: clamp(1.2rem, 2.1vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.panouBaza .titlu {
+  color: var(--color-ardezie-9);
+}
+
+.panouEnterprise .titlu {
+  color: var(--color-alb);
+}
+
+.text {
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.panouBaza .text {
+  color: var(--color-ardezie-5);
+}
+
+/* ardezie-3 pe ardezie-9: 12,02:1 */
+.panouEnterprise .text {
+  color: var(--color-ardezie-3);
+}
+
+.mergi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.panouBaza .mergi {
+  color: var(--color-albastru);
+}
+
+.panouEnterprise .mergi {
+  color: var(--color-alb);
+}
+
+/* --- Plecarea in oglinda (fisa §3): cardurile .42 s, continutul .52 s, aceeasi curba -------------
+   Selectorii poarta atributul sectiunii, deci bat hover-ul cardului de sub mouse. */
+
+.poarta[data-plecare] .panou {
+  pointer-events: none;
+}
+
+.poarta[data-plecare="baza"] .panouBaza {
+  transform: translate(-46%) scale(1.03);
+  opacity: 0;
+}
+
+.poarta[data-plecare="baza"] .panouBaza .interior {
+  transform: translate(-16%);
+}
+
+.poarta[data-plecare="baza"] .panouEnterprise {
+  transform: translate(52%) scale(0.95);
+  opacity: 0;
+}
+
+.poarta[data-plecare="baza"] .panouEnterprise .interior {
+  transform: translate(18%);
+}
+
+.poarta[data-plecare="enterprise"] .panouEnterprise {
+  transform: translate(46%) scale(1.03);
+  opacity: 0;
+}
+
+.poarta[data-plecare="enterprise"] .panouEnterprise .interior {
+  transform: translate(16%);
+}
+
+.poarta[data-plecare="enterprise"] .panouBaza {
+  transform: translate(-52%) scale(0.95);
+  opacity: 0;
+}
+
+.poarta[data-plecare="enterprise"] .panouBaza .interior {
+  transform: translate(-18%);
+}
+
+@media (max-width: 768px) {
+  /* Referinta: 28 sus. La exact 768 eroul interior lasa inca 40, deci aici se scad 12. */
+  .poarta {
+    margin-top: -12px;
+    padding: 0 0 56px;
+  }
+
+  .grila {
+    grid-template-columns: 1fr;
+  }
+
+  .panou {
+    padding: 24px 20px;
+  }
+
+  /* Pe mobil cardurile coboara 12 px si se sting, iar continutul lor aluneca tot orizontal: la
+     referinta regula mobila a continutului pierde la specificitate in fata celei de desktop, iar
+     fisa cere reproducerea asa (§3, "La 390"). De aceea regula de mai jos nu atinge `.interior`. */
+  .poarta[data-plecare="baza"] .panou,
+  .poarta[data-plecare="enterprise"] .panou {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .poarta {
+    margin-top: 0;
+    padding-top: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panou,
+  .interior {
+    transition: none;
+  }
+
+  .lumeIntrare {
+    animation: none;
+  }
+}

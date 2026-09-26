@@ -1,102 +1,73 @@
-// Datele de identificare ale comerciantului, citite dintr-un singur loc.
+// Ce arata site-ul despre cine il face: MARCA 3S, citita dintr-un singur loc, `config/brand.json`.
 //
-// Sursa e `config/entitate.ro.json`, nu JSX, fiindca acolo le cauta si poarta juridica
-// (`.claude/scripts/porti/poarta-juridic.py`, codul L-01). Doua surse pentru aceleasi
-// date ar insemna ca poarta masoara fisierul si vizitatorul citeste pagina, iar cele
-// doua se pot contrazice fara ca nimeni sa observe.
+// DECIZIA (owner, 24.09.2026, planul valului S4, sectiunea 7): pe site apare doar brandul - numele,
+// sigla si, cand exista una confirmata, adresa de e-mail. Nicio data de firma (denumire, sediu,
+// numar de registru, cod fiscal, telefon) nu se afiseaza: 3S nu are inca firma, iar datele
+// firmei-mame ADRIA nu sunt ale marcii. Numele fisierului a ramas de la mecanismul vechi, care
+// citea datele unei entitati juridice; acum citeste marca.
 //
-// Temeiul: Legea 365/2002 republicata, art. 5 alin. (1) lit. a)-e). Sanctiuni: art. 22
-// lit. b), amenda 1.000-50.000 lei, si art. 21 lit. a), nulitatea relativa a contractului.
+// Datele de identificare ale unei firme tin de OPERATORUL de date, in `config/operator.json`
+// (planul valului, sectiunile 9-10), cu `"operator": null` azi. Il citeste poarta juridica (L-01),
+// care cere datele numai din ziua in care operatorul exista.
+//
+// ADRESA DE E-MAIL se arata numai daca `config/brand.json` o are, ca adresa confirmata de owner.
+// Gol = nicio adresa pe site: legaturile de posta devin destinatii NEDECISE (`href: null`), pe
+// care navigatia nu le randeaza, iar intrebarile de pe start au o fraza care nu promite un canal.
+// O valoare care nu arata a adresa opreste construirea: o greseala de tastare nu are voie nici sa
+// ajunga pe pagina, nici sa ascunda tacut adresa buna.
 
-import date from "../../config/entitate.ro.json";
+import date from "../../config/brand.json";
+import type { Legatura } from "./navigatie";
 
-/**
- * Marcajul locului gol. Se scrie exact asa si in fisierul de configurare.
- *
- * De ce un marcaj si nu sirul vid: un camp lipsa se poate citi drept "am uitat", iar un
- * camp cu `de completat` spune ca data NU exista inca. 3S e in curs de infiintare, deci
- * nu are cod fiscal, numar de registru, sediu declarat sau telefon. Nu se completeaza cu
- * datele firmei-mama: ar fi o afirmatie falsa despre alta persoana juridica.
- */
-export const NECOMPLETAT = "de completat";
+export type SiglaMarcii = {
+  /** Sigla oficiala intreaga (iconita si cele trei randuri de text), fisierul inregistrat. */
+  completa: string;
+  /** Acelasi desen pentru fundal inchis: textul negru implicit trece pe alb. */
+  completaPeInchis: string;
+  /** Iconita oficiala si cuvantul ADRIA, decupate din fisierul oficial, pentru locurile inguste. */
+  compacta: string;
+};
 
-export type Entitate = {
-  denumire: string;
-  sediu: string;
+export type Brand = {
+  nume: string;
+  sigla: SiglaMarcii;
+  /** Adresa confirmata, sau sirul gol cand marca nu are inca una. */
   email: string;
-  telefon: string;
-  numar_orc: string;
-  cod_fiscal: string;
 };
 
-/** Campurile neconditionate din art. 5 alin. (1) lit. a)-e), in ordinea de afisare. */
-export const CAMPURI_IDENTITATE: (keyof Entitate)[] = [
-  "denumire",
-  "sediu",
-  "numar_orc",
-  "cod_fiscal",
-  "email",
-  "telefon",
-];
-
-/** Eticheta cu care apare fiecare camp in subsol, cand blocul se randeaza. */
-export const ETICHETE: Record<keyof Entitate, string> = {
-  denumire: "Denumire",
-  sediu: "Sediu",
-  numar_orc: "Număr de ordine în registrul comerțului",
-  cod_fiscal: "Cod de identificare fiscală",
-  email: "Poștă electronică",
-  telefon: "Telefon",
+export const BRAND: Brand = {
+  nume: date.nume,
+  sigla: date.sigla,
+  email: date.email.trim(),
 };
 
-export const entitate: Entitate = {
-  denumire: date.denumire,
-  sediu: date.sediu,
-  email: date.email,
-  telefon: date.telefon,
-  numar_orc: date.numar_orc,
-  cod_fiscal: date.cod_fiscal,
-};
+/** O adresa de posta plauzibila: un singur @, fara spatii, cu punct in domeniu. */
+const FORMA_ADRESEI = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Substituentii pe care ii recunoaste si `poarta-juridic.py`. Lista trebuie sa fie ACEEASI
-// in cele doua locuri. Cat timp aici erau doar doua forme, iar in poarta noua, o valoare ca
-// `TODO` sau `completati aici` trecea de amandoua: blocul de identificare s-ar fi randat pe
-// productie cu substituentul la vedere, cu poarta verde. Doua definitii ale aceluiasi lucru
-// nu se contrazic zgomotos - se contrazic exact pe cazul dintre ele.
-const SUBSTITUENTI = [
-  NECOMPLETAT,
-  "de-completat",
-  "completati aici",
-  "completați aici",
-  "todo",
-  "tbd",
-  "xxx",
-  "???",
-  "n/a",
-  "necunoscut",
-  "lorem",
-];
-
-/** Un camp e gol cand lipseste sau cand poarta un marcaj de necompletat. */
-export function campLipsa(valoare: string): boolean {
-  const v = valoare.trim().toLowerCase();
-  return v === "" || SUBSTITUENTI.includes(v);
-}
-
-/** Campurile care inca nu au valoare. Lista goala inseamna identitate completa. */
-export function campuriLipsa(): (keyof Entitate)[] {
-  return CAMPURI_IDENTITATE.filter((c) => campLipsa(entitate[c]));
+/**
+ * Adresa de e-mail a marcii, daca e confirmata; `null` cat timp configurarea o are goala.
+ * Arunca daca valoarea nu e goala dar nici nu arata a adresa.
+ */
+export function adresaMarcii(valoare: string = BRAND.email): string | null {
+  const v = valoare.trim();
+  if (v === "") {
+    return null;
+  }
+  if (!FORMA_ADRESEI.test(v)) {
+    throw new Error(
+      'config/brand.json: "email" trebuie sa fie gol sau o adresa confirmata, nu "' + v + '"',
+    );
+  }
+  return v;
 }
 
 /**
- * Se poate afisa blocul de identificare?
- *
- * Totul sau nimic, deliberat. Un bloc care afiseaza jumatate din date, cu `de completat`
- * la rest, nu informeaza pe nimeni si arata a santier; iar textul `de completat` ajuns pe
- * un site public e mai rau decat absenta lui, fiindca pare o valoare. Cat timp lipseste
- * un camp, blocul nu se randeaza deloc, si poarta juridica ramane rosie la productie -
- * exact mecanismul care impiedica publicarea unei identitati incomplete.
+ * Legatura de posta a marcii: `mailto:` catre adresa confirmata, sau destinatie NEDECISA
+ * (`href: null`, text gol) cand marca nu are adresa. Navigatia nu randeaza o destinatie nedecisa.
  */
-export function identitateCompleta(): boolean {
-  return campuriLipsa().length === 0;
+export function postaMarcii(valoare: string = BRAND.email): Legatura {
+  const adresa = adresaMarcii(valoare);
+  return adresa === null
+    ? { text: "", href: null, ruta: null }
+    : { text: adresa, href: "mailto:" + adresa, ruta: null };
 }

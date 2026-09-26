@@ -1,0 +1,383 @@
+/* Constructorul pe industrii (acasa-constructor.md): sectiunea, cele doua teme, poarta si capul
+   lumii. Panoul, scenele si chestionarul au foile lor, in acelasi dosar.
+
+   CULORILE PE TEME sunt variabile puse pe sectiune (`--k-*` pentru piesa, `--sc-*` pentru scena),
+   schimbate de `data-tema="inchisa"`. Valorile sunt cele masurate (§1.1), cu o abatere numita:
+   textul care se citeste nu coboara sub 4,5:1 (COMPONENTE.md §5.1). Pe tema deschisa referinta
+   pune `ardezie-4` (2,56:1), `gri-9` (2,85:1) si `verde` (3,30:1) pe text mic; la 3S textul trece
+   pe `ardezie-5`, `cerneala-3` si `verde-text`, iar culorile referintei raman pe iconite, bare si
+   chenare. Pe tema inchisa valorile referintei trec deja pragul si raman. */
+
+.sectiune {
+  --k-text: var(--color-cerneala);
+  --k-text-2: var(--color-cerneala-2);
+  --k-text-3: var(--color-cerneala-3);
+  --k-eticheta: var(--color-ardezie-5);
+  --k-decor: var(--color-ardezie-4);
+  --k-chevron: var(--color-ardezie-3);
+  --k-punct: var(--color-ardezie-3);
+  --k-focus: var(--color-albastru);
+
+  --k-buton-fundal: var(--color-alb);
+  --k-buton-chenar: var(--color-linie);
+  --k-buton-chenar-hover: var(--color-gri-c);
+  --k-buton-iconita: var(--color-gri-icon);
+
+  --k-card-fundal: var(--color-alb);
+  --k-card-chenar: var(--color-linie);
+  --k-card-umbra: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -18px rgba(0, 0, 0, 0.12);
+  --k-exp-umbra: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --k-separator: var(--color-linie-fina);
+  --k-cutie-fundal: var(--color-alb);
+  --k-cutie-chenar: var(--color-linie-app);
+  --k-marca-fundal: var(--color-cerneala);
+  --k-marca-inel: transparent;
+  --k-pista: var(--color-gri-e);
+  --k-umplere: var(--color-albastru);
+  --k-reluare-chenar: var(--color-linie);
+  --k-reluare-iconita: var(--color-cerneala-2);
+  --k-reluare-hover: var(--color-cerneala);
+  --k-reluare-chenar-hover: var(--color-gri-c);
+  --k-banda-chenar: var(--color-linie-app);
+  --k-banda-stanga: var(--color-ardezie-2);
+  --k-banda-gata: var(--color-verde);
+  --k-bifa: var(--color-verde);
+  --k-integrari-text: var(--color-ardezie-6);
+
+  /* chestionarul si duelul */
+  --k-jeton-fundal: var(--color-alb);
+  --k-jeton-chenar: var(--color-linie);
+  --k-jeton-text: var(--color-cerneala);
+  --k-jeton-iconita: var(--color-gri-icon);
+  --k-jeton-ales-fundal: var(--color-cerneala);
+  --k-jeton-ales-text: var(--color-alb);
+  --k-jeton-ales-chenar: var(--color-cerneala);
+  --k-segment-fundal: var(--color-ceata-duel);
+  --k-segment-activ: var(--color-alb);
+  --k-segment-inel: transparent;
+  --k-segment-umbra: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 6px rgba(0, 0, 0, 0.05);
+  --k-radio: var(--color-gri-c);
+  --k-radio-activ: var(--color-albastru);
+  --k-dosar-text: var(--color-gri-4);
+  --k-duel-stang: var(--color-alb);
+  --k-duel-drept: var(--color-ceata-duel);
+  --k-rau: var(--color-rosu);
+  --k-bun: var(--color-verde-text);
+  --k-albastru: var(--color-albastru);
+  --k-portocaliu: var(--color-portocaliu-ars);
+  --k-portocaliu-opacitate: 1;
+  --k-stres: var(--color-ardezie-5);
+  --k-gramada-stanga: var(--color-gri-5);
+  --k-gramada-dreapta: var(--color-cerneala);
+  --k-ai-fundal: var(--color-albastru-pal);
+  --k-ai-text: var(--color-albastru-apasat);
+  --k-calm: var(--color-verde-calm);
+  --k-bara-manual: var(--color-cerneala);
+  --k-bara-produs: var(--color-albastru);
+  --k-linie-cta: var(--color-ardezie-2);
+  --k-nota: var(--color-ardezie-5);
+  --k-in-ordine: var(--color-verde-text);
+  --k-confirma-hover: var(--color-cerneala);
+  --k-chevron-exp: var(--color-cerneala-2);
+  --k-insigna-fundal: var(--color-alb);
+  --k-insigna-chenar: var(--color-linie);
+  --k-insigna-text: var(--color-cerneala-2);
+
+  /* scena (§1.1, `--sc-*`) */
+  --sc-bg: var(--color-alb);
+  --sc-bg2: var(--color-ardezie-0);
+  --sc-line: var(--color-ardezie-2);
+  --sc-line2: var(--color-ardezie-1);
+  --sc-text: var(--color-ardezie-9);
+  --sc-muted: var(--color-ardezie-6);
+  --sc-faint: var(--color-ardezie-5);
+  --sc-accent: var(--color-albastru);
+  --sc-ok: var(--color-verde-text);
+  --sc-ok-grafic: var(--color-verde);
+  --sc-bad: var(--color-rosu);
+  --sc-warn: var(--color-chihlimbar);
+
+  position: relative;
+  z-index: 10;
+  padding: 52px 0 56px;
+}
+
+.sectiune[data-tema="inchisa"] {
+  --k-text: var(--color-alb);
+  --k-text-2: var(--color-ardezie-3);
+  --k-text-3: var(--color-ardezie-3);
+  --k-eticheta: var(--color-ardezie-4);
+  --k-decor: var(--color-ardezie-4);
+  --k-chevron: var(--color-ardezie-6);
+  --k-focus: var(--color-alb);
+
+  --k-buton-fundal: var(--color-ardezie-8);
+  --k-buton-chenar: var(--color-ardezie-6);
+  --k-buton-chenar-hover: var(--color-ardezie-4);
+  --k-buton-iconita: var(--color-ardezie-4);
+
+  --k-card-fundal: var(--color-ardezie-8);
+  --k-card-chenar: var(--color-ardezie-6);
+  --k-card-umbra: none;
+  --k-exp-umbra: none;
+  --k-separator: var(--color-ardezie-6);
+  --k-cutie-fundal: var(--color-ardezie-8);
+  --k-cutie-chenar: var(--color-ardezie-6);
+  --k-marca-fundal: var(--color-ardezie-9);
+  --k-marca-inel: var(--color-ardezie-6);
+  --k-pista: var(--color-ardezie-6);
+  --k-reluare-chenar: var(--color-ardezie-6);
+  --k-reluare-iconita: var(--color-ardezie-3);
+  --k-reluare-hover: var(--color-alb);
+  --k-reluare-chenar-hover: var(--color-ardezie-4);
+  --k-banda-chenar: var(--color-ardezie-6);
+  --k-banda-stanga: var(--color-ardezie-6);
+  --k-banda-gata: var(--color-verde-clar);
+  --k-bifa: var(--color-verde-clar);
+  --k-integrari-text: var(--color-ardezie-3);
+
+  --k-jeton-fundal: var(--color-ardezie-9);
+  --k-jeton-chenar: var(--color-ardezie-6);
+  --k-jeton-text: var(--color-alb);
+  --k-jeton-iconita: var(--color-ardezie-4);
+  --k-jeton-ales-fundal: var(--color-alb);
+  --k-jeton-ales-text: var(--color-ardezie-9);
+  --k-jeton-ales-chenar: var(--color-alb);
+  --k-segment-fundal: var(--color-ardezie-9);
+  --k-segment-activ: var(--color-ardezie-8);
+  --k-segment-inel: var(--color-ardezie-6);
+  --k-segment-umbra: none;
+  --k-radio: var(--color-ardezie-5);
+  --k-radio-activ: var(--color-albastru-clar);
+  --k-dosar-text: var(--color-alb);
+  --k-duel-stang: var(--color-ardezie-9);
+  --k-duel-drept: var(--color-ardezie-8);
+  --k-rau: var(--color-rosu-clar);
+  --k-bun: var(--color-verde-clar);
+  --k-albastru: var(--color-albastru-clar);
+  --k-portocaliu: var(--color-portocaliu-clar);
+  --k-portocaliu-opacitate: 0.75;
+  --k-stres: var(--color-ardezie-4);
+  --k-gramada-stanga: var(--color-ardezie-3);
+  --k-gramada-dreapta: var(--color-alb);
+  --k-ai-fundal: var(--color-ardezie-6);
+  --k-ai-text: var(--color-alb);
+  --k-calm: var(--color-verde-clar);
+  --k-bara-manual: var(--color-alb);
+  --k-bara-produs: var(--color-albastru-clar);
+  --k-linie-cta: var(--color-ardezie-6);
+  --k-nota: var(--color-ardezie-3);
+  --k-in-ordine: var(--color-verde-clar);
+  --k-confirma-hover: var(--color-ardezie-4);
+  --k-chevron-exp: var(--color-ardezie-4);
+  --k-insigna-fundal: var(--color-ardezie-9);
+  --k-insigna-chenar: var(--color-ardezie-6);
+  --k-insigna-text: var(--color-alb);
+
+  --sc-bg: var(--color-ardezie-8);
+  --sc-bg2: var(--color-ardezie-9);
+  --sc-line: var(--color-ardezie-6);
+  --sc-line2: var(--color-linie-inchisa);
+  --sc-text: var(--color-alb);
+  --sc-muted: var(--color-ardezie-3);
+  --sc-faint: var(--color-ardezie-4);
+  --sc-accent: var(--color-albastru-clar);
+  --sc-ok: var(--color-verde-clar);
+  --sc-ok-grafic: var(--color-verde-clar);
+  --sc-bad: var(--color-rosu-clar);
+  --sc-warn: var(--color-chihlimbar-clar);
+}
+
+/* Stratul de tema (§3): fix peste toata fereastra, in planul sectiunii (z 10), deci acopera restul
+   paginii; antetul (z 1000) pleaca singur. Intrare 0,9 s, iesire 0,6 s.
+   Pe tema inchisa stratul primeste evenimentele: ce se vede e o suprafata inchisa, deci un clic pe
+   ea nu are voie sa ajunga la o legatura ascunsa dedesubt (de pilda sectiunea urmatoare). Pe tema
+   deschisa e transparent si le lasa sa treaca, altfel ar bloca toata pagina.
+   La referinta stratul are z-index -1; aici 0, cu continutul pe un plan de z 1 deasupra lui. Pe
+   ecran e acelasi lucru, dar un z-index negativ intr-un context de suprapunere imbricat nu e
+   ordonat corect de unealta de accesibilitate, care masura atunci textul pe albul paginii. */
+.strat {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--color-ardezie-9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.sectiune[data-tema="inchisa"] .strat {
+  opacity: 1;
+  pointer-events: auto;
+  transition-duration: 0.9s;
+}
+
+.plan {
+  position: relative;
+  z-index: 1;
+}
+
+/* Focusul de tastatura pe orice comanda din constructor ia culoarea temei: albastru pe deschis,
+   alb pe inchis. Abatere numita: la referinta numai grila si legatura trec pe alb (§15), iar
+   comenzile chestionarului raman albastre si pe tema inchisa, adica 2,83:1 pe `ardezie-8`, sub
+   pragul de 3:1 cerut indicatorului de focus (WCAG 1.4.11). Regula globala de focus sta in
+   stratul `base`, deci asta, fara strat, o suprascrie doar ca si culoare. */
+.sectiune :focus-visible {
+  outline-color: var(--k-focus);
+}
+
+.interior {
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+/* --- poarta (§2.1) ------------------------------------------------------------------------ */
+
+.poarta {
+  display: flex;
+  min-height: 100lvh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.cap {
+  text-align: center;
+}
+
+.titlu {
+  margin-bottom: 10px;
+  color: var(--k-text);
+  transition: color 0.5s ease 0.2s;
+}
+
+.lume .titlu {
+  margin-top: 14px;
+}
+
+.subtitlu {
+  max-width: 600px;
+  margin-inline: auto;
+  color: var(--k-text-2);
+  font-size: 18px;
+  line-height: 28.8px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.intrebareBloc {
+  display: flex;
+  width: min(640px, 100%);
+  flex-direction: column;
+  align-items: center;
+  margin-top: 46px;
+}
+
+.intrebare {
+  margin-bottom: 18px;
+  color: var(--k-text);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.grila {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@keyframes aparitie {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.industrie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 14px 12px;
+  border: 1px solid var(--k-buton-chenar);
+  border-radius: 12px;
+  background: var(--k-buton-fundal);
+  color: var(--k-text);
+  font-size: 14.4px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.144px;
+  cursor: pointer;
+  animation: aparitie 0.3s ease both;
+  transition:
+    background-color 0.5s ease 0.2s,
+    color 0.5s ease 0.2s,
+    border-color 0.18s ease;
+}
+
+.industrie:hover {
+  border-color: var(--k-buton-chenar-hover);
+}
+
+.industrie:focus-visible {
+  outline: 2px solid var(--k-focus);
+  outline-offset: 2px;
+}
+
+.iconita {
+  flex-shrink: 0;
+  color: var(--k-buton-iconita);
+  transition: color 0.5s ease 0.2s;
+}
+
+/* --- lumea: capul (§4.2) ------------------------------------------------------------------ */
+
+.lume {
+  display: block;
+}
+
+.lume .cap {
+  margin-bottom: 26px;
+}
+
+.rezervare {
+  min-height: 900px;
+}
+
+@media (max-width: 900px) {
+  .sectiune {
+    padding: 40px 0 44px;
+  }
+
+  .intrebareBloc {
+    margin-top: 34px;
+  }
+
+  .grila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .industrie {
+    height: 43px;
+    padding: 12px 8px;
+    font-size: 13.44px;
+  }
+}
+
+/* Miscarea redusa (§15, regula planului): schimbarea temei e instanta. Regula globala scurteaza
+   duratele, dar nu si intarzierile de 0,2 s ale culorilor; fara asta textul ar ramane pe
+   culorile temei vechi inca 0,2 s, adica exact pe fundalul gresit. */
+@media (prefers-reduced-motion: reduce) {
+  .sectiune,
+  .sectiune * {
+    transition-delay: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

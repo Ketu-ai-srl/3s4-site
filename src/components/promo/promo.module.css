@@ -1,0 +1,790 @@
+/* Piesele paginilor promo (promo.md si promo__scanare-cu-telefonul.md). Valorile vin din fise; abaterile,
+   toate de contrast, sunt numite pe loc: textul de citit nu coboara sub alb .5 pe `negru-cinema` sau pe
+   `ardezie-9` (COMPONENTE.md §5.1; la referinta paragrafele aveau .4, etichetele .3, nota finala .18).
+   Ce ramane sub .5 e decor, fara informatie (sagetile, separatorii, ghilimeaua, chevronul).
+
+   Clasele stau pe elementele feliei; nimic de aici nu atinge piesele inghetate prin selectori descendenti. */
+
+/* --- tipografie ------------------------------------------------------------------------------ */
+
+.eticheta {
+  display: block;
+  margin: 0 0 24px;
+  font-size: 13.6px;
+  font-weight: 600;
+  line-height: 21.76px;
+  letter-spacing: 0.01em;
+  color: var(--color-ardezie-4);
+}
+
+/* Titlul mare: `t-h1-promo` (72 / 79,2, -0,03 em; 390: 40 / 44) pe `ardezie-1`, margine jos 16. */
+.titluMare {
+  margin: 0 0 16px;
+  color: var(--color-ardezie-1);
+}
+
+/* Pagina de scanare: spatiere -0,02 em (72 -> -1,44; 390: 40 -> -0,8). */
+.titluStrans {
+  letter-spacing: -0.02em;
+}
+
+.accentRosu {
+  color: var(--color-rosu-clar);
+}
+
+.accentAlbastru {
+  color: var(--color-albastru);
+}
+
+.accentPromo {
+  color: var(--color-albastru-clar-2);
+}
+
+/* h2 de card: clamp(1.6rem, 4.5vw, 2.75rem) = 44 / 50,6, -0,02 em; margine 24 / 0 / 12. */
+.h2 {
+  margin: 24px 0 12px;
+  font-size: clamp(1.6rem, 4.5vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-ardezie-1);
+}
+
+/* Paragraful: clamp(1rem, 2.2vw, 1.25rem) = 20 / 34, max 540. Alb .5 (referinta: .4, 3,6:1). */
+.paragraf {
+  max-width: 540px;
+  margin: 0 auto;
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Varianta mare: 20,8 / 35,36, max 560 (390: 16 / 27,2). */
+.paragrafMare {
+  max-width: 560px;
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+}
+
+/* --- indicatorul de derulare ----------------------------------------------------------------- */
+
+.indiciu {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  color: rgba(255, 255, 255, 0.12);
+  animation: bob 2.5s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* --- haosul ---------------------------------------------------------------------------------- */
+
+.iconite {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 0 0 32px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.iconite svg {
+  width: 32px;
+  height: 32px;
+  opacity: 0.6;
+}
+
+.statistici {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statistica {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.2px;
+}
+
+.statisticaValoare {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-ardezie-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.statisticaRosie {
+  color: var(--color-rosu-clar);
+}
+
+/* Eticheta 12, max 120; alb .5 (referinta .3). */
+.statisticaEticheta {
+  max-width: 120px;
+  font-size: 12px;
+  line-height: 19.2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.separator {
+  flex: none;
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* --- cardul-macheta -------------------------------------------------------------------------- */
+
+.card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.rama {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15.2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.punct {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-albastru);
+}
+
+.ramaText {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.55);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ramaSigla {
+  display: block;
+  flex: none;
+  opacity: 0.92;
+}
+
+.ramaSpatiu {
+  flex: 1;
+}
+
+/* Eticheta "exemplu" (plan D11): vizibila, mica, la dreapta ramei; D11 cere 11-12 px, deci 11 px.
+   line-height ramane 16 px, ca inaltimea ramei (si cutia cardului) sa nu se schimbe. */
+.exemplu {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.corp {
+  padding: 17.6px;
+}
+
+.corpScanare {
+  padding: 20px;
+}
+
+.corpCentrat {
+  text-align: center;
+}
+
+/* --- cardul "primire" ------------------------------------------------------------------------ */
+
+.depunere {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4.8px;
+  margin: 0 0 12.8px;
+  padding: 19.2px;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 11.52px;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.depunere svg {
+  color: var(--color-albastru);
+}
+
+.randAi {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8.8px 11.2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.randAi svg {
+  flex: none;
+  color: var(--color-verde-clar);
+}
+
+.randAiText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.numeFisier {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 19.2px;
+  color: rgba(255, 255, 255, 0.8);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.traseu {
+  font-size: 9.28px;
+  line-height: 14.848px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* --- cardul "cautare" ------------------------------------------------------------------------ */
+
+.camp {
+  display: flex;
+  align-items: center;
+  gap: 6.4px;
+  margin: 0 0 9.6px;
+  padding: 8.8px 12.8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12.8px;
+  line-height: 20.48px;
+  color: #e6ecf5;
+}
+
+.camp svg {
+  flex: none;
+  color: var(--color-albastru);
+}
+
+.intrebare {
+  position: relative;
+  min-width: 0;
+}
+
+/* Copia tastata sta peste textul intreg (ascuns vederii cat se tasteaza), deci campul nu-si schimba
+   marimea si cititorii de ecran citesc intrebarea intreaga. */
+.intrebareBaza[data-stare="tasteaza"] {
+  visibility: hidden;
+}
+
+.intrebareCopie {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: pre;
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 1px;
+  color: var(--color-albastru);
+  animation: clipire 1s step-end infinite;
+}
+
+@keyframes clipire {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.rezultate {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rezultat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 5.6px;
+  padding: 8px 9.6px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 12.48px;
+  line-height: 19.968px;
+  color: var(--color-ardezie-2);
+}
+
+.rezultat b {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Randul stins: la referinta la opacitate .3 (text ~2:1). Aici stins prin culoare, cu textul la .55. */
+.rezultatStins b {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.rezultatStins {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.eticheta8 {
+  flex: none;
+  padding: 1.6px 5.6px;
+  border-radius: 4px;
+  font-size: 8.32px;
+  font-weight: 700;
+  line-height: 13.312px;
+}
+
+.tonRosu {
+  background: rgba(248, 113, 113, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+.tonVerde {
+  background: rgba(74, 222, 128, 0.14);
+  color: var(--color-verde-clar);
+}
+
+/* --- cardul "automatizare" ------------------------------------------------------------------- */
+
+.regula {
+  display: flex;
+  align-items: center;
+  gap: 6.4px;
+  margin: 0 0 3.2px;
+}
+
+/* Eticheta Daca / Atunci (majuscula doar la prima litera, ca la referinta, fara text-transform): 8/700, +0,02 em, min 36; alb .5 (referinta .25). */
+.regulaEticheta {
+  min-width: 36px;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 12.8px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.regulaValoare {
+  flex: 1;
+  padding: 6.4px 10.4px;
+  border-radius: 7px;
+  font-size: 12.48px;
+  font-weight: 600;
+  line-height: 19.968px;
+  text-align: center;
+}
+
+.conditie {
+  background: rgba(251, 191, 36, 0.14);
+  color: var(--color-chihlimbar-clar);
+}
+
+.actiune {
+  background: rgba(37, 99, 235, 0.14);
+  color: var(--color-albastru-clar-2);
+}
+
+.sageataJos {
+  padding: 1.6px 0;
+  font-size: 12.8px;
+  line-height: 20.48px;
+  color: rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.jurnal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 9.6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intrare {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+  padding: 5.6px 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 11.2px;
+  line-height: 17.92px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ora {
+  min-width: 30px;
+  font-family: var(--font-mono);
+  font-size: 9.28px;
+  line-height: 14.848px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.intrare b {
+  font-weight: 700;
+  color: var(--color-ardezie-2);
+}
+
+.auto {
+  margin-left: auto;
+  padding: 1.28px 4.8px;
+  border-radius: 3px;
+  background: rgba(37, 99, 235, 0.14);
+  font-size: 7.2px;
+  font-weight: 700;
+  line-height: 11.52px;
+  color: var(--color-albastru-clar-2);
+}
+
+/* --- cardul "sistemul national" -------------------------------------------------------------- */
+
+.documentTitlu {
+  display: block;
+  margin: 0 0 12.8px;
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20.48px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pasi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 5.6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pasiRand {
+  display: flex;
+  align-items: center;
+  gap: 5.6px;
+}
+
+.pas {
+  padding: 5.6px 11.2px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 11.52px;
+  font-weight: 600;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pasOk {
+  border-color: transparent;
+  background: rgba(74, 222, 128, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.sageataDreapta {
+  font-size: 16px;
+  line-height: 25.6px;
+  color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- declaratia (forma testimonialului) ------------------------------------------------------ */
+
+.ghilimea {
+  display: block;
+  margin: 0 0 6.4px;
+  font-size: 72px;
+  font-weight: 600;
+  line-height: 36px;
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.ghilimeaScanare {
+  color: rgba(255, 255, 255, 0.14);
+}
+
+.fraza {
+  display: inline-block;
+  max-width: 480px;
+  margin: 0 0 19.2px;
+  font-family: var(--font-italic);
+  font-size: 22.4px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 35.84px;
+  color: var(--color-ardezie-2);
+}
+
+.atribuire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 9.6px;
+}
+
+.atribuireText {
+  display: flex;
+  flex-direction: column;
+}
+
+.atribuireNume {
+  font-size: 12.8px;
+  font-weight: 700;
+  line-height: 20.48px;
+  color: var(--color-ardezie-2);
+}
+
+.atribuireNumeScanare {
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Rolul 10,4; alb .55 (referinta .35). */
+.atribuireRol {
+  font-size: 10.4px;
+  line-height: 16.64px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.atribuireRolScanare {
+  text-align: left;
+}
+
+.avatar {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-albastru);
+  font-size: 12.8px;
+  font-weight: 600;
+  line-height: 20.48px;
+  color: #ffffff;
+}
+
+/* --- contoarele ------------------------------------------------------------------------------ */
+
+.contoare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.2px;
+}
+
+.contorValoare {
+  font-size: clamp(2.2rem, 5.5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-ardezie-1);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Eticheta 12,8 / 20,48, max 130; alb .5 (referinta .3). */
+.contorEticheta {
+  max-width: 130px;
+  font-size: 12.8px;
+  line-height: 20.48px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.separatorContor {
+  flex: none;
+  width: 1px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* --- CTA ------------------------------------------------------------------------------------- */
+
+.ctaTitlu {
+  margin: 0 0 16px;
+  color: var(--color-ardezie-1);
+}
+
+/* Butonul: pastila 16 / 35,2, `albastru`, 16,8 / 600, sageata 18; tranzitie 0,3 s. Hover: `albastru-apasat`
+   si umbra (promo); pe scanare doar fundalul. Fara ridicare: transformul il scrie cascada derularii, ca la
+   referinta, unde ridicarea declarata in foaie nu se vedea (fisa promo §9). */
+.buton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 28.8px 0 0;
+  padding: 16px 35.2px;
+  border-radius: 9999px;
+  background: var(--color-albastru);
+  font-size: 16.8px;
+  font-weight: 600;
+  line-height: 26.88px;
+  color: #ffffff;
+  white-space: nowrap;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
+}
+
+a.buton:hover {
+  background: var(--color-albastru-apasat);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.butonScanare {
+  transition: background 0.3s;
+}
+
+a.butonScanare:hover {
+  box-shadow: none;
+}
+
+/* Mentiunea fina 11,2; alb .5 (referinta .18, 1,6:1). */
+.nota {
+  display: block;
+  margin: 11.2px 0 0;
+  font-size: 11.2px;
+  line-height: 17.92px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- 390 ------------------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .titluMare {
+    font-size: 40px;
+    line-height: 44px;
+    letter-spacing: -1.2px;
+  }
+
+  .titluStrans {
+    letter-spacing: -0.8px;
+  }
+
+  .ctaTitlu {
+    font-size: 35.2px;
+    line-height: 38.72px;
+  }
+
+  .paragraf,
+  .paragrafMare {
+    font-size: 16px;
+    line-height: 27.2px;
+  }
+
+  .h2 {
+    font-size: 25.6px;
+    line-height: 29.44px;
+  }
+
+  .iconite {
+    gap: 16px;
+  }
+
+  .iconite svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .statistici {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .separator {
+    width: 40px;
+    height: 1px;
+  }
+
+  .contoare {
+    flex-direction: column;
+    gap: 19.2px;
+  }
+
+  .separatorContor {
+    width: 36px;
+    height: 1px;
+  }
+
+  .card {
+    width: calc(100% + 8px);
+    max-width: calc(100% + 8px);
+    margin: 0 -4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indiciu,
+  .cursor {
+    animation: none;
+  }
+
+  .cursor {
+    opacity: 0;
+  }
+}

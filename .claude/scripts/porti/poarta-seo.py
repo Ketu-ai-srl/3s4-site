@@ -21,13 +21,23 @@ CE VERIFICA, cu codurile stabile din PORTI-FABRICA.md sectiunea 5:
   S-03  exact un <h1> nevid si nicio saritura de nivel (h2 urmat de h4 pica)
   S-09  fiecare bloc application/ld+json trece JSON.parse, @context e schema.org
         si fiecare @type e in vocabularul declarat
+        plus, din decizia owner-ului din 24.09.2026 (planul valului S4, sectiunile 7 si
+        8.2; adaugat de felia seo-geo-gdpr):
+          - DOAR BRANDUL: niciun nod nu poarta date de firma (CAMPURI_FIRMA: adresa,
+            cod fiscal, denumire legala, telefon, coduri de registru);
+          - FARA RECENZII: niciun `aggregateRating` / `review` si niciun nod de tip
+            recenzie sau nota (3S nu are recenzii publicate; decizia D5);
+          - UN SINGUR @id PER ENTITATE: entitatile unice ale site-ului (ENTITATI_UNICE)
+            au @id; pe tot lotul, un @id poarta un singur tip, iar aceeasi entitate
+            (tip + nume) nu apare sub doua @id;
+          - pagina de start poarta nodurile Organization si WebSite ale marcii.
 
 SEVERITATI, luate din tabelul de operare (sectiunea 8), nu inventate aici:
   S-01, S-02, S-09 = OPRESTE (iesire 1)
   S-03             = AVERT (se raporteaza, lotul avanseaza)
-Absenta oricarui bloc JSON-LD e AVERT: S-09 pune conditii asupra blocurilor care
-EXISTA. Cerinta ca un nod Organization sa existe e o decizie de continut, nu una
-de poarta, si se ia in alta zona decat asta.
+Absenta oricarui bloc JSON-LD pe o pagina INTERIOARA ramane AVERT. Pe pagina de
+start, absenta nodurilor Organization si WebSite OPRESTE: pana la 24.09 asta era o
+decizie de continut nedecisa; owner-ul a decis-o (plan §8.2), deci a devenit poarta.
 
 PRAGURILE. Sursa e PORTI-FABRICA.md sectiunea 5, S-01: titlu 15-65, descriere
 50-160. Briefingul de sarcina cerea 15-60 si 70-160; am pastrat forma din
@@ -51,9 +61,15 @@ descriere, canonical, antete si blocuri de date structurate?" Nu "se indexeaza s
   - Unicitatea se masoara in interiorul lotului construit acum, nu contra a ce e deja publicat.
   - PAGINI_SARITE scoate paginile interne de eroare din TOATE verificarile, nu doar din
     unicitate. Exceptare motivata, dar ramane o gaura daca cineva pune continut acolo.
-  - La datele structurate se verifica parsarea, contextul si ca fiecare tip e in vocabularul
-    declarat. NU se verifica daca nodul are campurile obligatorii ale tipului, si nici daca ce
-    afirma corespunde paginii. Absenta oricarui bloc e AVERT, deliberat.
+  - La datele structurate se verifica parsarea, contextul, ca fiecare tip e in vocabularul
+    declarat, cele trei reguli din decizia de brand de mai sus si prezenta marcii pe start.
+    NU se verifica daca nodul are campurile obligatorii ale tipului, nici daca ce afirma
+    corespunde paginii (o intrebare din FAQPage care nu e pe pagina trece). Absenta oricarui
+    bloc pe o pagina interioara e AVERT, deliberat.
+  - Datele de firma se recunosc dupa NUMELE proprietatii (CAMPURI_FIRMA). Un cod fiscal pus
+    intr-un camp liber (`description`, `name`) trece.
+  - Identitatea unei entitati e perechea (tip, nume normalizat). Doua noduri cu nume scrise
+    diferit sub @id diferite trec drept doua entitati.
   - S-03 (un singur antet de nivel unu, fara sarituri de nivel) e AVERT: nu opreste nimic.
   - Nu se ating: robots, sitemap, viteza, imagini, legaturi interne, limbi alternative,
     redirectari.
@@ -65,6 +81,8 @@ LA ROSU: CE AI VOIE SA EDITEZI
       PRAGURI numai odata cu documentul de porti, citand sectiunea din el.
       PAGINI_SARITE numai cu motiv scris pe rand; TIPURI_CUNOSCUTE numai cu un tip real din
       vocabularul declarat.
+      CAMPURI_FIRMA, CAMPURI_RECENZIE, ENTITATI_UNICE numai cu o decizie noua a owner-ului,
+      citata in acelasi commit (de pilda: recenzii reale, vizibile pe pagina).
   NU  Culegator, analizeaza_pagina, analizeaza_lot, refuzul buildului invechit, controale().
 
 IESIRE
@@ -120,6 +138,27 @@ TIPURI_CUNOSCUTE = {
     'Country', 'State', 'City', 'AdministrativeArea', 'Place', 'GeoCoordinates',
     'OpeningHoursSpecification', 'PropertyValue', 'HowTo', 'HowToStep', 'ItemList',
 }
+
+# --- Decizia owner-ului din 24.09.2026 (planul valului S4, sectiunile 7 si 8.2) --------------
+# Adaugate de felia seo-geo-gdpr, cu martor pozitiv si negativ in controale(). Se schimba numai cu
+# o decizie noua a owner-ului, citata in acelasi commit.
+
+# DOAR BRANDUL (§7): proprietatile care identifica o FIRMA, nu o marca. Niciun nod nu le poarta.
+CAMPURI_FIRMA = {
+    'address', 'legalName', 'taxID', 'vatID', 'telephone', 'faxNumber', 'duns', 'leiCode',
+    'iso6523Code', 'naics', 'globalLocationNumber',
+}
+
+# FARA RECENZII (§8.2 "fara aggregateRating"; decizia D5): 3S nu are recenzii publicate. Tipurile
+# raman in TIPURI_CUNOSCUTE, fiindca sunt vocabular real; continutul le refuza aici.
+CAMPURI_RECENZIE = {'aggregateRating', 'review', 'reviews'}
+TIPURI_RECENZIE = {'AggregateRating', 'Review', 'Rating'}
+
+# UN SINGUR @id PER ENTITATE (§8.2): entitatile unice ale site-ului au @id, acelasi pe tot lotul.
+ENTITATI_UNICE = {'Organization', 'WebSite', 'SoftwareApplication', 'WebApplication'}
+
+# Pagina de start poarta marca, ca organizatie si ca site (§8.2).
+TIPURI_CERUTE_START = ('Organization', 'WebSite')
 
 OPRESTE = 'OPRESTE'
 AVERT = 'AVERT'
@@ -189,6 +228,97 @@ def tipuri_din(nod, adunate):
     elif isinstance(nod, list):
         for v in nod:
             tipuri_din(v, adunate)
+
+
+def noduri_din(nod, adunate):
+    """Toate nodurile-dictionar dintr-un arbore JSON-LD, oricat de adanc, in ordinea documentului."""
+    if isinstance(nod, dict):
+        adunate.append(nod)
+        for v in nod.values():
+            noduri_din(v, adunate)
+    elif isinstance(nod, list):
+        for v in nod:
+            noduri_din(v, adunate)
+
+
+def tipuri_nod(nod):
+    t = nod.get('@type')
+    if isinstance(t, str):
+        return [t]
+    if isinstance(t, list):
+        return [x for x in t if isinstance(x, str)]
+    return []
+
+
+def noduri_pagina(culegator):
+    """Nodurile din blocurile ld+json care se parseaza. Blocurile rupte le raporteaza S-09 separat."""
+    noduri = []
+    for brut in culegator.blocuri_ld:
+        try:
+            noduri_din(json.loads(brut), noduri)
+        except ValueError:
+            continue
+    return noduri
+
+
+def verifica_brand(ruta, noduri):
+    """Regulile din decizia owner-ului (§7 si §8.2) pe O pagina: date de firma, recenzii, @id."""
+    g = []
+    for nod in noduri:
+        for camp in sorted(set(nod.keys()) & CAMPURI_FIRMA):
+            g.append((OPRESTE, 'S-09', ruta + ': date de firma in datele structurate ("' + camp
+                      + '"): pe site apare doar brandul (decizia owner-ului din 24.09.2026, plan S4 sectiunea 7)'))
+        for camp in sorted(set(nod.keys()) & CAMPURI_RECENZIE):
+            g.append((OPRESTE, 'S-09', ruta + ': recenzie sau nota in datele structurate ("' + camp
+                      + '"): 3S nu are recenzii publicate (decizia D5, plan S4 sectiunea 8.2)'))
+        for t in tipuri_nod(nod):
+            if t in TIPURI_RECENZIE:
+                g.append((OPRESTE, 'S-09', ruta + ': recenzie sau nota in datele structurate (@type ' + t
+                          + '): 3S nu are recenzii publicate (decizia D5, plan S4 sectiunea 8.2)'))
+            if t in ENTITATI_UNICE and not isinstance(nod.get('@id'), str):
+                g.append((OPRESTE, 'S-09', ruta + ': entitatea ' + t + ' nu are @id: fiecare entitate a site-ului '
+                          'are un singur @id, acelasi pe toate paginile (plan S4 sectiunea 8.2)'))
+    if (ruta.rstrip('/') or '/') == '/':
+        prezente = set(t for nod in noduri for t in tipuri_nod(nod))
+        for t in TIPURI_CERUTE_START:
+            if t not in prezente:
+                g.append((OPRESTE, 'S-09', ruta + ': pagina de start nu are nodul ' + t
+                          + ' al marcii (plan S4 sectiunea 8.2)'))
+    return g
+
+
+def verifica_identitati(pagini):
+    """Pe tot lotul: un @id numeste o singura entitate, iar o entitate are un singur @id."""
+    g = []
+    tipuri_dupa_id = {}
+    iduri_dupa_entitate = {}
+    for ruta, html in pagini:
+        c = Culegator()
+        c.feed(html)
+        for nod in noduri_pagina(c):
+            tipuri = tipuri_nod(nod)
+            ident = nod.get('@id')
+            if not tipuri or not isinstance(ident, str):
+                continue
+            tipuri_dupa_id.setdefault(ident, set()).add(frozenset(tipuri))
+            nume = nod.get('name')
+            if isinstance(nume, str):
+                for t in tipuri:
+                    if t in ENTITATI_UNICE:
+                        cheie = (t, re.sub(r'\s+', ' ', nume).strip().lower())
+                        iduri_dupa_entitate.setdefault(cheie, set()).add(ident)
+    for ident in sorted(tipuri_dupa_id):
+        forme = tipuri_dupa_id[ident]
+        if len(forme) > 1:
+            descrise = sorted('/'.join(sorted(f)) for f in forme)
+            g.append((OPRESTE, 'S-09', '@id ' + ident + ' poarta tipuri diferite pe lot (' + ', '.join(descrise)
+                      + '): un @id numeste o singura entitate (plan S4 sectiunea 8.2)'))
+    for (t, nume) in sorted(iduri_dupa_entitate):
+        iduri = iduri_dupa_entitate[(t, nume)]
+        if len(iduri) > 1:
+            g.append((OPRESTE, 'S-09', 'entitatea ' + t + ' "' + nume + '" apare sub ' + str(len(iduri))
+                      + ' @id diferite (' + ', '.join(sorted(iduri)) + '): una singura pe tot site-ul (plan S4 sectiunea 8.2)'))
+    return g
 
 
 def analizeaza_pagina(ruta, html, gazda_asteptata=None):
@@ -286,6 +416,7 @@ def analizeaza_pagina(ruta, html, gazda_asteptata=None):
             if t not in TIPURI_CUNOSCUTE:
                 g.append((OPRESTE, 'S-09', ruta + ': @type necunoscut "' + t
                           + '". Daca e real, adauga-l in TIPURI_CUNOSCUTE din poarta; daca e typo, repara-l'))
+    g.extend(verifica_brand(ruta, noduri_pagina(c)))
     return g
 
 
@@ -313,6 +444,7 @@ def analizeaza_lot(pagini, gazda_asteptata=None):
             if len(rute) > 1:
                 g.append((OPRESTE, 'S-01', eticheta + ' identic pe ' + str(len(rute)) + ' rute ('
                           + ', '.join(sorted(rute)) + '): ' + valoare[:60]))
+    g.extend(verifica_identitati(pagini))
     return g
 
 
@@ -337,13 +469,20 @@ def fabrica_pagina_defecta():
     return cap
 
 
-def fabrica_pagina_corecta():
-    ld = json.dumps({
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        'name': 'Trei S',
-        'url': 'https://exemplu-corect.test/',
-    })
+def fabrica_pagina_corecta(ld=None):
+    # Pagina de start corecta si dupa decizia de brand (felia seo-geo-gdpr): marca apare ca
+    # Organization si WebSite, fiecare cu @id-ul ei, fara date de firma si fara note.
+    if ld is None:
+        ld = json.dumps({
+            '@context': 'https://schema.org',
+            '@graph': [
+                {'@type': 'Organization', '@id': 'https://exemplu-corect.test/#organizatie',
+                 'name': 'Trei S', 'url': 'https://exemplu-corect.test/'},
+                {'@type': 'WebSite', '@id': 'https://exemplu-corect.test/#site', 'name': 'Trei S',
+                 'url': 'https://exemplu-corect.test/',
+                 'publisher': {'@id': 'https://exemplu-corect.test/#organizatie'}},
+            ],
+        })
     return ''.join([
         '<html><head>',
         '<title>' + 'Arhiva care raspunde cu pagina' + '</title>',
@@ -359,6 +498,35 @@ def fabrica_pagina_corecta():
         '<!-- nota interna: 3 > 2, si aici scrie <h1> fara sa fie unul -->',
         '</body></html>',
     ])
+
+
+def fabrica_pagina_brand_defecta():
+    """Pagina de start cu cate un defect din fiecare regula de brand: un camp de firma, o nota,
+    o entitate unica fara @id si nodul WebSite lipsa. Restul paginii e cel corect, deci defectele
+    de brand sunt singurele. Numele campurilor se lipesc la rulare, din bucati."""
+    ld = json.dumps({
+        '@context': 'https://schema.org',
+        '@graph': [
+            {'@type': 'Organization', '@id': 'https://exemplu-corect.test/#organizatie', 'name': 'Trei S',
+             'tax' + 'ID': 'RO' + '0' * 8,
+             'aggregate' + 'Rating': {'@type': 'Aggregate' + 'Rating', 'ratingValue': '5', 'reviewCount': '12'}},
+            {'@type': 'SoftwareApplication', 'name': 'Trei S'},
+        ],
+    })
+    return fabrica_pagina_corecta(ld)
+
+
+def fabrica_pagina_id_dublu():
+    """A doua pagina a unui lot: aceeasi organizatie sub alt @id, si @id-ul site-ului refolosit
+    pentru o organizatie. Langa pagina corecta, fiecare trebuie prinsa pe lot."""
+    ld = json.dumps({
+        '@context': 'https://schema.org',
+        '@graph': [
+            {'@type': 'Organization', '@id': 'https://exemplu-corect.test/#firma', 'name': 'Trei S'},
+            {'@type': 'Organization', '@id': 'https://exemplu-corect.test/#site', 'name': 'Alt nume'},
+        ],
+    })
+    return fabrica_pagina_corecta(ld)
 
 
 def controale():
@@ -394,6 +562,31 @@ def controale():
                          gazda_asteptata='exemplu-corect.test')
     if not any(c == 'S-01' and 'identic' in m for _, c, m in lot):
         return 'martorul pozitiv de lot: titlul duplicat pe doua rute nu a fost prins'
+    # Martorul NEGATIV al identitatilor: aceleasi @id pe doua pagini, cu aceleasi tipuri, sunt
+    # aceeasi entitate referita de doua ori - exact ce cere decizia, deci nu are voie sa fie prins.
+    if any(c == 'S-09' for _, c, _ in lot):
+        return 'martorul negativ de lot: aceeasi marca pe doua pagini, cu aceleasi @id, a fost prinsa pe S-09'
+
+    # --- martorii deciziei de brand (plan S4 sectiunile 7 si 8.2), fiecare ramura separat ---
+    brand = ' | '.join(m for _, c, m in analizeaza_pagina('/', fabrica_pagina_brand_defecta(),
+                                                           gazda_asteptata='exemplu-corect.test') if c == 'S-09')
+    # Nota se cauta pe DOUA drumuri, cheia si tipul, iar martorul le are pe amandoua: fiecare drum
+    # se controleaza cu propria dovada. Masurat pe mutanti: un control comun ("recenzie sau nota")
+    # era satisfacut de oricare drum, deci dezarmarea unuia trecea verde.
+    cheie_nota = '("aggregate' + 'Rating")'
+    tip_nota = '(@type Aggregate' + 'Rating)'
+    for bucata, ce in (('date de firma', 'campul de firma'), (cheie_nota, 'nota pusa ca proprietate'),
+                       (tip_nota, 'nota pusa ca tip'), ('nu are @id', 'entitatea unica fara @id'),
+                       ('nu are nodul WebSite', 'startul fara WebSite')):
+        if bucata not in brand:
+            return 'martorul pozitiv de brand: ' + ce + ' nu a fost prins'
+    identitati = ' | '.join(m for _, c, m in analizeaza_lot(
+        [('/', fabrica_pagina_corecta()), ('/altundeva', fabrica_pagina_id_dublu())],
+        gazda_asteptata='exemplu-corect.test') if c == 'S-09')
+    if 'poarta tipuri diferite' not in identitati:
+        return 'martorul pozitiv de lot: un @id refolosit pentru alt tip nu a fost prins'
+    if '@id diferite' not in identitati:
+        return 'martorul pozitiv de lot: aceeasi organizatie sub doua @id nu a fost prinsa'
     return None
 
 
@@ -490,7 +683,8 @@ def main():
     for sev, cod, mesaj in avert:
         print('AVERT    ' + cod + '  ' + mesaj)
 
-    print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de lot OK')
+    print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de lot OK, '
+          'martori de brand OK (date de firma, note, @id, marca pe start, identitati pe lot)')
     print('SURSA: ' + str(len(pagini)) + ' pagina(i) construita(e): ' + ', '.join(r for r, _ in pagini))
     print('GAZDA ASTEPTATA: ' + (a.gazda if a.gazda else 'nedeclarata (S-02 verifica doar forma si auto-referinta)'))
     print('DEFECTE SEO: ' + str(len(opreste)) + ' care opresc, ' + str(len(avert)) + ' de avertisment')
