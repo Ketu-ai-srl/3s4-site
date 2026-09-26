@@ -24,6 +24,10 @@
 // subsol. Feliile fara rute isi pastreaza marcajul, ca ordinea sa ramana completa. Marcajele se
 // muta numai de dispecer. Feliile aceluiasi val care scriu aici se pliaza PE RAND.
 
+// Felia `juridic`: paginile juridice intra in `RUTE` numai cu operator de date numit (plan §9-§10).
+// Comutatorul e un apel sub marcajul feliei; importul lui e singurul rand al feliei in afara marcajului.
+import { ruteJuridice } from "./juridic/publicare";
+
 /** Adresa publica a site-ului. Din ea se compun canonical-urile, harta de site si robots. */
 export const ADRESA_BAZA = "https://3s4.ke2.in";
 
@@ -257,8 +261,47 @@ export const RUTE: Ruta[] = [
   },
 
   // <<felie:conversie>>
+  {
+    cale: "/inregistrare",
+    scurt: "Cont gratuit",
+    descriere: "Deschiderea contului 3S: toate pachetele costă 0 RON astăzi, iar cardul nu vi se cere.",
+    inHarta: true,
+  },
+  {
+    cale: "/descarca",
+    scurt: "Aplicația 3S",
+    descriere: "Aplicația 3S pentru Windows, macOS, Linux, telefon și browser, cu varianta potrivită recunoscută.",
+    inHarta: true,
+  },
+  {
+    cale: "/contact",
+    scurt: "Contact",
+    descriere: "Formularul de contact 3S, paginile care răspund deja întrebărilor și canalele deschise astăzi.",
+    inHarta: true,
+  },
+  {
+    cale: "/incepe",
+    scurt: "Primii pași",
+    descriere: "O demonstrație animată a interfeței 3S: actul intră, se așază în dosar și se găsește cu o întrebare.",
+    inHarta: true,
+  },
 
   // <<felie:juridic>>
+  // Indexul juridic si cele 7 documente: numai cu operator numit si complet, altfel lista e goala
+  // (src/content/juridic/publicare.ts). Ordinea e cea a coloanei Juridic din subsol.
+  ...ruteJuridice(),
+  {
+    cale: "/harta-site",
+    scurt: "Harta site",
+    descriere: "Toate paginile site-ului 3S, grupate pe secțiuni și generate din lista rutelor.",
+    inHarta: true,
+  },
+  {
+    cale: "/accesibilitate",
+    scurt: "Accesibilitate",
+    descriere: "Declarația de accesibilitate a site-ului 3S: ce verificăm la fiecare versiune și ce nu am verificat încă.",
+    inHarta: true,
+  },
 ];
 
 /** Rutele care intra in `sitemap.xml`. */

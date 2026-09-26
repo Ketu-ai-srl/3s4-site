@@ -13,23 +13,41 @@
 // ce vede vizitatorul cand alege e ce scrie aici.
 
 import type { Operator } from "@/lib/operator";
-import { DESCRIERE_EVENIMENTE, verificaOperatorPentruTexte } from "./confidentialitate";
-import { COOKIE_ALEGERE, FURNIZORI, furnizoriCategorie, type CookieDeclarat } from "./furnizori";
-import type { DocumentJuridic } from "./tipuri";
+import { DESCRIERE_EVENIMENTE, ETICHETA_MD, ETICHETA_RO, verificaOperatorPentruTexte } from "./confidentialitate";
+import { COOKIE_ALEGERE, FURNIZORI, furnizoriCategorie } from "./furnizori";
+import type { DocumentJuridic, TabelJuridic } from "./tipuri";
 
 /** Cheile sectiunilor cerute de Legea 284/2004 art. 10 alin. (2) lit. b)-h), plus masurile. */
 export const CHEI_L284 = ["2b", "2c", "2d", "2e", "2f", "2g", "2h", "masuri"] as const;
 
-function cookie(c: CookieDeclarat): string {
-  return c.nume + " (" + c.fel + ", " + c.durata + "): " + c.scop;
+/** Data versiunii; felia `juridic` a adaugat tabelul din sectiunea 2b si etichetele de jurisdictie din 2d. */
+export const VERSIUNE_COOKIE = "2026-09-25";
+
+/**
+ * Tabelul a ce se pastreaza in browser (felia `juridic`, fisa juridic__cookies.md: locul pentru fiecare
+ * cookie numit, cu categoria, durata si scopul). Randurile vin din aceeasi sursa ca panoul bannerului.
+ */
+export function tabelCookie(): TabelJuridic {
+  const randuri = [
+    { c: COOKIE_ALEGERE, categorie: "Strict necesară" },
+    ...furnizoriCategorie("statistica").flatMap((f) => f.cookieuri.map((c) => ({ c, categorie: "Statistică, cu acord" }))),
+  ];
+  return {
+    forma: "cu-antet",
+    titlu: "Informațiile păstrate în browser",
+    antet: ["Numele", "Categoria", "Cât rămâne", "Pentru ce"],
+    randuri: randuri.map(({ c, categorie }) => [{ text: c.nume, detaliu: c.fel }, categorie, c.durata, c.scop]),
+  };
 }
 
 export function politicaCookie(operator: Operator): DocumentJuridic {
   verificaOperatorPentruTexte(operator);
   const statistica = furnizoriCategorie("statistica");
+  const statisticaCookie = statistica.flatMap((f) => f.cookieuri);
   const evenimente = Object.values(DESCRIERE_EVENIMENTE).join("; ");
   return {
     titlu: "Politica de cookie-uri",
+    versiune: VERSIUNE_COOKIE,
     introducere:
       "Aici aflați ce informații stochează sau citește site-ul în browserul dumneavoastră, de ce, cine le primește și cum vă puteți răzgândi. Datele operatorului și drepturile complete sunt în politica de confidențialitate.",
     sectiuni: [
@@ -58,8 +76,16 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "Strict necesare, fără acord: " + cookie(COOKIE_ALEGERE),
-              ...statistica.flatMap((f) => f.cookieuri.map((c) => "Statistică, numai cu acordul dumneavoastră: " + cookie(c))),
+              "Strict necesară, fără acord, e numai " +
+                COOKIE_ALEGERE.nume +
+                ". Cu acordul dumneavoastră pentru statistică se adaugă " +
+                statisticaCookie.map((c) => c.nume).join(" și ") +
+                ", care rămân cel mult " +
+                [...new Set(statisticaCookie.map((c) => c.durata))].join(" sau ") +
+                ". Tabelul arată fiecare informație, cu durata și rostul ei.",
+            ],
+            tabel: tabelCookie(),
+            dupa: [
               "Cu acordul pentru statistică, Google Analytics 4 primește adresa paginii, pagina de pe care ați venit, tipul de dispozitiv și de browser, țara și orașul aproximate din adresa IP, plus acțiunile din lista închisă: " +
                 evenimente +
                 ". Nu primește numele, adresa de e-mail sau ce scrieți în formulare.",
@@ -87,12 +113,14 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
         blocuri: [
           {
             jurisdictie: "ro",
+            eticheta: ETICHETA_RO,
             paragrafe: statistica.map(
               (f) => f.serviciu + ", numai după acordul dumneavoastră: " + f.destinatar + ". " + f.transferUe,
             ),
           },
           {
             jurisdictie: "md",
+            eticheta: ETICHETA_MD,
             paragrafe: statistica.map((f) => f.serviciu + ": " + f.transferMd),
           },
           {

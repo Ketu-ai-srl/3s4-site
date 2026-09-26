@@ -75,6 +75,12 @@ Intrebarea pe care o pune de fapt, pe cod:
   L-01  "apare valoarea LITERALA a fiecarui camp undeva in pagina livrata?" Un cod fiscal
         dintr-un comentariu sau dintr-un bloc ascuns satisface verificarea. Nu se masoara ca
         datele sunt PREZENTATE ca identificare a comerciantului, si nici ca sunt corecte.
+        "Loc gol" inseamna camp lipsa sau null, fara nicio litera si nicio cifra, ori cu un
+        substituent EXPLICIT pe cuvant intreg (TIPAR_SUBSTITUENT). O valoare falsa care nu arata a
+        substituent trece; la fel un cuvant de substituire sau o serie de X lipite de o litera
+        ("TODOsediu", "de completate", "J40/AXXX/2026") ori declinate ("Exemplului"), si "exemplu"
+        pus imediat dupa @ (scutire provizorie, cu motivul langa tipar). "NA" fara bara si
+        "necunoscut" trec deliberat, cu motivul scris langa tipar.
         Cat timp operatorul e null, L-01 nu verifica NIMIC: verde nu inseamna ca site-ul
         identifica furnizorul, ci ca owner-ul a decis sa nu numeasca inca unul.
   L-05  "apare undeva sintagma care numeste temeiul, si lipseste tiparul de consimtamant?"
@@ -160,7 +166,48 @@ CAMPURI_IDENTITATE = ('denumire', 'sediu', 'email', 'telefon', 'numar_orc', 'cod
 
 # Ce inseamna "loc gol". Nu doar sirul vid: un substituent lasat in fisier e mai
 # periculos, fiindca trece orice verificare de "nevid" si ajunge pe pagina.
-TIPAR_SUBSTITUENT = re.compile(r'(TODO|TBD|XXX+|\?\?\?|N/?A\b|de\s+completat|necunoscut|<[^>]*>|lorem)', re.I)
+#
+# Numai substituenti EXPLICITI, cautati pe cuvant intreg (25.09.2026, felia de porti a dispecerului).
+# Tiparul de dinainte cauta bucati de cuvant: "N/A" fara bara, in coada cuvantului, prindea "Str. Ana
+# Ipatescu", "Poiana" si "Ucraina", iar "TODO" o denumire cu "Todoran" (constatarea criticului feliei
+# 44, remasurata pe tiparul vechi); "necunoscut" prindea la fel strada "Eroul Necunoscut". In ziua
+# operatorului (plan S4 sectiunea 10) poarta ar fi oprit productia pe datele copiate din certificat.
+#   cuvinte   de completat, TODO, TBD, lorem, exemplu (eticheta datelor fictive, decizia owner-ului D11)
+#   notatii   XXX si mai lung (si lipit de prefixul RO al codului fiscal), N/A cu bara, ???, orice
+#             text intre [ ] sau intre < >
+#   granita   cuvantul si seria de X nu sunt lipite de o LITERA. Cifra, _ si semnele nu leaga:
+#             "RO1234XXXX", "J40/XXXX/2026" si "TODO_sediu" raman prinse, "XXXL" si "Todoran" nu.
+#             Dupa @ opresc la fel: "contact@TODO" si "office@lorem.ro" sunt locuri goale, nu adrese
+#   scutire   NUMAI "exemplu" pus imediat dupa @, si numai din cauza martorului negativ din controale(),
+#             care are adresa contact@exemplu-3s.test: fara scutire, poarta iese 3 pe orice arbore. Nu
+#             e o regula despre domenii. Adresa brandului sta pe domeniul lui (D12), deci "@exemplu" in
+#             config/operator.json e aproape sigur un substituent, pe care poarta azi il lasa sa treaca.
+#             controale() nu se editeaza din felia de porti: mutarea martorului pe un domeniu fara cuvant
+#             de substituire si apoi scoaterea scutirii sunt cerute dispecerului
+#   scoase    "necunoscut", cuvant al limbii din nume reale de strazi (Str. Eroul Necunoscut, in
+#             Ploiesti si in Arad), si "NA" fara bara, care sta in nume reale de locuri (Nove Mesto na
+#             Morave, in Cehia). Amandoua au caz de valoare reala in proba-porti-proces.py
+# Campul fara nicio litera si nicio cifra (sir vid, null, "-") il prinde loc_gol(), nu tiparul.
+TIPAR_SUBSTITUENT = re.compile(
+    r'(?<![^\W\d_])(?:de\s+completat|todo|tbd|lorem|(?<!@)exemplu)(?![^\W\d_])'
+    r'|(?<![^\W\d_])(?:(?:ro)?x{3,}|n/a)(?![^\W\d_])'
+    r'|\?{3,}|\[[^\]]*\]|<[^>]*>',
+    re.I)
+
+
+def loc_gol(valoare):
+    """L-01: campul nu identifica nimic - lipsa sau null, fara nicio litera si nicio cifra, ori cu un
+    substituent din TIPAR_SUBSTITUENT.
+
+    Pana la 25.09.2026 un null devenea textul "None", iar "-" era si el valoare: amandoua treceau de
+    locul gol, si L-01 ramanea verde daca pagina continea "none" (un `display:none` ajunge) sau "-".
+    Masurat pe poarta veche, ca proces, la productie. Se compara fara diacritice, ca in restul
+    portii: o litera scrisa descompus (NFD) ar pune altfel o granita in mijlocul cuvantului."""
+    if valoare is None:
+        return True
+    text = fara_diacritice(str(valoare)).strip()
+    return re.search(r'[^\W_]', text) is None or TIPAR_SUBSTITUENT.search(text) is not None
+
 
 # Gazdele proprii. O resursa incarcata de aici nu e "tert". Lista e scurta si
 # motivata: doar mediile noastre. O gazda adaugata aici trebuie sa vina cu motiv.
@@ -455,11 +502,7 @@ def verifica_identitate(radacina, construite, sever_prezenta):
         g.append((OPRESTE, 'L-01', rel + ': ' + date))
         return g
 
-    goale = []
-    for camp in CAMPURI_IDENTITATE:
-        valoare = str(date.get(camp, '')).strip()
-        if not valoare or TIPAR_SUBSTITUENT.search(valoare):
-            goale.append(camp)
+    goale = [camp for camp in CAMPURI_IDENTITATE if loc_gol(date.get(camp))]
     if goale:
         g.append((sever_prezenta, 'L-01', rel + ': operatorul e numit, dar are loc gol la ' + ', '.join(goale)
                   + ' | TEMEI: ' + TEMEI_IDENTITATE))

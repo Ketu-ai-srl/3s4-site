@@ -495,6 +495,142 @@ def cazuri_juridic():
     caz('poarta-juridic.py', 'proiect complet si curat: cod 0', html_juridic(), CURAT)
     caz('poarta-juridic.py', 'arbore fara nicio sursa: cod 3, nu 0',
         gol, NEMASURAT, 'masuratoarea e invalida')
+    cazuri_juridic_l01()
+
+
+# ------------------------------------------------------------------ L-01, locul gol al operatorului
+# Ziua operatorului (plan S4 sectiunea 10): `config/operator.json` primeste datele copiate din
+# certificat, iar L-01 nu are voie sa le opreasca drept "substituent". Tiparul de pana la 25.09.2026
+# le oprea (Str. Ana Ipatescu, Poiana, Ucraina, Todoran - constatarea criticului feliei 44).
+
+# Operatorul complet, cu valori evident de proba: adresa pe domeniul rezervat `.test`, telefon numai
+# cu zerouri, cod fiscal cu cifra de control gresita. Fiecare caz schimba UN camp, deci ce iese vine
+# din campul schimbat. Domeniul adresei nu tine niciun cuvant de substituire: scutirea lui "exemplu"
+# dupa @ sta in poarta numai pentru martorul din controale() si e ceruta spre scoatere, deci proba
+# nu se sprijina pe ea.
+OPERATOR_L01 = {
+    'denumire': 'Trei S Proba SRL',
+    'sediu': 'Str. Proba 1, Bucuresti',
+    'email': 'contact@proba-3s.test',
+    'telefon': '+40 000 000 000',
+    'numar_orc': 'J40/0000/2026',
+    'cod_fiscal': 'RO12345678',
+}
+
+# La PRODUCTIE: pe staging locul gol e AVERT si poarta iese 0 oricum, deci tiparul vechi si cel nou
+# ar da acelasi cod, iar cazul n-ar deosebi nimic.
+LA_PRODUCTIE = ('--mediu', 'productie')
+
+# Valori reale, care NU sunt locuri goale; poarta de dinainte de 25.09.2026 le oprea pe toate (masurat
+# ca proces, la productie). Tara nu e camp L-01 (CAMPURI_IDENTITATE din poarta), deci Ucraina sta in
+# sediu, singurul drum pe care ajunge la tipar. Primele patru sunt ale criticului; restul, aceeasi
+# clasa: strada si orasul care tin cuvintele scoase din tipar ("necunoscut", "NA" fara bara), si
+# "Metodo", unde "todo" are litere lipite la STANGA - pereche cu "Todoran", unde le are la dreapta;
+# la fel "Luxxx" si "XXXL" pentru seria de X (fara ele, niciun caz nu pazea granitele seriei de X).
+VALORI_REALE_L01 = [
+    {'sediu': 'Str. Ana Ipătescu, București'},
+    {'sediu': 'Poiana Brașov, județul Brașov'},
+    {'denumire': 'Todoran Arhive SRL'},
+    {'sediu': 'Lviv, Ucraina'},
+    {'sediu': 'Str. Eroul Necunoscut, Ploiești'},
+    {'denumire': 'Metodo Arhive SRL', 'sediu': 'Nové Město na Moravě, Cehia'},
+    {'denumire': 'Luxxx Arhive SRL'},
+    {'denumire': 'XXXL Arhive SRL'},
+]
+
+# "Arhiva Romana" (src/lib/operator.ts) trecea si de poarta veche (masurat: cod 0): aceea nu scotea
+# diacriticele, iar a cu caciula nu se potrivea cu "NA". loc_gol() le scoate, deci poarta noua vede
+# "Romana", terminat in "na" ca "Poiana" si "Ucraina", si trebuie sa-l lase sa treaca. Nu intra la
+# MUTANT: acolo tiparul vechi sta in loc_gol() nou si ar opri o valoare pe care poarta veche n-o
+# oprea - un hibrid, nu poarta veche.
+VALOARE_REALA_DIACRITICE_L01 = {'denumire': 'Arhiva Română SRL'}
+
+# Substituentii ceruti de dispecer, fiecare singur, pe cate un camp. Campul gol e si martorul POZITIV:
+# nu depinde de tipar, deci arata ca drumul pana la L-01 e deschis la productie.
+SUBSTITUENTI_L01 = [
+    ('telefon', ''),
+    ('cod_fiscal', 'de completat'),
+    ('sediu', '[...]'),
+    ('numar_orc', 'XXX'),
+    ('email', 'TODO'),
+    ('denumire', 'exemplu'),
+    ('sediu', 'Lorem ipsum'),
+]
+
+# Doua forme, fiecare singura, cu cate un mutant pe care numai ea il ucide (masurat pe o copie a portii):
+#   "contact@TODO"  dupa @ opreste orice cuvant de substituire afara de "exemplu" (scutirea provizorie
+#                   din poarta); ucide mutantul cu scutirea @ intinsa pe toate cuvintele
+#   "J40/???/2026"  semnele de intrebare langa litere si cifre. "???" singur il prinde si campul fara
+#                   nicio litera din loc_gol(), deci numai aici se vede ramura ??? a tiparului
+FORME_L01 = [
+    ('email', 'contact@TODO'),
+    ('numar_orc', 'J40/???/2026'),
+]
+
+# Aceleasi reguli in alte forme, mai multe campuri intr-un singur arbore (un proces in loc de sase).
+# Mesajul portii numeste campurile in ordinea din CAMPURI_IDENTITATE, deci lista asteptata e exacta.
+LOTURI_L01 = [
+    ('campul gol ca null, spatii si "-"; notatiile pastrate din tiparul vechi', {
+        'denumire': None, 'sediu': '   ', 'email': 'N/A', 'telefon': '-', 'numar_orc': 'TBD',
+        'cod_fiscal': '???'}),
+    ('cuvant intreg intre cuvinte, langa @, / si prefixul RO; sabloane intre < >', {
+        'denumire': 'Alfa Exemplu SRL', 'sediu': '<sediul firmei>', 'email': 'todo@proba-3s.test',
+        'telefon': '+40 7XX XXX XXX', 'numar_orc': 'J40/XXXX/2026', 'cod_fiscal': 'ROXXXXXXXX'}),
+    ('cifra si _ nu leaga; majuscule si spatii duble; text oarecare intre [ ]', {
+        'denumire': '[denumirea firmei]', 'sediu': 'De  Completat', 'telefon': 'TODO_telefon',
+        'cod_fiscal': 'RO1234XXXX'}),
+]
+
+# MUTANTUL: tiparul de pana la 25.09.2026, pus inapoi in copia portii. Pe fiecare valoare din
+# VALORI_REALE_L01 (cele oprite de poarta veche) trebuie sa OPREASCA - altfel cazul real n-ar deosebi
+# tiparul vechi de cel nou.
+TIPAR_VECHI_L01 = r"re.compile(r'(TODO|TBD|XXX+|\?\?\?|N/?A\b|de\s+completat|necunoscut|<[^>]*>|lorem)', re.I)"
+MUTANT_L01 = ('poarta-juridic.py', 'TIPAR_SUBSTITUENT = re.compile(',
+              'TIPAR_SUBSTITUENT = ' + TIPAR_VECHI_L01 + '  # mutant: tiparul vechi\nTIPAR_NOU = re.compile(')
+
+# Trei mutanti ai regulii noi SUPRAVIETUIESC cazurilor de aici (masurat pe o copie a portilor, 25.09.2026)
+# si se declara, ca un verde sa nu fie citit drept acoperire: granita la stanga si granita la dreapta a
+# lui "N/A" cu bara (nicio valoare plauzibila nu lipeste o litera de el), si loc_gol() fara scoaterea
+# diacriticelor (ar trebui o litera cu diacritic, scrisa descompus, lipita inaintea unui cuvant de
+# substituire).
+
+CAMPURI_L01 = ('denumire', 'sediu', 'email', 'telefon', 'numar_orc', 'cod_fiscal')
+
+
+def operator_l01(schimbari):
+    date = dict(OPERATOR_L01)
+    date.update(schimbari)
+    return html_juridic(date)
+
+
+def gol_la(campuri):
+    """Randul L-01 exact, pana la temei: o lista de campuri mai lunga nu se potriveste."""
+    return ('OPRESTE  L-01  config/operator.json: operatorul e numit, dar are loc gol la '
+            + ', '.join(c for c in CAMPURI_L01 if c in campuri) + ' | TEMEI')
+
+
+def descrie(schimbari):
+    return ', '.join(camp + ' "' + str(valoare) + '"' for camp, valoare in schimbari.items())
+
+
+def cazuri_juridic_l01():
+    p = 'poarta-juridic.py'
+    curat = 'DEFECTE JURIDICE: 0 care opresc, 0 de avertisment'
+    caz(p, 'L-01 martor NEGATIV: operator complet, fara niciun substituent: cod 0',
+        operator_l01({}), CURAT, curat, argumente=LA_PRODUCTIE)
+    for schimbari in VALORI_REALE_L01 + [VALOARE_REALA_DIACRITICE_L01]:
+        caz(p, 'L-01 valoare reala, ' + descrie(schimbari) + ': cod 0',
+            operator_l01(schimbari), CURAT, curat, argumente=LA_PRODUCTIE)
+    for camp, valoare in SUBSTITUENTI_L01 + FORME_L01:
+        caz(p, 'L-01 substituent, ' + descrie({camp: valoare}) + ': cod 1',
+            operator_l01({camp: valoare}), PICAT, gol_la([camp]), argumente=LA_PRODUCTIE)
+    for eticheta, schimbari in LOTURI_L01:
+        caz(p, 'L-01 ' + eticheta + ': cod 1', operator_l01(schimbari), PICAT, gol_la(schimbari),
+            argumente=LA_PRODUCTIE)
+    for schimbari in VALORI_REALE_L01:
+        caz(p, 'L-01 MUTANT tiparul vechi, ' + descrie(schimbari) + ': cod 1',
+            operator_l01(schimbari), PICAT, gol_la(schimbari), argumente=LA_PRODUCTIE,
+            mutatie=MUTANT_L01)
 
 
 def cazuri_seo():

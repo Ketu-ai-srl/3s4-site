@@ -445,8 +445,11 @@ describe('HTML-ul servit (fara JavaScript)', () => {
     for (const p of PLANURI) expect(html).toContain('>' + p.nume + '</h3>')
     expect(numara(html, '>0</span><span class="_unitatePret_')).toBe(3)
     expect(numara(html, 'class="_rand_')).toBe(27)
-    // formularul de cont nu exista inca: butoanele sunt inerte, nu legaturi moarte
-    expect(numara(html, 'data-tinta-lipsa="' + GRILA.buton.href + '"')).toBe(3)
+    // fara formularul de cont butoanele sunt inerte, nu legaturi moarte; cu el devin legaturi. Ramura se
+    // alege dupa CAI_EXISTENTE (26.09): forma veche cerea /inregistrare lipsa si picea pe felia conversie,
+    // care o adauga corect (rularea 36230388457).
+    const cont = CAI_EXISTENTE.has(GRILA.buton.href)
+    expect(numara(html, cont ? 'href="' + GRILA.buton.href + '"' : 'data-tinta-lipsa="' + GRILA.buton.href + '"')).toBe(3)
     expect(html).toContain(LISTA_PDF.buton)
   })
 

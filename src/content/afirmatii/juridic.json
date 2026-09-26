@@ -1,0 +1,146 @@
+[
+  {
+    "id": "juridic-harta-generata",
+    "text": "Harta site-ului se generează din rutele site-ului și din registrul blogului, așa că o pagină nouă apare acolo singură",
+    "unde": "src/app/harta-site/page.tsx, src/content/juridic/harta.ts, src/content/juridic/pagini.ts",
+    "stare": "confirmat",
+    "sursa": "măsurat în cod: tests/juridic.test.ts randează harta și cere ca legăturile ei să fie exact rutele hărții XML (rutePentruHarta) plus articolele din registrul blogului; tests/browser/juridic.spec.ts repetă măsurătoarea pe build, la 1440 și la 390",
+    "confirmat_de": "măsurat de felia juridic (S4-3), 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "juridic-accesibilitate-tinta-aa",
+    "text": "Ținta declarației de accesibilitate este nivelul AA din WCAG 2.2, iar site-ul nu declară încă o conformitate deplină",
+    "unde": "src/app/accesibilitate/page.tsx, src/content/juridic/pagini.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner: ținta AA vine din fișa accesibilitate.md și din pragul porții PA-03 (tests/browser/accesibilitate.spec.ts), încadrată INDUSTRIE, nu LEGAL; declarația nu promite conformitate deplină",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "juridic-accesibilitate-verificari-automate",
+    "text": "Verificările automate, rulate la fiecare versiune nouă, cer zero încălcări grave sau critice ale regulilor implicite axe-core pe fiecare pagină publică la 1280 de pixeli, contrast de cel puțin 4,5:1 acolo unde biblioteca îl poate calcula și nicio derulare pe orizontală la 390 de pixeli",
+    "unde": "src/app/accesibilitate/page.tsx, src/content/juridic/pagini.ts",
+    "stare": "confirmat",
+    "sursa": "măsurat în cod: tests/browser/accesibilitate.spec.ts (PA-03: regulile implicite axe-core, blocante critical și serious, pe rutePublice(), în fereastra Desktop Chrome din tests/browser/playwright.config.ts) și tests/browser/derapaj.spec.ts (LATIME = 390, pe rutePublice()); amândouă rulează în pnpm verifica, deci în poarta locală și în CI (.github/workflows/ci.yml); tests/juridic.test.ts leagă textul declarației de aceste fișiere și de regulile din axe-core",
+    "confirmat_de": "măsurat de felia juridic (S4-3), 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "juridic-accesibilitate-implementat",
+    "text": "Site-ul are legătura „Săriți la conținut” prima pe pagină, un contur albastru de 2 pixeli pentru focusul de la tastatură, oprește tranzițiile, animațiile din foile de stil și derularea lină la mișcare redusă, marchează pagina curentă în firul de navigare și își declară limba română",
+    "unde": "src/app/accesibilitate/page.tsx, src/content/juridic/pagini.ts",
+    "stare": "confirmat",
+    "sursa": "măsurat în cod: src/app/layout.tsx (lang ro, legătura de salt înaintea antetului), src/app/globals.css (:focus-visible și blocul prefers-reduced-motion), src/components/primitive/FirPagina.tsx (aria-current); tests/juridic.test.ts se înroșește dacă layout-ul sau foaia globală se schimbă",
+    "confirmat_de": "măsurat de felia juridic (S4-3), 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "juridic-accesibilitate-paleta-fara-contur",
+    "text": "Câmpul de căutare din paleta de comenzi își ascunde conturul de focus și arată numai cursorul de scriere",
+    "unde": "src/app/accesibilitate/page.tsx, src/content/juridic/pagini.ts",
+    "stare": "confirmat",
+    "sursa": "măsurat în cod: src/components/global/PaletaCautare.module.css (.camp și .campInvelis:focus-within cu outline: none); tests/juridic.test.ts se înroșește când regula se schimbă, ca limitarea să fie scoasă din declarație",
+    "confirmat_de": "măsurat de felia juridic (S4-3), 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "juridic-acte-citite",
+    "text": "Regulamentul (UE) 2016/679, Legile nr. 190/2018, 506/2004 și 365/2002 și WCAG 2.2 au fost citite la adresele din pagina Reguli publice pe 25 septembrie 2026; pentru Legea nr. 195/2024 a Republicii Moldova, la adresă stă prezentarea autorității, nu textul legii",
+    "unde": "src/content/juridic/reguli-publice.ts, src/content/juridic/acte.ts",
+    "stare": "confirmat",
+    "sursa": "citite de felia juridic pe 2026-09-25 la adresele din src/content/juridic/acte.ts (EUR-Lex, dataprotection.ro, w3.org, datepersonale.md, justice.gov.md); legislatie.just.ro și legis.md nu au răspuns (docs/ziua-operatorului.md cere recitirea formei consolidate înainte de publicare)",
+    "confirmat_de": "citit de felia juridic (S4-3), 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "juridic-gazduire-amazon-germania",
+    "text": "Platforma 3S, cu conturile, fișierele încărcate și arhiva digitală, rulează la Amazon Web Services, într-o singură regiune din Germania",
+    "unde": "src/content/juridic/mentiuni-legale.ts, src/content/juridic/termeni.ts, src/content/juridic/subimputerniciti.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-gazduire-amazon-germania: decizia D4c din planul valului S4 (găzduire Amazon, Germania, o singură regiune); textul vine din src/content/juridic/furnizori.ts",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "juridic-criptare-aes-256-tls",
+    "text": "Fișierele sunt criptate AES-256 pe disc și circulă numai prin conexiuni TLS 1.2 sau mai noi",
+    "unde": "src/content/juridic/termeni.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-criptare-aes-256-tls (varianta aleasă în decizia D4c a planului valului S4; configurarea reală o confirmă dezvoltatorul platformei)",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "juridic-arhive-despartite-si-roluri",
+    "text": "Fiecare client își vede numai arhiva lui, iar fiecare utilizator are în cont rolul dat de client",
+    "unde": "src/content/juridic/termeni.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-arhive-separate-pe-firma și acasa-acces-pe-persoana-si-dosar",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "juridic-confidentialitatea-personalului",
+    "text": "Cei care lucrează cu datele clientului s-au obligat să le păstreze secrete",
+    "unde": "src/content/juridic/termeni.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner și de jurist: clauza cerută de GDPR art. 28 alin. (3) lit. b); devine adevărată numai când furnizorul are angajamentele semnate cu oamenii lui (docs/ziua-operatorului.md)",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "juridic-pret-0-ron",
+    "text": "Astăzi toate pachetele costă 0 RON",
+    "unde": "src/content/juridic/termeni.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-pret-0-ron: deciziile owner-ului D3 și D4c din planul valului S4",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "juridic-serviciu-web-si-whatsapp",
+    "text": "3S ține actele firmei într-o arhivă digitală și răspunde la întrebări despre ele cu documentul din care vine răspunsul, în browser și pe WhatsApp",
+    "unde": "src/content/juridic/termeni.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-functii-in-productie și acasa-integrari-si-whatsapp: deciziile D4b și D4c din planul valului S4 (căutarea cu sursa citată există azi; pe WhatsApp răspunde la întrebări)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "juridic-platforma-pe-toate-dispozitivele",
+    "text": "Platforma 3S se folosește pe web, pe calculator, pe telefon și pe WhatsApp",
+    "unde": "src/content/juridic/licenta.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-aplicatie-pe-toate-platformele și acasa-integrari-si-whatsapp: decizia D4c din planul valului S4",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "juridic-subimputerniciti-azi",
+    "text": "Subîmputernicitul numit azi al platformei este Amazon Web Services, pentru găzduire; furnizorul unui model de inteligență artificială care primește documente intră în listă înainte să primească vreun document",
+    "unde": "src/content/juridic/subimputerniciti.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner și de dezvoltatorul platformei: lista numește numai furnizorul din decizia D4c; furnizorii modelelor AI, ai e-mailului și ai canalului WhatsApp nu sunt numiți în depozit (docs/ziua-operatorului.md)",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "juridic-licenta-de-folosire",
+    "text": "Licența aplicației este de folosire, neexclusivă și netransmisibilă, cât timp contul e activ, fără codul sursă, iar drepturile asupra codului rămân ale titularilor lor",
+    "unde": "src/content/juridic/licenta.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner și de jurist: forma uzuală a unei licențe de folosire pentru un serviciu online; titularul drepturilor asupra codului nu e consemnat în depozit, deci nu e numit",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "juridic-cont-cu-acceptarea-anexei",
+    "text": "Contul se deschide numai cu acceptarea termenilor și a Anexei A",
+    "unde": "src/content/juridic/termeni.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner și de dezvoltatorul platformei: fluxul de înregistrare trebuie să ceară acceptarea ambelor părți înainte ca termenii să fie publicați",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

@@ -1,0 +1,371 @@
+/* Paginile juridice (COMPONENTE.md §4.12; fisele juridic__sablon.md, juridic.md, harta-site.md,
+   accesibilitate.md). Valorile sunt cele masurate, la 1440 si la 390 (fisele, "Scheletul"). Clasele sunt
+   ale feliei si se pun pe elementele ei: nicio regula de aici nu atinge o piesa inghetata prin
+   selector descendent. Tranzitiile se opresc la miscare redusa prin regula globala din globals.css. */
+
+/* --- Sablonul A si A': zona, grila 240 + 864, bara lipita ------------------------------------- */
+
+.zona {
+  min-height: 60vh;
+  padding: 120px 0 64px;
+  background: var(--color-alb);
+}
+
+.grila {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.coloana {
+  min-width: 0;
+}
+
+.bara {
+  position: sticky;
+  top: 96px;
+}
+
+.baraTitlu {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-ardezie-2);
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.07px;
+}
+
+.baraLista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.baraLegatura {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22.4px;
+  transition: all 150ms ease;
+}
+
+a.baraLegatura:hover {
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-9);
+}
+
+/* Activ: la referinta textul e albastru pe albastru-pal, 4,24:1 (sub AA la 14 px). Aici
+   albastru-apasat, 5,49:1 (COMPONENTE §5 punctul 1). Hover-ul nu schimba nimic pe cel activ. */
+.baraLegatura[aria-current="page"],
+a.baraLegatura[aria-current="page"]:hover {
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+  font-weight: 600;
+}
+
+/* --- Antetul documentului (sablon §4) -------------------------------------------------------- */
+
+/* margin-top: cei 24 px de la firul de pagina (sablon §3). Distanta sta pe antetul feliei, nu pe
+   clasa trecuta primitivei: `.fir { margin: 0 }` din primitiva are aceeasi specificitate, se incarca
+   dupa si o anula (masurat de critic: 0 px in loc de 24). Articolul nu are margine, umplutura sau
+   chenar, deci marginea trece prin el si ramane intre fir si antet. */
+.antetDocument {
+  margin-top: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.titluDocument {
+  margin: 0 0 8px;
+}
+
+.versiune {
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+/* Randul care spune pentru cine e un bloc de jurisdictie: paragraf cu accent, ca in proza. */
+.eticheta {
+  color: var(--color-ardezie-9);
+  font-weight: 600;
+}
+
+/* --- Sigiliul SHA-256 (sablon §7) -------------------------------------------------------------- */
+
+.sigiliu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  padding: 17.6px 0 38.4px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.sigiliuEticheta {
+  color: var(--color-ardezie-5);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 19.2px;
+  cursor: help;
+}
+
+.sigiliuAmprenta {
+  padding: 2px 7px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 4px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-6);
+  font-family: var(--font-mono);
+  font-size: 12.48px;
+  line-height: 19.97px;
+}
+
+/* --- Indexul A' (juridic.md §2c-§2d) ----------------------------------------------------------- */
+
+.antetIndex {
+  margin-bottom: 40px;
+}
+
+.titluIndex {
+  margin: 20px 0 14px;
+}
+
+.subtitlu {
+  max-width: 640px;
+  color: var(--color-ardezie-5);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28.8px;
+}
+
+.carduri {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  transition: border-color 150ms ease;
+}
+
+a.card:hover {
+  border-color: var(--color-ardezie-3);
+}
+
+.cardIconita {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru);
+}
+
+.cardTitlu {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-ardezie-9);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+}
+
+.cardSageata {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+a.card:hover .cardSageata {
+  color: var(--color-albastru);
+  transform: translateX(4px);
+}
+
+/* --- Sablonul B: harta site si accesibilitate (sablon §8) --------------------------------------- */
+
+.zonaIngusta {
+  padding: 120px 0 80px;
+  background: var(--color-alb);
+}
+
+.bloc {
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+.titluIngust {
+  margin: 20px 0 14px;
+}
+
+.titluDeclaratie {
+  margin: 20px 0 8px;
+}
+
+/* Harta: grila automata de 280, gap 48, pe 1100 (harta-site.md §2b). */
+.grilaHarta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 48px;
+  max-width: 1100px;
+  margin: 48px auto 0;
+}
+
+.grupaTitlu {
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-ardezie-2);
+  color: var(--color-ardezie-9);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+}
+
+.grupaLista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* `li` pastreaza randul corpului (25,6), iar legatura ramane inline: asa pasul unui titlu rupt pe
+   doua randuri e 25,6, ca la referinta (harta-site.md §2b). */
+.grupaElement {
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.grupaLegatura {
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19.6px;
+  transition: color 150ms ease;
+}
+
+a.grupaLegatura:hover {
+  color: var(--color-ardezie-9);
+}
+
+/* Declaratia: linia cu data pe forma intentionata (14 px, 48 px pana la prima sectiune), nu pe cea
+   randata la referinta, unde o regula mai specifica o facea paragraf obisnuit (sablon §12 punctul 9). */
+.dataDeclaratie {
+  margin-bottom: 48px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.sectiuneDeclaratie {
+  margin-bottom: 40px;
+}
+
+.titluSectiune {
+  margin-bottom: 12px;
+}
+
+.paragrafDeclaratie {
+  max-width: 720px;
+  margin-bottom: 16px;
+  color: var(--color-ardezie-6);
+  font-size: 16px;
+  line-height: 27.2px;
+}
+
+/* Listele cu marcatorul gri al prozei (la referinta, fara buline: sablon §12 punctul 9). */
+.listaDeclaratie {
+  max-width: 720px;
+  margin: 0 0 16px;
+  padding-left: 24px;
+  list-style: disc;
+  color: var(--color-ardezie-6);
+}
+
+.listaDeclaratie li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  line-height: 27.2px;
+}
+
+.listaDeclaratie li::marker {
+  color: var(--color-ardezie-4);
+}
+
+.legaturaDeclaratie {
+  color: var(--color-albastru);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- 390 --------------------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .grila {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .bara {
+    position: static;
+  }
+
+  .baraLista {
+    flex-flow: row wrap;
+    gap: 8px;
+  }
+
+  .baraLegatura {
+    padding: 6.4px 12px;
+    border: 1px solid var(--color-ardezie-2);
+    border-radius: 9999px;
+    font-size: 12px;
+    line-height: 19.2px;
+  }
+
+  .baraLegatura[aria-current="page"],
+  a.baraLegatura[aria-current="page"]:hover {
+    border-color: var(--color-albastru);
+  }
+
+  .grilaHarta {
+    gap: 40px;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .zonaIngusta {
+    padding: 88px 0 56px;
+  }
+}

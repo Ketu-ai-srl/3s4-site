@@ -1,0 +1,83 @@
+[
+  {
+    "id": "conversie-pret-0-ron",
+    "text": "Toate pachetele 3S costă 0 RON astăzi, iar la deschiderea contului nu se cere cardul",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D3 din planul valului S4: pachetele identice ca structură, toate sumele 0 RON astăzi",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "conversie-gazduire-amazon-germania",
+    "text": "Actele stau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: găzduire Amazon, Germania, o singură regiune",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "conversie-criptare-aes-256-tls",
+    "text": "Criptare AES-256 la stocare și TLS 1.2 sau mai nou în tranzit",
+    "unde": "src/content/conversie.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: varianta aleasă în decizia D4c a planului valului S4; configurarea reală o confirmă dezvoltatorul platformei",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "conversie-canale-web-whatsapp",
+    "text": "3S face scanare, păstrare și căutare cu sursa citată, prin interfața web și pe WhatsApp",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "planul valului S4, deciziile D4 (căutare cu citarea sursei, canal WhatsApp, interfață web, digitizare) și D4b (funcționalitățile se prezintă ca existente, produsul fiind în producție)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "conversie-integrari",
+    "text": "3S se leagă de Microsoft 365, Google Workspace, programe de contabilitate, servicii de stocare și WhatsApp",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: aceleași integrări ca referința vizuală, plus WhatsApp",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "conversie-aplicatie-toate-platformele",
+    "text": "Aplicația 3S merge pe Windows, macOS, Linux, iPhone și iPad, Android și în browser; toate variantele pornesc de la același cont",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "declarația owner-ului, decizia D4c din planul valului S4 (aplicația: toate platformele) și §6.9 (fără instalatori publici încă, butoanele duc la contul gratuit)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "conversie-formulare-inactive",
+    "text": "Cât timp formularul de contact și cel de cont nu sunt pornite, ce se scrie în ele nu pleacă de pe pagină și nu se salvează; pornesc odată cu publicarea politicii de confidențialitate",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "decizia owner-ului din 24.09.2026 („Nimeni deocamdată”, planul valului S4, §9-§10) și mecanismul din cod: config/operator.json null, src/components/formular/stare.ts, src/components/conversie/FormularInregistrare.tsx (nicio cerere cu operator null, dovedit de tests/browser/conversie.spec.ts)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "conversie-om-din-echipa",
+    "text": "După o cerere de cont, un om din echipa 3S scrie la adresa lăsată, cu pașii de intrare în cont",
+    "unde": "src/content/conversie.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner: felul în care se deschide contul în ziua operatorului (textul apare numai după o trimitere reușită, deci numai cu operator și destinație configurate)",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "conversie-demonstratie-exemplu",
+    "text": "Demonstrația de pe /incepe (Alfa Exemplu SRL, Beta Exemplu SRL, aviz_0147_exemplu.jpg, 40 de paleți, 12 martie) e animată în HTML, cu date fictive, și e declarată pe pagină ca demonstrație cu date de exemplu",
+    "unde": "src/content/conversie.ts",
+    "stare": "confirmat",
+    "sursa": "planul valului S4, deciziile D9 (machete cu date fictive declarate ca exemplu), D11 (nume evident fictive, eticheta vizibilă „exemplu”) și §6.9 (fără clip inventat)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-25",
+    "data": "2026-09-25"
+  }
+]

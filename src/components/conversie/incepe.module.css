@@ -1,0 +1,709 @@
+/* Pagina /incepe (incepe.md §1; COMPONENTE §3 "imersiva", §4.11). Scena de 100lvh pe ardezie-9,
+   invelis 880 centrat, rama 16:9 cu umbra-player. Culorile de pe aceasta pagina sunt cele masurate ale
+   playerului (#818cf8, #6366f1, #a5b4fc, #c084fc; COMPONENTE §2.1 "Doar pe /incepe").
+
+   ANTETUL SI SUBSOLUL. La referinta pagina nu le are. Aici ele stau in layout-ul inghetat, deci pana
+   la comutatorul cerut dispecerului pagina pune tema inchisa (antet si subsol pe varianta inchisa) si
+   isi coboara continutul sub antet cu `--antet-inaltime` (tokenul global). Cand comutatorul ascunde
+   antetul, tokenul devine 0 pe pagina asta si scena revine la geometria masurata. */
+
+.scena {
+  --sus: var(--antet-inaltime, 0px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100lvh;
+  padding: calc(64px + var(--sus)) 20px 64px;
+  background: var(--color-ardezie-9);
+  color: var(--color-ardezie-2);
+}
+
+@media (max-width: 600px) {
+  .scena {
+    padding: calc(48px + var(--sus)) 16px 32px;
+  }
+}
+
+/* --- butonul "inapoi": pastila 94x42 (84x37), chenar alb 25% -------------------------------- */
+
+.inapoi {
+  position: absolute;
+  top: calc(24px + var(--sus));
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7.2px;
+  padding: 8.8px 14.4px 8.8px 11.2px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-pastila);
+  background: transparent;
+  color: var(--color-ardezie-3);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  text-decoration: none;
+  transition:
+    background-color var(--durata-rapida) ease,
+    border-color var(--durata-rapida) ease,
+    color var(--durata-rapida) ease;
+}
+
+.inapoi:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--color-alb);
+}
+
+.inapoi:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .inapoi {
+    top: calc(16px + var(--sus));
+    left: 16px;
+    font-size: 12px;
+    line-height: 19.2px;
+  }
+}
+
+/* --- invelisul: max 880, centrat -------------------------------------------------------------- */
+
+.invelis {
+  width: 100%;
+  max-width: 880px;
+  text-align: center;
+}
+
+.titlu {
+  margin: 0 0 14px;
+  color: var(--color-alb);
+}
+
+.paragraf {
+  max-width: 640px;
+  margin: 0 auto 40px;
+  font-size: 18px;
+  line-height: 28.8px;
+  color: var(--color-ardezie-3);
+}
+
+@media (max-width: 600px) {
+  .titlu {
+    margin-bottom: 9.6px;
+  }
+
+  .paragraf {
+    margin-bottom: 25.6px;
+  }
+}
+
+/* --- rama: 16:9, raza 16 (12), chenar alb 8%, umbra-player --------------------------------- */
+
+.rama {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-16);
+  background: #000;
+  box-shadow: var(--shadow-player);
+  container-type: inline-size;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .rama {
+    border-radius: var(--radius-12);
+  }
+}
+
+.ramaLinistita {
+  cursor: none;
+}
+
+/* --- demonstratia: desenata pe 880 si scalata cu latimea ramei (`--u` = 1 px la 880) --------- */
+
+.demo {
+  --u: calc(100cqw / 880);
+  position: absolute;
+  inset: 0;
+  background: #f8fafc;
+  font-size: calc(13 * var(--u));
+  line-height: 1.5;
+  color: var(--color-ardezie-8);
+}
+
+.app {
+  display: grid;
+  grid-template-columns: calc(190 * var(--u)) minmax(0, 1fr);
+  height: 100%;
+}
+
+.appMeniu {
+  padding: calc(18 * var(--u)) calc(14 * var(--u));
+  background: var(--color-alb);
+  border-right: 1px solid var(--color-ardezie-2);
+}
+
+.appSpatiu {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  margin: 0 0 calc(18 * var(--u));
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  color: var(--color-ardezie-9);
+}
+
+.appSigla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(26 * var(--u));
+  height: calc(26 * var(--u));
+  border-radius: calc(7 * var(--u));
+  background: #226699;
+  color: var(--color-alb);
+  font-size: calc(11 * var(--u));
+  font-weight: 700;
+}
+
+.appLista {
+  display: grid;
+  gap: calc(4 * var(--u));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.appLista li {
+  padding: calc(7 * var(--u)) calc(10 * var(--u));
+  border-radius: calc(8 * var(--u));
+  font-size: calc(12.5 * var(--u));
+  color: var(--color-ardezie-6);
+}
+
+.appLista .appActiv {
+  background: var(--color-ceata-albastra-2);
+  color: var(--color-albastru-apasat);
+  font-weight: 600;
+}
+
+.appCorp {
+  position: relative;
+  padding: calc(22 * var(--u)) calc(28 * var(--u));
+}
+
+.appCautare {
+  display: flex;
+  margin-right: calc(128 * var(--u));
+  align-items: center;
+  gap: calc(10 * var(--u));
+  height: calc(44 * var(--u));
+  padding: 0 calc(14 * var(--u));
+  border: calc(2 * var(--u)) solid var(--color-albastru-chenar);
+  border-radius: calc(12 * var(--u));
+  background: var(--color-alb);
+}
+
+.appLupa {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  color: var(--color-ardezie-5);
+}
+
+.appCamp {
+  font-size: calc(14 * var(--u));
+  color: var(--color-ardezie-8);
+}
+
+.cursor {
+  display: inline-block;
+  width: calc(1.5 * var(--u));
+  height: calc(16 * var(--u));
+  margin-left: calc(1 * var(--u));
+  vertical-align: middle;
+  background: var(--color-albastru);
+  animation: clipeste 1s steps(2, start) infinite;
+}
+
+@keyframes clipeste {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Scenele: suprapuse in corpul aplicatiei; cea activa apare (opacitate + 8 px). */
+
+.cadru {
+  position: absolute;
+  inset: calc(86 * var(--u)) calc(28 * var(--u)) calc(70 * var(--u));
+  opacity: 0;
+  transform: translateY(calc(8 * var(--u)));
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.45s ease-out;
+  pointer-events: none;
+}
+
+.cadru[data-activa] {
+  opacity: 1;
+  transform: none;
+}
+
+.scenaTitlu {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  margin: 0 0 calc(12 * var(--u));
+  font-size: calc(13 * var(--u));
+  font-weight: 600;
+  color: var(--color-ardezie-9);
+}
+
+.scenaIconita {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  color: var(--color-albastru);
+}
+
+.randIntrare,
+.cardFisier {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(12 * var(--u));
+  padding: calc(14 * var(--u)) calc(16 * var(--u));
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: calc(12 * var(--u));
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.canal {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  color: var(--color-verde-text);
+}
+
+.canalIconita {
+  width: calc(15 * var(--u));
+  height: calc(15 * var(--u));
+}
+
+.fisier {
+  font-family: var(--font-mono);
+  font-size: calc(12.5 * var(--u));
+  color: var(--color-ardezie-8);
+}
+
+.eticheta {
+  margin-left: auto;
+  padding: calc(3 * var(--u)) calc(9 * var(--u));
+  border: 1px solid var(--color-albastru-chenar);
+  border-radius: 999px;
+  background: var(--color-albastru-ceata-3);
+  font-size: calc(11.5 * var(--u));
+  font-weight: 600;
+  color: var(--color-albastru-apasat);
+}
+
+.cale {
+  margin: 0 0 calc(12 * var(--u));
+  font-size: calc(12.5 * var(--u));
+  color: var(--color-ardezie-6);
+}
+
+.cardFisierIconita {
+  width: calc(18 * var(--u));
+  height: calc(18 * var(--u));
+  color: var(--color-albastru);
+}
+
+.regula {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  margin: calc(14 * var(--u)) 0 0;
+  font-size: calc(12.5 * var(--u));
+  color: var(--color-ardezie-7);
+}
+
+.regulaIconita {
+  width: calc(15 * var(--u));
+  height: calc(15 * var(--u));
+  color: var(--color-ardezie-5);
+}
+
+.bifa {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  color: var(--color-verde);
+}
+
+.raspuns {
+  padding: calc(16 * var(--u)) calc(18 * var(--u));
+  border: 1px solid var(--color-ardezie-2);
+  border-left: calc(3 * var(--u)) solid var(--color-albastru);
+  border-radius: calc(12 * var(--u));
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  opacity: 0;
+  transition: opacity 0.45s ease-out;
+}
+
+.raspuns[data-vizibil] {
+  opacity: 1;
+}
+
+.raspunsText {
+  margin: 0 0 calc(10 * var(--u));
+  font-size: calc(14.5 * var(--u));
+  color: var(--color-ardezie-9);
+}
+
+.sursa {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  margin: 0;
+  padding: calc(4 * var(--u)) calc(10 * var(--u));
+  border-radius: calc(8 * var(--u));
+  background: var(--color-ardezie-0);
+  font-size: calc(12 * var(--u));
+  color: var(--color-ardezie-6);
+}
+
+.sursaIconita {
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
+  color: var(--color-albastru);
+}
+
+.sursaPagina {
+  font-weight: 600;
+  color: var(--color-albastru-apasat);
+}
+
+/* Eticheta de demonstratie: vizibila, 11 px la orice latime, in coltul din dreapta sus (D11). */
+
+.insigna {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  gap: 6px;
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-ardezie-9);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 17.6px;
+  color: var(--color-alb);
+}
+
+.insignaExemplu {
+  color: #c7d2fe;
+}
+
+/* --- butonul mare: cerc 86 (66), #818cf8 la .9 cu blur, triunghi alb 34 (30) ----------------- */
+
+.butonMare {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 86px;
+  height: 86px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(129, 140, 248, 0.9);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
+  backdrop-filter: blur(10px);
+  color: var(--color-alb);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.butonMare:hover {
+  background: #818cf8;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.butonMare:focus-visible {
+  outline: 2px solid var(--color-alb);
+  outline-offset: 3px;
+}
+
+.butonMareIconita {
+  width: 34px;
+  height: 34px;
+  margin-left: 2px;
+  fill: currentColor;
+}
+
+@media (max-width: 600px) {
+  .butonMare {
+    width: 66px;
+    height: 66px;
+  }
+
+  .butonMareIconita {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* --- bara de comenzi: jos, gradient din negru 88%, se stinge in .25 s ------------------------ */
+
+.comenzi {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 8.8px 13.6px 11.2px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0));
+  transition: opacity 0.25s ease;
+}
+
+.ramaLinistita .comenzi {
+  opacity: 0;
+}
+
+@media (max-width: 600px) {
+  .comenzi {
+    padding: 8px 8px 9.6px;
+  }
+}
+
+.pista {
+  position: relative;
+  height: 5px;
+  margin: 8px 0;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.32);
+}
+
+@media (max-width: 600px) {
+  .pista {
+    height: 6px;
+  }
+}
+
+.progres {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #818cf8, #c084fc);
+  transform-origin: 0 50%;
+}
+
+.butoane {
+  display: flex;
+  align-items: center;
+  gap: 2.4px;
+  margin-top: 1.6px;
+}
+
+.buton {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-8);
+  background: transparent;
+  color: var(--color-alb);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.buton svg {
+  width: 22px;
+  height: 22px;
+}
+
+.buton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.buton:active {
+  transform: scale(0.94);
+}
+
+.buton:focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: -2px;
+}
+
+.butonActiv {
+  background: rgba(255, 255, 255, 0.12);
+  color: #a5b4fc;
+}
+
+@media (max-width: 600px) {
+  .butoane {
+    gap: 1.6px;
+  }
+
+  .buton {
+    height: 42px;
+  }
+
+  .buton svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.butonDreapta {
+  margin-left: auto;
+}
+
+.timp {
+  margin-left: 6.4px;
+  font-size: 13.1px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.timpCurent {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.timpSeparator {
+  margin: 0 4.8px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.timpTotal {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scenaCurenta {
+  overflow: hidden;
+  margin-left: 12px;
+  font-size: 12.8px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .timp {
+    margin-left: 4px;
+    font-size: 12.8px;
+  }
+
+  .scenaCurenta {
+    display: none;
+  }
+}
+
+/* --- blocul de dupa final: titlu 16,8/500, pastila albastra 226x50 si legatura text ---------- */
+
+.final {
+  margin-top: 28px;
+}
+
+.final[hidden] {
+  display: none;
+}
+
+.finalTitlu {
+  margin: 0 0 20px;
+  font-size: 16.8px;
+  font-weight: 500;
+  line-height: 26.88px;
+  color: var(--color-ardezie-2);
+}
+
+.finalActiuni {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.finalButon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 12px 28px;
+  border-radius: var(--radius-pastila);
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 26px;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.finalButon:hover {
+  background: var(--color-albastru-apasat);
+}
+
+.finalButon:focus-visible,
+.finalLegatura:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 3px;
+}
+
+.finalLegatura {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 25.6px;
+  color: var(--color-ardezie-4);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.finalLegatura:hover {
+  color: var(--color-alb);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inapoi,
+  .cadru,
+  .raspuns,
+  .comenzi,
+  .butonMare,
+  .buton,
+  .finalButon,
+  .finalLegatura {
+    transition: none;
+  }
+
+  .cursor {
+    animation: none;
+  }
+
+  .butonMare:hover {
+    transform: translate(-50%, -50%);
+  }
+}

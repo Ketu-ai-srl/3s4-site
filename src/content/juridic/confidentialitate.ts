@@ -80,6 +80,16 @@ export function verificaOperatorPentruTexte(operator: Operator): void {
   }
 }
 
+/**
+ * Randul de deasupra unui bloc de jurisdictie, cand paragrafele lui nu spun singure pentru cine
+ * sunt (felia `juridic`: pagina il arata deasupra blocului, in acelasi `data-jurisdictie`).
+ */
+export const ETICHETA_RO = "Pentru vizitatorii din România și din Uniunea Europeană";
+export const ETICHETA_MD = "Pentru vizitatorii din Republica Moldova";
+
+/** Data versiunii textelor feliei 44, cu etichetele de jurisdictie adaugate de felia `juridic`. */
+export const VERSIUNE_CONFIDENTIALITATE = "2026-09-25";
+
 function autoritate(a: Autoritate): string {
   return "Pentru " + a.pentru + ": " + a.nume + " (" + a.sigla + "), " + a.adresa + "; " + a.email + "; " + a.site + ".";
 }
@@ -95,6 +105,7 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
   const evenimente = Object.values(DESCRIERE_EVENIMENTE).join("; ");
   return {
     titlu: "Politica de confidențialitate",
+    versiune: VERSIUNE_CONFIDENTIALITATE,
     introducere:
       "Aici aflați ce date personale prelucrează site-ul " +
       domeniu +
@@ -184,10 +195,12 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
         blocuri: [
           {
             jurisdictie: "ro",
+            eticheta: ETICHETA_RO,
             paragrafe: FURNIZORI.map((f) => f.serviciu + ": " + f.transferUe),
           },
           {
             jurisdictie: "md",
+            eticheta: ETICHETA_MD,
             paragrafe: FURNIZORI.map((f) => f.serviciu + ": " + f.transferMd),
           },
           {

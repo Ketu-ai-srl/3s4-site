@@ -21,6 +21,8 @@ mai departe "urmand sa revenim".
 | GA4 | nu se incarca niciodata | se incarca numai dupa acceptul categoriei Statistica |
 | Evidenta consimtamantului (`/api/consimtamant`) | calea raspunde 404 | un rand JSON in jurnalul serverului la fiecare alegere |
 | Textele juridice (`src/content/juridic/`) | construite, nepublicate (`texteJuridice()` intoarce `null`) | randate de paginile feliei `juridic` |
+| Paginile juridice (`/juridic` si cele 7 documente) | in cod, dar neconstruite: 404, absente din `RUTE`, din harta XML si din subsol | construite si publicate singure, prin `ruteJuridice()` (`src/content/juridic/publicare.ts`) |
+| Harta site-ului si declaratia de accesibilitate | publicate | publicate, iar harta primeste singura cele 8 pagini |
 | Poarta juridica L-01, L-15 | nu cer nimic | cer datele firmei pe fiecare pagina si paginile juridice; politica de cookie-uri o cere din clipa in care bannerul e in HTML-ul construit |
 
 Conditia de aparitie a bannerului si a GA4 e una singura, in `src/lib/analitica.ts`: operator
@@ -49,7 +51,10 @@ reprezentant in Republica Moldova (Legea 195/2024 art. 27, poarta G-MD-02), iar 
 se construiasca pana atunci.
 
 Un camp gol sau un substituent (`TODO`, `de completat`, `<...>`) lasa analitica OPRITA si textele
-neconstruite: informarea din politica ar avea locuri goale.
+neconstruite: informarea din politica ar avea locuri goale. Mai mult, `next build` se OPRESTE cu
+lista campurilor care lipsesc (`verificaComutator` din `src/content/juridic/comutator.ts`): pachetul
+de browser afla numai daca exista un operator numit, nu si daca e complet, deci un operator numit
+pe jumatate ar pune in paleta de cautare legaturi spre pagini neconstruite.
 
 **Verificare:**
 
@@ -83,29 +88,77 @@ Asteptat: zero constatari L-01.
 
 ## Pasul 3. Publica paginile juridice (L-15)
 
-Paginile feliei `juridic` intra in `RUTE` (locul marcat `<<felie:juridic>>` in
-`src/content/rute.ts`); de acolo ajung singure in harta de site, in coloana Juridic din subsol si
-in legaturile bannerului (bannerul leaga numai pagini care exista). Textele le da
-`texteJuridice()` din `src/content/juridic/`.
+Nu se editeaza nicio lista de rute. Paginile feliei `juridic` (`/juridic` si cele 7 documente) sunt
+deja in cod (`src/app/juridic/[[...document]]/page.tsx`) si intra singure in `RUTE`, sub marcajul
+`<<felie:juridic>>` din `src/content/rute.ts`, prin `ruteJuridice()` din
+`src/content/juridic/publicare.ts`, din clipa in care operatorul e numit si complet (pasul 1). De
+acolo ajung singure in harta XML, in harta site-ului, in coloana Juridic din subsol (sase dintre
+ele; subimputernicitii si indexul se leaga din pagini) si in legaturile bannerului. Cu operatorul
+`null`, aceeasi pagina nu construieste nimic (`generateStaticParams` intoarce lista goala, iar
+`dynamicParams = false` da 404 pe orice cale de sub `/juridic`).
 
 Politica de cookie-uri (`/juridic/cookies`) se publica acum, odata cu celelalte, nu dupa GA4: din
 clipa in care bannerul apare in HTML-ul construit (pasul 6), poarta juridica o cere (L-15) si
 OPRESTE productia fara ea, oricare ar fi starea operatorului.
 
-Inainte de publicare se reiau de pe site-urile autoritatilor datele de contact din
-`src/content/juridic/autoritati.ts` (dataprotection.ro si datepersonale.md, citite pe 24.09.2026).
+**Inainte de publicare, pe continut** (nimic din lista nu se poate masura din fabrica):
+
+1. **Juristul** revizuieste cele 7 documente, cu prioritate Anexa A din `termeni.ts` (acordul de
+   prelucrare, GDPR art. 28), licenta (`licenta.ts`) si lista subimputernicitilor
+   (`subimputerniciti.ts`). Acordul se noteaza in scris, cu data.
+2. **Owner-ul decide**, iar textele se completeaza dupa decizie:
+   - subimputernicitii reali: azi lista numeste numai gazduirea (Amazon, decizia D4c); furnizorul
+     modelelor AI care primesc continutul documentelor, cel de e-mail si canalul WhatsApp se adauga
+     in `src/content/juridic/furnizori.ts`, cu tara si temeiul transferului, INAINTE de publicare;
+   - termenele de anunt: cu cat timp inainte se anunta un pret nou, o schimbare a termenilor si un
+     subimputernicit nou (textele spun regula, fara cifra, pana la decizie);
+   - titularul drepturilor asupra codului (licenta spune "ale titularilor lor", fara nume);
+   - daca fluxul de inregistrare al platformei cere acceptarea termenilor si a Anexei A (termenii
+     afirma ca da);
+   - afirmatiile ramase neconfirmate din `docs/afirmatii/juridic.md`.
+3. **Textele de lege se recitesc la sursa oficiala.** Pe 25.09.2026 portalul legislativ
+   (legislatie.just.ro) a inchis conexiunea la fiecare incercare, iar legis.md a cerut o verificare
+   anti-robot. Legile nr. 190/2018, 506/2004 si 365/2002 au fost citite in textele publicate de
+   ANSPDCP, iar pentru Legea nr. 195/2024 a Republicii Moldova numai titlul si prezentarea
+   autoritatii, nu textul articolelor (`src/content/juridic/acte.ts`). Trimiterile la articolele
+   ei din politica de confidentialitate (felia 44) se verifica pe textul oficial.
+4. Datele de contact ale autoritatilor din `src/content/juridic/autoritati.ts` se reiau de pe
+   dataprotection.ro si datepersonale.md (citite pe 24.09.2026).
+
+**In depozit, odata cu operatorul** (piese care nu sunt ale feliei `juridic`; le schimba
+dispecerul, la reconciliere):
+
+1. Cititorul declaratiilor de raspuns (`tests/browser/ajutor/raspunsuri.ts`) citeste `rute.ts` ca
+   text si cere ca rutele gasite acolo (`cale: "..."` sub marcaj) sa fie exact cele din modulul
+   `RUTE`. Cele 8 rute juridice vin din apelul `...ruteJuridice()`, nu sunt scrise pe litere, deci
+   din ziua operatorului `geo.spec.ts` iese rosu pana cand cititorul recunoaste apelul (sau
+   rutele se scriu pe litere sub marcaj).
+2. In `config/seo/juridic.json`, declaratiile din `raspuns_autonom_cu_operator` se muta in
+   `raspuns_autonom` (azi cititorul ar refuza o ruta care nu e in `RUTE`).
+3. `poarta-rute.py` si `poarta-registru-rute.py` citesc tot `cale: "..."` din text: nu vad cele 8
+   rute. Nu iese niciun rosu fals; iese o pata oarba (pagina juridica nu e ceruta de ele).
+4. `lastmod` din harta XML: `surseleRutei` (`src/lib/istoric-git.ts`) cauta pagina la
+   `src/app/<cale>/page.tsx`, iar pagina celor 8 rute sta sub segmentul optional
+   `[[...document]]`, deci pentru ele campul lipseste (nu apare o data falsa). Verificarea de la
+   pasul 8 ("cele doua numere egale") iese atunci cu 8 diferenta, pana cand `surseleRutei`
+   recunoaste segmentul optional.
 
 **Verificare:**
 
 ```
 python .claude/scripts/porti/poarta-juridic.py --mediu productie
+for p in "" /informatii-legale /confidentialitate /termeni /cookies /politici-publice /licenta-software /subimputerniciti; do curl -s -o /dev/null -w "%{http_code} /juridic$p\n" https://<domeniu>/juridic$p; done
 curl -s https://<domeniu>/juridic/confidentialitate | grep -o 'data-art13="[^"]*"' | sort -u | wc -l
 curl -s https://<domeniu>/juridic/cookies | grep -o 'data-l284="[^"]*"' | sort -u | wc -l
+PORT_3S=3907 pnpm exec playwright test --config tests/browser/playwright.config.ts tests/browser/juridic.spec.ts
 ```
 
-Asteptat: zero constatari L-15; 12 chei `data-art13` distincte (G-MD-01) si 8 chei `data-l284`
-distincte (G-MD-08: `2b`-`2h` si `masuri`), daca paginile pun cheile sectiunilor in atribut, cum
-cer comentariile din `confidentialitate.ts` si `cookie-uri.ts`.
+Asteptat: zero constatari L-15; 8 randuri `200`; 12 chei `data-art13` distincte (G-MD-01) si 8
+chei `data-l284` distincte (G-MD-08: `2b`-`2h` si `masuri`); proba `juridic.spec.ts` verde, care
+cu operator numit cere invers fata de azi: 200 pe cele 8 pagini, prezenta in harta XML si in subsol,
+si bugetul de la 390 si pe `/juridic/termeni`. Forma paginilor, sigiliul SHA-256, portile G-MD si
+poarta juridica pe paginile construite le masoara deja azi `juridic-comutator.spec.ts`, pe copia cu
+operator sintetic.
 
 ## Pasul 4. Furnizorii, cum sunt in realitate
 
