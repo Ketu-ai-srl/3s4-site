@@ -1,0 +1,30 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei blog. De la primul lot de articole (felia blog-articole), listarea si cele 4 categorii sunt pagini statice in RUTE, sub marcajul feliei blog, deci se declara aici; declaratia listarii e cea pregatita de felia 59 in la_primul_articol, mutata neschimbata. Articolele nu sunt in RUTE (rute dinamice din registru), deci nu se declara aici. Antetul listarii si al categoriilor are forma masurata a referintei (blog.md A2 si §B): sub h1 sta un subtitlu de o fraza, nu un paragraf de 30-80 de cuvinte.",
+  "raspuns_autonom": {
+    "/blog": {
+      "intrebare": "Unde găsesc ghiduri despre termenele de păstrare și arhiva firmei?",
+      "entitati": ["arhiva firmei", "termene de păstrare"],
+      "fara_regula_paragrafului": "Antetul listarii are forma masurata a referintei (blog.md A2): sub titlu sta un subtitlu de o fraza, de ~87 de caractere, nu un paragraf de 30-80 de cuvinte. Raspunsul paginii e titlul impreuna cu subtitlul si cu titlurile articolelor din grila."
+    },
+    "/blog/categorie/contabilitate": {
+      "intrebare": "Ce articole explică păstrarea actelor contabile și fiscale ale firmei?",
+      "entitati": ["actele contabile", "fiscale"],
+      "fara_regula_paragrafului": "Pagina categoriei are antetul masurat al referintei (blog.md §B): eticheta, h1 cu numele categoriei si un subtitlu de o fraza, apoi grila de carduri. Raspunsul paginii e subtitlul impreuna cu titlurile si extrasele articolelor categoriei."
+    },
+    "/blog/categorie/juridic": {
+      "intrebare": "Ce articole explică obligațiile legale pentru arhiva unei firme?",
+      "entitati": ["legile", "arhiva unei firme"],
+      "fara_regula_paragrafului": "Pagina categoriei are antetul masurat al referintei (blog.md §B): eticheta, h1 cu numele categoriei si un subtitlu de o fraza, apoi grila de carduri. Raspunsul paginii e subtitlul impreuna cu titlurile si extrasele articolelor categoriei."
+    },
+    "/blog/categorie/it": {
+      "intrebare": "Ce articole explică scanarea și căutarea în documentele firmei?",
+      "entitati": ["scanarea", "căutarea în documente"],
+      "fara_regula_paragrafului": "Pagina categoriei are antetul masurat al referintei (blog.md §B): eticheta, h1 cu numele categoriei si un subtitlu de o fraza, apoi grila de carduri. Raspunsul paginii e subtitlul impreuna cu titlurile si extrasele articolelor categoriei."
+    },
+    "/blog/categorie/management": {
+      "intrebare": "Ce articole explică organizarea actelor firmei și arhivarea la un prestator?",
+      "entitati": ["digitizarea", "prestator"],
+      "fara_regula_paragrafului": "Pagina categoriei are antetul masurat al referintei (blog.md §B): eticheta, h1 cu numele categoriei si un subtitlu de o fraza, apoi grila de carduri. Raspunsul paginii e subtitlul impreuna cu titlurile si extrasele articolelor categoriei."
+    }
+  }
+}

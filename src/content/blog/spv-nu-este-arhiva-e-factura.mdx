@@ -1,0 +1,96 @@
+---
+slug: spv-nu-este-arhiva-e-factura
+titlu: "e-Factura: cât stau facturile în SPV și ce arhivați"
+extras: "Fișierele din RO e-Factura se descarcă 60 de zile. Ce păstrează firma 5 ani, de când curge termenul și cum arată o rutină de arhivare a XML-ului semnat."
+categorie: contabilitate
+data_verificarii: 2026-09-26
+caseta_fapte:
+  - "Factura în format XML și mesajele de eroare se pot descărca din RO e-Factura 60 de zile de la publicarea în sistem; apoi sunt arhivate electronic și eliberate la cerere (Procedura aprobată prin OMF 1.365/2021, art. 8 alin. (2))"
+  - "Exemplarul original al facturii electronice este fișierul XML însoțit de semnătura electronică a Ministerului Finanțelor, pus la dispoziție ca arhivă zip (aceeași procedură, art. 3 alin. (3)); ghidul ANAF pentru RO e-Factura o numește sigiliu electronic"
+  - "Documentele justificative se păstrează 5 ani, socotiți de la 1 iulie a anului de după încheierea exercițiului (Legea 82/1991, art. 25, modificat prin Legea 36/2023; Normele OMFP 2.634/2015, pct. 37^1)"
+  - "Actele bunurilor de capital rămân în arhivă încă 5 ani după ce se încheie ajustarea TVA, care ține 5 ani, iar la imobile 20 de ani (Codul fiscal, art. 305 alin. (2) și (8))"
+  - "Autenticitatea originii, integritatea conținutului și lizibilitatea facturii se garantează până la sfârșitul perioadei de stocare (Codul fiscal, art. 319 alin. (25))"
+surse:
+  - url: https://mfinante.gov.ro/static/10/eFactura/1065%20Modif.%20L_7_1996%20cadastru,%20O%201365%20mf%20RO%20e-factura.pdf
+    ce_sustine: "MO I nr. 1065/08.11.2021, OMF 1.365/2021, procedura RO e-Factura: art. 1 alin. (1) (sistemul e disponibil în SPV), art. 3 alin. (3) (originalul = XML cu semnătura MF, arhivă zip), art. 7 (notificări pentru fișierele nedescărcate), art. 8 alin. (1) (data comunicării) și alin. (2) (60 de zile, apoi arhivare electronică și eliberare la cerere)"
+  - url: https://static.anaf.ro/static/10/Anaf/AsistentaContribuabili_r/Ghid_RO_eFactura.pdf
+    ce_sustine: "Ghidul ANAF privind utilizarea sistemului RO e-Factura (citit la 26.09.2026): exemplarul original al facturii electronice se consideră fișierul XML însoțit de sigiliul electronic al Ministerului Finanțelor"
+  - url: https://static.anaf.ro/static/10/Anaf/legislatie/OMFP_2634_2015.pdf
+    ce_sustine: "Normele OMFP 2.634/2015, text publicat de ANAF (citit la 26.09.2026): pct. 38 în forma inițială (10 ani de la încheierea exercițiului pentru registre și documentele financiar-contabile, 50 de ani pentru statele de salarii) și pct. 40 (actele de proveniență ale bunurilor cu durată de viață de peste 5 ani se păstrează pe durata de viață utilă); OMF 1.447/2023 abrogă pct. 38 și 39, nu și pct. 40"
+  - url: https://www.cdep.ro/ords/pls/proiecte/docs?2022/pr739_22.pdf
+    ce_sustine: "Legea 36/2023, forma trimisă la promulgare (citită integral la 26.09.2026): noul art. 25 din Legea 82/1991, fără dispoziții tranzitorii"
+  - url: http://web.archive.org/web/20221123142556/http://arhivelenationale.ro/site/servicii_publice/creatori-si-detinatori-de-arhiva/
+    ce_sustine: "Textul Legii 16/1996 de pe pagina Arhivelor Naționale, copia arhivată la 23.11.2022 (site-ul AN a răspuns 503 la 26.09.2026): art. 9 alin. (3) și art. 11 alin. (2)-(3), neatinse de Legea 26/2023 și de Legea 201/2024 (formele pentru promulgare, cdep.ro)"
+  - url: https://mfinante.gov.ro/web/efactura/legislatie
+    ce_sustine: "Pagina de legislație e-Factura a Ministerului Finanțelor listează OMF 1.365/2021 ca act de referință pentru procedura de utilizare a sistemului"
+  - url: https://mfinante.gov.ro/static/10/eFactura/listamesaje.html
+    ce_sustine: "Documentația API a Ministerului Finanțelor pentru lista de mesaje: interogarea refuză un startTime mai vechi de 60 de zile față de momentul cererii"
+  - url: https://mfinante.gov.ro/static/10/eFactura/validaresemnatura.html
+    ce_sustine: "Serviciul MF de validare a semnăturii: validează semnătura electronică de tip detached pentru un fișier XML (XML-ul și semnătura sunt fișiere separate)"
+  - url: https://mfinante.gov.ro/static/10/eFactura/xmltopdf.html
+    ce_sustine: "Serviciul MF de transformare XML în PDF; fără validare, MF nu garantează corectitudinea informațiilor din PDF-ul generat"
+  - url: https://static.anaf.ro/static/10/Galati/Vrancea/Procedura-e-factura.pdf
+    ce_sustine: "Material ANAF (AJFP Vrancea) care reia procedura: originalul e XML-ul cu semnătura MF, fișierele sunt disponibile 60 de zile, apoi arhivate și eliberate la cerere"
+  - url: https://static.anaf.ro/static/10/Anaf/legislatie/Cod_fiscal_norme_2023.htm
+    ce_sustine: "Codul fiscal actualizat până la OUG 38/2026: art. 305 alin. (2) (perioada de ajustare: 5 ani, 20 de ani pentru construcția sau achiziția unui bun imobil) și alin. (8) (situația bunurilor de capital și celelalte acte ale lor se țin încă 5 ani după ce perioada de ajustare s-a încheiat); art. 319 alin. (25) (autenticitate, integritate, lizibilitate până la sfârșitul stocării), alin. (31) (stocarea facturilor emise și primite), alin. (32)-(34) (locul de stocare, acces fără întârziere, excepția pentru facturile electronice cu acces on-line, comunicarea locului din afara României), alin. (35) (Legea 135/2007 nu e obligatorie), alin. (37) (acces, descărcare și utilizare de către organele fiscale)"
+  - url: https://mfinante.gov.ro/static/10/Mfp/acte-normative-aprobate/OMF1447_MO453_24052023.pdf
+    ce_sustine: "OMF 1.447/2023 (MO I nr. 453/24.05.2023) introduce în Normele OMFP 2.634/2015 pct. 37^1: termenul de 5 ani pentru registre și acte justificative, cu pornire la 1 iulie din anul de după închiderea exercițiului; abrogă pct. 38 și 39"
+  - url: https://www.cdep.ro/ords/pls/legis/legis_pck.htp_act?ida=1354
+    ce_sustine: "Fișa Legii 82/1991: art. 25 a fost modificat prin Legea 36/2023; actele ulterioare listate (OUG 115/2023, OUG 138/2024, Legea 148/2026) nu modifică art. 25"
+  - url: https://www.cdep.ro/ords/pls/legis/legis_pck.htp_act?ida=191325
+    ce_sustine: "Fișa Legii 36/2023 (MO I nr. 36/12.01.2023): modifică art. 23 alin. (1) și art. 25 din Legea contabilității"
+  - url: https://www.cdep.ro/ords/pls/legis/legis_pck.htp_act?ida=8555
+    ce_sustine: "Fișa Legii Arhivelor Naționale 16/1996: în vigoare, republicată în MO I nr. 293/22.04.2014; modificările de după republicare (Legea 26/2023, Legea 237/2024) nu ating art. 11 și art. 37 alin. (1)-(2). Textul republicat: art. 11 alin. (2)-(3) (procesul-verbal al comisiei de selecționare se aprobă de comisia serviciului județean al Arhivelor Naționale; documentele se elimină numai pe baza lui), art. 36 lit. c)-d) și art. 37 (neselecționarea și nepăstrarea în condiții corespunzătoare, amendă de la 1.000 la 25.000 lei, aplicată și persoanei juridice)"
+---
+
+Un fișier primit prin RO e-Factura se poate descărca din Spațiul privat virtual (SPV) timp de 60 de zile de la publicarea lui în sistem. După aceea, sistemul îl arhivează electronic și îl eliberează doar la cerere (Procedura aprobată prin OMF 1.365/2021, art. 8 alin. (2)). Legea contabilității vă cere însă să păstrați factura 5 ani, iar termenul pornește abia la 1 iulie din anul de după închiderea exercițiului. Pentru echipamente și clădiri, Codul fiscal cere mai mult. După a 60-a zi, singura copie pe care o puteți deschide imediat e a dumneavoastră.
+
+## Cât stă o factură în SPV
+
+Numărătoarea pornește în ziua publicării. O factură de furnizor publicată pe 10 martie 2026 rămâne în lista de descărcare până în jurul datei de 9 mai 2026. Aceeași zi e și data comunicării facturii către dumneavoastră (art. 8 alin. (1)). Programele de contabilitate care citesc SPV-ul automat se lovesc de aceeași limită: interfața Ministerului Finanțelor refuză o listă de mesaje care începe mai devreme de 60 de zile.
+
+Pentru fișierele nedescărcate, sistemul trimite o notificare a doua zi după publicare, dar numai la adresele de e-mail declarate în SPV de cei care au optat pentru asta (art. 7). Verificați dacă adresa firmei e trecută acolo.
+
+## Cât păstrează firma și de când curge
+
+Ca regulă generală, o factură intră în arhivă ca document justificativ și stă acolo 5 ani, numărați din 1 iulie al anului care vine după exercițiul încheiat (Legea 82/1991, art. 25; Normele OMFP 2.634/2015, pct. 37^1). Pentru factura din martie 2026, exercițiul se închide la 31 decembrie 2026, termenul curge de la 1 iulie 2027 și se împlinește la 1 iulie 2032. Pentru facturile de dinainte de 2023 socoteala nu e la fel de simplă: Normele cereau atunci 10 ani de la încheierea exercițiului (pct. 38, abrogat prin OMF 1.447/2023), iar Legea nr. 36/2023 nu are dispoziții tranzitorii. Pe acestea le eliminați numai după ce lămuriți termenul cu expertul contabil.
+
+[Bunurile de capital au termen mai lung.](/blog/cat-timp-se-pastreaza-documentele-firmei) TVA-ul dedus pe ele se poate ajusta 5 ani, iar la construcția sau cumpărarea unui imobil 20 de ani; actele lor rămân în arhivă încă 5 ani după ce ajustarea se încheie (Codul fiscal, art. 305 alin. (2) și (8)). Normele contabile adaugă o regulă: actele care atestă proveniența unui bun cu durată de viață de peste 5 ani se păstrează pe toată durata lui de viață utilă (Normele OMFP 2.634/2015, pct. 40). Se aplică termenul mai lung dintre cele două. Factura unui strung stă deci cel puțin 10 ani, iar cea a unui depozit cel puțin 25; dacă strungul are o durată de viață utilă de 15 ani, factura lui stă 15.
+
+| Criteriu | RO e-Factura (SPV) | Arhiva firmei |
+|---|---|---|
+| Cât timp | 60 de zile | 5 ani; bunurile de capital, încă 5 ani după ajustarea TVA; bunurile cu viață de peste 5 ani, cel puțin durata de viață utilă |
+| De când | de la publicarea în sistem | de la 1 iulie a anului de după exercițiu |
+| După termen | arhivare electronică, eliberare la cerere | intră la selecționare; procesul-verbal îl aprobă comisia serviciului județean al Arhivelor Naționale |
+| Cine răspunde | Ministerul Finanțelor | firma (Codul fiscal, art. 319 alin. (31)) |
+
+## Ce fișier păstrați
+
+[Originalul facturii electronice este fișierul XML însoțit de semnătura electronică](/blog/document-electronic-sau-document-scanat) a Ministerului Finanțelor, pus la dispoziție ca arhivă zip (procedura, art. 3 alin. (3)). Ghidul ANAF pentru RO e-Factura îi spune sigiliu electronic al Ministerului Finanțelor: același element, sub alt nume. Semnătura stă într-un fișier separat de XML, iar serviciul de validare al ministerului le cere pe amândouă. PDF-ul e o redare a XML-ului, produsă de un serviciu de conversie; pentru varianta fără validare, ministerul nu garantează corectitudinea informațiilor din el.
+
+Practic: păstrați zip-ul descărcat, nemodificat. PDF-ul îl puteți genera oricând pentru citit, dar singur nu ține locul originalului.
+
+## O rutină de descărcare și arhivare
+
+1. Descărcați săptămânal tot ce apare în SPV: facturile primite, facturile emise și mesajele de eroare.
+2. Salvați fiecare zip întreg, cu un nume care conține CUI-ul partenerului, numărul facturii și data.
+3. Extrageți XML-ul și un PDF de lucru lângă zip. Zip-ul rămâne neatins.
+4. La închiderea lunii, comparați numărul facturilor din SPV cu numărul de fișiere din arhivă.
+5. Verificați prin sondaj semnătura câtorva facturi cu serviciul de validare al ministerului.
+6. Țineți o copie de rezervă în altă locație și treceți pe fiecare dosar anual termenul din nomenclatorul arhivistic, separat pentru facturile de bunuri de capital.
+
+## Unde puteți ține arhiva
+
+Locul de stocare îl alegeți dumneavoastră, dacă fiscul primește facturile fără întârziere, ori de câte ori le cere (Codul fiscal, art. 319 alin. (32)). O firmă cu sediul în România își ține facturile în țară, cu excepția celor electronice cu acces on-line garantat pentru fisc (alin. (33)); un loc din afara țării se comunică organelor fiscale (alin. (34)). Legea 135/2007 nu e obligatorie pentru facturi (alin. (35)).
+
+## Ce riscați dacă ratați fereastra
+
+După 60 de zile, factura nu mai apare în lista de descărcare și se eliberează doar la cerere. În tot acest timp, un control fiscal vă poate cere facturile, iar Codul fiscal vi le cere puse la dispoziție fără întârziere (art. 319 alin. (32)). Tot firma trebuie să arate că factura păstrată e autentică, întreagă și lizibilă până la sfârșitul perioadei de stocare (art. 319 alin. (25)). Un dosar doar cu PDF-uri se apără mai greu la acest capitol decât unul cu zip-urile semnate.
+
+La capătul termenului, [comisia internă de selecționare](/blog/distrugerea-legala-a-documentelor) trece actele fără valoare într-un proces-verbal. Procesul-verbal se aprobă de comisia de selecționare din cadrul serviciului județean al Arhivelor Naționale, iar actele se scot din evidență și se elimină numai pe baza lui (Legea 16/1996, art. 11 alin. (2)-(3)), cu aprobarea conducerii și avizul Arhivelor Naționale (art. 9 alin. (3)). Neselecționarea la termenele din nomenclator și păstrarea în condiții necorespunzătoare se amendează cu 1.000 până la 25.000 de lei, inclusiv firma (art. 36 lit. c) și d), art. 37).
+
+## Unde intervine 3S
+
+Fișierele încărcate în 3S stau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, iar evidența arhivei ține termenele de păstrare.
+
+> **3S** În 3S, fiecare act stă în evidența arhivei cu termenul lui de păstrare. Îl căutați pe web sau pe WhatsApp și primiți răspunsul cu documentul-sursă citat. Fișierele încărcate stau în Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene.
