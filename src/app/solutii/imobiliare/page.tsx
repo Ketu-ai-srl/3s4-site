@@ -1,24 +1,15 @@
-import type { Metadata } from "next";
-import PaginaDeSegment from "@/components/PaginaDeSegment";
-import { IMOBILIARE } from "@/content/segmente";
+import PaginaSector from "@/components/solutii/PaginaSector";
+import { metadataPagina } from "@/components/seo/metadata";
+import { IMOBILIARE } from "@/content/solutii/imobiliare";
 
-// Al saptelea segment. Acelasi tipar ca la celelalte sase: constanta in `segmente.ts`,
-// legata in `SEGMENTE`, plus ruta scurta de mai jos. Hub-ul o preia singur.
-//
-// Canonical auto-referential: fara el, pagina ar mosteni canonical-ul layout-ului si
-// ar arata spre pagina de start, ceea ce scoate ruta asta din index.
-export const metadata: Metadata = {
-  title: IMOBILIARE.titluMeta,
-  description: IMOBILIARE.descriereMeta,
-  alternates: { canonical: "/solutii/imobiliare" },
-};
+// Pagina de sector pe sablonul comun (`PaginaSector`); continutul e in `src/content/solutii/imobiliare.ts`.
 
-export default function Imobiliare() {
-  return (
-    <PaginaDeSegment
-      segment={IMOBILIARE}
-      nume="Agenții imobiliare și administrare de imobile"
-      slug="imobiliare"
-    />
-  );
+export const metadata = metadataPagina({
+  titlu: IMOBILIARE.meta.titlu,
+  descriere: IMOBILIARE.meta.descriere,
+  cale: IMOBILIARE.cale,
+});
+
+export default function Pagina() {
+  return <PaginaSector sector={IMOBILIARE} />;
 }

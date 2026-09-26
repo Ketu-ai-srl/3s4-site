@@ -1,0 +1,823 @@
+/* Machetele unice ale paginii automatizari-ai (functionalitati__automatizari-ai.md). Cifrele: 1440 / 390.
+   Efectele legate de derulare citesc `--p`, progresul sectiunii (SectiuneScena), in ambele sensuri. */
+
+/* --- cardul actului (erou si asteptare) --------------------------------------------------------- */
+
+.act {
+  box-sizing: border-box;
+  padding: 12px 12.8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  text-align: left;
+  /* In erou cardul are fundal propriu: haloul textului eroului s-ar vedea pe el ca o pata. */
+  text-shadow: none;
+}
+
+.capAct {
+  display: flex;
+  align-items: center;
+  gap: 7.2px;
+}
+
+.numeAct {
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 500;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.8);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bareAct {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 9.6px;
+}
+
+.bareAct > span {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Barele actului din erou: 86 / 71 / 60% din latimea lui. */
+.bareAct > .baraGol1 {
+  width: 86%;
+}
+
+.bareAct > .baraGol2 {
+  width: 71%;
+}
+
+.bareAct > .baraGol3 {
+  width: 60%;
+}
+
+.oraAct {
+  margin-top: 9.6px;
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+  font-weight: 400;
+  line-height: 15.872px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- S0, golul din erou ------------------------------------------------------------------------- */
+
+.gol {
+  position: relative;
+  width: 320px;
+  max-width: 100%;
+  height: 280px;
+  margin: 0 auto;
+}
+
+/* Actul sta sus in gol; dupa scriere cade in groapa (3 s, `forwards`). Coborarea se face cu
+   `transform`, nu cu `top` ca la referinta: aceeasi traiectorie (60% si 90% din 280 px), fara
+   deplasari de asezare numarate in CLS. */
+.actGol {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 180px;
+  transform: translateX(-50%);
+}
+
+.actGol[data-cade="da"] {
+  animation: cadere 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes cadere {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1) rotateX(0deg);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translate(-50%, 168px) scale(0.7) rotateX(20deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 252px) scale(0.3) rotateX(60deg);
+  }
+}
+
+.groapa {
+  position: absolute;
+  top: 240px;
+  left: 50%;
+  width: 280px;
+  height: 60px;
+  border-radius: 50%;
+  background-image: radial-gradient(#000000 0%, #0a0a12 50%, transparent 80%);
+  box-shadow: inset 0 -6px 30px rgba(255, 255, 255, 0.06);
+  transform: translateX(-50%);
+}
+
+/* --- piese comune ------------------------------------------------------------------------------ */
+
+.figura {
+  margin: 0;
+}
+
+.titluSectiune {
+  margin: 0 0 16px;
+}
+
+/* --- S1, asteptarea ----------------------------------------------------------------------------- */
+
+/* Titlul stins (alb .5) si paragraful: la referinta .3 (2,53:1); la 3S textul de citit are .5. */
+.titluStins {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.paragrafStins {
+  max-width: 540px;
+  margin: 0 auto 32px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 25.6px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.oameni {
+  display: grid;
+  grid-template-columns: repeat(4, 212px);
+  justify-content: center;
+  gap: 24px;
+  margin: 48px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.persoana {
+  padding: 20px 8px;
+  text-align: center;
+}
+
+.cercIconita {
+  display: inline-flex;
+  width: 84px;
+  height: 84px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.numePersoana {
+  margin: 0;
+  font-size: 16.8px;
+  font-weight: 600;
+  line-height: 26.88px;
+  letter-spacing: -0.168px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Bula i se aprinde la 1,4 (p - 0,083 i). */
+.bula {
+  min-height: 39.36px;
+  margin: 17.6px 0 0;
+  box-sizing: border-box;
+  padding: 11.2px 12.8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  font-family: var(--font-italic);
+  font-size: 13.12px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 19.024px;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: left;
+  /* La referinta 1,4 (p - 0,083 i): al patrulea om intreg abia la p 0,96, iar la p 0,5 replicile ieseau
+     4,1 / 3,0 / 2,2:1 (contrast calculat, 25.09; axe le lasa "incomplete"). ABATERE: aceeasi scara,
+     stransa - omul i intreg la p 0,25 + 0,05 i. */
+  opacity: clamp(0, calc(4 * (var(--p) - 0.05 * var(--i, 0))), 1);
+  transition: opacity 0.4s ease;
+}
+
+/* Actul uitat se stinge: max(0,45; 1 - 0,76 p).
+   ABATEREA DE CONTRAST: la referinta se stinge tot cardul, deci si textul (numele ajunge la alb .36,
+   zilele la .23, masurat de axe 3,28:1 si 1,96:1). Aici se sting fundalul, chenarul, umbra, barele si
+   patratul PDF; numele coboara cel mult pana la alb .5, iar randul zilelor ramane la culoarea lui
+   (pragul de citit al cadrului: alb .5, 5,3:1). Fundalul sta intr-un strat propriu, sub continut. */
+.actPrafuit {
+  --stingere: max(0.45, calc(1 - 0.76 * var(--p)));
+  position: relative;
+  isolation: isolate;
+  width: 240px;
+  max-width: 100%;
+  margin: 16px auto 0;
+  border-color: transparent;
+  background: none;
+  box-shadow: none;
+}
+
+.actPrafuit::before {
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: inherit;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  content: "";
+  opacity: var(--stingere);
+  transition: opacity 0.3s ease;
+}
+
+.actPrafuit .capAct > :first-child,
+.actPrafuit .bareAct {
+  opacity: var(--stingere);
+  transition: opacity 0.3s ease;
+}
+
+.actPrafuit .numeAct {
+  color: rgba(255, 255, 255, max(0.5, calc(0.8 * var(--stingere))));
+  transition: color 0.3s ease;
+}
+
+.actPrafuit .metaPraf {
+  border-top-color: rgba(255, 255, 255, calc(0.1 * var(--stingere)));
+}
+
+.bareAct > .bara1 {
+  width: 187px;
+  max-width: 100%;
+}
+
+.bareAct > .bara2 {
+  width: 153px;
+  max-width: 100%;
+}
+
+.metaPraf {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9.6px;
+  padding-top: 9.6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ziPraf {
+  font-family: var(--font-mono);
+}
+
+.starePraf[data-uitat="da"] {
+  color: var(--color-rosu-clar);
+}
+
+/* --- S2, pretul tacerii: cronologia ------------------------------------------------------------- */
+
+.paragrafCost {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.cronologie {
+  position: relative;
+  max-width: 620px;
+  margin: 48px auto 0;
+  text-align: left;
+}
+
+/* Coloana vertebrala: 1 px la 26 px de marginea stanga, de la 28 px sub varf pana la 110 px deasupra
+   bazei, in spatele randurilor (care au z-index 1). */
+.cronologie::before {
+  position: absolute;
+  top: 28px;
+  bottom: 110px;
+  left: 26px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  content: "";
+}
+
+.listaEvenimente {
+  display: flex;
+  flex-direction: column;
+  gap: 14.4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Randul i iese din penumbra: la referinta max(0,15; min(1; 2(p - 0,06 i))), deci ultimul rand intreg abia
+   la p 0,74; la p 0,5 cipurile de cost ieseau 2,3-2,9:1 (contrast calculat, 25.09; axe le lasa
+   "incomplete"). ABATERE: aceeasi scara, stransa - randul i intreg la p 0,25 + 0,05 i, ultimul la 0,45.
+   Coborarea ramane a referintei: max(0, 20 + 3,6 i - 60 p).
+   A DOUA ABATERE (a11y, critic 25.09 runda 2): opacitatea NU mai urmeaza derularea continuu. Oprita pe o
+   pozitie intermediara, o treapta la .2-.6 lasa text vizibil sub 4,5:1 (axe cu miscare, 1,1-3,5:1). Acum
+   randul e 0 sau 1 dupa cum p a trecut pragul lui (panta 1000), iar trecerea se face in timp, prin
+   tranzitie; pragul e punctul in care scara de mai sus ajungea la jumatate. Ca avalansa din cautare-ai. */
+.eveniment {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 56px 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13.6px;
+  padding: 13.6px 16px 13.6px 8.8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  opacity: clamp(0, calc(1000 * (var(--p) - 0.125 - 0.05 * var(--i, 0))), 1);
+  transform: translateY(max(0px, calc((20 + 3.6 * var(--i, 0) - 60 * var(--p)) * 1px)));
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.ziEveniment {
+  font-family: var(--font-mono);
+  font-size: 11.2px;
+  font-weight: 600;
+  line-height: 17.92px;
+  letter-spacing: 0.448px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cutieEveniment {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.textEveniment {
+  font-size: 15.04px;
+  font-weight: 500;
+  line-height: 21.056px;
+  color: #e6ecf5;
+}
+
+.textUltim {
+  font-weight: 600;
+}
+
+.cost {
+  padding: 4.8px 8px;
+  border-radius: 5px;
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  white-space: nowrap;
+}
+
+.cost-info {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cost-avertizare,
+.cost-alerta {
+  background: rgba(251, 191, 36, 0.14);
+  color: var(--color-chihlimbar-clar);
+}
+
+.cost-critic,
+.cost-urgenta {
+  background: rgba(248, 113, 113, 0.14);
+  color: var(--color-rosu-clar);
+}
+
+/* Totalul: min(1, max(0, 2(p - 0,475))), coborat cu max(0, 30 - 50 p). La referinta sta in aceeasi
+   coloana cu randurile (pas 14,4) plus 19,2 margine; aici dupa lista, deci 33,6 (30,4 la 390). */
+.total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 33.6px 0 0;
+  padding: 16.8px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  /* La referinta 2 (p - 0,475): la p 0,5 bilantul sta la .05, deci cu sectiunea centrata nu se citeste.
+     ABATERE: vine tot dupa randuri, intreg la p 0,45 (odata cu ultimul rand). Si, ca randurile, e 0 sau 1
+     (prag 0,325, jumatatea scarii de mai sus), cu trecerea in timp - oprit la mijloc iesea 1,3-2,5:1. */
+  opacity: clamp(0, calc(1000 * (var(--p) - 0.325)), 1);
+  transform: translateY(max(0px, calc((30 - 50 * var(--p)) * 1px)));
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.valoareTotal {
+  font-size: 14.08px;
+  font-weight: 500;
+  line-height: 20.416px;
+  color: #e6ecf5;
+  text-align: right;
+}
+
+/* --- S4, fluxul --------------------------------------------------------------------------------- */
+
+/* Dublat: bate spatierea de baza a sectiunii oricare ar fi ordinea foilor (la 390: 48 / 20). */
+.sectiuneFlux.sectiuneFlux {
+  padding: 96px 32px 64px;
+}
+
+.scena {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 5 / 3;
+}
+
+.raze {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.razeMobil {
+  display: none;
+}
+
+/* Raza k se deseneaza la pragul ei (`--prag`): lungimea caii e 1 (`pathLength`), deci decalajul
+   1 -> 0 o traseaza de la inima spre rol, in 0,6 s. */
+.raza {
+  --trasa: clamp(0, calc((var(--p) - var(--prag, 0)) * 1000), 1);
+  fill: none;
+  stroke: var(--color-albastru);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--trasa));
+  stroke-opacity: 0.55;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.roluriFlux {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Centrat pe punctul lui (`--x`, `--y`, procente din scena). Latimea e a continutului (180-187 px
+   la 1440), nu a spatiului ramas pana la marginea scenei: cardul din dreapta, centrat la 87%, ar fi
+   altfel strans la 117 px. */
+.rolFlux {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  z-index: 2;
+  width: max-content;
+  max-width: 200px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.4s ease;
+}
+
+.cardRol {
+  box-sizing: border-box;
+  padding: 13.6px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-nod);
+  text-align: left;
+  transition: all 0.4s ease 0.45s;
+}
+
+/* Rolul la care a ajuns raza: chenar albastru .35 si cercul iconitei pe albastru .15 (sablon §5.1). */
+.rolFlux[data-aprins="da"] .cardRol {
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+.capRol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cercRol {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+  transition: all 0.4s ease 0.45s;
+}
+
+.rolFlux[data-aprins="da"] .cercRol {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
+
+.numeRol {
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 20.992px;
+  color: #e6ecf5;
+}
+
+.sarcinaRol {
+  margin: 0;
+  font-size: 11.52px;
+  font-weight: 400;
+  line-height: 16.128px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.inima {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
+.miezInima {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7.2px;
+  padding: 16px 19.2px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+  box-shadow:
+    inset 0 0 0 1px rgba(37, 99, 235, 0.5),
+    0 16px 40px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+
+/* Aprinderea: `popIn` 0,4 s din centru, la fiecare trecere peste prag. */
+.miezInima[data-aprins="da"] {
+  animation: popIn 0.4s ease both;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.numeInima {
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20.48px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.legendaFlux {
+  margin: 32px 0 0;
+  font-family: var(--font-italic);
+  font-size: 19.2px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 30.72px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- S5, regula --------------------------------------------------------------------------------- */
+
+.paragrafRegula {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.fereastraRegula {
+  margin-top: 32px;
+}
+
+/* Dublat: bate bara de baza a ferestrei (37 px) oricare ar fi ordinea foilor; aici 35 px. */
+.baraRegula.baraRegula {
+  gap: 8px;
+  min-height: 35px;
+  padding: 8px 15.2px;
+}
+
+.corpRegula {
+  display: flex;
+  flex-direction: column;
+  gap: 8.8px;
+  margin: 0;
+  padding: 22.4px 25.6px;
+  list-style: none;
+}
+
+/* Treapta k (randul 1, apoi sageata + randul urmator): la referinta 2,5 (p - 0,04 k), deci ultima treapta
+   era intreaga abia la p 0,6 si, la p 0,5, etichetele "Cand" / "Atunci" ale ultimelor doua randuri ieseau
+   3,8:1 (axe cu miscare, critic 25.09). ABATERE: aceeasi scara, panta 4 - ultima treapta intreaga la 0,45.
+   A DOUA ABATERE (a11y, critic 25.09 runda 2): opacitatea NU mai urmeaza derularea continuu. Oprita pe o
+   pozitie intermediara, o treapta la .2-.6 lasa text vizibil sub 4,5:1 (axe cu miscare, 1,1-3,5:1). Acum
+   randul e 0 sau 1 dupa cum p a trecut pragul lui (panta 1000), iar trecerea se face in timp, prin
+   tranzitie; pragul e punctul in care scara de mai sus ajungea la jumatate. Ca avalansa din cautare-ai. */
+.treapta {
+  opacity: clamp(0, calc(1000 * (var(--p) - 0.125 - 0.04 * var(--k, 0))), 1);
+  transition: opacity 0.4s ease;
+}
+
+.randRegula {
+  display: flex;
+  align-items: center;
+  gap: 11.2px;
+  padding: 11.2px 14.4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: left;
+}
+
+.etichetaRegula {
+  flex: none;
+  padding: 3.2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 9.92px;
+  font-weight: 700;
+  line-height: 15.872px;
+  letter-spacing: 0.1984px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.etichetaAtunci {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
+
+.textRegula {
+  font-size: 13.12px;
+  font-weight: 500;
+  line-height: 18.368px;
+  color: #e6ecf5;
+}
+
+.valoareRegula {
+  font-family: var(--font-mono);
+  font-size: 12.16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 17.024px;
+}
+
+.departamentRegula {
+  font-style: normal;
+  font-weight: 600;
+}
+
+.sageata {
+  display: flex;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* --- S6, desenele saptamanii -------------------------------------------------------------------- */
+
+/* Fulgerele din "Acum" se aprind de luni pana duminica (0,12 s intre zile), iar punctul pleaca pe
+   linie dupa 0,9 s si o parcurge in 1,8 s; la urcare sub prag se sting si punctul se intoarce. */
+.saptamanaAcum {
+  --pornit: clamp(0, calc((var(--p) - 0.36) * 1000), 1);
+}
+
+.fulger {
+  fill: var(--color-verde-clar);
+  opacity: calc(0.15 + 0.85 * var(--pornit));
+  transition: opacity 0.45s ease var(--intarziere, 0s);
+}
+
+.punctFlux {
+  fill: var(--color-albastru);
+  transform: translateX(calc(240px * var(--pornit)));
+  transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.9s;
+}
+
+/* Cuvantul de sub desen: italicul adevarat al familiei, nu oblicul sintetizat. */
+.italicDesen {
+  font-family: var(--font-italic);
+  font-style: italic;
+}
+
+@media (max-width: 767px) {
+  .oameni {
+    grid-template-columns: repeat(2, 163px);
+  }
+
+  .listaEvenimente {
+    gap: 11.2px;
+  }
+
+  .cronologie::before {
+    bottom: 100px;
+    left: 22px;
+  }
+
+  .eveniment {
+    grid-template-columns: 48px 32px minmax(0, 1fr);
+    gap: 8px 10.4px;
+    padding: 11.2px 13.6px 12px 8px;
+  }
+
+  .ziEveniment {
+    font-size: 9.92px;
+    line-height: 15.872px;
+    letter-spacing: 0.3968px;
+  }
+
+  .cutieEveniment {
+    width: 32px;
+    height: 32px;
+  }
+
+  .textEveniment {
+    font-size: 13.6px;
+    line-height: 19.04px;
+  }
+
+  .cost {
+    grid-column: 2 / 4;
+    justify-self: start;
+    padding: 3.52px 7.2px;
+  }
+
+  .total {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 30.4px;
+    padding: 13.6px 16px;
+  }
+
+  .valoareTotal {
+    font-size: 12.8px;
+    line-height: 18.56px;
+    text-align: left;
+  }
+
+  .sectiuneFlux.sectiuneFlux {
+    padding: 48px 20px;
+  }
+
+  .scena {
+    max-width: 380px;
+    aspect-ratio: 3 / 5;
+  }
+
+  .razeDesktop {
+    display: none;
+  }
+
+  .razeMobil {
+    display: block;
+  }
+
+  .rolFlux {
+    top: var(--y-mobil);
+    left: var(--x-mobil);
+    max-width: 160px;
+  }
+
+  .cardRol {
+    padding: 10.4px 12px;
+  }
+
+  .miezInima {
+    padding: 12.8px 16px;
+  }
+
+  .legendaFlux {
+    font-size: 16px;
+    line-height: 25.6px;
+  }
+}

@@ -1,0 +1,1070 @@
+/* Chestionarul, duelul si estimarea (acasa-constructor.md §10-§12, §14). Culorile vin din
+   variabilele temei, puse pe sectiune (Constructor.module.css). */
+
+@keyframes aparitie {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes intrareRand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes intrareScor {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes puls {
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes dafin {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-8deg);
+  }
+}
+
+/* --- expandorul (§10.1) -------------------------------------------------------------------- */
+
+/* RANDUL TEXTULUI DIN BUTOANE. La referinta butoanele chestionarului mostenesc doar familia
+   fontului, deci raman pe randul implicit al butonului (`normal`: 21 px la 16 px, 16 la 12,8, 17
+   la 13,44, 15 la 11,84 pentru acest font). La noi `button { font: inherit }` din globale le dadea
+   randul paginii (1,5-1,6), si expandorul inchis crestea de la 73 la 79,2 px la 1440 (106 -> 118,4
+   la 390), iar chestionarul deschis cu 46,6 px. De aceea randul e pus explicit pe fiecare text din
+   butoane: capul expandorului, segmentul, randurile "cine", confirmarea, reluarea simularii. */
+
+.expandor {
+  margin-top: 16px;
+  border: 1px solid var(--k-card-chenar);
+  border-radius: 16px;
+  background: var(--k-card-fundal);
+  box-shadow: var(--k-exp-umbra);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.capExpandor {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.capExpandor:focus-visible {
+  outline: 2px solid var(--k-focus);
+  outline-offset: -2px;
+}
+
+.titluriExpandor {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.titluExpandor {
+  color: var(--k-text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.24px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.descriereExpandor {
+  color: var(--k-text-2);
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.128px;
+  transition: color 0.5s ease 0.2s;
+}
+
+.chevronExpandor {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--k-chevron-exp);
+  transition:
+    transform 0.3s ease,
+    color 0.5s ease 0.2s;
+}
+
+.deschis .chevronExpandor {
+  transform: rotate(180deg);
+}
+
+.corpExpandor {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.35s ease;
+}
+
+.deschis .corpExpandor {
+  max-height: 2800px;
+  opacity: 1;
+}
+
+.interiorExpandor {
+  padding: 2px 20px 18px;
+  border-top: 1px solid var(--k-separator);
+  transition: border-color 0.5s ease;
+}
+
+/* --- pasii (§10.2): ascunsi pana la dezvaluire; marginea -8 lasa loc conturului de focus ---- */
+
+.pas {
+  max-height: 0;
+  margin: 0 -8px;
+  padding: 0 8px;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.32s ease,
+    padding 0.35s ease;
+}
+
+.pas.in {
+  max-height: 420px;
+  padding-bottom: 5px;
+  opacity: 1;
+}
+
+.pasMare.in {
+  max-height: 1500px;
+}
+
+/* Pasul confirmarii: la referinta e un rand flex, iar spatiul de 5 px de dupa fiecare pas ajunge
+   acolo alaturi de buton, nu sub el (masurat: pasul are 35 px, cat butonul). */
+.pas.in.pasConfirmare {
+  padding-bottom: 0;
+}
+
+.intrebare {
+  margin: 14px 0 8px;
+  color: var(--k-text);
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: -0.13px;
+  transition: color 0.5s ease 0.2s;
+}
+
+/* Q1: jetoanele (alegere multipla) */
+.jetoane {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.jeton {
+  display: inline-flex;
+  height: 35px;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px 8px 11px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 999px;
+  background: var(--k-jeton-fundal);
+  color: var(--k-jeton-text);
+  font-size: 13.44px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.jeton:hover {
+  border-color: var(--k-buton-chenar-hover);
+}
+
+.iconitaJeton {
+  flex-shrink: 0;
+  color: var(--k-jeton-iconita);
+}
+
+.jeton.ales {
+  border-color: var(--k-jeton-ales-chenar);
+  background: var(--k-jeton-ales-fundal);
+  color: var(--k-jeton-ales-text);
+}
+
+.jeton.ales .iconitaJeton {
+  color: var(--k-jeton-ales-text);
+}
+
+/* Q2: segmentul (o alegere) */
+.segment {
+  display: flex;
+  max-width: 420px;
+  padding: 3px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 10px;
+  background: var(--k-segment-fundal);
+}
+
+.optiuneSegment {
+  flex: 1 1 0%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--k-text-2);
+  font-size: 13.44px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.optiuneSegment:hover {
+  color: var(--k-text);
+}
+
+.optiuneSegment.activ {
+  background: var(--k-segment-activ);
+  box-shadow:
+    0 0 0 1px var(--k-segment-inel),
+    var(--k-segment-umbra);
+  color: var(--k-text);
+  font-weight: 600;
+}
+
+/* Q3: randurile radio */
+.randuri {
+  display: flex;
+  max-width: 420px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.randCine {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 10px;
+  background: var(--k-jeton-fundal);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.5s ease;
+}
+
+.randCine:hover {
+  border-color: var(--k-buton-chenar-hover);
+}
+
+.randCine.activ {
+  border-color: var(--k-radio-activ);
+}
+
+.radio {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  border: 1.5px solid var(--k-radio);
+  border-radius: 9999px;
+}
+
+.activ .radio {
+  border-color: var(--k-radio-activ);
+}
+
+.activ .radio::after {
+  position: absolute;
+  inset: 2.5px;
+  border-radius: 9999px;
+  background: var(--k-radio-activ);
+  content: "";
+}
+
+.textCine {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.titluCine {
+  color: var(--k-text);
+  font-size: 13.44px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.01em;
+}
+
+.descriereCine {
+  margin-top: 1px;
+  color: var(--k-text-3);
+  font-size: 11.84px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+/* Confirmarea */
+.randConfirmare {
+  display: flex;
+}
+
+.confirma {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px 8px 11px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 999px;
+  background: var(--k-jeton-fundal);
+  color: var(--k-text);
+  font-size: 13.44px;
+  font-weight: 600;
+  line-height: normal;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    opacity 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.confirma:hover:not(:disabled) {
+  border-color: var(--k-confirma-hover);
+}
+
+.confirma:disabled {
+  cursor: default;
+}
+
+.confirma:disabled:not(.confirmat) {
+  opacity: 0.4;
+}
+
+.bifaConfirma {
+  color: var(--k-jeton-iconita);
+}
+
+.confirma.confirmat {
+  color: var(--k-text-3);
+}
+
+.confirmat .bifaConfirma {
+  color: var(--k-bifa);
+}
+
+/* --- duelul (§11.1) ------------------------------------------------------------------------ */
+
+.capDuel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 16px 0 9px;
+  padding-top: 14px;
+  border-top: 1px solid var(--k-separator);
+}
+
+.etichetaDuel {
+  color: var(--k-eticheta);
+  font-size: 11.52px;
+  font-weight: 600;
+  letter-spacing: 0.115px;
+}
+
+.reluareDuel {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--k-text-2);
+  font-size: 11.84px;
+  font-weight: 500;
+  line-height: normal;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Pe tema inchisa regula temei castiga si culoarea nu se schimba la hover (§11.1). */
+[data-tema="deschisa"] .reluareDuel:hover {
+  color: var(--k-text);
+}
+
+.arena {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cardDuel {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 13px 14px 11px;
+  overflow: hidden;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 12px;
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.cardStang {
+  background: var(--k-duel-stang);
+}
+
+.cardDrept {
+  background: var(--k-duel-drept);
+}
+
+.capCardDuel {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.numeFirma {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.numeFirmaText {
+  overflow: hidden;
+  color: var(--k-text);
+  font-size: 15.2px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.punctFirma {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+}
+
+.punctPortocaliu {
+  background: var(--color-chihlimbar-mediu);
+}
+
+.punctAlbastru {
+  background: var(--color-albastru);
+}
+
+.punctVerde {
+  background: var(--color-verde);
+}
+
+.contorDuel {
+  flex-shrink: 0;
+  color: var(--k-text-2);
+  font-size: 11.84px;
+  font-weight: 500;
+}
+
+.numarContor {
+  font-size: 16.32px;
+  font-weight: 600;
+}
+
+.rau {
+  color: var(--k-rau);
+}
+
+.bun {
+  color: var(--k-bun);
+}
+
+.inOrdine {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5px;
+  color: var(--k-in-ordine);
+  font-size: 11.84px;
+  font-weight: 600;
+}
+
+.culoar {
+  display: flex;
+  height: 40px;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.jetonDoc {
+  display: inline-flex;
+  min-width: 0;
+  flex-shrink: 1;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  overflow: hidden;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 7px;
+  background: var(--k-jeton-fundal);
+  color: var(--k-jeton-text);
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  animation: aparitie 0.3s ease both;
+}
+
+.insigna {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 7px 1px 5px;
+  border: 1px solid var(--k-insigna-chenar);
+  border-radius: 999px;
+  background: var(--k-insigna-fundal);
+  color: var(--k-insigna-text);
+  font-family: var(--font-mono);
+  font-size: 11.2px;
+  font-weight: 500;
+  animation: aparitie 0.25s ease both;
+}
+
+.jetonAi,
+.jetonTip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.84px;
+  font-weight: 600;
+  line-height: 1.4;
+  animation: aparitie 0.25s ease both;
+}
+
+.jetonAi {
+  background: var(--k-ai-fundal);
+  color: var(--k-ai-text);
+}
+
+.jetonTip {
+  border: 1px solid var(--k-jeton-chenar);
+  background: var(--k-jeton-fundal);
+  color: var(--k-jeton-text);
+}
+
+/* Randul scris de mana: rotit -1,2 grade in jurul capatului stang. */
+.stres {
+  min-height: 20px;
+  margin: 6px 0 8px;
+  color: var(--k-stres);
+  font-family: var(--font-mana);
+  font-size: 16.32px;
+  line-height: 26.1px;
+  transform: rotate(-1.2deg);
+  transform-origin: left center;
+}
+
+.stres.in {
+  animation: aparitieStres 0.35s ease both;
+}
+
+@keyframes aparitieStres {
+  from {
+    opacity: 0;
+    transform: rotate(-1.2deg) translateY(-6px);
+  }
+}
+
+.calm {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  margin: 6px 0 8px;
+  color: var(--k-calm);
+  font-size: 12.48px;
+  font-weight: 500;
+}
+
+.calm.in {
+  animation: aparitie 0.35s ease both;
+}
+
+.gramada {
+  display: flex;
+  height: 148px;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.rand {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  animation: intrareRand 0.3s ease both;
+}
+
+.randStang {
+  color: var(--k-gramada-stanga);
+}
+
+.randDrept {
+  color: var(--k-gramada-dreapta);
+}
+
+.randTermen {
+  color: var(--k-rau);
+  font-size: 12.8px;
+  font-weight: 600;
+}
+
+.iconitaRand {
+  flex-shrink: 0;
+  color: var(--k-decor);
+}
+
+.bifaRand {
+  flex-shrink: 0;
+  color: var(--k-bifa);
+}
+
+.numeFisier {
+  font-family: var(--font-mono);
+  font-size: 12.64px;
+}
+
+.faraEticheta {
+  color: var(--k-portocaliu);
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  opacity: var(--k-portocaliu-opacitate);
+}
+
+.tipRand {
+  color: var(--k-albastru);
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  font-weight: 600;
+}
+
+.dosare {
+  display: flex;
+  min-height: 24px;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: auto;
+  margin-bottom: 9px;
+}
+
+.dosar {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 8px;
+  background: var(--k-jeton-fundal);
+  color: var(--k-dosar-text);
+  font-size: 12.48px;
+  font-weight: 600;
+}
+
+.iconitaDosar {
+  flex-shrink: 0;
+  color: var(--k-decor);
+}
+
+.contorDosar {
+  display: inline-block;
+  font-weight: 700;
+}
+
+.contorAlbastru {
+  color: var(--k-albastru);
+}
+
+.puls {
+  animation: puls 0.3s ease;
+}
+
+/* Subsolul nu se rupe pe randuri: la 390 timpul economisit (cu dafinii) se strange langa
+   "nesortate" si textul lui trece pe doua randuri in interior, ca la referinta. */
+.subsolDuel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--k-separator);
+  font-size: 13.12px;
+  font-weight: 500;
+}
+
+.valoareSubsol {
+  font-size: 16.32px;
+  font-weight: 600;
+}
+
+.nesortateZero {
+  flex: 0 0 auto;
+  color: var(--k-text-2);
+}
+
+.nesortateZero .valoareSubsol {
+  color: var(--k-text);
+}
+
+.economisit {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  color: var(--k-albastru);
+}
+
+.dafin {
+  flex-shrink: 0;
+  animation: dafin 0.5s var(--ease-lansare) 0.25s both;
+}
+
+.dafin.oglindit {
+  scale: -1 1;
+}
+
+.tulpina {
+  fill: none;
+  stroke: #8fbf9f;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.frunzaA {
+  fill: #8fbf9f;
+}
+
+.frunzaB {
+  fill: #b7d8c2;
+}
+
+/* Toastul: cine a fost anuntat automat (1,7 s vizibil). */
+.toast {
+  position: absolute;
+  top: 58px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 8px;
+  background: var(--k-jeton-fundal);
+  color: var(--k-jeton-text);
+  font-size: 11.2px;
+  font-weight: 500;
+  animation: aparitie 0.3s ease both;
+}
+
+/* Scorul si fraza finala (dupa simulare) */
+.scor {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  padding: 11px 16px;
+  border: 1px solid var(--k-jeton-chenar);
+  border-radius: 12px;
+  animation: intrareScor 0.45s ease both;
+}
+
+.celulaScor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.etichetaScor {
+  color: var(--k-text-2);
+  font-size: 11.2px;
+  font-weight: 500;
+}
+
+.valoareScor {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: var(--k-text);
+  font-size: 15.68px;
+  font-weight: 700;
+}
+
+/* Numerele scorului: greutatea calculata 900, ca la referinta; se randeaza cu cea mai grea
+   greutate incarcata a fontului. */
+.valoareScor b {
+  font-weight: 900;
+}
+
+.vs {
+  color: var(--k-text-2);
+  font-size: 10.56px;
+  font-weight: 500;
+}
+
+.frazaFinala {
+  margin: 12px 0 2px;
+  color: var(--k-text);
+  font-size: 13.76px;
+  font-weight: 600;
+  letter-spacing: -0.138px;
+  text-align: center;
+  animation: intrareScor 0.45s ease both;
+}
+
+/* --- estimarea si CTA-ul final (§12) ------------------------------------------------------- */
+
+.estimare {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 40px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--k-separator);
+}
+
+.stangaEstimare {
+  width: 280px;
+  flex: 0 0 280px;
+}
+
+.etichetaEstimare {
+  color: var(--k-eticheta);
+  font-size: 11.52px;
+  font-weight: 600;
+  letter-spacing: 0.115px;
+}
+
+.cifraEstimare {
+  margin-top: 2px;
+  color: var(--k-albastru);
+  font-size: 25.6px;
+  font-weight: 600;
+  line-height: 40.96px;
+  letter-spacing: -0.512px;
+}
+
+.formula {
+  max-width: 280px;
+  margin-top: 4px;
+  color: var(--k-text-3);
+  font-size: 11.52px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.dreaptaEstimare {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 280px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+}
+
+.randComparatie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--k-text-2);
+  font-size: 11.84px;
+  font-weight: 500;
+}
+
+.numeComparatie {
+  width: 92px;
+  flex-shrink: 0;
+}
+
+.baraComparatie {
+  height: 4px;
+  flex: 1 1 0%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--k-pista);
+}
+
+.umplereComparatie {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  transform-origin: left center;
+  transition: transform 0.55s ease 0.1s;
+}
+
+.umplereManual {
+  background: var(--k-bara-manual);
+}
+
+.umplereProdus {
+  background: var(--k-bara-produs);
+}
+
+.valoareComparatie {
+  width: 36px;
+  flex-shrink: 0;
+  color: var(--k-text);
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.morala {
+  margin-top: 4px;
+  color: var(--k-text);
+  font-size: 13.44px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ctaFinal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22.4px;
+  padding-top: 22.4px;
+  border-top: 1px solid var(--k-linie-cta);
+}
+
+.butonFinal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12.8px 25.6px;
+  border-radius: 9999px;
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+a.butonFinal:hover {
+  background: var(--color-albastru-apasat);
+  transform: translateY(-1px);
+}
+
+a.butonFinal:focus-visible {
+  outline: 2px solid var(--k-focus);
+  outline-offset: 2px;
+}
+
+.notaFinala {
+  color: var(--k-nota);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* --- sub 900 px (§14) ---------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .capExpandor {
+    padding: 14px;
+  }
+
+  .interiorExpandor {
+    padding: 2px 14px 16px;
+  }
+
+  .segment,
+  .randuri {
+    max-width: none;
+  }
+
+  .confirma {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .arena {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stres {
+    white-space: normal;
+  }
+
+  .gramada {
+    height: 96px;
+  }
+
+  .scor {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 11px 12px;
+  }
+
+  .celulaScor {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .numeComparatie {
+    width: 84px;
+  }
+
+  .stangaEstimare {
+    width: 100%;
+    flex-basis: 100%;
+  }
+}

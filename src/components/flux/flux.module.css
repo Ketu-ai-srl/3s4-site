@@ -1,0 +1,1747 @@
+/* Pagina /flux-documente (flux-documente.md). Clasele feliei, pe elementele feliei; piesele
+   inghetate (EroulInterior, CutieCta880, LegaturaInText) nu se restilizeaza de aici. */
+
+.bloc880 {
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+.capTitlu {
+  margin-bottom: 10px;
+  color: var(--color-ardezie-9);
+}
+
+.capText {
+  max-width: 640px;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+/* ============================================================================================
+   §2 Scena lipita
+   ============================================================================================ */
+
+.scenaSectiune {
+  padding-top: 48px;
+}
+
+.scenaIntro {
+  position: relative;
+  z-index: 2;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.pin {
+  position: relative;
+}
+
+.pin[data-gata] {
+  height: 300lvh;
+  margin-top: -64px;
+}
+
+/* Starea statica (fara JavaScript, miscare redusa): lipitorul curge in pagina. */
+.lipitor {
+  padding: 64px 0 16px;
+}
+
+.pin[data-gata] .lipitor {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.bara {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  width: min(880px, 100% - 40px);
+  margin: 0 auto 12px;
+}
+
+.pin[data-gata] .bara {
+  position: absolute;
+  top: 104px;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+}
+
+.faza {
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.contor {
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etichetele fazei: in starea statica se vede faza a doua; cu pinul pregatit, faza curenta. */
+.faza1,
+.contor1 {
+  display: none;
+}
+
+.pin[data-faza="1"] .faza1,
+.pin[data-faza="1"] .contor1 {
+  display: inline;
+}
+
+.pin[data-faza="1"] .faza2,
+.pin[data-faza="1"] .contor2 {
+  display: none;
+}
+
+.pin[data-faza="2"] .faza,
+.pin:not([data-gata]) .faza {
+  color: var(--color-albastru);
+}
+
+.scena {
+  position: relative;
+  width: 100%;
+  margin: 0;
+}
+
+.pin[data-gata] .scena {
+  height: 420px;
+  perspective: 1000px;
+}
+
+.scenaInterior {
+  position: relative;
+}
+
+.pin[data-gata] .scenaInterior {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 1100px) and (min-height: 860px) {
+  .pin[data-gata] .scenaInterior {
+    transform: scale(1.12);
+  }
+}
+
+/* Ferestrele "programelor de azi" */
+.fereastra {
+  display: none;
+}
+
+.pin[data-gata] .fereastra {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  width: 176px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.fereastraFierbinte {
+  border-color: var(--color-ardezie-3) !important;
+}
+
+.fereastraBara {
+  padding: 5.6px 9.6px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+  border-radius: 12px 12px 0 0;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+}
+
+.fereastraCorp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9.6px 9.6px 48px;
+}
+
+.fereastraLinie {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-ardezie-1);
+}
+
+/* Panoul sistemului */
+.panou {
+  position: relative;
+  width: min(800px, 100% - 32px);
+  margin: 0 auto;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+}
+
+.pin[data-gata] .panou {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  margin: 0;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+.panouBara {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 14.4px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.panouMarca {
+  color: var(--color-ardezie-9);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 18px;
+}
+
+.panouNume {
+  color: var(--color-ardezie-5);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.panouCorp {
+  position: relative;
+  height: 214px;
+}
+
+.panouLinie {
+  position: absolute;
+  top: 98px;
+  left: 60px;
+  right: 60px;
+  height: 1px;
+  background: var(--color-ardezie-2);
+}
+
+.pasi {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pas {
+  position: absolute;
+  top: 72px;
+  left: calc(50% + var(--sx));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5.6px;
+  width: 156px;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.pasCutie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-4);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* ardezie-5 in loc de ardezie-4 pe titlurile inactive: 4,76 fata de 2,56 (COMPONENTE §5, pct. 1) */
+.pasTitlu {
+  color: var(--color-ardezie-5);
+  font-size: 14.4px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.pasNota {
+  max-width: 156px;
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 11.84px;
+  line-height: 16.58px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.pas[data-stare="on"] .pasCutie,
+.pin:not([data-gata]) .pasCutie {
+  border-color: transparent;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+}
+
+.pas[data-stare="on"] .pasTitlu,
+.pas[data-stare="now"] .pasTitlu,
+.pin:not([data-gata]) .pasTitlu {
+  color: var(--color-ardezie-9);
+}
+
+.pas[data-stare="now"] .pasCutie {
+  border-color: transparent;
+  background: var(--color-albastru);
+  color: var(--color-alb);
+}
+
+.pas[data-stare="now"] .pasNota,
+.pin:not([data-gata]) .pasNota {
+  opacity: 1;
+}
+
+/* Pastila de actiune, documentul, persoana: numai cu scena pregatita */
+.pastilaActiune,
+.doc,
+.persoana {
+  display: none;
+}
+
+.pin[data-gata] .pastilaActiune {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  display: inline-block;
+  padding: 2.88px 9.6px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 9999px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-6);
+  font-size: 10.88px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.pin[data-gata] .doc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4px;
+  min-width: 200px;
+  max-width: 360px;
+  padding: 8.8px 12.8px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Specificitatea trebuie sa bata `.pin[data-gata] .doc` (0,3,0), altfel chenarul ramane gri. */
+.pin[data-gata] .doc[data-stampilat="da"] {
+  border-color: var(--color-albastru);
+}
+
+.docNume {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ardezie-9);
+  font-family: var(--font-mono);
+  font-size: 14.4px;
+  white-space: nowrap;
+}
+
+.docStampila {
+  color: var(--color-albastru);
+  font-family: var(--font-mono);
+  font-size: 12.48px;
+  white-space: nowrap;
+}
+
+.docStampila:empty {
+  display: none;
+}
+
+.pin[data-gata] .persoana {
+  position: absolute;
+  top: calc(50% + 150px);
+  left: calc(50% + 160px);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2.4px 8.8px 2.4px 3.2px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 9999px;
+  background: var(--color-alb);
+  color: var(--color-cerneala);
+  font-size: 10.88px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+}
+
+.persoana[data-vizibila="da"] {
+  opacity: 1 !important;
+}
+
+.persoanaAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+  font-size: 9.28px;
+  font-weight: 600;
+}
+
+/* Descrierile de sub scena */
+.descrieri {
+  width: min(640px, 100% - 40px);
+  margin: 16px auto 0;
+}
+
+.descriere {
+  margin-bottom: 12px;
+  color: var(--color-ardezie-6);
+  font-size: 16px;
+  line-height: 25.6px;
+  text-align: center;
+}
+
+.pin[data-gata] .descrieri {
+  position: relative;
+  min-height: 4.6em;
+}
+
+.pin[data-gata] .descriere {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.pin[data-gata] .descriere[data-curenta="da"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .pin[data-gata] .bara {
+    top: 88px;
+  }
+
+  .pin[data-gata] .scena {
+    height: 380px;
+  }
+
+  .pin[data-gata] .scenaInterior {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 767px) {
+  .scenaSectiune {
+    padding-top: 32px;
+  }
+}
+
+/* Sub 600: ferestre de 150, panou ingust cu pasii pe verticala, documentul fix deasupra. */
+@media (max-width: 600px) {
+  .pin[data-gata] {
+    height: 280lvh;
+  }
+
+  .pin[data-gata] .lipitor {
+    justify-content: flex-start;
+    padding-top: 84px;
+  }
+
+  .bara,
+  .pin[data-gata] .bara {
+    position: static;
+    flex-direction: column;
+    gap: 3.2px;
+    margin: 0 auto 12px;
+    transform: none;
+  }
+
+  .pin[data-gata] .scena {
+    height: 400px;
+  }
+
+  .pin[data-gata] .scenaInterior {
+    transform: none;
+  }
+
+  .pin[data-gata] .fereastra {
+    width: 150px;
+  }
+
+  .fereastraCorp {
+    padding-bottom: 38.4px;
+  }
+
+  .panou,
+  .pin[data-gata] .panou {
+    width: min(360px, 100vw - 32px);
+  }
+
+  .panouCorp {
+    height: 236px;
+  }
+
+  .panouLinie {
+    top: 12px;
+    bottom: 12px;
+    left: 35px;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .pas {
+    top: calc(12px + var(--i) * 44px);
+    left: 12px;
+    flex-direction: row;
+    gap: 9.6px;
+    width: auto;
+    transform: none;
+    text-align: left;
+  }
+
+  .pasCutie {
+    width: 46px;
+    height: 46px;
+  }
+
+  .pasTitlu {
+    font-size: 13.44px;
+  }
+
+  .pasNota,
+  .pin:not([data-gata]) .pasNota {
+    display: none;
+  }
+
+  .pin[data-gata] .persoana {
+    left: 50%;
+    top: calc(50% + 150px);
+  }
+
+  .descrieri {
+    margin-top: 8px;
+  }
+
+  .pin[data-gata] .descrieri {
+    min-height: 6.5em;
+  }
+
+  .descriere {
+    font-size: 14px;
+    line-height: 22.4px;
+  }
+}
+
+/* ============================================================================================
+   §3 Banda hub
+   ============================================================================================ */
+
+.hubBanda {
+  margin-top: 16px;
+  padding: 48px 0;
+  border-top: 1px solid var(--color-ardezie-1);
+  border-bottom: 1px solid var(--color-ardezie-1);
+  background: var(--color-ardezie-0);
+}
+
+.hubGrila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: center;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.hubTitlu {
+  max-width: 720px;
+  margin-bottom: 14px;
+  color: var(--color-ardezie-9);
+}
+
+/* ardezie-6 pe ardezie-0: 7,24 */
+.hubText {
+  max-width: 660px;
+  color: var(--color-ardezie-6);
+  font-size: 18px;
+  line-height: 28.8px;
+}
+
+.hubFigura {
+  margin: 0;
+}
+
+.hub {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  height: 300px;
+  margin-inline: auto;
+}
+
+.hubLinii {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--color-ardezie-2);
+  stroke-width: 1.5;
+}
+
+.hubLinii path {
+  vector-effect: non-scaling-stroke;
+}
+
+.hubDocumente {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 186px;
+  padding: 38px 0;
+  will-change: transform;
+}
+
+.hubDoc {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6.4px 9.6px 6.4px 7.2px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.hubDocIconita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+}
+
+.hubDocText {
+  display: flex;
+  flex-direction: column;
+}
+
+.hubDocTitlu {
+  color: var(--color-ardezie-9);
+  font-size: 12.48px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.hubDocMeta {
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 9.92px;
+  white-space: nowrap;
+}
+
+.hubNucleu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 190px;
+  padding: 16px 14.4px 12.8px;
+  border: 1px solid var(--color-albastru);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+  transform: translate(-50%, -50%);
+}
+
+.hubMarca {
+  color: var(--color-ardezie-9);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 20px;
+}
+
+/* verde-text (5,02) in loc de verde (3,30): text de 10,88 px */
+.hubIndiciu {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-verde-text);
+  font-size: 10.88px;
+  font-weight: 600;
+}
+
+.hubIesiri {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 164px;
+  padding: 30px 0 24px;
+  will-change: transform;
+}
+
+.hubGrup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* ardezie-5 in loc de ardezie-4 (2,56): eticheta e text */
+.hubGrupEticheta {
+  color: var(--color-ardezie-5);
+  font-size: 9.92px;
+  font-weight: 600;
+}
+
+.hubCip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4.48px 9.6px 4.48px 4.8px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  color: var(--color-ardezie-8);
+  font-size: 12.16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.hubCipMono {
+  font-family: var(--font-mono);
+  font-size: 11.2px;
+}
+
+.hubCipIconita {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+}
+
+.hubLegenda {
+  max-width: 520px;
+  margin: 20px auto 0;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .hubBanda {
+    margin-top: 40px;
+    padding: 36px 0;
+  }
+
+  .hubGrila {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hubLinii {
+    display: none;
+  }
+
+  .hub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14.4px;
+    height: auto;
+  }
+
+  .hubDocumente,
+  .hubIesiri {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    padding: 0;
+  }
+
+  .hubGrup {
+    align-items: center;
+  }
+
+  .hubNucleu {
+    position: static;
+    width: 180px;
+    transform: none;
+    translate: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hubDocumente,
+  .hubIesiri {
+    will-change: auto;
+  }
+}
+
+/* ============================================================================================
+   §4-§7 Domeniile
+   ============================================================================================ */
+
+.domeniiIntro {
+  padding-top: 56px;
+}
+
+.selector {
+  max-width: 880px;
+  margin: 28px auto 0;
+}
+
+.selectorEticheta {
+  margin-bottom: 9.6px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.taburi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tab {
+  height: 39px;
+  padding: 7.2px 15.2px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 9999px;
+  background: var(--color-alb);
+  color: var(--color-cerneala);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tab:hover {
+  border-color: var(--color-ardezie-3);
+}
+
+/* albastru pe ceata-albastra: 4,70 */
+.tab[aria-selected="true"] {
+  border-color: transparent;
+  background: var(--color-ceata-albastra);
+  color: var(--color-albastru);
+  font-weight: 600;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+.panouDomeniu {
+  padding-top: 32px;
+}
+
+.panouCap {
+  max-width: 880px;
+  margin: 0 auto 20px;
+}
+
+.panouEticheta {
+  margin-bottom: 6.4px;
+  color: var(--color-albastru);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.panouTitlu {
+  color: var(--color-ardezie-9);
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.panouScena {
+  position: relative;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.panouLegatura {
+  max-width: 880px;
+  margin: 20px auto 0;
+}
+
+.notaDomenii {
+  max-width: 880px;
+  padding-top: 40px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+@media (max-width: 767px) {
+  .domeniiIntro {
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .taburi {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .tab {
+    flex-shrink: 0;
+  }
+}
+
+/* --- Piesele comune ale machetelor --------------------------------------------------------- */
+
+.cip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  color: var(--color-ardezie-5);
+}
+
+.cipNume {
+  overflow: hidden;
+  color: var(--color-ardezie-9);
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mCard {
+  overflow: hidden;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.mCardMic {
+  padding: 14px 16px;
+}
+
+.mSageata {
+  color: var(--color-albastru);
+}
+
+.mNotaRosie {
+  color: var(--color-rosu);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mNotaAlbastra {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--color-albastru-pal);
+  color: var(--color-albastru-apasat);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mStareVerde {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-verde-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mStareRosie {
+  color: var(--color-rosu);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mMarcaj {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--color-ceata-albastra);
+  color: var(--color-ardezie-9);
+}
+
+.mFragment {
+  color: var(--color-ardezie-6);
+  font-size: 14px;
+  line-height: 23.1px;
+}
+
+/* 1. Imobiliare - cautare */
+.mCautare {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.mLupa {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.mInterogare {
+  overflow: hidden;
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.mRezultat {
+  padding: 14px 16px 16px;
+}
+
+.mRezultatRand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin-bottom: 6px;
+}
+
+.mFisier {
+  color: var(--color-ardezie-9);
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+}
+
+.mLoc {
+  color: var(--color-ardezie-5);
+  font-size: 12px;
+}
+
+.mRisc {
+  margin-left: auto;
+  color: var(--color-rosu);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 2. Contabilitate - canale */
+.mCanale {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.mCanaleSursa {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mCanal {
+  padding: 8px 12px;
+  border: 1px dashed var(--color-ardezie-3);
+  border-radius: 8px;
+  color: var(--color-ardezie-5);
+  font-size: 14px;
+  opacity: 0.3;
+  transform: translateX(16px);
+}
+
+.mCanalDoc {
+  border-style: solid;
+  background: var(--color-alb);
+}
+
+.mPanouMic {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+}
+
+.mPanouMarca {
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mPanouRand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+}
+
+.mBifa {
+  flex-shrink: 0;
+  color: var(--color-verde);
+}
+
+/* 3. Constructii - cronologie */
+.mCronologie {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding-top: 57.6px;
+}
+
+.mCronLinie {
+  position: absolute;
+  top: 63px;
+  left: 16.6%;
+  right: 16.6%;
+  height: 2px;
+  background: var(--color-albastru);
+  transform-origin: left;
+}
+
+.mCronDoc {
+  position: absolute;
+  top: 0;
+  left: 66.6%;
+  transform: translateX(-50%);
+}
+
+.mCronEtapa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.mCronPunct {
+  position: relative;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--color-albastru);
+  border-radius: 9999px;
+  background: var(--color-alb);
+}
+
+.mCronTitlu {
+  color: var(--color-ardezie-9);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mCronData {
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* 4. Avocatura - teanc */
+.mTeanc {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.mTeancFoi {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: 170px;
+  padding: 0 0 4px;
+}
+
+.mFoaie {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 96px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 6px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+.mFoaie:nth-child(1) {
+  top: 0;
+  left: 16px;
+  right: 0;
+}
+
+.mFoaie:nth-child(2) {
+  top: 6px;
+  left: 12px;
+  right: 4px;
+}
+
+.mFoaie:nth-child(3) {
+  top: 12px;
+  left: 8px;
+  right: 8px;
+}
+
+.mFoaie:nth-child(4) {
+  top: 18px;
+  left: 4px;
+  right: 12px;
+}
+
+.mFoaie:nth-child(5) {
+  top: 24px;
+  left: 0;
+  right: 16px;
+}
+
+.mTeancCip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.mTeancCip .mNotaRosie {
+  opacity: 0;
+}
+
+.mLocAlbastru {
+  color: var(--color-albastru-apasat);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 5. Asigurari - evantai */
+.mEvantai {
+  position: relative;
+  height: 260px;
+}
+
+.mEvantaiLinii {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--color-ardezie-3);
+  stroke-width: 1.5;
+}
+
+.mEvantaiLinii path {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 0;
+  vector-effect: non-scaling-stroke;
+}
+
+.mEvantaiFisiere {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  max-width: 46%;
+}
+
+.mFisierPunctat {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 6px 12px;
+  border: 1px dashed var(--color-ardezie-3);
+  border-radius: 9999px;
+  background: var(--color-alb);
+  color: var(--color-ardezie-6);
+  font-family: var(--font-mono);
+  font-size: 12.16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mDosar {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 210px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-albastru);
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+  transform: translateY(-50%);
+}
+
+.mDosarIconita {
+  color: var(--color-albastru);
+}
+
+.mDosarNume {
+  color: var(--color-ardezie-9);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mDosarStari {
+  position: relative;
+  display: grid;
+}
+
+.mDosarStari > * {
+  grid-area: 1 / 1;
+}
+
+.mDosarStari .mStareRosie {
+  opacity: 0;
+}
+
+/* 6. Logistica - contopire */
+.mContopire {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  min-height: 150px;
+}
+
+.mContopireSursa {
+  position: relative;
+  height: 110px;
+}
+
+.mContopireFisier {
+  position: absolute;
+  opacity: 0.35;
+  translate: var(--dx) var(--dy);
+}
+
+.mContopireRezultat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 12px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-panou);
+}
+
+/* 7. Notariat - pastrare */
+.mPastrare {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mPastrareCap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.mPastrarePista {
+  position: relative;
+  height: 48px;
+  margin: 0 24px;
+}
+
+.mPastrareLinie {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-albastru), var(--color-ardezie-2));
+  transform-origin: left;
+}
+
+.mAn {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-ardezie-5);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
+
+.mAnPunct {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: var(--color-albastru);
+}
+
+@media (max-width: 820px) {
+  .mCronologie {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 0;
+    justify-items: start;
+  }
+
+  .mCronLinie {
+    display: none;
+  }
+
+  .mCronDoc {
+    position: static;
+    transform: none;
+    margin-bottom: 8px;
+  }
+
+  .mCronEtapa {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .mTeanc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mEvantai {
+    height: 320px;
+  }
+
+  .mEvantaiLinii {
+    display: none;
+  }
+
+  .mEvantaiFisiere {
+    position: static;
+    max-width: 100%;
+    gap: 8px;
+  }
+
+  .mDosar {
+    position: static;
+    width: 100%;
+    margin-top: 16px;
+    transform: none;
+  }
+
+  .mEvantai {
+    height: auto;
+  }
+
+  .mContopire,
+  .mCanale {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mSageata {
+    transform: rotate(90deg);
+  }
+}
+
+/* --- Animatiile de o singura data (numai cu `data-stare`, deci numai cu JavaScript) --------- */
+
+.panouri[data-stare] .aTastare {
+  animation: tastare 1.1s steps(34) 0.2s both;
+}
+
+.panouri[data-stare] .aUrca {
+  animation: urca 0.4s ease-out 1.45s both;
+}
+
+.panouri[data-stare] .aUrca16 {
+  animation: urca 0.4s ease-out 1.6s both;
+}
+
+.panouri[data-stare] .aApare21 {
+  animation: apare 0.3s ease 2.1s both;
+}
+
+.panouri[data-stare] .aApare17 {
+  animation: apare 0.3s ease 1.7s both;
+}
+
+.panouri[data-stare] .aApare20 {
+  animation: apare 0.3s ease 2s both;
+}
+
+.panouri[data-stare] .aApare {
+  animation: apare 0.3s ease both;
+}
+
+.panouri[data-stare] .aMarcaj {
+  animation: marcaj 0.4s ease 1.9s both;
+}
+
+.panouri[data-stare] .aAbsorbit {
+  animation: absorbit 0.6s ease-in both;
+}
+
+.panouri[data-stare] .aIntraStanga {
+  animation: intraStanga 0.35s ease-out both;
+}
+
+.panouri[data-stare] .aLinie {
+  animation: linie 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+.panouri[data-stare] .aLinie16 {
+  animation: linie 1.6s ease 0.2s both;
+}
+
+.panouri[data-stare] .aCalatoreste {
+  animation: calatoreste 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+.panouri[data-stare] .aPunct {
+  animation: punct 0.3s ease both;
+}
+
+.panouri[data-stare] .aAseaza {
+  animation: aseaza 0.8s ease-in both;
+}
+
+.panouri[data-stare] .aDispare15 {
+  animation: dispare 0.3s ease 1.5s both;
+}
+
+.panouri[data-stare] .aDeseneaza {
+  animation: deseneaza 1s ease-out both;
+}
+
+.panouri[data-stare] .aDeschide {
+  animation: deschide 0.4s ease 1.6s both;
+}
+
+.panouri[data-stare] .aIese16 {
+  animation: dispare 0.3s ease 1.6s both;
+}
+
+.panouri[data-stare] .aIntra19 {
+  animation: apare 0.3s ease 1.9s both;
+}
+
+.panouri[data-stare] .aContopeste {
+  animation: contopeste 0.7s ease-in both;
+}
+
+.panouri[data-stare] .aIntra13 {
+  animation: urca 0.45s ease 1.3s both;
+}
+
+.panouri[data-stare="asteapta"] * {
+  animation-play-state: paused;
+}
+
+@keyframes tastare {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes urca {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes apare {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes marcaj {
+  from {
+    background-color: transparent;
+  }
+}
+
+@keyframes absorbit {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intraStanga {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes linie {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes calatoreste {
+  from {
+    left: 16.6%;
+  }
+}
+
+@keyframes punct {
+  from {
+    border-color: var(--color-ardezie-2);
+  }
+}
+
+@keyframes aseaza {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes dispare {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes deseneaza {
+  from {
+    stroke-dashoffset: 400;
+  }
+}
+
+@keyframes deschide {
+  from {
+    border-color: var(--color-ardezie-2);
+    box-shadow: none;
+  }
+}
+
+@keyframes contopeste {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Eticheta vizibila a machetelor cu date fictive (decizia D11): 11 px, colt dreapta-sus, cerneala-3
+   pe alb = 4,74:1. Figura are deja declaratia pentru cititoarele de ecran, deci eticheta e aria-hidden. */
+.eticheteExemplu {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  padding: 2px 6px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 6px;
+  background: var(--color-alb);
+  color: var(--color-cerneala-3);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  pointer-events: none;
+}
+
+/* In scena lipita figura are latimea ecranului: eticheta se aliniaza la coloana de 880 a machetei. */
+.scena > .eticheteExemplu {
+  right: max(8px, calc(50% - 440px));
+}

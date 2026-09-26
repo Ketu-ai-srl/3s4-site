@@ -1,0 +1,308 @@
+/* Pagina /contact (contact.md §3-§6; COMPONENTE §4.11). Eroul, formularul si CTA-ul final sunt
+   piese inghetate si nu se stilizeaza de aici; clasele de mai jos sunt numai pe elementele feliei. */
+
+.bloc {
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+/* --- 3. caseta principala: padding 16 sus; 880, padding 24, ardezie-0, chenar ardezie-2, raza 16 --- */
+
+.sectiuneCaseta {
+  padding-top: 16px;
+}
+
+.caseta {
+  padding: 24px;
+  background: var(--color-ardezie-0);
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-16);
+}
+
+.casetaTitlu {
+  margin: 0 0 6px;
+  color: var(--color-ardezie-9);
+}
+
+.casetaText {
+  margin: 0 0 20px;
+  max-width: 640px;
+  font-size: 16px;
+  line-height: 25.6px;
+  color: var(--color-ardezie-6);
+}
+
+.casetaRand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.casetaNota {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-ardezie-5);
+}
+
+/* --- 4-6. blocurile cu cap: padding 64 sus (40 la <= 768) ---------------------------------- */
+
+.sectiuneBloc {
+  padding-top: 64px;
+}
+
+@media (max-width: 768px) {
+  .sectiuneBloc {
+    padding-top: 40px;
+  }
+}
+
+/* --- 4. grila de subiecte: max 1100, mai lata decat blocul de 880 ------------------------- */
+
+.grila {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  max-width: 1100px;
+  margin: 20px auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.celula {
+  display: flex;
+}
+
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  background: var(--color-alb);
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-16);
+  box-shadow: var(--shadow-fir);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--durata-rapida) ease;
+}
+
+.card:hover {
+  border-color: var(--color-albastru);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+.cardIconita {
+  margin-bottom: 4px;
+  color: var(--color-albastru);
+}
+
+.cardTitlu {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+  color: var(--color-ardezie-9);
+}
+
+.cardText {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-ardezie-5);
+}
+
+.cardAdresa {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  color: var(--color-albastru);
+  overflow-wrap: anywhere;
+}
+
+/* --- 5. canalele: panou 880, 4 randuri `1fr auto` ----------------------------------------- */
+
+.panou {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--color-alb);
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-16);
+  box-shadow: var(--shadow-fir);
+  overflow: hidden;
+}
+
+.rand {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-ardezie-1);
+}
+
+.rand:last-child {
+  border-bottom: 0;
+}
+
+.randStanga {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4px;
+  min-width: 0;
+}
+
+.randNume {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 25.6px;
+  letter-spacing: -0.08px;
+  color: var(--color-ardezie-9);
+}
+
+.randLegatura {
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-albastru);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+a.randLegatura:hover {
+  text-decoration: underline;
+}
+
+a.randLegatura:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.randText {
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-ardezie-5);
+}
+
+.randStare {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  color: var(--color-ardezie-6);
+  white-space: nowrap;
+}
+
+.randCeas {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+}
+
+@media (max-width: 720px) {
+  .rand {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .randStare {
+    white-space: normal;
+  }
+}
+
+.notaPanou {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-ardezie-5);
+}
+
+.notaPanou strong {
+  font-weight: 600;
+  color: var(--color-ardezie-6);
+}
+
+/* --- 6. marca si platforma: 2 carduri de 432 + 16 (o coloana la <= 720) ------------------- */
+
+.carduriMarca {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+@media (max-width: 720px) {
+  .carduriMarca {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cardMarca {
+  padding: 24px;
+  background: var(--color-alb);
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-16);
+  box-shadow: var(--shadow-fir);
+}
+
+.cardMarcaTitlu {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+  color: var(--color-ardezie-9);
+}
+
+.cardMarcaRol {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-ardezie-5);
+}
+
+.fapte {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-ardezie-1);
+}
+
+.fapt {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4px;
+}
+
+.faptEticheta {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 19.2px;
+  color: var(--color-ardezie-5);
+}
+
+.faptValoare {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22.4px;
+  color: var(--color-ardezie-9);
+}
+
+.faptMono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}

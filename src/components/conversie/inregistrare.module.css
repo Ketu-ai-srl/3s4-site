@@ -1,0 +1,423 @@
+/* Pagina /inregistrare (inregistrare.md §2-§2b; COMPONENTE §4.11, sablonul autentificare-centrata).
+   Invelis 600 centrat; card 600 cu padding 40, chenar ardezie-2, raza 16, umbra-fir; sub 600 cardul
+   dispare si campurile stau direct pe pagina. Campul are 48 px (contactul are 47; COMPONENTE §1 #15). */
+
+.zona {
+  min-height: 80vh;
+  padding-bottom: 64px;
+}
+
+.invelis {
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+.card {
+  padding: 40px;
+  background: var(--color-alb);
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-16);
+  box-shadow: var(--shadow-fir);
+}
+
+@media (max-width: 600px) {
+  .zona {
+    padding-bottom: 32px;
+  }
+
+  .card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+.formular {
+  display: block;
+}
+
+/* --- Randurile: prenume + nume raman pe 2 coloane si la 390 (o coloana abia sub 350);
+       e-mail + telefon trec pe o coloana sub 600 ----------------------------------------------- */
+
+.randNume,
+.randContact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .randNume {
+    gap: 12px;
+  }
+
+  .randContact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
+@media (max-width: 350px) {
+  .randNume {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
+.grup {
+  margin-bottom: 20px;
+  min-width: 0;
+}
+
+.eticheta {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22.4px;
+  color: var(--color-cerneala);
+}
+
+.camp {
+  display: block;
+  width: 100%;
+  height: 48px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--color-linie);
+  border-radius: var(--radius-12);
+  background: var(--color-alb);
+  color: var(--color-cerneala);
+  font: inherit;
+  font-size: 16px;
+  line-height: 21px;
+  transition: all var(--durata-rapida) ease;
+}
+
+.camp::placeholder {
+  color: var(--color-cerneala-3);
+  opacity: 1;
+}
+
+.camp:focus,
+.camp:focus-visible {
+  outline: none;
+  border-color: var(--color-albastru);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.campEroare {
+  border-color: var(--color-rosu);
+}
+
+.eroare,
+.eroareBifa {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 19.2px;
+  color: var(--color-rosu);
+}
+
+.eroareBifa {
+  margin: -2px 0 8px 26px;
+}
+
+/* --- Parola: padding dreapta 52, butonul ochi 44x44 la 2 px de margine ---------------------- */
+
+.parolaInvelis {
+  position: relative;
+}
+
+.campParola {
+  padding-right: 52px;
+}
+
+.ochi {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-6);
+  background: transparent;
+  color: var(--color-ardezie-5);
+  cursor: pointer;
+}
+
+.ochi:hover {
+  color: var(--color-ardezie-9);
+}
+
+.ochi:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: -2px;
+}
+
+.indiciu,
+.indiciuEroare {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: var(--color-ardezie-5);
+}
+
+.indiciuEroare {
+  color: var(--color-rosu);
+}
+
+/* --- Bifele: 18 px, accent albastru; termenii obligatorii, noutatile separate si nebifate ---- */
+
+.grupBife {
+  margin-bottom: 12px;
+}
+
+.bifa {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-cerneala-2);
+  cursor: pointer;
+}
+
+.bifa input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  accent-color: var(--color-albastru);
+}
+
+.bifa input:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+/* Legatura apare ca legatura numai cand pagina ei e publicata; pana atunci `Tinta` randeaza un
+   `span` inert, iar textul ramane text simplu (un element care arata a legatura si nu duce nicaieri
+   ar insela). */
+a.legaturaText {
+  color: var(--color-albastru);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a.legaturaText:hover {
+  color: var(--color-albastru-apasat);
+}
+
+a.legaturaText:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Butonul: 518x53, pastila; la <= 600 minim 52 ----------------------------------------- */
+
+.trimite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 16px 32px;
+  border: 0;
+  border-radius: var(--radius-pastila);
+  background: var(--color-albastru);
+  color: var(--color-alb);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 21px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.trimite:hover {
+  background: var(--color-albastru-apasat);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medie);
+}
+
+.trimite:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 3px;
+}
+
+.trimite:disabled {
+  opacity: 0.65;
+  cursor: default;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trimite,
+  .camp {
+    transition: none;
+  }
+
+  .trimite:hover {
+    transform: none;
+  }
+}
+
+.inactiv {
+  margin: 12px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-12);
+  background: var(--color-ardezie-0);
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-ardezie-7);
+}
+
+.inactiv:empty {
+  display: none;
+}
+
+.eroareTrimitere {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 22.4px;
+  color: var(--color-rosu);
+}
+
+.nota {
+  margin: 13.6px 0 0;
+  font-size: 13px;
+  line-height: 20.8px;
+  text-align: center;
+  color: var(--color-ardezie-5);
+}
+
+.informare {
+  margin: 16px 0 0;
+  font-size: 12px;
+  line-height: 19.2px;
+  color: var(--color-cerneala-2);
+}
+
+.informare p + p {
+  margin-top: 4px;
+}
+
+.ajutor {
+  margin: 20px 0 0;
+  font-size: 14px;
+  line-height: 22.4px;
+  text-align: center;
+}
+
+.ajutorLegatura {
+  color: var(--color-ardezie-5);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a.ajutorLegatura:hover {
+  color: var(--color-albastru);
+}
+
+a.ajutorLegatura:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Rezumatul raspunsurilor din constructor (numai cand adresa are parametri) ------------- */
+
+.rezumat {
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: var(--radius-12);
+  background: var(--color-ardezie-0);
+}
+
+.rezumatTitlu {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20.8px;
+  color: var(--color-ardezie-9);
+}
+
+.rezumatLista {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 20.8px;
+}
+
+.rezumatLista div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+}
+
+.rezumatLista dt {
+  color: var(--color-ardezie-5);
+}
+
+.rezumatLista dt::after {
+  content: ":";
+}
+
+.rezumatLista dd {
+  margin: 0;
+  color: var(--color-ardezie-9);
+}
+
+.rezumatNota {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 19.2px;
+  color: var(--color-ardezie-5);
+}
+
+/* --- Succesul (numai cu operator): cerc 56 verde-nuanta, bifa 28 ----------------------------- */
+
+.succes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.succesCerc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--color-verde-nuanta);
+  color: var(--color-verde);
+}
+
+.succesTitlu {
+  margin: 0 0 8px;
+  font-size: 20.8px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-cerneala);
+}
+
+.succesText {
+  margin: 0;
+  font-size: 16px;
+  line-height: 25.6px;
+  color: var(--color-cerneala-2);
+}

@@ -1,0 +1,25 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei conversie din src/content/rute.ts: /inregistrare, /descarca, /contact, /incepe. Fisierul feliei, dupa regula din config/seo/fundatie.json si tests/browser/ajutor/raspunsuri.ts. Pe toate patru, primul paragraf din <main> e subtitlul eroului, cu forma masurata a referintei (un rand sau doua, sub 30 de cuvinte), deci regula paragrafului se ridica pe fiecare, cu motivul scris; entitatile si titlul se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",
+  "raspuns_autonom": {
+    "/inregistrare": {
+      "intrebare": "Cum deschid un cont 3S și cât costă?",
+      "entitati": ["3S", "0 RON", "contul"],
+      "fara_regula_paragrafului": "Sablonul autentificare-centrata (inregistrare.md §2a): sub titlu sta un singur rand de subtitlu la 1440, masurat, apoi formularul. Raspunsul paginii e titlul impreuna cu acel rand (contul gratuit, 0 RON astazi); un paragraf de 30 de cuvinte ar schimba forma masurata a invelisului de 600."
+    },
+    "/descarca": {
+      "intrebare": "Pe ce dispozitive merge aplicația 3S?",
+      "entitati": ["3S", "Windows", "0 RON"],
+      "fara_regula_paragrafului": "Eroul interior pe 880 are forma masurata (descarca.md §2): subtitlu de doua randuri la 1440, 18/28,8, adica aproximativ 22 de cuvinte. Raspunsul (calculator, telefon, browser, contul gratuit la 0 RON) e in titlu, subtitlu si cardul recomandat, toate in fereastra de 400 de cuvinte."
+    },
+    "/contact": {
+      "intrebare": "Cum ajung la echipa 3S cu o întrebare?",
+      "entitati": ["3S", "echipa", "formularul"],
+      "fara_regula_paragrafului": "Eroul interior pe 880 are forma masurata (contact.md §2): subtitlu de doua randuri la 1440, 18/28,8. Raspunsul (formularul de pe pagina, paginile care raspund deja, canalele deschise azi) e in caseta principala si in panoul de canale, in fereastra de 400 de cuvinte."
+    },
+    "/incepe": {
+      "intrebare": "Cum arată interfața 3S la primii pași?",
+      "entitati": ["3S", "demonstrație"],
+      "fara_regula_paragrafului": "Sablonul imersiva (incepe.md §1): titlu si un singur rand de text deasupra ramei, masurate; restul paginii e demonstratia din rama. Un paragraf de 30 de cuvinte ar schimba scena de 100lvh."
+    }
+  }
+}

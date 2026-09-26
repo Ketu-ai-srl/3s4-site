@@ -1,0 +1,9 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei enterprise-formular din src/content/rute.ts. Forma si regulile: config/seo/fundatie.json si tests/browser/ajutor/raspunsuri.ts.",
+  "raspuns_autonom": {
+    "/enterprise": {
+      "intrebare": "Ce primește o organizație cu arhivă mare de la 3S, în afara contului?",
+      "entitati": ["3S", "Amazon", "Germania", "nivelul de serviciu"]
+    }
+  }
+}

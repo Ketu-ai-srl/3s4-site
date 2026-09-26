@@ -1,0 +1,20 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei cinema-1 din src/content/rute.ts: cele trei pagini cinema de functionalitate. Forma si regulile: config/seo/fundatie.json si tests/browser/ajutor/raspunsuri.ts. Toate trei au eroul sablonului cinema masurat, deci primul paragraf din <main> e un rand scurt al eroului, nu un paragraf de raspuns de 30-80 de cuvinte; entitatile si titlul se verifica, ca pe orice ruta.",
+  "raspuns_autonom": {
+    "/functionalitati/cautare-ai": {
+      "intrebare": "Cum găsește 3S fraza căutată într-un document fără să deschideți dosarele?",
+      "entitati": ["3S", "Căutare AI", "sursa citată"],
+      "fara_regula_paragrafului": "Eroul are forma masurata a sablonului cinema: dupa eticheta-titlu vine intrebarea scrisa in terminal (doua randuri la 1440), apoi doua randuri scurte; primul <p> din <main> are sub 30 de cuvinte prin constructie. Raspunsul paginii e titlul impreuna cu intrebarea din terminal si randurile de sub ea."
+    },
+    "/functionalitati/automatizari-ai": {
+      "intrebare": "Cum ajunge un act nou la omul care trebuie să se ocupe de el?",
+      "entitati": ["Reguli automate", "3S"],
+      "fara_regula_paragrafului": "Eroul are forma masurata a sablonului cinema: primul <p> din <main> e eticheta paginii, urmata de titlu si de subtitlul scris de un rand; nu exista paragraf de raspuns de 30-80 de cuvinte in erou. Raspunsul paginii e titlul impreuna cu subtitlul si cu sectiunile de sub erou."
+    },
+    "/functionalitati/portal-clienti": {
+      "intrebare": "Cum ajung actele la client fără atașamente trimise pe e-mail?",
+      "entitati": ["Portalul clienților", "3S"],
+      "fara_regula_paragrafului": "Eroul are forma masurata a sablonului cinema: primul <p> din <main> e eticheta paginii, urmata de titlu, de cererea scrisa in terminal si de un subtitlu de un rand; nu exista paragraf de raspuns de 30-80 de cuvinte in erou. Raspunsul paginii e titlul impreuna cu cererea si cu subtitlul."
+    }
+  }
+}

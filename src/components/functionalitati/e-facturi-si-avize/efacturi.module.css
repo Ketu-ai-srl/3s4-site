@@ -1,0 +1,437 @@
+/* Machetele paginii /functionalitati/e-facturi-si-avize (fisa functionalitati__e-facturi-si-avize.md).
+   Cifrele: 1440 / 390. Clasele stau numai pe elementele acestei pagini; piesele cadrului cinema nu se
+   restilizeaza de aici. */
+
+.titluSectiune {
+  margin: 0 0 16px;
+}
+
+.paragraf {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* --- S1: harta celor cinci locuri ------------------------------------------------------------- */
+
+.harta {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  margin: 44px auto 0;
+  aspect-ratio: 800 / 420;
+}
+
+.desenHarta {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.curge {
+  animation: curgeLegatura 14s linear infinite;
+}
+
+.curgeContrast {
+  animation: curgeLegatura 12s linear infinite;
+}
+
+@keyframes curgeLegatura {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -22px;
+  }
+}
+
+.textLegatura {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: rgba(252, 165, 165, 0.8);
+  white-space: nowrap;
+}
+
+.noduri {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nod {
+  position: absolute;
+  display: flex;
+  width: 138px;
+  min-height: 98px;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 11.2px 8.8px 10.4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: var(--color-ardezie-9);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.cutieNod {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  box-sizing: border-box;
+}
+
+.etichetaNod {
+  font-size: 12.16px;
+  font-weight: 600;
+  line-height: 16px;
+  color: #e6ecf5;
+}
+
+.rolNod {
+  font-size: 9.92px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0.2px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.rezumat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8.8px;
+  margin: 28px 0 0;
+  padding: 8px 15.2px;
+  border-radius: 9999px;
+  background: rgba(248, 113, 113, 0.14);
+  font-size: 11.52px;
+  font-weight: 700;
+  line-height: 18px;
+  letter-spacing: 0.23px;
+  color: var(--color-rosu-clar);
+}
+
+.punctRezumat {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-rosu-clar);
+}
+
+/* --- S4: generatorul --------------------------------------------------------------------------- */
+
+/* La referinta min(1, 2p - 0,1) si max(0, 24 - 50p) px; aici intreg la p ~0,44 (antetul componentei). */
+.generatorLoc {
+  width: 100%;
+  max-width: 580px;
+  margin: 40px auto 0;
+  opacity: clamp(0, calc(2.5 * var(--p) - 0.1), 1);
+  transform: translateY(max(0px, calc(24px - 50px * var(--p))));
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.generator {
+  width: 100%;
+}
+
+.exemplu {
+  display: inline-block;
+  padding: 1px 7.2px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.capGenerator {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 13.6px;
+  padding: 13.6px 17.6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stareGenerator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+}
+
+.punctVerde {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-verde-clar);
+}
+
+.cheieMica {
+  font-size: 9.28px;
+  font-weight: 600;
+  line-height: 14px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.valoareStare {
+  font-size: 11.2px;
+  font-weight: 600;
+  line-height: 17.92px;
+  color: var(--color-verde-clar);
+}
+
+.butonDecorativ {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6.4px;
+  margin-left: auto;
+  padding: 7.2px 12.8px;
+  border-radius: 8px;
+  background: var(--color-albastru);
+  font-size: 12.48px;
+  font-weight: 600;
+  line-height: 15.6px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.sabloane {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6.4px;
+  padding: 13.6px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: opacity 0.5s ease;
+}
+
+.sablon {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 4.8px 8.8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 10.4px;
+  font-weight: 600;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.sablonActiv {
+  border-color: transparent;
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-albastru-clar);
+}
+
+.sablonMaiMulte {
+  font-size: 10.4px;
+  font-style: italic;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.flux {
+  display: flex;
+  flex-direction: column;
+  gap: 8.8px;
+  margin: 0;
+  padding: 16px 20px;
+  list-style: none;
+}
+
+.randFlux {
+  display: flex;
+  min-height: 41px;
+  align-items: center;
+  gap: 10.4px;
+  padding: 8.8px 10.4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  box-sizing: border-box;
+  opacity: var(--o, 1);
+  transition: opacity 0.5s ease;
+}
+
+.cercFlux {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.14);
+  color: var(--color-verde-clar);
+}
+
+.cercLucru {
+  background: rgba(251, 191, 36, 0.14);
+}
+
+.punctLucru {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-chihlimbar-clar);
+}
+
+.textFlux {
+  min-width: 0;
+  flex: 1;
+  font-size: 13.6px;
+  font-weight: 400;
+  line-height: 21.76px;
+  color: #e6ecf5;
+}
+
+.puncteLucru {
+  font-family: var(--font-mono);
+  font-size: 10.88px;
+  font-weight: 700;
+  color: var(--color-chihlimbar-clar);
+}
+
+/* Starea "asteapta" (cu miscare, sub prag): sabloanele ascunse, fluxul stins. Dupa prag, o singura data,
+   starea finala (`gata`), aceeasi cu cea din HTML-ul servit (`static`). */
+.generatorLoc[data-prag="asteapta"] .sabloane {
+  opacity: 0;
+}
+
+.generatorLoc[data-prag="asteapta"] .randFlux {
+  opacity: 0.2;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5.6px;
+  margin: 0;
+  padding: 4px 20px 20px;
+}
+
+.randMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8.8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cheieMeta {
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 20.48px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.valoareMeta {
+  margin: 0;
+  font-size: 12.8px;
+  font-weight: 600;
+  line-height: 20.48px;
+  color: #e6ecf5;
+  text-align: right;
+}
+
+.valoareCod {
+  font-family: var(--font-mono);
+  font-size: 11.84px;
+  font-weight: 500;
+}
+
+.valoarePastila {
+  padding: 3.2px 8.8px;
+  line-height: 18.6px;
+  border-radius: 6px;
+  background: rgba(37, 99, 235, 0.14);
+  font-size: 10.88px;
+  color: var(--color-albastru-clar);
+}
+
+@media (max-width: 767px) {
+  .harta {
+    aspect-ratio: 600 / 460;
+  }
+
+  .nod {
+    width: 96px;
+    min-height: 82px;
+    gap: 2px;
+    padding: 8.8px 5.6px 8px;
+  }
+
+  .cutieNod {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 2px;
+  }
+
+  .cutieNod svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .etichetaNod {
+    font-size: 10.24px;
+    line-height: 13px;
+  }
+
+  .rolNod {
+    font-size: 8.64px;
+    line-height: 12px;
+  }
+
+  /* La 390 nodurile de 96 px acopera locul etichetelor de pe legaturi (la referinta ies de ~4 px, de
+     necitit): se ascund, iar legaturile raman desenate. Sunt decor (`aria-hidden`), nu poarta informatie. */
+  .textLegatura {
+    display: none;
+  }
+
+  .rezumat {
+    padding: 7.2px 12.8px;
+    font-size: 9.92px;
+  }
+
+  .butonDecorativ {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  /* Capul, sabloanele, fluxul si metadatele pastreaza la 390 marginile de la 1440 (fisa S4: randuri de 308 in
+     cardul de 350, capul 90, sabloanele 91), deci nu se suprascriu aici. */
+
+  .randMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .valoareMeta {
+    text-align: left;
+  }
+}

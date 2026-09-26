@@ -1,0 +1,23 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor aflate sub marcajul feliei comparatii-termene din src/content/rute.ts, in fisierul feliei, dupa regula din tests/browser/ajutor/raspunsuri.ts (un fisier pe felie, cu numele marcajului). Cele doua comparatii au eroul masurat al referintei: sub titlu sta un subtitlu de doua randuri, nu un paragraf de raspuns; scutirea are motivul scris pe ruta. Verificatorul si subpagina de tiparit au paragraful de raspuns si nu cer scutire.",
+  "raspuns_autonom": {
+    "/comparatie-drive": {
+      "intrebare": "Ține Google Drive registrul și termenele legale ale actelor unei firme?",
+      "entitati": ["3S", "Google Drive", "drive"],
+      "fara_regula_paragrafului": "Eroul are forma masurata a paginii de referinta: sub titlu sta un subtitlu de doua randuri la 1440, nu un paragraf de raspuns cu lungimea lui. Raspunsul e titlul impreuna cu subtitlul si cu cardul divizat de dedesubt, iar entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta."
+    },
+    "/comparatie-stocare": {
+      "intrebare": "În ce țară și pe ce servere stau actele firmei în 3S, într-un bucket S3 propriu sau în Google Drive?",
+      "entitati": ["3S", "Google Drive", "S3"],
+      "fara_regula_paragrafului": "Eroul are forma masurata a paginii de referinta: sub titlul-intrebare sta un subtitlu de doua randuri la 1440, nu un paragraf de raspuns cu lungimea lui. Raspunsul e titlul impreuna cu subtitlul si cu cele trei carduri de dedesubt, iar entitatile se verifica in fereastra de 400 de cuvinte."
+    },
+    "/instrumente/termene-pastrare": {
+      "intrebare": "Care e termenul de păstrare pentru facturi, state de salarii și dosare de personal în România și în Republica Moldova?",
+      "entitati": ["România", "Republica Moldova", "facturi", "5 ani"]
+    },
+    "/instrumente/termene-pastrare/tipar": {
+      "intrebare": "Care sunt termenele de păstrare a actelor în România și în Republica Moldova, pe o foaie de tipărit?",
+      "entitati": ["România", "Republica Moldova", "termene de păstrare"]
+    }
+  }
+}
