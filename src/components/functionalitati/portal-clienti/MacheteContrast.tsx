@@ -5,12 +5,9 @@
 //            de puncte. Randurile stinse si punctele sunt decor (textura unui inbox plin): se deseneaza din
 //            CSS si nu poarta informatie.
 //   Acum     portal: pastila verde "in timp real", patru randuri rol -> drept, cu bifa.
-//
-// ETICHETA "exemplu" (decizia D11): inboxul are adrese de firma si o factura, deci poarta eticheta
-// vizibila la capatul barei; portalul in miniatura are doar roluri, fara ea.
 
 import { Check } from "lucide-react";
-import { CONTRAST_PORTAL, ETICHETA_EXEMPLU } from "@/content/functionalitati/portal-clienti";
+import { CONTRAST_PORTAL } from "@/content/functionalitati/portal-clienti";
 import s from "./portal.module.css";
 
 export function InboxMini() {
@@ -23,9 +20,6 @@ export function InboxMini() {
           {d.necitite}
         </span>
         <span className={s.caleMini}>{d.cale}</span>
-        <span className={[s.exemplu, s.exempluMini].join(" ")} aria-hidden="true">
-          {ETICHETA_EXEMPLU}
-        </span>
       </div>
       <ul className={s.randuriMini}>
         {d.mesaje.map((m) => (

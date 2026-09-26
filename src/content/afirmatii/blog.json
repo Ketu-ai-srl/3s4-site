@@ -1,0 +1,56 @@
+[
+  {
+    "id": "blog-surse-oficiale-la-final",
+    "text": "Fiecare articol de pe blog are la final sursele oficiale pe care se sprijină",
+    "unde": "src/content/blog/texte.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: conducta blogului refuză un articol fără cel puțin o sursă (src/content/blog/antet.ts), iar regula lotului de articole cere surse primare (legislație, monitorul oficial, autoritățile); că sursele sunt oficiale ține de fiecare articol, nu de cod",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "blog-cta-cautare-cu-intrebare",
+    "text": "Actele firmei se găsesc punând o întrebare",
+    "unde": "src/content/blog/texte.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-functii-in-productie: declarația owner-ului, decizia D4b din planul valului S4 (căutarea cu sursa citată există azi în produs)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "blog-cta-web-si-whatsapp",
+    "text": "3S răspunde la întrebări pe web și pe WhatsApp",
+    "unde": "src/content/blog/texte.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-integrari-si-whatsapp: decizia D4c din planul valului S4 (pe WhatsApp răspunde la întrebări)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "blog-cta-raspuns-cu-documentul",
+    "text": "Răspunsul vine împreună cu documentul din care e luat",
+    "unde": "src/content/blog/texte.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-raspuns-cu-pagina; citarea documentului e un detaliu al căutării declarate existente prin decizia D4b",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "blog-cta-pret-0-ron",
+    "text": "Contul costă 0 RON astăzi",
+    "unde": "src/content/blog/texte.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-pret-0-ron: decizia D3 din planul valului S4 (toate pachetele costă 0 RON astăzi)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "blog-autor-echipa-3s",
+    "text": "Articolele blogului sunt semnate „Echipa 3S”",
+    "unde": "src/content/blog/texte.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat de owner: semnătura articolelor; la referința vizuală autorul e mereu echipa, niciodată o persoană (blog__articol-sablon.md §3), iar articolele se scriu pentru marca 3S",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

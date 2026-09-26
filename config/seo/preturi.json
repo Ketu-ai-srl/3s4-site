@@ -1,9 +1,0 @@
-{
-  "_nota": "Declaratia de raspuns (poarta G-AI-02) a rutei aflate sub marcajul feliei preturi din src/content/rute.ts, in fisierul acestei felii, cum cere tests/browser/ajutor/raspunsuri.ts. Primul paragraf din <main> e subtitlul eroului (41 de cuvinte), deci regula paragrafului se aplica fara scutire.",
-  "raspuns_autonom": {
-    "/preturi": {
-      "intrebare": "Cât costă 3S și ce include fiecare pachet?",
-      "entitati": ["3S Business", "3S Enterprise", "0 RON"]
-    }
-  }
-}

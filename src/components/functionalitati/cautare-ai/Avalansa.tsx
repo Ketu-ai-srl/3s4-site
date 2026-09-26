@@ -4,9 +4,6 @@
 // dosarului sta lipita cat dureaza inca o fereastra de derulare, iar cele 13 randuri se aprind pe rand,
 // dupa progresul sectiunii. Ultimul rand e tinta (numele `albastru-clar`, fundal albastru .15).
 //
-// ETICHETA "exemplu" (decizia D11): dosarul are nume de firma si o factura, deci pe langa declaratia
-// pentru cititori (`figcaption`) poarta eticheta vizibila in coltul de sus-dreapta, dupa numarul de fisiere.
-//
 // PULSUL (fisa S1, masurat pe pagina vie): la fiecare 2,4 s un rand ales la intamplare licare 1,1 s,
 // numai cat p e intre 0,05 si 0,95. La 3S ceasul merge doar cat sectiunea e in acel interval si
 // numai cu miscare permisa (COMPONENTE.md §5.7: fara ceasuri pornite nevazut).
@@ -15,7 +12,7 @@ import { useEffect, useState } from "react";
 import Fereastra, { Cip, RandFisier } from "@/components/cinema/Fereastra";
 import { useMiscarePermisa } from "@/components/cinema/miscare";
 import SectiuneScena, { useDinProgres } from "@/components/cinema/SectiuneScena";
-import { AVALANSA, ETICHETA_EXEMPLU } from "@/content/functionalitati/cautare-ai";
+import { AVALANSA } from "@/content/functionalitati/cautare-ai";
 import s from "./cautare.module.css";
 
 /**
@@ -93,14 +90,7 @@ export default function Avalansa() {
       <div className={s.lipit}>
         <Fereastra
           titlu={<CaleDosar />}
-          dreapta={
-            <span className={s.dreaptaExemplu}>
-              {AVALANSA.numar}
-              <span className={s.exemplu} aria-hidden="true">
-                {ETICHETA_EXEMPLU}
-              </span>
-            </span>
-          }
+          dreapta={AVALANSA.numar}
           declaratie={AVALANSA.declaratie}
           compactMobil
           className={s.dosar}

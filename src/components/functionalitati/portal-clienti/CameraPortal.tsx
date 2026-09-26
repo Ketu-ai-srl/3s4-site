@@ -20,7 +20,7 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
 import Fereastra from "@/components/cinema/Fereastra";
 import { useMiscarePermisa } from "@/components/cinema/miscare";
 import SectiuneScena from "@/components/cinema/SectiuneScena";
-import { ACT_PORTAL, areDrept, ETICHETA_EXEMPLU, PORTAL, ROLURI_PORTAL, type RolPortal } from "@/content/functionalitati/portal-clienti";
+import { ACT_PORTAL, areDrept, PORTAL, ROLURI_PORTAL, type RolPortal } from "@/content/functionalitati/portal-clienti";
 import s from "./portal.module.css";
 
 /** Intervalul ciclului si pauza dupa o alegere (fisa S6: 2,38-2,65 s; urmatoarea schimbare la ~12,4 s). */
@@ -65,16 +65,6 @@ function useCiclu(radacina: RefObject<HTMLElement | null>) {
   return { rol, alege, setAtins };
 }
 
-/** Eticheta vizibila "exemplu" din coltul ferestrei (decizia D11): documentul are firma, cod fiscal si
- *  sume, grila numele firmei; declaratia pentru cititori ramane `figcaption`. */
-function Exemplu() {
-  return (
-    <span className={s.exemplu} aria-hidden="true">
-      {ETICHETA_EXEMPLU}
-    </span>
-  );
-}
-
 export default function CameraPortal() {
   const radacina = useRef<HTMLDivElement>(null);
   const { rol, alege, setAtins } = useCiclu(radacina);
@@ -105,14 +95,7 @@ export default function CameraPortal() {
           ))}
         </div>
 
-        <Fereastra
-          titlu={ACT_PORTAL}
-          dreapta={<Exemplu />}
-          declaratie={p.declaratieDocument}
-          className={s.document}
-          corpClassName={s.corpDocument}
-          nume="document-zone"
-        >
+        <Fereastra titlu={ACT_PORTAL} declaratie={p.declaratieDocument} className={s.document} corpClassName={s.corpDocument} nume="document-zone">
           <div className={s.zona} data-activa={rol === "client" ? "da" : "nu"}>
             <p className={s.etichetaZona}>{p.roluri.client.eticheta}</p>
             <p className={s.titluZona}>{ACT_PORTAL}</p>
@@ -143,14 +126,7 @@ export default function CameraPortal() {
           </div>
         </Fereastra>
 
-        <Fereastra
-          titlu={p.grila}
-          dreapta={<Exemplu />}
-          declaratie={p.declaratieGrila}
-          className={s.grila}
-          corpClassName={s.corpGrila}
-          nume="grila-drepturi"
-        >
+        <Fereastra titlu={p.grila} declaratie={p.declaratieGrila} className={s.grila} corpClassName={s.corpGrila} nume="grila-drepturi">
           <table className={s.tabel}>
             <thead>
               <tr>

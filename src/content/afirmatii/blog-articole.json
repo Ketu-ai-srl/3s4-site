@@ -1,0 +1,56 @@
+[
+  {
+    "id": "blog-articole-sursele-pe-pagini",
+    "text": "Articolele din listarea blogului și din paginile de categorie se sprijină pe sursele oficiale citate la finalul fiecăruia",
+    "unde": "src/app/blog/page.tsx, src/app/blog/categorie/contabilitate/page.tsx, src/app/blog/categorie/juridic/page.tsx, src/app/blog/categorie/it/page.tsx, src/app/blog/categorie/management/page.tsx",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca blog-surse-oficiale-la-final; fiecare articol din primul lot are sursele în antet (conducta refuză un articol fără sursă), verificate de lotul de articole al fabricii, nu de cod",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "blog-articole-termen-pe-fiecare-act",
+    "text": "În 3S, fiecare act stă în evidența arhivei cu termenul lui de păstrare",
+    "unde": "src/content/blog/arhivarea-externalizata.mdx, src/content/blog/cat-timp-se-pastreaza-documentele-firmei.mdx, src/content/blog/cautarea-in-documente-dupa-sens.mdx, src/content/blog/digitizarea-arhivei-de-hartie.mdx, src/content/blog/distrugerea-legala-a-documentelor.mdx, src/content/blog/document-electronic-sau-document-scanat.mdx, src/content/blog/inchiderea-firmei-si-arhiva.mdx, src/content/blog/persoana-desemnata-cu-arhiva-firmei.mdx, src/content/blog/registrul-de-evidenta-a-arhivei.mdx, src/content/blog/spv-nu-este-arhiva-e-factura.mdx",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-termene-calculate; evidența arhivei cu termene de păstrare e declarată existentă prin decizia D4b, termenul pe fiecare act e un detaliu al ei",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "blog-articole-web-si-whatsapp",
+    "text": "Actul se caută în 3S pe web sau pe WhatsApp",
+    "unde": "src/content/blog/arhivarea-externalizata.mdx, src/content/blog/cat-timp-se-pastreaza-documentele-firmei.mdx, src/content/blog/cautarea-in-documente-dupa-sens.mdx, src/content/blog/digitizarea-arhivei-de-hartie.mdx, src/content/blog/distrugerea-legala-a-documentelor.mdx, src/content/blog/document-electronic-sau-document-scanat.mdx, src/content/blog/inchiderea-firmei-si-arhiva.mdx, src/content/blog/persoana-desemnata-cu-arhiva-firmei.mdx, src/content/blog/registrul-de-evidenta-a-arhivei.mdx, src/content/blog/spv-nu-este-arhiva-e-factura.mdx",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-integrari-si-whatsapp: decizia D4c din planul valului S4 (pe WhatsApp răspunde la întrebări)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "blog-articole-raspuns-cu-sursa",
+    "text": "Răspunsul vine cu documentul-sursă citat",
+    "unde": "src/content/blog/arhivarea-externalizata.mdx, src/content/blog/cat-timp-se-pastreaza-documentele-firmei.mdx, src/content/blog/cautarea-in-documente-dupa-sens.mdx, src/content/blog/digitizarea-arhivei-de-hartie.mdx, src/content/blog/distrugerea-legala-a-documentelor.mdx, src/content/blog/document-electronic-sau-document-scanat.mdx, src/content/blog/inchiderea-firmei-si-arhiva.mdx, src/content/blog/persoana-desemnata-cu-arhiva-firmei.mdx, src/content/blog/registrul-de-evidenta-a-arhivei.mdx, src/content/blog/spv-nu-este-arhiva-e-factura.mdx",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-raspuns-cu-pagina; citarea documentului e un detaliu al căutării declarate existente prin decizia D4b",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "blog-articole-gazduire-germania",
+    "text": "Fișierele încărcate în 3S stau în Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene",
+    "unde": "src/content/blog/arhivarea-externalizata.mdx, src/content/blog/cat-timp-se-pastreaza-documentele-firmei.mdx, src/content/blog/cautarea-in-documente-dupa-sens.mdx, src/content/blog/digitizarea-arhivei-de-hartie.mdx, src/content/blog/distrugerea-legala-a-documentelor.mdx, src/content/blog/document-electronic-sau-document-scanat.mdx, src/content/blog/inchiderea-firmei-si-arhiva.mdx, src/content/blog/persoana-desemnata-cu-arhiva-firmei.mdx, src/content/blog/registrul-de-evidenta-a-arhivei.mdx, src/content/blog/spv-nu-este-arhiva-e-factura.mdx",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-gazduire-amazon-germania: decizia D4c din planul valului S4 (găzduire Amazon, Germania, o singură regiune)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "blog-articole-semnatura-in-curs",
+    "text": "Prin 3S semnătura calificată nu se poate face azi: integrarea cu furnizorii acreditați e în curs",
+    "unde": "src/content/blog/document-electronic-sau-document-scanat.mdx",
+    "stare": "confirmat",
+    "sursa": "decizia D4c din planul valului S4: semnătura calificată = integrare în curs cu furnizorii acreditați",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  }
+]

@@ -4,14 +4,11 @@
 // MISCAREA (fisa S2, [derulare], in ambele sensuri), in CSS din `--p`: la referinta randul i la max(.15,
 // min(1, 2 (p - 0,07 i))); la 3S aceeasi scara, stransa, intreaga la p 0,45 (abaterea de contrast, cu
 // motivul, in `portal.module.css`); apoi aluneca spre dreapta cu max(0, 36 (p - 0,389 - 0,07 i)) px.
-//
-// ETICHETA "exemplu" (decizia D11): inboxul are o factura si cererile unor firme, deci poarta eticheta
-// vizibila dupa chipul cu necititele, in coltul de sus-dreapta.
 
 import type { CSSProperties } from "react";
 import Fereastra from "@/components/cinema/Fereastra";
 import SectiuneScena from "@/components/cinema/SectiuneScena";
-import { ETICHETA_EXEMPLU, RECUNOASTERE_PORTAL } from "@/content/functionalitati/portal-clienti";
+import { RECUNOASTERE_PORTAL } from "@/content/functionalitati/portal-clienti";
 import s from "./portal.module.css";
 
 /** Latimile barelor-schelet de sub subiecte (fisa S2). */
@@ -25,14 +22,7 @@ export default function Recunoastere() {
       <p className={s.paragrafRecunoastere}>{r.paragraf}</p>
       <Fereastra
         titlu={<span className={s.caleInbox}>{r.cale}</span>}
-        dreapta={
-          <span className={s.dreaptaExemplu}>
-            <span className={s.cipRosu}>{r.necitite}</span>
-            <span className={s.exemplu} aria-hidden="true">
-              {ETICHETA_EXEMPLU}
-            </span>
-          </span>
-        }
+        dreapta={<span className={s.cipRosu}>{r.necitite}</span>}
         punct="patrat-email"
         declaratie={r.declaratie}
         className={s.inbox}

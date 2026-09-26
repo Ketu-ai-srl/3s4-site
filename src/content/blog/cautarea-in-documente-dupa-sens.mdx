@@ -1,0 +1,72 @@
+---
+slug: cautarea-in-documente-dupa-sens
+titlu: "Căutarea în documente după sens, pe înțeles"
+extras: "De ce căutarea după cuvinte exacte ratează actele scanate, cum lucrează căutarea după sens și de ce un răspuns bun arată documentul și pagina."
+categorie: it
+data_verificarii: 2026-09-26
+caseta_fapte:
+  - "La o cerere de acces la datele personale, operatorul răspunde fără întârzieri nejustificate și în cel mult o lună de la primire; când e necesar, după complexitatea și numărul cererilor, termenul se poate prelungi cu două luni, iar persoana e informată în prima lună, cu motivele întârzierii (Regulamentul (UE) 2016/679, art. 12 alin. (3))"
+  - "Operatorul furnizează persoanei vizate o copie a datelor care fac obiectul prelucrării; la o cerere electronică, dacă persoana nu cere alt format, răspunsul vine într-un format electronic utilizat în mod curent (Regulamentul (UE) 2016/679, art. 15 alin. (3))"
+  - "Când evidența contabilă e ținută cu programe informatice, documentele financiar-contabile se pot păstra pe suporturi tehnice, cu condiția să poată fi listate în orice moment, la nevoia entității sau la cererea organelor de control (OMFP 2.634/2015, anexa nr. 1, pct. 36)"
+surse:
+  - url: https://www.dataprotection.ro/servlet/ViewDocument?id=1262
+    ce_sustine: "Textul Regulamentului (UE) 2016/679 publicat de ANSPDCP: art. 12 alin. (3) (răspuns în cel mult o lună de la primire; prelungire cu două luni când e necesar, după complexitatea și numărul cererilor; informarea persoanei despre prelungire în termen de o lună, cu motivele întârzierii), art. 15 alin. (3) (copia datelor care fac obiectul prelucrării; format electronic utilizat în mod curent la cererea electronică, cu excepția cazului în care persoana cere alt format) și art. 15 alin. (4) (dreptul la copie nu aduce atingere drepturilor și libertăților altora)"
+  - url: https://mfinante.gov.ro/documents/35673/219198/OMFP2634_MO910.pdf
+    ce_sustine: "OMFP 2.634/2015, imaginea Monitorului Oficial I nr. 910/09.12.2015 publicată de Ministerul Finanțelor, anexa nr. 1, pct. 36: când evidența contabilă e ținută cu programe informatice, documentele financiar-contabile se pot păstra pe suporturi tehnice, cu condiția să poată fi listate în orice moment, în funcție de necesitățile entității sau la cererea organelor de control"
+  - url: https://mfinante.gov.ro/static/10/Mfp/acte-normative-aprobate/OMF1447_MO453_24052023.pdf
+    ce_sustine: "OMF 1.447/2023 (MO I nr. 453/24.05.2023) modifică Normele OMFP 2.634/2015 la pct. 35^1 și 37^1 și abrogă pct. 38, 39 și anexa nr. 4; pct. 36 nu e atins"
+---
+
+Căutarea după sens găsește un document după ce spune el, chiar dacă întrebarea dumneavoastră folosește alte cuvinte decât actul. Căutarea clasică, cea din Windows sau din programul de e-mail, potrivește litere: numele fișierului sau un șir exact din text. Pe o arhivă scanată, ea eșuează din două motive. Fișierul se numește de obicei `Scan_0042.pdf`, iar [un PDF scanat, fără recunoaștere de text (OCR), conține doar o fotografie a paginii](/blog/digitizarea-arhivei-de-hartie), deci nu există niciun cuvânt în care să caute. Căutarea după sens pornește de la textul extras din scanări, înțelege întrebarea și vă arată fragmentul care răspunde, cu trimitere la documentul și la pagina din care e luat.
+
+## Trei feluri de a căuta
+
+| Criteriu | După numele fișierului | După cuvinte exacte | După sens |
+|---|---|---|---|
+| Ce compară | numele dat la salvare | literele din text | înțelesul întrebării cu înțelesul textului |
+| Merge pe PDF scanat fără OCR | doar dacă numele e bun | nu | nu |
+| Găsește „chiria crește anual" în „se indexează cu rata inflației" | nu | nu | da |
+| Găsește un număr de factură sau un CUI | doar dacă apare în nume | da | mai slab; se combină cu căutarea exactă |
+| Ce primiți | o listă de fișiere | o listă de potriviri | un răspuns cu sursa lui |
+
+De aceea un instrument bun le combină: sensul pentru întrebări în limbaj obișnuit, potrivirea exactă pentru numere, coduri și nume proprii.
+
+## De ce cedează căutarea clasică pe arhivele scanate
+
+Un contract semnat și scanat în 2019 e, pentru calculator, o fotografie. Până nu trece prin OCR, căutarea după cuvinte nu îl vede deloc.
+
+După OCR apare a doua problemă: calitatea textului. Un motor de recunoaștere pus pe engleză poate citi „privind" ca „pnvind" și de obicei pierde diacriticele. Căutarea exactă după „privind" nu mai găsește pagina. Ștampilele peste text, copiile xerox șterse și scrisul de mână pe margine strică și ele cuvinte.
+
+A treia problemă ține de limbaj. Contabilul întreabă „cât plătim la furnizorul de pază", contractul spune „tariful lunar al serviciilor de securitate". Cele două texte n-au niciun cuvânt comun, așa că motorul nu întoarce nimic.
+
+## Cum funcționează, pe scurt
+
+1. **OCR.** Fiecare pagină scanată trece prin recunoașterea textului, setată pe limba română, ca să păstreze ș, ț, ă, î, â.
+2. **Împărțire.** Textul se taie în fragmente scurte, câteva paragrafe, iar fiecare fragment își ține adresa: documentul și pagina.
+3. **Indexare după sens.** Fiecare fragment e transformat de un model de limbaj într-un șir de numere care îi descrie înțelesul. Textele care spun același lucru cu alte cuvinte ajung apropiate.
+4. **Înțelegerea întrebării.** Întrebarea dumneavoastră trece prin aceeași transformare, iar sistemul aduce fragmentele cele mai apropiate, plus potrivirile exacte pentru numere și nume.
+5. **Răspunsul.** Un model de limbaj citește fragmentele aduse și formulează răspunsul, cu trimitere la fiecare sursă folosită.
+
+## Citarea documentului și a paginii
+
+Un model de limbaj poate formula greșit sau poate amesteca două contracte asemănătoare. Trimiterea la document și la pagină vă lasă să deschideți actul și să citiți clauza cu ochii dumneavoastră în câteva secunde. Fără ea, o penalitate redată greșit în răspuns poate ajunge într-o plată fără ca cineva s-o fi citit în contract.
+
+Contează și în fața autorităților. Când contabilitatea e ținută cu programe informatice, normele privind documentele financiar-contabile permit păstrarea lor pe suporturi tehnice, cu condiția să poată fi listate în orice moment, inclusiv la cererea organelor de control (OMFP 2.634/2015, anexa nr. 1, pct. 36). Inspectorul cere actul însuși, iar o căutare care citează sursa vă duce direct la el.
+
+## Întrebări reale, din birou
+
+- „Ce termen de plată avem în contractul cu furnizorul de ambalaje și ce penalități curg la întârziere?"
+- „Care contracte de închiriere au clauză de indexare a chiriei?"
+- „Unde e factura de energie electrică din martie 2023 și ce sumă avea?"
+- „Care angajați au în contract clauză de neconcurență?"
+- „În ce acte apare numele unui fost colaborator?" Aceasta e întrebarea de la o cerere de acces la date personale. Aveți cel mult o lună ca să răspundeți. La cereri complexe sau numeroase termenul se poate prelungi cu două luni, dar îi spuneți persoanei în prima lună și îi explicați motivul (Regulamentul (UE) 2016/679, art. 12 alin. (3)). Îi datorați o copie a datelor ei (art. 15 alin. (3)), nu actele întregi: datele altor persoane din acte se acoperă (art. 15 alin. (4)). Fără o căutare care vede și scanările, lista se face răsfoind dosare.
+
+## Ce verificați la un instrument de căutare
+
+- Face OCR în limba română pe documentele vechi, deja scanate, sau doar pe cele noi?
+- Arată pentru fiecare răspuns documentul și locul din care e luat?
+- Găsește și după număr de factură, CUI sau nume, pe lângă întrebările în limbaj obișnuit?
+- Unde sunt stocate fișierele și cine le poate citi?
+- Puteți exporta documentele și textul extras dacă renunțați la serviciu?
+
+> **3S** În 3S, fiecare act stă în evidența arhivei cu termenul lui de păstrare. Îl căutați pe web sau pe WhatsApp și primiți răspunsul cu documentul-sursă citat. Fișierele încărcate stau în Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene.

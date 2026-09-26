@@ -171,14 +171,17 @@ describe('manifestul de rute', () => {
 })
 
 describe('registrul blogului si harta de site', () => {
-  it('registrul e gol la S4-1, iar categoriile sunt cele din plan', () => {
-    expect(ARTICOLE).toEqual([])
+  // Registrul era gol la S4-1; de la primul lot (felia blog-articole) are articole. Starea se
+  // DERIVA din registru, ca ziua in care cineva publica un articol sa nu inroseasca proba.
+  it('fiecare articol din registru are o categorie din plan, iar categoriile sunt cele din plan', () => {
+    expect(ARTICOLE.every((a) => (CATEGORII_BLOG as readonly string[]).includes(a.categorie))).toBe(true)
     expect([...CATEGORII_BLOG]).toEqual(['contabilitate', 'it', 'juridic', 'management'])
   })
 
-  it('harta de site e derivata din RUTE, fara dubluri', () => {
+  it('harta de site e derivata din RUTE si din registrul blogului, fara dubluri', () => {
     const adrese = sitemap().map((i) => new URL(i.url).pathname)
-    expect(adrese).toEqual(RUTE.filter((r) => r.inHarta).map((r) => r.cale))
+    expect(adrese).toEqual([...RUTE.filter((r) => r.inHarta).map((r) => r.cale), ...ARTICOLE.map((a) => '/blog/' + a.slug)])
+    expect(new Set(adrese).size).toBe(adrese.length)
   })
 })
 

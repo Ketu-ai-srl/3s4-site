@@ -8,9 +8,6 @@
 // max(0, 84 (p - s_i - 0,119)) px - scara de la stanga sus spre dreapta jos. Contorul creste cu
 // derularea: pornire + floor(24 p), scris cu punct de mii.
 //
-// ETICHETA "exemplu" (decizia D11): arborele are nume de firme, deci poarta eticheta vizibila in coltul
-// de sus-dreapta al ferestrei, pe langa declaratia pentru cititori.
-//
 // ABATEREA DE CONTRAST: la referinta ultimul rand ("si inca peste ...") porneste la 0,92, deci la p = 1
 // sta la opacitate .48 si textul lui iese 2,0:1 (masurat pe pixeli, 25.09) chiar in starea finala. Aici
 // porneste odata cu randul 14 (0,84): la p = 1 e la .96, iar scara ramane aceeasi.
@@ -20,7 +17,7 @@ import type { CSSProperties } from "react";
 import Fereastra from "@/components/cinema/Fereastra";
 import SectiuneScena, { useDinProgres } from "@/components/cinema/SectiuneScena";
 import b from "@/components/cinema/bucle.module.css";
-import { ARBORE, ETICHETA_EXEMPLU, NECITITE_CRESTERE, NECITITE_START, type RandArbore } from "@/content/functionalitati/portal-clienti";
+import { ARBORE, NECITITE_CRESTERE, NECITITE_START, type RandArbore } from "@/content/functionalitati/portal-clienti";
 import s from "./portal.module.css";
 
 /** Pragul de aprindere al randului i (fisa S1). */
@@ -66,11 +63,6 @@ export default function Arbore() {
       <Contor />
       <Fereastra
         titlu={<span className={s.caleArbore}>{ARBORE.cale}</span>}
-        dreapta={
-          <span className={s.exemplu} aria-hidden="true">
-            {ETICHETA_EXEMPLU}
-          </span>
-        }
         punct="patrat-email"
         declaratie={ARBORE.declaratie}
         baraClassName={s.baraArbore}

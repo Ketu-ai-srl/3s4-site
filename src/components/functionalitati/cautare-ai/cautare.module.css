@@ -42,31 +42,6 @@
   opacity: 0.7;
 }
 
-/* Eticheta vizibila "exemplu" (decizia D11), in coltul de sus-dreapta al machetei, dupa informatia din
-   bara. 11 px si la 390 (bara compacta coboara textul ei la 9,92, eticheta nu); alb .72 pe bara ferestrei
-   (`ardezie-9` cu alb .03) iese ~9:1 calculat, peste AA. Declaratia pentru cititori ramane `figcaption`,
-   deci eticheta e ascunsa lor, sa nu se citeasca de doua ori. */
-.dreaptaExemplu {
-  display: inline-flex;
-  align-items: center;
-}
-
-.exemplu {
-  flex: none;
-  margin-left: 8px;
-  padding: 0 6px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 4px;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.72);
-  white-space: nowrap;
-}
-
 .corpDosar {
   padding: 3.2px 0;
 }

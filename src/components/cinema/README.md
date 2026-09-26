@@ -80,10 +80,11 @@ ei la 390, comutatorul de rol) in `tests/browser/cinema-1.spec.ts`.
 
 ## Reguli pentru o pagina noua
 
-- Textele stau in `src/content/functionalitati/<pagina>.ts` si se scriu din faptele 3S, cele din registrul
-  de afirmatii al feliei (`src/content/afirmatii/<felia>.json`): fisa paginii da doar rolul fiecarui bloc
-  si lungimea lui tinta. Comentariile `Rol:` numesc rolul abstract si lungimea; nu citeaza si nu rezuma
-  texte din afara depozitului.
+- Textele stau in `src/content/functionalitati/<pagina>.ts`, scrise pe rolul si lungimea referintei, fara
+  cuvintele ei, PORNIND DE LA IDEE (alta imagine, alt ritm, alta ordine): o fraza rescrisa cu sinonime
+  ramane parafraza, iar `verifica-copiere.py` n-o vede (prinde doar 8 cuvinte la rand). Pe cinema-1 textele
+  au fost masurate contra textului sursei cu bigrame, Jaccard pe radacini si difflib, pe fraza; afirmatiile
+  verificabile intra in registrul feliei (`src/content/afirmatii/<felia>.json`).
 - Datele din machete sunt fictive si se declara ca exemplu (`declaratie` pe `Fereastra`, `figcaption`
   ascuns vederii pe machetele proprii); codurile fiscale au cifra de control gresita, adresele de e-mail
   sunt pe domeniul rezervat `.example`.

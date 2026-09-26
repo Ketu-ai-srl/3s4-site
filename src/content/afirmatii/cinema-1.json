@@ -28,16 +28,16 @@
   },
   {
     "id": "cinema-reguli-scrise-de-firma",
-    "text": "Regulile automate „când / atunci” le scrie cineva din firmă, iar fiecare regulă pornește la intrarea unui act care îi corespunde",
+    "text": "Firma își scrie singură regulile automate „când / atunci”, fără programare, iar fiecare regulă pornește la încărcarea unui act care îi corespunde",
     "unde": "src/content/functionalitati/automatizari-ai.ts",
     "stare": "neconfirmat",
-    "sursa": "de confirmat: regulile automate sunt declarate existente prin decizia D4b; scrierea lor de către firmă și pornirea la intrarea actului sunt detalii neconfirmate",
+    "sursa": "de confirmat: regulile automate sunt declarate existente prin decizia D4b; scrierea lor fără cod și pornirea la încărcare sunt detalii neconfirmate",
     "confirmat_de": "",
     "data": ""
   },
   {
     "id": "cinema-reguli-trimit-si-cer-aprobare",
-    "text": "O regulă trimite actul nou omului care trebuie să-l înregistreze, să-l verifice sau să-l aprobe, iar un tip de act ales de firmă (în exemplu, contractul-cadru) așteaptă aprobarea conducerii",
+    "text": "Un act nou pleacă singur spre omul care trebuie să-l înregistreze, să-l verifice sau să-l aprobe, iar un tip de act ales de firmă (în exemplu, contractul-cadru) așteaptă aprobarea conducerii",
     "unde": "src/content/functionalitati/automatizari-ai.ts",
     "stare": "neconfirmat",
     "sursa": "de confirmat: aceeași regulă ca acasa-flux-aprobare; condiția din exemplu (tipul de act) e fictivă",
@@ -55,7 +55,7 @@
   },
   {
     "id": "cinema-portal-acces-pe-persoana",
-    "text": "Actele clientului stau în dosarul lui din portal; accesul se dă pe persoană și pe dosar, iar documentul se arată pe zone, după rol: clientul actele, contabilul cifrele, echipa notele interne",
+    "text": "Clientul își ia singur actele din portal; accesul se dă pe persoană și pe dosar, iar fiecare rol vede doar partea lui: clientul actele, contabilul cifrele, echipa notele interne",
     "unde": "src/content/functionalitati/portal-clienti.ts",
     "stare": "neconfirmat",
     "sursa": "de confirmat: aceeași regulă ca acasa-acces-pe-persoana-si-dosar; notele interne vizibile doar echipei și împărțirea documentului pe roluri sunt detalii neconfirmate",

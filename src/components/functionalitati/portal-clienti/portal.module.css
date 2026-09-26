@@ -1083,36 +1083,6 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
-/* Eticheta vizibila "exemplu" (decizia D11), in coltul de sus-dreapta al fiecarei machete cu nume de
-   firma, cod fiscal, sume sau facturi (arborele, inboxul, documentul pe zone, grila, jurnalul, inboxul
-   din contrast). 11 px si la 390; alb .72 pe bara ferestrei (`ardezie-9` cu alb .03) iese ~9:1 calculat,
-   peste AA. Declaratia pentru cititori ramane `figcaption`, deci eticheta e ascunsa lor. */
-.dreaptaExemplu {
-  display: inline-flex;
-  align-items: center;
-}
-
-.exemplu {
-  flex: none;
-  margin-left: 8px;
-  padding: 0 6px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 4px;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.72);
-  white-space: nowrap;
-}
-
-/* In bara inboxului din contrast calea sta deja la dreapta (`margin-left: auto`); eticheta vine dupa ea. */
-.exempluMini {
-  margin-left: 0;
-}
-
 .randuriMini {
   margin: 0;
   padding: 5.6px 0;
