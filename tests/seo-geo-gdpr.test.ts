@@ -8,6 +8,7 @@ import { prerenderToNodeStream } from 'react-dom/static'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import Acasa from '../src/app/page'
 import sitemap from '../src/app/sitemap'
+import { ARTICOLE, caleArticol } from '../src/content/blog/registru'
 import { CAI_CTA_URMARITE, EVENIMENTE, evenimentValid } from '../src/components/consimtamant/evenimente'
 import { prefixRetea, randEvidenta, valideazaEvidenta } from '../src/components/consimtamant/evidenta'
 import { CAI_POLITICI, legaturiPolitici } from '../src/components/consimtamant/PunctConsimtamant'
@@ -291,9 +292,11 @@ function git(argumente: string[], cwd: string): string {
 }
 
 describe('harta de site', () => {
-  it('fara priority si changefreq; adresele sunt cele din RUTE, pe adresa site-ului', () => {
+  it('fara priority si changefreq; adresele sunt cele din RUTE si din registrul blogului, pe adresa site-ului', () => {
     const intrari = sitemap()
-    expect(intrari.map((i) => i.url)).toEqual(rutePentruHarta().map((r) => urlAbsolut(r.cale)))
+    // Articolele vin din registrul blogului (rute dinamice), dupa RUTE; derivat, nu scris de mana.
+    const articole = ARTICOLE.map((a) => urlAbsolut(caleArticol(a)))
+    expect(intrari.map((i) => i.url)).toEqual([...rutePentruHarta().map((r) => urlAbsolut(r.cale)), ...articole])
     for (const i of intrari) {
       expect(i).not.toHaveProperty('priority')
       expect(i).not.toHaveProperty('changeFrequency')

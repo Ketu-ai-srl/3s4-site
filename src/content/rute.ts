@@ -183,7 +183,40 @@ export const RUTE: Ruta[] = [
   },
 
   // <<felie:blog>>
-  // Articolele NU intra aici: stau in registrul blogului (`src/content/blog/registru.ts`).
+  // Listarea si categoriile (pagini statice, de cand registrul are articole); articolele raman in
+  // registrul blogului (`src/content/blog/registru.ts`), rute dinamice. Categoriile, in ordinea
+  // pastilelor (`ORDINE_CATEGORII`); `tests/blog-articole.test.ts` cere exact caile deschise de registru.
+  {
+    cale: "/blog",
+    scurt: "Blog",
+    descriere:
+      "Ghiduri despre termenele de păstrare, registrul arhivei, digitizare și căutare, cu sursele oficiale la final.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/contabilitate",
+    scurt: "Blog: contabilitate și fisc",
+    descriere: "Articole despre actele contabile și fiscale: ce se păstrează, cât timp și unde.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/juridic",
+    scurt: "Blog: legi și obligații",
+    descriere: "Articole despre ce cer legile pentru arhiva firmei: registre, termene, predare și distrugere.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/it",
+    scurt: "Blog: tehnologie",
+    descriere: "Articole despre scanare, căutarea în documente după sens și păstrarea digitală a actelor.",
+    inHarta: true,
+  },
+  {
+    cale: "/blog/categorie/management",
+    scurt: "Blog: organizarea firmei",
+    descriere: "Articole despre digitizarea hârtiei, arhivarea la un prestator și rutina care ține dosarele la zi.",
+    inHarta: true,
+  },
 
   // <<felie:produs>>
   {
