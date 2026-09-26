@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -26,8 +26,10 @@ import { SUBSOL } from '../src/content/navigatie'
  * infiintarea firmei, iar in ziua operatorului un obiect cu campurile din `_forma`. Proba ii
  * verifica FORMA, nu starea: si `null`, si un operator numit trec.
  *
- * SIGLA. Forma compacta (iconita + ADRIA) trebuie sa fie DECUPATA din fisierul oficial, nu
- * redesenata: fiecare traseu al ei se cauta, caracter cu caracter, in fisierul oficial.
+ * SIGLA. Pe site sta doar ICONITA marcii (decizia owner-ului D10, 25.09), DECUPATA din fisierul
+ * oficial, nu redesenata: fiecare traseu al ei se cauta, caracter cu caracter, in fisierul oficial,
+ * care sta in `docs/design/brand/` (nu se serveste). Niciun traseu de text al siglei oficiale nu
+ * ajunge in fisierul servit.
  */
 
 const RADACINA = join(__dirname, '..')
@@ -135,8 +137,8 @@ describe('config/operator.json, comutatorul operatorului (plan §9-§10)', () =>
   })
 
   it('martor POZITIV: text, lista, camp necunoscut si cheie lipsa sunt raportate', () => {
-    expect(abateriOperator({ ...cfg, operator: 'ADRIA' })).toHaveLength(1)
-    expect(abateriOperator({ ...cfg, operator: ['ADRIA'] })).toHaveLength(1)
+    expect(abateriOperator({ ...cfg, operator: 'Alfa Exemplu' })).toHaveLength(1)
+    expect(abateriOperator({ ...cfg, operator: ['Alfa Exemplu'] })).toHaveLength(1)
     expect(abateriOperator({ ...cfg, operator: { denumire: 'x', cui: 'y' } })).toEqual(['camp necunoscut: cui'])
     expect(abateriOperator({ _forma: forma })).toEqual(['lipseste cheia operator'])
   })
@@ -184,11 +186,12 @@ describe('startul si subsolul, pe o copie a configurarii cu adresa GOALA', () =>
 })
 
 describe('sigla in subsol', () => {
-  it('e decorativa si marcata ca atare: alt gol plus role="presentation", pe ambele variante', async () => {
+  it('e decorativa si marcata ca atare: alt gol plus role="presentation", o singura iconita', async () => {
     const { subsol } = await randeaza(null)
     const imagini = subsol.match(/<img\b[^>]*data-sigla="[^"]+"[^>]*>/g) ?? []
-    // Varianta pentru fundal deschis si cea pentru fundal inchis.
-    expect(imagini).toHaveLength(2)
+    // O singura imagine: iconita are numai culori explicite, deci e aceeasi pe fundal deschis si inchis.
+    expect(imagini).toHaveLength(1)
+    expect(imagini[0]).toContain('data-sigla="iconita"')
     for (const img of imagini) {
       expect(img).toContain('alt=""')
       expect(img).toContain('role="presentation"')
@@ -216,40 +219,73 @@ describe('startul si subsolul, pe o copie a configurarii cu adresa sintetica', (
   }, REIMPORT_MS)
 })
 
-describe('sigla compacta: decupata din fisierul oficial, nu redesenata', () => {
-  const oficial = citeste('public/brand/sigla-3s.svg')
-  const compacta = citeste('public/brand/sigla-3s-compacta.svg')
-  const trasee = compacta.match(/<path\b[^>]*\/>/g) ?? []
+/** Fisierul oficial al marcii, pastrat nepublicat ca referinta a decupajului. */
+const OFICIAL = 'docs/design/brand/sigla-3s-oficiala.svg'
+const ICONITA = 'public/brand/sigla-3s-iconita.svg'
+
+/** Traseele, fiecare pe un rand propriu, ca in fisierul oficial. */
+const trasee = (svg: string) => svg.match(/<path\b[^>]*\/>/g) ?? []
+
+/**
+ * Marginea din dreapta a iconitei, in unitatile desenului: fereastra ei e `9 34.8 219.1 219.1`.
+ * In fisierul oficial, tot ce incepe la dreapta ei e linia despartitoare si textul siglei.
+ */
+const DREAPTA_ICONITEI = 9 + 219.1
+
+/**
+ * Cel mai mic x absolut al unui traseu: primul numar dupa fiecare comanda M sau L, plus translatia
+ * din `matrix(1,0,0,-1,tx,ty)`. Ajunge ca sa desparta iconita de text; nu e un calcul de cutie.
+ */
+function xMinim(traseu: string): number {
+  const d = /\sd="([^"]+)"/.exec(traseu)?.[1] ?? ''
+  const tx = Number(/matrix\(1,0,0,-1,(-?[\d.]+),/.exec(traseu)?.[1] ?? 'NaN')
+  const xs = [...d.matchAll(/[ML]\s*(-?[\d.]+)/g)].map((m) => Number(m[1]) + tx)
+  return Math.min(...xs)
+}
+
+describe('sigla: doar iconita, decupata din fisierul oficial (decizia D10)', () => {
+  const oficial = citeste(OFICIAL)
+  const iconita = citeste(ICONITA)
 
   it('fisierul oficial e cel inregistrat, cu amprenta scrisa in docs/design/ACTIVE.md', () => {
     const scrisa = /sha256 `([0-9a-f]{64})`/.exec(citeste('docs/design/ACTIVE.md'))?.[1]
     expect(scrisa).toBeTruthy()
-    const amprenta = createHash('sha256').update(readFileSync(join(RADACINA, 'public/brand/sigla-3s.svg'))).digest('hex')
+    const amprenta = createHash('sha256').update(readFileSync(join(RADACINA, OFICIAL))).digest('hex')
     expect(amprenta).toBe(scrisa)
   })
 
-  it('iconita (7 trasee) si ADRIA (5 litere) sunt copiate neschimbate din fisierul oficial', () => {
-    expect(trasee).toHaveLength(12)
-    for (const t of trasee) expect(oficial.includes(t), t.slice(0, 80)).toBe(true)
-    expect(trasee.slice(7).every((t) => t.includes('fill="#226699"'))).toBe(true)
+  it('configurarea numeste o singura sigla, iconita, si public/brand nu mai are alt fisier', () => {
+    expect(BRAND.sigla).toEqual({ iconita: '/brand/sigla-3s-iconita.svg' })
+    expect(readdirSync(join(RADACINA, 'public', 'brand')).sort()).toEqual(['sigla-3s-iconita.svg'])
+  })
+
+  it('iconita are cele 7 trasee ale iconitei oficiale, copiate neschimbate, si nimic la dreapta ei', () => {
+    const t = trasee(iconita)
+    expect(t).toHaveLength(7)
+    for (const x of t) expect(oficial.includes(x), x.slice(0, 80)).toBe(true)
+    for (const x of t) expect(xMinim(x), x.slice(0, 80)).toBeLessThan(DREAPTA_ICONITEI)
+    // Fara glife de font si fara referinte catre alte desene: numai trasee.
+    expect(iconita).not.toMatch(/<use\b|<text\b|<defs\b/)
+  })
+
+  it('martor POZITIV: fisierul oficial are trasee si glife la dreapta iconitei, iar regula le gaseste', () => {
+    // Controlul masuratorii de mai sus: fara el, "nimic la dreapta" ar trece si cu o regula oarba.
+    const dincolo = trasee(oficial).filter((x) => xMinim(x) >= DREAPTA_ICONITEI)
+    expect(dincolo.length).toBeGreaterThanOrEqual(5)
+    expect(oficial).toMatch(/<use\b/)
   })
 
   it('martor POZITIV: un traseu cu o singura cifra schimbata nu mai e gasit in fisierul oficial', () => {
-    const primul = trasee[0] ?? ''
+    const primul = trasee(iconita)[0] ?? ''
     expect(primul).not.toBe('')
     const retusat = primul.replace(/(\d)(\D*)$/, (_, c: string, rest: string) => String((Number(c) + 1) % 10) + rest)
     expect(retusat).not.toBe(primul)
     expect(oficial.includes(retusat)).toBe(false)
   })
 
-  it('raportul folosit la randare e cel din viewBox-ul fiecarui fisier', () => {
-    const viewBox = (cale: string) => /viewBox="([^"]+)"/.exec(citeste(cale))![1].split(/\s+/).map(Number)
-    for (const [forma, cale] of [
-      ['completa', 'public/brand/sigla-3s.svg'],
-      ['compacta', 'public/brand/sigla-3s-compacta.svg'],
-    ] as const) {
-      const [, , l, i] = viewBox(cale)
-      expect(RAPORT_SIGLA[forma], forma).toBeCloseTo(l / i, 4)
-    }
+  it('raportul folosit la randare e cel din viewBox-ul iconitei (patrat)', () => {
+    const [, , l, i] = /viewBox="([^"]+)"/.exec(iconita)![1].split(/\s+/).map(Number)
+    expect(RAPORT_SIGLA).toBeCloseTo(l / i, 4)
+    expect(l).toBeCloseTo(i, 4)
   })
 })

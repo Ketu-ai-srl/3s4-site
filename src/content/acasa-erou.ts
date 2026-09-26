@@ -216,7 +216,7 @@ export const MACHETA: Macheta = {
     acte: [
       {
         tip: "factura",
-        expeditor: "Termoplus Instal S.R.L.",
+        expeditor: "Alfa Exemplu S.R.L.",
         subiect: "Factura pe septembrie, scadentă la 15.10",
         fisier: "Factura_2026_0917.pdf",
         recunoscut: "Factură",
@@ -225,7 +225,7 @@ export const MACHETA: Macheta = {
       },
       {
         tip: "contract",
-        expeditor: "Casa Nord Imobiliare",
+        expeditor: "Beta Exemplu Imobiliare",
         subiect: "Contractul de închiriere semnat, pentru dosar",
         fisier: "Contract_chirie_B12.pdf",
         recunoscut: "Contract",
@@ -234,7 +234,7 @@ export const MACHETA: Macheta = {
       },
       {
         tip: "aviz",
-        expeditor: "Carpo Transport S.R.L.",
+        expeditor: "Gama Exemplu S.R.L.",
         subiect: "Avizul de însoțire pentru marfa de azi",
         fisier: "Aviz_0588.pdf",
         recunoscut: "Aviz",
@@ -243,7 +243,7 @@ export const MACHETA: Macheta = {
       },
       {
         tip: "raport",
-        expeditor: "Cabinet contabil Dima",
+        expeditor: "Cabinet contabil Exemplu",
         subiect: "Balanța pe august, de verificat",
         fisier: "Balanta_08_2026.xlsx",
         recunoscut: "Raport",
@@ -356,8 +356,8 @@ export const MACHETA: Macheta = {
   },
   portal: {
     titlu: "Portal clienți",
-    vizitator: { initiale: "DM", nume: "Dana Marin", rol: "Client" },
-    firma: { initiala: "L", nume: "Livada Verde S.R.L.", subtitlu: "Actele pe care vi le-am pus la dispoziție" },
+    vizitator: { initiale: "DE", nume: "Dana Exemplu", rol: "Client" },
+    firma: { initiala: "D", nume: "Delta Exemplu S.R.L.", subtitlu: "Actele pe care vi le-am pus la dispoziție" },
     dosar: "Facturi 2026",
     numar: "12 acte",
     acte: [

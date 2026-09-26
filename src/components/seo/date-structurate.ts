@@ -11,7 +11,7 @@
 //   - `aggregateRating` si `review`: 3S nu are recenzii publicate; o nota inventata e publicitate
 //     inselatoare (decizia D5 a owner-ului; poarta S-09 le refuza);
 //   - `SearchAction`: cautarea site-ului e o paleta in pagina, fara adresa de rezultate;
-//   - `parentOrganization`: firma-mama e pomenita in text, dar ar fi prima data de firma din graf.
+//   - `parentOrganization`: site-ul nu numeste alta firma decat marca (decizia D10).
 //
 // Pozitia onesta (cercetarea seo-2026, §2): `FAQPage` nu mai produce rezultate imbogatite in Google
 // din 7 mai 2026, iar `SoftwareApplication` fara recenzii nu primeste stele. Le punem pentru
@@ -48,14 +48,16 @@ export function nodOrganizatie(baza: string = adresaSite()): NodJsonLd {
   return {
     "@type": "Organization",
     "@id": id.organizatie,
-    name: BRAND.nume,
-    alternateName: ["3S", SUBSOL.copyright.mentiune],
+    // Decizia D10 (owner, 25.09): organizatia e marca "3S" si atat; niciun nume de alta firma, nici
+    // in `alternateName`, nici in descriere.
+    name: "3S",
+    alternateName: BRAND.nume,
     url: baza + "/",
     logo: {
       "@type": "ImageObject",
       "@id": id.sigla,
-      url: urlAbsolut(BRAND.sigla.completa, baza),
-      contentUrl: urlAbsolut(BRAND.sigla.completa, baza),
+      url: urlAbsolut(BRAND.sigla.iconita, baza),
+      contentUrl: urlAbsolut(BRAND.sigla.iconita, baza),
       caption: BRAND.nume,
     },
     slogan: SUBSOL.brand.slogan,

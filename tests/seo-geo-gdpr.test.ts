@@ -555,7 +555,7 @@ describe('comutatorul operatorului si al analiticii (plan §9-§10)', () => {
 
   it('martor POZITIV: cheie lipsa, text, camp necunoscut si camp netextual opresc construirea', () => {
     expect(() => citesteOperator({})).toThrow(/operator/)
-    expect(() => citesteOperator({ operator: 'ADRIA' })).toThrow()
+    expect(() => citesteOperator({ operator: 'Alfa Exemplu' })).toThrow()
     expect(() => citesteOperator({ operator: { denumire: 'x', cui: 'y' } })).toThrow(/cui/)
     expect(() => citesteOperator({ operator: { denumire: 3 } })).toThrow(/text/)
   })

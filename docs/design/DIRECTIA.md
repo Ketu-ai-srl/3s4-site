@@ -121,22 +121,22 @@ Inălțimile sunt apărate de `tests/browser/fundatie-start.spec.ts`, cu toleran
 
 ## Sigla
 
-Marca 3S e înregistrată la OSIM. Pe site apare **numai desenul oficial**, din fișierul vectorial al mărcii: nu se retipărește niciun cuvânt, nu se redesenează și nu se recolorează nimic. Proveniența fiecărui fișier, inclusiv a formei compacte: `docs/design/ACTIVE.md`; derivarea formei compacte e descrisă și mai jos, și în comentariul din fișierul ei. Căile tuturor, în configurarea mărcii, `config/brand.json`; componenta, `src/components/global/SiglaMarca.tsx`.
+Marca 3S e înregistrată la OSIM. Pe site apare **numai iconița mărcii** (decizia owner-ului D10, 25.09: „doar 3S”): chenarul de scanare, dosarul și „3S”, decupate din fișierul vectorial oficial. Rândurile de text ale siglei oficiale nu apar nicăieri pe site: nici în antet, nici în sertar, nici în subsol, nici în imaginile sociale sau în datele structurate. Nu se retipărește niciun cuvânt, nu se redesenează și nu se recolorează nimic. Proveniența: `docs/design/ACTIVE.md`. Calea fișierului, în `config/brand.json`; componenta, `src/components/global/SiglaMarca.tsx`.
 
-**Regula de lizibilitate**: sigla se pune numai la o mărime la care fiecare rând de litere al ei are cel puțin cât majusculele unui text de 11 px al site-ului, minimul de text de mai jos (abaterea 4). Măsurat pe pixeli, pe 24.09: 8 px. Proba: `tests/browser/fundatie-sigla.spec.ts`, care desenează sigla randată pe o pânză și măsoară fiecare rând.
+**Regula de folosire**: un singur fișier, `sigla-3s-iconita.svg`, pătrat, pe fundal deschis și pe fundal închis (are numai culori explicite). Nu se pune lângă el niciun nume de firmă, nici ca text, nici ca imagine.
 
-| Formă | Fișier | Unde | Mărime | Litere, măsurate |
-|---|---|---|---|---|
-| completă | `sigla-3s.svg` (oficial, neschimbat) | subsol | 96 px (227,8 lățime) | ADRIA 17 px, DOC MANAGEMENT 9, scan-store-solve 9 |
-| completă, fundal închis | `sigla-3s-inchis.svg` | subsolul paginilor închise | la fel | la fel |
-| compactă | `sigla-3s-compacta.svg` | antet de la 768 px în sus, sertarul mobil | 40 px (95,4 lățime) | ADRIA 10 px, cât majusculele legăturilor de 14 px |
-| iconiță | aceeași imagine compactă, tăiată la 40 px | antet sub 768 px | 40 x 40 | „3S” din iconiță: 9,6 px, din geometria traseelor |
+**Regula de lizibilitate**: iconița se pune numai la o latură la care „3S” din ea are cel puțin cât majusculele unui text de 11 px al site-ului, minimul de text de mai jos (abaterea 4). Măsurat pe pixeli, pe 26.09, la 1440 și la 390: pragul e 8 px. Proba: `tests/browser/fundatie-sigla.spec.ts`, care desenează iconița randată pe o pânză și măsoară golurile literelor în forma albastru-închis.
 
-- **Forma completă nu intră în locuri înguste.** La 40 px, cât are slotul antetului, DOC MANAGEMENT ar avea 4 px (măsurat), adică ilizibil; de aceea antetul și sertarul folosesc forma compactă.
-- **Forma compactă** e decupată din fișierul oficial: iconița (chenarul de scanare, dosarul, „3S”) și cuvântul ADRIA, cu traseele copiate caracter cu caracter; singura schimbare e o mutare pe verticală a cuvântului, cât să stea centrat pe iconiță. Fără linia despărțitoare și fără rândurile DOC MANAGEMENT și scan-store-solve. Proba `tests/fundatie-brand.test.ts` caută fiecare traseu al ei în fișierul oficial.
-- **Iconița singură** nu are fișier propriu în antet: cadrul imaginii compacte are 40 px sub 768 px și o taie exact după iconiță (ADRIA începe la 50,4 px). Imaginea nu se strivește în cadru (`max-width: none`).
-- **Fundal închis**: forma completă are varianta ei (DOC MANAGEMENT, desenat în negru, trece pe alb). Forma compactă e aceeași pe ambele fundaluri, fiindcă nu are elemente negre; ADRIA rămâne în albastrul mărcii, cu 3,3:1 pe antetul închis și 2,9:1 pe `ardezie-9`. O variantă cu ADRIA alb ar fi o schimbare a mărcii și e decizia owner-ului.
+| Unde | Latură | „3S”, măsurat |
+|---|---|---|
+| antet (1440 și 390), în același slot de 106,5 px | 40 px | 9 px |
+| sertarul mobil | 40 px | 9 px |
+| subsol (1440 și 390), și pe paginile închise | 56 px | 12 px |
+| centrul buclei din erou, rama promo | 40-52 px, 18 px | la 18 px „3S” nu se citește; acolo iconița e decor, cu `alt` sau lângă nume |
+| sub prag (martorul probei) | 24 px | 5 px |
+
 - Sigla stă mereu într-o legătură cu nume accesibil, deci imaginea e decorativă (`alt` gol).
+- Imaginea socială (Open Graph, cardul social) are iconița centrată în cutia de 840 x 440 px, pe alb, cu banda albastră a mărcii jos.
 
 ## Marca, fără firmă
 
@@ -157,4 +157,4 @@ Pe site apare numai brandul (decizia owner-ului, 24.09): nume, siglă și, când
 9. **Bannerul de consimțământ** nu se construiește: site-ul nu are cookie-uri neesențiale, iar un banner fără obiect ar fi o afirmație falsă.
 10. **Ancorele** aterizează sub antetul fix; ancora funcționalităților nu mai e deviată spre constructor.
 11. **Cardul enterprise** duce, identic, la `/securitate`.
-12. **Sigla**: la referință, sigla din antet are 26 px și un singur rând de text. Marca 3S are iconiță și trei rânduri, care la mărimea aceea nu se citesc; antetul poartă forma compactă de 40 px, în același slot de 106,5 px, iar subsolul sigla completă de 96 px, nu de 28 (secțiunea „Sigla”).
+12. **Sigla**: la referință, sigla din antet are 26 px și un singur rând de text. La 3S pe site stă doar iconița mărcii (decizia D10), pătrată: 40 px în antet, în același slot de 106,5 px, și 56 px în subsol, nu 28, ca „3S” din ea să se citească (secțiunea „Sigla”).

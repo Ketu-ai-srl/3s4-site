@@ -4,7 +4,8 @@
 // (`FUNCTIONALITATI`), scris de felia de text.
 //
 // DATE FICTIVE, DECLARATE CA EXEMPLU (plan D9). Fisierele, sumele, persoanele si firma-client din
-// machete sunt inventate; fiecare macheta poarta o eticheta accesibila care o spune (`declaratie`).
+// machete sunt inventate, cu nume evident fictive (decizia D11); fiecare macheta poarta o eticheta
+// accesibila care o spune (`declaratie`) si una vizibila (`ETICHETA_EXEMPLU`).
 // Nicio data a vreunei firme reale si nimic din exemplele referintei (nume de fisiere, firme,
 // persoane): rolurile si lungimile vin din fisa, cuvintele sunt scrise pentru 3S.
 //
@@ -27,6 +28,13 @@
 // (`src/content/afirmatii/functionalitati-acasa.json`), pana il confirma cineva la sursa. La
 // referinta factura avea 10 ani; un contract nu apare in registru, fiindca pentru el nici relatarea
 // nu are un termen.
+
+/**
+ * Eticheta mica VIZIBILA de langa numele fiecarei machete (decizia owner-ului D11, 25.09): datele
+ * arata a firma reala (nume de firma, sume, facturi), deci se spune si pe ecran ca sunt un exemplu,
+ * nu doar cititorului de ecran (`declaratie`). 11 px, `ardezie-6` pe `ardezie-0` (7,24:1).
+ */
+export const ETICHETA_EXEMPLU = "exemplu";
 
 /** Tipul unui act, dupa culoarea etichetei lui (fisa §5: factura chihlimbar, albastru, ardezie). */
 export type CodTip = "factura" | "albastru" | "raport";
@@ -189,8 +197,8 @@ export const MACHETA_PORTAL: MachetaPortal = {
       ],
     },
     {
-      initiale: "LS",
-      nume: "Livada Sud SRL",
+      initiale: "ES",
+      nume: "Exemplu SRL",
       rol: "Client",
       culoare: "chihlimbar",
       foldere: [

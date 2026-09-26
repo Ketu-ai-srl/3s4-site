@@ -36,7 +36,7 @@ export const CALE_IMAGINE_OG = "/opengraph-image";
 export const CALE_IMAGINE_CARD = "/twitter-image";
 export const MARIME_IMAGINE = { width: 1200, height: 630 };
 export const TIP_IMAGINE = "image/png";
-export const ALT_IMAGINE = "Sigla " + BRAND.nume + ", ADRIA Doc Management";
+export const ALT_IMAGINE = "Sigla " + BRAND.nume;
 
 export const LIMITE_SEO = {
   titluMin: 15,

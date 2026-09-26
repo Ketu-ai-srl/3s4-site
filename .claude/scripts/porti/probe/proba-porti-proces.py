@@ -337,10 +337,10 @@ def cazuri_afirmatii():
         lambda d: scrie(os.path.join(d, 'src', 'app', 'page.tsx'),
                         'export default () => <p>' + interzis + '</p>\n'),
         PICAT, 'persoana intai cu vechime')
-    caz('poarta-afirmatii.py', 'forma atribuita catre firma-mama: cod 0',
+    caz('poarta-afirmatii.py', 'forma atribuita catre o entitate numita: cod 0',
         lambda d: scrie(os.path.join(d, 'src', 'app', 'page.tsx'),
-                        'export default () => <p>ADRIA, firma-mama, arhiveaza documente '
-                        'din 2019, la Golesti.</p>\n'),
+                        'export default () => <p>Alfa Exemplu SRL, firma care detine depozitul, '
+                        'arhiveaza documente din 2019, la Golesti.</p>\n'),
         CURAT)
     caz('poarta-afirmatii.py', 'arbore fara src si docs: cod 3, nu 0',
         gol, NEMASURAT, 'masuratoarea e invalida')

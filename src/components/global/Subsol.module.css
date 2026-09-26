@@ -280,14 +280,3 @@
   color: var(--color-alb);
 }
 
-.siglaInchisa {
-  display: none;
-}
-
-:global(html:has([data-tema-pagina="inchisa"])) .siglaDeschisa {
-  display: none;
-}
-
-:global(html:has([data-tema-pagina="inchisa"])) .siglaInchisa {
-  display: inline-flex;
-}

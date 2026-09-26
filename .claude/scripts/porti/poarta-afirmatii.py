@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Poarta de adevar: afirmatiile de vechime si autoritate se scriu ATRIBUIT.
 
-Faptul care naste poarta: firma 3S nu e inregistrata inca si e fiica a ADRIA
-SERVICII ARHIVARE SRL. Deci "ADRIA, firma-mama, arhiveaza din 2019" e adevarat si
-verificabil, iar "avem 6 ani de experienta" e o afirmatie pe care nu o putem sustine.
+Faptul care naste poarta: marca 3S nu e inca o persoana juridica, iar dupa decizia
+owner-ului D10 (25.09.2026) site-ul nu numeste nicio alta firma. Deci "avem 6 ani de
+experienta" e o afirmatie pe care nu o poate sustine nimeni de pe site; forma permisa
+numeste entitatea care ar scoate actul, iar cat timp nu exista una, propozitia nu se scrie.
 
 Poarta cauta in textul VIZIBIL al paginilor si al continutului doua clase de defect:
   1. persoana intai plus vechime sau autoritate ("avem X ani", "suntem autorizati")
@@ -143,7 +144,9 @@ def controale():
     pozitiv = ' '.join(['avem', '6', 'ani', 'de', 'experienta', 'in', 'arhivare'])
     if not cauta(pozitiv):
         return 'martorul pozitiv nu a fost prins: poarta nu masoara nimic'
-    negativ = 'ADRIA, firma-mama, arhiveaza documente din 2019, la Golesti, judetul Arges.'
+    # Forma corecta, atribuita unei entitati numite. Numele e evident fictiv (decizia D11), ca
+    # fisierul sa nu poarte numele vreunei firme reale (decizia D10).
+    negativ = 'Alfa Exemplu SRL, firma care detine depozitul, arhiveaza documente din 2019, la Golesti.'
     if cauta(negativ):
         return 'martorul negativ a fost prins: tiparele sunt prea late si ar bloca forma corecta'
 
@@ -192,7 +195,8 @@ def main():
     print('AFIRMATII NEACOPERITE: ' + str(total))
     if total:
         print('')
-        print('Regula: vechimea si autorizarea se scriu ATRIBUIT catre ADRIA, firma-mama.')
+        print('Regula: vechimea si autorizarea se scriu ATRIBUIT entitatii care ar scoate actul;')
+        print('cat timp site-ul nu numeste nicio firma (decizia D10), propozitia nu se scrie.')
         print('Vezi .claude/rules/afirmatii-atribuite.md')
     return 1 if total else 0
 

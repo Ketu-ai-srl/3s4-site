@@ -435,7 +435,7 @@ describe('continutul celor 9 scenarii', () => {
   })
 
   it('datele sunt declarate ca exemplu, pe ecran (plan D9)', () => {
-    expect(COMUN.tipSpatiu.toLowerCase()).toContain('demonstrativ')
+    expect(COMUN.tipSpatiu.toLowerCase()).toContain('exemplu')
     expect(ESTIMARE.formula).toContain('exemplu')
   })
 

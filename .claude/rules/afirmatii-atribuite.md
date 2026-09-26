@@ -27,10 +27,14 @@ Vecinul de care se desparte greu e descrierea muncii. Diferenta e actul, nu tonu
 
 ## Entitatea care raspunde, azi
 
-Marca sub care se vinde nu e inca o persoana juridica. Entitatea care detine autorizarea,
-depozitul si bilanturile e firma-mama, **ADRIA SERVICII ARHIVARE SRL** - ea e cea care ar scoate
-actul. Randul asta e instanta care satisface granita de mai sus; granita ramane adevarata si daca
-firma isi schimba numele sau daca marca se inregistreaza si preia dosarul.
+Marca sub care se vinde nu e inca o persoana juridica. Decizia owner-ului **D10** (25.09.2026,
+„nu, doar 3s"): site-ul nu numeste nicio alta firma - nici in text, nici in date structurate, nici
+in afirmatii. Deci azi nu exista pe site nicio entitate care sa poata fi numita ca subiect al unei
+vechimi sau al unei autorizari, iar asemenea propozitii **nu se scriu deloc**. Faptele care sunt
+adevarate doar pentru alta firma (vechimea, istoricul) se scot, nu se muta pe marca.
+
+Granita ramane adevarata si cand marca se inregistreaza: din ziua in care 3S are dosarul lui
+(registru, autorizatie, bilant), numele ei devine entitatea care raspunde.
 
 ## Testul persoanei
 
@@ -54,10 +58,12 @@ onesta a lui "inca nu am intrebat clientul".
 
 ```
 gresit:  Avem 6 ani de experienta in arhivare.
-corect:  ADRIA, firma-mama, arhiveaza documente din 2019.
+corect:  (nimic - pe site nu exista azi entitatea care ar scoate actul)
 
 gresit:  Suntem autorizati de Arhivele Nationale.
-corect:  Depozitul ADRIA este autorizat de Arhivele Nationale.
+corect:  (nimic, pana cand entitatea autorizata poate fi numita pe site)
+
+corect:  Primim documentele, le inventariem si le indexam.   (descriere a muncii, nu cere act)
 ```
 
 Perechile de mai sus sunt scrise pe litere aici fiindca fisierul asta nu intra in multimea pe care
@@ -70,7 +76,7 @@ Ce se strica: site-ul afirma o vechime pe care nu o poate dovedi. In momentul in
 arata banal - un titlu de sectiune scris la persoana intai, corect gramatical, scris de cineva
 care stia ca depozitul chiar exista din 2019 si a scurtat propozitia.
 
-De ce nu-l vede masinaria: intre "avem 6 ani" si "ADRIA are 6 ani" nu e nicio diferenta de
+De ce nu-l vede masinaria: intre "avem 6 ani" si "firma X are 6 ani" nu e nicio diferenta de
 sintaxa, de ortografie sau de randare. Diferenta e cine tine actul, si asta nu e in fisier.
 
 Poarta care il prinde: **`poarta-afirmatii.py`**, pe o lista de tipare, cu o fereastra de negare

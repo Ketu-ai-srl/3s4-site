@@ -704,6 +704,16 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
       const caseta = panou.locator('input[type="checkbox"]')
       await expect(caseta, 'panoul nu arata acordul dat').toBeChecked()
       await caseta.uncheck()
+      // Cererea de evidenta pleaca la clic (sendBeacon), dar in contextul pazit trece prin ruta de
+      // mai sus, adica printr-un drum dus-intors pana la Playwright. Inchis inainte ca ruta sa o lase
+      // sa plece, contextul o arunca si randul nu mai ajunge in jurnal: CI 36238036676 si
+      // 36240535571, cate o ruta din 31, "Expected: 1, Received: 0" cu fanionul si cookie-urile
+      // corecte. Celelalte doua probe de evidenta asteapta 1,5 s si 3 s inainte de inchidere; aceasta
+      // inchidea imediat. Se asteapta deci cererea insasi, nu un timp ales.
+      const evidentaPlecata = context.waitForEvent('requestfinished', {
+        predicate: (c) => new URL(c.url()).pathname === CALE_EVIDENTA && (c.postData() ?? '').includes('"metoda":"setari"'),
+        timeout: 10_000,
+      })
       await panou.locator('[data-salveaza]').click()
       await expect(panou).toBeHidden()
 
@@ -714,6 +724,7 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
       const consimtamant = await semnale(pagina)
       const aleasa = await alegerea(pagina)
       const cookies = (await context.cookies()).map((c) => c.name)
+      await evidentaPlecata
       await context.close()
       console.log('[copie, retragere] ' + cale + ' | fanion: ' + oprit + ' | cookie-uri ramase: ' + (cookies.join(', ') || '(niciunul)'))
 

@@ -723,9 +723,9 @@ export const SUBSOL: {
         // tutoriale video; ghidurile scrise stau pe blog.
         { text: "Ghiduri practice", href: "/blog", ruta: "/blog" },
         // Rol: pagina externa a dezvoltatorului, la referinta. NEDECIS la 3S (componente-globale.md
-        // §6.1): candidatul e site-ul firmei-mame, cu adresa inca neverificata si fara acordul
-        // owner-ului. Pana la decizie legatura nu se randeaza (`href: null`).
-        { text: "Despre ADRIA", href: null, ruta: null },
+        // §6.1): site-ul nu numeste alta firma decat marca (decizia D10), iar o pagina despre marca
+        // nu exista inca. Pana la decizie legatura nu se randeaza (`href: null`).
+        { text: "Despre 3S", href: null, ruta: null },
       ],
     },
     {
@@ -767,7 +767,7 @@ export const SUBSOL: {
     { text: "Fișiere criptate cu AES-256", iconita: "lock" },
     { text: "Conexiuni TLS 1.2+", iconita: "shield-check" },
     { text: "Răspunsuri cu sursa citată", iconita: "file-check" },
-    { text: "Arhivă fizică ADRIA", iconita: "archive" },
+    { text: "Arhivare fizică și digitală", iconita: "archive" },
   ],
   copyright: {
     // Rol: randul 1, cine detine drepturile (12/400 `cerneala-3`). Anul se pune la randare. Datele
@@ -776,9 +776,9 @@ export const SUBSOL: {
     // Plan §7 (owner, 24.09): pe site apare doar brandul, fara informatii despre firma, iar
     // copyright-ul vorbeste in numele brandului. De aceea randul numeste marca si nu firma.
     detinator: "3S Scan Store Solve",
-    // Rol: randul 1, a doua parte. In contractul provizoriu era starea juridica a marcii; dupa
-    // plan §7 ramane numele din sigla oficiala (3S, ADRIA Doc Management, scan-store-solve).
-    mentiune: "ADRIA Doc Management",
+    // Rol: randul 1, a doua parte. Goala dupa decizia owner-ului D10 (25.09): pe site sta doar
+    // marca 3S, fara randurile de text ale siglei oficiale; `randDrepturi` o sare cand e goala.
+    mentiune: "",
     // Rol: randul 2. Lungime: 27 [numarat].
     drepturi: "Toate drepturile rezervate.",
   },

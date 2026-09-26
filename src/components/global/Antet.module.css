@@ -92,10 +92,9 @@
 
 /* Slotul are latimea siglei de la referinta (106,5 px, masurat la 1440 si 390). Fara slot,
    containerul (spatiu-intre) muta legaturile, lupa de mobil si meniul mare, centrat pe legaturi.
-   In slot sta forma COMPACTA a siglei (iconita + ADRIA, decupate din fisierul oficial), 40 px
-   inaltime si 95,4 latime: literele ADRIA au 10 px pe pixeli, cat majusculele legaturilor de 14 px
-   de langa ele. Sigla completa, la inaltimea asta, avea DOC MANAGEMENT la 3,6 px in desen si 4 pe
-   pixeli. Regula de folosire: docs/design/DIRECTIA.md, "Sigla". */
+   In slot sta ICONITA marcii 3S, 40 x 40 px, la fel pe toate latimile (decizia owner-ului D10:
+   doar iconita, fara randurile de text ale siglei oficiale). Regula de folosire:
+   docs/design/DIRECTIA.md, "Sigla". */
 .sigla {
   display: inline-flex;
   flex-shrink: 0;
@@ -106,26 +105,6 @@
 
 .sigla:hover {
   opacity: 0.8;
-}
-
-/* Cadrul imaginii. Sub 768 px ramane doar iconita: cadrul de 40 px taie imaginea exact dupa ea
-   (iconita ocupa 0-40 px, ADRIA incepe la 50,4 px). Aceeasi imagine, niciun fisier in plus.
-   `max-width: none`: regula de baza a imaginilor (max 100% din parinte) ar strivi sigla in cadrul
-   ingust in loc s-o taie - masurat: 40 x 40, cu iconita turtita la 17 px. */
-.siglaCadru {
-  display: block;
-  overflow: hidden;
-  line-height: 0;
-}
-
-.siglaCadru > img {
-  max-width: none;
-}
-
-@media (max-width: 767px) {
-  .siglaCadru {
-    width: 40px;
-  }
 }
 
 /* --- legaturile din centru ------------------------------------------------------------------ */

@@ -14,7 +14,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Folder, Lock, Users, Zap } from "lucide-react";
-import { MACHETA_PORTAL } from "@/content/acasa-functionalitati";
+import { MACHETA_PORTAL, ETICHETA_EXEMPLU } from "@/content/acasa-functionalitati";
 import { areMiscareRedusa, useBataie, useVizibil } from "./ceas";
 import { useEstompare } from "./estompare";
 import type { MachetaProps } from "./MachetaCautare";
@@ -67,6 +67,9 @@ export default function MachetaPortal({ activ, estompat = false, inert = false, 
       <div className={s.etichetaMacheta}>
         <Users width={14} height={14} strokeWidth={1.5} aria-hidden="true" />
         <span>{m.eticheta}</span>
+        <span className={s.exemplu} aria-hidden="true">
+          {ETICHETA_EXEMPLU}
+        </span>
       </div>
       <div className={s.taburi} role="group" aria-label={m.grup}>
         {m.persoane.map((p, k) => (

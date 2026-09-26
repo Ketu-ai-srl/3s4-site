@@ -27,7 +27,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { CircleCheck, FileText, Search, Zap } from "lucide-react";
-import { BIFA_TEXT, MACHETA_CAUTARE } from "@/content/acasa-functionalitati";
+import { BIFA_TEXT, MACHETA_CAUTARE, ETICHETA_EXEMPLU } from "@/content/acasa-functionalitati";
 import { areMiscareRedusa, useBataie, useMontat, useVizibil } from "./ceas";
 import { useEstompare } from "./estompare";
 import s from "./Machete.module.css";
@@ -167,6 +167,9 @@ export default function MachetaCautare({ activ, estompat = false, inert = false,
         <div className={s.etichetaMacheta}>
           <Search width={13} height={13} strokeWidth={2} aria-hidden="true" />
           <span>{m.eticheta}</span>
+          <span className={s.exemplu} aria-hidden="true">
+            {ETICHETA_EXEMPLU}
+          </span>
         </div>
         <div className={s.bara}>
           <Search width={13} height={13} strokeWidth={2} aria-hidden="true" />

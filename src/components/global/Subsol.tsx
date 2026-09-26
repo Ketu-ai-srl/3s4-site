@@ -35,15 +35,19 @@ function Legaturi({ legatura, className }: { legatura: Legatura; className: stri
 }
 
 /**
- * Inaltimea siglei complete in subsol (227,8 x 96). Masurat pe pixeli, la 1440 si la 390: ADRIA are
- * literele de 17 px, DOC MANAGEMENT de 9, scan-store-solve de 9 - fiecare rand trece de majusculele
- * unui text de 11 px al site-ului (8 px). La 88 px randul de jos cobora la 8, adica fara nicio marja.
+ * Latura iconitei marcii in subsol (decizia D10: doar iconita, fara randurile de text ale siglei
+ * oficiale). 56 px: "3S" din iconita iese mai mare decat in antet (40 px), iar blocul brandului
+ * ramane mai scund decat cu sigla completa de 96 px. Masuratoarea, in docs/design/DIRECTIA.md.
  */
-export const INALTIME_SIGLA_SUBSOL = 96;
+export const INALTIME_SIGLA_SUBSOL = 56;
 
-/** Primul rand al drepturilor, mereu in numele marcii (plan §7): anul, marca si numele din sigla. */
+/**
+ * Primul rand al drepturilor, mereu in numele marcii (plan §7): anul, marca si, daca exista,
+ * mentiunea. Mentiunea goala nu lasa separatorul in urma.
+ */
 export function randDrepturi(an: number): string {
-  return "© " + an + " " + SUBSOL.copyright.detinator + " · " + SUBSOL.copyright.mentiune;
+  const { detinator, mentiune } = SUBSOL.copyright;
+  return "© " + an + " " + detinator + (mentiune.trim() === "" ? "" : " · " + mentiune);
 }
 
 export default function Subsol() {
@@ -61,12 +65,7 @@ export default function Subsol() {
         <div className={s.grila}>
           <div className={s.brand}>
             <Link href="/" className={s.brandSigla} aria-label={ANTET.sigla.text}>
-              <span className={s.siglaDeschisa}>
-                <SiglaMarca forma="completa" inaltime={INALTIME_SIGLA_SUBSOL} />
-              </span>
-              <span className={s.siglaInchisa}>
-                <SiglaMarca forma="completa" tema="inchis" inaltime={INALTIME_SIGLA_SUBSOL} />
-              </span>
+              <SiglaMarca inaltime={INALTIME_SIGLA_SUBSOL} />
             </Link>
             <p className={s.slogan}>{SUBSOL.brand.slogan}</p>
             <p className={s.descriere}>{SUBSOL.brand.descriere}</p>

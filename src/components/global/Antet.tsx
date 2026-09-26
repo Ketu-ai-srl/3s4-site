@@ -264,9 +264,7 @@ export default function Antet() {
       <header className={clase} data-antet={plecat ? "plecat" : pastila ? "pastila" : "plat"} inert={plecat ? true : undefined}>
         <div className={s.container}>
           <Link href="/" className={s.sigla} aria-label={ANTET.sigla.text}>
-            <span className={s.siglaCadru}>
-              <SiglaMarca forma="compacta" inaltime={40} prioritar />
-            </span>
+            <SiglaMarca inaltime={40} prioritar />
           </Link>
 
           <div

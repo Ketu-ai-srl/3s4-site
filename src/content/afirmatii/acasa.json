@@ -63,29 +63,29 @@
     "data": ""
   },
   {
-    "id": "acasa-adria-din-2019",
-    "text": "Din 2019 ADRIA arhivează documente",
+    "id": "acasa-vechime-din-2019",
+    "text": "Vechimea de arhivare din 2019, a altei firme decât marca",
     "unde": "src/content/acasa.ts",
-    "stare": "neconfirmat",
-    "sursa": "",
+    "stare": "retras",
+    "sursa": "retrasă de felia 57 (doar-3s): decizia owner-ului D10 din planul valului S4 (25.09): site-ul nu numește altă firmă decât marca 3S; vechimea nu e a mărcii, deci nu se atribuie lui 3S. Locul din banda de cifre îl ia prețul (acasa-pret-0-ron)",
     "confirmat_de": "",
-    "data": ""
+    "data": "2026-09-26"
   },
   {
-    "id": "acasa-adria-arhivare-fizica-si-digitala",
-    "text": "ADRIA, firma-mamă a mărcii 3S, face arhivare fizică și digitală",
+    "id": "acasa-3s-arhivare-fizica-si-digitala",
+    "text": "Marca 3S face arhivare fizică și digitală",
     "unde": "src/content/acasa.ts, src/content/navigatie.ts",
-    "stare": "neconfirmat",
-    "sursa": "",
+    "stare": "retras",
+    "sursa": "retrasă de felia 57 (doar-3s), runda de reparații 1: atribuirea din testimonial nu mai numește arhivarea fizică drept serviciu al mărcii; nu se scrie pe pagină până nu o confirmă owner-ul în scris (decizia D10 din planul valului S4, 25.09)",
     "confirmat_de": "",
-    "data": ""
+    "data": "2026-09-26"
   },
   {
-    "id": "acasa-originale-la-adria",
-    "text": "Originalele predate spre arhivare se preiau pe bază de proces-verbal și stau în depozitul ADRIA până când clientul le cere înapoi",
+    "id": "acasa-originale-in-depozit",
+    "text": "Originalele pe hârtie predate de client stau într-un depozit, pe bază de proces-verbal",
     "unde": "src/content/acasa.ts",
     "stare": "neconfirmat",
-    "sursa": "",
+    "sursa": "de confirmat: rămâne doar faptul că originalele stau într-un depozit, cu proces-verbal; proprietarul depozitului nu se numește, fiindcă depozitul nu e un bun al mărcii 3S (decizia owner-ului D10 din planul valului S4, 25.09, și runda de reparații 1 a feliei 57)",
     "confirmat_de": "",
     "data": ""
   },
@@ -154,7 +154,7 @@
   },
   {
     "id": "acasa-original-cerut-de-lista",
-    "text": "Un original din depozitul ADRIA îl poate cere doar cine e trecut în scris pe lista clientului",
+    "text": "Un original din depozit îl poate cere doar cine e trecut în scris pe lista clientului",
     "unde": "src/content/acasa.ts",
     "stare": "neconfirmat",
     "sursa": "de confirmat: regula stă neconfirmată în registrul de pe main (securitate.json, securitate-lista-nominala-de-solicitanti)",
@@ -253,10 +253,10 @@
   },
   {
     "id": "acasa-3s-in-infiintare",
-    "text": "3S este în curs de înființare, iar drepturile asupra site-ului sunt ale ADRIA Servicii Arhivare SRL, firma-mamă",
+    "text": "3S este în curs de înființare, iar drepturile asupra site-ului sunt ale altei firme",
     "unde": "src/content/navigatie.ts",
     "stare": "retras",
-    "sursa": "retrasă de felia text-acasa (S4-1): decizia owner-ului din planul valului, §7 - pe site apare doar brandul, fără informații despre firmă; rândul de copyright numește marca",
+    "sursa": "retrasă de felia text-acasa (S4-1): decizia owner-ului din planul valului, §7 - pe site apare doar brandul, fără informații despre firmă; rândul de copyright numește marca; textul retras numea firma, numele e scos prin decizia owner-ului D10 din planul valului S4 (25.09): site-ul nu numește altă firmă decât marca 3S",
     "confirmat_de": "",
     "data": "2026-09-24"
   },
@@ -271,10 +271,10 @@
   },
   {
     "id": "acasa-depozit-vizitabil",
-    "text": "Depozitul ADRIA din județul Argeș poate fi vizitat înainte de semnare",
+    "text": "Depozitul poate fi vizitat înainte de semnare",
     "unde": "src/content/acasa.ts",
     "stare": "retras",
-    "sursa": "retrasă de felia text-acasa (S4-1): textul nou al testimonialului nu mai promite vizita și nu numește locul depozitului (planul valului, §7)",
+    "sursa": "retrasă de felia text-acasa (S4-1): textul nou al testimonialului nu mai promite vizita și nu numește locul depozitului (planul valului, §7); textul retras numea firma, numele e scos prin decizia owner-ului D10 din planul valului S4 (25.09): site-ul nu numește altă firmă decât marca 3S",
     "confirmat_de": "",
     "data": "2026-09-24"
   }

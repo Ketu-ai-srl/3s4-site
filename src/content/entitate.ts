@@ -2,9 +2,9 @@
 //
 // DECIZIA (owner, 24.09.2026, planul valului S4, sectiunea 7): pe site apare doar brandul - numele,
 // sigla si, cand exista una confirmata, adresa de e-mail. Nicio data de firma (denumire, sediu,
-// numar de registru, cod fiscal, telefon) nu se afiseaza: 3S nu are inca firma, iar datele
-// firmei-mame ADRIA nu sunt ale marcii. Numele fisierului a ramas de la mecanismul vechi, care
-// citea datele unei entitati juridice; acum citeste marca.
+// numar de registru, cod fiscal, telefon) nu se afiseaza: 3S nu are inca firma. Decizia D10
+// (25.09): site-ul nu numeste nicio alta firma. Numele fisierului a ramas de la mecanismul vechi,
+// care citea datele unei entitati juridice; acum citeste marca.
 //
 // Datele de identificare ale unei firme tin de OPERATORUL de date, in `config/operator.json`
 // (planul valului, sectiunile 9-10), cu `"operator": null` azi. Il citeste poarta juridica (L-01),
@@ -20,12 +20,11 @@ import date from "../../config/brand.json";
 import type { Legatura } from "./navigatie";
 
 export type SiglaMarcii = {
-  /** Sigla oficiala intreaga (iconita si cele trei randuri de text), fisierul inregistrat. */
-  completa: string;
-  /** Acelasi desen pentru fundal inchis: textul negru implicit trece pe alb. */
-  completaPeInchis: string;
-  /** Iconita oficiala si cuvantul ADRIA, decupate din fisierul oficial, pentru locurile inguste. */
-  compacta: string;
+  /**
+   * Iconita marcii 3S (chenarul de scanare, dosarul si "3S"), decupata din fisierul oficial cu
+   * traseele neschimbate. Singura forma a siglei pe site (decizia D10).
+   */
+  iconita: string;
 };
 
 export type Brand = {
