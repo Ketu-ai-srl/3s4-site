@@ -16,7 +16,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BookOpen, Check, Clock, FileText, Shield, Tag, Zap, type LucideIcon } from "lucide-react";
-import { MACHETA_REGISTRU, type IconitaVerificare } from "@/content/acasa-functionalitati";
+import { MACHETA_REGISTRU, type IconitaVerificare, ETICHETA_EXEMPLU } from "@/content/acasa-functionalitati";
 import { areMiscareRedusa, useBataie, useVizibil } from "./ceas";
 import { useEstompare } from "./estompare";
 import type { MachetaProps } from "./MachetaCautare";
@@ -67,6 +67,9 @@ export default function MachetaRegistru({ activ, estompat = false, inert = false
         <span className={s.etichetaMacheta}>
           <FileText width={13} height={13} strokeWidth={1.6} aria-hidden="true" />
           <span>{m.eticheta}</span>
+          <span className={s.exemplu} aria-hidden="true">
+            {ETICHETA_EXEMPLU}
+          </span>
         </span>
         <span className={s.insignaCap}>
           <Zap width={9} height={9} fill="currentColor" stroke="none" aria-hidden="true" />

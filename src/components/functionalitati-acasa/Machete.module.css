@@ -76,6 +76,23 @@
   flex-shrink: 0;
 }
 
+/* Eticheta vizibila "exemplu" (decizia D11): mica, langa numele machetei, in coltul de sus.
+   11 px / 600, `ardezie-6` pe `ardezie-0` = 7,24:1 (AA cere 4,5:1). Nu se micsoreaza sub 11 px
+   la nicio latime: e minimul de text al site-ului. */
+.exemplu {
+  flex-shrink: 0;
+  margin-left: 4px;
+  padding: 0 6px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 4px;
+  background: var(--color-ardezie-0);
+  color: var(--color-ardezie-6);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
 /* Eticheta de tip a unui act: factura, albastru (contract / extras), raport. */
 .tip {
   display: inline-block;
@@ -592,17 +609,26 @@
   color: var(--color-cerneala);
 }
 
+/* Cu eticheta "exemplu" (D11), capul nu mai incape pe un rand in rama ingusta de la 390: numele
+   machetei ramane pe un rand, iar insigna trece sub el, aliniata tot la dreapta. De la ~400 px in
+   sus totul sta pe un rand, ca inainte. */
 .capRegistru {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px 8px;
   margin-bottom: 10.4px;
+}
+
+.capRegistru .etichetaMacheta {
+  white-space: nowrap;
 }
 
 .insignaCap {
   display: inline-flex;
   flex-shrink: 0;
+  margin-left: auto;
   align-items: center;
   gap: 4px;
   padding: 3.84px 9.6px;

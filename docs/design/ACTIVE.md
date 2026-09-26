@@ -4,18 +4,14 @@ Fiecare activ vizual din depozit, de unde vine și sub ce licență. Nimic din d
 
 ## Sigla 3S
 
-Marca 3S e înregistrată la OSIM. Fișierul oficial (vectorial, pentru web) vine din dosarul de brand al proiectului și e servit **neschimbat la octet**; celelalte trei fișiere sunt derivate din el, cu schimbarea scrisă pe rândul fiecăruia:
+Marca 3S e înregistrată la OSIM. Pe site se servește **numai iconița** mărcii (decizia owner-ului D10, 25.09), decupată din fișierul oficial; fișierul oficial întreg nu se mai servește și stă în depozit doar ca referință a decupajului:
 
 | Fișier | Ce e | Cum s-a obținut |
 |---|---|---|
-| `public/brand/sigla-3s.svg` | sigla oficială: iconița și textul mărcii | copiat neschimbat; sha256 `af5de81be4f706be42199046b2ff71cf634c05efcc77dddc67e2e7154492fe33`, identic cu fișierul oficial |
-| `public/brand/sigla-3s-inchis.svg` | același desen, pentru fundal închis | grupul rădăcină al desenului primește `fill="#ffffff"`: textul, desenat implicit în negru, devine alb; culorile iconiței rămân |
-| `public/brand/sigla-3s-marca.svg` | numai iconița pătrată | același desen, cu fereastra de vizualizare tăiată pe iconiță (`viewBox="9 34.8 219.1 219.1"`) |
-| `public/brand/sigla-3s-compacta.svg` | forma compactă: iconița și cuvântul ADRIA, pentru locurile înguste | decupată din `sigla-3s.svg` (amprenta de pe primul rând): cele 7 trasee ale iconiței și cele 5 ale cuvântului ADRIA, 12 în total, copiate neschimbate, caracter cu caracter; ADRIA e mutat pe verticală cu `translate(0 44.32)`, ca să stea centrat pe iconiță; fără linia despărțitoare gri și fără rândurile DOC MANAGEMENT și scan-store-solve; `viewBox="9 34.8 522.4 219.1"`. Proba `tests/fundatie-brand.test.ts` caută fiecare traseu în fișierul oficial |
+| `docs/design/brand/sigla-3s-oficiala.svg` | sigla oficială, vectorială, pentru web; NU se servește | copiată neschimbat din dosarul de brand al proiectului; sha256 `af5de81be4f706be42199046b2ff71cf634c05efcc77dddc67e2e7154492fe33` |
+| `public/brand/sigla-3s-iconita.svg` | iconița: chenarul de scanare, dosarul și „3S” | decupată din fișierul oficial: cele 7 trasee ale iconiței, copiate neschimbate, caracter cu caracter, în ordinea din original; fereastra tăiată pe iconiță (`viewBox="9 34.8 219.1 219.1"`, cutia măsurată a traseelor: x 9,00-228,06, y 34,81-253,88); fără linia despărțitoare, fără rândurile de text și fără glife de font. Proba `tests/fundatie-brand.test.ts` caută fiecare traseu în fișierul oficial și cere ca niciunul să nu înceapă la dreapta iconiței |
 
-Componentele care o folosesc: `src/components/global/SiglaMarca.tsx` în antet, în sertarul mobil și în subsol (căile fișierelor vin din `config/brand.json`), și `src/components/primitive/Sigla.tsx` pentru iconița din erou. Mărimile: forma compactă de 40 px (95,4 px lățime) în antet și în sertar, iar sub 768 px cadrul antetului o taie după iconiță (40 x 40); sigla completă de 96 px (227,8 px lățime) în subsol, cu varianta pentru fundal închis pe paginile închise; iconița de 40 px în centrul buclei din erou. De ce aceste mărimi și cât au literele pe pixeli: `DIRECTIA.md`, secțiunea „Sigla”.
-
-Forma compactă a fost cerută de dispecer în sarcina feliei 43, ca sigla să se citească în slotul îngust al antetului. Acordul owner-ului pe așezarea ei (ADRIA mutat pe verticală, fără linia despărțitoare) e în așteptare.
+Componentele care o folosesc: `src/components/global/SiglaMarca.tsx` în antet (40 px), în sertarul mobil (40 px) și în subsol (56 px), cu calea din `config/brand.json`; `src/components/primitive/Sigla.tsx` pentru iconița din erou și din rama promo; `src/components/seo/imagine-sociala.tsx` pentru imaginile Open Graph și ale cardului social. Aceeași imagine pe fundal deschis și închis: are numai culori explicite. De ce aceste mărimi și cât are „3S” pe pixeli: `DIRECTIA.md`, secțiunea „Sigla”.
 
 ## Siglele terților (banda de integrări, rețelele din subsol)
 

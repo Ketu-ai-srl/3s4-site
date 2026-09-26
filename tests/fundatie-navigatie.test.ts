@@ -193,7 +193,10 @@ describe('subsolul', () => {
 
   it('drepturile sunt in numele marcii, fara nicio data de firma (plan §7)', () => {
     const rand = randDrepturi(2026)
-    expect(rand).toBe('© 2026 ' + SUBSOL.copyright.detinator + ' · ' + SUBSOL.copyright.mentiune)
+    const { detinator, mentiune } = SUBSOL.copyright
+    expect(rand).toBe('© 2026 ' + detinator + (mentiune.trim() === '' ? '' : ' · ' + mentiune))
+    // Mentiunea goala (decizia D10: fara numele din lockup-ul vechi) nu lasa separatorul in urma.
+    expect(rand).not.toMatch(/·\s*$/)
     expect(rand).not.toMatch(/de completat/i)
   })
 

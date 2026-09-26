@@ -4,7 +4,7 @@
 //
 // DATELE DIN SCENE SUNT FICTIVE si se declara ca exemplu (plan D9): numele de clienti, numerele de
 // dosar, datele, fisierele si persoanele nu exista. Declaratia e pe ecran, in capul panoului
-// (`COMUN.tipSpatiu`, arhiva demonstrativa), si in textul estimarii (exemplu de calcul).
+// (`COMUN.tipSpatiu`, arhiva de exemplu), si in textul estimarii (exemplu de calcul).
 //
 // CE E ADEVARAT SI UNDE II E SURSA. Afirmatiile despre produs din fisierul asta au fiecare o
 // intrare in `src/content/afirmatii/acasa-constructor.json`, cu `unde` pe fisierul asta si cu
@@ -216,7 +216,7 @@ export const COMUN = {
   // Rol: numele spatiului din capul cardului (15,2/700, un rand). Referinta: 10.
   numeSpatiu: "Firma dumneavoastră",
   // Rol: tipul spatiului, inaintea domeniului (12,16/500). Declara si exemplul (plan D9).
-  tipSpatiu: "Arhivă demonstrativă",
+  tipSpatiu: "Arhivă de exemplu",
   // Rol: eticheta barei de progres (11,84/600). Referinta: 13.
   progres: "Arhiva dumneavoastră",
   // Rol: eticheta accesibila a butonului rotund de reluare.
@@ -539,7 +539,7 @@ export const SCENARII: Scenarii = {
     durere: "Balanța se închide vineri, iar în extrasele clientului lipsesc două zile.",
     concluzie: "Zilele lipsă din extrase se văd de când sosește actul, nu vineri seara.",
     obiect: {
-      client: "Livada Nord",
+      client: "Alfa Exemplu",
       perioada: "08/2026",
       celule: [
         { eticheta: "Facturi de vânzare", valoare: "14" },
@@ -628,7 +628,7 @@ export const SCENARII: Scenarii = {
     durere: "Modificați prețul, dar nu știți dacă lucrați pe versiunea semnată sau pe o ciornă.",
     concluzie: "Fiecare modificare pornește de la versiunea semnată, iar ciornele nu se mai confundă cu ea.",
     obiect: {
-      client: "Orizont Digital",
+      client: "Beta Exemplu",
       dataInitiala: "01.07.2026.",
       dataNoua: "15.09.2026.",
       propunere: "sugestie, de verificat",
@@ -639,7 +639,7 @@ export const SCENARII: Scenarii = {
       set: ["Contract-cadru", "SOW", "Tarife", "Licențe", "Comandă"],
       lipsa: 1,
       nota: "pachet incomplet: 4 acte din 5",
-      notaFinala: "Orizont Digital: dosar complet",
+      notaFinala: "Beta Exemplu: dosar complet",
     },
     benzi: [
       { declansator: "licență de server", actiune: "alarmă înainte de reînnoire", iconita: "ceas", laPas: 2 },
@@ -829,15 +829,15 @@ export const SCENARII: Scenarii = {
     concluzie: "Donația din 2018 apare pe ecran pe loc, fără drum până în subsol.",
     obiect: {
       substituent: "Căutați după numele părților",
-      cautare: "Vasilescu Ioan",
+      cautare: "Viorel Exemplu",
       // A TREIA COLOANA are rolul fisei (§7.8): termenul de pastrare al fiecarui act, calculat
       // dupa categorie (`acasa-termene-calculate`). Se arata POZITIA din nomenclator, nu un an:
       // registrul de pe main (`notari-termen-pastrare-lipsa`) nu admite pe site un termen in ani
       // pentru actele notariale, fiindca nu il putem cita pe articol. Pozitiile sunt de exemplu.
       randuri: [
-        { numar: "2018/0412", parti: "Donație · Vasilescu Ioan", pastrare: "păstrare după nomenclator, poz. 12" },
-        { numar: "2022/0931", parti: "Partaj · Dobre, Ilie", pastrare: "păstrare după nomenclator, poz. 15" },
-        { numar: "2025/0317", parti: "Testament autentic · Enache Maria", pastrare: "păstrare după nomenclator, poz. 9" },
+        { numar: "2018/0412", parti: "Donație · Viorel Exemplu", pastrare: "păstrare după nomenclator, poz. 12" },
+        { numar: "2022/0931", parti: "Partaj · Ana și Ilie Exemplu", pastrare: "păstrare după nomenclator, poz. 15" },
+        { numar: "2025/0317", parti: "Testament autentic · Maria Exemplu", pastrare: "păstrare după nomenclator, poz. 9" },
       ],
       potrivit: 0,
       gasit: "Un singur act pe acest nume, din 2018, afișat pe loc",
@@ -873,7 +873,7 @@ export const SCENARII: Scenarii = {
     durere: "Ați predat diagnoza acum nouă zile și tot n-o puteți factura.",
     concluzie: "Acordul semnat stă lângă diagnoza pe care o confirmă, iar încasarea pornește din aceeași zi.",
     obiect: {
-      nume: "Audit de procese pentru Mureșan",
+      nume: "Audit de procese pentru Exemplu",
       trimis: {
         nume: "Diagnoza inițială",
         meta: "predată pe 2 septembrie",

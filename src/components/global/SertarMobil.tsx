@@ -119,8 +119,8 @@ export default function SertarMobil({ cai, cale, foi, grupuriDescarca, onInchide
       <div ref={sertar} className={s.sertar} role="dialog" aria-modal="true" aria-label={SERTAR.eticheta} data-sertar="">
         <div className={s.cap}>
           <Link href="/" aria-label={ANTET.sigla.text} onClick={onInchide}>
-            {/* Forma compacta, ca in antet: sigla completa de 36 px avea DOC MANAGEMENT la 3,2 px in desen (DIRECTIA.md). */}
-            <SiglaMarca forma="compacta" inaltime={40} />
+            {/* Iconita marcii, ca in antet (DIRECTIA.md, "Sigla"). */}
+            <SiglaMarca inaltime={40} />
           </Link>
           <button ref={inchide} type="button" className={s.inchide} aria-label={SERTAR.inchide} onClick={onInchide}>
             <Iconita nume="x" marime={20} contur={1.75} />

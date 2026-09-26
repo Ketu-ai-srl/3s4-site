@@ -7,7 +7,7 @@ import { imagineSociala } from "@/components/seo/imagine-sociala";
 // Valorile de mai jos se scriu literal: Next le citeste ca metadata a fisierului. Proba le compara
 // cu constantele din `metadata.ts` (tests/seo-geo-gdpr.test.ts).
 
-export const alt = "Sigla 3S Scan Store Solve, ADRIA Doc Management";
+export const alt = "Sigla 3S Scan Store Solve";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

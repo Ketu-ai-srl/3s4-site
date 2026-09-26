@@ -482,7 +482,8 @@ export const FUNCTIONALITATI: SectiuneFunctionalitati = {
 
 // ---------------------------------------------------------------------------------------------
 // 6. Banda de cifre (acasa.md §6): trei perechi "cifra + eticheta", statice. Plan D5 si §6.3:
-//    fapte 3S atribuite, nicio cifra de tractiune.
+//    fapte 3S din registrul de afirmatii, nicio cifra de tractiune. Decizia D10 (25.09): nicio
+//    vechime a altei firme; locul ei il ia pretul confirmat (`acasa-pret-0-ron`).
 // ---------------------------------------------------------------------------------------------
 
 export type PerecheCifra = {
@@ -494,8 +495,9 @@ export type PerecheCifra = {
 
 // Lungimile de mai jos sunt ale PERECHII intregi (cifra, un spatiu, eticheta).
 export const CIFRE: PerecheCifra[] = [
-  // Rol: la referinta, cati clienti. Aici vechimea, atribuita firmei-mame. Pereche: 34 [numarat].
-  { cifra: "Din 2019", eticheta: "ADRIA arhivează documente" },
+  // Rol: la referinta, cati clienti. Aici pretul de azi al oricarui pachet (plan D3, afirmatia
+  // confirmata `acasa-pret-0-ron`). Pereche: 32 [numarat].
+  { cifra: "0 RON", eticheta: "costă azi orice pachet 3S" },
   // Rol: la referinta, un procent de clasificare automata. Aici criptarea la stocare (plan D4c).
   // Pereche: 40 [numarat].
   { cifra: "AES-256", eticheta: "pe disc, iar transferul prin TLS 1.2+" },
@@ -586,8 +588,9 @@ export const INDUSTRII: SectiuneIndustrii = {
 
 // ---------------------------------------------------------------------------------------------
 // 8. Testimonialul (acasa.md §8): se pastreaza FORMA (cardul inchis, fraza mare, continuarea,
-//    atribuirea cu bara). Plan §6.3: o afirmatie atribuita firmei-mame, fara persoana si fara
-//    citat pana la acordul scris al administratorului ADRIA.
+//    atribuirea cu bara). Plan §6.3 si decizia D10: un fapt al marcii 3S, din registrul de
+//    afirmatii, CONFIRMAT de owner (`acasa-functii-in-productie`), fara persoana si fara citat.
+//    Depozitul fizic nu se atribuie marcii: nu e un bun al ei (vezi raspunsurile 1 si 2 din FAQ).
 // ---------------------------------------------------------------------------------------------
 
 export type Testimonial = {
@@ -603,17 +606,17 @@ export type Testimonial = {
 
 export const TESTIMONIAL: Testimonial = {
   esteCitat: false,
-  // Rol: fraza mare (24/600, doua randuri). Lungime: 65 [numarat].
-  fraza: "Hârtia rămâne la ADRIA, firma-mamă. La dumneavoastră ajunge răspunsul.",
+  // Rol: fraza mare (24/600, doua randuri). Lungime: 69 [numarat].
+  fraza: "Fiecare funcție arătată pe această pagină rulează azi în produsul 3S.",
   // Rol: continuarea (16/400, alb 72%, trei randuri). Lungime: 198 [numarat].
   continuare:
-    "Originalele predate spre arhivare se preiau pe bază de proces-verbal și stau în depozitul ADRIA până le cereți înapoi. Copiile scanate intră în 3S, iar orice răspuns din arhivă vă arată pagina din care vine.",
+    "Căutarea cu sursa citată, regulile automate, portalul clienților, termenele de păstrare, aplicația pe toate platformele, integrările, canalul WhatsApp și lucrul pe stocarea firmei sunt în producție.",
   atribuire: {
-    // Rol: la referinta, functia persoanei. Aici relatia cu marca, fara persoana. Lungime: 22 [numarat].
-    rol: "Firma-mamă a mărcii 3S",
-    // Rol: firma si marimea ei. Aici numele din sigla si ce face; fara denumirea juridica si
-    // fara sediu (plan §7: pe site apare doar brandul). Lungime: 38 [numarat].
-    firma: "ADRIA, arhivare fizică și digitală",
+    // Rol: la referinta, functia persoanei. Aici felul faptului, fara persoana. Lungime: 22 [numarat].
+    rol: "Starea produsului, azi",
+    // Rol: firma si marimea ei. Aici marca si deviza ei; fara denumire juridica si fara sediu
+    // (plan §7 si D10: pe site apare doar marca 3S). Lungime: 25 [numarat].
+    firma: "3S · Scan · Store · Solve",
   },
 };
 
@@ -716,24 +719,24 @@ export const INTREBARI: SectiuneIntrebari = {
     {
       // Rol: unde stau documentele. Lungime: 35 [numarat].
       intrebare: "În ce țară stau fișierele mele?",
-      // Rol: furnizorul si locul, criptarea automata (4 randuri la 1440). Lungime: 357 [numarat].
+      // Rol: furnizorul si locul, criptarea automata (4 randuri la 1440). Lungime: 307 [numarat].
       // Pe faptele din plan D4c: o singura regiune, in Germania.
       raspuns:
-        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc, fișierele sunt criptate AES-256, iar între calculatorul dumneavoastră și server circulă prin conexiuni TLS 1.2 sau mai noi. Dacă ne predați și originalele pe hârtie, acestea rămân în depozitul ADRIA, firma-mamă a mărcii 3S.",
+        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc, fișierele sunt criptate AES-256, iar între calculatorul dumneavoastră și server circulă prin conexiuni TLS 1.2 sau mai noi. Dacă ne predați și originalele pe hârtie, acestea stau într-un depozit, pe bază de proces-verbal.",
     },
     {
       // Rol: intrebarea despre cine altcineva ajunge la documente. Lungime: 48 [numarat].
       intrebare: "Cine mai poate deschide documentele mele?",
-      // Rol: accesul trece numai prin regulile clientului (5 randuri la 1440). Lungime: 535
+      // Rol: accesul trece numai prin regulile clientului (5 randuri la 1440). Lungime: 546
       // [numarat]. La 3S raspunsul e scris din mecanica marcii: arhive separate pe firma, acces
       // nominal pe dosar, portalul pe categorii, originalele cerute numai de persoanele de pe lista
       // clientului, jurnalul. Angajamentele despre accesul echipei 3S si despre antrenarea
       // modelelor NU se scriu pana nu le confirma owner-ul in scris; criptarea sta in raspunsul 1.
       // Prima propozitie spune cine da accesul IN APLICATIE (acasa-acces-pe-persoana-si-dosar) si
-      // nu promite ca nimeni altcineva nu vede actele: scanarea si depozitul ADRIA inseamna oameni
-      // care le deschid (raspunsul 4, testimonialul).
+      // nu promite ca nimeni altcineva nu vede actele: scanarea si depozitul inseamna oameni
+      // care le deschid (raspunsurile 1 si 4). Depozitul nu e numit al marcii: nu e un bun al ei.
       raspuns:
-        "Accesul în aplicație îl hotărâți dumneavoastră. Arhiva fiecărei firme stă separat, pe raft și în format digital, iar căutarea nu trece în arhiva altei firme. În firmă, accesul se dă nominal și pe dosar: colegul de la achiziții nu vede contractele de muncă dacă nu i le deschideți. Clienții intră prin portal și găsesc acolo numai categoriile lor. Un original din depozitul ADRIA îl poate cere doar cine e trecut în scris pe lista dumneavoastră. Orice căutare și orice document deschis se trec în jurnal, cu nume și oră, iar jurnalul vă stă la dispoziție.",
+        "Accesul în aplicație îl hotărâți dumneavoastră. Arhiva fiecărei firme stă separat, pe raft și în format digital, iar căutarea nu trece în arhiva altei firme. În firmă, accesul se dă nominal și pe dosar: colegul de la achiziții nu vede contractele de muncă dacă nu i le deschideți. Clienții intră prin portal și găsesc acolo numai categoriile lor. Un original din depozit îl poate cere doar cine e trecut în scris pe lista dumneavoastră. Orice căutare și orice document deschis se trec în jurnal, cu nume și oră, iar jurnalul vă stă la dispoziție.",
     },
     {
       // Rol: ce face AI-ul in produs. Lungime: 43 [numarat].
