@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import type { Browser, Page } from '@playwright/test'
+import { CHEIE_ALEGERE } from '../../../src/components/consimtamant/stocare'
 import { nemasurat } from './proiect'
 
 /**
@@ -204,6 +205,59 @@ export type MasuraTerti = {
   refuzApasat: boolean
   cookies: string[]
   cheiStocare: string[]
+  /** Cookie-urile si stocarea citite INAINTE de orice interactiune, dupa linistea retelei. */
+  cookiesInainte: string[]
+  cheiStocareInainte: string[]
+}
+
+export type OptiuniTerti = {
+  /**
+   * Cererile catre alte gazde se inregistreaza si apoi se BLOCHEAZA la retea: masuratoarea le
+   * vede, dar nu pleaca nicaieri. Pentru copiile cu analitica pornita (proba comutatorului), unde
+   * un defect ar trimite altfel o cerere reala catre Google.
+   */
+  blocheazaStraine?: boolean
+}
+
+/**
+ * Cheia sub care bannerul pastreaza alegerea: SINGURA stocare permisa dupa un refuz. E strict
+ * necesara (Legea 506/2004 art. 4 alin. (6) lit. b)) - fara ea refuzul n-ar putea fi respectat pe
+ * pagina urmatoare - si e declarata in politica de cookie-uri (`COOKIE_ALEGERE`).
+ *
+ * DE CE EXISTA (poarta C-01, decizia owner-ului din 24.09, planul valului S4 §8-§10): bannerul
+ * intra pe drumul cu GA4, iar un refuz respectat LASA aceasta cheie. Fara exceptie, C-01 s-ar
+ * inrosi pe site-ul corect exact in ziua operatorului. Exceptia e ingusta: o cheie, numai in
+ * `localStorage`, numai dupa un refuz apasat efectiv; inainte de interactiune stocarea trebuie sa
+ * fie goala (`cheiStocareInainte`), deci o pagina care o scrie la incarcare e prinsa.
+ */
+export const STOCARE_ALEGERE = 'localStorage:' + CHEIE_ALEGERE
+
+/** Stocarea care NU e alegerea unui refuz apasat. Lista goala = curat. */
+export function stocareNedeclarata(m: Pick<MasuraTerti, 'cheiStocare' | 'refuzApasat'>): string[] {
+  const permise = m.refuzApasat ? [STOCARE_ALEGERE] : []
+  return m.cheiStocare.filter((k) => !permise.includes(k))
+}
+
+async function citesteStocarea(pagina: Page): Promise<string[]> {
+  return pagina.evaluate(() => {
+    const chei: string[] = []
+    try {
+      for (let i = 0; i < localStorage.length; i++) chei.push('localStorage:' + localStorage.key(i))
+      for (let i = 0; i < sessionStorage.length; i++)
+        chei.push('sessionStorage:' + sessionStorage.key(i))
+    } catch {
+      chei.push('stocare inaccesibila')
+    }
+    return chei
+  })
+}
+
+function gazdaCererii(url: string): string {
+  try {
+    return new URL(url).host
+  } catch {
+    return ''
+  }
 }
 
 /**
@@ -211,20 +265,37 @@ export type MasuraTerti = {
  * banner, se apasa REFUZ si abia apoi se lasa pagina sa mai respire: poarta trebuie sa
  * spuna ce pleaca in scenariul in care utilizatorul a spus nu.
  *
+ * Inainte de clic, dupa linistea retelei, se citesc cookie-urile si stocarea: ce exista ATUNCI
+ * s-a scris fara nicio interactiune. Cererile se inregistreaza pe tot parcursul, deci si cele de
+ * dinaintea clicului.
+ *
  * Cookie-urile se citesc din context (`context.cookies()`), nu din `document.cookie`,
  * fiindca al doilea nu vede cookie-urile `HttpOnly`.
  */
-export async function masoaraTerti(browser: Browser, url: string): Promise<MasuraTerti> {
+export async function masoaraTerti(
+  browser: Browser,
+  url: string,
+  optiuni: OptiuniTerti = {},
+): Promise<MasuraTerti> {
   const context = await browser.newContext()
   const pagina = await context.newPage()
+  const gazdaProprie = new URL(url).host
 
   const cereri: string[] = []
   pagina.on('request', (cerere) => cereri.push(cerere.url()))
   context.on('request', (cerere) => cereri.push(cerere.url()))
+  if (optiuni.blocheazaStraine) {
+    await context.route('**/*', (ruta) => {
+      const gazda = gazdaCererii(ruta.request().url())
+      return gazda !== '' && gazda !== gazdaProprie ? ruta.abort('blockedbyclient') : ruta.continue()
+    })
+  }
 
   await pagina.goto(url, { waitUntil: 'domcontentloaded' })
 
-  const gazdaProprie = new URL(url).host
+  await pagina.waitForLoadState('networkidle').catch(() => {})
+  const cheiStocareInainte = await citesteStocarea(pagina)
+  const cookiesInainte = (await context.cookies()).map((c) => c.name + '@' + c.domain)
 
   let bannerGasit = false
   let refuzApasat = false
@@ -243,28 +314,14 @@ export async function masoaraTerti(browser: Browser, url: string): Promise<Masur
   await pagina.waitForLoadState('networkidle').catch(() => {})
   await pagina.waitForTimeout(3000)
 
-  const cheiStocare = await pagina.evaluate(() => {
-    const chei: string[] = []
-    try {
-      for (let i = 0; i < localStorage.length; i++) chei.push('localStorage:' + localStorage.key(i))
-      for (let i = 0; i < sessionStorage.length; i++)
-        chei.push('sessionStorage:' + sessionStorage.key(i))
-    } catch {
-      chei.push('stocare inaccesibila')
-    }
-    return chei
-  })
+  const cheiStocare = await citesteStocarea(pagina)
 
   const cookies = (await context.cookies()).map((c) => c.name + '@' + c.domain)
   await context.close()
 
   const cereriStraine = cereri.filter((u) => {
-    try {
-      const gazda = new URL(u).host
-      return gazda !== '' && gazda !== gazdaProprie
-    } catch {
-      return false
-    }
+    const gazda = gazdaCererii(u)
+    return gazda !== '' && gazda !== gazdaProprie
   })
   const gazdeStraine = [...new Set(cereriStraine.map((u) => new URL(u).host))].sort()
 
@@ -277,6 +334,8 @@ export async function masoaraTerti(browser: Browser, url: string): Promise<Masur
     refuzApasat,
     cookies,
     cheiStocare,
+    cookiesInainte,
+    cheiStocareInainte,
   }
 }
 

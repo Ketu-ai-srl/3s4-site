@@ -1,0 +1,670 @@
+/* Machetele unice ale paginii cautare-ai (functionalitati__cautare-ai.md). Cifrele: 1440 / 390. Toate
+   efectele legate de derulare citesc `--p`, progresul sectiunii (SectiuneScena). */
+
+/* --- S1, avalansa: sectiune de 200vh cu fereastra lipita ------------------------------------- */
+
+/* Dublat: bate `.fara` din SectiuneScena oricare ar fi ordinea foilor. */
+.avalansa.avalansa {
+  display: block;
+  padding: 0;
+}
+
+.lipit {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 32px 20px;
+  box-sizing: border-box;
+}
+
+.dosar {
+  width: 100%;
+  max-width: 760px;
+}
+
+.caleDosar {
+  display: inline-flex;
+  align-items: center;
+}
+
+.separator {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin: 0 6px;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-left: 4px solid currentColor;
+  opacity: 0.7;
+}
+
+.corpDosar {
+  padding: 3.2px 0;
+}
+
+/* Randul i se aprinde la pragul lui (`--prag`): treapta, apoi 0,3 s de tranzitie. */
+.randAvalansa {
+  --aprins: clamp(0, calc((var(--p) - var(--prag, 0)) * 1000), 1);
+  opacity: var(--aprins);
+  transform: translateY(calc(6px - 6px * var(--aprins)));
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.randAvalansa:last-child {
+  border-bottom: 0;
+}
+
+.randTinta {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+/* Pulsul: la fiecare 2,4 s un rand ales la intamplare licare 1,1 s (fundal .06 la 40%). */
+.puls {
+  animation: pulsRand 1.1s ease;
+}
+
+@keyframes pulsRand {
+  0%,
+  100% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  40% {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* --- S2, recunoasterea ----------------------------------------------------------------------- */
+
+/* Sectiunea urca 35vh peste finalul avalansei (18vh la 390), deasupra ei (z 10). Dublat: bate
+   stilul de baza al sectiunii oricare ar fi ordinea foilor. */
+.recunoastere.recunoastere {
+  z-index: 10;
+  overflow: hidden;
+  margin-top: -35vh;
+}
+
+.ecou {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 176px;
+  font-weight: 600;
+  line-height: 176px;
+  letter-spacing: -7.04px;
+  color: var(--color-ardezie-3);
+  white-space: nowrap;
+  filter: blur(1.5px);
+  pointer-events: none;
+  opacity: calc(0.056 + 0.014 * var(--pornit));
+  transition: opacity 0.5s ease;
+}
+
+.ecou::before {
+  content: attr(data-ecou);
+}
+
+.recunoastere {
+  --pornit: clamp(0, calc((var(--p) - 0.08) * 1000), 1);
+}
+
+.recunoastereBloc {
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
+  text-align: center;
+  opacity: calc(0.8 + 0.2 * var(--pornit));
+  transform: scale(calc(1.012 - 0.012 * var(--pornit)));
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.recunoastereTitlu {
+  margin: 0 0 16px;
+  color: var(--color-ardezie-0);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+
+.recunoastereParagraf {
+  margin: 24px 0 0;
+  font-size: 22.4px;
+  font-weight: 400;
+  line-height: 34.72px;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
+}
+
+.linieAlbastra {
+  width: 49px;
+  height: 2px;
+  margin: 32px auto 0;
+  background: rgba(37, 99, 235, 0.6);
+}
+
+/* --- S3, frustrarea: cardul sesiunii si citatele --------------------------------------------- */
+
+.frustrare {
+  position: relative;
+}
+
+.cardSesiune {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: var(--color-ardezie-9);
+  box-shadow: var(--shadow-fereastra-mare);
+  text-align: left;
+}
+
+.capSesiune {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 17.6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.inCurs {
+  display: flex;
+  align-items: center;
+  gap: 6.4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 9.92px;
+  font-weight: 600;
+  line-height: 15.872px;
+  letter-spacing: 0.198px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.punctRosu,
+.punctGalben {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.punctRosu {
+  background: var(--color-rosu-clar);
+}
+
+.punctGalben {
+  background: var(--color-chihlimbar-clar);
+}
+
+.sesiune {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.2px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cronometru {
+  margin-left: auto;
+  padding: 3.2px 7.2px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-mono);
+  font-size: 11.52px;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+.randuriSesiune {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+
+.randSesiune {
+  display: flex;
+  align-items: center;
+  gap: 13.6px;
+  padding: 13.6px 17.6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.randSesiune:last-child {
+  border-bottom: 0;
+}
+
+.textSesiune {
+  min-width: 0;
+  flex: 1;
+}
+
+.etichetaSesiune {
+  display: block;
+  font-size: 13.12px;
+  font-weight: 600;
+  line-height: 17.056px;
+  color: var(--color-ardezie-2);
+}
+
+.subSesiune {
+  display: block;
+  margin-top: 2.4px;
+  font-size: 10.88px;
+  line-height: 14.144px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.numar {
+  font-size: 22.4px;
+  font-weight: 600;
+  line-height: 22.4px;
+  letter-spacing: -0.448px;
+  color: #e6ecf5;
+  font-variant-numeric: tabular-nums;
+}
+
+.numarTimp {
+  font-size: 17.6px;
+  line-height: 17.6px;
+  letter-spacing: -0.352px;
+}
+
+.subsolSesiune {
+  display: flex;
+  align-items: center;
+  gap: 8.8px;
+  padding: 10.4px 17.6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 11.52px;
+  line-height: 18.432px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.citate {
+  position: absolute;
+  inset: -131.5px -82px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.citat {
+  position: absolute;
+}
+
+.citat1 {
+  top: 5%;
+  left: -8%;
+}
+
+.citat2 {
+  top: 18%;
+  right: -5%;
+}
+
+.citat3 {
+  bottom: 18%;
+  left: -10%;
+}
+
+.citat4 {
+  right: -6%;
+  bottom: 5%;
+}
+
+.citat5 {
+  top: 48%;
+  right: -7%;
+}
+
+/* --- S5, lumina: bara de cautare ------------------------------------------------------------- */
+
+.lumina {
+  position: relative;
+}
+
+/* Bara si copia ei invizibila (plina) in aceeasi celula: celula are inaltimea barei pline, bara reala
+   sta sus si creste in jos cu textul scris, deci indicatia de sub celula nu se misca. */
+.locBara {
+  display: grid;
+  /* Coloana cat blocul: fara ea, coloana implicita creste cat bara (620) si la 390 bara iesea din ecran. */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: start;
+}
+
+.locBara > * {
+  grid-area: 1 / 1;
+}
+
+.baraFantoma.baraFantoma {
+  visibility: hidden;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.bara {
+  display: flex;
+  box-sizing: border-box;
+  width: 620px;
+  max-width: 100%;
+  margin: 0;
+  align-items: center;
+  gap: 12.8px;
+  padding: 19.2px 22.4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-fereastra);
+  text-align: left;
+  opacity: clamp(0, calc(1.8 * var(--p)), 1);
+  transform: scale(calc(0.85 + 0.15 * var(--p)));
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.lupaBara {
+  flex: none;
+  color: var(--color-albastru);
+}
+
+.textBara {
+  min-width: 0;
+  flex: 1;
+  min-height: 24.64px;
+  font-size: 17.6px;
+  font-weight: 500;
+  line-height: 24.64px;
+  color: #e6ecf5;
+}
+
+.tasta {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding: 4px 8.8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.indicatie {
+  margin: 24px 0 0;
+  font-size: 13.6px;
+  line-height: 21.76px;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: var(--scris-gata, 1);
+  transition: opacity 0.4s ease;
+}
+
+/* --- S6, extragerea -------------------------------------------------------------------------- */
+
+.extragere {
+  --pornit: clamp(0, calc((var(--p) - 0.35) * 1000), 1);
+  position: relative;
+}
+
+.raza {
+  position: absolute;
+  top: -77px;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 77px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), var(--color-albastru), var(--color-albastru));
+  transform: scaleY(var(--pornit));
+  transform-origin: top;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.extras {
+  opacity: var(--pornit);
+  transform: translateY(calc(20px - 20px * var(--pornit)));
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.sursaExtras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9.6px;
+  margin-bottom: 17.6px;
+  padding: 8.8px 15.2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.fisierExtras {
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  line-height: 20.48px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.paginaExtras {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11.2px;
+  line-height: 17.92px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.citatExtras {
+  margin: 0 19.2px 16px;
+  padding: 9.6px 14.4px;
+  border-left: 3px solid var(--color-albastru);
+  border-radius: 0 6px 6px 0;
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-italic);
+  font-size: 19.2px;
+  font-style: italic;
+  line-height: 30.72px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.metaExtras {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 19.2px 19.2px;
+  font-size: 13.6px;
+  font-weight: 600;
+  line-height: 21.76px;
+  color: var(--color-verde-clar);
+}
+
+.bifa {
+  display: flex;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.14);
+}
+
+.legenda {
+  margin: 32px 0 0;
+  font-size: 18.4px;
+  line-height: 29.44px;
+  color: rgba(255, 255, 255, 0.5);
+  /* La referinta 1,5 (p - 0,33): intreaga abia la p ~1, iar la p 0,5 textul iesea 1,3:1 (contrast calculat,
+     25.09). ABATERE: tot dupa card (pragul lui e 0,35), intreaga la p 0,45. */
+  opacity: clamp(0, calc(10 * (var(--p) - 0.35)), 1);
+  transition: opacity 0.5s ease;
+}
+
+/* --- S7, desenele contrastului ------------------------------------------------------------------ */
+
+.cursorDesen {
+  animation: cursorDesen 1s steps(1) infinite;
+}
+
+@keyframes cursorDesen {
+  50% {
+    fill-opacity: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .avalansa.avalansa {
+    padding: 48px 20px;
+  }
+
+  .lipit {
+    padding: 24px 16px;
+  }
+
+  .recunoastere.recunoastere {
+    margin-top: -18vh;
+  }
+
+  .ecou {
+    display: none;
+  }
+
+  .recunoastereTitlu {
+    font-size: 66.3px;
+    line-height: 62.985px;
+    letter-spacing: -2.652px;
+  }
+
+  .recunoastereParagraf {
+    margin-top: 32px;
+    font-size: 15.2px;
+    line-height: 23.56px;
+  }
+
+  .cardSesiune {
+    max-width: none;
+  }
+
+  .capSesiune {
+    flex-wrap: wrap;
+    gap: 8.8px;
+    padding: 10.4px 12.8px;
+  }
+
+  .sesiune {
+    font-size: 11.2px;
+    line-height: 17.92px;
+  }
+
+  .cronometru {
+    padding: 2.4px 5.6px;
+    font-size: 10.4px;
+    line-height: 16.64px;
+  }
+
+  .randSesiune {
+    gap: 10.4px;
+    padding: 11.2px 12.8px;
+  }
+
+  .etichetaSesiune {
+    font-size: 12.48px;
+    line-height: 16.224px;
+  }
+
+  .subSesiune {
+    font-size: 9.92px;
+    line-height: 12.896px;
+  }
+
+  .numar {
+    font-size: 19.2px;
+    line-height: 19.2px;
+    letter-spacing: -0.384px;
+  }
+
+  .numarTimp {
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: -0.32px;
+  }
+
+  .subsolSesiune {
+    padding: 10.4px 12.8px;
+    font-size: 10.4px;
+    line-height: 16.64px;
+  }
+
+  .citate {
+    inset: -68px 0;
+  }
+
+  .citat1 {
+    top: 2%;
+    left: 0;
+  }
+
+  .citat2 {
+    top: 18%;
+    right: 0;
+  }
+
+  .citat3 {
+    bottom: 2%;
+    left: 0;
+  }
+
+  .citat4 {
+    right: 0;
+    bottom: 18%;
+  }
+
+  /* Dublat: bate `display: flex` al cardului-citat oricare ar fi ordinea foilor. */
+  .citate .citat5 {
+    display: none;
+  }
+
+  /* Dublate: bat stilurile de baza ale cutiei si pastilei (Fereastra) oricare ar fi ordinea foilor. */
+  .cutieSesiune.cutieSesiune {
+    width: 28px;
+    height: 28px;
+  }
+
+  .cutieSesiune svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pastilaSesiune.pastilaSesiune {
+    padding: 4.48px 8.8px;
+    font-size: 9.92px;
+    line-height: 15.872px;
+    letter-spacing: 0.1984px;
+  }
+
+  .textBara {
+    min-height: 21.28px;
+    font-size: 15.2px;
+    line-height: 21.28px;
+  }
+
+  .citatExtras {
+    font-size: 16px;
+    line-height: 25.6px;
+  }
+
+  .legenda {
+    font-size: 16px;
+    line-height: 25.6px;
+  }
+}

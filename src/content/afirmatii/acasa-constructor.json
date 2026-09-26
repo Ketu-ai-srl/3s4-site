@@ -1,0 +1,119 @@
+[
+  {
+    "id": "constructor-notari-custodie",
+    "text": "În scena Notariat a constructorului, arhiva biroului se preia cu proces-verbal și se scanează, actul se găsește după numele părților, iar originalul vine din depozit la cerere",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-notari-custodie (src/content/afirmatii/acasa.json), neconfirmată și în registrul de pe main (solutii-notari.json, notari-custodie-original)",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-notari-termen-nomenclator",
+    "text": "În registrul din scena Notariat, fiecare act arată poziția din nomenclator după care i se socotește termenul de păstrare",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: sprijinit pe acasa-termene-calculate (termenul calculat după categorie); pozițiile sunt de exemplu, iar anul de păstrare nu se scrie, fiindcă registrul de pe main (solutii-notari.json, notari-termen-pastrare-lipsa) nu admite pe site un termen în ani pentru actele notariale fără articol citat",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-clasare-si-reguli",
+    "text": "În scenele constructorului, fiecare act sosit e recunoscut, așezat singur în dosarul lui (lucrarea, clientul pe lună, cursa, cauza, adresa, dauna, proiectul) și pornește regulile stabilite de firmă: anunță omul potrivit sau atașează actul la dosarul lui",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-clasare-automata; regulile automate ca funcționalitate sunt declarate existente (acasa-functii-in-productie, decizia D4b), detaliile de aici nu",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-alerte-lipsa-si-expirari",
+    "text": "În scenele constructorului, 3S arată din timp actele care lipsesc dintr-un dosar și pune alarme înainte să expire un termen, o garanție, o licență sau un acord",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-alerte-acte-lipsa-si-expirari",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-avocatura-data-primirii",
+    "text": "În scena Avocatură, ziua în care sosește un act de procedură se notează pe act, iar termenul de apel se socotește de la comunicare",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-avocatura-termene-procedurale",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-imobiliare-adresa",
+    "text": "În scena Imobiliare, actele unei locuințe se găsesc după adresă",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-imobiliare-cautare-dupa-adresa",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-logistica-cursa",
+    "text": "În scena Logistică, documentele unei curse stau legate de cursă și se vede care lipsește",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași regulă ca acasa-logistica-acte-legate-de-cursa",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-versiuni-si-semnaturi",
+    "text": "În scenele IT și web și Consultanță, versiunile unui contract sau ale unui raport stau în același dosar, iar versiunea semnată se vede lângă semnătura ei",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: nu are intrare pereche în acasa.json; funcționalitățile sunt declarate existente prin decizia D4b, dar versiunile nu sunt numite acolo",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-integrari",
+    "text": "În panoul constructorului, 3S merge cu stocarea proprie a firmei și cu Gmail, Outlook și WhatsApp",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-functii-in-productie (lucrul pe stocarea proprie, decizia D4b) și acasa-integrari-si-whatsapp (Gmail, Outlook, WhatsApp, decizia D4c), planul valului S4",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "constructor-pret-0-ron",
+    "text": "În panoul constructorului, contul costă 0 RON astăzi",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "confirmat",
+    "sursa": "aceeași confirmare ca acasa-pret-0-ron: deciziile D3 și D4c din planul valului S4",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "constructor-cont-fara-card",
+    "text": "Contul deschis din constructor nu cere card de plată",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: aceeași afirmație ca acasa-cont-fara-card",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-cont-cu-raspunsurile",
+    "text": "Contul deschis din constructor pornește cu răspunsurile date la chestionar (domeniul, canalele, volumul și cine se ocupă de acte)",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: răspunsurile ajung la /inregistrare prin contractul din acasa.ts (adresaInregistrare); ce face contul cu ele nu e confirmat",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "constructor-estimare-exemplu",
+    "text": "Estimarea din constructor (orele pe lună duse cu sortatul manual și timpul redat de 3S în ziua simulată) e un exemplu de calcul după o formulă fixă, nu o măsurătoare",
+    "unde": "src/content/acasa-constructor.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: formula e cea a referinței vizuale, iar proba tests/constructor.test.ts o compară cu cele 24 de combinații măsurate acolo; pe pagină e declarată ca exemplu de calcul; ipotezele ei (4-5 minute pe act, raportul de 1 la 11 cu 3S) nu au o măsurătoare a noastră",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

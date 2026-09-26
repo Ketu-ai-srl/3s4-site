@@ -253,8 +253,9 @@ def html_juridic(date=None, in_plus=()):
               'export default function P() { return <p>Politica</p> }\n')
         scrie(os.path.join(d, 'src', 'app', 'termeni', 'page.tsx'),
               'export default function P() { return <p>Termeni</p> }\n')
-        scrie(os.path.join(d, 'config', 'entitate.ro.json'),
-              json.dumps(date, ensure_ascii=False, indent=2) + '\n')
+        # Comutatorul operatorului (L-01): un operator numit, ale carui date apar in pagina.
+        scrie(os.path.join(d, 'config', 'operator.json'),
+              json.dumps({'operator': date}, ensure_ascii=False, indent=2) + '\n')
         corp = ['<html><body>']
         for camp in ('denumire', 'sediu', 'email', 'telefon', 'numar_orc', 'cod_fiscal'):
             corp.append('<p>' + str(date.get(camp, '')) + '</p>')
@@ -274,9 +275,16 @@ def html_seo(canonical='https://exemplu.test/'):
                   'care citeaza pagina din care vine raspunsul."/>']
         if canonical is not None:
             bucati.append('<link rel="canonical" href="' + canonical + '"/>')
+        # Graful de brand pe care S-09 il cere pe start din felia seo-geo-gdpr (decizia owner-ului
+        # din 24.09.2026, plan S4 sectiunea 8.2): Organization si WebSite, fiecare cu @id-ul lui.
+        # Pagina ramane "construita corect" numai daca poarta o primeste asa.
+        baza = 'https://exemplu.test/'
         bucati.append('<script type="application/ld+json">'
-                      + json.dumps({'@context': 'https://schema.org', '@type': 'Organization',
-                                    'name': 'Trei S'})
+                      + json.dumps({'@context': 'https://schema.org', '@graph': [
+                          {'@type': 'Organization', '@id': baza + '#organizatie', 'name': 'Trei S'},
+                          {'@type': 'WebSite', '@id': baza + '#site', 'url': baza, 'name': 'Trei S',
+                           'publisher': {'@id': baza + '#organizatie'}},
+                      ]})
                       + '</script>')
         bucati.append('</head><body><h1>Unu</h1><h2>Doi</h2><h3>Trei</h3></body></html>')
         scrie(os.path.join(d, '.next', 'server', 'app', 'index.html'), ''.join(bucati))
@@ -409,6 +417,19 @@ def cazuri_tipografie():
         lambda d: scrie(os.path.join(d, 'docs', 'separator.md'),
                         chr(0x2500) * u2500 + '\n'),
         CURAT)
+    def peste_linia_de_comanda(d):
+        # Pe 25.09 lotul a trecut de plafonul liniei de comanda din Windows (32.767 de caractere:
+        # 323 de fisiere, WinError 206) si poarta a picat pe fiecare felie curata. 450 de fisiere
+        # cu nume lungi il depasesc pe orice masina; ultimul poarta liniuta lunga, ca o transa
+        # sarita sa se vada ca rosu lipsa, nu doar ca un 0 corect din intamplare.
+        for i in range(450):
+            scrie(os.path.join(d, 'docs', 'transe',
+                               'fisier-cu-nume-lung-pentru-linia-de-comanda-%03d.md' % i), 'nota - aici\n')
+        scrie(os.path.join(d, 'docs', 'transe', 'zz-ultimul.md'), 'nota ' + chr(0x2014) + ' aici\n')
+
+    caz('poarta-tipografie.py',
+        '451 de fisiere peste plafonul liniei de comanda din Windows: rulat pe transe, ultimul prins (cod 1)',
+        peste_linia_de_comanda, PICAT, 'zz-ultimul.md')
     # MUTANTUL: se goleste lista de tinte a DETECTORULUI. Controlul lui interior trebuie sa
     # pice, detectorul sa iasa 3, iar poarta sa TRANSMITA codul in loc sa-l inghita.
     caz('poarta-tipografie.py', 'MUTANT: detector cu tinte goale - poarta transmite codul 3',
