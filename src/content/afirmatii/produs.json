@@ -190,7 +190,7 @@
   },
   {
     "id": "produs-raportare-vulnerabilitati",
-    "text": "Problemele de securitate găsite în 3S se raportează pe pagina de contact, cu „securitate” în subiectul mesajului, iar detaliile nu se publică până la reparare",
+    "text": "Problemele de securitate găsite în 3S se raportează prin e-mail la security@3s.com.ro, adresă publicată și în security.txt, iar detaliile nu se publică până la reparare",
     "unde": "src/content/produs/securitate.ts",
     "stare": "neconfirmat",
     "sursa": "",

@@ -11,9 +11,9 @@
 // canonical-uri care arata in alta parte decat pagina, iar asta scoate site-ul din index fara ca
 // vreun ecran sa se schimbe. Mai bine un build rosu decat un index gol.
 //
-// RAMANE IN AFARA (de stiut): `FirPagina` (piesa inghetata a fundatiei) compune adresele firului
-// direct din `ADRESA_BAZA`. Cat timp `SITE_URL` lipseste, cele doua coincid; la lansare,
-// `FirPagina` trebuie trecuta pe `adresaSite()` - pas scris in `docs/ziua-operatorului.md`.
+// Si firul de pagina (`FirPagina`) si foaia de tiparit a termenelor (`FoaieTipar`) compun adresele
+// tot prin `adresaSite()` (felia seo-tehnic), deci `ADRESA_BAZA` nu mai are alt consumator decat
+// implicitul de aici. Proba: un build cu `SITE_URL` schimbat nu mai contine gazda de proba.
 
 import { ADRESA_BAZA } from "@/content/rute";
 

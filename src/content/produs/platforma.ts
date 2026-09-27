@@ -17,7 +17,8 @@ import type { BlocIntrebari } from "./intrebari";
 export const CALE_PLATFORMA = "/platforma";
 
 export const META_PLATFORMA = {
-  titlu: "Platforma 3S: actele firmei citite, păstrate și întrebate",
+  // Felia seo-tehnic (auditul SEO M3): numele categoriei de produs cautate, cu marca la final.
+  titlu: "Program de arhivare electronică a documentelor | 3S",
   descriere:
     "Cum lucrează 3S: preia actele pe hârtie și fișierele, le citește, le păstrează criptat în Germania și răspunde cu sursa citată, pe web, WhatsApp și API.",
 };

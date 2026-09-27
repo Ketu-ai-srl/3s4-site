@@ -79,6 +79,16 @@ export default function DemoCautareFile({ eticheta, file }: DemoCautareFileProps
   // Ciclul filei active: tastare, rezultat, iar dupa 6,5 s de la pornire, fila urmatoare. Orice
   // schimbare (fila, vizibilitate, pauza, clic) opreste ceasurile vechi si porneste altele.
   const lungime = file[activ].interogare.length;
+
+  // Fila noua porneste GOALA in acelasi lot cu schimbarea filei. Efectul de mai jos o goleste si el,
+  // dar abia dupa commit, intr-o sarcina separata: pana atunci cardul arata fila noua cu progresul
+  // filei vechi (interogarea noua taiata la pozitia veche, sau intreaga si cu rezultatul ei) - un
+  // cadru vizibil, masurat 7-12 ms pe statie si mai lung pe o masina incarcata.
+  const golesteFila = () => {
+    setFaza("gol");
+    setTastat(0);
+  };
+
   useEffect(() => {
     if (!animat || !vizibil || pauza) return;
     setFaza("tastare");
@@ -96,7 +106,12 @@ export default function DemoCautareFile({ eticheta, file }: DemoCautareFileProps
     }, PAS_TASTARE);
     const urmatoarea = window.setTimeout(() => {
       if (subMouse.current) amanata.current = true;
-      else setActiv((a) => (a + 1) % file.length);
+      else {
+        // Ca `golesteFila`, scrisa pe loc: efectul nu depinde de o functie refacuta la fiecare randare.
+        setFaza("gol");
+        setTastat(0);
+        setActiv((a) => (a + 1) % file.length);
+      }
     }, PERIOADA_FILA);
     return () => {
       window.clearInterval(interval);
@@ -112,6 +127,7 @@ export default function DemoCautareFile({ eticheta, file }: DemoCautareFileProps
     setActiv(i);
     setRunda((r) => r + 1);
     if (!animat || pauza) setFaza("final");
+    else golesteFila();
   };
 
   const laFocus = (e: FocusEvent<HTMLDivElement>) => {
@@ -131,6 +147,8 @@ export default function DemoCautareFile({ eticheta, file }: DemoCautareFileProps
     subMouse.current = false;
     if (amanata.current) {
       amanata.current = false;
+      // Cu focusul de tastatura in card fila ramane in starea finala (vezi `laFocus`), nu goala.
+      if (!pauza) golesteFila();
       setActiv((a) => (a + 1) % file.length);
     }
   };

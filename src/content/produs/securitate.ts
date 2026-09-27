@@ -323,19 +323,24 @@ export const BLOC_ORIGINALE = {
 
 // --- 08 Raportarea vulnerabilitatilor ------------------------------------------------------------
 
+// Canalul e adresa `security@` (constatarea de audit 3S4-F-026): formularul de contact e inactiv cat
+// timp operatorul e null, deci un raport trimis pe acolo nu pleca nicaieri. Aceeasi adresa sta in
+// `/.well-known/security.txt` (RFC 9116), citita din constanta de aici.
+export const EMAIL_SECURITATE = "security@3s.com.ro";
+
 // Titlul numeste norma (raportarea responsabila), iar lista spune ce cuprinde mesajul; regula de a
 // nu publica detaliile sta o singura data, in paragraf. Titlul are 2 randuri la 1440 si la 390.
 export const BLOC_RAPORTARE = {
   numar: "08",
   titlu: "Raportarea responsabilă a unei vulnerabilități în 3S",
-  text: "Ca să putem reproduce problema, scrie-ne pe pagina de contact un mesaj cu cele trei lucruri de mai jos. Dacă e vorba de un act anume, dă-ne numele fișierului, nu conținutul lui. Până la reparare, te rugăm să păstrezi detaliile între noi, ca alte conturi să nu rămână expuse.",
+  text: "Ca să putem reproduce problema, scrie-ne pe adresa de securitate un e-mail cu cele trei lucruri de mai jos. Dacă e vorba de un act anume, dă-ne numele fișierului, nu conținutul lui. Până la reparare, te rugăm să păstrezi detaliile între noi, ca alte conturi să nu rămână expuse.",
   lista: [
     "Adresa exactă a paginii afectate și ora la care ai observat problema.",
     "Pașii, în ordine, prin care putem vedea și noi problema pe ecranul nostru.",
     "Contul folosit la test: lucrează numai pe contul și pe actele propriei firme.",
   ],
-  buton: { text: "Pagina de contact", href: "/contact", ruta: "/contact" } as Legatura,
-  nota: "Menționează „securitate” în subiectul mesajului.",
+  buton: { text: EMAIL_SECURITATE, href: "mailto:" + EMAIL_SECURITATE, ruta: null } as Legatura,
+  nota: "Aceeași adresă e scrisă și în fișierul security.txt al site-ului.",
 };
 
 // --- 09 Intrebari frecvente ----------------------------------------------------------------------

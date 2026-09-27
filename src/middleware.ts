@@ -7,7 +7,12 @@ import {
   randEvidenta,
   valideazaEvidenta,
 } from '@/components/consimtamant/evidenta'
+import { LimitaRata, adresaClient, citesteCorpLimitat, originePermisa, tipJson } from '@/app/api/formular/garda'
 import { stareAnalitica } from '@/lib/analitica'
+import { adresaSite } from '@/lib/site'
+
+// Limita de rata a evidentei, una pe proces (garda comuna cu formularul: `src/app/api/formular/garda.ts`).
+const LIMITA_EVIDENTA = new LimitaRata()
 
 // EVIDENTA CONSIMTAMANTULUI (felia seo-geo-gdpr, planul valului S4, §9). Site-ul nu are baza de date,
 // deci alegerea din banner ajunge ca UN rand JSON in jurnalul serverului, scris de aici. Calea exista
@@ -15,21 +20,39 @@ import { stareAnalitica } from '@/lib/analitica'
 // merge mai departe si primeste 404, ca orice adresa fara pagina. Validarea e stricta si inchisa
 // (`src/components/consimtamant/evidenta.ts`): o cerere care nu are exact forma asteptata nu ajunge
 // in jurnal. Se scrie prefixul de retea, niciodata adresa IP completa.
+//
+// GARDA (constatarea de audit 3S4-F-008), inainte de citirea corpului: o cerere de navigator (are
+// `Origin`) trebuie sa vina de pe site si sa fie `application/json`, altfel 403; limita de rata pe
+// adresa, altfel 429; corpul se citeste in flux, cu oprire la `MARIME_MAXIMA` octeti.
+// O cerere FARA `Origin` nu vine dintr-un navigator (acesta il pune la orice POST, inclusiv prin
+// `sendBeacon`): pe ea verificarea de origine si de tip nu opreste nimic - clientul si-ar scrie
+// singur antetele - iar rata, marimea si validarea stricta raman. Formularul, unde fiecare cerere
+// valida pleaca spre o destinatie, respinge si lipsa antetului (`src/app/api/formular/logica.ts`).
 async function evidentaConsimtamant(request: NextRequest): Promise<NextResponse> {
   if (request.method !== 'POST') {
     return new NextResponse(null, { status: 405, headers: { Allow: 'POST' } })
   }
-  const lungime = Number(request.headers.get('content-length') ?? '0')
-  if (lungime > MARIME_MAXIMA) {
+  const dinNavigator = request.headers.has('origin')
+  if (dinNavigator && (!originePermisa(request, adresaSite()) || !tipJson(request))) {
+    return new NextResponse(null, { status: 403 })
+  }
+  const adresa = adresaClient(request)
+  if (!LIMITA_EVIDENTA.permite(adresa)) {
+    return new NextResponse(null, {
+      status: 429,
+      headers: { 'Retry-After': String(LIMITA_EVIDENTA.secundeRamase(adresa)) },
+    })
+  }
+  const citit = await citesteCorpLimitat(request, MARIME_MAXIMA)
+  if (citit.stare === 'prea-mare') {
     return new NextResponse(null, { status: 413 })
   }
-  const text = await request.text()
-  if (text.length > MARIME_MAXIMA) {
-    return new NextResponse(null, { status: 413 })
+  if (citit.stare === 'necitit') {
+    return new NextResponse(null, { status: 400 })
   }
   let corp: unknown
   try {
-    corp = JSON.parse(text)
+    corp = JSON.parse(citit.text)
   } catch {
     return new NextResponse(null, { status: 400 })
   }

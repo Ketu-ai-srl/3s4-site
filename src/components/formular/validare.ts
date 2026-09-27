@@ -63,13 +63,44 @@ export function valideaza(date: DateFormular): Erori {
 }
 
 /**
- * Corpul unei cereri, citit pe server: exact cheile asteptate, fiecare cu tipul ei. Orice alta
- * forma intoarce `null` (cererea se respinge fara sa fie citita mai departe).
+ * Campul-capcana (ascuns, 3S4-F-008): numele lui in HTML si cheia din corp. Un om nu il vede si nu
+ * ajunge la el cu tastatura; un robot care completeaza tot ce gaseste il umple. Numele e unul pe
+ * care completarea automata a navigatorului nu il recunoaste.
  */
-export function citesteCorp(corp: unknown): { formular: Formular; date: DateFormular } | null {
+export const CAMP_CAPCANA = "adresa_site";
+/** Cheia duratei de completare din corp: milisecunde de la afisarea formularului la trimitere. */
+export const CHEIE_DURATA = "durata";
+/**
+ * Sub atat timp de la afisarea formularului, serverul trateaza trimiterea ca pe a unui robot. Formularul
+ * din pagina nu trimite niciodata sub prag: asteapta diferenta inainte de cerere (`asteptareInainteDeTrimitere`),
+ * deci un om rapid (completare automata a navigatorului) nu pierde mesajul. Pragul prinde numai cererile
+ * care declara singure o durata mai mica.
+ */
+export const DURATA_MINIMA_MS = 3_000;
+
+/** Cat mai asteapta formularul inainte de cerere, ca durata trimisa sa nu fie sub prag. */
+export function asteptareInainteDeTrimitere(durata: number): number {
+  return Math.max(0, DURATA_MINIMA_MS - durata);
+}
+
+export type CorpCitit = {
+  formular: Formular;
+  date: DateFormular;
+  /** Valoarea campului-capcana; sir gol cand lipseste. */
+  capcana: string;
+  /** Durata de completare, in milisecunde, sau `null` cand clientul nu a trimis-o. */
+  durata: number | null;
+};
+
+/**
+ * Corpul unei cereri, citit pe server: exact cheile asteptate, fiecare cu tipul ei. Orice alta
+ * forma intoarce `null` (cererea se respinge fara sa fie citita mai departe). Capcana si durata sunt
+ * optionale: formularul de cont (felia conversie) nu le trimite inca.
+ */
+export function citesteCorp(corp: unknown): CorpCitit | null {
   if (typeof corp !== "object" || corp === null || Array.isArray(corp)) return null;
   const o = corp as Record<string, unknown>;
-  const permise = new Set<string>([...CAMPURI_TEXT, "marketing", "formular"]);
+  const permise = new Set<string>([...CAMPURI_TEXT, "marketing", "formular", CAMP_CAPCANA, CHEIE_DURATA]);
   if (Object.keys(o).some((k) => !permise.has(k))) return null;
   if (typeof o.formular !== "string" || !(TIPURI_FORMULAR as readonly string[]).includes(o.formular)) return null;
   const date = { marketing: o.marketing === true } as DateFormular;
@@ -79,5 +110,9 @@ export function citesteCorp(corp: unknown): { formular: Formular; date: DateForm
     if (typeof v !== "string") return null;
     date[camp] = v;
   }
-  return { formular: o.formular as Formular, date };
+  const capcana = o[CAMP_CAPCANA] ?? "";
+  if (typeof capcana !== "string") return null;
+  const durata = o[CHEIE_DURATA];
+  if (durata !== undefined && (typeof durata !== "number" || !Number.isFinite(durata) || durata < 0)) return null;
+  return { formular: o.formular as Formular, date, capcana, durata: durata === undefined ? null : durata };
 }

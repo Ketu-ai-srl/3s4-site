@@ -4,8 +4,13 @@
 //   - `cu-antet`: un rand de capete, apoi randuri albe; o celula poate avea `strong` si `small`.
 // Sub 768 px tabelul se deruleaza orizontal in invelisul lui, nu impinge pagina (la referinta
 // coloana juridica se latea peste ecran; aici invelisul e o grila `minmax(0, 1fr)`).
+// Invelisul e zona derulabila (ZonaDerulabila): rol `region`, numele tabelului (legenda, altfel
+// randul de capete) si `tabindex=0`, ca derularea sa se poata face si de la tastatura (livrarea S4-5,
+// axe `scrollable-region-focusable`). Sub 768 px chenarul si raza trec de pe tabel pe invelis, ca
+// rama sa ramana pe latimea coloanei, cum era cand tabelul insusi se derula.
 
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
+import ZonaDerulabila from "./ZonaDerulabila";
 import s from "./bloc.module.css";
 
 export type TabelDateProps = {
@@ -20,13 +25,24 @@ export type TabelDateProps = {
 };
 
 export default function TabelDate({ forma, antet, randuri, titlu, className }: TabelDateProps) {
+  const id = useId();
+  const idLegenda = titlu ? id + "-legenda" : undefined;
+  const idCapete = !titlu && forma === "cu-antet" && antet ? id + "-capete" : undefined;
   return (
-    <div className={[s.tabelInvelis, className ?? ""].filter(Boolean).join(" ")}>
+    <ZonaDerulabila
+      className={[s.tabelInvelis, className ?? ""].filter(Boolean).join(" ")}
+      numitaDe={idLegenda ?? idCapete}
+      eticheta="Tabel"
+    >
       <table className={s.tabel}>
-        {titlu ? <caption className="doar-cititor">{titlu}</caption> : null}
+        {titlu ? (
+          <caption id={idLegenda} className="doar-cititor">
+            {titlu}
+          </caption>
+        ) : null}
         {forma === "cu-antet" && antet ? (
           <thead>
-            <tr>
+            <tr id={idCapete}>
               {antet.map((a, i) => (
                 <th key={i} scope="col">
                   {a}
@@ -50,6 +66,6 @@ export default function TabelDate({ forma, antet, randuri, titlu, className }: T
           ))}
         </tbody>
       </table>
-    </div>
+    </ZonaDerulabila>
   );
 }

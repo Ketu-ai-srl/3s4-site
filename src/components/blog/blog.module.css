@@ -916,3 +916,21 @@ a.ctaSecundara:hover {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* ============================================================================================
+   PAGINAREA SERVITA (felia seo-tehnic, auditul SEO m1): legaturile spre pagina anterioara si
+   urmatoare, cu butonul contur al site-ului, la aceeasi marime ca butonul care aduce inca 9 carduri.
+   ============================================================================================ */
+
+.paginare {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.paginare .butonPaginare {
+  line-height: 18px;
+  gap: 8px;
+}

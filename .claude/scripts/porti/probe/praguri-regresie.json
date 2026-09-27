@@ -1,10 +1,68 @@
 {
-  "fisiere": 13,
-  "teste": 119,
-  "asertiuni": 282,
+  "fisiere": 57,
+  "teste": 1222,
+  "asertiuni": 3711,
   "sarite_maxim": 0,
-  "masurat_la": "2026-09-24",
-  "masurat_pe": "3s4 felie/41 (fundatie, val S4-1, directia REF-N), dupa cazurile de contrast ale antetului intreg: 13 fisiere / 119 cazuri / 282 asertiuni / zero sarite, cifre copiate din poarta de regresie pe arborele feliei.",
-  "de_ce": "Ridicare la cifra masurata, ca poarta sa apere cele doua cazuri de contrast adaugate in tests/browser/fundatie-antet-intreg.spec.ts (Descarca deschis si hover pe butonul contur, axe pe copia cu toate caile existente; pe regula veche amandoua picau pe color-contrast). Inainte: ridicare la 13/117/278 pentru proba antetului intreg (1 fisier, 9 cazuri scrise, 49 de asertiuni; meniul mare, Descarca si sertarul, masurate pe o copie cu toate caile existente). Inainte, in commit-ul retragerii REF-S: coborare DECLARATA (plan S4-SITE-3S4 §5.1 regula 7, §5.7) de la 14/125/286 la 12/108/229. Au plecat, odata cu paginile si componentele pe care le probau, 6 fisiere de probe unitare REF-S (directia, felie-juridic, felie-juridic-referinte, felie6-bara-acte, fotografii, interior-felie4) si 2 spec-uri de browser REF-S (directie-s4, meniu: meniul pliabil cu markup-ul vechi). Au venit 4 fisiere de probe unitare ale fundatiei (tokeni si contrast recalculat din hex, navigatia filtrata, paleta, subsolul, Tinta, startul randat pe server, cioturile, marcajele din rute.ts, registrul blogului, Scena3D, segmentele dinamice din ajutorul probelor) si 2 spec-uri de browser (antetul in doua stari, paleta Ctrl K, sertarul la 390, limba, structura servita fara JavaScript; inaltimile cioturilor, ordinea sectiunilor, acordeonul, aparitia la derulare), fiecare cu martor pozitiv si negativ. Portile generice si spec-urile lor raman neatinse. Pragul se ridica din nou la livrarea valului (S4-5), cand feliile S4-2..S4-4 isi adauga probele.",
-  "cum_se_coboara": "Stergerea unui test invechit e legitima. Se scade cifra de aici IN ACELASI COMMIT cu stergerea, si poarta o lasa sa treaca, marcand-o 'coborare DECLARATA'. Fara modificarea acestui fisier, scaderea fata de HEAD opreste lotul."
+  "masurat_la": "2026-09-27",
+  "masurat_pe": "3s4 felie/65 (livrarea S4-5) peste lot/s4-4c: 57 fisiere / 1222 cazuri / 3711 asertiuni / zero sarite, cifre copiate din poarta de regresie pe arborele feliei, dupa probele livrarii (completitudinea navigatiei, tintele de 24 px, zona derulabila a tabelelor, marca, /stamp).",
+  "de_ce": "Ridicare la cifra masurata a lotului final (plan S4 §5.4: S4-5 ridica pragul), ca poarta sa apere probele aduse de feliile S4-2..S4-4 si de livrare. Fara marja la numarare: pragul e o podea, iar o marja sub cifra masurata ar lasa sa dispara tacut exact atatea cazuri cat e marja. Inainte: Ridicare la cifra masurata, ca poarta sa apere cele doua cazuri de contrast adaugate in tests/browser/fundatie-antet-intreg.spec.ts (Descarca deschis si hover pe butonul contur, axe pe copia cu toate caile existente; pe regula veche amandoua picau pe color-contrast). Inainte: ridicare la 13/117/278 pentru proba antetului intreg (1 fisier, 9 cazuri scrise, 49 de asertiuni; meniul mare, Descarca si sertarul, masurate pe o copie cu toate caile existente). Inainte, in commit-ul retragerii REF-S: coborare DECLARATA (plan S4-SITE-3S4 §5.1 regula 7, §5.7) de la 14/125/286 la 12/108/229. Au plecat, odata cu paginile si componentele pe care le probau, 6 fisiere de probe unitare REF-S (directia, felie-juridic, felie-juridic-referinte, felie6-bara-acte, fotografii, interior-felie4) si 2 spec-uri de browser REF-S (directie-s4, meniu: meniul pliabil cu markup-ul vechi). Au venit 4 fisiere de probe unitare ale fundatiei (tokeni si contrast recalculat din hex, navigatia filtrata, paleta, subsolul, Tinta, startul randat pe server, cioturile, marcajele din rute.ts, registrul blogului, Scena3D, segmentele dinamice din ajutorul probelor) si 2 spec-uri de browser (antetul in doua stari, paleta Ctrl K, sertarul la 390, limba, structura servita fara JavaScript; inaltimile cioturilor, ordinea sectiunilor, acordeonul, aparitia la derulare), fiecare cu martor pozitiv si negativ. Portile generice si spec-urile lor raman neatinse. Pragul se ridica din nou la livrarea valului (S4-5), cand feliile S4-2..S4-4 isi adauga probele.",
+  "cum_se_coboara": "Stergerea unui test invechit e legitima. Se scade cifra de aici IN ACELASI COMMIT cu stergerea, si poarta o lasa sa treaca, marcand-o 'coborare DECLARATA'. Fara modificarea acestui fisier, scaderea fata de HEAD opreste lotul.",
+  "performanta": {
+    "_nota": "Masuratoarea lotului final, pentru livrarea S4-5. NICIO POARTA NU CITESTE AZI blocul asta: poarta de regresie citeste numai fisiere, teste, asertiuni si sarite_maxim. Bugetele care se aplica mecanic sunt cele din probele feliilor (tests/browser/blog.spec.ts pentru blog, tests/browser/erou.spec.ts pentru INP-ul machetei). Cifrele de aici sunt reperul pentru o poarta de performanta pe toate rutele, care e a dispecerului (portile din .claude/scripts/porti/).",
+    "metoda": "next start local (fara retea: LCP-ul nu contine timpul de transfer al unei retele mobile), Chromium headless, 49 de rute (rutele statice din src/app plus articolele din build), 3 rulari pe ruta si latime; LCP si INP = mediana celor 3, CLS = maximul; CLS insumat pe toata vizita, cu derulare pana jos si inapoi (limita superioara a ferestrei de sesiune); INP = cea mai lunga intrare Event Timing a unui clic pe titlul h1 (sub 16 ms nu se raporteaza, deci 16 = sub prag). innerWidth citit din pagina: 390, respectiv 1440, pe toate rutele.",
+    "buget_plan": {
+      "lcp_ms": 2500,
+      "cls": 0.1,
+      "inp_ms": 200
+    },
+    "latime_390_cpu_x4": {
+      "masurat_maxim": {
+        "lcp_ms": 1412,
+        "lcp_ruta": "/solutii/notariate",
+        "cls": 0.0415,
+        "cls_ruta": "/",
+        "inp_ms": 72,
+        "inp_ruta": "/functionalitati/aplicatie-mobila"
+      },
+      "lcp_mediana_rutelor_ms": 708,
+      "prag_livrare": {
+        "lcp_ms": 1765,
+        "cls": 0.062,
+        "inp_ms": 90
+      },
+      "prag_se_aplica_pe": "mediana a cel putin 3 rulari pe ruta, ca la masurare; niciodata o rulare singura. O rulare singura sub sarcina iese peste prag si pe o pagina sanatoasa: / a dat 2228 ms si 1328 ms in cate o rulare la remasurare, cu mediana seriei 692 si 728 ms.",
+      "remasurare_lcp_27_09": {
+        "de_ce": "o critica a raportat / mai lenta decat /solutii/notariate la fiecare rulare (1184-1436 ms contra 496-920) si o rulare sub sarcina de 1724 ms pe /; atribuirea maximului si pragul s-au remasurat.",
+        "metoda": "next start local pe build-ul feliei, Chromium headless, 390x844, CPU x4 prin CDP, context nou pe rulare, rutele alternate in fiecare runda; LCP = ultima intrare largest-contentful-paint la 2,5 s dupa load; innerWidth citit: 390 la fiecare rulare.",
+        "serii_ms": {
+          "/ (DPR 1, seria 1)": [692, 616, 828, 2228, 672],
+          "/solutii/notariate (DPR 1, seria 1)": [996, 940, 1000, 900, 748],
+          "/solutii/notariate (DPR 1, seria 2)": [1220, 904, 556, 1016, 1056],
+          "/ (DPR 1, seria 2)": [524, 608, 716, 672, 584],
+          "/ (DPR 3 mobil)": [832, 536, 728, 1328, 692],
+          "/solutii/notariate (DPR 3 mobil)": [844, 712, 988, 976, 1076]
+        },
+        "mediane_ms": {"/": [692, 608, 728], "/solutii/notariate": [940, 1016, 976]},
+        "elementul_lcp": {"/": "titlul h1 al eroului", "/solutii/notariate": "subtitlul eroului"},
+        "concluzie": "atribuirea ramane /solutii/notariate: in 3 serii de cate 5 rulari mediana ei (940-1016 ms) e peste cea a lui / (608-728 ms); ordinea raportata de critica nu s-a reprodus cu metoda de mai sus, iar metoda criticii nu e scrisa, deci diferenta ramane neexplicata. Pragul de 1765 ms ramane: e cu 74% peste cea mai mare mediana remasurata (1016) si cu 45% peste cea mai lunga rulare pe notariate (1220); singurele rulari peste el sunt varfuri singulare pe /, pe care mediana le absoarbe."
+      }
+    },
+    "latime_1440_cpu_x1": {
+      "masurat_maxim": {
+        "lcp_ms": 316,
+        "lcp_ruta": "/functionalitati/semnatura-calificata",
+        "cls": 0.018,
+        "cls_ruta": "/flux-documente",
+        "inp_ms": 48,
+        "inp_ruta": "/functionalitati/automatizari-ai"
+      },
+      "lcp_mediana_rutelor_ms": 172,
+      "prag_livrare": {
+        "lcp_ms": 395,
+        "cls": 0.027,
+        "inp_ms": 60
+      }
+    },
+    "marja": "prag_livrare = maximul masurat + 25% la LCP si INP, x1,5 la CLS, rotunjit in sus; toate sub bugetul planului. Marja acopera zgomotul masinii partajate (pe 25.09 aceeasi pagina a dat LCP intre 768 si 4212 ms cu masina ocupata, tests/browser/blog.spec.ts), nu o crestere a paginilor."
+  }
 }

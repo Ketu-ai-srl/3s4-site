@@ -48,8 +48,10 @@ export const ANCORE_ACASA = {
 } as const;
 
 export const META_ACASA = {
-  // Rol: `<title>`-ul paginii de start. Prag de poarta: 15-65 caractere.
-  titlu: "3S Scan Store Solve: arhiva firmei care răspunde",
+  // Rol: `<title>`-ul paginii de start. Prag de poarta: 15-65 caractere. Felia seo-tehnic (auditul
+  // SEO M3): termenul cautat ("arhivare documente") si diferentiatorul (sursa citata), cu marca la
+  // final. Numai `<title>`; H1-ul ramane vocea marcii (D15).
+  titlu: "Arhivare documente și căutare AI cu sursa citată | 3S",
   // Rol: descrierea pentru motoarele de cautare. Prag de poarta: 50-160 caractere.
   descriere:
     "Arhiva firmei, scanată și ținută în ordine, îți răspunde cu pagina citată, pe web sau pe WhatsApp. Toate pachetele costă 0 RON astăzi.",

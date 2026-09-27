@@ -205,10 +205,20 @@
   line-height: 18.67px;
 }
 
+/* Sub 768 px invelisul e zona derulabila (ZonaDerulabila: rol, nume, tabindex) si poarta rama;
+   tabelul isi pastreaza latimea fireasca in ea. Forma vizibila e aceeasi ca atunci cand se derula
+   tabelul insusi: chenarul si raza stau pe latimea coloanei, continutul trece pe dedesubt. */
 @media (max-width: 768px) {
-  .tabel {
-    display: block;
+  .tabelInvelis {
     overflow-x: auto;
+    border: 1px solid var(--color-ardezie-2);
+    border-radius: 12px;
+  }
+
+  .tabel {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
   }
 }
 

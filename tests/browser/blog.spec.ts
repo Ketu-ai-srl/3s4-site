@@ -7,6 +7,7 @@ import { expect, test, type Browser, type Page } from '@playwright/test'
 import { citesteArticolele, indexRegistru, type ArticolComplet } from '../../src/content/blog/conducta'
 import { ARTICOLE, caiArticole, type CategorieBlog } from '../../src/content/blog/registru'
 import { ARTICOL, CATEGORII, LISTARE } from '../../src/content/blog/texte'
+import { PE_PAGINA, calePagina, numarPagini } from '../../src/components/blog/paginare'
 import { masoaraAccesibilitatea, masoaraHtmlBrut, masoaraLegaturiSiImagini } from './ajutor/detectori'
 import { PRAG_PARITATE, masoaraParitatea, masoaraRaspunsul, type DeclaratieRaspuns } from './ajutor/geo'
 import { RADACINA, nemasurat } from './ajutor/proiect'
@@ -403,14 +404,18 @@ test.describe('copia cu articole sintetice', () => {
 
   const url = (cale: string) => copie.baza + cale
 
-  test('controlul copiei: manifestul de prerandare are listarea, cele 4 categorii si cele 12 articole', () => {
+  test('controlul copiei: manifestul de prerandare are listarea, paginile ei, cele 4 categorii si cele 12 articole', () => {
     const manifest = JSON.parse(readFileSync(join(copie.director, '.next', 'prerender-manifest.json'), 'utf8')) as {
       routes: Record<string, unknown>
     }
     const blog = Object.keys(manifest.routes).filter((r) => r.startsWith('/blog')).sort()
     console.log('[blog, copie] rute prerandate: ' + blog.length + ' | ' + blog.join(', '))
+    // Paginile 2..n ale listarii (felia seo-tehnic): derivate din numarul de articole al copiei si
+    // din PE_PAGINA, nu scrise de mana - o schimbare a marimii paginii nu inroseste proba.
+    const pagini = Array.from({ length: numarPagini(SINTETICE.length, PE_PAGINA) - 1 }, (_, i) => calePagina(i + 2))
     const asteptat = [
       '/blog',
+      ...pagini,
       ...(['contabilitate', 'it', 'juridic', 'management'] as const).map((c) => '/blog/categorie/' + c),
       ...SINTETICE.map((a) => '/blog/' + a.slug),
     ].sort()

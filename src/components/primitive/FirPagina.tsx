@@ -2,8 +2,12 @@
 // Legaturile 14/400 cerneala-2 (hover albastru, 0,15 s), chevron 16 cu contur 1,5 cerneala-3,
 // nivelul curent 14/500 cerneala, fara legatura, cu `aria-current`. Se rupe pe randuri cand nu
 // incape. Date structurate `BreadcrumbList` o singura data, aici, pe fiecare pagina care il are.
+//
+// Adresele din `BreadcrumbList` vin din `adresaSite()`, adica din `SITE_URL`, ca toate celelalte
+// adrese absolute ale site-ului (felia seo-tehnic, auditul SEO D2). Pana atunci veneau direct din
+// `ADRESA_BAZA`, deci la lansare firul ar fi ramas pe domeniul de proba.
 
-import { ADRESA_BAZA } from "@/content/rute";
+import { adresaSite } from "@/lib/site";
 import Tinta from "./Tinta";
 import s from "./primitive.module.css";
 
@@ -36,7 +40,7 @@ function Chevron() {
   );
 }
 
-export function dateFir(niveluri: NivelFir[]) {
+export function dateFir(niveluri: NivelFir[], baza: string = adresaSite()) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -44,7 +48,7 @@ export function dateFir(niveluri: NivelFir[]) {
       "@type": "ListItem",
       position: i + 1,
       name: n.text,
-      item: new URL(n.cale, ADRESA_BAZA).toString(),
+      item: new URL(n.cale, baza + "/").toString(),
     })),
   };
 }

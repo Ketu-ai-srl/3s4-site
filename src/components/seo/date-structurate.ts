@@ -42,9 +42,21 @@ export function iduri(baza: string = adresaSite()) {
  */
 export const SISTEME_APLICATIE = "Web, Windows, macOS, Linux, Android, iOS, iPadOS";
 
-export function nodOrganizatie(baza: string = adresaSite()): NodJsonLd {
+/**
+ * Tarile in care lucreaza marca (auditul GEO din 27.09, M2): Romania si Republica Moldova, dupa
+ * tintele de lansare (3s.com.ro si 3s.md, plan §8). Codurile ISO 3166-1, ca nume de `Country`.
+ */
+export const TARI_DESERVITE = ["RO", "MD"] as const;
+
+/**
+ * Organizatia (marca). `emailBrut` e campul `email` din `config/brand.json`, parametru numai pentru
+ * probe (brand sintetic): cu o adresa confirmata apar `email` si `contactPoint`; fara ea, lipsesc
+ * amandoua, fiindca un punct de contact fara nicio cale de contact n-ar spune nimic adevarat.
+ */
+export function nodOrganizatie(baza: string = adresaSite(), emailBrut: string = BRAND.email): NodJsonLd {
   const id = iduri(baza);
-  const posta = adresaMarcii();
+  const posta = adresaMarcii(emailBrut);
+  const tari = TARI_DESERVITE.map((cod) => ({ "@type": "Country", name: cod }));
   return {
     "@type": "Organization",
     "@id": id.organizatie,
@@ -62,7 +74,19 @@ export function nodOrganizatie(baza: string = adresaSite()): NodJsonLd {
     },
     slogan: SUBSOL.brand.slogan,
     description: SUBSOL.brand.descriere,
-    ...(posta === null ? {} : { email: posta }),
+    areaServed: tari,
+    ...(posta === null
+      ? {}
+      : {
+          email: posta,
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            email: posta,
+            availableLanguage: ["ro"],
+            areaServed: tari,
+          },
+        }),
   };
 }
 

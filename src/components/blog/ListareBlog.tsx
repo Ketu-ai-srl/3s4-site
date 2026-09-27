@@ -29,6 +29,11 @@
 //   - cardurile sunt memorate: se randeaza doar cele noi sau mutate. Obiectele articolelor vin
 //     neschimbate din `filtreaza`, deci comparatia superficiala a proprietatilor e suficienta.
 // Contorul si starea goala urmeaza valorile amanate, ca sa descrie lista care se vede.
+//
+// PAGINAREA SERVITA (felia seo-tehnic, auditul SEO m1): sub buton sta legatura spre
+// `/blog/pagina/2`, in HTML-ul servit, ca un cititor sau un motor fara JavaScript sa ajunga la toate
+// articolele. Se arata numai in starea initiala (nefiltrata, prima pagina): dupa un filtru sau dupa
+// buton, lista din ecran nu mai e prima pagina a listarii, deci legatura ar minti.
 
 import { memo, startTransition, useDeferredValue, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import Buton from "@/components/primitive/Buton";
@@ -36,25 +41,29 @@ import { CALE_BLOG, PARAMETRU_CATEGORIE, caleFiltru, esteCategorie, type Categor
 import { LISTARE } from "@/content/blog/texte";
 import CardArticol from "./CardArticol";
 import { contorGasite, filtreaza, type DateCard } from "./format";
+import NavPaginare from "./NavPaginare";
+import { PE_PAGINA } from "./paginare";
 import s from "./blog.module.css";
 
 const CardListare = memo(CardArticol);
 
 /** Cate carduri se arata la incarcare si cate se adauga la fiecare apasare (blog.md 3d, 3f). */
-export const PE_PAGINA = 9;
+export { PE_PAGINA };
 
 export type PastilaCategorie = { slug: CategorieBlog; nume: string; cale: string };
 
 export type ListareBlogProps = {
   articole: DateCard[];
   categorii: PastilaCategorie[];
+  /** Adresa paginii a doua a listarii, sau `null` cand toate articolele incap pe prima. */
+  urmatoare?: string | null;
 };
 
 function faraModificatori(e: MouseEvent<HTMLAnchorElement>): boolean {
   return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 }
 
-export default function ListareBlog({ articole, categorii }: ListareBlogProps) {
+export default function ListareBlog({ articole, categorii, urmatoare = null }: ListareBlogProps) {
   const [interogare, setInterogare] = useState("");
   const [categorie, setCategorie] = useState<CategorieBlog | null>(null);
   const [pagini, setPagini] = useState(1);
@@ -166,6 +175,8 @@ export default function ListareBlog({ articole, categorii }: ListareBlogProps) {
           </Buton>
         </div>
       ) : null}
+
+      {!filtrat && pagini === 1 ? <NavPaginare anterioara={null} urmatoare={urmatoare} /> : null}
     </div>
   );
 }

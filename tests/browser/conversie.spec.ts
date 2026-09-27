@@ -4,7 +4,9 @@ import { TEXTE_BANNER } from '../../src/components/consimtamant/texte'
 import { stareFormular } from '../../src/components/formular/stare'
 import { FORMULAR } from '../../src/content/formular'
 import { CONTACT, DESCARCA, INCEPE, INREGISTRARE } from '../../src/content/conversie'
-import { pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
+import { versiuneInformare } from '../../src/app/api/formular/logica'
+import type { Operator } from '../../src/lib/operator'
+import { OPERATOR_SINTETIC, pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
 
 /**
  * Felia conversie, in browser: /contact, /inregistrare, /descarca, /incepe (planul valului S4, §5.3,
@@ -296,7 +298,18 @@ test.describe('/inregistrare pe copia cu operator sintetic', () => {
     expect(primite).toHaveLength(1)
     const { primit, ...rest } = primite[0]
     expect(typeof primit).toBe('string')
-    expect(Object.keys(rest).sort()).toEqual(['companie', 'email', 'formular', 'marketing', 'mesaj', 'nume', 'telefon'])
+    // versiune_informare: amprenta notei de informare a formularului (3S4-F-045), din operatorul copiei.
+    expect(Object.keys(rest).sort()).toEqual([
+      'companie',
+      'email',
+      'formular',
+      'marketing',
+      'mesaj',
+      'nume',
+      'telefon',
+      'versiune_informare',
+    ])
+    expect(rest.versiune_informare).toBe(versiuneInformare('inregistrare', OPERATOR_SINTETIC as Operator))
     expect(rest.formular).toBe('inregistrare')
     expect(rest.nume).toBe(DATE.prenume + ' ' + DATE.nume)
     expect(String(rest.mesaj)).toContain(DATE.utilizator)

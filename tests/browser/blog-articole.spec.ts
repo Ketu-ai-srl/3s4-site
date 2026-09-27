@@ -101,27 +101,14 @@ for (const articol of REALE) {
       await page.goto(cale, { waitUntil: 'networkidle' })
       const m = await masoaraAccesibilitatea(page)
       const l = await latime(page)
-      // EXCEPTIE DECLARATA, ingusta, pana la repararea primitivei inghetate `TabelDate`: sub 768 px
-      // tabelul insusi devine zona derulabila (`display: block; overflow-x: auto`, bloc.module.css),
-      // fara `tabindex`, deci axe raporteaza `scrollable-region-focusable` cand un tabel de articol e
-      // mai lat decat coloana (masurat 26.09: un tabel de 4 coloane, 427 px in 356). Reparatia e in
-      // primitiva (zona derulabila focalizabila, cu rol si eticheta), ceruta dispecerului. Exceptia se
-      // aplica NUMAI regulii acesteia, NUMAI pe tinte `table` si NUMAI cat timp un tabel derulabil nu
-      // are `tabindex`; din ziua in care primitiva e reparata, exceptia nu mai prinde nimic si proba
-      // cere din nou lista goala intreaga.
-      const faraFocus = await page.evaluate(
-        () => [...document.querySelectorAll('main table')].filter((t) => t.scrollWidth > t.clientWidth && !t.hasAttribute('tabindex')).length,
-      )
-      const exceptate = m.grave.filter(
-        (g) => g.regula === 'scrollable-region-focusable' && faraFocus > 0 && g.tinte.every((t) => t === 'table' || t.endsWith(' table')),
-      )
-      const blocante = m.grave.filter((g) => !exceptate.includes(g))
+      // Tabelele de articol trec prin primitiva `TabelDate`, a carei zona derulabila are, de la livrarea
+      // S4-5, rol, nume si `tabindex=0` (`ZonaDerulabila`); exceptia pentru `scrollable-region-focusable`
+      // care statea aici pana atunci s-a scos, deci axe trebuie sa dea lista goala intreaga.
       console.log(
-        '[blog-articole axe] ' + cale + ' innerWidth ' + l + ' | blocante ' + (blocante.map((g) => g.regula).join(', ') || '(niciuna)') +
-          (exceptate.length > 0 ? ' | EXCEPTIE TabelDate: ' + faraFocus + ' tabel(e) derulabil(e) fara tabindex' : ''),
+        '[blog-articole axe] ' + cale + ' innerWidth ' + l + ' | blocante ' + (m.grave.map((g) => g.regula).join(', ') || '(niciuna)'),
       )
       expect(l).toBe(fereastra.width)
-      expect(blocante.map((g) => g.regula)).toEqual([])
+      expect(m.grave.map((g) => g.regula)).toEqual([])
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
       // `empty-table-header` e minora pentru axe, deci filtrul serious/critical de mai sus n-o vede; o cerem
       // aici direct: nicio celula de antet a unui tabel de articol nu ramane fara text.

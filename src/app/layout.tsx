@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Marck_Script, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import PunctConsimtamant from "@/components/consimtamant/PunctConsimtamant";
 import Antet from "@/components/global/Antet";
+import { CULOARE_MARCA } from "@/components/global/culoare-marca";
 import Subsol from "@/components/global/Subsol";
 import TranzitieVedere from "@/components/global/TranzitieVedere";
 import DateStructurateSite from "@/components/seo/DateStructurateSite";
@@ -82,6 +83,12 @@ export const metadata: Metadata = {
     description: META_ACASA.descriere,
   },
   ...(VERIFICARE_GOOGLE === "" ? {} : { verification: { google: VERIFICARE_GOOGLE } }),
+};
+
+// CULOAREA MARCII in bara navigatorului (livrarea S4-5): aceeasi valoare ca `theme_color` din
+// manifest (`src/app/manifest.ts`), dintr-un singur loc, legat de tokenul `--color-albastru`.
+export const viewport: Viewport = {
+  themeColor: CULOARE_MARCA,
 };
 
 export default function RootLayout({

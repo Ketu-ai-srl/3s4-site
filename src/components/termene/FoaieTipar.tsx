@@ -5,7 +5,6 @@
 
 import { ArrowLeft } from "lucide-react";
 import Tinta from "@/components/primitive/Tinta";
-import { ADRESA_BAZA } from "@/content/rute";
 import {
   CALE_TERMENE,
   INSTRUMENT,
@@ -15,6 +14,7 @@ import {
   numeTip,
   type SursaPrimara,
 } from "@/content/termene/date";
+import { adresaSite } from "@/lib/site";
 import ButonTiparire from "./ButonTiparire";
 import Steag from "./Steag";
 import s from "./tipar.module.css";
@@ -137,7 +137,8 @@ export default function FoaieTipar() {
 
       <footer className={s.nota}>
         <p>{TIPAR.nota}</p>
-        <p className={s.adresa}>{faraProtocol(ADRESA_BAZA) + CALE_TERMENE}</p>
+        {/* Adresa din `SITE_URL`, ca restul site-ului (auditul SEO D2): pe hartie sta domeniul real. */}
+        <p className={s.adresa}>{faraProtocol(adresaSite()) + CALE_TERMENE}</p>
       </footer>
     </div>
   );

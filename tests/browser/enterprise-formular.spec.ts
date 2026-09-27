@@ -1,11 +1,14 @@
 import { createServer, type Server } from 'node:http'
 import { expect, test, type Page } from '@playwright/test'
 import { TEXTE_BANNER } from '../../src/components/consimtamant/texte'
+import { versiuneInformare } from '../../src/app/api/formular/logica'
 import { CALE_API_FORMULAR } from '../../src/components/formular/FormularContact'
+import { CAMP_CAPCANA, CHEIE_DURATA, DURATA_MINIMA_MS } from '../../src/components/formular/validare'
+import type { Operator } from '../../src/lib/operator'
 import { stareFormular } from '../../src/components/formular/stare'
 import { DRUM_DOCUMENT, EROU_ENTERPRISE, FORMULAR_ENTERPRISE } from '../../src/content/enterprise'
 import { FORMULAR } from '../../src/content/formular'
-import { pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
+import { OPERATOR_SINTETIC, pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
 
 /**
  * Felia enterprise-formular, in browser (planul valului S4, §10: proba comutatorului pe formulare).
@@ -19,7 +22,10 @@ import { pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operat
  *      cu `FORMULARE_DESTINATIE` spre un server de proba LOCAL, pornit aici: trimiterea ajunge acolo
  *      o singura data, cu campurile scrise, si pagina arata starea de succes; cand destinatia
  *      raspunde 500, pagina arata starea de rezerva cu mesajul compus. Nimic nu pleaca in afara
- *      masinii.
+ *      masinii. Proba completeaza si apasa in sub 3 s de la afisare, ca un om cu completarea automata a
+ *      navigatorului: formularul asteapta pragul duratei (`DURATA_MINIMA_MS`) si abia apoi trimite,
+ *      deci cererea ajunge (martorul pozitiv). Martorul negativ: o cerere care DECLARA o durata sub prag
+ *      primeste acelasi 200 si nu ajunge la destinatie (3S4-F-008).
  *
  * Proba nu scrie starea de mana: prima jumatate cere `stareFormular().activ === false`; in ziua
  * operatorului ea se inroseste pe asertiunea aceea, cu motivul, si se muta pe copie.
@@ -203,11 +209,46 @@ test.describe('formularul pe copia cu operator sintetic', () => {
     await deschide(page)
     await completeaza(page)
     await trimite(page).click()
-    await expect(page.locator('#contact-form').getByText(FORMULAR.succes.titlu)).toBeVisible()
+    // Formularul asteapta pragul duratei inainte de cerere: pana la ~3 s in plus fata de trimiterea directa.
+    await expect(page.locator('#contact-form').getByText(FORMULAR.succes.titlu)).toBeVisible({
+      timeout: DURATA_MINIMA_MS + 10_000,
+    })
     expect(primite).toHaveLength(1)
     const { primit, ...rest } = primite[0]
     expect(typeof primit).toBe('string')
-    expect(rest).toEqual({ formular: 'enterprise', ...DATE, telefon: '', marketing: false })
+    // Versiunea notei de informare (3S4-F-045): calculata aici din acelasi operator ca al copiei.
+    expect(rest).toEqual({
+      formular: 'enterprise',
+      ...DATE,
+      telefon: '',
+      marketing: false,
+      versiune_informare: versiuneInformare('enterprise', OPERATOR_SINTETIC as Operator),
+    })
+  })
+
+  test('durata declarata: sub prag nu ajunge la destinatie (200 fals), peste prag ajunge', async ({ page }) => {
+    status = 200
+    primite.length = 0
+    await deschide(page)
+    const posteaza = (durata: number) =>
+      page.evaluate(
+        async ({ cale, corp }) => {
+          const r = await fetch(cale, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corp) })
+          return [r.status, await r.text()] as const
+        },
+        {
+          cale: CALE_API_FORMULAR,
+          corp: { formular: 'enterprise', ...DATE, telefon: '', marketing: false, [CAMP_CAPCANA]: '', [CHEIE_DURATA]: durata },
+        },
+      )
+    // Martor pozitiv al respingerii: sub prag, raspuns de succes si nimic la destinatie.
+    const sub = await posteaza(DURATA_MINIMA_MS - 1000)
+    expect(sub).toEqual([200, JSON.stringify({ stare: 'trimis' })])
+    expect(primite).toHaveLength(0)
+    // Martor negativ: acelasi corp, peste prag, ajunge o data.
+    const peste = await posteaza(DURATA_MINIMA_MS + 1000)
+    expect(peste).toEqual([200, JSON.stringify({ stare: 'trimis' })])
+    await expect.poll(() => primite.length).toBe(1)
   })
 
   test('destinatia raspunde 500: starea de rezerva cu mesajul compus', async ({ page }) => {
@@ -216,7 +257,9 @@ test.describe('formularul pe copia cu operator sintetic', () => {
     await deschide(page)
     await completeaza(page)
     await trimite(page).click()
-    await expect(page.locator('#contact-form').getByText(FORMULAR.rezerva.explicatie)).toBeVisible()
+    await expect(page.locator('#contact-form').getByText(FORMULAR.rezerva.explicatie)).toBeVisible({
+      timeout: DURATA_MINIMA_MS + 10_000,
+    })
     await expect(page.locator('#contact-form')).toContainText(DATE.mesaj)
     await expect(page.locator('#contact-form')).toContainText(FORMULAR_ENTERPRISE.subiect + ' - ' + DATE.companie)
     expect(primite).toHaveLength(1)

@@ -10,6 +10,7 @@ import AntetBlog from "./AntetBlog";
 import { grafListaArticole } from "./date-structurate";
 import ListareBlog from "./ListareBlog";
 import { dateCard } from "./carduri";
+import { numarPagini, vecini } from "./paginare";
 import s from "./blog.module.css";
 
 export default function PaginaListare({ articole }: { articole: readonly ArticolComplet[] }) {
@@ -27,7 +28,7 @@ export default function PaginaListare({ articole }: { articole: readonly Articol
       />
       <div className={s.sectiuneLista}>
         <div className="container-site">
-          <ListareBlog articole={carduri} categorii={categorii} />
+          <ListareBlog articole={carduri} categorii={categorii} urmatoare={vecini(1, numarPagini(carduri.length)).urmatoare} />
         </div>
       </div>
       <JsonLd date={grafListaArticole(LISTARE.titlu, CALE_BLOG, carduri)} />

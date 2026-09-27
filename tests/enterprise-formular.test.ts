@@ -1,7 +1,7 @@
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { MARIME_MAXIMA, destinatieValida, trateazaCerere } from '../src/app/api/formular/logica'
+import { MARIME_MAXIMA, destinatieValida, trateazaCerere, versiuneInformare } from '../src/app/api/formular/logica'
 import { asteptare, DURATA_BUCLA, MOMENTE_PASI, PAS_FINAL } from '../src/components/enterprise/BandaDrumDocument'
 import { EVENIMENTE, FORMULARE } from '../src/components/consimtamant/evenimente'
 import { distanta, propunereEmail } from '../src/components/formular/corector'
@@ -13,6 +13,7 @@ import { abateriMetadata } from '../src/components/seo/metadata'
 import { CALE_ENTERPRISE, DRUM_DOCUMENT, EROU_ENTERPRISE, LIVRABILE, META_ENTERPRISE } from '../src/content/enterprise'
 import { RUTE } from '../src/content/rute'
 import type { Operator } from '../src/lib/operator'
+import { adresaSite } from '../src/lib/site'
 
 /**
  * Felia enterprise-formular: pagina /enterprise si formularul de contact comun.
@@ -50,10 +51,12 @@ const VALID: DateFormular = {
   marketing: false,
 }
 
+// Cererile poarta originea site-ului, ca in navigator: garda (3S4-F-008, `garda.ts`) respinge altfel.
+// Garda insasi, capcana si durata au probele lor in `tests/securitate.test.ts`.
 function cerere(corp: unknown): Request {
   return new Request('http://127.0.0.1/api/formular', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', Origin: adresaSite() },
     body: JSON.stringify(corp),
   })
 }
@@ -184,8 +187,9 @@ describe('punctul de trimitere: comutatorul operatorului', () => {
     expect(await r.json()).toEqual({ stare: 'trimis' })
     expect(d.trimise).toHaveLength(1)
     expect(d.trimise[0].url).toBe(DESTINATIE)
-    const { primit, ...rest } = d.trimise[0].corp
+    const { primit, versiune_informare, ...rest } = d.trimise[0].corp
     expect(typeof primit).toBe('string')
+    expect(versiune_informare).toBe(versiuneInformare('enterprise', OPERATOR_SINTETIC))
     expect(rest).toEqual({ formular: 'enterprise', ...VALID, marketing: true })
   })
 

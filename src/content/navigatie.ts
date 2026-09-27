@@ -634,8 +634,45 @@ export const SUBSOL: {
       titlu: "Produs",
       // 11 legaturi, in ordinea masurata. Lungimile la referinta: 9, 10, 11, 31, 7, 7, 17, 23,
       // 10, 9, 8 [numarat].
+      // ABATERE DE LA REFERINTA (felia seo-tehnic, auditul SEO din 27.09, M1): dupa Platforma vin
+      // fluxul documentelor si cele 6 pagini de functionalitate, cu numele lor scurte din `RUTE`.
+      // Masurat pe live: 8 pagini de produs primeau legaturi numai din harta site-ului, fiindca foile
+      // meniului se monteaza abia la deschidere. Subsolul e in HTML-ul servit pe fiecare pagina, deci
+      // aici legatura ajunge la motor fara JavaScript. Cu a doua comparatie (mai jos), coloana are 19
+      // legaturi in loc de 11.
       legaturi: [
         { text: "Platforma", href: "/platforma", ruta: "/platforma" },
+        { text: "Fluxul documentelor", href: "/flux-documente", ruta: "/flux-documente" },
+        {
+          text: "Căutare cu sursa citată",
+          href: "/functionalitati/cautare-ai",
+          ruta: "/functionalitati/cautare-ai",
+        },
+        {
+          text: "Reguli automate",
+          href: "/functionalitati/automatizari-ai",
+          ruta: "/functionalitati/automatizari-ai",
+        },
+        {
+          text: "Clienții își văd actele",
+          href: "/functionalitati/portal-clienti",
+          ruta: "/functionalitati/portal-clienti",
+        },
+        {
+          text: "Semnătura calificată",
+          href: "/functionalitati/semnatura-calificata",
+          ruta: "/functionalitati/semnatura-calificata",
+        },
+        {
+          text: "Arhiva pe telefon",
+          href: "/functionalitati/aplicatie-mobila",
+          ruta: "/functionalitati/aplicatie-mobila",
+        },
+        {
+          text: "E-facturi și avize",
+          href: "/functionalitati/e-facturi-si-avize",
+          ruta: "/functionalitati/e-facturi-si-avize",
+        },
         { text: "Enterprise", href: "/enterprise", ruta: "/enterprise" },
         { text: "E-facturare", href: "/e-facturare", ruta: "/e-facturare" },
         {
@@ -648,6 +685,13 @@ export const SUBSOL: {
         { text: "Pachete", href: "/preturi#pachete", ruta: "/preturi" },
         { text: "Deschide un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
         { text: "3S comparat cu un drive", href: "/comparatie-drive", ruta: "/comparatie-drive" },
+        // Felia seo-tehnic (auditul SEO M1): a doua comparatie avea o singura legatura intrata servita
+        // (de pe start); masurat de proba `tests/browser/seo-tehnic.spec.ts`, 27.09.
+        {
+          text: "Stocarea actelor, comparată",
+          href: "/comparatie-stocare",
+          ruta: "/comparatie-stocare",
+        },
         { text: "Securitate", href: "/securitate", ruta: "/securitate" },
         { text: "Integrări", href: "/integrari", ruta: "/integrari" },
         { text: "Aplicația", href: "/descarca", ruta: "/descarca" },
@@ -676,10 +720,11 @@ export const SUBSOL: {
     {
       // Lungime: 7 [numarat].
       titlu: "Resurse",
-      // 7 legaturi: listarea, 5 articole, intrebarile de pe start. Slugurile articolelor sunt
-      // PROPUNERI pe subiectele masurate (componente-globale.md §6.1): cautare, digitizare,
-      // birou fara hartie, fluxuri automate, GDPR. Felia `blog` le confirma sau cere
-      // dispecerului alte sluguri; pana exista in registrul blogului, `seVede` le ascunde.
+      // 7 legaturi: listarea, 5 articole, intrebarile de pe start. Slugurile articolelor au fost
+      // PROPUNERI pe subiectele masurate (componente-globale.md §6.1): cautare, digitizare, birou
+      // fara hartie, fluxuri automate, GDPR. Primele doua sunt scrise; celelalte trei nu exista in
+      // registrul blogului, deci au destinatie NEDECISA (`href: null`, felia seo-tehnic, auditul SEO
+      // m9): randul nu se randeaza pana cand articolul e scris si legatura primeste calea lui.
       // Lungimile la referinta: 16, 20, 20, 17, 26, 25, 19 [numarat].
       legaturi: [
         { text: "Lista articolelor", href: "/blog", ruta: "/blog" },
@@ -693,21 +738,9 @@ export const SUBSOL: {
           href: "/blog/digitizarea-arhivei-de-hartie",
           ruta: "/blog/digitizarea-arhivei-de-hartie",
         },
-        {
-          text: "Mai puțină hârtie",
-          href: "/blog/biroul-fara-hartie",
-          ruta: "/blog/biroul-fara-hartie",
-        },
-        {
-          text: "Fluxuri automate de acte",
-          href: "/blog/fluxuri-automate-de-documente",
-          ruta: "/blog/fluxuri-automate-de-documente",
-        },
-        {
-          text: "GDPR și actele din arhivă",
-          href: "/blog/actele-firmei-si-gdpr",
-          ruta: "/blog/actele-firmei-si-gdpr",
-        },
+        { text: "Mai puțină hârtie", href: null, ruta: null },
+        { text: "Fluxuri automate de acte", href: null, ruta: null },
+        { text: "GDPR și actele din arhivă", href: null, ruta: null },
         { text: "Ce trebuie să știi", href: "/#intrebari", ruta: "/" },
       ],
     },

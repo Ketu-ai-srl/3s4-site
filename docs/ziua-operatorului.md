@@ -234,7 +234,19 @@ un build nou. In Coolify se marcheaza ca variabile de build.
 | `NEXT_PUBLIC_GA4_ID` | ID-ul de la pasul 5 | porneste bannerul, legatura din subsol, evidenta si incarcatorul GA4. O valoare care nu are forma `G-...` opreste construirea |
 | `SITE_URL` | `https://www.3s.com.ro`, la lansarea pe domeniul real | canonical-urile, harta de site, `robots.txt`, `/llms.txt`, imaginea sociala, datele structurate. Numai originea, pe https; altfel construirea se opreste |
 | `GOOGLE_SITE_VERIFICATION` | codul din Search Console (metoda eticheta HTML) | eticheta de verificare din `<head>` |
-| `SITE_ENV` | `productie`, numai pe productie | deschide indexarea: `robots.txt` cu semnalul de continut, fara `X-Robots-Tag` |
+| `SITE_ENV` | `productie`, numai pe productie | deschide indexarea: `robots.txt` cu semnalul de continut, fara `X-Robots-Tag`; adauga antetul HSTS (`Strict-Transport-Security: max-age=31536000; includeSubDomains`), care intra in manifestul build-ului, deci cere si el variabila la construire |
+
+**Variabilele formularului, citite la RULARE** (nu cer build nou, dar cer repornirea containerului).
+Formularul trimite numai cu operator complet (pasul 1) si cu destinatie; fara ele raspunde "inactiv".
+
+| Variabila | Valoare | Ce face |
+|---|---|---|
+| `FORMULARE_DESTINATIE` | adresa HTTPS a canalului de lead-uri (webhook CRM sau serviciu de e-mail) | fiecare trimitere valida pleaca aici, o data, ca JSON: campurile formularului, `marketing`, `versiune_informare` (amprenta notei de informare pe care a vazut-o omul, aceeasi metoda ca la cookie-uri) si `primit` |
+| `FORMULARE_SECRET` | un sir aleator lung (de pilda `openssl rand -hex 32`), pastrat si in destinatie | fiecare cerere spre destinatie poarta antetul `X-Formular-Secret` cu valoarea lui; destinatia respinge cererile fara el. Fara variabila, antetul lipseste si oricine afla adresa destinatiei poate scrie direct in ea |
+
+**Verificare:** destinatia primeste o trimitere de proba de pe site cu `X-Formular-Secret` egal cu
+valoarea setata si cu `versiune_informare` de forma `ro-` + 8 caractere hexazecimale; aceeasi cerere
+trimisa direct la destinatie, fara antet, e respinsa de ea.
 
 **Verificare, dupa deploy:**
 

@@ -354,13 +354,33 @@ test.describe('cautarea cu file a hubului, miscare normala', () => {
     await page.goto('/solutii', { waitUntil: 'networkidle' })
     await aduceCardul(page)
     await page.waitForTimeout(2500)
+    // Fiecare stare pe care o capata DOM-ul cardului dupa clic se inregistreaza, nu doar cea gasita
+    // la citire: pe runner-ul incarcat citirea cadea in cadrul dintre commit-ul filei noi si golirea
+    // ei, unde fila noua purta progresul filei vechi (63 de caractere, rularea CI 36286147173).
+    await card(page).evaluate((c) => {
+      const w = window as unknown as { stariClic: { fila: string | null; faza: string | null; n: number }[] }
+      w.stariClic = []
+      new MutationObserver(() => {
+        w.stariClic.push({
+          fila: c.getAttribute('data-fila-activa'),
+          faza: c.querySelector('[data-faza]')?.getAttribute('data-faza') ?? null,
+          n: (c.querySelector('[data-tastat]')?.textContent ?? '').length,
+        })
+      }).observe(c, { subtree: true, attributes: true, childList: true, characterData: true })
+    })
     const a3a = card(page).getByRole('button').nth(2)
     await a3a.click()
     await expect(a3a).toHaveAttribute('aria-pressed', 'true')
     expect(await filaActiva(page)).toBe('2')
     const tastat = await card(page).evaluate((c) => (c.querySelector('[data-tastat]')?.textContent ?? '').length)
-    console.log('[hub clic pe fila] caractere tastate imediat dupa clic: ' + tastat)
+    const stari = await page.evaluate(() => (window as unknown as { stariClic: { fila: string | null; faza: string | null; n: number }[] }).stariClic)
+    const primaPeFila = stari.find((s) => s.fila === '2')
+    console.log('[hub clic pe fila] caractere tastate imediat dupa clic: ' + tastat + '; prima stare pe fila aleasa: ' + JSON.stringify(primaPeFila))
     expect(tastat).toBeLessThan(12)
+    // Fila aleasa porneste de la text gol, fara rezultat, din PRIMA stare in care e activa.
+    expect(primaPeFila).toBeDefined()
+    expect(primaPeFila!.n).toBe(0)
+    expect(['gol', 'tastare']).toContain(primaPeFila!.faza)
   })
 
   /**

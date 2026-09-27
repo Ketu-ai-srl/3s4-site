@@ -16,8 +16,15 @@
 // `trimiteEveniment`, care nu trimite nimic fara GA4 pornit si acceptat. Modulul lui se incarca
 // LENES si numai cand serverul spune ca analitica e pornita: cu analitica oprita, codul ei nu are
 // voie sa fie in JavaScript-ul paginii (proba comutatorului, tests/browser/comutator.spec.ts).
+//
+// ANTI-ABUZ (constatarea de audit 3S4-F-008): un camp-capcana pe care omul nu il vede si nu il atinge
+// cu tastatura (in afara ecranului, `aria-hidden`, `tabIndex=-1`), si durata de la afisarea
+// formularului pana la trimitere. Serverul trateaza capcana completata sau o durata sub 3 s ca pe un
+// robot: raspunde ca la succes si nu trimite nimic (`src/app/api/formular/logica.ts`). De aceea
+// formularul nu trimite niciodata sub prag: daca omul a apasat mai repede (completare automata),
+// butonul ramane pe "trimitere" pana se implinesc cele 3 s, apoi cererea pleaca normal.
 
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import type { Formular } from "@/components/consimtamant/evenimente";
 import { CAMPURI, ERORI, FORMULAR } from "@/content/formular";
@@ -25,7 +32,16 @@ import CampFormular from "./CampFormular";
 import CorectorEmail from "./CorectorEmail";
 import { propunereEmail } from "./corector";
 import type { StareFormular } from "./stare";
-import { CAMPURI_TEXT, valideaza, type CampText, type DateFormular, type Erori } from "./validare";
+import {
+  CAMPURI_TEXT,
+  CAMP_CAPCANA,
+  CHEIE_DURATA,
+  asteptareInainteDeTrimitere,
+  valideaza,
+  type CampText,
+  type DateFormular,
+  type Erori,
+} from "./validare";
 import s from "./Formular.module.css";
 
 export const CALE_API_FORMULAR = "/api/formular";
@@ -41,6 +57,16 @@ export type FormularContactProps = {
 };
 
 type Etapa = "editare" | "trimitere" | "succes" | "rezerva";
+
+/** Capcana sta in afara ecranului, nu ascunsa cu `display: none`: unii roboti le sar pe acelea. */
+const STIL_CAPCANA: CSSProperties = {
+  position: "absolute",
+  left: "-10000px",
+  top: "auto",
+  width: "1px",
+  height: "1px",
+  overflow: "hidden",
+};
 
 const GOL: DateFormular = { nume: "", email: "", telefon: "", companie: "", mesaj: "", marketing: false };
 
@@ -76,7 +102,13 @@ export default function FormularContact({ formular, stare, exempluMesaj, subiect
   const [copiere, setCopiere] = useState<"" | "copiat" | "necopiat">("");
   const inceput = useRef(false);
   const formRef = useRef<HTMLFormElement | null>(null);
+  const capcana = useRef<HTMLInputElement | null>(null);
+  const afisat = useRef<number | null>(null);
   const id = "formular-" + formular;
+
+  useEffect(() => {
+    afisat.current = performance.now();
+  }, []);
 
   const schimba = (camp: CampText) => (v: string) => {
     setDate((d) => ({ ...d, [camp]: v }));
@@ -118,10 +150,18 @@ export default function FormularContact({ formular, stare, exempluMesaj, subiect
     }
     setEtapa("trimitere");
     try {
+      const pornit = afisat.current ?? performance.now();
+      const ramas = asteptareInainteDeTrimitere(performance.now() - pornit);
+      if (ramas > 0) await new Promise((gata) => setTimeout(gata, ramas));
       const raspuns = await fetch(CALE_API_FORMULAR, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ formular, ...date }),
+        body: JSON.stringify({
+          formular,
+          ...date,
+          [CAMP_CAPCANA]: capcana.current?.value ?? "",
+          [CHEIE_DURATA]: Math.ceil(performance.now() - pornit),
+        }),
       });
       if (!raspuns.ok) throw new Error("raspuns " + raspuns.status);
       eveniment(stare.analitica, "formular_trimis", formular);
@@ -276,6 +316,18 @@ export default function FormularContact({ formular, stare, exempluMesaj, subiect
           />
           <span>{FORMULAR.marketing}</span>
         </label>
+        <div style={STIL_CAPCANA} aria-hidden="true" data-capcana="">
+          <label htmlFor={id + "-" + CAMP_CAPCANA}>Nu completa acest câmp</label>
+          <input
+            ref={capcana}
+            id={id + "-" + CAMP_CAPCANA}
+            type="text"
+            name={CAMP_CAPCANA}
+            tabIndex={-1}
+            autoComplete="off"
+            defaultValue=""
+          />
+        </div>
         <button type="submit" className={s.trimite} disabled={etapa === "trimitere"}>
           <span>{etapa === "trimitere" ? FORMULAR.trimitere : FORMULAR.trimite}</span>
           <ArrowRight size={18} strokeWidth={1.5} aria-hidden="true" />

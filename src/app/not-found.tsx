@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Buton from "@/components/primitive/Buton";
 import { RUTE } from "@/content/rute";
@@ -11,7 +12,18 @@ import s from "./negasita.module.css";
 // spre adrese inexistente ar fi chiar defectul pe care il explica. Cat timp singura ruta e cea de
 // start (valul S4-1), lista nu se randeaza.
 //
-// Nu poarta `metadata` proprie: fisierul nu e o ruta, nu intra in harta de site si nu se indexeaza.
+// METADATA PROPRIE (felia seo-tehnic, auditul SEO m3). Fara ea, pagina de negasit mostenea titlul
+// startului si avea DOUA `meta robots`: cel din layout si `noindex`-ul pe care Next il pune singur pe
+// orice raspuns 404. `robots: null` sterge valoarea mostenita, deci ramane numai cel al lui Next.
+// Descrierea startului se sterge si ea: nu descrie pagina asta. Fisierul nu e o ruta si nu intra in
+// harta de site.
+
+export const metadata: Metadata = {
+  // Absolut, fara sablonul "%s | 3S" din layout.
+  title: { absolute: "Pagina nu există | 3S" },
+  description: null,
+  robots: null,
+};
 
 const NUMAR_DRUMURI = 4;
 

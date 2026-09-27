@@ -18,7 +18,8 @@
 export const CALE_CAUTARE_AI = "/functionalitati/cautare-ai";
 
 export const META_CAUTARE_AI = {
-  titlu: "Căutare AI în arhiva firmei, cu sursa citată | 3S",
+  // Felia seo-tehnic (auditul SEO M3): ce se cauta (documente scanate) si ce primesti (pagina citata).
+  titlu: "Căutare în documente scanate, cu pagina citată | 3S",
   descriere:
     "Întreabă arhiva firmei cu vorbele tale și primești răspunsul împreună cu documentul și pagina din care vine, pe web sau pe WhatsApp.",
 } as const;
