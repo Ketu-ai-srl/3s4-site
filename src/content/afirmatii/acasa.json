@@ -226,7 +226,7 @@
   },
   {
     "id": "acasa-logistica-acte-legate-de-cursa",
-    "text": "Comenzile, CMR-urile semnate și dovezile de livrare stau legate de cursa lor și se găsesc după cursă sau după client, ca facturarea să nu mai aștepte după o hârtie",
+    "text": "Comenzile, CMR-urile semnate și dovezile de livrare stau legate de cursa lor și se găsesc după cursă sau după client, ca facturarea să nu mai aștepte un document",
     "unde": "src/content/acasa.ts, src/content/navigatie.ts",
     "stare": "neconfirmat",
     "sursa": "de confirmat: regula stă neconfirmată în registrul de pe main (segmente-lot3.json, logistica-index-dupa-cursa-nu-dupa-numar)",
@@ -277,5 +277,14 @@
     "sursa": "retrasă de felia text-acasa (S4-1): textul nou al testimonialului nu mai promite vizita și nu numește locul depozitului (planul valului, §7); textul retras numea firma, numele e scos prin decizia owner-ului D10 din planul valului S4 (25.09): site-ul nu numește altă firmă decât marca 3S",
     "confirmat_de": "",
     "data": "2026-09-24"
+  },
+  {
+    "id": "acasa-trei-pasi-scan-store-solve",
+    "text": "Cei trei pași ai mărcii: echipa 3S preia și scanează documentele fizice, iar fișierele deja scanate se încarcă direct în platformă (Scan); fiecare document încărcat stă în spațiul organizației și e pregătit automat pentru căutare (Store); la o întrebare în română, 3S răspunde cu informația și cu documentul din care vine (Solve)",
+    "unde": "src/content/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "vocea mărcii aleasă de owner (decizia D15 e din planul valului S4, 26.09), din textul de prezentare al partenerului de afaceri; funcțiile descrise sunt deja confirmate ca existente prin decizia D4b (produsul e în producție)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-26",
+    "data": "2026-09-26"
   }
 ]

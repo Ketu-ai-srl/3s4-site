@@ -94,7 +94,7 @@ export default function RootLayout({
     <html lang="ro" className={fonturi}>
       <body>
         <a className="sari-la-continut" href="#zona-continut">
-          Săriți la conținut
+          Sari la conținut
         </a>
         <Antet />
         <div id="zona-continut" tabIndex={-1}>

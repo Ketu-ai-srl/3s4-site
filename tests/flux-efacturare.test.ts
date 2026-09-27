@@ -12,6 +12,7 @@ import { JURNAL, MODIFICARI_RECENTE, PIETE } from '../src/content/efacturare/pie
 import { DATA_VERIFICARII, SURSE, TARI_NEVERIFICATE } from '../src/content/efacturare/surse'
 import { DOMENII, FERESTRE, META_FLUX, SCENA } from '../src/content/flux'
 import { RUTE } from '../src/content/rute'
+import { numarCuDe } from '../src/content/limba'
 
 // Probele feliei flux-efacturare: calendarul .ics (RFC 5545, alarma pe fiecare eveniment),
 // datele cu sursa lor oficiala, cronologia scenei lipite si HTML-ul servit al celor doua pagini.
@@ -83,8 +84,11 @@ describe('calendarul /instrumente/termene.ics', () => {
     expect(text).toContain(ue.length + ' date europene')
     expect(new Set(ro.map((t) => t.alarmaZile))).toEqual(new Set([7]))
     expect(new Set(ue.map((t) => t.alarmaZile))).toEqual(new Set([30]))
-    expect(text).toContain('alarmă la 7 zile')
-    expect(text).toContain('alarmă la 30')
+    // Zilele de alarma se citesc din termene, nu se scriu pe litere (numeralul cu "de" la 20+, D15).
+    const zileRo = [...new Set(ro.map((t) => t.alarmaZile))][0]
+    const zileUe = [...new Set(ue.map((t) => t.alarmaZile))][0]
+    expect(text).toContain('alarmă cu ' + numarCuDe(zileRo) + ' zile înainte')
+    expect(text).toContain('alarmă cu ' + numarCuDe(zileUe) + ' zile înainte')
   })
 
   it('termenul de transmitere in RO e-Factura nu apare cat forma lui din 2026 nu e verificata', () => {

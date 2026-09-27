@@ -89,7 +89,7 @@ export const META_DOCUMENTE: Record<SlugJuridic, MetaPagina> = {
   "licenta-software": {
     titlu: "Licența aplicației | 3S",
     descriere:
-      "Ce drept de folosire primiți asupra aplicației 3S, ce puteți face cu ea și ce nu aveți voie, pe web, pe calculator și pe telefon.",
+      "Ce drept de folosire primiți asupra aplicației 3S, ce puteți face cu ea și ce nu aveți voie să faceți, pe web, pe calculator și pe telefon.",
   },
   subimputerniciti: {
     titlu: "Subîmputerniciții platformei | 3S",
@@ -182,7 +182,7 @@ export function declaratieAccesibilitate(gazda: string, adresa: string | null): 
         titlu: "Ce am făcut pentru acces",
         paragrafe: [],
         lista: [
-          "legătura „Săriți la conținut”, prima pe fiecare pagină, pentru tastatură și pentru cititoarele de ecran (criteriul 2.4.1);",
+          "legătura „Sari la conținut”, prima pe fiecare pagină, pentru tastatură și pentru cititoarele de ecran (criteriul 2.4.1);",
           "un contur albastru de 2 pixeli, definit pentru tot site-ul, pe elementele care primesc focus de la tastatură (criteriul 2.4.7);",
           "la setarea de mișcare redusă a sistemului, tranzițiile și animațiile din foile de stil și derularea lină se opresc;",
           "pagina curentă marcată pentru cititoarele de ecran în firul de navigare;",

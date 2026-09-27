@@ -33,9 +33,9 @@ export const EROU_ENTERPRISE = {
   titlu: "3S pentru organizații: arhiva de hârtie răspunde cu actul și pagina exactă",
   // Rol: raspunsul paginii, 3 randuri la 640 px (G-AI-02: 30-80 de cuvinte; 31 aici). Lungime: 189 [numarat].
   subtitlu:
-    "Pentru firmele cu mii de dosare, echipa 3S scanează hârtia, mută arhiva și leagă programele pe care le folosiți; nivelul de serviciu se trece în contract. Implicit, datele stau în Germania.",
+    "Pentru firmele cu mii de dosare, echipa 3S scanează hârtia, mută arhiva și leagă programele pe care le folosești; nivelul de serviciu se trece în contract. Implicit, datele stau în Germania.",
   // Rol: butonul spre formular. Lungime: 21 [numarat].
-  buton: "Programați o discuție",
+  buton: "Programează o discuție",
   // Rol: legatura secundara spre pagina platformei.
   secundara: { text: "Cum lucrează platforma", href: "/platforma", ruta: "/platforma" } satisfies Legatura,
   // Rol: randul de incredere, 4 elemente scurte.
@@ -84,7 +84,7 @@ export const DRUM_DOCUMENT = {
   anFinal: "2036",
   // Rol: nota de sub axa timpului; declara exemplul (D9).
   // Un rand la 358 px (12 px), ca la referinta.
-  nota: "Exemplu fictiv. Termenul îl alege firma, pe tipul de act.",
+  nota: "Exemplu fictiv. Termenul îl alege firma, pentru fiecare tip de act.",
   // Rol: eticheta mica din coltul machetei (D11), vizibila la orice pas al buclei.
   etichetaExemplu: "exemplu",
 };
@@ -93,20 +93,20 @@ export type Livrabil = { titlu: string; text: string };
 
 export const LIVRABILE = {
   // Rol: titlul listei. Lungime: 39 [numarat].
-  titlu: "Ce face echipa 3S la nivelul enterprise",
+  titlu: "Ce face echipa 3S la nivelul Enterprise",
   // Rol: subtitlul, 2 randuri la 640 px.
-  text: "În primele săptămâni lucrăm alături de oamenii firmei, până când arhiva voastră răspunde la întrebări cu actul și pagina din care vine răspunsul.",
+  text: "În primele săptămâni lucrăm alături de oamenii firmei, până când arhiva ta răspunde la întrebări cu actul și pagina din care vine răspunsul.",
   // Ordinea: intai cele doua elemente scurte (un rand de text la 635 px), apoi cele patru lungi.
   // Continutul vine din serviciile 3S: termenele, colegul alocat, scanarea, gazduirea implicita,
   // intrebarile pe WhatsApp si arhiva fizica.
   elemente: [
     {
       titlu: "Termene de păstrare pe tipuri de acte",
-      text: "Fiecare tip de act primește termenul stabilit cu voi, aplicat apoi automat de 3S.",
+      text: "Fiecare tip de act primește termenul stabilit împreună cu tine, aplicat apoi automat de 3S.",
     },
     {
       titlu: "Un coleg 3S alocat firmei",
-      text: "Îl găsiți pe WhatsApp sau pe e-mail când vreți o regulă nouă sau un răspuns lămurit.",
+      text: "Îl găsești pe WhatsApp sau pe e-mail când vrei o regulă nouă sau un răspuns lămurit.",
     },
     {
       titlu: "Cutiile din depozit, în aceeași căutare",
@@ -133,10 +133,10 @@ export const FORMULAR_ENTERPRISE = {
   // Rol: titlul formularului; tinta masurata: 3 randuri la 40 px pe 640 si 4 la 30 px pe 358.
   titlu: "O discuție despre arhiva firmei și programele ei, înainte de orice ofertă sau contract",
   // Rol: subtitlul, un rand. Lungime: 53 [numarat].
-  subtitlu: "Pornim de la dosarele și programele pe care le aveți.",
+  subtitlu: "Pornim de la dosarele și programele pe care le ai.",
   // Rol: textul-exemplu al mesajului, propriu paginii.
   exempluMesaj:
-    "De exemplu: câte cutii de arhivă aveți, în ce program țineți contabilitatea și ce ați vrea să găsiți mai repede.",
+    "De exemplu: câte cutii de arhivă ai, în ce program ții contabilitatea și ce ai vrea să găsești mai repede.",
   // Rol: subiectul din previzualizarea de rezerva; firma se adauga dupa cratima.
-  subiect: "Cerere enterprise",
+  subiect: "Cerere Enterprise",
 };

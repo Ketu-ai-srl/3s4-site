@@ -152,11 +152,11 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
             jurisdictie: null,
             paragrafe: [
               "Afișarea și securitatea site-ului. La fiecare vizită, serverul primește adresa IP, pagina cerută, data și ora, browserul și sistemul de operare. Le folosim ca să vă livrăm paginile și ca să apărăm site-ul de abuzuri. Temeiul este interesul legitim (GDPR art. 6 alin. (1) lit. f)).",
-              "Statistica vizitelor. Numai dacă acceptați categoria Statistică din bannerul de cookie-uri, Google Analytics 4 măsoară vizitele, paginile citite și câteva acțiuni dintr-o listă închisă: " +
+              "Statistica vizitelor. Numai dacă acceptați categoria „Statistică” din bannerul de cookie-uri, Google Analytics 4 măsoară vizitele, paginile citite și câteva acțiuni dintr-o listă închisă: " +
                 evenimente +
                 ". Temeiul este consimțământul dumneavoastră (GDPR art. 6 alin. (1) lit. a)), cerut înainte de orice stocare în browser (Legea nr. 506/2004, art. 4 alin. (5)).",
               "Evidența alegerii din bannerul de cookie-uri. Când alegeți, serverul notează un identificator aleator al dispozitivului, momentul, versiunea textului afișat, alegerea făcută, pagina și prefixul rețelei, fără adresa IP completă. Temeiul este obligația legală de a putea dovedi consimțământul (GDPR art. 6 alin. (1) lit. c), coroborat cu art. 7 alin. (1)).",
-              "Cererile trimise prin formulare. Datele din formularul de contact, din cel de înregistrare și din cel pentru companii le folosim ca să vă răspundem și, dacă ne cereți, să vă facem o ofertă. Temeiul îl constituie demersuri precontractuale făcute la cererea dumneavoastră (GDPR art. 6 alin. (1) lit. b)), nu consimțământul. Acordul de a primi noutăți, dacă îl dați separat, are temei consimțământul și îl puteți retrage oricând.",
+              "Cererile trimise prin formulare. Datele din formularul de contact, din cel de înregistrare și din cel pentru companii le folosim ca să vă răspundem și, dacă ne cereți, să vă facem o ofertă. Temeiul îl constituie demersurile precontractuale făcute la cererea dumneavoastră (GDPR art. 6 alin. (1) lit. b)), nu consimțământul. Acordul de a primi noutăți, dacă îl dați separat, are ca temei consimțământul și îl puteți retrage oricând.",
             ],
           },
         ],
@@ -242,7 +242,7 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
               "Aveți dreptul de acces la date (art. 15), de rectificare (art. 16), de ștergere (art. 17), de restricționare a prelucrării (art. 18), de a afla cui le-am comunicat (art. 19), la portabilitatea datelor (art. 20), de opoziție (art. 21) și dreptul de a nu face obiectul unei decizii bazate exclusiv pe prelucrare automată (art. 22). Articolele sunt aceleași în GDPR și în Legea nr. 195/2024.",
               "Cererile le trimiteți la " +
                 contact +
-                ". Vă răspundem fără întârzieri nejustificate, în cel mult o lună de la primire; pentru cereri complexe, termenul se poate prelungi cu două luni, iar despre prelungire și motivele ei vă anunțăm în prima lună (GDPR art. 12 alin. (3); Legea nr. 195/2024, art. 12 alin. (3)). Răspunsul este gratuit.",
+                ". Vă răspundem fără întârzieri nejustificate, în cel mult o lună de la primire; pentru cereri complexe, termenul se poate prelungi cu două luni, iar prelungirea și motivele ei vi le comunicăm în prima lună (GDPR art. 12 alin. (3); Legea nr. 195/2024, art. 12 alin. (3)). Răspunsul este gratuit.",
             ],
           },
         ],
@@ -254,7 +254,7 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
           {
             jurisdictie: null,
             paragrafe: [
-              "Consimțământul pentru statistică îl puteți retrage oricând, la fel de simplu cum l-ați dat: legătura Setări cookie-uri din subsolul oricărei pagini redeschide alegerea, iar Refuz tot oprește măsurarea pe loc. Retragerea nu afectează legalitatea prelucrării făcute înainte de ea.",
+              "Consimțământul pentru statistică îl puteți retrage oricând, la fel de simplu cum l-ați dat: legătura „Setări cookie-uri” din subsolul oricărei pagini redeschide alegerea, iar butonul „Refuz tot” oprește măsurarea pe loc. Retragerea nu afectează legalitatea prelucrării făcute înainte de ea.",
             ],
           },
         ],

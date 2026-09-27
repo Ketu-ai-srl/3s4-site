@@ -182,7 +182,7 @@ export const DOMENII_OFICIALE = [
 const BUTON_CONT: Legatura = {
   // Rol: incercarea gratuita (buton plin-plat, 232x52 [fisa]). Textul are ~168 px la 16/600, cat
   // cere butonul de 232 cu padding 32 + 32 (masurat: 167,9).
-  text: "Începeți acum, gratuit",
+  text: "Testează gratuit",
   href: CALE_INREGISTRARE,
   ruta: CALE_INREGISTRARE,
 };
@@ -450,7 +450,7 @@ export const COMPARATIE_DRIVE = {
   } satisfies TabelComparatie,
   cta: {
     // Rol: cutia de incheiere; h2 pe 1 rand la 1440 si pe 2 la 390, paragraful pe 1 si pe 3 [fisa].
-    titlu: "Deschideți arhiva 3S peste Drive-ul firmei",
+    titlu: "Deschide arhiva 3S peste Drive-ul firmei",
     text: "Contul costă 0 RON azi. Primul act urcat primește termenul legal și se găsește apoi pe WhatsApp.",
     buton: BUTON_CONT,
   },
@@ -506,7 +506,7 @@ export const COMPARATIE_STOCARE = {
     {
       titlu: "3S",
       descriere: "Arhiva firmei, cu registrul și termenele fiecărui act.",
-      verdict: "Stă în Germania, criptată AES-256 pe disc și TLS pe drum.",
+      verdict: "Stă în Germania, criptată AES-256 pe disc și transmisă prin TLS.",
       noi: true,
       elemente: [
         "Fiecare act intră în registru, cu termenul legal calculat după tipul lui",
@@ -519,12 +519,12 @@ export const COMPARATIE_STOCARE = {
     {
       titlu: "S3 propriu",
       descriere: "Obiecte într-un bucket din contul firmei.",
-      verdict: "Regiunea se alege la crearea bucket-ului și rămâne aceeași.",
+      verdict: "Regiunea se alege la crearea bucketului și rămâne aceeași.",
       noi: false,
       elemente: [
         "S3 Object Lock poate bloca ștergerea unui fișier până la o dată, dar nu ține un registru cu termenul fiecărui act",
         "Jurnalele de acces ajung într-un bucket ales de firmă; stocarea lor se plătește",
-        "Din 2023, S3 criptează singur fiecare obiect nou; conexiunile numai prin HTTPS le cere o regulă separată a bucket-ului",
+        "Din 2023, S3 criptează singur fiecare obiect nou; conexiunile numai prin HTTPS le cere o regulă separată a bucketului",
       ],
       surse: [A_OBJECT_LOCK, A_JURNALE, A_CRIPTARE, A_BUNE_PRACTICI, A_BUCKET],
     },
@@ -562,7 +562,7 @@ export const COMPARATIE_STOCARE = {
         terti: [
           {
             marcaj: "da",
-            nota: "Regiunea se alege la crearea bucket-ului și nu se mai poate schimba după aceea.",
+            nota: "Regiunea se alege la crearea bucketului și nu se mai poate schimba după aceea.",
             surse: [A_BUCKET],
           },
           {
@@ -574,11 +574,11 @@ export const COMPARATIE_STOCARE = {
         noi: { marcaj: "da", afirmatie: "comparatii-gazduire-germania" },
       },
       {
-        functie: "Criptare AES-256 pe disc și TLS pe drum",
+        functie: "Criptare AES-256 pe disc și TLS în tranzit",
         terti: [
           {
             marcaj: "partial",
-            nota: "Criptarea la stocare e pornită pentru obiectele noi din 5 ianuarie 2023; conexiunile numai prin HTTPS le impuneți printr-o politică a bucket-ului.",
+            nota: "Criptarea la stocare e pornită pentru obiectele noi din 5 ianuarie 2023; conexiunile numai prin HTTPS le impui printr-o politică a bucketului.",
             surse: [A_CRIPTARE, A_BUNE_PRACTICI],
           },
           {
@@ -594,7 +594,7 @@ export const COMPARATIE_STOCARE = {
         terti: [
           {
             marcaj: "partial",
-            nota: "Resursele sunt private implicit; cine are acces decide proprietarul, prin politici pe care le scrie singur.",
+            nota: "Resursele sunt private implicit; proprietarul decide cine are acces, prin politici pe care le scrie singur.",
             surse: [A_ACCES],
           },
           {
@@ -610,7 +610,7 @@ export const COMPARATIE_STOCARE = {
         terti: [
           {
             marcaj: "partial",
-            nota: "Jurnalele de acces le pornește proprietarul bucket-ului; livrarea într-un bucket e gratuită, stocarea lor se plătește.",
+            nota: "Jurnalele de acces le pornește proprietarul bucketului; livrarea într-un bucket e gratuită, stocarea lor se plătește.",
             surse: [A_JURNALE],
           },
           {
@@ -626,7 +626,7 @@ export const COMPARATIE_STOCARE = {
   comutator: {
     titlu: "Două locuri pentru fișiere",
     eticheta: "Unde stau fișierele",
-    declaratie: "Schemă ilustrativă; adresa bucket-ului este un exemplu.",
+    declaratie: "Schemă ilustrativă; adresa bucketului este un exemplu.",
     // Latimile fluxului in starea A sunt 223 | 88 | 288 | 88 | 144 [fisa]: un nod are latimea celui
     // mai lat rand al lui + 34, conectorii iau restul. Eticheta documentelor are ~189 px la 13,44/600
     // (masurat 190,8). In nodul stocarii randul cel mai lat trebuie sa aiba ~110 px, iar la noi e
@@ -655,12 +655,12 @@ export const COMPARATIE_STOCARE = {
     // Rol: blocul pentru cine are deja stocare S3; titlul pe 1 rand, paragraful pe 3 randuri la
     // 1440 si 5 la 390 [fisa; masurat].
     titlu: "Pentru un bucket S3 propriu",
-    text: "Legați bucket-ul de 3S și întrebați pe WhatsApp de orice act din el: răspunsul vine cu sursa citată, iar actul intră în registru cu termenul lui. Factura de stocare vine tot de la Amazon.",
+    text: "Leagă bucketul de 3S și întreabă pe WhatsApp de orice act din el: răspunsul vine cu sursa citată, iar actul intră în registru cu termenul lui. Factura de stocare vine tot de la Amazon.",
   },
   cta: {
-    titlu: "Încercați arhiva pe actele firmei",
+    titlu: "Încearcă arhiva pe actele firmei",
     // Rol: paragraful cutiei, 1 rand la 1440 si 3 la 390 (cutie de 368) [fisa].
-    text: "Contul costă 0 RON azi. Legați bucket-ul firmei sau urcați primele acte în stocarea 3S din Germania.",
+    text: "Contul costă 0 RON azi. Leagă bucketul firmei sau urcă primele acte în stocarea 3S din Germania.",
     buton: BUTON_CONT,
   },
 };

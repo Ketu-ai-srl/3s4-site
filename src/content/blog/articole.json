@@ -1,8 +1,8 @@
 [
   {
     "slug": "arhivarea-externalizata",
-    "titlu": "Arhivarea externalizată: cum alegeți prestatorul",
-    "extras": "Ce servicii poate presta un operator autorizat de Arhivele Naționale, ce condiții are depozitul, ce clauze cereți în contract și cum verificați autorizația.",
+    "titlu": "Arhivarea externalizată: cum alegi prestatorul",
+    "extras": "Ce servicii poate presta un operator autorizat de Arhivele Naționale, ce condiții are depozitul, ce clauze ceri în contract și cum verifici autorizația.",
     "categorie": "management",
     "data": "2026-09-26"
   },
@@ -23,7 +23,7 @@
   {
     "slug": "digitizarea-arhivei-de-hartie",
     "titlu": "Digitizarea arhivei de hârtie, pas cu pas",
-    "extras": "Cum scanați dosarele firmei ca să le găsiți ușor și să le arătați la control, ce valoare are copia și de ce originalul rămâne până la selecționare.",
+    "extras": "Cum scanezi dosarele firmei ca să le găsești ușor și să le arăți la control, ce valoare are copia și de ce originalul rămâne până la selecționare.",
     "categorie": "management",
     "data": "2026-09-26"
   },
@@ -37,7 +37,7 @@
   {
     "slug": "document-electronic-sau-document-scanat",
     "titlu": "Document electronic sau scanat: ce valoare au",
-    "extras": "Ce valoare are un document semnat electronic față de unul scanat de pe hârtie, când vă ajunge copia și când trebuie să păstrați originalul.",
+    "extras": "Ce valoare are un document semnat electronic față de unul scanat de pe hârtie, când e suficientă copia și când trebuie să păstrezi originalul.",
     "categorie": "juridic",
     "data": "2026-09-26"
   },
@@ -50,7 +50,7 @@
   },
   {
     "slug": "persoana-desemnata-cu-arhiva-firmei",
-    "titlu": "Persoana desemnată cu arhiva firmei: cine și cum",
+    "titlu": "Persoana responsabilă cu arhiva firmei: cine și cum",
     "extras": "Ce cere art. 31 din Legea 16/1996, cine poate primi sarcinile de arhivă, ce acte cere avizul Arhivelor Naționale și ce riscă firma fără responsabil.",
     "categorie": "juridic",
     "data": "2026-09-26"
@@ -64,8 +64,8 @@
   },
   {
     "slug": "spv-nu-este-arhiva-e-factura",
-    "titlu": "e-Factura: cât stau facturile în SPV și ce arhivați",
-    "extras": "Fișierele din RO e-Factura se descarcă 60 de zile. Ce păstrează firma 5 ani, de când curge termenul și cum arată o rutină de arhivare a XML-ului semnat.",
+    "titlu": "e-Factura: cât stau facturile în SPV și ce arhivezi",
+    "extras": "Fișierele din RO e-Factura se pot descărca 60 de zile. Ce păstrează firma 5 ani, de când curge termenul și cum arată o rutină de arhivare a XML-ului semnat.",
     "categorie": "contabilitate",
     "data": "2026-09-26"
   }

@@ -18,7 +18,7 @@
 // LUNGIMILE. Fiecare text sta pe rolul si pe lungimea textului referintei (numarate pe referinta,
 // niciodata preluate): fraza de sub alegere, durerea si concluzia fiecarei industrii au in proba
 // `tests/constructor.test.ts` lungimea de referinta si o toleranta de 15%. Textul e scris de noi,
-// cu o singura forma de adresare (dumneavoastra, scris intreg), diacritice complete si doar cratima.
+// cu o singura forma de adresare (persoana a II-a singular, decizia D15), diacritice complete si doar cratima.
 //
 // FARA ETICHETELE REFERINTEI. Actele din scene, listele duelului, declansatoarele benzilor si
 // termenele ratate sunt alese de noi pentru fiecare domeniu, nu luate din dictionarul referintei:
@@ -31,6 +31,7 @@
 // CONTRACTUL SPRE `/inregistrare` nu se scrie aici: il da `adresaInregistrare` din `acasa.ts`.
 
 import { CODURI_CANAL, type CodCanal, type CodCine, type CodIndustrie, type CodVolum } from "./acasa";
+import { numarCuDe } from "./limba";
 
 // ---------------------------------------------------------------------------------------------
 // Tipuri comune
@@ -214,13 +215,13 @@ export const COMUN = {
   // Rol: legatura care intoarce la grila (12,8/500, subliniata). Referinta: 18.
   schimba: "înapoi la domenii",
   // Rol: numele spatiului din capul cardului (15,2/700, un rand). Referinta: 10.
-  numeSpatiu: "Firma dumneavoastră",
+  numeSpatiu: "Firma ta",
   // Rol: tipul spatiului, inaintea domeniului (12,16/500). Declara si exemplul (plan D9).
   tipSpatiu: "Arhivă de exemplu",
   // Rol: eticheta barei de progres (11,84/600). Referinta: 13.
-  progres: "Arhiva dumneavoastră",
+  progres: "Arhiva ta",
   // Rol: eticheta accesibila a butonului rotund de reluare.
-  reluare: "Reluați construirea arhivei",
+  reluare: "Reia construirea arhivei",
   // Rol: titlul listei de reguli automate (11,84/600). Referinta: 51.
   automatizari: "Reguli care pornesc singure la fiecare act primit",
   // Rol: compatibilitatea cu ce foloseste firma azi (11,2/600) si doua elemente (12,16/500).
@@ -235,12 +236,12 @@ export const COMUN = {
   },
   // Rol: randul final al cardului: rezumatul, sub-randul si butonul. Referinta: 45 / 27 / 25.
   final: {
-    titlu: "Arhiva de mai sus e gata de folosit.",
+    titlu: "Arhiva de mai sus e gata de folosit",
     subRand: "0 RON astăzi, fără card de plată.",
-    buton: "Deschideți contul gratuit",
+    buton: "Testează gratuit",
   },
   // Rol: anuntul pentru cititoarele de ecran cand panoul s-a construit (nu apare pe ecran).
-  anuntGata: "Arhiva demonstrativă pentru {industrie} s-a construit.",
+  anuntGata: "Arhiva demonstrativă pentru domeniul „{industrie}” s-a construit.",
 };
 
 /** Canalele, cum apar ele in banda canalelor si in fraza finala a duelului. */
@@ -288,19 +289,19 @@ export const CHESTIONAR = {
   // Rol: capul expandorului (16/700) si descrierea lui (12,8/500). Referinta: 39 / 79.
   // La 390 amandoua stau pe cate doua randuri, ca la referinta (expandorul inchis are 106 px).
   titlu: "Ce se întâmplă în fiecare zi cu actele firmei?",
-  descriere: "Trei clicuri, iar calculul vă arată câte ore pe lună duce sortatul actelor.",
+  descriere: "Trei clicuri, iar calculul îți arată câte ore pe lună cere sortatul actelor.",
   canale: {
     // Rol: prima intrebare (13,12/600). Referinta: 30.
     intrebare: "Pe unde ajung actele în firmă?",
     optiuni: [
       { cod: "email" as CodCanal, text: "E-mail" },
       { cod: "mesaj" as CodCanal, text: "WhatsApp și mesaje" },
-      { cod: "hartie" as CodCanal, text: "Hârtii și plicuri" },
+      { cod: "hartie" as CodCanal, text: "Pe hârtie și prin poștă" },
     ],
   },
   volum: {
     // Referinta: 27.
-    intrebare: "Câte acte primiți într-o zi?",
+    intrebare: "Câte acte primești într-o zi?",
     optiuni: [
       { cod: "v10" as CodVolum, text: "Cel mult 10" },
       { cod: "v50" as CodVolum, text: "Între 10 și 50" },
@@ -311,13 +312,13 @@ export const CHESTIONAR = {
     // Referinta: 24.
     intrebare: "Cine se ocupă azi de ele?",
     optiuni: [
-      { cod: "eu", titlu: "Chiar eu", descriere: "Timpul de conducere se duce pe sortat acte" },
-      { cod: "coleg", titlu: "Cineva din echipă", descriere: "E plătit pentru altceva, dar își petrece ziua sortând hârtii" },
+      { cod: "eu", titlu: "Chiar eu", descriere: "Timpul de conducere se duce pe sortatul actelor" },
+      { cod: "coleg", titlu: "Cineva din echipă", descriere: "E plătit pentru altceva, dar își petrece ziua sortând documente" },
       { cod: "nimeni", titlu: "Nimeni anume", descriere: "Actele stau neatinse până le caută cineva în grabă, la termen" },
     ] as OptiuneCine[],
   },
   // Rol: butonul de confirmare, inainte si dupa (13,44/600).
-  confirma: "Confirmați",
+  confirma: "Confirmă",
   confirmat: "Confirmat",
 };
 
@@ -335,9 +336,9 @@ export { PRECOMPLETARI } from "./acasa-constructor-precompletari";
 export const DUEL = {
   // Rol: eticheta simularii (11,52/600) si legatura de reluare (11,84/500). Referinta: 23 / 22.
   eticheta: "Ziua simulată, pas cu pas",
-  reluare: "Reluați ziua",
+  reluare: "Reia ziua",
   // Rol: numele celor doua firme (15,2/700). Referinta: 17 / 21.
-  firmaFara: "Hârtii și e-mailuri",
+  firmaFara: "Documente și e-mailuri",
   firmaCu: "Totul în arhiva 3S",
   nesortate: "nesortate:",
   inOrdine: "în ordine",
@@ -350,15 +351,15 @@ export const DUEL = {
   calm: "Actele s-au așezat singure în dosare.",
   // Rol: randul scris de mana la final, dupa "cine" (`{timp}` = timpul pierdut al zilei).
   cine: {
-    eu: "Pierdeți {timp} pe zi cu hârtiile, nu cu clienții.",
-    coleg: "Colegul pierde {timp} pe zi căutând prin hârtii.",
+    eu: "Pierzi {timp} pe zi cu documentele, nu cu clienții.",
+    coleg: "Colegul pierde {timp} pe zi căutând prin documente.",
     nimeni: "Actele se strâng în grămezi și nu le mai vede nimeni.",
   } as Record<CodCine, string>,
   // Rol: fraza finala (13,76/600): volumul, canalele si, dupa "cine", timpul redat sau riscul.
   // `{timp}` = timpul economisit al zilei simulate.
   final: {
-    eu: "Cu {volum} sosite {canale}, 3S vă redă {timp} pe zi.",
-    coleg: "Cu {volum} sosite {canale}, colegul câștigă înapoi {timp} pe zi.",
+    eu: "Cu {volum} sosite {canale}, 3S îți redă {timp} pe zi.",
+    coleg: "Cu {volum} sosite {canale}, colegul recâștigă {timp} pe zi.",
     nimeni: "Cu {volum} sosite {canale}, niciun act nu mai stă neobservat până expiră un termen.",
   } as Record<CodCine, string>,
   volumInCuvinte: {
@@ -373,21 +374,21 @@ export const DUEL = {
 
 export const ESTIMARE = {
   // Rol: eticheta estimarii (11,52/600). Referinta: 26.
-  eticheta: "Ce vă costă sortatul manual",
+  eticheta: "Ce te costă sortatul manual",
   // Rol: cifra mare (25,6/600, cifre tabulare).
-  cifra: "≈ {ore} ore pe lună",
+  cifra: "≈ {ore|de} ore pe lună",
   // Rol: formula in cuvinte (11,52/500, doua randuri in 280 px), cu mentiunea ca e un exemplu.
-  formula: "{docs} acte pe zi, câte {k} min fiecare, în {zile} de zile lucrătoare (exemplu de calcul)",
+  formula: "{docs|de} acte pe zi, câte {k} min fiecare, în {zile} de zile lucrătoare (exemplu de calcul)",
   manual: "Manual",
   cuProdus: "Cu 3S",
   // Rol: fraza morala, dupa "cine" (13,44/600).
   morala: {
-    eu: "Orele astea ar putea merge spre clienți, nu spre dosare.",
-    coleg: "O parte din salariul colegului plătește căutatul prin hârtii.",
+    eu: "Aceste ore ar putea merge spre clienți, nu spre dosare.",
+    coleg: "O parte din salariul colegului plătește căutatul prin documente.",
     nimeni: "La un control, actul care nu se găsește costă mai mult decât timpul.",
   } as Record<CodCine, string>,
   // Rol: CTA-ul final (14/600, cu sageata) si nota de sub el (12/400). Referinta: 19 / 57.
-  buton: "Creați-vă arhiva",
+  buton: "Creează-ți arhiva",
   nota: "Contul pornește cu aceste răspunsuri. Nu cerem card.",
 };
 
@@ -460,13 +461,13 @@ export function indiciToast(volum: CodVolum): number[] {
   return [Math.floor(n * 0.3), Math.floor(n * 0.72)];
 }
 
-/** Timpul: sub 60 de minute "N min", altfel "Nh" sau "Nh Mm". */
+/** Timpul: sub 60 de minute "N min", altfel "N h" sau "N h M min" (SI: simbol cu spatiu, D15). */
 export function formatTimp(minute: number): string {
   const m = Math.round(minute);
   if (m < 60) return m + " min";
   const ore = Math.floor(m / 60);
   const rest = m % 60;
-  return rest === 0 ? ore + "h" : ore + "h " + rest + "m";
+  return rest === 0 ? ore + " h" : ore + " h " + rest + " min";
 }
 
 /** Minutele cu virgula romaneasca: 4,5 -> "4,5". */
@@ -479,9 +480,16 @@ export function numeFisier(f: FisierDuel, ciclu: number): string {
   return f.sablon.replace("{n}", String(f.start + ciclu));
 }
 
-/** Completeaza `{cheie}` intr-un sablon de text. */
+/**
+ * Completeaza `{cheie}` intr-un sablon de text. `{cheie|de}` scrie numarul urmat de "de" cand
+ * forma literara o cere ("8 acte", "30 de acte"; regula in `limba.ts`, decizia D15).
+ */
 export function completeaza(sablon: string, valori: Record<string, string | number>): string {
-  return sablon.replace(/\{(\w+)\}/g, (_, k: string) => (k in valori ? String(valori[k]) : "{" + k + "}"));
+  return sablon.replace(/\{(\w+)(\|de)?\}/g, (tot: string, k: string, de?: string) => {
+    if (!(k in valori)) return tot;
+    const v = valori[k];
+    return de && typeof v === "number" ? numarCuDe(v) : String(v);
+  });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -498,8 +506,8 @@ export const SCENARII: Scenarii = {
     obiect: {
       cod: "PL-204",
       nume: "Structură, etajul 2",
-      veche: { numar: "rev. B", data: "11.06.", stare: "folosită de echipă", retrasa: "scoasă din uz pe 02.09." },
-      noua: { numar: "rev. C", data: "02.09.", stare: "folosită de echipă", propunere: "sugestie, de verificat" },
+      veche: { numar: "rev. B", data: "11.06", stare: "folosită de echipă", retrasa: "scoasă din uz pe 02.09" },
+      noua: { numar: "rev. C", data: "02.09", stare: "folosită de echipă", propunere: "sugestie, de verificat" },
       bara: { nume: "Dosarul de recepție", total: 6, contor: "anexe: {n}/{total}", complet: "complet" },
     },
     benzi: [
@@ -535,7 +543,7 @@ export const SCENARII: Scenarii = {
   contabilitate: {
     // Referinta: 145 / 78 / 71.
     fraza:
-      "Extrasele, facturile și bonurile unui client sosesc pe bucăți, pe tot parcursul lunii. În 3S le vedeți așezate pe lună, cu golurile marcate.",
+      "Extrasele, facturile și bonurile unui client sosesc pe bucăți, pe tot parcursul lunii. În 3S le vezi așezate pe lună, cu golurile marcate.",
     durere: "Balanța se închide vineri, iar în extrasele clientului lipsesc două zile.",
     concluzie: "Zilele lipsă din extrase se văd de când sosește actul, nu vineri seara.",
     obiect: {
@@ -584,7 +592,7 @@ export const SCENARII: Scenarii = {
   logistica: {
     // Referinta: 146 / 94 / 67.
     fraza:
-      "Documentele unei curse se nasc pe drum: la încărcare, în cabină, la descărcare, fiecare în mâna altcuiva. În 3S vedeți ce hârtie lipsește.",
+      "Documentele unei curse se nasc pe drum: la încărcare, în cabină, la descărcare, fiecare în mâna altcuiva. În 3S vezi ce document lipsește.",
     durere: "Marfa a ajuns la Hamburg de o săptămână, dar cursa rămâne nefacturată până vine recepția.",
     concluzie: "Cursa se facturează chiar în ziua în care sosește recepția.",
     obiect: {
@@ -593,8 +601,8 @@ export const SCENARII: Scenarii = {
       notaFierbinte: "poză neclară, se reface",
       notaBlocata: "așteaptă recepția",
       notaDeblocata: "gata de emis",
-      coada: "descărcat pe 29.08., recepția lipsește",
-      fisier: "receptie_c418.pdf",
+      coada: "descărcat pe 29.08, recepția lipsește",
+      fisier: "recepție_c418.pdf",
       propunere: "sugestie, de verificat",
     },
     benzi: [
@@ -625,16 +633,16 @@ export const SCENARII: Scenarii = {
     // Referinta: 154 / 92 / 88.
     fraza:
       "Contractele cu clienții stau în trei locuri diferite, fiecare cu altă versiune și cu alte anexe. În 3S, fiecare client are un singur dosar, iar versiunea valabilă se vede clar.",
-    durere: "Modificați prețul, dar nu știți dacă lucrați pe versiunea semnată sau pe o ciornă.",
+    durere: "Modifici prețul, dar nu știi dacă lucrezi pe versiunea semnată sau pe o ciornă.",
     concluzie: "Fiecare modificare pornește de la versiunea semnată, iar ciornele nu se mai confundă cu ea.",
     obiect: {
       client: "Beta Exemplu",
-      dataInitiala: "01.07.2026.",
-      dataNoua: "15.09.2026.",
+      dataInitiala: "01.07.2026",
+      dataNoua: "15.09.2026",
       propunere: "sugestie, de verificat",
       azi: "astăzi",
       vechiInVigoare: "în vigoare",
-      vechiInlocuit: "valabil până la 14.09.",
+      vechiInlocuit: "valabil până la 14.09",
       nou: "în vigoare",
       set: ["Contract-cadru", "SOW", "Tarife", "Licențe", "Comandă"],
       lipsa: 1,
@@ -677,9 +685,9 @@ export const SCENARII: Scenarii = {
       stampila: "comunicată: 03.09.2026",
       zileInitial: "25 de zile",
       zileCorect: "11 zile",
-      dataInitiala: "02.10.2026.",
-      dataCorecta: "18.09.2026.",
-      nota: "socotit de la comunicare; verificați înainte de depunere",
+      dataInitiala: "02.10.2026",
+      dataCorecta: "18.09.2026",
+      nota: "socotit de la comunicare; verifică înainte de depunere",
       acte: ["Întâmpinarea pârâtului", "Raportul de expertiză", "Sentința de primă instanță"],
       asteptare: "se așteaptă comunicarea",
       ancora: "comunicarea acestei sentințe pornește numărătoarea",
@@ -717,7 +725,7 @@ export const SCENARII: Scenarii = {
   imobiliare: {
     // Referinta: 162 / 70 / 91.
     fraza:
-      "Actele unei locuințe vin de la proprietar, de la bancă, de la cadastru și de la asociație, fiecare pe alt drum. În 3S le găsiți după adresă și vedeți din timp ce expiră.",
+      "Actele unei locuințe vin de la proprietar, de la bancă, de la cadastru și de la asociație, fiecare pe alt drum. În 3S le găsești după adresă și vezi din timp ce expiră.",
     durere: "Semnarea e joi, iar certificatul fiscal din dosarul locuinței nu mai e valabil.",
     concluzie: "Certificatul nou se cere cu zile înainte, iar joi vânzarea se semnează fără nicio amânare.",
     obiect: {
@@ -768,7 +776,7 @@ export const SCENARII: Scenarii = {
   asigurari: {
     // Referinta: 132 / 111 / 84.
     fraza:
-      "La o daună, actele vin de la client, de la service și de la poliție. În 3S le vedeți la numărul daunei, cu actele lipsă semnalate din prima zi.",
+      "La o daună, actele vin de la client, de la service și de la poliție. În 3S le vezi la numărul daunei, cu actele lipsă semnalate din prima zi.",
     durere:
       "Mașina stă în service de două săptămâni, iar plata reparației așteaptă o autorizație încă nesosită.",
     concluzie: "Autorizația se cere în ziua avizării, iar service-ul își primește banii fără întârziere.",
@@ -784,7 +792,7 @@ export const SCENARII: Scenarii = {
         "Avizarea daunei",
       ],
       stari: { asteptare: "în așteptare", complet: "complet", lipsa: "lipsă" },
-      zile: "avizată pe 29.08.",
+      zile: "avizată pe 29.08",
       fotografii: "12 poze de la daună",
     },
     benzi: [
@@ -804,7 +812,7 @@ export const SCENARII: Scenarii = {
       tipuri: ["Avizare", "Expertiză", "Reparație", "CASCO", "Poză"],
       stres: [
         "CASCO-ul expiră vineri",
-        "Service-ul sună după bani",
+        "Service-ul sună să-și ceară banii",
         "Unde e autorizația de reparație?",
         "Expertul vine abia joi",
       ],
@@ -828,7 +836,7 @@ export const SCENARII: Scenarii = {
     durere: "Banca cere azi copia unei donații din 2018, iar registrul acelui an e în subsol.",
     concluzie: "Donația din 2018 apare pe ecran pe loc, fără drum până în subsol.",
     obiect: {
-      substituent: "Căutați după numele părților",
+      substituent: "Caută după numele părților",
       cautare: "Viorel Exemplu",
       // A TREIA COLOANA are rolul fisei (§7.8): termenul de pastrare al fiecarui act, calculat
       // dupa categorie (`acasa-termene-calculate`). Se arata POZITIA din nomenclator, nu un an:
@@ -870,7 +878,7 @@ export const SCENARII: Scenarii = {
     // Referinta: 118 / 67 / 90.
     fraza:
       "Rapoartele circulă în mai multe versiuni, iar semnăturile vin pe hârtie. În 3S, fiecare versiune stă lângă semnătura ei.",
-    durere: "Ați predat diagnoza acum nouă zile și tot n-o puteți factura.",
+    durere: "Ai predat diagnoza acum nouă zile și tot n-o poți factura.",
     concluzie: "Acordul semnat stă lângă diagnoza pe care o confirmă, iar încasarea pornește din aceeași zi.",
     obiect: {
       nume: "Audit de procese pentru Exemplu",
@@ -880,7 +888,7 @@ export const SCENARII: Scenarii = {
         fisier: "diagnoza_v3_final.pdf",
         asteptare: "lipsește semnătura clientului",
       },
-      intors: { linie: "acceptată la 11.09.", propunere: "sugestie, de verificat" },
+      intors: { linie: "acceptată la 11.09", propunere: "sugestie, de verificat" },
       factura: { nume: "Factura etapei", asteapta: "nu se emite fără acord scris", activa: "poate fi emisă" },
       stare: { nume: "acordul clientului", asteptare: "în așteptare", complet: "complet" },
     },
@@ -893,7 +901,7 @@ export const SCENARII: Scenarii = {
       dosare: ["Acceptanțe", "Livrabile", "Încasări", "Propuneri", "Mandate"],
       fisiere: [
         { sablon: "acceptanță_{n}.pdf", start: 5 },
-        { sablon: "raport_etapa_{n}.pdf", start: 2 },
+        { sablon: "raport_etapă_{n}.pdf", start: 2 },
         { sablon: "factură_C{n}.pdf", start: 301 },
         { sablon: "propunere_{n}.pdf", start: 27 },
         { sablon: "contract_consultanță_{n}.pdf", start: 14 },

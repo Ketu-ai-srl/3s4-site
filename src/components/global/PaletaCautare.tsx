@@ -97,7 +97,7 @@ export default function PaletaCautare({ cai, onInchide }: PaletaCautareProps) {
             }}
             onKeyDown={laTasta}
           />
-          <button type="button" className={s.tastaEsc} onClick={onInchide} aria-label="Închideți căutarea">
+          <button type="button" className={s.tastaEsc} onClick={onInchide} aria-label="Închide căutarea">
             {PALETA.tastaInchidere}
           </button>
         </div>

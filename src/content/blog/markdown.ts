@@ -447,7 +447,37 @@ function sfarsitEticheta(s: string, deschis: number): number {
   return -1;
 }
 
-export function parseazaInline(s: string, rand = 0): Inline[] {
+/**
+ * Ghilimelele romanesti (DOOM3): o ghilimea dreapta ASCII care inchide un citat deschis cu cea
+ * de jos devine ghilimeaua de sus, dreapta. In afara codului inline, si numai daca nu e evadata;
+ * o ghilimea ASCII fara citat deschis ramane cum e (decizia D15).
+ */
+export function inchideGhilimele(s: string): string {
+  let rezultat = "";
+  let deschis = false;
+  let inCod = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === "\\" && i + 1 < s.length) {
+      rezultat += c + s[i + 1];
+      i++;
+      continue;
+    }
+    if (c === "`") inCod = !inCod;
+    else if (!inCod && c === "„") deschis = true;
+    else if (!inCod && c === "”") deschis = false;
+    else if (!inCod && c === '"' && deschis) {
+      rezultat += "”";
+      deschis = false;
+      continue;
+    }
+    rezultat += c;
+  }
+  return rezultat;
+}
+
+export function parseazaInline(sursa: string, rand = 0): Inline[] {
+  const s = inchideGhilimele(sursa);
   const rezultat: Inline[] = [];
   let tampon = "";
   const scoate = () => {

@@ -183,7 +183,7 @@ const IDENTIFICARE = [
   ["Sediul", "sediu"],
   ["Țara", "tara"],
   ["Nr. de ordine în registrul comerțului", CAMP_REGISTRU],
-  ["Cod de identificare fiscală", "cod_fiscal"],
-  ["E-mail", "email"],
-  ["Telefon", "telefon"],
+  ["Codul de identificare fiscală", "cod_fiscal"],
+  ["Adresa de e-mail", "email"],
+  ["Telefonul", "telefon"],
 ] as const satisfies readonly (readonly [string, CampOperator])[];

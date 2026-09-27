@@ -21,10 +21,10 @@ import { FRUSTRARE } from "@/content/functionalitati/cautare-ai";
 import b from "@/components/cinema/bucle.module.css";
 import s from "./cautare.module.css";
 
-/** Minutele scrise ca in macheta: "1h 38m". */
+/** Minutele scrise ca in macheta: "1 h 38 min" (SI: simbol cu spatiu, decizia D15). */
 export function formatTimp(minute: number): string {
   const m = Math.max(0, Math.round(minute));
-  return Math.floor(m / 60) + "h " + (m % 60) + "m";
+  return Math.floor(m / 60) + " h " + (m % 60) + " min";
 }
 
 const ASEZARE_CITATE = [

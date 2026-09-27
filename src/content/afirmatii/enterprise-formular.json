@@ -46,7 +46,7 @@
   },
   {
     "id": "enterprise-servicii-echipa",
-    "text": "La nivelul enterprise, echipa 3S fixează cu firma termenele de păstrare pe tipuri de acte, alocă un coleg 3S firmei, aduce în căutare arhiva de hârtie scanată de echipa 3S, răspunde pe WhatsApp cu actul și pagina din care vine răspunsul și poate păstra originalele în arhiva fizică 3S după scanare",
+    "text": "La nivelul Enterprise, echipa 3S fixează cu firma termenele de păstrare pe tipuri de acte, alocă un coleg 3S firmei, aduce în căutare arhiva de hârtie scanată de echipa 3S, răspunde pe WhatsApp cu actul și pagina din care vine răspunsul și poate păstra originalele în arhiva fizică 3S după scanare",
     "unde": "src/content/enterprise.ts",
     "stare": "neconfirmat",
     "sursa": "de confirmat de owner: forma ofertei enterprise 3S (livrabilele sunt scrise din serviciile 3S din deciziile D4 și D10: digitizare, arhivă fizică, căutare cu sursa citată, WhatsApp)",
@@ -64,7 +64,7 @@
   },
   {
     "id": "formular-temei-precontractual",
-    "text": "Temeiul prelucrării datelor din formular îl constituie demersurile precontractuale făcute la cererea persoanei (GDPR, art. 6 alin. (1) lit. b)); bifa de noutăți are temei consimțământul",
+    "text": "Temeiul prelucrării datelor din formular îl constituie demersurile precontractuale făcute la cererea persoanei (GDPR, art. 6 alin. (1) lit. b)); bifa de noutăți are ca temei consimțământul",
     "unde": "src/content/formular.ts",
     "stare": "confirmat",
     "sursa": "Regulamentul (UE) 2016/679, art. 6 alin. (1) lit. a) (consimțământul) și lit. b) (demersuri la cererea persoanei vizate înainte de încheierea unui contract), textul oficial în limba română: https://eur-lex.europa.eu/legal-content/RO/TXT/HTML/?uri=CELEX:32016R0679",

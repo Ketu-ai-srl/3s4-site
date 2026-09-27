@@ -152,8 +152,8 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "La prima vizită, bannerul de cookie-uri spune ce folosim și vă lasă să alegeți între Accept tot, Refuz tot și Setări cookie-uri, trei butoane de aceeași mărime. Până nu alegeți, nu se încarcă nimic de la Google și nu se scrie niciun cookie.",
-              "În setări, categoria Statistică pornește oprită; o porniți numai dumneavoastră. Vă întrebăm din nou după 6 luni sau când se schimbă textul acestei informări.",
+              "La prima vizită, bannerul de cookie-uri spune ce folosim și vă lasă să alegeți între „Accept tot”, „Refuz tot” și „Setări cookie-uri”, trei butoane de aceeași mărime. Până nu alegeți, nu se încarcă nimic de la Google și nu se scrie niciun cookie.",
+              "În setări, categoria „Statistică” pornește oprită; o porniți numai dumneavoastră. Vă întrebăm din nou după 6 luni sau când se schimbă textul acestei informări.",
             ],
           },
         ],
@@ -165,7 +165,7 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "Refuzul costă un singur clic, pe Refuz tot. Site-ul funcționează la fel și fără statistică: nicio pagină și nicio funcție nu depind de acordul dumneavoastră.",
+              "Refuzul costă un singur clic, pe „Refuz tot”. Site-ul funcționează la fel și fără statistică: nicio pagină și nicio funcție nu depind de acordul dumneavoastră.",
             ],
           },
         ],
@@ -177,7 +177,7 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "Legătura Setări cookie-uri din subsolul oricărei pagini deschide din nou alegerea. Refuz tot sau oprirea categoriei Statistică opresc măsurarea pe loc și șterg cookie-urile de statistică din browser. Datele site-ului se pot șterge oricând și din setările browserului.",
+              "Legătura „Setări cookie-uri” din subsolul oricărei pagini deschide din nou alegerea. Butonul „Refuz tot” sau oprirea categoriei „Statistică” opresc măsurarea pe loc și șterg cookie-urile de statistică din browser. Datele site-ului se pot șterge oricând și din setările browserului.",
             ],
           },
         ],
@@ -189,8 +189,8 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "Site-ul se servește prin HTTPS. Fonturile sunt găzduite pe același domeniu cu site-ul, deci nu pleacă nicio cerere către un serviciu de fonturi al altcuiva. Înainte de acordul dumneavoastră, paginile nu contactează niciun terț; lucrul acesta se verifică automat, la fiecare versiune a site-ului, înainte de publicare.",
-              "Evidența alegerilor păstrează doar prefixul rețelei, nu adresa IP completă, iar codul de statistică nu primește date de publicitate: semnalele de publicitate rămân refuzate.",
+              "Site-ul folosește HTTPS. Fonturile sunt găzduite pe același domeniu cu site-ul, deci nu pleacă nicio cerere către un serviciu de fonturi al altcuiva. Înainte de acordul dumneavoastră, paginile nu contactează niciun terț; lucrul acesta se verifică automat, la fiecare versiune a site-ului, înainte de publicare.",
+              "Evidența alegerilor păstrează doar prefixul rețelei, nu adresa IP completă, iar codul de statistică nu primește date de publicitate: semnalele pentru publicitate rămân dezactivate.",
             ],
           },
         ],

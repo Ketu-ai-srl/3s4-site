@@ -918,7 +918,7 @@ describe('textele juridice (plan §9-§10, nepublicate)', () => {
 
   it('formularele au temei precontractual, nu consimtamant (L-05, G-MD-06)', () => {
     const t = normalizat(textIntreg(politica))
-    expect(t).toContain('demersuri precontractuale')
+    expect(t).toContain('demersurile precontractuale')
     expect(/trimiterea\s+(acestui\s+)?formular\w*.{0,90}?consimt/.test(t)).toBe(false)
   })
 

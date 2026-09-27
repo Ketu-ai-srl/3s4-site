@@ -16,7 +16,7 @@ export const AVOCATURA: Sector = {
   },
   erou: {
     // Rol: h1, un rand. Lungime: 40.
-    titlu: "Căutați în arhiva cabinetului după sens",
+    titlu: "Caută în arhiva cabinetului după sens",
     // Rol: subtitlul (3 randuri la 1440, 5 la 390, ca la referinta). Lungime: 200.
     subtitlu:
       "3S scanează dosarele cabinetului, leagă e-mailul și fișierele de pe calculatoare și pune fiecare act pe cauza lui, cu data sosirii. Orice act se găsește după sens, cu pagina din care vine răspunsul.",
@@ -54,7 +54,7 @@ export const AVOCATURA: Sector = {
   schimbare: {
     // Rol: paragraful-punte. Lungime: 158.
     punte:
-      "Dosarele pe hârtie se scanează, e-mailul se leagă, iar orice act se găsește dintr-o întrebare, cu pagina lui. Cine are acces la o cauză hotărâți dumneavoastră.",
+      "Dosarele pe hârtie se scanează, e-mailul se leagă, iar orice act se găsește dintr-o întrebare, cu pagina lui. Cine are acces la o cauză hotărăști tu.",
     // Lungimi: 42 / 54 / 59.
     buline: [
       "O întrebare, iar actul iese din orice dosar",
@@ -70,18 +70,18 @@ export const AVOCATURA: Sector = {
     lista: [
       {
         // Lungimi: titlul 16, textul 103.
-        titlu: "Predați cutiile la scanat",
+        titlu: "Predă cutiile la scanat",
         text: "Dosarele închise pleacă la scanat și se întorc ca fișiere căutabile, iar e-mailul se leagă din setări.",
       },
       {
         // Lungimi: titlul 19, textul 80.
-        titlu: "Întrebați pe WhatsApp",
-        text: "Din sala de judecată, scrieți întrebarea și primiți actul potrivit, pe telefon.",
+        titlu: "Întreabă pe WhatsApp",
+        text: "Din sala de judecată, scrii întrebarea și primești actul potrivit, pe telefon.",
       },
       {
         // Lungimi: titlul 15, textul 114.
         titlu: "Accesul, pe dosar",
-        text: "Stabiliți cine vede fiecare cauză, iar orice document deschis intră în jurnal, cu numele și ora.",
+        text: "Stabilește cine vede fiecare cauză, iar orice document deschis intră în jurnal, cu numele și ora.",
       },
     ],
     demo: {
@@ -117,13 +117,13 @@ export const AVOCATURA: Sector = {
       // Lungimi: intrebarea 54, raspunsul 291. O intrebare a sectorului, pe data primirii.
       intrebare: "Cum aflăm data la care a sosit un act la cabinet?",
       raspuns:
-        "Actul scanat la recepție sau primit pe e-mail intră în 3S cu data sosirii, pus pe cauza la care se referă. Căutați hotărârea sau adresa și vedeți pe loc când a ajuns la cabinet, cu pagina din care vine răspunsul.",
+        "Actul scanat la recepție sau primit pe e-mail intră în 3S cu data sosirii, pus pe cauza la care se referă. Cauți hotărârea sau adresa și vezi pe loc când a ajuns la cabinet, cu pagina din care vine răspunsul.",
     },
     {
       // Lungimi: intrebarea 58, raspunsul 367. O intrebare a sectorului, pe acces si gazduire.
       intrebare: "Cine din cabinet vede dosarele unui client?",
       raspuns:
-        "Accesul îl stabiliți dumneavoastră, pe persoană și pe dosar: un avocat vede cauzele la care lucrează, iar un coleg nou vede doar ce îi deschideți. Fiecare document deschis se trece în jurnal, cu numele și ora. Fișierele stau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene.",
+        "Accesul îl stabilești tu, pe persoană și pe dosar: un avocat vede cauzele la care lucrează, iar un coleg nou vede doar ce îi deschizi. Fiecare document deschis se trece în jurnal, cu numele și ora. Fișierele stau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene.",
     },
   ],
 };

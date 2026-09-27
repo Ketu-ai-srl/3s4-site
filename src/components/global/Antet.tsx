@@ -123,6 +123,16 @@ export default function Antet() {
    * e sincron, iar valoarea se goleste imediat dupa, deci nu poate inghiti un focus viitor.
    */
   const faraRedeschidere = useRef<HTMLElement | null>(null);
+  /**
+   * ArrowDown pe un declansator muta focusul pe primul element al meniului. Elementul exista abia
+   * dupa ce React aplica starea deschisa, iar aplicarea NU vine garantat inaintea cadrului
+   * urmator: pe o masina incarcata (CPU incetinit de 4 ori), la 42-66 ms dupa focusul pe
+   * declansator meniul inca nu era in pagina cand a rulat `requestAnimationFrame`, deci focusul
+   * ramanea pe declansator si ArrowDown era pierdut (9 din 30 de rulari; CI Windows, 2 din ~1000).
+   * Acum: daca elementul exista, focusul se muta pe loc; altfel cererea asteapta aici si o
+   * implineste efectul de dupa aplicarea starii. Cererea traieste o singura aplicare.
+   */
+  const deFocusat = useRef<{ id: string; selector: string } | null>(null);
   const idMeniu = useId() + "-meniu";
   const idDescarca = useId() + "-descarca";
 
@@ -214,6 +224,23 @@ export default function Antet() {
     };
   }, [foaieActiva, descarcaDeschis]);
 
+  const focuseazaPrimul = (id: string, selector: string) => {
+    const tinta = document.getElementById(id)?.querySelector<HTMLElement>(selector);
+    if (tinta) {
+      deFocusat.current = null;
+      tinta.focus();
+    } else {
+      deFocusat.current = { id, selector };
+    }
+  };
+
+  useEffect(() => {
+    const cerere = deFocusat.current;
+    if (!cerere) return;
+    deFocusat.current = null;
+    document.getElementById(cerere.id)?.querySelector<HTMLElement>(cerere.selector)?.focus();
+  }, [foaieActiva, descarca]);
+
   const anuleazaInchiderea = () => {
     if (temporizator.current) {
       clearTimeout(temporizator.current);
@@ -302,11 +329,13 @@ export default function Antet() {
                           if (areFoaie && e.key === "ArrowDown") {
                             e.preventDefault();
                             setFoaieActiva(l.text);
-                            requestAnimationFrame(() =>
-                              document
-                                .getElementById(idMeniu)
-                                ?.querySelector<HTMLElement>('[role="group"]:not([aria-hidden]) [data-element-meniu]')
-                                ?.focus(),
+                            // Foaia ACESTUI declansator, nu cea vizibila: cu starea inca neaplicata,
+                            // vizibila poate fi foaia de dinainte.
+                            focuseazaPrimul(
+                              idMeniu,
+                              '[role="group"][aria-label="' +
+                                CSS.escape(foi[l.text]?.foaie.eticheta ?? "") +
+                                '"]:not([aria-hidden]) [data-element-meniu]',
                             );
                           }
                         }}
@@ -362,9 +391,7 @@ export default function Antet() {
                     if (e.key === "ArrowDown") {
                       e.preventDefault();
                       deschideDescarca();
-                      requestAnimationFrame(() =>
-                        document.getElementById(idDescarca)?.querySelector<HTMLElement>("[data-element-meniu]")?.focus(),
-                      );
+                      focuseazaPrimul(idDescarca, "[data-element-meniu]");
                     }
                   }}
                 >

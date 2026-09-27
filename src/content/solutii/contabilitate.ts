@@ -19,7 +19,7 @@ export const CONTABILITATE: Sector = {
   meta: {
     titlu: "Actele clienților, clasate pe firmă și pe lună | 3S",
     descriere:
-      "Clienții încarcă actele în portalul lor, 3S le clasează pe firmă și pe lună, iar dumneavoastră căutați în toți clienții deodată.",
+      "Clienții încarcă actele în portalul lor, 3S le clasează pe firmă și pe lună, iar tu cauți deodată în actele tuturor clienților.",
   },
   erou: {
     // Rol: h1, doua randuri (trei la 390). Lungime: 63.
@@ -27,7 +27,7 @@ export const CONTABILITATE: Sector = {
     // Rol: subtitlul (3 randuri la 1440, 5 la 390, ca la referinta). Lungime: 169; aici ~195, ca primul
     // paragraf al paginii sa raspunda singur (poarta G-AI-02 cere 30-80 de cuvinte).
     subtitlu:
-      "3S clasează pe lună tot ce trimit clienții, pe e-mail sau din portalul lor, și vă arată la fiecare firmă ce acte lipsesc înainte de închidere. Când căutați o factură, primiți actul și pagina lui.",
+      "3S clasează pe lună tot ce trimit clienții, pe e-mail sau din portalul lor, și îți arată la fiecare firmă ce acte lipsesc înainte de închidere. Când cauți o factură, primești actul și pagina lui.",
   },
   momente: {
     // Rol: subtitlul sinei. Lungime: 79.
@@ -53,7 +53,7 @@ export const CONTABILITATE: Sector = {
         // Lungimi: eticheta 36, titlul 19, textul 151, fisierul 26, problema 18.
         eticheta: "După orele de program",
         titlu: "Un patron vrea confirmarea",
-        text: "A trimis de pe telefon factura de chirie a sediului și întreabă dacă a ajuns. La birou așteaptă alte patruzeci de mesaje nedeschise de la alți clienți.",
+        text: "A trimis de pe telefon factura de chirie a sediului și întreabă dacă a ajuns. La birou mai așteaptă patruzeci de mesaje nedeschise de la alți clienți.",
         fisier: "Factura_chirie_sediu_iunie.pdf",
         problema: "Așteaptă până luni",
       },
@@ -84,12 +84,12 @@ export const CONTABILITATE: Sector = {
       {
         // Lungimi: titlul 22, textul 109.
         titlu: "Clientul trimite pe e-mail",
-        text: "Fiecare firmă are o adresă proprie în 3S, iar atașamentele trimise acolo ajung singure în dosarul ei, fără să le mutați.",
+        text: "Fiecare firmă are o adresă proprie în 3S, iar atașamentele trimise acolo ajung singure în dosarul ei, fără să le muți.",
       },
       {
         // Lungimi: titlul 22, textul 110.
-        titlu: "Întrebați arhiva, nu clientul",
-        text: "Când lipsește ceva, căutați întâi în 3S: răspunsul vine cu actul și pagina, din orice firmă.",
+        titlu: "Întreabă arhiva, nu clientul",
+        text: "Când lipsește ceva, cauți întâi în 3S: răspunsul vine cu actul și pagina, din orice firmă.",
       },
     ],
     demo: {
@@ -127,13 +127,13 @@ export const CONTABILITATE: Sector = {
       // Lungimi: intrebarea 58, raspunsul 162. O intrebare a sectorului, pe drumurile actelor.
       intrebare: "Pe ce drumuri ajung actele clienților în 3S?",
       raspuns:
-        "Clientul le încarcă în portalul firmei lui, le trimite la adresa de e-mail pe care firma o are în 3S sau vi le aduce pe hârtie, iar dumneavoastră le predați la scanat. Toate ajung în același dosar, clasate pe lună.",
+        "Clientul le încarcă în portalul firmei lui, le trimite la adresa de e-mail pe care firma o are în 3S sau ți le aduce pe hârtie, iar tu le predai la scanat. Toate ajung în același dosar, clasate pe lună.",
     },
     {
       // Lungimi: intrebarea 46, raspunsul 183. O intrebare a sectorului, pe acces.
       intrebare: "Cine din birou poate vedea actele unei firme?",
       raspuns:
-        "Accesul se dă pe persoană și pe firmă: fiecare contabil vede firmele de care se ocupă, iar un coleg nou vede doar ce îi deschideți. Fiecare document deschis se trece în jurnal, cu numele și ora.",
+        "Accesul se dă pe persoană și pe firmă: fiecare contabil vede firmele de care se ocupă, iar un coleg nou vede doar ce îi deschizi. Fiecare document deschis se trece în jurnal, cu numele și ora.",
     },
   ],
   consola: {
@@ -141,7 +141,7 @@ export const CONTABILITATE: Sector = {
     titlu: "Consola cu firmele biroului",
     // Rol: subtitlul (3 randuri, 16/25,6). Lungime: 229.
     subtitlu:
-      "Dimineața deschideți consola și vedeți unde e de lucru: ce a sosit peste noapte, ce acte așteaptă verificarea și ce termen a expirat, la fiecare firmă. De acolo intrați în arhiva oricărei firme.",
+      "Dimineața deschizi consola și vezi unde e de lucru: ce a sosit peste noapte, ce acte așteaptă verificarea și ce termen a expirat, la fiecare firmă. De acolo intri în arhiva oricărei firme.",
     declaratie:
       "Exemplu de consolă 3S cu firme și date fictive: 14 firme în portofoliu, 29 de acte de verificat, 3 termene expirate, 1.136 de facturi luna aceasta.",
     bara: {
@@ -158,7 +158,7 @@ export const CONTABILITATE: Sector = {
     ],
     cautare: {
       // Rol: textul-indemn din camp (nu e un camp real). Lungime: 39.
-      indemn: "Scrieți numele firmei sau CUI-ul",
+      indemn: "Scrie numele firmei sau CUI-ul",
       contor: "6 / 14",
     },
     // Eticheta se acorda cu numarul de pe fiecare card: „1 expirat”, „3 expirate”, „1 sosit”, „12 sosite”.
@@ -181,13 +181,13 @@ export const CONTABILITATE: Sector = {
     capabilitati: [
       {
         iconita: "search",
-        titlu: "Întrebați toate arhivele deodată",
-        text: "Scrieți ce căutați, iar 3S răspunde din arhivele tuturor firmelor, cu actul și pagina din care vine răspunsul.",
+        titlu: "Întreabă toate arhivele deodată",
+        text: "Scrii ce cauți, iar 3S răspunde din arhivele tuturor firmelor, cu actul și pagina din care vine răspunsul.",
       },
       {
         iconita: "arrow-left-right",
         titlu: "Același cont pentru toate firmele",
-        text: "Alegeți firma din listă și lucrați direct în arhiva ei, fără o a doua parolă.",
+        text: "Alegi firma din listă și lucrezi direct în arhiva ei, fără o a doua parolă.",
       },
       {
         iconita: "inbox",
@@ -197,12 +197,12 @@ export const CONTABILITATE: Sector = {
       {
         iconita: "calendar-clock",
         titlu: "Ce expiră, la toate firmele",
-        text: "Termenele tuturor firmelor apar în ordinea în care expiră, ca să vedeți ce urmează înainte de orice închidere.",
+        text: "Termenele tuturor firmelor apar în ordinea în care expiră, ca să vezi ce urmează înainte de orice închidere.",
       },
       {
         iconita: "user-plus",
         titlu: "O firmă nouă, adăugată după CUI",
-        text: "Scrieți CUI-ul, iar firma apare în consolă cu dosarul ei, gata să primească primele acte chiar în ziua aceea.",
+        text: "Scrii CUI-ul, iar firma apare în consolă cu dosarul ei, gata să primească primele acte chiar în ziua aceea.",
       },
       {
         iconita: "layout-grid",
@@ -211,10 +211,10 @@ export const CONTABILITATE: Sector = {
       },
     ],
     // Rol: nota de sub capabilitati, cu linie sus (14/400 ardezie-5). Lungime: 108.
-    nota: "Cine din birou vede o firmă hotărâți dumneavoastră, iar orice document deschis se trece în jurnal.",
+    nota: "Cine din birou vede o firmă hotărăști tu, iar orice document deschis se trece în jurnal.",
     // Rol: legatura spre contact (14/600 albastru, cu sageata). Lungime: 50.
     legatura: {
-      text: "Scrieți-ne câți clienți aveți și vă arătăm consola",
+      text: "Scrie-ne câți clienți ai și îți arătăm consola",
       href: "/contact",
       ruta: "/contact",
     },

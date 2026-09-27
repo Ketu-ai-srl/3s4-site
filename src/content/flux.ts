@@ -24,10 +24,10 @@ export const FIR_FLUX = [
 
 export const EROU_FLUX = {
   // Rol: teza paginii, 2 randuri pe 880.
-  titlu: "De la primul e-mail la dosarul cu termen, fără nimic copiat de mână.",
+  titlu: "De la primul e-mail la dosarul cu termen, fără nimic copiat de mână",
   // Rol: ce se intampla cu actul, 5 randuri pe 640.
   subtitlu:
-    "Un furnizor vă trimite pe WhatsApp poza unei facturi. În 3S, poza stă alături de actele venite pe e-mail sau de la scaner, cu suma și data plății la vedere. Peste o lună, colegul de la plăți scrie în căutare „ce mai avem de achitat furnizorului acestuia?” și primește răspunsul cu factura citată ca sursă, fără să deschidă vreun folder.",
+    "Un furnizor îți trimite pe WhatsApp poza unei facturi. În 3S, poza stă alături de actele venite pe e-mail sau de la scaner, cu suma și data plății la vedere. Peste o lună, colegul de la plăți scrie în căutare „ce mai avem de achitat furnizorului acestuia?” și primește răspunsul cu factura citată ca sursă, fără să deschidă vreun folder.",
 };
 
 export type Fereastra = {
@@ -62,9 +62,9 @@ export type PasSistem = {
 export const SCENA = {
   // Rol: capul sectiunii derulate (h2 de 4 cuvinte + paragraf de 2 randuri).
   titlu: "Drumul unui act, pas cu pas",
-  text: "Mai jos, același act trece de două ori prin firmă: o dată cum se lucrează des astăzi, pe mână, și o dată prin 3S.",
+  text: "Mai jos, același act trece de două ori prin firmă: o dată cum se lucrează des astăzi, de mână, și o dată prin 3S.",
   declaratie: "Exemplu cu date fictive",
-  faza1: "Azi, pe mână",
+  faza1: "Azi, de mână",
   faza2: "Cu 3S",
   /** Contorul fazei 1: de cate ori a fost salvat de mana acelasi act. */
   contor1: (n: number) => "salvat de mână " + (n === 1 ? "o dată" : "de " + n + " ori"),
@@ -83,7 +83,7 @@ export const SCENA = {
     {
       titlu: "Se citește",
       nota: "câmpuri recunoscute",
-      stampila: "factură · Furnizor Exemplu · 4.180 lei",
+      stampila: "factură · Furnizor Exemplu · 4.180 de lei",
       descriere:
         "3S recunoaște ce fel de act este și scoate din el datele care contează: cine l-a emis, pentru ce sumă și până când trebuie rezolvat.",
       iconita: "scan-text",
@@ -117,10 +117,10 @@ export const SCENA = {
 
 export const HUB = {
   // Rol: ideea benzii (3 randuri) si explicatia (4 randuri).
-  titlu: "Gmail, Outlook și WhatsApp trimit actele direct în arhivă.",
-  text: "Un act sosit sâmbătă noaptea are dosar și responsabil până luni dimineață. Legăturile de mai jos aduc în aceeași arhivă ce vine prin poștă, prin rețeaua Peppol sau din SAP Business One. Fiecare act își păstrează canalul și ora sosirii, așa că știți oricând de unde a venit.",
+  titlu: "Gmail, Outlook și WhatsApp trimit actele direct în arhivă",
+  text: "Un act sosit sâmbătă noaptea are dosar și responsabil până luni dimineață. Legăturile de mai jos aduc în aceeași arhivă ce vine prin poștă, prin rețeaua Peppol sau din SAP Business One. Fiecare act își păstrează canalul și ora sosirii, așa că știi oricând de unde a venit.",
   documente: [
-    { titlu: "Factură", meta: "Exemplu · 4.180 lei", iconita: "file-text" },
+    { titlu: "Factură", meta: "Exemplu · 4.180 de lei", iconita: "file-text" },
     { titlu: "Contract", meta: "Închiriere · 2026", iconita: "file-signature" },
     { titlu: "Extras de cont", meta: "Septembrie 2026", iconita: "landmark" },
   ],
@@ -128,7 +128,7 @@ export const HUB = {
   grupuri: [
     { eticheta: "Poștă și birou", elemente: [{ text: "Gmail", iconita: "mail" }, { text: "Outlook", iconita: "mail" }] },
     {
-      eticheta: "Sisteme de afaceri",
+      eticheta: "Gestiune și facturare electronică",
       elemente: [
         { text: "SAP Business One", iconita: "building" },
         { text: "Peppol", iconita: "network", mono: true },
@@ -142,9 +142,9 @@ export const HUB = {
 export const DOMENII_CAP = {
   // Rol: capul selectorului (h2 de 4 cuvinte + paragraf de 3 randuri).
   titlu: "Exemple din șapte domenii",
-  text: "Un transportator adună avize și CMR-uri, un cabinet de avocatură ține termene, o agenție imobiliară predă apartamente cu proces-verbal. Alegeți domeniul și urmăriți cum se comportă 3S cu actele lui.",
+  text: "Un transportator adună avize și CMR-uri, un cabinet de avocatură ține termene, o agenție imobiliară predă apartamente cu proces-verbal. Alege domeniul și urmărește cum se comportă 3S cu actele lui.",
   eticheta: "Domeniul firmei",
-  nota: "Activitatea dumneavoastră nu apare aici? Regulile, jurnalul și căutarea se configurează pe actele pe care le primește firma.",
+  nota: "Activitatea ta nu apare aici? Regulile, jurnalul și căutarea se configurează pe actele pe care le primește firma.",
   legatura: "Pagina sectorului",
 };
 
@@ -196,7 +196,7 @@ export const DOMENII: Domeniu[] = [
     cheie: "logistica",
     tab: "Transport și logistică",
     eticheta: "Transport și logistică",
-    titlu: "Trei hârtii ale aceleiași curse, un singur transport",
+    titlu: "Trei documente ale aceleiași curse, un singur transport",
     legatura: { text: DOMENII_CAP.legatura, href: "/solutii/logistica", ruta: "/solutii/logistica" },
   },
   {
@@ -257,7 +257,7 @@ export const MACHETE = {
 
 export const CUTIE_CTA_FLUX = {
   // Rol: invitatia de a porni fluxul firmei (h2 alb 28, paragraf 2 randuri, buton).
-  titlu: "Porniți arhiva firmei de la primul e-mail",
-  text: "Contul costă 0 RON astăzi și se deschide fără card. Legați căsuța de e-mail sau trimiteți un act pe WhatsApp, iar el intră pe drumul de mai sus.",
-  buton: { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
+  titlu: "Pornește arhiva firmei de la primul e-mail",
+  text: "Contul costă 0 RON astăzi și se deschide fără card. Leagă căsuța de e-mail sau trimite un act pe WhatsApp, iar el intră pe drumul de mai sus.",
+  buton: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
 };

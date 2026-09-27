@@ -51,7 +51,7 @@ export const MOLDOVA: Tara = {
       tip: "registre",
       valoare: null,
       motiv:
-        "Rândul are două termene, iar unul lipsește. Registrele contabile (cartea mare, balanța de verificare) se păstrează 6 ani (Indicatorul, art. 236). Pentru situațiile financiare anuale, Indicatorul cere păstrare permanentă în organizațiile care completează Fondul Arhivistic, iar în coloana celorlalte organizații nu trece niciun termen (art. 224). Înainte să eliminați situațiile financiare, întrebați Agenția Națională a Arhivelor.",
+        "Rândul are două termene, iar unul lipsește. Registrele contabile (cartea mare, balanța de verificare) se păstrează 6 ani (Indicatorul, art. 236). Pentru situațiile financiare anuale, Indicatorul cere păstrare permanentă în organizațiile care completează Fondul Arhivistic, iar în coloana celorlalte organizații nu trece niciun termen (art. 224). Înainte să elimini situațiile financiare, întreabă Agenția Națională a Arhivelor.",
       surse: [INDICATOR_57_2016, LEGEA_287_2017],
     },
     {

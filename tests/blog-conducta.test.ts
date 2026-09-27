@@ -529,7 +529,7 @@ describe('pagina /blog (sablonul L), cu 12 articole sintetice', () => {
   })
 
   it('cautarea are eticheta si pastilele sunt legaturi reale spre categoriile cu articole', () => {
-    expect(html).toMatch(/<label for="cautare-blog"[^>]*>Căutați în articolele blogului<\/label>/)
+    expect(html).toContain('<label for="cautare-blog" class="doar-cititor">' + LISTARE.etichetaCautare + '</label>')
     // Pastilele raman pe listare (`?categorie=`): o legatura spre alt pathname ar fi preluata de tranzitia
     // de vedere a site-ului si ar duce pe pagina categoriei in loc sa filtreze.
     for (const c of CATEGORII_BLOG) expect(html).toContain('href="/blog?categorie=' + c + '"')
@@ -659,11 +659,12 @@ describe('metadata paginilor', () => {
 describe('textele blogului', () => {
   const toate = JSON.stringify({ LISTARE, CATEGORII, ARTICOL })
 
-  it('doar cratima, diacritice cu virgula, adresare cu dumneavoastra', () => {
+  // Adresarea e "tu" pe blog (decizia D15, 26.09): "dumneavoastra" ramane doar in documentele juridice.
+  it('doar cratima, diacritice cu virgula, adresare cu tu', () => {
     expect(LINIUTE_INTERZISE.test(toate)).toBe(false)
     expect(/[şţŞŢ]/.test(toate)).toBe(false)
     const cuvinte = new Set(toate.toLowerCase().split(/[^\p{L}]+/u))
-    for (const informal of ['tu', 'tău', 'tale', 'ție', 'tine']) expect(cuvinte.has(informal), informal).toBe(false)
+    for (const formal of ['dumneavoastră', 'vă', 'vi']) expect(cuvinte.has(formal), formal).toBe(false)
   })
 
   it('butonul casetei CTA incape pe un rand in 302 px la 390 (la referinta se rupe)', () => {

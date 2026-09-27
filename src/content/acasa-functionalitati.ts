@@ -94,7 +94,7 @@ export const MACHETA_CAUTARE: MachetaCautare = {
       // Rol: emitentul, suma si scadenta. Lungime: 83 [numarat].
       rezumat: {
         titlu: "Rezumat din pagina 1",
-        text: "Chiria depozitului pe martie: 3.200,00 lei plus TVA, de plătit până pe 10 aprilie 2025.",
+        text: "Chiria depozitului pe martie: 3.200,00 lei plus TVA, de plătit până la 10 aprilie 2025.",
       },
     },
     {

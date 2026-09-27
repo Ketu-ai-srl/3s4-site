@@ -38,12 +38,12 @@ export const IN_CURS = "integrare în curs cu furnizorii acreditați";
 export const EROU_SEMNATURA = {
   eticheta: "Funcționalitate 03 · Semnătura calificată",
   // Rol: titlul, 1 rand.
-  titlu: "O semnătură lentă.",
+  titlu: "O semnătură lentă",
   // Rol: cererea din terminal (~53).
   cerere: "Contractul cu Alfa Exemplu trebuie semnat până vineri",
   // Rol: subtitlul italic (~41).
   subtitlu: "Vineri e la șapte drumuri de hârtie distanță.",
-  indiciu: "derulați",
+  indiciu: "derulează",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -58,18 +58,18 @@ export type PasHartie = { eticheta: string; cost: string; iconita: IconitaPas };
 export const ZILE_TOTAL = 5;
 
 export const DRUM = {
-  titlu: "Cât drum face o semnătură.",
+  titlu: "Cât drum face o semnătură",
   paragraf: "Pe hârtie, fiecare semnătură cere un drum dus și unul întors. Zilele nu se văd pe loc, doar la capăt.",
   contorEticheta: "Zile pe drum",
   unitate: "zile",
   pasi: [
-    { eticheta: "Contractul vine prin curier", cost: "+30 ore", iconita: "plic" },
+    { eticheta: "Contractul vine prin curier", cost: "+30 de ore", iconita: "plic" },
     { eticheta: "Plicul stă la recepție", cost: "+18 ore", iconita: "ceas" },
-    { eticheta: "Juristul cere o corectură", cost: "+36 ore", iconita: "intoarcere" },
+    { eticheta: "Juristul cere o corectură", cost: "+36 de ore", iconita: "intoarcere" },
     { eticheta: "Pagina 3 se retipărește", cost: "+10 min", iconita: "imprimanta" },
     { eticheta: "Semnătură pe fiecare pagină", cost: "de mână", iconita: "stilou" },
     { eticheta: "O copie scanată, pentru dosar", cost: "+20 min", iconita: "scaner" },
-    { eticheta: "Curierul duce originalul înapoi", cost: "+36 ore", iconita: "retur" },
+    { eticheta: "Curierul duce originalul înapoi", cost: "+36 de ore", iconita: "retur" },
   ] as readonly PasHartie[],
   declaratie: "Exemplu: drumul unui contract semnat pe hârtie, pas cu pas, cu timpul adunat",
 } as const;
@@ -105,7 +105,7 @@ export const AMPRENTA = "3cd8ef3cf068b8eb03da862ee8312ce8202ced723194d83c9928de8
 export const SIGILIU = {
   titlu: "Ce poartă o semnătură calificată",
   paragraf:
-    "Certificatul calificat leagă semnătura de om, iar amprenta fișierului arată orice schimbare de după.",
+    "Certificatul calificat leagă semnătura de om, iar amprenta fișierului arată orice modificare ulterioară.",
   fisier: "contract_service_alfa.pdf",
   stareBara: "exemplu",
   initiala: "S",
@@ -141,9 +141,9 @@ export function caractereAmprenta(p: number): number {
 export type FilaLot = { eticheta: string; descriere: string; iconita: "contract" | "factura" | "proces" };
 
 export const LOT = {
-  titlu: "Mai multe acte, o singură semnare.",
+  titlu: "Mai multe acte, o singură semnare",
   paragraf:
-    "Integrarea în curs e gândită pe lot: bifați contractele, facturile și procesele-verbale gata de semnat, iar semnarea calificată se face pentru toate deodată.",
+    "Integrarea în curs e gândită pe lot: bifezi contractele, facturile și procesele-verbale gata de semnat, iar semnarea calificată se face pentru toate deodată.",
   aplicatie: "3S · previzualizare",
   // Scurt, ca bara sa incapa pe un rand la 390; formularea intreaga D4c e in nota de sub fereastra.
   dreapta: "integrare în curs",
@@ -185,7 +185,7 @@ export type Gravitate = "urgent" | "atentie";
 
 export const TERMENE = {
   eticheta: "Termenele certificatelor",
-  titlu: "Și semnăturile au o dată-limită.",
+  titlu: "Și semnăturile au o dată-limită",
   paragraf:
     "Certificatul unui semnatar are o valabilitate limitată. Termenele actelor stau deja în registrul arhivei 3S; integrarea în curs cu furnizorii acreditați adaugă data certificatului, ca actele atinse să apară din timp.",
   modul: "certificate",
@@ -198,11 +198,11 @@ export const TERMENE = {
   ] as const,
   randuri: [
     { fisier: "contract_service_alfa.pdf", zile: "9 zile", gravitate: "urgent", eticheta: "Urgent" },
-    { fisier: "anexa_2_beta.pdf", zile: "26 zile", gravitate: "atentie", eticheta: "Atenție" },
-    { fisier: "pv_predare_gama.pdf", zile: "41 zile", gravitate: "atentie", eticheta: "Atenție" },
+    { fisier: "anexa_2_beta.pdf", zile: "26 de zile", gravitate: "atentie", eticheta: "Atenție" },
+    { fisier: "pv_predare_gama.pdf", zile: "41 de zile", gravitate: "atentie", eticheta: "Atenție" },
   ] as readonly { fisier: string; zile: string; gravitate: Gravitate; eticheta: string }[],
-  nota: "Datele sunt un exemplu. Termenele actelor se țin azi în registrul arhivei 3S; re-semnarea calificată vine odată cu integrarea cu furnizorii acreditați.",
-  buton: "Re-semnare: integrare în curs",
+  nota: "Datele sunt un exemplu. Termenele actelor se țin azi în registrul arhivei 3S; semnarea calificată din nou vine odată cu integrarea cu furnizorii acreditați.",
+  buton: "Semnare din nou: integrare în curs",
   declaratie: "Exemplu cu date fictive: registrul termenelor de certificat, cu trei acte aproape de expirare",
 } as const;
 
@@ -224,7 +224,7 @@ export const CONTRAST_SEMNATURA = {
       { valoare: "5 zile", cheie: "Pe drum" },
       { valoare: "2", cheie: "Curieri" },
       { valoare: "3", cheie: "Exemplare" },
-      { valoare: "PDF din scanner", cheie: "În dosar", calitativ: "rau" },
+      { valoare: "PDF din scaner", cheie: "În dosar", calitativ: "rau" },
     ],
   },
   // Coloana a doua NU e starea de azi (D4c): titlul, subtitlul, stampila de pe desen si prima metrica spun ca
@@ -252,10 +252,10 @@ export const CONTRAST_SEMNATURA = {
 // ---------------------------------------------------------------------------------------------
 
 export const CTA_SEMNATURA = {
-  titlu: "Semnătura calificată vine în 3S.",
+  titlu: "Semnătura calificată vine în 3S",
   paragraf:
     "Integrarea cu furnizorii acreditați e în curs. Până atunci, actele semnate de mână sau cu alte unelte se arhivează și se caută în 3S.",
-  buton: "Deschideți un cont",
+  buton: "Testează gratuit",
   nota: "Contul e gratuit azi, la 0 RON, și nu cere card.",
 } as const;
 

@@ -15,14 +15,14 @@ export const CONSTRUCTII: Sector = {
   meta: {
     titlu: "Planșe și procese-verbale de șantier, cu pagina citată | 3S",
     descriere:
-      "Autorizații, planșe, procese-verbale și certificate de pe fiecare șantier, într-o arhivă în care găsiți orice act dintr-o singură întrebare.",
+      "Autorizații, planșe, procese-verbale și certificate de pe fiecare șantier, într-o arhivă în care găsești orice act dintr-o singură întrebare.",
   },
   erou: {
     // Rol: h1, doua randuri (trei la 390). Lungime: 65.
     titlu: "Planșa corectă, pe telefonul echipei, înainte de turnare",
     // Rol: subtitlul (4 randuri, 18/28,8). Lungime: 267.
     subtitlu:
-      "3S scanează bibliorafturile fiecărei lucrări și primește pozele făcute pe șantier cu aplicația de telefon. Citește fiecare planșă, proces-verbal sau aviz, iar la o întrebare pusă pe WhatsApp răspunde cu actul deschis la pagina potrivită, ca să îl verificați pe loc.",
+      "3S scanează bibliorafturile fiecărei lucrări și primește pozele făcute pe șantier cu aplicația de telefon. Citește fiecare planșă, proces-verbal sau aviz, iar la o întrebare pusă pe WhatsApp răspunde cu actul deschis la pagina potrivită, ca să îl verifici pe loc.",
   },
   momente: {
     // Rol: subtitlul sinei (un rand). Lungime: 80.
@@ -48,7 +48,7 @@ export const CONSTRUCTII: Sector = {
         // Lungimi: eticheta 13, titlul 39, textul 132, fisierul 30, problema 14.
         eticheta: "În perioada de garanție",
         titlu: "Apare o infiltrație la terasa blocului",
-        text: "La doi ani după terminare, curge apă în tavanul ultimului etaj. Constructorul trebuie să arate că hidroizolația a fost verificată înainte de acoperire.",
+        text: "La doi ani după terminare, curge apă prin tavanul ultimului etaj. Constructorul trebuie să arate că hidroizolația a fost verificată înainte de acoperire.",
         fisier: "PV_ascunse_hidroizolatie.pdf",
         problema: "Semnat, dar negăsit",
       },
@@ -84,8 +84,8 @@ export const CONSTRUCTII: Sector = {
       },
       {
         // Lungimi: titlul 23, textul 146.
-        titlu: "Verificați pe pagină",
-        text: "Fiecare răspuns arată actul și pagina din care vine, ca cifra sau cota citită să poată fi confirmată pe original înainte să turnați sau să comandați.",
+        titlu: "Verifică pe pagină",
+        text: "Fiecare răspuns arată actul și pagina din care vine, ca cifra sau cota citită să poată fi confirmată pe original înainte să torni betonul sau să comanzi materialul.",
       },
     ],
     demo: {
@@ -122,13 +122,13 @@ export const CONSTRUCTII: Sector = {
       // Lungimi: intrebarea 54, raspunsul 247. O intrebare a sectorului, pe arhiva de hartie.
       intrebare: "Ce facem cu arhiva de hârtie a proiectelor închise?",
       raspuns:
-        "O predați la scanat, cutie cu cutie. Fiecare contract, factură sau proces-verbal intră în 3S pe proiectul lui, iar prețul plătit pe o lucrare veche îl găsiți după material sau după furnizor, cu pagina din care vine cifra.",
+        "O predai la scanat, cutie cu cutie. Fiecare contract, factură sau proces-verbal intră în 3S pe proiectul lui, iar prețul plătit pe o lucrare veche îl găsești după material sau după furnizor, cu pagina din care vine cifra.",
     },
     {
       // Lungimi: intrebarea 77, raspunsul 257.
       intrebare: "Ne ajută 3S cu actele cerute la recepție și pentru cartea tehnică a construcției?",
       raspuns:
-        "Da. Procesele-verbale, avizele și certificatele de calitate stau în dosarul proiectului, pe etape. 3S vă arată din timp ce act lipsește dintr-un dosar, așa că la recepție ajungeți cu actele complete, strânse pe parcursul lucrării.",
+        "Da. Procesele-verbale, avizele și certificatele de calitate stau în dosarul proiectului, pe etape. 3S îți arată din timp ce act lipsește dintr-un dosar, așa că la recepție ajungi cu actele complete, strânse pe parcursul lucrării.",
     },
   ],
 };

@@ -20,11 +20,11 @@ export const CALE_CAUTARE_AI = "/functionalitati/cautare-ai";
 export const META_CAUTARE_AI = {
   titlu: "Căutare AI în arhiva firmei, cu sursa citată | 3S",
   descriere:
-    "Întrebați arhiva firmei cu vorbele dumneavoastră și primiți răspunsul împreună cu documentul și pagina din care vine, pe web sau pe WhatsApp.",
+    "Întreabă arhiva firmei cu vorbele tale și primești răspunsul împreună cu documentul și pagina din care vine, pe web sau pe WhatsApp.",
 } as const;
 
 /** Declaratia de raspuns a paginii (G-AI-02), ca text: intrebarea la care raspunde. */
-export const INTREBARE_PAGINA = "Cum găsește 3S fraza căutată într-un document fără să deschideți dosarele?";
+export const INTREBARE_PAGINA = "Cum găsește 3S fraza căutată într-un document fără să deschizi dosarele?";
 
 /** Eticheta vizibila de pe machetele cu nume de firma si acte (decizia D11): mica, intr-un colt. */
 export const ETICHETA_EXEMPLU = "exemplu";
@@ -45,7 +45,7 @@ export const EROU_CAUTARE = {
   // Rol: al doilea rand (italic). Lungime: 17 [numarat].
   rand2: "...acum doi ani și ceva.",
   // Rol: indiciul de derulare. Lungime: 8 [numarat].
-  indiciu: "derulați",
+  indiciu: "derulează",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ export const AVALANSA = {
   // Rol: calea dosarelor (mono 11,52). Lungime: 6 segmente [fisa].
   cale: ["Documente comune", "Furnizori", "Beta Exemplu", "Compresor hala 2", "2024", "diverse"],
   // Rol: numarul de fisiere din dosar (mono, dreapta).
-  numar: "41 elemente",
+  numar: "41 de elemente",
   // Rol: 13 randuri din dosarul unui utilaj, cumparat, livrat, montat si revizuit: acte de furnizor,
   // poze, calcule, un e-mail de revizie, o scanare fara nume. Datele nu sunt in ordine, ca intr-un dosar
   // umplut de mai multi oameni. Ultimul rand e tinta.
@@ -89,7 +89,7 @@ export const AVALANSA = {
 
 export const RECUNOASTERE = {
   // Rol: titlul recunoasterii (40/600). Acelasi text face ecoul.
-  titlu: "Doi ani, un dosar.",
+  titlu: "Doi ani, un dosar",
   // Rol: paragraful recunoasterii, 2 randuri (22,4/400). Lungime: ~95 [numarat]. Spune cum s-a umplut
   // dosarul.
   paragraf: "Fiecare om care a lucrat cu utilajul a mai pus acolo câte un fișier, doi ani la rând, fără să șteargă nimic.",
@@ -137,7 +137,7 @@ export const FRUSTRARE = {
 export const SOAPTA = {
   // Rol: intrebarea pivotului (sablon §4.4, 22,4/400).
   // Lungime: 31 [numarat].
-  intrebare: "Și dacă arhiva v-ar răspunde ca un coleg?",
+  intrebare: "Și dacă arhiva ți-ar răspunde ca un coleg?",
   // Rol: emfaza pivotului (38,4/600). Lungime: 34 [numarat].
   emfaza: "Un coleg care a citit tot dosarul.",
   // Rol: linia albastra care numeste functionalitatea (32/600). Lungime: 18 [numarat].
@@ -151,7 +151,7 @@ export const SOAPTA = {
 export const LUMINA = {
   declaratie: "Exemplu: bara de căutare a arhivei, cu întrebarea scrisă în cuvinte obișnuite",
   // Rol: indicatia de sub bara, tasta de trimitere (13,6/400). Lungime: 13 [numarat].
-  indicatie: "trimiteți cu Enter",
+  indicatie: "trimite cu Enter",
   // Numele tastei, pentru cititorul de ecran (tasta se deseneaza cu o iconita).
   tasta: "Enter",
 } as const;
@@ -192,7 +192,7 @@ export const CONTRAST_CAUTARE = {
     declaratie: "Desen: patru documente răsturnate, cu semne de întrebare",
     metrici: [
       { valoare: "29", cheie: "Deschideri" },
-      { valoare: "1h 25m", cheie: "Durată" },
+      { valoare: "1 h 25 min", cheie: "Durată" },
       { valoare: "5", cheie: "Deranjați" },
       { valoare: "fără sursă", cheie: "Stare", calitativ: "rau" },
     ],
@@ -217,8 +217,8 @@ export const CONTRAST_CAUTARE = {
       { valoare: "verificabil", cheie: "Stare", calitativ: "bun" },
     ],
   },
-  // Rol: eticheta puntii, mono (9,92/700). La 3S cu `->`.
-  punte: "de mână -> citat",
+  // Rol: eticheta puntii, mono (9,92/700). La 3S cu sageata U+2192.
+  punte: "de mână → citat",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -227,11 +227,11 @@ export const CONTRAST_CAUTARE = {
 
 export const CTA_CAUTARE = {
   // Rol: titlul CTA, un indemn pe un rand. Lungime: 14 [fisa].
-  titlu: "Citiți doar pagina.",
+  titlu: "Citește doar pagina",
   // Rol: paragraful CTA (20,8/400, 2 randuri). Lungime: ~85 [numarat].
-  paragraf: "Căutarea AI citește documentele firmei și vă răspunde cu fraza exactă, pe web sau pe WhatsApp.",
+  paragraf: "Căutarea AI citește documentele firmei și îți răspunde cu fraza exactă, pe web sau pe WhatsApp.",
   // Rol: butonul (16,8/600). Lungime: 17 [numarat].
-  buton: "Deschideți un cont",
+  buton: "Testează gratuit",
   // Rol: pretul de azi si contul fara card (11,52). Lungime: ~56 [fisa].
   nota: "Toate pachetele costă azi 0 RON, iar contul nu cere card.",
 } as const;

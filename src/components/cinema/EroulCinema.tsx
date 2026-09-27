@@ -11,7 +11,7 @@
 //       <TitluErou>...</TitluErou>                       // h1; lipseste cand eticheta
 //       <TerminalErou text="..." pas={35} />             //   e titlul (`<EtichetaErou titlu>`)
 //       <SubtitluErou varianta="italic" dupaScriere>...</SubtitluErou>
-//       <IndiciuDerulare text="derulați" />
+//       <IndiciuDerulare text="derulează" />
 //     </EroulCinema>
 //
 // FAZA SCRIERII, comuna piesei: `static` (HTML-ul servit si miscarea redusa: totul in starea finala),

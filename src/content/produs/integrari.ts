@@ -67,7 +67,7 @@ export const CATEGORII_INTEGRARI: CategorieIntegrari[] = [
     iconita: "document-randuri",
     titlu: "Programe de contabilitate",
     descriere:
-      "Arhiva se leagă de programul în care țineți contabilitatea, ca actele să nu mai fie trimise de mână de la unul la altul, nici exportate în fiecare lună.",
+      "Arhiva se leagă de programul în care ții contabilitatea, ca actele să nu mai fie trimise de mână de la unul la altul, nici exportate în fiecare lună.",
     integrari: disponibile(["SAP Business One", "Sage", "QuickBooks", "Zoho Books", "Xero", "NetSuite"]),
   },
   {
@@ -89,7 +89,7 @@ export const CATEGORII_INTEGRARI: CategorieIntegrari[] = [
     titlu: "Infrastructură de stocare",
     descriere:
       "În planul Enterprise, 3S lucrează direct pe stocarea firmei, iar fișierele stau în contul ei; colegii întreabă mai departe pe web și pe WhatsApp, ca înainte.",
-    integrari: disponibile(["AWS S3", "MinIO", "Azure Blob Storage", "Backblaze B2", "Wasabi", "S3 compatibil"]),
+    integrari: disponibile(["AWS S3", "MinIO", "Azure Blob Storage", "Backblaze B2", "Wasabi", "Compatibil S3"]),
   },
   {
     iconita: "rotita",
@@ -102,7 +102,7 @@ export const CATEGORII_INTEGRARI: CategorieIntegrari[] = [
     iconita: "lacat",
     titlu: "Autentificare și SSO",
     descriere:
-      "Colegii intră în 3S cu contul de la serviciu, prin Microsoft Entra ID, Google sau Okta. Merg atât SAML 2.0, cât și OIDC, fără o parolă separată pentru 3S.",
+      "Colegii intră în 3S cu contul de la serviciu, prin Microsoft Entra ID, Google sau Okta. Sunt acceptate atât SAML 2.0, cât și OIDC, fără o parolă separată pentru 3S.",
     integrari: disponibile([
       "SSO / SAML 2.0",
       "Microsoft Entra ID",
@@ -139,8 +139,8 @@ export const DIRECTOR_INTEGRARI = {
 // 1440, iar butonul ramane in dreapta, pe acelasi rand (card 880 x 117).
 export const LIPSESTE_INTEGRARI = {
   titlu: "Un program care lipsește din listă",
-  text: "Scrieți-ne numele lui și vă spunem dacă 3S se poate lega de el.",
-  buton: { text: "Cereți o integrare", href: "/contact", ruta: "/contact" } as Legatura,
+  text: "Scrie-ne numele lui și îți spunem dacă 3S se poate lega de el.",
+  buton: { text: "Cere o integrare", href: "/contact", ruta: "/contact" } as Legatura,
 };
 
 export function toateLegaturileIntegrari(): Legatura[] {

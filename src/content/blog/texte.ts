@@ -34,7 +34,7 @@ export const CATEGORII: Record<CategorieBlog, InfoCategorie> = {
     nume: "Contabilitate și fisc",
     titluPagina: "Contabilitate și fisc: articole pe blogul 3S",
     descriere:
-      "Actele contabile și fiscale ale firmei: ce se păstrează, cât timp și cum le găsiți repede când le cere cineva.",
+      "Actele contabile și fiscale ale firmei: ce se păstrează, cât timp și cum le găsești repede când le cere cineva.",
     legaturaCta: dinSubsol("/solutii/contabilitate"),
   },
   it: {
@@ -55,7 +55,7 @@ export const CATEGORII: Record<CategorieBlog, InfoCategorie> = {
     nume: "Organizarea firmei",
     titluPagina: "Organizarea firmei: articole pe blogul 3S",
     descriere:
-      "Cum puneți ordine în actele firmei: digitizarea hârtiei, arhivarea la un prestator și rutina care ține dosarele la zi.",
+      "Cum faci ordine în actele firmei: digitizarea hârtiei, arhivarea la un prestator și rutina care ține dosarele la zi.",
     legaturaCta: dinSubsol("/solutii"),
   },
 };
@@ -73,9 +73,9 @@ export const LISTARE = {
   // Rol: subtitlul, ~87 de caractere [fisa].
   subtitlu: "Termene de păstrare, registre, digitizare și căutare, cu trimitere la sursele oficiale.",
   // Rol: eticheta accesibila a campului de cautare (la referinta lipseste).
-  etichetaCautare: "Căutați în articolele blogului",
+  etichetaCautare: "Caută în articolele blogului",
   // Rol: textul-exemplu din camp, 2-3 cuvinte [fisa].
-  campExemplu: "Scrieți un subiect...",
+  campExemplu: "Scrie un subiect...",
   // Rol: eticheta listei de pastile, pentru cititoarele de ecran.
   etichetaPastile: "Categoriile blogului",
   // Rol: pastila care arata toate articolele.
@@ -83,7 +83,7 @@ export const LISTARE = {
   // Rol: butonul care aduce inca 9 carduri.
   maiMulte: "Mai multe articole",
   // Rol: starea goala, ~9 cuvinte [fisa].
-  gol: "Încercați alt cuvânt sau alegeți toate articolele.",
+  gol: "Încearcă alt cuvânt sau alege toate articolele.",
 } as const;
 
 export const CATEGORIE = {
@@ -93,7 +93,7 @@ export const CATEGORIE = {
 
 export const CARD = {
   // Rol: indemnul de la baza cardului.
-  citeste: "Citiți articolul",
+  citeste: "Citește articolul",
 } as const;
 
 export const ARTICOL = {
@@ -109,12 +109,12 @@ export const ARTICOL = {
     // Rol: supratitlul casetei, 3 cuvinte [fisa].
     supratitlu: "Arhiva cu 3S",
     // Rol: titlul casetei, ~5 cuvinte [fisa].
-    titlu: "Găsiți actele firmei cu o întrebare",
+    titlu: "Găsește actele firmei cu o întrebare",
     // Rol: textul casetei cand articolul nu-l da pe al lui (ultimul citat `**3S**` din corp).
     text:
-      "Încărcați actele, iar 3S vă răspunde pe web sau pe WhatsApp cu documentul din care vine răspunsul. Contul costă 0 RON astăzi.",
+      "Încarcă actele, iar 3S îți răspunde pe web sau pe WhatsApp cu documentul din care vine răspunsul. Contul costă 0 RON astăzi.",
     // Rol: butonul plin, scurt: incape pe un rand in 302 px la 390 (la referinta se rupe) [fisa].
-    buton: { text: "Deschideți un cont", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
+    buton: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } satisfies Legatura,
   },
 } as const;
 

@@ -181,7 +181,7 @@
   },
   {
     "id": "comparatii-marcaje-amazon-s3",
-    "text": "Marcajele și rezervele despre un spațiu Amazon S3 propriu urmează documentația publică Amazon S3: criptarea pornită implicit pentru obiectele noi din 5 ianuarie 2023, HTTPS impus prin politica bucket-ului, regiunea aleasă la creare, accesul prin politici, jurnalele de acces plătite la stocare și S3 Object Lock",
+    "text": "Marcajele și rezervele despre un spațiu Amazon S3 propriu urmează documentația publică Amazon S3: criptarea pornită implicit pentru obiectele noi din 5 ianuarie 2023, HTTPS impus prin politica bucketului, regiunea aleasă la creare, accesul prin politici, jurnalele de acces plătite la stocare și S3 Object Lock",
     "unde": "src/content/comparatii.ts",
     "stare": "confirmat",
     "sursa": "documentația oficială Amazon S3, citită pe 2026-09-25: docs.aws.amazon.com/AmazonS3/latest/userguide/ default-bucket-encryption.html, security-best-practices.html, create-bucket-overview.html, access-management.html, ServerLogs.html, object-lock.html",
@@ -217,7 +217,7 @@
   },
   {
     "id": "termene-ro-state-5-ani",
-    "text": "În România, statele de salarii se păstrează 5 ani (până la 15 ianuarie 2023, 50 de ani, iar legea nouă nu spune ce termen urmează statele mai vechi); cât timp le are, firma eliberează la cerere, în cel mult 60 de zile, adeverințe, copii și extrase, iar după termen statele se elimină prin comisia de selecționare, cu confirmarea Arhivelor Naționale, care pot hotărî păstrarea permanentă",
+    "text": "În România, statele de salarii se păstrează 5 ani (până la 15 ianuarie 2023, 50 de ani, iar legea nouă nu spune ce termen se aplică statelor mai vechi); cât timp le are, firma eliberează la cerere, în cel mult 60 de zile, adeverințe, copii și extrase, iar după termen statele se elimină prin comisia de selecționare, cu confirmarea Arhivelor Naționale, care pot hotărî păstrarea permanentă",
     "unde": "src/content/termene/romania.ts",
     "stare": "confirmat",
     "sursa": "Legea nr. 82/1991, art. 25, în forma dată de Legea nr. 36/2023 („inclusiv pentru statele de salarii”; cdep.ro, pr739_22.pdf); forma anterioară, din Legea nr. 82/1991 republicată (static.anaf.ro/static/10/Anaf/legislatie/Legea_82_1991.pdf), nemodificată la art. 25 între republicare și Legea nr. 36/2023 (fișa actului pe cdep.ro); Legea nr. 16/1996, art. 29 alin. (1), în forma dată de Legea nr. 26/2023 (cdep.ro, pr604_21.pdf: obligația privește documentele create ori deținute); Instrucțiunile privind activitatea de arhivă la creatorii și deținătorii de documente, art. 29-34 (arhivelenationale.ro/site/wp-content/uploads/2017/06/Instructiuni-pentru-creatorii-de-arhiva.pdf)",

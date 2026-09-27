@@ -10,7 +10,7 @@
 // un buton pe acelasi rand cu acceptul, de aceeasi marime (GDPR art. 7 alin. (3); raportul EDPB al
 // grupului pentru bannere, 17.01.2023, pct. 8 si 14).
 //
-// Adresarea e cea a site-ului: dumneavoastra, scris intreg. Butoanele vorbesc cu vocea
+// Adresarea e cea a site-ului: persoana a II-a singular (decizia D15). Butoanele vorbesc cu vocea
 // vizitatorului ("Accept tot"), ca in fixtura portii C-01.
 
 export const TEXTE_BANNER = {
@@ -20,7 +20,7 @@ export const TEXTE_BANNER = {
   // fraza despre retragere, ceruta de lege in primul strat: la 1440 ramane pe doua randuri, la 390
   // trece pe trei (sursa: doua), deci bannerul de telefon e cu un rand mai inalt (masurat 25.09.2026).
   descriere:
-    "Cu acordul dumneavoastră, măsurăm vizitele cu Google Analytics. Îl puteți retrage oricând, din subsolul oricărei pagini.",
+    "Cu acordul tău, măsurăm vizitele cu Google Analytics. Îl poți retrage oricând, din subsolul oricărei pagini.",
   accept: "Accept tot",
   refuz: "Refuz tot",
   setari: "Setări cookie-uri",
@@ -31,29 +31,29 @@ export const TEXTE_BANNER = {
 
 export const TEXTE_PANOU = {
   titlu: "Setări cookie-uri",
-  inchide: "Închideți setările",
+  inchide: "Închide setările",
   // Rol: sectiunea de introducere (titlu 15/600 + paragraf).
-  optiuniTitlu: "Opțiunile dumneavoastră",
+  optiuniTitlu: "Opțiunile tale",
   optiuniText:
-    "Alegeți ce cookie-uri permiteți pe acest site. Alegerea se poate schimba oricând, din subsolul oricărei pagini.",
+    "Alege ce cookie-uri permiți pe acest site. Alegerea se poate schimba oricând, din subsolul oricărei pagini.",
   necesareTitlu: "Strict necesare",
   necesareInsigna: "Mereu active",
   necesareText:
     "Țin minte alegerea făcută aici. Fără ele, bannerul ar apărea din nou pe fiecare pagină. Nu se trimit nicăieri.",
   statisticaTitlu: "Statistică",
   statisticaText:
-    "Google Analytics 4 măsoară vizitele și paginile citite. Se încarcă numai dacă permiteți, iar datele pot ajunge în Statele Unite.",
+    "Google Analytics 4 măsoară vizitele și paginile citite. Se încarcă numai dacă permiți, iar datele pot ajunge în Statele Unite.",
   // Capetele tabelului de cookie-uri din fiecare categorie.
   coloanaNume: "Nume",
   coloanaDurata: "Durată",
   coloanaScop: "Scop",
   // Rol: blocul de la final (titlu + o fraza cu legaturile).
   informatiiTitlu: "Mai multe informații",
-  informatiiText: "Furnizorii, țara fiecăruia și drepturile dumneavoastră sunt descrise în",
+  informatiiText: "Furnizorii, țara fiecăruia și drepturile tale sunt descrise în",
   informatiiLegatura: "politica de cookie-uri",
   informatiiSi: "și în",
   informatiiLegatura2: "politica de confidențialitate",
-  salveaza: "Salvați setările",
+  salveaza: "Salvează setările",
 } as const;
 
 /** Insigna categoriei cu servicii: "1 serviciu", "2 servicii" (acordul in romana). */

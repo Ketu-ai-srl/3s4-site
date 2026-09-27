@@ -43,13 +43,13 @@ export const EROU_PORTAL = {
   // Rol: eticheta paginii (13,6/600). Lungime: 18.
   eticheta: "Funcționalitate 04 · Portalul clienților",
   // Rol: titlul eroului, 1 rand (72/600). Lungime: 19 [numarat]. Numeste gestul repetat.
-  titlu: "Încă un atașament.",
+  titlu: "Încă un atașament",
   // Rol: cererea scrisa in terminal (17,6/500), un rand si la 390. Lungime: 38 [fisa]. Fara nume de
   // firma: terminalul e o piesa a cadrului si nu poarta eticheta vizibila "exemplu".
   cerere: "Cine îi trimite clientului avizul?",
   // Rol: subtitlul italic al eroului (20, 1 rand). Lungime: 52 [numarat].
-  subtitlu: "Fiecare cerere a clientului vă ia din ziua de lucru.",
-  indiciu: "derulați",
+  subtitlu: "Fiecare cerere a clientului îți ia din ziua de lucru.",
+  indiciu: "derulează",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ export const ARBORE = {
     { tip: "radacina", nivel: 0, nume: "Mesaje primite", numar: "2.740" },
     { tip: "dosar", nivel: 1, nume: "Parteneri", numar: "902" },
     { tip: "dosar", nivel: 2, nume: "Alfa Exemplu", numar: "388" },
-    { tip: "dosar", nivel: 3, nume: "Contract cadru", numar: "76" },
+    { tip: "dosar", nivel: 3, nume: "Contract-cadru", numar: "76" },
     { tip: "dosar", nivel: 4, nume: "Anexe", numar: "11" },
     { tip: "dosar", nivel: 4, nume: "Acte adiționale", numar: "4" },
     { tip: "dosar", nivel: 4, nume: "Procese-verbale", numar: "17" },
@@ -105,13 +105,13 @@ export type MesajInbox = { subiect: string; ora: string; urgent?: boolean; numar
 
 export const RECUNOASTERE_PORTAL = {
   // Rol: titlul recunoasterii (40/600, 1 rand). Lungime: 19 [numarat].
-  titlu: "Arhiva firmei stă în mail.",
+  titlu: "Arhiva firmei stă în e-mail",
   // Rol: paragraful recunoasterii (22,4/400, 2 randuri).
   // Lungime: 104.
-  paragraf: "Dosarele pe clienți le-au făcut niște reguli de mail puse acum câțiva ani, de un coleg plecat între timp.",
+  paragraf: "Dosarele pe clienți le-au făcut niște reguli de e-mail puse acum câțiva ani, de un coleg plecat între timp.",
   // Bara ferestrei: calea (mono 10,56) si chipul rosu cu necititele (9,92/600).
   cale: "mesaje",
-  necitite: "2.740 mesaje noi",
+  necitite: "2.740 de mesaje noi",
   // Rol: 5 subiecte de mesaje, primul marcat urgent. Continutul e fluxul unui portal 3S: cereri de acces,
   // facturi emise, confirmari de primire, procese-verbale.
   mesaje: [
@@ -121,7 +121,7 @@ export const RECUNOASTERE_PORTAL = {
     { subiect: "Proces-verbal de predare", ora: "09:05" },
     { subiect: "Situația plăților pe trimestrul I", ora: "ieri" },
   ] as readonly MesajInbox[],
-  declaratie: "Exemplu cu date fictive: cinci mesaje din inboxul unei firme, unul urgent",
+  declaratie: "Exemplu cu date fictive: cinci mesaje din căsuța de e-mail a unei firme, unul urgent",
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -148,9 +148,9 @@ export const ETICHETE = {
   ] as readonly Eticheta[],
   // Rol: titlul sectiunii (40/600). Lungime: 30 [numarat]. Descrie macheta: etichetele care se contrazic
   // pe acelasi act.
-  titlu: "Șapte etichete pe aceeași ofertă.",
+  titlu: "Șapte etichete pe aceeași ofertă",
   // Rol: randul de dinaintea constatarii (20/400). Lungime: 74 [numarat].
-  linie: "Una întreabă dacă e plătită, alta spune că revine, a treia doar că e de ieri.",
+  linie: "Una întreabă dacă e plătită, alta spune că revine, a treia spune doar că e de ieri.",
   // Rol: constatarea, pe randul italic (italic 28,8/600). Lungime: 29 [numarat]. La 3S e o afirmatie,
   // nu o intrebare intre ghilimele.
   intrebare: "Niciuna nu arată cine a semnat.",
@@ -167,7 +167,7 @@ export const ANXIETATE_PORTAL = {
   // Rol: doua intrebari italice (20; sablon §4.3). Lungimi: 41, 31 [numarat].
   randuri: ["Parola dosarului o mai are cineva de afară?", "Fostul contabil o mai folosește?"] as const,
   // Rol: emfaza (29,6/600, roz, 2 randuri). Lungime: 50 [numarat].
-  emfaza: "Un act plecat pe mail nu se mai poate lua înapoi.",
+  emfaza: "Un act plecat pe e-mail nu se mai poate lua înapoi.",
   // Rol: 4 replici scurte de birou (italic 14,4). Lungimi: 10, 25, 22, 47 [numarat].
   fantome: ["Cui i-am dat-o?", "Am pus-o pe stick, cred", "Scanerul a sărit pagina 2", "Contabilul vrea tot dosarul, încă o dată."],
 } as const;
@@ -199,18 +199,18 @@ export type RandCheie = { cheie: string; valoare: string; cip?: boolean };
 
 export const PORTAL = {
   // Rol: titlul portalului (40/600, 1 rand). Lungime: 24 [numarat].
-  titlu: "Un dosar, trei chei diferite.",
+  titlu: "Un dosar, trei chei diferite",
   // Rol: paragraful portalului (19,2/400, 2 randuri la max 580; 16/25,6 la 390). Lungime: ~76 (critic
   // 25.09: la 133 iesea pe 3 randuri la 1440 si pe 4 la 390, sectiunea crestea cu 34 / 61 px; la 101
   // ramanea +25 px la 390). Ce vede fiecare rol arata comutatorul de dedesubt.
   paragraf: "Accesul se dă pe persoană și pe dosar. Grila arată ce poate face fiecare.",
   // Rol: eticheta comutatorului (10,88/600). Lungime: 19 [numarat].
-  priviti: "Alegeți cine privește:",
-  eticheteRol: "Rolul din care priviți documentul",
+  priviti: "Alege cine privește:",
+  eticheteRol: "Rolul din care privești documentul",
   roluri: {
     client: { buton: "Clientul", eticheta: "01 · Clientul", coloana: "Clientul", firma: "Alfa Exemplu SRL" },
     contabil: { buton: "Contabilul", eticheta: "02 · Contabilul", coloana: "Contabilul", firma: "contabil extern" },
-    echipa: { buton: "Echipa", eticheta: "03 · Echipa", coloana: "Echipa", firma: "biroul vostru" },
+    echipa: { buton: "Echipa", eticheta: "03 · Echipa", coloana: "Echipa", firma: "biroul tău" },
   },
   // Zona clientului: numele fisierului (mono 14,72) si metadatele (mono 11,52).
   meta: "semnat 14.03.2026 · 6 pagini",
@@ -248,10 +248,10 @@ export function areDrept(r: number, rol: RolPortal): boolean {
 
 export const JURNAL = {
   // Rol: titlul jurnalului (40/600, 1 rand). Lungime: 26 [numarat].
-  titlu: "Un istoric pe fiecare dosar.",
+  titlu: "Un istoric pe fiecare dosar",
   // Rol: paragraful jurnalului (2 randuri). Lungime: 95. Ce se vede in jurnalul de dedesubt, pe randurile
   // lui.
-  paragraf: "Pe dosarul fiecărui client vedeți ce a salvat el, ce a citit contabilul și cine a primit acces nou.",
+  paragraf: "Pe dosarul fiecărui client vezi ce a salvat el, ce a citit contabilul și cine a primit acces nou.",
   fisier: "istoric-portal.log",
   // Rol: indicatorul "in direct" (9,92/600, verde).
   inDirect: "În timp real",
@@ -275,8 +275,8 @@ export const CONTRAST_PORTAL = {
   inainte: {
     titlu: "Înainte",
     subtitlu: "atașamente trimise",
-    declaratie: "Exemplu cu date fictive: un inbox cu cereri de acces, facturi și confirmări trimise pe mail",
-    necitite: "2.740 mesaje noi",
+    declaratie: "Exemplu cu date fictive: o căsuță de mesaje primite, cu cereri de acces, facturi și confirmări trimise pe e-mail",
+    necitite: "2.740 de mesaje noi",
     cale: "mesaje",
     mesaje: [
       { subiect: "Factura 2291 a fost emisă", dela: "De la: office@alfa.example", numar: "2" },
@@ -286,10 +286,10 @@ export const CONTRAST_PORTAL = {
     // Patru randuri de metrici din faptele portalului 3S (notele interne, o singura copie, jurnalul,
     // dosarul clientului).
     metrici: [
-      { valoare: "amestecate în mail", cheie: "Notele interne", calitativ: "rau" },
+      { valoare: "amestecate în e-mail", cheie: "Notele interne", calitativ: "rau" },
       { valoare: "7", cheie: "Copii ale actului" },
       { valoare: "nu se știe", cheie: "Cine l-a deschis", calitativ: "rau" },
-      { valoare: "în mailuri", cheie: "Unde îl căutați", calitativ: "rau" },
+      { valoare: "în e-mailuri", cheie: "Unde îl cauți", calitativ: "rau" },
     ],
   },
   acum: {
@@ -308,7 +308,7 @@ export const CONTRAST_PORTAL = {
       { valoare: "doar pentru echipă", cheie: "Notele interne", calitativ: "bun" },
       { valoare: "1", cheie: "Copii ale actului" },
       { valoare: "scris în jurnal", cheie: "Cine l-a deschis", calitativ: "bun" },
-      { valoare: "într-un dosar", cheie: "Unde îl căutați", calitativ: "bun" },
+      { valoare: "într-un dosar", cheie: "Unde îl cauți", calitativ: "bun" },
     ],
   },
 } as const;
@@ -320,11 +320,11 @@ export const CONTRAST_PORTAL = {
 export const CTA_PORTAL = {
   // Rol: titlul CTA, 3 randuri la 1440 si la 390. Lungime: 42 [numarat] (la noi mai lung: la 41 de
   // caractere titlul iesea pe 2 randuri, masurat).
-  titlu: "Fiecare client are dosarul și cheia lui, în portalul 3S.",
+  titlu: "Fiecare client are dosarul și cheia lui, în portalul 3S",
   // Rol: paragraful CTA (2 randuri).
   // Lungime: 104.
   paragraf: "Clientul își vede dosarul, iar notele interne și cifrele ajung doar la cine le lucrează.",
-  buton: "Deschideți un cont",
+  buton: "Testează gratuit",
   nota: "Toate pachetele costă azi 0 RON, iar contul nu cere card.",
 } as const;
 

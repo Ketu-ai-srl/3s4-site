@@ -126,7 +126,7 @@ export function termeni(operator: Operator): DocumentJuridic {
           {
             jurisdictie: null,
             paragrafe: [
-              "Astăzi toate pachetele costă 0 RON. Un preț nou se aplică unui cont numai după ce îl anunțăm și după ce clientul îl acceptă.",
+              "Astăzi toate pachetele costă 0 RON. Un preț nou se aplică unui cont numai după ce furnizorul îl anunță și clientul îl acceptă.",
             ],
           },
         ],
@@ -298,7 +298,7 @@ export function termeni(operator: Operator): DocumentJuridic {
             lista: {
               numerotata: true,
               elemente: [
-                "prelucrează datele numai după instrucțiunile scrise ale clientului, inclusiv cele despre transferuri în afara Uniunii Europene, afară de cazul în care legea îl obligă altfel; atunci îl anunță pe client înainte, dacă legea permite;",
+                "prelucrează datele numai după instrucțiunile scrise ale clientului, inclusiv cele despre transferuri în afara Uniunii Europene, cu excepția cazului în care legea îl obligă să procedeze altfel; atunci îl anunță pe client înainte, dacă legea permite;",
                 "se asigură că oamenii care au acces la date s-au obligat să păstreze confidențialitatea lor;",
                 "aplică măsurile de securitate de la articolul 6;",
                 "folosește subîmputerniciți numai în condițiile de la articolul 5;",

@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 import { TEXTE_BANNER } from '../../src/components/consimtamant/texte'
 import { CALE_API_FORMULAR } from '../../src/components/formular/FormularContact'
 import { stareFormular } from '../../src/components/formular/stare'
-import { DRUM_DOCUMENT, EROU_ENTERPRISE } from '../../src/content/enterprise'
+import { DRUM_DOCUMENT, EROU_ENTERPRISE, FORMULAR_ENTERPRISE } from '../../src/content/enterprise'
 import { FORMULAR } from '../../src/content/formular'
 import { pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
 
@@ -218,7 +218,7 @@ test.describe('formularul pe copia cu operator sintetic', () => {
     await trimite(page).click()
     await expect(page.locator('#contact-form').getByText(FORMULAR.rezerva.explicatie)).toBeVisible()
     await expect(page.locator('#contact-form')).toContainText(DATE.mesaj)
-    await expect(page.locator('#contact-form')).toContainText('Cerere enterprise - ' + DATE.companie)
+    await expect(page.locator('#contact-form')).toContainText(FORMULAR_ENTERPRISE.subiect + ' - ' + DATE.companie)
     expect(primite).toHaveLength(1)
     // Intoarcerea la editare pastreaza campurile.
     await page.getByRole('button', { name: FORMULAR.rezerva.inapoi }).click()

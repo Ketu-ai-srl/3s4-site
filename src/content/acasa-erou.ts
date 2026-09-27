@@ -15,7 +15,7 @@
 //
 // LUNGIMILE din comentarii sunt ale referintei, pe acelasi rol, scrise in fisa de masurare
 // (`[fisa]`) sau numarate de noi pe capturi (`[numarat]`), niciodata pentru cuvinte. Adresarea e
-// "dumneavoastra", diacriticele complete, doar cratima.
+// "tu" (persoana a II-a singular, decizia D15), diacriticele complete, doar cratima.
 
 export type IlustratieTur = "posta" | "scanare" | "flux";
 
@@ -38,15 +38,15 @@ export type Tur = {
 
 export const TUR: Tur = {
   // Rol: salutul din produs. Lungime: 26 [fisa].
-  bunVenit: "Bine ați venit în arhiva 3S!",
+  bunVenit: "Bine ai venit în arhiva 3S!",
   scene: [
     {
       // Rol: legarea casutei de e-mail. Lungime: 20 [fisa].
-      titlu: "Legați e-mailul firmei",
+      titlu: "Leagă e-mailul firmei",
       // Rol: actele se sorteaza singure, echipa lucreaza pe ele, iar cu arhiva se vorbeste prin
       // asistenti AI. Lungime: 185, 4 randuri [fisa].
       paragraf:
-        "Facturile și contractele primite pe e-mail intră singure în arhivă, fiecare în dosarul lui. Echipa lucrează pe ele în aplicație, iar arhiva vă răspunde pe WhatsApp, în Claude sau în ChatGPT.",
+        "Facturile și contractele primite pe e-mail intră singure în arhivă, fiecare în dosarul lui. Echipa se ocupă de ele în aplicație, iar arhiva îți răspunde pe WhatsApp, în Claude sau în ChatGPT.",
       ilustratie: "posta",
     },
     {
@@ -64,7 +64,7 @@ export const TUR: Tur = {
       // Rol: regulile si AI-ul trimit singure actele; proprietarul primeste doar o notificare
       // cand documentul e deschis. Lungime: 192, 4 randuri [fisa].
       paragraf:
-        "Clienții, colaboratorii și contabilul primesc singuri actele care îi privesc, prin regulile automate și prin portal. Dumneavoastră aflați doar momentul în care cineva a deschis documentul.",
+        "Clienții, colaboratorii și contabilul primesc singuri actele care îi privesc, prin regulile automate și prin portal. Tu afli doar momentul în care cineva a deschis documentul.",
       ilustratie: "flux",
     },
   ],
@@ -192,7 +192,7 @@ export type Macheta = {
 };
 
 export const MACHETA: Macheta = {
-  declaratie: "Demonstrație a aplicației 3S, cu date fictive, date doar ca exemplu",
+  declaratie: "Demonstrație a aplicației 3S, cu date fictive, doar ca exemplu",
   // Rol: la referinta, domeniul aplicatiei. La 3S adresa publica a aplicatiei nu exista inca
   // (tintele externe duc la /inregistrare), deci bara spune ce e: aplicatia, ca exemplu.
   adresa: "aplicația 3S · exemplu",
@@ -205,7 +205,7 @@ export const MACHETA: Macheta = {
     // Lungimi la referinta: 11 / 9 / 10 / 13 [numarat]; pe telefon 5 / 7 / 2 / 13.
     { cheie: "primite", text: "Acte primite", scurt: "Primite" },
     { cheie: "documente", text: "Documente", scurt: "Dosare" },
-    { cheie: "cautare", text: "Căutare AI", scurt: "Caută" },
+    { cheie: "cautare", text: "Căutare AI", scurt: "Căutare" },
     { cheie: "portal", text: "Portal clienți", scurt: "Clienți" },
   ],
   primite: {
@@ -216,7 +216,7 @@ export const MACHETA: Macheta = {
     acte: [
       {
         tip: "factura",
-        expeditor: "Alfa Exemplu S.R.L.",
+        expeditor: "Alfa Exemplu SRL",
         subiect: "Factura pe septembrie, scadentă la 15.10",
         fisier: "Factura_2026_0917.pdf",
         recunoscut: "Factură",
@@ -234,7 +234,7 @@ export const MACHETA: Macheta = {
       },
       {
         tip: "aviz",
-        expeditor: "Gama Exemplu S.R.L.",
+        expeditor: "Gama Exemplu SRL",
         subiect: "Avizul de însoțire pentru marfa de azi",
         fisier: "Aviz_0588.pdf",
         recunoscut: "Aviz",
@@ -263,7 +263,7 @@ export const MACHETA: Macheta = {
     ],
   },
   documente: {
-    spatiu: "Firma dumneavoastră",
+    spatiu: "Firma ta",
     acasa: "Toate dosarele",
     dosare: [
       {
@@ -333,20 +333,20 @@ export const MACHETA: Macheta = {
     unitateFisiere: (numar) => (numar === 1 ? "1 fișier" : numar + " fișiere"),
   },
   cautare: {
-    titlu: "Întrebați arhiva",
+    titlu: "Întreabă documentele",
     // Rol: cererea scrisa litera cu litera. Lungime: 57 [fisa].
-    cerere: "Care contracte au preaviz de 30 de zile la reziliere?",
+    cerere: "Când expiră contractul de închiriere pentru spațiul B12?",
     // Rol: randul cu numarul de rezultate. Lungime: 26 [numarat].
-    gasite: "7 contracte, cu pagina citată",
+    gasite: "3 acte, cu pagina citată",
     rezultate: [
       { fisier: "Contract_chirie_B12.pdf", loc: "pag. 4 · art. 9" },
-      { fisier: "Contract_service_2025.pdf", loc: "pag. 2 · art. 6" },
+      { fisier: "Act_aditional_B12.pdf", loc: "pag. 1 · art. 2" },
     ],
-    inca: "și încă 5 contracte",
+    inca: "și încă 1 act",
     trimite: "Trimite pe WhatsApp",
     descarca: "Descarcă tot",
     regula: {
-      titlu: "Faceți din asta o regulă",
+      titlu: "Fă din această căutare o regulă",
       cand: "Când:",
       candValoare: "Contract nou în „Contracte”",
       actiune: "Acțiune:",
@@ -357,7 +357,7 @@ export const MACHETA: Macheta = {
   portal: {
     titlu: "Portal clienți",
     vizitator: { initiale: "DE", nume: "Dana Exemplu", rol: "Client" },
-    firma: { initiala: "D", nume: "Delta Exemplu S.R.L.", subtitlu: "Actele pe care vi le-am pus la dispoziție" },
+    firma: { initiala: "D", nume: "Delta Exemplu SRL", subtitlu: "Actele pe care ți le-am pus la dispoziție" },
     dosar: "Facturi 2026",
     numar: "12 acte",
     acte: [

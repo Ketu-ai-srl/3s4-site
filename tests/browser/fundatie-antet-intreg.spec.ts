@@ -237,11 +237,13 @@ test.describe('antetul intreg la 1440', () => {
     const legatura = declansator(page, 'Soluții')
     await legatura.focus()
     await page.keyboard.press('ArrowDown')
-    // ArrowDown muta focusul pe primul element abia in cadrul urmator (requestAnimationFrame).
-    // Fara asteptarea starii, cand cadrul intarzia (masina incarcata), el cadea intre focusul pus
-    // mai jos pe ultimul element si Tab: focusul sarea inapoi pe primul, iar Tab ajungea pe al
-    // doilea element al foii, nu pe cautare. Reprodus cu cadrul intarziat artificial 10 / 15 ms:
-    // 5 / 4 esecuri din 20 fara asteptare, 0 din 20 cu ea.
+    // ArrowDown muta focusul pe primul element abia dupa ce React aplica starea deschisa, care pe
+    // o masina incarcata poate veni dupa cadrul urmator. Fara asteptarea starii, mutarea cadea
+    // intre focusul pus mai jos pe ultimul element si Tab: focusul sarea inapoi pe primul, iar Tab
+    // ajungea pe al doilea element al foii, nu pe cautare. Reprodus cu cadrul intarziat artificial
+    // 10 / 15 ms: 5 / 4 esecuri din 20 fara asteptare, 0 din 20 cu ea. Asteptarea de mai jos a
+    // prins si defectul componentei (focusul pus o singura data, in `requestAnimationFrame`, pe un
+    // meniu inca neaplicat, deci niciodata): CI 36259045225; reparat in Antet.tsx (`deFocusat`).
     const elemente = page.locator('[role="group"]:not([aria-hidden]) a')
     await expect(elemente.first()).toBeFocused()
     await elemente.last().focus()

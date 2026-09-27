@@ -33,14 +33,14 @@ export const PIETE: Piata[] = [
     tara: "Franța",
     ce: "Toate firmele vizate primesc e-facturi; emiterea pornește cu firmele mari și cu cele de mărime intermediară.",
     cand: "Firmele mari și intermediare emit din 1 septembrie 2026, dată de la care toate primesc. IMM-urile și microîntreprinderile emit din 1 septembrie 2027.",
-    format: "Prin platforme agreate de administrația fiscală",
+    format: "Prin platforme autorizate de administrația fiscală",
     surse: ["fr"],
   },
   {
     ancora: "polonia",
     tara: "Polonia",
-    ce: "Facturile structurate se emit în KSeF, sistemul național al Ministerului de Finanțe.",
-    cand: "1 februarie 2026 pentru vânzări de peste 200 mil. PLN în 2024; 1 aprilie 2026 pentru ceilalți. Unele facilități țin până la finalul lui 2026.",
+    ce: "Facturile structurate se emit în KSeF, sistemul național al Ministerului Finanțelor.",
+    cand: "1 februarie 2026 pentru firmele cu vânzări de peste 200 mil. PLN în 2024; 1 aprilie 2026 pentru celelalte firme. Unele facilități țin până la finalul lui 2026.",
     format: "Structura FA(3), prin KSeF",
     surse: ["pl"],
   },
@@ -92,7 +92,7 @@ export const JURNAL: Modificare[] = [
     dataText: "1 septembrie 2026",
     cod: "FR",
     ancora: "franta",
-    text: "Firmele mari și intermediare emit prin platformele agreate, iar toate firmele vizate primesc. IMM-urile emit din 1 septembrie 2027.",
+    text: "Firmele mari și intermediare emit prin platformele autorizate, iar toate firmele vizate primesc. IMM-urile emit din 1 septembrie 2027.",
     sursa: "fr",
   },
   {
@@ -100,7 +100,7 @@ export const JURNAL: Modificare[] = [
     dataText: "1 aprilie 2026",
     cod: "BE",
     ancora: "belgia",
-    text: "La trei luni de la start se închide toleranța generală. La autofacturare, când clientul emite factura în locul furnizorului, amenzile rămân suspendate până la 30 iunie 2026.",
+    text: "La trei luni de la intrarea în vigoare a obligației se închide toleranța generală. La autofacturare, când clientul emite factura în locul furnizorului, amenzile rămân suspendate până la 30 iunie 2026.",
     sursa: "beToleranta",
   },
   {
@@ -108,7 +108,7 @@ export const JURNAL: Modificare[] = [
     dataText: "1 aprilie 2026",
     cod: "PL",
     ancora: "polonia",
-    text: "Pragul de 200 mil. PLN nu mai contează: de la această dată, orice firmă poloneză emite facturile structurate în KSeF, sistemul național al Ministerului de Finanțe.",
+    text: "Pragul de 200 mil. PLN nu mai contează: de la această dată, orice firmă poloneză emite facturile structurate în KSeF, sistemul național al Ministerului Finanțelor.",
     sursa: "pl",
   },
   {
@@ -116,7 +116,7 @@ export const JURNAL: Modificare[] = [
     dataText: "1 februarie 2026",
     cod: "PL",
     ancora: "polonia",
-    text: "KSeF 2.0 intră în producție; primele obligate să emită prin el sunt firmele cu vânzări de peste 200 mil. PLN în 2024.",
+    text: "KSeF 2.0 intră în funcțiune; primele obligate să emită prin el sunt firmele cu vânzări de peste 200 mil. PLN în 2024.",
     sursa: "pl",
   },
   {
@@ -131,9 +131,9 @@ export const JURNAL: Modificare[] = [
 
 /** Cutia de sub tabel: cele mai noi trei schimbari, pe scurt. */
 export const MODIFICARI_RECENTE: { text: string; sursa: CheieSursa }[] = [
-  { text: "1 septembrie 2026, FR: firmele mari și intermediare emit prin platformele agreate.", sursa: "fr" },
+  { text: "1 septembrie 2026, FR: firmele mari și intermediare emit prin platformele autorizate.", sursa: "fr" },
   { text: "1 aprilie 2026, PL: pragul de vânzări dispare, KSeF e pentru toate firmele.", sursa: "pl" },
-  { text: "1 aprilie 2026, BE: toleranța generală de la start ia sfârșit.", sursa: "beToleranta" },
+  { text: "1 aprilie 2026, BE: toleranța generală de la începutul obligației ia sfârșit.", sursa: "beToleranta" },
 ];
 
 export function sursa(cheie: CheieSursa) {

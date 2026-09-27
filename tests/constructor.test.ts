@@ -256,12 +256,12 @@ describe('programul pasilor', () => {
 describe('simularea zilei', () => {
   const peste50 = { industrie: 'constructii' as const, canale: ['email', 'mesaj', 'hartie'] as CodCanal[], volum: 'v99' as const, cine: 'nimeni' as const }
 
-  it('peste 50 si 3 canale: 26 vs 0, 2h 10m, 3 termene, dosarele 6/5/5/5/5 (masurat pe referinta)', () => {
+  it('peste 50 si 3 canale: 26 vs 0, 2 h 10 min, 3 termene, dosarele 6/5/5/5/5 (masurat pe referinta)', () => {
     const s = stareFinala(peste50)
     expect(s.final).toBe(true)
     expect(s.nesortate).toBe(26)
-    expect(formatTimp(s.timpPierdut)).toBe('2h 10m')
-    expect(formatTimp(s.timpEconomisit)).toBe('2h 10m')
+    expect(formatTimp(s.timpPierdut)).toBe('2 h 10 min')
+    expect(formatTimp(s.timpEconomisit)).toBe('2 h 10 min')
     expect(s.termene).toBe(3)
     expect(s.dosareDreapta).toEqual([6, 5, 5, 5, 5])
     expect(construiesteSimularea(peste50).sfarsit).toBe(11880)
@@ -272,9 +272,9 @@ describe('simularea zilei', () => {
     const p50 = construiesteSimularea({ ...peste50, volum: 'v50' })
     expect([p10.documente, p10.pas, p10.sfarsit]).toEqual([8, 1150, 9900])
     expect([p50.documente, p50.pas, p50.sfarsit]).toEqual([16, 680, 11580])
-    // Masurat la Avocatura (10-50, 3 canale): 16 vs 0, 1h 20m, 2 termene.
+    // Masurat la Avocatura (10-50, 3 canale): 16 vs 0, 1 h 20 min, 2 termene.
     const av = stareFinala({ industrie: 'avocatura', canale: ['email', 'mesaj', 'hartie'], volum: 'v50', cine: 'eu' })
-    expect([av.nesortate, formatTimp(av.timpPierdut), av.termene]).toEqual([16, '1h 20m', 2])
+    expect([av.nesortate, formatTimp(av.timpPierdut), av.termene]).toEqual([16, '1 h 20 min', 2])
   })
 
   it('termenele ratate si toastul cad la documentele din fisa', () => {
@@ -298,11 +298,11 @@ describe('simularea zilei', () => {
   })
 
   it('finalul pune fraza despre "cine", cu timpul zilei', () => {
-    expect(stareFinala({ ...peste50, cine: 'coleg' }).stres?.text).toContain('2h 10m')
+    expect(stareFinala({ ...peste50, cine: 'coleg' }).stres?.text).toContain('2 h 10 min')
   })
 
   it('formatul timpului: sub o ora in minute, apoi ore si minute', () => {
-    expect([formatTimp(30), formatTimp(60), formatTimp(80), formatTimp(130)]).toEqual(['30 min', '1h', '1h 20m', '2h 10m'])
+    expect([formatTimp(30), formatTimp(60), formatTimp(80), formatTimp(130)]).toEqual(['30 min', '1 h', '1 h 20 min', '2 h 10 min'])
   })
 })
 

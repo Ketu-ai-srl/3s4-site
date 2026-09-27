@@ -18,7 +18,7 @@ export const IMOBILIARE: Sector = {
     titlu: "Dosarul fiecărei clădiri, de la titlul de proprietate la chiriaș",
     // Rol: subtitlul (3 randuri la 1440, 6 la 390, ca la referinta). Lungime: 204.
     subtitlu:
-      "3S scanează bibliorafturile fiecărei clădiri, leagă fiecare contract de unitatea lui și vă arată din timp ce expiră. Administratorul întreabă pe WhatsApp, chiar din fața clădirii, și primește pe loc actul căutat, cu pagina lui.",
+      "3S scanează bibliorafturile fiecărei clădiri, leagă fiecare contract de unitatea lui și îți arată din timp ce expiră. Administratorul întreabă pe WhatsApp, chiar din fața clădirii, și primește pe loc actul căutat, cu pagina lui.",
   },
   momente: {
     // Rol: subtitlul sinei. Lungime: 71.
@@ -35,7 +35,7 @@ export const IMOBILIARE: Sector = {
       {
         // Lungimi: eticheta 22, titlul 38, textul 137, fisierul 18, problema 21.
         eticheta: "La un control de prevenire",
-        titlu: "Se cere autorizația de incendiu",
+        titlu: "Se cere autorizația de securitate la incendiu",
         text: "Autorizația clădirii și rapoartele de verificare a stingătoarelor au rămas la fostul administrator, care nu mai răspunde la telefon.",
         fisier: "Autorizatie_incendiu_bloc_C.pdf",
         problema: "La fostul administrator",
@@ -53,7 +53,7 @@ export const IMOBILIARE: Sector = {
   schimbare: {
     // Rol: paragraful-punte. Lungime: 179.
     punte:
-      "Fiecare act ajunge la clădirea și la unitatea lui: cele pe hârtie după scanare, cele din e-mail și din foldere direct. Termenele din contracte le vedeți din timp, nu după ce au trecut.",
+      "Fiecare act ajunge la clădirea și la unitatea lui: cele pe hârtie după scanare, cele din e-mail și din foldere direct. Termenele din contracte le vezi din timp, nu după ce au trecut.",
     // Lungimi: 55 / 50 / 52.
     buline: [
       "Actele fiecărei clădiri și unități, găsite după adresă",
@@ -71,18 +71,18 @@ export const IMOBILIARE: Sector = {
       {
         // Lungimi: titlul 41, textul 91. Titlul pe doua randuri la 1440 si pe unul la 390, ca la
         // referinta (primii doi pasi ai acestui sector au titluri rupte).
-        titlu: "Trimiteți la scanat actele fiecărei clădiri",
+        titlu: "Trimite la scanat actele fiecărei clădiri",
         text: "Bibliorafturile pleacă la scanat și se întorc în 3S așezate pe clădire, cu textul fiecărei pagini.",
       },
       {
         // Lungimi: titlul 41, textul 85.
-        titlu: "Întrebați pe WhatsApp, din fața clădirii",
+        titlu: "Întreabă pe WhatsApp, din fața clădirii",
         text: "Administratorul scrie adresa și ce caută, iar 3S îi trimite actul și pagina potrivită.",
       },
       {
         // Lungimi: titlul 27, textul 99.
-        titlu: "Termenele vin singure la voi",
-        text: "3S vă arată din timp ce contract expiră și ce act lipsește din dosarul unei clădiri sau al unei unități.",
+        titlu: "Termenele vin singure la tine",
+        text: "3S îți arată din timp ce contract expiră și ce act lipsește din dosarul unei clădiri sau al unei unități.",
       },
     ],
     demo: {
@@ -118,13 +118,13 @@ export const IMOBILIARE: Sector = {
       // Lungimi: intrebarea 45, raspunsul 253. O intrebare a sectorului, pe termene.
       intrebare: "Cum aflăm din timp ce contracte expiră?",
       raspuns:
-        "3S citește data de expirare din fiecare contract scanat sau încărcat și vă arată din timp ce urmează, pe clădire și pe unitate. Tot acolo vedeți ce act lipsește din dosarul unei clădiri, înainte să vi-l ceară cineva.",
+        "3S citește data de expirare din fiecare contract scanat sau încărcat și îți arată din timp ce urmează, pe clădire și pe unitate. Tot acolo vezi ce act lipsește din dosarul unei clădiri, înainte să ți-l ceară cineva.",
     },
     {
       // Lungimi: intrebarea 49, raspunsul 233. O intrebare a sectorului, pe acces.
       intrebare: "Cine din echipă vede actele unei clădiri?",
       raspuns:
-        "Accesul se dă pe persoană și pe clădire: administratorul unei clădiri vede dosarul ei, iar un coleg de la contabilitate vede doar ce îi deschideți. Fiecare document deschis se trece în jurnal, cu numele și ora.",
+        "Accesul se dă pe persoană și pe clădire: administratorul unei clădiri vede dosarul ei, iar un coleg de la contabilitate vede doar ce îi deschizi. Fiecare document deschis se trece în jurnal, cu numele și ora.",
     },
   ],
 };

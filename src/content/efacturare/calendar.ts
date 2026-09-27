@@ -9,6 +9,7 @@
 // ale aceluiasi commit sa serveasca acelasi fisier.
 
 import { DATA_VERIFICARII, SURSE, type CheieSursa } from "./surse";
+import { dataInCuvinte } from "../juridic/tipuri";
 
 export type Termen = {
   /** Ziua, ISO (AAAA-LL-ZZ). */
@@ -59,7 +60,7 @@ function termeneD406(): Termen[] {
       data: ultimaZi(an, luna),
       titlu: "România: D406 (SAF-T) pentru " + LUNI[perioada.getUTCMonth()] + " " + perioada.getUTCFullYear(),
       descriere:
-        "Termenul declarației informative D406 pentru contribuabilii cu raportare lunară: ultima zi calendaristică a lunii următoare perioadei de raportare. Data este cea din ghidul ANAF; când pică în weekend sau într-o zi de sărbătoare, confirmați ziua depunerii cu contabilul.",
+        "Termenul declarației informative D406 pentru contribuabilii cu raportare lunară: ultima zi calendaristică a lunii următoare perioadei de raportare. Data este cea din ghidul ANAF; când cade într-o zi nelucrătoare, confirmă ziua depunerii cu contabilul.",
       sursa: "roSaft",
       alarmaZile: 7,
     });
@@ -70,7 +71,7 @@ function termeneD406(): Termen[] {
 const EUROPENE: Termen[] = [
   {
     data: "2027-01-01",
-    titlu: "Germania: se încheie tranziția pentru firmele de peste 800.000 EUR",
+    titlu: "Germania: se încheie tranziția pentru firmele cu cifra de afaceri de peste 800.000 EUR",
     descriere:
       "De la această dată, firmele germane cu cifra de afaceri din anul anterior de peste 800.000 EUR nu mai pot emite facturi pe hârtie sau PDF în locul e-facturii.",
     sursa: "de",
@@ -169,7 +170,7 @@ export function fisierIcs(lista: Termen[] = termene()): string {
       "DTSTART;VALUE=DATE:" + zi(t.data),
       "DTEND;VALUE=DATE:" + zi(ziuaUrmatoare(t.data)),
       "SUMMARY:" + evadeaza(t.titlu),
-      "DESCRIPTION:" + evadeaza(t.descriere + "\nSursa: " + s.autoritate + ", " + s.titlu + ". Verificat la " + DATA_VERIFICARII + "."),
+      "DESCRIPTION:" + evadeaza(t.descriere + "\nSursa: " + s.autoritate + ", " + s.titlu + ". Verificat pe " + dataInCuvinte(DATA_VERIFICARII) + "."),
       "URL:" + s.url,
       "TRANSP:TRANSPARENT",
       "BEGIN:VALARM",
