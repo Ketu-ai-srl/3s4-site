@@ -1,5 +1,8 @@
 import createMDX from '@next/mdx'
 import type { NextConfig } from 'next'
+import { AVERTISMENT_FARA_OPERATOR, rescrieriAnalitica, stareAnaliticaProprie } from './src/components/analitica/config'
+import { alegeOperator, operatorComplet } from './src/lib/operator'
+import { VARIABILA_OPERATOR_NUMIT, operatorNumitInMediu } from './src/lib/operator-mediu'
 
 // De ce e `output` conditionat: pe Windows fara drept de legaturi simbolice,
 // `standalone` cade cu EPERM la copierea fisierelor urmarite (masurat 2026-09-05,
@@ -34,6 +37,11 @@ export function anteteSecuritate(mediu: string | undefined = process.env.SITE_EN
   return antete
 }
 
+// Avertismentul despre analitica fara operator iese o singura data pe proces: Next cheama `rewrites()` de doua
+// ori intr-un build (o data pentru rutele personalizate, o data pentru manifestul tipurilor de rute; masurat pe
+// 30.09.2026, avertismentul aparea de doua ori in jurnalul build-ului).
+let avertizatFaraOperator = false
+
 const nextConfig: NextConfig = {
   output: standalone ? 'standalone' : undefined,
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
@@ -41,6 +49,31 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   async headers() {
     return [{ source: '/:path*', headers: anteteSecuritate() }]
+  },
+  // OPERATORUL, PENTRU PACHETUL DE BROWSER (felia multi-domeniu, runda 1 de reparatii). Next inlocuieste in
+  // pachetul de browser numai variabilele `NEXT_PUBLIC_*`, deci `OPERATOR_JSON` nu ajunge acolo, iar lista de
+  // rute din browser (`RUTE`, folosita de cautarea Ctrl+K) decidea dupa `config/operator.json`: pe un domeniu
+  // cu operatorul numai in mediu, serverul avea cele opt pagini juridice, dar cautarea nu le gasea. Valoarea de
+  // mai jos ("true" / "false" cand `OPERATOR_JSON` e setata, "null" cand nu e) e inlocuita de Next in TOATE
+  // pachetele, iar `src/content/juridic/publicare.ts` o citeste inaintea variabilei si a fisierului. Cheia e
+  // definita mereu, chiar pe "null": o valoare pusa de altcineva in mediul build-ului n-are cum s-o inlocuiasca.
+  // Se citeste la CONSTRUIRE, ca tot ce tine de operator (`src/lib/operator-mediu.ts`).
+  env: { [VARIABILA_OPERATOR_NUMIT]: String(operatorNumitInMediu()) },
+  // ANALITICA PROPRIE PE CALE PROPRIE (felia multi-domeniu): cu `UMAMI_URL` si `UMAMI_WEBSITE_ID` in
+  // mediu SI cu un operator numit si complet (planul §9: analitica prelucreaza date personale, deci cere
+  // operator, ca GA4), `/a/script.js` si `/a/api/send` sunt transmise de serverul site-ului spre instanta de
+  // statistica, deci browserul nu vorbeste niciodata cu alta origine (poarta C-01). Fara variabile sau fara
+  // operator, lista e goala si nu exista nicio rescriere; cu variabilele date si operatorul lipsa, jurnalul
+  // build-ului spune de ce (o singura data). Se citesc la CONSTRUIRE (`src/components/analitica/config.ts`);
+  // o valoare gresita opreste construirea inainte de compilare, cu sau fara operator.
+  async rewrites() {
+    const cuOperator = operatorComplet(alegeOperator().operator)
+    const stare = stareAnaliticaProprie(process.env, cuOperator)
+    if (!stare.activa && stare.motiv === 'fara-operator' && !avertizatFaraOperator) {
+      avertizatFaraOperator = true
+      console.warn('[analitica] ' + AVERTISMENT_FARA_OPERATOR)
+    }
+    return rescrieriAnalitica(process.env, cuOperator)
   },
 }
 

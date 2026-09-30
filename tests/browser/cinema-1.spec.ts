@@ -1,7 +1,10 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Browser, type Page } from '@playwright/test'
+import { createServer, type Server } from 'node:http'
+import type { AddressInfo } from 'node:net'
 import { PORTAL, ROLURI_PORTAL, type RolPortal } from '../../src/content/functionalitati/portal-clienti'
 import { IMPACTURI_BLOCANTE, masoaraAccesibilitatea } from './ajutor/detectori'
+import { esuateDeTransport, navigheaza, reincarca, urmareste, type Urmarire } from './ajutor/navigare'
 import { nemasurat } from './ajutor/proiect'
 
 /**
@@ -42,8 +45,12 @@ const PAGINI_CU_PUNTE = ['/functionalitati/cautare-ai', '/functionalitati/automa
 const CICLU_FISA_MS = 2650
 const PAUZA_FISA_MS = 10000
 
+/** Ce s-a pierdut in timp ce s-a incarcat fiecare pagina deschisa cu `deschide` (cereri esuate, erori). */
+const urmarite = new WeakMap<Page, Urmarire>()
+
 async function deschide(page: Page, cale: string, latime: number): Promise<void> {
-  await page.goto(cale, { waitUntil: 'networkidle' })
+  urmarite.set(page, urmareste(page))
+  await navigheaza(page, cale, { waitUntil: 'networkidle' })
   expect(await page.evaluate(() => window.innerWidth), 'innerWidth CITIT').toBe(latime)
 }
 
@@ -375,8 +382,56 @@ for (const latime of [1440, 390]) {
 
 type AxeSectiune = { nume: string; p: string; noduri: number; detalii: string[] }
 
+/**
+ * Ceasul de derulare e pornit: fiecare sectiune cu progres are `--p` scris de el, ca stil pe element
+ * (`SectiuneScena` il scrie la primul cadru de dupa hidratare; pana atunci `--p` e 1 numai din CSS).
+ * Fara el, derularea nu misca nimic, iar toate sectiunile citesc p = 1.
+ */
+const CEAS_PORNIT = () => {
+  const sectiuni = [...document.querySelectorAll<HTMLElement>('main section[data-sectiune]')].filter((s) => s.getAttribute('data-sectiune') !== 'erou')
+  return sectiuni.length > 0 && sectiuni.every((s) => s.style.getPropertyValue('--p') !== '')
+}
+
+/** Cat se asteapta ceasul dupa o incarcare, si de cate ori se reincarca pagina daca nu vine. */
+const ASTEPTARE_CEAS_MS = 8000
+const RELUARI_CEAS = 2
+
+/**
+ * Asteapta STAREA de care depinde orice masura de progres: ceasul de derulare pornit. CI 36286812854
+ * (cautare-ai la 390): dupa incarcarea completa toate cele 8 sectiuni au citit p = 1, adica pagina a
+ * ramas in forma ei statica pe tot parcursul probei - scriptul care porneste ceasul nu a rulat -, iar
+ * proba a cazut cu "progresul sectiunii avalansa: asteptat < 0,02, primit 0,5" fara sa spuna de ce.
+ * Cauza scriptului care n-a rulat NU e masurata (jurnalul CI n-are cererile paginii); ce se poate face
+ * fara ea: se asteapta ceasul, iar daca nu vine se reincarca pagina (cel mult `RELUARI_CEAS` ori), cu
+ * cererile esuate si erorile paginii in mesaj. O pagina care nu porneste nici la a treia incarcare e
+ * PICATA (defect al paginii) daca nicio cerere n-a esuat, si NEMASURATA daca a esuat una cu semnatura
+ * de transport a masinii (`net::ERR_NO_BUFFER_SPACE`). La miscare redusa ceasul nu porneste niciodata,
+ * deci nu se asteapta nimic.
+ */
+async function asteaptaCeasul(page: Page): Promise<void> {
+  if (await page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return
+  for (let incarcare = 1; ; incarcare++) {
+    try {
+      await page.waitForFunction(CEAS_PORNIT, undefined, { timeout: ASTEPTARE_CEAS_MS })
+      return
+    } catch {
+      const pierdut = urmarite.get(page) ?? { cereriEsuate: [], erori: [] }
+      const stare =
+        'cereri esuate: ' + (pierdut.cereriEsuate.join(' ; ') || '(niciuna)') + ' | erori ale paginii: ' + (pierdut.erori.join(' ; ') || '(niciuna)')
+      if (incarcare > RELUARI_CEAS) {
+        const mesaj = 'ceasul de derulare nu a pornit in ' + ASTEPTARE_CEAS_MS + ' ms la niciuna din ' + incarcare + ' incarcari ale ' + page.url() + ' | ' + stare
+        if (esuateDeTransport(pierdut).length > 0) nemasurat(mesaj)
+        throw new Error(mesaj)
+      }
+      console.log('[ceas] ' + page.url() + ': ceasul nu a pornit in ' + ASTEPTARE_CEAS_MS + ' ms (incarcarea ' + incarcare + ' din ' + (RELUARI_CEAS + 1) + '), reincarc | ' + stare)
+      await reincarca(page, { waitUntil: 'networkidle' })
+    }
+  }
+}
+
 /** Deruleaza sectiunea `nume` la progresul `p`: p = (0,5 vh - top) / inaltime (sablon §1.4). */
 async function laProgres(page: Page, nume: string, p: number): Promise<void> {
+  await asteaptaCeasul(page)
   const y = await page.evaluate(
     ({ nume, p }) => {
       const s = document.querySelector('main section[data-sectiune="' + nume + '"]')
@@ -441,7 +496,7 @@ for (const latime of [1440, 390]) {
         console.log('[axe miscare ' + latime + ' ' + cale + '] ' + masuri.map((m) => m.nume + ' p=' + m.p + ': ' + m.noduri).join(' | '))
         for (const m of masuri) for (const d of m.detalii) console.log('    BLOCANT: ' + m.nume + ' ' + d)
         // Masura e la p 0,5, nu la alt progres: un selector care nu mai derula ar da "curat" la p 0.
-        for (const m of masuri) expect(Math.abs(Number(m.p) - 0.5), 'progresul sectiunii ' + m.nume).toBeLessThan(0.02)
+        for (const m of masuri) expect(Math.abs(Number(m.p) - 0.5), 'progresul sectiunii ' + m.nume + ' (p citit: "' + m.p + '")').toBeLessThan(0.02)
         expect(masuri.flatMap((m) => m.detalii)).toEqual([])
       })
     }
@@ -886,7 +941,16 @@ const PRAG_LCP_MS = 2500
 const PRAG_CLS = 0.1
 const PRAG_INP_MS = 200
 
-type Incarcare = { lcp: number; element: string; cls: number; latime: number }
+type Incarcare = {
+  lcp: number
+  element: string
+  cls: number
+  latime: number
+  /** Cele mai mari deplasari (cel mult 3, cele de cel putin 0,005): valoare, elementul mutat, de unde pana unde. */
+  deplasari: string[]
+  /** De cate ori documentul a fost servit in doua bucati in aceasta incarcare (0 = intreg). */
+  bucati: number
+}
 
 /** Calea paginii-martor, servita de proba insasi (interceptata), pe originea site-ului. */
 const CALE_MARTOR = '/__martor-lcp-cinema-1'
@@ -906,19 +970,109 @@ const PRAG_MARTOR_MS = 250
 const INCARCARI_CURATE = 3
 const INCERCARI = 8
 
-type OptiuniIncarcare = { deplasareTarzie?: boolean; raspunsTarziuMs?: number }
+/** Cum se serveste documentul unei pagini in doua bucati (vezi `serverInDouaBucati`). */
+type LivrareInDouaBucati = {
+  /**
+   * Prima bucata se opreste dupa prima aparitie a acestui sir, cautata in documentul de dupa inceputul
+   * eroului. `null` = documentul se serveste intreg (martorul negativ: aceeasi cale, fara taietura).
+   */
+  taieDupa: string | null
+  /** A doua bucata soseste atatea ms dupa prima. */
+  pauzaMs: number
+  /** Adauga in `<head>` o regula care scoate garda eroului (`visibility: visible !important` pe bloc), ca in codul de dinainte de ea. */
+  anuleazaGarda?: boolean
+}
+
+/** Regula care anuleaza garda din `EroulCinema.module.css`: blocul ramane vizibil cat timp nu i s-a parsat sfarsitul. */
+const STIL_GARDA_ANULATA = '<style>[class*="EroulCinema_bloc"]{visibility:visible !important}</style>'
+
+type OptiuniIncarcare = { deplasareTarzie?: boolean; raspunsTarziuMs?: number; doiBucati?: LivrareInDouaBucati }
+
+/**
+ * Un server local pus in fata serverului site-ului, care serveste `cale` in DOUA bucati (transfer in
+ * bucati, a doua vine `pauzaMs` mai tarziu) si lasa restul cererilor neschimbate. E felul de a face
+ * ca navigatorul sa picteze documentul cand a parsat doar o parte din el: pe un procesor lent, parserul
+ * cedeaza firul de executie intre doua bucati de pagina si primul cadru iese cu ce are pana atunci.
+ * `taieturi` numara documentele taiate cu adevarat (controlul ca fixtura a aterizat).
+ */
+async function serverInDouaBucati(
+  baza: string,
+  cale: string,
+  livrare: LivrareInDouaBucati,
+): Promise<{ baza: string; taieturi: () => number; inchide: () => Promise<void> }> {
+  let taieturi = 0
+  const server: Server = createServer((cerere, raspuns) => {
+    void (async () => {
+      const cai = (cerere.url ?? '/').split('?')[0]
+      // Fara compresie: bucata taiata trebuie sa fie text, nu un flux comprimat.
+      const amonte = await fetch(baza + (cerere.url ?? '/'), { headers: { 'accept-encoding': 'identity' }, redirect: 'manual' })
+      const corp = Buffer.from(await amonte.arrayBuffer())
+      const antete: Record<string, string> = {}
+      amonte.headers.forEach((valoare, cheie) => {
+        if (!['content-length', 'transfer-encoding', 'content-encoding', 'connection', 'keep-alive'].includes(cheie)) antete[cheie] = valoare
+      })
+      if (cai !== cale) {
+        raspuns.writeHead(amonte.status, { ...antete, 'content-length': String(corp.length) })
+        raspuns.end(corp)
+        return
+      }
+      let html = corp.toString('utf8')
+      if (livrare.anuleazaGarda) html = html.replace('</head>', STIL_GARDA_ANULATA + '</head>')
+      const octeti = Buffer.from(html, 'utf8')
+      if (livrare.taieDupa === null) {
+        raspuns.writeHead(amonte.status, { ...antete, 'content-length': String(octeti.length) })
+        raspuns.end(octeti)
+        return
+      }
+      const eroul = html.indexOf('data-sectiune="erou"')
+      const taietura = eroul < 0 ? -1 : html.indexOf(livrare.taieDupa, eroul)
+      if (taietura < 0) {
+        raspuns.writeHead(500, { 'content-type': 'text/plain' })
+        raspuns.end('taietura lipsa: ' + livrare.taieDupa)
+        return
+      }
+      taieturi++
+      const limita = Buffer.byteLength(html.slice(0, taietura + livrare.taieDupa.length), 'utf8')
+      // Fara `content-length`, deci transfer in bucati: prima bucata pleaca acum, a doua peste `pauzaMs`.
+      raspuns.writeHead(amonte.status, antete)
+      raspuns.write(octeti.subarray(0, limita))
+      setTimeout(() => raspuns.end(octeti.subarray(limita)), livrare.pauzaMs)
+    })().catch((eroare) => {
+      raspuns.writeHead(502, { 'content-type': 'text/plain' })
+      raspuns.end(String(eroare))
+    })
+  })
+  await new Promise<void>((gata) => server.listen(0, '127.0.0.1', gata))
+  const port = (server.address() as AddressInfo).port
+  return {
+    baza: 'http://127.0.0.1:' + port,
+    taieturi: () => taieturi,
+    inchide: () =>
+      new Promise<void>((gata) => {
+        server.close(() => gata())
+        server.closeAllConnections()
+      }),
+  }
+}
 
 /**
  * LCP si CLS ale unei incarcari proaspete, in context nou, cu incetinirea pornita inaintea incarcarii
  * (ca pe un telefon lent) si cu miscare permisa (cazul greu: scrierea din erou si aparitiile ruleaza).
  * Se citesc dupa 6 s fara nicio interactiune: o interactiune ar opri inregistrarea LCP.
  * Martorii pozitivi: `deplasareTarzie` insereaza la 1 s un bloc de 300 px deasupra continutului;
- * `raspunsTarziuMs` tine raspunsul documentului atatea ms (interceptat), deci totul se picteaza tarziu.
+ * `raspunsTarziuMs` tine raspunsul documentului atatea ms (interceptat), deci totul se picteaza tarziu;
+ * `doiBucati` serveste documentul in doua bucati, taiat in interiorul eroului (`serverInDouaBucati`).
  * (Un `main` ascuns din CSS nu merge ca martor: hidratarea scoate stilul strain si LCP-ul ramane
  * la ~1,4 s - masurat 25.09.)
  */
 async function incarcare(browser: Browser, baza: string, cale: string, optiuni: OptiuniIncarcare = {}): Promise<Incarcare> {
-  const context = await browser.newContext({ baseURL: baza, viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' })
+  const livrare = optiuni.doiBucati ? await serverInDouaBucati(baza, cale, optiuni.doiBucati) : null
+  const context = await browser
+    .newContext({ baseURL: livrare ? livrare.baza : baza, viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' })
+    .catch(async (eroare) => {
+      await livrare?.inchide()
+      throw eroare
+    })
   try {
     if (cale === CALE_MARTOR) {
       await context.route('**' + CALE_MARTOR, (r) => r.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: HTML_MARTOR }))
@@ -931,18 +1085,28 @@ async function incarcare(browser: Browser, baza: string, cale: string, optiuni: 
       })
     }
     await context.addInitScript((o: OptiuniIncarcare) => {
-      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number }
+      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number; __deplasari: { v: number; text: string }[] }
       w.__lcp = []
       w.__cls = 0
+      w.__deplasari = []
       new PerformanceObserver((lista) => {
         for (const e of lista.getEntries() as (PerformanceEntry & { element?: Element | null })[]) {
           const el = e.element
           w.__lcp.push({ t: e.startTime, el: el ? el.tagName.toLowerCase() + ' ' + (el.textContent ?? '').trim().slice(0, 30) : '?' })
         }
       }).observe({ type: 'largest-contentful-paint', buffered: true })
+      type Sursa = { node: Node | null; previousRect: DOMRectReadOnly; currentRect: DOMRectReadOnly }
       new PerformanceObserver((lista) => {
-        for (const e of lista.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
-          if (!e.hadRecentInput) w.__cls += e.value
+        for (const e of lista.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean; sources?: Sursa[] })[]) {
+          if (e.hadRecentInput) continue
+          w.__cls += e.value
+          // Ce s-a mutat si de unde pana unde: fara asta, un CLS peste prag spune doar cat, nu ce.
+          const rect = (r: DOMRectReadOnly) => '[' + Math.round(r.y) + ',' + Math.round(r.height) + ']'
+          const surse = (e.sources ?? []).map((x) => {
+            const nod = x.node instanceof Element ? x.node.tagName.toLowerCase() + '.' + String(x.node.className).split(' ')[0] : x.node ? x.node.nodeName.toLowerCase() : '?'
+            return nod + ' ' + rect(x.previousRect) + '->' + rect(x.currentRect)
+          })
+          w.__deplasari.push({ v: e.value, text: e.value.toFixed(4) + ' ' + surse.join(' ; ') })
         }
       }).observe({ type: 'layout-shift', buffered: true })
       if (o.deplasareTarzie) {
@@ -958,18 +1122,20 @@ async function incarcare(browser: Browser, baza: string, cale: string, optiuni: 
     const page = await context.newPage()
     const cdp = await context.newCDPSession(page)
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: INCETINIRE_CPU })
-    await page.goto(cale, { waitUntil: 'load' })
+    await navigheaza(page, cale, { waitUntil: 'load' })
     await page.waitForTimeout(cale === CALE_MARTOR ? 1500 : 6000)
     const latime = await page.evaluate(() => window.innerWidth)
     const r = await page.evaluate(() => {
-      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number }
+      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number; __deplasari: { v: number; text: string }[] }
       const ultim = w.__lcp[w.__lcp.length - 1]
-      return { lcp: ultim ? ultim.t : -1, element: ultim ? ultim.el : '(niciun LCP)', cls: w.__cls }
+      const mari = [...w.__deplasari].filter((d) => d.v >= 0.005).sort((a, b) => b.v - a.v).slice(0, 3)
+      return { lcp: ultim ? ultim.t : -1, element: ultim ? ultim.el : '(niciun LCP)', cls: w.__cls, deplasari: mari.map((d) => d.text) }
     })
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
-    return { ...r, latime }
+    return { ...r, latime, bucati: livrare ? livrare.taieturi() : 0 }
   } finally {
     await context.close()
+    await livrare?.inchide()
   }
 }
 
@@ -1017,7 +1183,7 @@ async function clicRol(browser: Browser, baza: string, lentPeLoc = 0): Promise<{
     const page = await context.newPage()
     const cdp = await context.newCDPSession(page)
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: INCETINIRE_CPU })
-    await page.goto(PAGINI[2], { waitUntil: 'networkidle' })
+    await navigheaza(page, PAGINI[2], { waitUntil: 'networkidle' })
     const latime = await page.evaluate(() => window.innerWidth)
     await page.locator('section[data-sectiune="portal"] [role="group"]').scrollIntoViewIfNeeded()
     await page.waitForTimeout(1500)
@@ -1063,7 +1229,8 @@ test.describe('bugetele de la 390, procesor incetinit de 4 ori', () => {
       console.log(
         '[bugete ' + cale + '] innerWidth CITIT: ' + b.curate.map((c) => c.latime).join('/') + ' | LCP curate ' +
           b.curate.map((c) => Math.round(c.lcp) + ' (' + c.element + ')').join(' / ') + ' | mediana ' + Math.round(b.lcp) +
-          ' ms | CLS max ' + b.cls.toFixed(4) + ' | martor ' + b.martori.join(' / ') + ' ms | aruncate ' + (b.aruncate.join(' / ') || '-'),
+          ' ms | CLS max ' + b.cls.toFixed(4) + ' | martor ' + b.martori.join(' / ') + ' ms | aruncate ' + (b.aruncate.join(' / ') || '-') +
+          ' | deplasari mari ' + (b.curate.flatMap((c) => c.deplasari).join(' || ') || '-'),
       )
       for (const c of b.curate) expect(c.latime).toBe(390)
       expect(b.lcp, 'LCP masurat').toBeGreaterThan(0)
@@ -1104,5 +1271,62 @@ test.describe('bugetele de la 390, procesor incetinit de 4 ori', () => {
     const r = await clicRol(browser, baseURL ?? '', 250)
     console.log('[INP martor pozitiv] ' + r.durata + ' ms')
     expect(r.durata).toBeGreaterThan(PRAG_INP_MS)
+  })
+})
+
+// --- Eroul cand documentul soseste in doua bucati ------------------------------------------------
+//
+// CI 36310864983 (automatizari-ai la 390, procesor x4): CLS 0,178 pe cel putin una din cele 3 incarcari,
+// LCP bun (756-1324 ms). Eroul e centrat pe verticala, deci inaltimea blocului hotaraste unde sta fiecare
+// rand. Cand navigatorul picteaza dupa ce a parsat doar inceputul blocului (eticheta si titlul), iar restul
+// soseste dupa, blocul creste, se recentreaza si tot ce era deja pictat sare. Reprodus cu documentul
+// automatizarii-ai taiat in doua, garda anulata (masurat 30.09, `innerWidth` 390, procesor x4): taiat dupa
+// titlu 0,19; dupa subtitlul scris 0,16; in macheta 0,05; aproape de sfarsitul blocului 0,015 - valoarea din
+// CI (0,178) cade in aceeasi familie, intre taieturile din titlu si din subtitlu. Cauza in CI NU e masurata
+// direct (jurnalul n-are deplasarile): masurat e numai ca mecanismul exista si ca da valori de acest ordin.
+//
+// Reparatia e in componenta (garda din `EroulCinema.module.css`: blocul sta ascuns cu `visibility` cat timp
+// nu are ultimul copil), nu in prag: proba de mai jos o apara, iar martorii ei arata ca masoara mecanismul.
+
+/** Taietura eroului: dupa primul titlu (`h1`) al lui; a doua bucata vine dupa 2,5 s, mult dupa prima pictare. */
+const TAIETURA_EROU: LivrareInDouaBucati = { taieDupa: '</h1>', pauzaMs: 2500 }
+
+test.describe('eroul cand documentul soseste in doua bucati, 390, procesor incetinit de 4 ori', () => {
+  for (const cale of PAGINI) {
+    test(cale + ': documentul taiat dupa titlul eroului, CLS <= 0,1 (blocul sta ascuns pana la sfarsitul lui)', async ({ browser, baseURL }) => {
+      test.setTimeout(90_000)
+      const r = await incarcare(browser, baseURL ?? '', cale, { doiBucati: TAIETURA_EROU })
+      console.log(
+        '[erou in doua bucati ' + cale + '] innerWidth CITIT: ' + r.latime + ' | bucati ' + r.bucati + ' | LCP ' + Math.round(r.lcp) +
+          ' ms (' + r.element + ') | CLS ' + r.cls.toFixed(4) + ' | deplasari mari ' + (r.deplasari.join(' || ') || '-'),
+      )
+      expect(r.latime).toBe(390)
+      expect(r.bucati, 'documentul a fost taiat (controlul ca fixtura a aterizat)').toBe(1)
+      expect(r.lcp, 'eroul s-a pictat pana la urma').toBeGreaterThan(0)
+      expect(r.cls).toBeLessThanOrEqual(PRAG_CLS)
+    })
+  }
+
+  test('martor POZITIV: acelasi document taiat, cu garda anulata prin CSS, TREBUIE sa treaca de 0,1 pe automatizari-ai', async ({ browser, baseURL }) => {
+    test.setTimeout(90_000)
+    const r = await incarcare(browser, baseURL ?? '', PAGINI[1], { doiBucati: { ...TAIETURA_EROU, anuleazaGarda: true } })
+    console.log('[erou in doua bucati, martor pozitiv] bucati ' + r.bucati + ' | CLS ' + r.cls.toFixed(4) + ' | deplasari mari ' + (r.deplasari.join(' || ') || '-'))
+    expect(r.bucati).toBe(1)
+    expect(r.cls).toBeGreaterThan(PRAG_CLS)
+  })
+
+  test('martor NEGATIV: garda anulata, dar documentul servit INTREG, NU trebuie sa treaca de 0,1 (deplasarea vine din taietura)', async ({ browser, baseURL }) => {
+    test.setTimeout(120_000)
+    // Mediana a 3 incarcari, nu una: si fara nicio taietura, un navigator lent poate picta o data din cand in cand
+    // pe jumatate parsat (masurat 30.09, garda anulata: 1 incarcare din 14 a avut 0,05), deci o singura incarcare
+    // ar face martorul negativ nesigur exact prin fenomenul pe care il apara garda. Taietura, ea, da 0,19 de fiecare data.
+    const incarcari: Incarcare[] = []
+    for (let i = 0; i < 3; i++) {
+      incarcari.push(await incarcare(browser, baseURL ?? '', PAGINI[1], { doiBucati: { taieDupa: null, pauzaMs: 0, anuleazaGarda: true } }))
+    }
+    const cls = incarcari.map((r) => r.cls).sort((a, b) => a - b)
+    console.log('[erou in doua bucati, martor negativ] bucati ' + incarcari.map((r) => r.bucati).join('/') + ' | CLS ' + cls.map((v) => v.toFixed(4)).join(' / ') + ' | mediana ' + cls[1].toFixed(4))
+    for (const r of incarcari) expect(r.bucati, 'documentul a fost servit intreg').toBe(0)
+    expect(cls[1]).toBeLessThanOrEqual(PRAG_CLS)
   })
 })

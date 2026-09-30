@@ -21,6 +21,7 @@
 
 import type { NumeEveniment } from "@/components/consimtamant/evenimente";
 import { lipsuriInformare, type Operator } from "@/lib/operator";
+import { VERSIUNE_ANALITICA, texteAnalitica } from "./analitica";
 import { AUTORITATI, type Autoritate } from "./autoritati";
 import { FURNIZORI } from "./furnizori";
 import type { DocumentJuridic } from "./tipuri";
@@ -97,15 +98,22 @@ function autoritate(a: Autoritate): string {
 export type OptiuniPolitica = {
   /** Gazda site-ului, cum o vede vizitatorul (de pilda `3s4.ke2.in`). */
   domeniu: string;
+  /**
+   * Analitica proprie, fara cookie, e pornita pe acest domeniu (`UMAMI_URL` si `UMAMI_WEBSITE_ID`)? Implicit se
+   * citeste din mediu; parametrul e pentru probe. Cand e pornita, politica are paragrafele din
+   * `./analitica.ts`; altfel ramane textul de pana acum.
+   */
+  analitica?: boolean;
 };
 
-export function politicaConfidentialitate(operator: Operator, { domeniu }: OptiuniPolitica): DocumentJuridic {
+export function politicaConfidentialitate(operator: Operator, { domeniu, analitica }: OptiuniPolitica): DocumentJuridic {
   verificaOperatorPentruTexte(operator);
   const contact = operator.email;
+  const masurare = texteAnalitica(contact, analitica);
   const evenimente = Object.values(DESCRIERE_EVENIMENTE).join("; ");
   return {
     titlu: "Politica de confidențialitate",
-    versiune: VERSIUNE_CONFIDENTIALITATE,
+    versiune: masurare === null ? VERSIUNE_CONFIDENTIALITATE : VERSIUNE_ANALITICA,
     introducere:
       "Aici aflați ce date personale prelucrează site-ul " +
       domeniu +
@@ -155,6 +163,7 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
               "Statistica vizitelor. Numai dacă acceptați categoria „Statistică” din bannerul de cookie-uri, Google Analytics 4 măsoară vizitele, paginile citite și câteva acțiuni dintr-o listă închisă: " +
                 evenimente +
                 ". Temeiul este consimțământul dumneavoastră (GDPR art. 6 alin. (1) lit. a)), cerut înainte de orice stocare în browser (Legea nr. 506/2004, art. 4 alin. (5)).",
+              ...(masurare === null ? [] : [masurare.prelucrare]),
               "Evidența alegerii din bannerul de cookie-uri. Când alegeți, serverul notează un identificator aleator al dispozitivului, momentul, versiunea textului afișat, alegerea făcută, pagina și prefixul rețelei, fără adresa IP completă. Temeiul este obligația legală de a putea dovedi consimțământul (GDPR art. 6 alin. (1) lit. c), coroborat cu art. 7 alin. (1)).",
               "Cererile trimise prin formulare. Datele din formularul de contact, din cel de înregistrare și din cel pentru companii le folosim ca să vă răspundem și, dacă ne cereți, să vă facem o ofertă. Temeiul îl constituie demersurile precontractuale făcute la cererea dumneavoastră (GDPR art. 6 alin. (1) lit. b)), nu consimțământul. Acordul de a primi noutăți, dacă îl dați separat, are ca temei consimțământul și îl puteți retrage oricând.",
             ],
@@ -167,9 +176,12 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
         blocuri: [
           {
             jurisdictie: null,
-            paragrafe: [
-              "Invocăm interesul legitim numai pentru jurnalele serverului: ca site-ul să funcționeze, să poată fi depanat și să fie apărat de atacuri. Datele din jurnale nu se folosesc pentru publicitate și nu se combină cu alte surse.",
-            ],
+            paragrafe:
+              masurare === null
+                ? [
+                    "Invocăm interesul legitim numai pentru jurnalele serverului: ca site-ul să funcționeze, să poată fi depanat și să fie apărat de atacuri. Datele din jurnale nu se folosesc pentru publicitate și nu se combină cu alte surse.",
+                  ]
+                : [masurare.jurnale, masurare.interes],
           },
         ],
       },
@@ -228,6 +240,7 @@ export function politicaConfidentialitate(operator: Operator, { domeniu }: Optiu
                 " dacă nu devin ofertă și " +
                 PASTRARE.formulareCuOferta +
                 " dacă ați primit o ofertă.",
+              ...(masurare === null ? [] : [masurare.pastrare]),
             ],
           },
         ],

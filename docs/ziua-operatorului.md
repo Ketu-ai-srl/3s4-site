@@ -19,15 +19,24 @@ mai departe "urmand sa revenim".
 | Bannerul de consimtamant | nu exista in pagina | apare, daca exista si ID-ul GA4 |
 | Legatura "Setari cookie-uri" din subsol | nu exista | pe fiecare pagina |
 | GA4 | nu se incarca niciodata | se incarca numai dupa acceptul categoriei Statistica |
+| Analitica proprie, fara cookie (`UMAMI_URL` + `UMAMI_WEBSITE_ID`) | nu porneste, chiar cu variabilele date: niciun script, nicio rescriere `/a/`; jurnalul build-ului spune de ce | porneste la urmatorul build, cu paragraful despre ea in politicile publicate; nu asteapta bannerul |
 | Evidenta consimtamantului (`/api/consimtamant`) | calea raspunde 404 | un rand JSON in jurnalul serverului la fiecare alegere |
 | Textele juridice (`src/content/juridic/`) | construite, nepublicate (`texteJuridice()` intoarce `null`) | randate de paginile feliei `juridic` |
 | Paginile juridice (`/juridic` si cele 7 documente) | in cod, dar neconstruite: 404, absente din `RUTE`, din harta XML si din subsol | construite si publicate singure, prin `ruteJuridice()` (`src/content/juridic/publicare.ts`) |
 | Harta site-ului si declaratia de accesibilitate | publicate | publicate, iar harta primeste singura cele 8 pagini |
-| Poarta juridica L-01, L-15 | nu cer nimic | cer datele firmei pe fiecare pagina si paginile juridice; politica de cookie-uri o cere din clipa in care bannerul e in HTML-ul construit |
+| Poarta juridica L-01, L-15 | nu cer nimic | cer datele firmei pe fiecare pagina si paginile juridice; politica de cookie-uri o cere din clipa in care bannerul e in HTML-ul construit. **Numai pe operatorul din `config/operator.json`**: pe un domeniu cu `OPERATOR_JSON` poarta nu il vede (vezi "`OPERATOR_JSON`: ce trebuie stiut") |
 
 Conditia de aparitie a bannerului si a GA4 e una singura, in `src/lib/analitica.ts`: operator
 numit **si complet** (denumire, sediu, adresa de contact, tara) **si** `NEXT_PUBLIC_GA4_ID` in
 mediu la construire. Fara operator, GA4 ramane oprit chiar daca ID-ul exista.
+
+Analitica proprie (`UMAMI_*`) are aceeasi conditie de operator, calculata pe acelasi operator
+rezolvat (`OPERATOR_JSON` inaintea lui `config/operator.json`; `src/components/analitica/config.ts`),
+dar nu cere ID-ul GA4 si nu asteapta bannerul. Oprirea e tacuta pentru vizitator si nu opreste
+construirea: cu variabilele date si fara operator, `next build` scrie in jurnal un avertisment
+(`[analitica] UMAMI_URL si UMAMI_WEBSITE_ID sunt setate, dar ...`) si nu pune nici scriptul, nici
+rescrierile `/a/`. Variabilele se pot deci pune inaintea operatorului; porneste singura la primul
+build in care operatorul exista.
 
 ## Pasul 0. Ce trebuie sa existe inainte
 
@@ -69,13 +78,19 @@ Asteptat: probele trec; poarta juridica tipareste "L-01: se aplica - operator: n
 pagina (L-01) si paginile juridice (L-15). Pana la pasii 2 si 3 poarta e rosie la productie. E
 comportamentul voit.
 
+**Numai daca operatorul e in `config/operator.json`.** Poarta juridica citeste operatorul numai din
+fisier, nu din `OPERATOR_JSON`: pentru un domeniu al carui operator vine din mediu, aceasta verificare
+NU se aplica asa (vezi "`OPERATOR_JSON`: ce trebuie stiut", punctul despre poarta juridica).
+
 ## Pasul 2. Datele firmei pe fiecare pagina (L-01)
 
 Legea 365/2002 art. 5 alin. (1) lit. a)-e) cere identificarea furnizorului pe site: denumire,
 sediu, e-mail, telefon, numar de ordine in registrul comertului, cod fiscal. Poarta le cere
 prezente in HTML-ul livrat al fiecarei pagini publice. Piesa care le afiseaza (subsolul, pagina de
-informatii legale) e a feliilor `fundatie` si `juridic`; datele vin numai din `config/operator.json`
-(`src/lib/operator.ts`), nu se scriu in pagini.
+informatii legale) e a feliilor `fundatie` si `juridic`; datele vin numai din operatorul rezolvat al
+domeniului (`OPERATOR_JSON` inaintea lui `config/operator.json`, `src/lib/operator.ts`), nu se scriu
+in pagini. Poarta, in schimb, le verifica numai pe cele din fisier (Pasul 1 si "`OPERATOR_JSON`: ce
+trebuie stiut").
 
 **Verificare:**
 
@@ -269,23 +284,233 @@ ai-input=yes, ai-train=yes`, grupul `Bytespider` cu `Disallow: /` si `Sitemap:` 
 nu declara azi niciun `ARG` pentru ele (NEMASURAT daca Coolify le injecteaza singur); atunci se
 adauga in etapa `builder`, inaintea lui `RUN pnpm build`.
 
+## Variabile pe domeniu (tabel de referinta)
+
+Acelasi cod ruleaza ca aplicatii separate in Coolify, cate una pe domeniu: mediul de proba
+(`3s4.ke2.in`), site-ul pentru clientii internationali (`3s.md`, in engleza si romana) si, mai
+tarziu, `3s.com.ro`. Ce difera de la un domeniu la altul sta in variabilele de mai jos, nu in cod.
+Fara valori reale: exemplele sunt de forma si nu apartin nimanui.
+
+**Toate se citesc la CONSTRUIRE**, deci orice schimbare cere un build nou; exceptiile sunt scrise
+in coloana "Citita la". In Coolify se pun ca variabile obisnuite (build si rulare), nu "numai build".
+
+| Variabila | Ce face | Fara ea | Citita la | Cand se seteaza |
+|---|---|---|---|---|
+| `SITE_URL` | Originea domeniului, numai `https://gazda`, fara cale sau parametri. Din ea se compun canonical-urile, harta de site, `robots.txt`, `/llms.txt`, `security.txt`, imaginea sociala, datele structurate (JSON-LD) si originea pe care o accepta formularele. O valoare cu cale, parametri sau pe `http` opreste construirea | `https://3s4.ke2.in` (mediul de proba) | construire | la crearea aplicatiei fiecarui domeniu |
+| `SITE_ENV` | `productie` deschide indexarea (`robots.txt` cu semnalul de continut si harta, fara `X-Robots-Tag`) si adauga HSTS. Orice alta valoare lasa domeniul neindexat | neindexat | construire; antetul `X-Robots-Tag` din middleware, si la rulare | `productie` numai pe domeniul lansat |
+| `NEXT_PUBLIC_GA4_ID` | Porneste GA4 cu bannerul de consimtamant, numai daca exista si un operator complet (fara operator, GA4 ramane oprit chiar cu ID). Analitica proprie (`UMAMI_*`) nu depinde de el si nu asteapta bannerul, dar are aceeasi conditie de operator | fara GA4 | construire (inlocuita in pachetul de browser) | dupa Pasul 5, cu proprietatea GA4 a domeniului |
+| `OPERATOR_JSON` | Operatorul de date al domeniului, ca JSON cu schema din `config/operator.json`: `{"operator": null}` sau `{"operator": {"denumire": "...", "sediu": "...", "email": "...", "telefon": "", "numar_orc": "", "cod_fiscal": "", "tara": "...", "dpo": ""}}`. Are PRIORITATE fata de fisier si e validat cu aceeasi functie: un JSON stricat, o forma gresita (fara cheia `operator`, camp necunoscut, camp care nu e text) sau un operator numit dar incomplet opresc construirea, cu un mesaj care numeste variabila si campurile care lipsesc (de pilda `lipsesc: sediu, email, tara`). `{"operator": null}` inseamna "acest domeniu nu are operator", chiar daca fisierul numeste unul. Numit si complet, pornesc paginile juridice, subsolul, formularele, bannerul (cu `NEXT_PUBLIC_GA4_ID`) si analitica proprie (cu `UMAMI_*`), ca pentru fisier. Pachetul de browser nu vede variabila, ci valoarea derivata `NEXT_PUBLIC_OPERATOR_NUMIT` (mai jos), deci si cautarea Ctrl+K gaseste paginile juridice | decide `config/operator.json` (azi `null`) | construire SI rulare, aceeasi valoare in ambele: `/api/formular` si middleware o citesc la rulare | cand exista firma care opereaza domeniul (Pasii 0-1) |
+| `SITE_ALTERNATE` | Variantele site-ului pentru motoarele de cautare, ca perechi `cod=adresa` separate prin virgula; regulile mai jos. Fiecare pagina emite `<link rel="alternate" hreflang>` spre aceeasi cale pe fiecare varianta, inclusiv spre ea insasi | nimic (nicio legatura) | construire | cand exista cel putin doua domenii publicate; aceeasi valoare pe TOATE |
+| `UMAMI_URL` | Originea instantei de statistica proprie (fara cookie), numai `https://gazda`; `http` doar pe masina locala. Scriptul se incarca prin calea proprie a site-ului, `/a/script.js`, iar evenimentele pleaca la `/a/api/send`: serverul site-ului le transmite instantei, browserul vorbeste numai cu domeniul (poarta C-01 ramane adevarata). Se seteaza impreuna cu `UMAMI_WEBSITE_ID`: una fara cealalta opreste construirea. **Porneste numai cu un operator numit si complet**, ca GA4 (planul S4, sectiunea 9: analitica prelucreaza date personale, deci cere operator): fara operator ramane oprita chiar cu variabilele date, fara script si fara rescrieri, iar `next build` scrie un avertisment in jurnal | nicio analitica proprie, nicio rescriere | construire (rescrierile intra in manifest) | cand instanta si site-ul ei din aplicatie exista; se pot pune si inaintea operatorului, porneste singura la primul build in care el exista |
+| `UMAMI_WEBSITE_ID` | Identificatorul site-ului din aplicatia de statistica (UUID), unul pe domeniu, ca vizitele sa nu se amestece. Nu e secret: se vede in pagina | vezi `UMAMI_URL` | construire | odata cu `UMAMI_URL` |
+| `INDEXNOW_KEY` | Cheia IndexNow a domeniului (8-128 de caractere: a-z, A-Z, 0-9, cratima). `/indexnow.txt` o intoarce ca text simplu, iar motoarele o citesc ca sa verifice ca domeniul e al celui care trimite adresele. O cheie de alta forma opreste construirea (mesajul nu repeta valoarea). Nu trimite nimic singura: trimiterea e `scripts/indexnow.mjs`, la comanda | `/indexnow.txt` raspunde 404 | construire | la lansarea publica a domeniului |
+
+Valori de forma, pentru un domeniu ca `3s.md` (nu sunt reale):
+
+```
+SITE_URL=https://3s.md
+SITE_ENV=productie
+SITE_ALTERNATE=ro-RO=https://3s.com.ro,en=https://3s.md,ro-MD=https://3s.md/ro,x-default=https://3s.md
+OPERATOR_JSON={"operator": {"denumire": "Exemplu Operator SRL", "sediu": "Strada Exemplului 1, Orasul", "email": "date@exemplu.test", "telefon": "", "numar_orc": "", "cod_fiscal": "", "tara": "Romania", "dpo": ""}}
+UMAMI_URL=https://statistica.exemplu.test
+UMAMI_WEBSITE_ID=00000000-0000-4000-8000-000000000000
+INDEXNOW_KEY=cheie-de-exemplu-indexnow-1234
+```
+
+In Coolify valoarea lui `OPERATOR_JSON` se lipeste ca text, fara ghilimele in plus; intr-un fisier
+`.env` local se pune intre apostrofuri.
+
+**Variabila derivata `NEXT_PUBLIC_OPERATOR_NUMIT` nu se seteaza de mana.** O defineste
+`next.config.ts` la construire din `OPERATOR_JSON` (`true`, `false`, sau `null` cand `OPERATOR_JSON`
+nu e setata), o inlocuieste Next in toate pachetele, iar `src/content/juridic/publicare.ts` o citeste
+inaintea variabilei si a fisierului. Pachetul de browser nu vede `OPERATOR_JSON`, deci fara ea lista de
+rute din browser ar decide dupa fisier. O valoare pusa de mana in mediul build-ului este ignorata:
+cheia din `next.config.ts` are prioritate, fiindca `define-env.js` din Next 15.5.25 aplica intai
+variabilele `NEXT_PUBLIC_*` din mediu, apoi `env` din configurare (citit in cod si masurat pe
+30.09.2026: pe o copie cu `OPERATOR_JSON` complet si `NEXT_PUBLIC_OPERATOR_NUMIT=false` pusa de mana in
+mediul build-ului, cautarea Ctrl+K a gasit cele trei pagini juridice la 1440 si la 390 - `innerWidth`
+citit 1440 si 390 - iar `/juridic` si `/juridic/confidentialitate` au raspuns 200, deci valoarea pusa
+de mana n-a schimbat nimic).
+
+### `SITE_ALTERNATE`: regulile listei
+
+Regulile lui Google, citite pe 30.09.2026 in documentatia oficiala
+(https://developers.google.com/search/docs/specialty/international/localized-versions): "Each
+language version must list itself as well as all other language versions", "If two pages don't both
+point to each other, the tags will be ignored", adresele sunt complete (`https://...`), codurile sunt
+limba (ISO 639-1) cu regiune optionala (ISO 3166-1 alfa-2), iar `x-default` e recomandat. O lista
+care le incalca opreste construirea, cu variabila si motivul in mesaj:
+
+- lista contine domeniul curent, fara prefix de cale: fiecare pagina se refera si la ea insasi. Pe
+  fiecare domeniu, valoarea e aceeasi, deci variantele se confirma reciproc din constructie;
+- o adresa e o origine `https` cu un prefix de cale optional, pentru versiunea unei limbi care sta pe
+  acelasi domeniu (`ro-MD=https://3s.md/ro`); prefixul se lipeste fara `//`, iar bara finala se ignora;
+- un cod apare o singura data; forma se verifica (`ro`, `ro-MD`), nu si apartenenta la listele ISO: un
+  cod inexistent trece de build si Google il ignora, deci codurile se citesc o data cu ochii;
+- `x-default` se poate da explicit ca pereche si trebuie sa fie una dintre variantele listate; fara el
+  se emite spre PRIMA varianta din lista, deci prima pozitie conteaza (pentru `3s.md`, varianta engleza
+  e cea spre care vrem sa cada vizitatorii fara varianta potrivita: se scrie explicit);
+- metoda e cea cu elemente `<link>` in `<head>`; harta de site NU poarta alternate. Google spune ca cele trei
+  metode sunt echivalente ("The three methods are equivalent from Google's perspective") si ca folosirea
+  mai multor nu aduce nimic in cautare ("there's no benefit in Search");
+- pagina de negasit nu primeste alternate;
+- versiunea romaneasca a lui `3s.md` (sub `/ro`) nu exista inca: felia de limbi care urmeaza trebuie sa
+  scoata prefixul din calea curenta inainte de a compune adresele, altfel pagina `/ro/preturi` ar
+  indica `https://3s.md/ro/ro/preturi`.
+
+**Verificare** (dupa deploy, pe fiecare domeniu):
+
+```
+curl -s https://<domeniu>/preturi | grep -io '<link[^>]*hreflang[^>]*>'
+curl -s https://<domeniu>/preturi | grep -o '<link rel="canonical"[^>]*>'
+```
+
+Asteptat: patru elemente (cate unul pe varianta si `x-default`), fiecare cu calea `/preturi`;
+varianta domeniului curent are exact adresa din `canonical`; pe radacina, adresele nu au bara finala.
+
+### Analitica proprie: ce se hotaraste inainte de a o porni pe un domeniu
+
+Analitica proprie nu scrie cookie-uri si nimic in stocarea locala si respecta "Do Not Track"; nu
+asteapta bannerul (fapte si surse: `src/components/analitica/config.ts`). **Porneste numai cu un
+operator numit si complet** (planul S4, sectiunea 9, ca GA4): pe un domeniu fara operator, cu
+variabilele `UMAMI_*` date, nu exista script, nu exista rescrierile `/a/` (`GET /a/script.js` si
+`POST /a/api/send` raspund 404), nimic nu ajunge la instanta, iar `next build` scrie in jurnal
+avertismentul care spune de ce (masurat pe o copie fara operator: proba `martor NEGATIV: domeniu FARA
+operator` din `tests/browser/multi-domeniu.spec.ts`). Cand porneste, politica de
+confidentialitate si cea de cookie-uri primesc singure paragraful despre ea, cu data 30 septembrie
+2026 (`src/content/juridic/analitica.ts`); fara variabile, documentele raman cele de dinainte. Trei
+lucruri raman de hotarat, iar textele NU sunt validate juridic:
+
+1. **Cine administreaza instanta.** Textul spune "instalata pe un server administrat de noi". E adevarat
+   numai daca cel care administreaza instanta e operatorul domeniului; pentru un operator care foloseste
+   instanta altcuiva, acela e imputernicit si intra in lista destinatarilor
+   (`src/content/juridic/furnizori.ts`), cu tara si mecanismul de transfer. Tara si furnizorul serverului
+   nu se afirma in text, fiindca nu se cunosc din depozit.
+2. **Cat timp se pastreaza datele.** Aplicatia le tine nelimitat pana le sterge cineva (FAQ-ul oficial,
+   intrebarea 8: https://docs.umami.is/docs/faq), iar textul spune "cat timp ne ajuta, apoi le stergem".
+   Se fixeaza o perioada, se scrie in `PASTRARE` (`confidentialitate.ts`) si se ruleaza stergerea in
+   aplicatie; pana atunci promisiunea din text nu are cine s-o tina.
+3. **Daca masurarea are nevoie de acord.** Textul afirma ce face masurarea, nu ca "nu cere acord": ghidurile
+   EDPB 2/2023 (octombrie 2024) trateaza ca acces la echipamentul terminal (art. 5 alin. (3) ePrivacy) si
+   colectarea de informatii generate local prin API-urile browserului, de felul dimensiunii ecranului sau a
+   limbii. Juristul decide; daca cere acord, pornirea dupa banner e o schimbare mica de cod.
+   Un fapt masurat pe 30.09.2026 (mai intai de critic, apoi reverificat pe o copie proprie, cu operator, GA4,
+   banner si o instanta falsa): dupa "Refuz tot" din banner (alegerea se scrie ca `statistica: false`,
+   `metoda: refuz-tot`), masurarea proprie continua, doua trimiteri spre `/a/api/send` la doua navigari
+   pe client, fiindca politica spune deschis ca ea nu asteapta alegerea din banner. Bannerul spune "Cu
+   acordul tau, masuram vizitele cu Google Analytics": nu contrazice (analitica proprie nu e Google
+   Analytics), dar un vizitator care refuza se poate astepta sa nu fie masurat deloc. Trei iesiri, de
+   ales cu juristul:
+   (a) ramane asa, cu textul juridic actual; (b) masurarea proprie se opreste la "Refuz tot" (schimba
+   textele juridice, care spun azi ca ea nu asteapta alegerea din banner, si lista stocarii declarate:
+   trackerul isi opreste singur trimiterea numai prin marcajul `umami.disabled` din stocarea locala, deci
+   fie se scrie acel marcaj la refuz, fie scriptul nu se mai incarca dupa refuz); (c) porneste numai dupa
+   acceptul categoriei Statistica (schimba textele juridice si pe cele ale bannerului). Bannerul e piesa
+   inghetata (`src/components/consimtamant`): orice schimbare de text sau de comportament al lui trece prin
+   dispecer, iar analitica proprie nu se atinge pana la decizia juristului.
+
+**Verificare** (dupa deploy):
+
+```
+curl -s -o /dev/null -w "%{http_code} %{content_type}\n" https://<domeniu>/a/script.js
+curl -s https://<domeniu>/ | grep -o '<link rel="preload" href="/a/script.js"[^>]*>'
+```
+
+Asteptat: `200` si un tip JavaScript (scriptul vine de la instanta, prin serverul site-ului); un rand de
+preincarcare pe calea proprie, niciunul spre alta gazda. In browser, la fila Network, cererile merg numai
+spre domeniu (`/a/script.js`, `/a/api/send`), iar dupa o vizita apare un rand in Realtime-ul aplicatiei.
+Pe un domeniu FARA operator, cu aceleasi variabile, cele doua comenzi dau `404` si zero randuri: e starea
+corecta, nu o defectiune (jurnalul build-ului are avertismentul care o explica).
+**Nemasurat, se verifica aici:** adresa IP a vizitatorului trece prin trei proxy-uri (cel al site-ului,
+serverul Next, cel al instantei) si instanta citeste primul element din `X-Forwarded-For`; o vizita
+de pe un telefon pe date mobile trebuie sa apara cu tara corecta, nu cu cea a serverului.
+
+### `OPERATOR_JSON`: ce trebuie stiut
+
+- **Build si rulare, aceeasi valoare.** Paginile (juridice, formulare, banner) se decid la build; ruta
+  `/api/formular` si middleware-ul citesc valoarea la rulare. O valoare doar la build lasa formularul
+  aratat ca activ si raspunzand "inactiv".
+- **Operator din afara SEE.** Textele juridice cer un operator cu sediul in Spatiul Economic European
+  (`verificaOperatorPentruTexte`, `confidentialitate.ts`): pentru un operator din Republica Moldova
+  construirea se opreste cu mesajul acela, fiindca textele pentru el nu exista. Decizia e a feliei
+  `juridic` si a owner-ului.
+- **Cautarea Ctrl+K.** Pachetul de browser nu primeste variabilele care nu incep cu `NEXT_PUBLIC_`, deci
+  fara o valoare calculata lista de rute din browser ar decide dupa `config/operator.json`, nu dupa
+  `OPERATOR_JSON`. Masurat pe 30.09.2026, INAINTE de reparatie, pe o copie cu fisierul pe `null` si
+  operatorul numai in mediu: cele opt pagini, harta, subsolul (sase legaturi), formularul si consola
+  browserului erau in regula, dar "confiden", "cookie" si "termeni" dadeau zero rezultate in cautare.
+  Reparat: `next.config.ts` defineste `NEXT_PUBLIC_OPERATOR_NUMIT` din `OPERATOR_JSON` (tabelul de mai
+  sus), iar `publicare.ts` o citeste inaintea variabilei si a fisierului; acopera si cazul invers (operator
+  in fisier si `{"operator": null}` in mediu: paleta nu arata pagini pe care serverul nu le construieste).
+  Probele: `tests/multi-domeniu-operator.test.ts` (valoarea din `next.config.ts` in cele trei stari, lista
+  de rute pe simulacrul pachetului de browser, expresia literala din `publicare.ts`) si
+  `tests/browser/multi-domeniu.spec.ts` (Ctrl+K pe o copie cu operatorul numai in mediu).
+- **Poarta juridica citeste numai fisierul (NEREPARAT: portile sunt ale dispecerului).**
+  `.claude/scripts/porti/poarta-juridic.py` cauta operatorul in `config/operator.json`
+  (`stare_operator`), nu in `OPERATOR_JSON`. Masurat pe 30.09.2026, pe o copie cu `SITE_URL=https://3s.md`
+  si operatorul numai in `OPERATOR_JSON` (cele opt pagini juridice sunt publicate): "L-01: NU SE APLICA" si
+  "L-15: NU SE APLICA - fara operator". Pe acelasi HTML, cu operatorul pus si in fisier: "L-01: se aplica",
+  "L-15: se aplica" si un OPRESTE L-01 pe campurile lasate goale ale fixturii (`telefon`, `numar_orc`,
+  `cod_fiscal`). Datele operatorului apar pe `/contact` si pe paginile juridice, dar nu pe `/`, `/preturi`,
+  `/blog` si `/harta-site` (0 aparitii): L-01 le cere pe fiecare pagina, iar piesa care le afiseaza e a
+  feliilor `fundatie` si `juridic` (Pasul 2). Deci, pana cand poarta citeste operatorul rezolvat
+  (`OPERATOR_JSON` inaintea fisierului), **nicio verificare a unui domeniu cu `OPERATOR_JSON` nu e dovada de
+  conformitate juridica**. Verificare provizorie: o copie a arborelui in care `config/operator.json` poarta
+  acelasi operator ca `OPERATOR_JSON`, construita cu aceleasi variabile, si
+  `python .claude/scripts/porti/poarta-juridic.py --radacina <copie> --mediu productie`. Pe orice build de
+  domeniu, in plus, C-01 iese rosu (canonical si alternate numarate drept resursa de la un tert; Pasul 7):
+  290 de constatari pe copia masurata (58 de pagini, cate 5), fata de 0 la `poarta-seo.py` pe acelasi build,
+  deci raportul portii pe un domeniu se citeste cu ambele defecte in minte.
+
+### Trimiterea la IndexNow
+
+Nu e automata: nimic din site, din build sau din CI nu o porneste. Dupa ce domeniul e publicat, cu
+`INDEXNOW_KEY` din aplicatia lui in mediul de unde se ruleaza:
+
+```
+node scripts/indexnow.mjs https://<domeniu> --dry-run
+node scripts/indexnow.mjs https://<domeniu>
+```
+
+Scriptul verifica, inainte de orice trimitere: forma cheii, ca `<domeniu>/indexnow.txt` contine exact
+cheia, ca `robots.txt` nu interzice tot (pe mediul de proba interzice, deci se opreste) si ca harta
+de site are adrese de pe domeniu. Trimite JSON cu `host`, `key`, `keyLocation` (adresa fisierului-cheie) si
+`urlList`, cel mult 10.000 de adrese pe cerere, la `https://api.indexnow.org/indexnow`. Iesire: `0` trimis,
+`1` oprit de o verificare sau refuzat de motor, `2` folosire gresita, `3` nemasurat (reteaua nu a raspuns).
+Protocolul, citit pe 30.09.2026: https://www.indexnow.org/documentation si https://www.indexnow.org/faq
+(cheia poate sta si in alt loc public al aceleiasi gazde, daca `keyLocation` il numeste; aceeasi adresa nu
+se retrimite de mai multe ori pe zi fara o schimbare de continut). Un raspuns `200` sau `202` spune numai
+ca cererea a fost primita, nu ca paginile s-au indexat.
+
 ## Pasul 7. Domeniul nou in portile si piesele care il stiu
 
 1. `.claude/scripts/porti/poarta-juridic.py`, `GAZDE_PROPRII`: se ADAUGA gazdele de productie
-   (`www.3s.com.ro`, `3s.com.ro`), cu motivul pe rand, cum cere antetul portii. Altfel C-01 citeste
-   canonical-ul de pe domeniul nou (`<link href>` absolut) drept resursa de la un tert.
-2. `FirPagina` (piesa inghetata a fundatiei) compune adresele firului direct din `ADRESA_BAZA`;
-   trebuie trecuta pe `adresaSite()` din `src/lib/site.ts`, altfel `BreadcrumbList` arata spre
-   mediul de proba.
+   (`www.3s.com.ro`, `3s.com.ro`, `3s.md`), cu motivul pe rand, cum cere antetul portii. Altfel C-01
+   citeste canonical-ul de pe domeniul nou (`<link href>` absolut) drept resursa de la un tert. Acelasi
+   lucru pentru fiecare gazda din `SITE_ALTERNATE`: elementele `<link rel="alternate" href>` spre celelalte
+   domenii intra in aceeasi cautare (masurat pe 30.09.2026, pe un build cu `SITE_URL` si `SITE_ALTERNATE`:
+   poarta a raportat C-01 pentru canonical si pentru fiecare alternata, pe fiecare pagina). Un `<link>` cu
+   `rel="canonical"` sau `rel="alternate"` nu incarca nimic, deci reparatia potrivita e in poarta (le exclude),
+   nu o lista de gazde care creste cu fiecare domeniu; e treaba dispecerului, nu a acestui pas.
+2. **Facut in felia 67** (commitul `ee7563c`, "SEO tehnic: ... adresa de baza"): `FirPagina` si
+   `FoaieTipar` compun acum adresele din `adresaSite()` (`src/lib/site.ts`), deci `BreadcrumbList`
+   urmeaza `SITE_URL` si nu mai arata spre mediul de proba. Nu mai ramane nimic de facut la acest
+   punct. Comanda de verificare de mai jos mai da pentru `src/components` un singur rand: comentariul
+   din antetul lui `FirPagina.tsx`, care numeste `ADRESA_BAZA` ca sa explice de ce s-a schimbat, nu o
+   folosire.
+   Masurat si in felia 69 (30.09.2026): un build cu `SITE_URL=https://3s.md` nu are nicio aparitie a
+   mediului de proba in datele structurate ale paginilor cu fir, in `.next/server/app`, in harta, in
+   `robots.txt`, in `/llms.txt` si in `security.txt`.
 
 **Verificare:**
 
 ```
-grep -rn "ADRESA_BAZA" src/components
+grep -rn "ADRESA_BAZA" src/components | grep -v ":[0-9]*: *//"
 pnpm build && python .claude/scripts/porti/poarta-juridic.py --mediu productie
 ```
 
-Asteptat: niciun rand pentru `src/components`; zero constatari C-01.
+Asteptat: pentru `src/components`, cel mult randul-comentariu din `FirPagina.tsx` (punctul 2, deja
+facut), nicio folosire; zero constatari C-01.
 
 ## Pasul 8. `lastmod` in harta de site
 

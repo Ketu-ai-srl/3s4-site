@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { ANTET, PALETA, SELECTOR_LIMBA, SERTAR } from '../../src/content/navigatie'
+import { asteaptaHidratarea } from './ajutor/hidratare'
 import { rutePublice } from './ajutor/proiect'
 
 /**
@@ -68,6 +69,10 @@ test.describe('antetul la 1440', () => {
 
   test('martor POZITIV: o ruta inexistenta si o ancora fara tinta, puse in antet, sunt prinse', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
+    // `networkidle` nu spune ca pagina e hidratata: la procesor incetinit hidratarea vine la cateva sute de ms pana
+    // la secunde dupa el, iar un copil pe care serverul nu l-a trimis da eroarea de hidratare, arborele se
+    // regenereaza pe client si legaturile de proba dispar (aceeasi clasa ca martorul din `livrare.spec.ts`).
+    await asteaptaHidratarea(page, ['header nav'])
     await page.evaluate(() => {
       for (const href of ['/ruta-care-nu-exista-inca', '/#ancora-care-nu-exista']) {
         const a = document.createElement('a')

@@ -48,6 +48,24 @@ ceas `requestAnimationFrame` pentru toata pagina (`ceas-derulare.ts`).
 - **Starea statica**: p = 1 pe server si la `prefers-reduced-motion: reduce`. HTML-ul servit arata
   fiecare piesa in forma ei finala (paritatea G-AI-01, pagina completa fara JavaScript).
 
+## Garda eroului la parsare incompleta
+
+Eroul e centrat vertical, deci inaltimea blocului hotaraste unde sta fiecare rand. Pe un procesor lent
+navigatorul poate picta cand a parsat doar o parte din bloc; cand soseste restul, blocul creste, se
+recentreaza si tot ce era pictat sare. Masurat 30.09 la 390 px, procesor x4: cu documentul livrat in
+doua bucati, taiat dupa titlu, CLS 0,19 pe pagina din `automatizari-ai.ts` (0,083 pe cea din
+`cautare-ai.ts`, 0,069 pe cea din `portal-clienti.ts`); fara nicio taietura, 1 incarcare din 14 a picat
+singura pe jumatate parsat (0,05). In CI 36310864983 pagina din `automatizari-ai.ts` a dat 0,178 pe una
+din trei incarcari: valoarea cade in aceeasi familie, dar cauza din CI nu e masurata direct (jurnalul
+n-are deplasarile, doar suma). `EroulCinema` pune deci, dupa continut, un ultim copil gol
+(`[data-erou-sfarsit]`), iar `EroulCinema.module.css` tine blocul cu `visibility: hidden` cat timp acel
+copil nu exista in DOM. HTML-ul servit complet il contine, deci nimic nu se ascunde pe pagina finala, la
+roboti sau fara JavaScript; un navigator fara `:has()` ignora regula si se poarta ca inainte. Consecinta
+pentru cine scrie un erou: nu se bazeaza pe `:last-child` al blocului (ultimul copil e santinela).
+Proba: `tests/browser/cinema-1.spec.ts`, sectiunea "eroul cand documentul soseste in doua bucati", cu
+martor pozitiv (garda anulata prin CSS, taietura in eroul din `automatizari-ai.ts`) si negativ (garda
+anulata, documentul intreg).
+
 ## Piesele
 
 | Piesa | Fisier | Proprietati |

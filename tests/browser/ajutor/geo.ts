@@ -1,4 +1,5 @@
 import type { Browser, Page } from '@playwright/test'
+import { navigheaza } from './navigare'
 import { nemasurat } from './proiect'
 
 /**
@@ -105,7 +106,8 @@ async function textServitDin(pagina: Page, selector: string): Promise<string | n
 async function deschideFaraJs(browser: Browser, url: string): Promise<{ pagina: Page; inchide: () => Promise<void> }> {
   const context = await browser.newContext({ javaScriptEnabled: false })
   const pagina = await context.newPage()
-  const raspuns = await pagina.goto(url, { waitUntil: 'load' })
+  // Prin `navigheaza`: eroarea de transport a masinii de rulare se reia, nu pica proba (`ajutor/navigare.ts`).
+  const raspuns = await navigheaza(pagina, url, { waitUntil: 'load' })
   if (!raspuns || raspuns.status() >= 400) {
     await context.close()
     nemasurat('pagina nu s-a servit (' + (raspuns ? raspuns.status() : 'fara raspuns') + '): ' + url)
@@ -134,7 +136,7 @@ export type MasuraParitate = {
 export async function masoaraParitatea(browser: Browser, url: string): Promise<MasuraParitate> {
   const cuJs = await browser.newContext()
   const pagina = await cuJs.newPage()
-  await pagina.goto(url, { waitUntil: 'load' })
+  await navigheaza(pagina, url, { waitUntil: 'load' })
   await pagina.waitForLoadState('networkidle').catch(() => {})
   await pagina.waitForTimeout(1000)
   const randat = await pagina.evaluate(() => ({ text: document.body.innerText, innerWidth: window.innerWidth }))

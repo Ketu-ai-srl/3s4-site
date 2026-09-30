@@ -6,6 +6,7 @@ import { citesteArticolele } from '../../src/content/blog/conducta'
 import { caleArticol } from '../../src/content/blog/registru'
 import { CAI_EXISTENTE } from '../../src/content/cai'
 import { BRAND } from '../../src/content/entitate'
+import { asteaptaHidratarea } from './ajutor/hidratare'
 import { RADACINA, rutePublice } from './ajutor/proiect'
 
 /**
@@ -84,6 +85,10 @@ test.describe('livrare: completitudinea navigatiei pe fiecare pagina', () => {
 
   test('martor POZITIV: o legatura moarta in subsol si una inerta in fir sunt prinse', async ({ page }) => {
     await page.goto('/securitate', { waitUntil: 'load' })
+    // Nodurile de proba se scriu in subsol si in fir, elemente pe care React le hidrateaza DUPA `load`: un copil
+    // pe care serverul nu l-a trimis da eroarea de hidratare si arborele se regenereaza pe client, iar nodurile
+    // dispar (CI 36688120515, incercarea 1: primit [] in loc de cele 2 defecte). Se asteapta hidratarea lor.
+    await asteaptaHidratarea(page, ['footer', 'nav[aria-label="Fir de navigare"]'])
     await page.evaluate(() => {
       const a = document.createElement('a')
       a.href = '/nu-exista-la-livrare'

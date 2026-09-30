@@ -2,6 +2,11 @@
 // cine prelucreaza datele. Fisierul e `config/operator.json`, cu `"operator": null` azi (decizia
 // owner-ului din 24.09.2026: niciun operator pana la infiintarea firmei 3S).
 //
+// PE DOMENIU (felia multi-domeniu): variabila `OPERATOR_JSON`, cu aceeasi schema ca fisierul, are
+// PRIORITATE fata de el si e validata cu ACEEASI functie de citire (`citesteOperator`). Fara variabila
+// (nesetata sau goala), comportamentul e cel de pana acum: decide fisierul. O valoare gresita opreste
+// construirea, cu mesajul care numeste variabila si campul.
+//
 // CINE IL CITESTE: starea consimtamantului (`src/lib/analitica.ts`), deci bannerul, analitica si
 // legatura "Setari cookie-uri" din subsol; textele juridice (`src/content/juridic/`); poarta juridica
 // (L-01, L-15), care il citeste separat, din Python. Nicio alta piesa nu are o a doua sursa pentru
@@ -14,6 +19,10 @@
 // goala. Campurile de identificare ale firmei pe fiecare pagina le cere poarta juridica, nu codul.
 
 import configurare from "../../config/operator.json";
+import { VARIABILA_OPERATOR, configurareOperatorDinMediu } from "./operator-mediu";
+
+/** Sursa implicita a comutatorului, cum o numesc mesajele de eroare. */
+export const SURSA_FISIER = "config/operator.json";
 
 /** Numele campurilor, luate din `_forma`: niciun camp nu se scrie a doua oara aici. */
 export type CampOperator = keyof typeof configurare._forma;
@@ -41,27 +50,35 @@ const SUBSTITUENT = /(?<!\p{L})(?:TODO|TBD|N\/?A|lorem)(?!\p{L})|XXX+|\?\?\?|de\
 /** O adresa de posta plauzibila: un singur @, fara spatii, cu punct in domeniu. */
 const FORMA_ADRESEI = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Citeste comutatorul dintr-o configurare data. Arunca pe o forma gresita. */
-export function citesteOperator(cfg: unknown): Operator | null {
+/**
+ * Citeste comutatorul dintr-o configurare data. Arunca pe o forma gresita. `sursa` e numele din
+ * mesaje: fisierul implicit, sau `OPERATOR_JSON` cand configurarea vine din mediu.
+ */
+export function citesteOperator(cfg: unknown, sursa: string = SURSA_FISIER): Operator | null {
   if (typeof cfg !== "object" || cfg === null || !("operator" in cfg)) {
-    throw new Error('config/operator.json: lipseste cheia "operator" (null sau obiectul firmei)');
+    const camp = typeof cfg === "object" && cfg !== null ? Object.keys(cfg).filter((k) => (CAMPURI as string[]).includes(k)) : [];
+    throw new Error(
+      sursa +
+        ': lipseste cheia "operator" (null sau obiectul firmei)' +
+        (camp.length > 0 ? ': campurile firmei (' + camp.join(", ") + ') stau sub cheia "operator", nu la radacina' : ""),
+    );
   }
   const brut = (cfg as { operator: unknown }).operator;
   if (brut === null) {
     return null;
   }
   if (typeof brut !== "object" || Array.isArray(brut)) {
-    throw new Error('config/operator.json: "operator" trebuie sa fie null sau un obiect');
+    throw new Error(sursa + ': "operator" trebuie sa fie null sau un obiect');
   }
   const necunoscute = Object.keys(brut).filter((k) => !(CAMPURI as string[]).includes(k));
   if (necunoscute.length > 0) {
-    throw new Error("config/operator.json: camp necunoscut " + necunoscute.join(", ") + " (campurile sunt cele din _forma)");
+    throw new Error(sursa + ": camp necunoscut " + necunoscute.join(", ") + " (campurile sunt cele din _forma)");
   }
   const operator = {} as Operator;
   for (const camp of CAMPURI) {
     const valoare = (brut as Record<string, unknown>)[camp] ?? "";
     if (typeof valoare !== "string") {
-      throw new Error("config/operator.json: campul " + camp + " trebuie sa fie text");
+      throw new Error(sursa + ": campul " + camp + " trebuie sa fie text");
     }
     operator[camp] = valoare.trim();
   }
@@ -82,5 +99,40 @@ export function operatorComplet(operator: Operator | null): operator is Operator
   return operator !== null && lipsuriInformare(operator).length === 0;
 }
 
-/** Comutatorul, citit la construire din `config/operator.json`. */
-export const OPERATOR: Operator | null = citesteOperator(configurare as unknown);
+/**
+ * Operatorul unui domeniu: `OPERATOR_JSON` daca e setata, altfel `config/operator.json`.
+ *
+ * Din mediu, un operator NUMIT dar incomplet opreste construirea aici, cu lista campurilor care
+ * lipsesc si numele variabilei. Din fisier, aceeasi oprire vine mai tarziu, din `verificaComutator`
+ * (`src/content/juridic/comutator.ts`), la generarea paginilor juridice; aici nu se schimba nimic.
+ */
+export function alegeOperator(
+  dinMediu: ReturnType<typeof configurareOperatorDinMediu> = configurareOperatorDinMediu(),
+  dinFisier: unknown = configurare,
+): { operator: Operator | null; sursa: string } {
+  if (dinMediu === null) {
+    return { operator: citesteOperator(dinFisier), sursa: SURSA_FISIER };
+  }
+  const operator = citesteOperator(dinMediu.configurare, VARIABILA_OPERATOR);
+  if (operator !== null) {
+    const lipsuri = lipsuriInformare(operator);
+    if (lipsuri.length > 0) {
+      throw new Error(
+        VARIABILA_OPERATOR +
+          ": operatorul e numit, dar informarea nu e completa (lipsesc: " +
+          lipsuri.join(", ") +
+          "). Se completeaza campurile sau se foloseste " +
+          '{"operator": null}.',
+      );
+    }
+  }
+  return { operator, sursa: VARIABILA_OPERATOR };
+}
+
+const ALES = alegeOperator();
+
+/** Comutatorul, citit la construire: din `OPERATOR_JSON` daca e setata, altfel din `config/operator.json`. */
+export const OPERATOR: Operator | null = ALES.operator;
+
+/** De unde vine `OPERATOR`: `OPERATOR_JSON` sau `config/operator.json`. Pentru mesaje si probe. */
+export const SURSA_OPERATOR: string = ALES.sursa;

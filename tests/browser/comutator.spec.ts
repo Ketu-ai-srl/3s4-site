@@ -10,6 +10,7 @@ import {
   pornesteFixturile,
   type ServerFixturi,
 } from './ajutor/fixturi'
+import { navigheaza } from './ajutor/navigare'
 import { rutePublice } from './ajutor/proiect'
 
 /**
@@ -682,7 +683,10 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
       browser,
     }) => {
       const { context, pagina, retea } = await contextPazit(browser, copie.baza)
-      await pagina.goto(copie.baza + cale, { waitUntil: 'load' })
+      // CI 36310864983 (/blog/categorie/contabilitate): `page.goto` a cazut cu net::ERR_NO_BUFFER_SPACE, in 66 ms,
+      // inainte de orice octet din pagina; celelalte 50 de rute ale aceleiasi bucle au trecut. Transportul
+      // masinii de rulare, nu subsolul: navigarea se reia numai pe aceasta eroare (`ajutor/navigare.ts`).
+      await navigheaza(pagina, copie.baza + cale, { waitUntil: 'load' })
       await pagina.locator('[data-consimtamant] [data-accept]').click()
       await expect.poll(() => scriptGa(retea).length, { timeout: 10_000 }).toBeGreaterThan(0)
 

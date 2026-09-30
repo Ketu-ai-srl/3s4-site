@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import type { Browser, Page } from '@playwright/test'
 import { CHEIE_ALEGERE } from '../../../src/components/consimtamant/stocare'
+import { navigheaza } from './navigare'
 import { nemasurat } from './proiect'
 
 /**
@@ -155,7 +156,9 @@ function normalizeaza(text: string): string {
 export async function masoaraHtmlBrut(browser: Browser, url: string): Promise<MasuraHtmlBrut> {
   const cuJs = await browser.newContext({ javaScriptEnabled: true })
   const paginaCuJs = await cuJs.newPage()
-  await paginaCuJs.goto(url, { waitUntil: 'networkidle' })
+  // Navigarile ajutoarelor trec prin `navigheaza`: o eroare de transport a masinii de rulare nu trebuie sa
+  // pice odata toate probele care folosesc aceasta masuratoare (`ajutor/navigare.ts`).
+  await navigheaza(paginaCuJs, url, { waitUntil: 'networkidle' })
   const titluCuJs = normalizeaza(await paginaCuJs.title())
   const paragrafeAsteptate = await paginaCuJs.evaluate((minim) => {
     const gasite: string[] = []
@@ -181,7 +184,7 @@ export async function masoaraHtmlBrut(browser: Browser, url: string): Promise<Ma
 
   const faraJs = await browser.newContext({ javaScriptEnabled: false })
   const paginaFaraJs = await faraJs.newPage()
-  await paginaFaraJs.goto(url, { waitUntil: 'domcontentloaded' })
+  await navigheaza(paginaFaraJs, url, { waitUntil: 'domcontentloaded' })
   const titluFaraJs = normalizeaza(await paginaFaraJs.title())
   const textBrut = normalizeaza(
     await paginaFaraJs.evaluate(() => document.body.innerText || document.body.textContent || ''),
@@ -291,7 +294,7 @@ export async function masoaraTerti(
     })
   }
 
-  await pagina.goto(url, { waitUntil: 'domcontentloaded' })
+  await navigheaza(pagina, url, { waitUntil: 'domcontentloaded' })
 
   await pagina.waitForLoadState('networkidle').catch(() => {})
   const cheiStocareInainte = await citesteStocarea(pagina)

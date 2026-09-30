@@ -1,5 +1,5 @@
 // Comutatorul PAGINILOR juridice (planul valului S4, §9-§10): care dintre cele 8 pagini ale
-// grupului exista, dupa operatorul de date din `config/operator.json`.
+// grupului exista, dupa operatorul de date al domeniului (`OPERATOR_JSON`, altfel `config/operator.json`).
 //
 // REGULA: cu `"operator": null` (decizia owner-ului din 24.09.2026, "Nimeni deocamdata") paginile
 // juridice NU exista - nu intra in `RUTE`, deci nici in harta de site, in subsol, in paleta sau in
@@ -28,10 +28,23 @@
 // construieste nimic, deci nu exista nici HTML, nici adresa.
 
 import configurare from "../../../config/operator.json";
+import { citesteOperatorNumit, operatorNumitInMediu } from "../../lib/operator-mediu";
 import type { Ruta } from "../rute";
 
-/** Exista un operator numit in `config/operator.json`? Numai cheia `operator` se citeste. */
-export const OPERATOR_NUMIT: boolean = (configurare.operator as unknown) !== null;
+/**
+ * Exista un operator numit? Trei surse, in aceasta ordine (felia multi-domeniu):
+ *   1. `NEXT_PUBLIC_OPERATOR_NUMIT`, valoarea pe care `next.config.ts` o calculeaza din `OPERATOR_JSON` la
+ *      construire si pe care Next o inlocuieste in TOATE pachetele, si pe cel de browser: "true" / "false"
+ *      hotarasc. Expresia e scrisa LITERAL, fiindca Next inlocuieste numai ce recunoaste pe text;
+ *   2. variabila `OPERATOR_JSON` insasi (operatorul pe domeniu), acolo unde exista: pe server, si in probe;
+ *   3. `config/operator.json`, din care se citeste numai cheia `operator`.
+ * Fara prima sursa, pachetul de browser cadea pe fisier si cautarea Ctrl+K nu gasea paginile juridice ale unui
+ * domeniu al carui operator vine numai din mediu (antetul `src/lib/operator-mediu.ts`).
+ * Modulul din `lib` e mic si nu trage configurarea: `@/lib/operator` ramane interzis aici (proba
+ * `tests/juridic.test.ts`).
+ */
+export const OPERATOR_NUMIT: boolean =
+  citesteOperatorNumit(process.env.NEXT_PUBLIC_OPERATOR_NUMIT) ?? operatorNumitInMediu() ?? ((configurare.operator as unknown) !== null);
 
 /** Calea indexului juridic. */
 export const CALE_JURIDIC = "/juridic";

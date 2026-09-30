@@ -13,6 +13,7 @@
 // ce vede vizitatorul cand alege e ce scrie aici.
 
 import type { Operator } from "@/lib/operator";
+import { VERSIUNE_ANALITICA, texteAnalitica } from "./analitica";
 import { DESCRIERE_EVENIMENTE, ETICHETA_MD, ETICHETA_RO, verificaOperatorPentruTexte } from "./confidentialitate";
 import { COOKIE_ALEGERE, FURNIZORI, furnizoriCategorie } from "./furnizori";
 import type { DocumentJuridic, TabelJuridic } from "./tipuri";
@@ -40,14 +41,20 @@ export function tabelCookie(): TabelJuridic {
   };
 }
 
-export function politicaCookie(operator: Operator): DocumentJuridic {
+/**
+ * `analitica`: analitica proprie, fara cookie, e pornita pe acest domeniu? Implicit se citeste din mediu
+ * (`UMAMI_URL` si `UMAMI_WEBSITE_ID`); parametrul e pentru probe. Cand e pornita, sectiunea 2b are in plus
+ * paragraful din `./analitica.ts`; altfel ramane textul de pana acum.
+ */
+export function politicaCookie(operator: Operator, { analitica }: { analitica?: boolean } = {}): DocumentJuridic {
   verificaOperatorPentruTexte(operator);
+  const masurare = texteAnalitica(operator.email, analitica);
   const statistica = furnizoriCategorie("statistica");
   const statisticaCookie = statistica.flatMap((f) => f.cookieuri);
   const evenimente = Object.values(DESCRIERE_EVENIMENTE).join("; ");
   return {
     titlu: "Politica de cookie-uri",
-    versiune: VERSIUNE_COOKIE,
+    versiune: masurare === null ? VERSIUNE_COOKIE : VERSIUNE_ANALITICA,
     introducere:
       "Aici aflați ce informații stochează sau citește site-ul în browserul dumneavoastră, de ce, cine le primește și cum vă puteți răzgândi. Datele operatorului și drepturile complete sunt în politica de confidențialitate.",
     sectiuni: [
@@ -89,6 +96,7 @@ export function politicaCookie(operator: Operator): DocumentJuridic {
               "Cu acordul pentru statistică, Google Analytics 4 primește adresa paginii, pagina de pe care ați venit, tipul de dispozitiv și de browser, țara și orașul aproximate din adresa IP, plus acțiunile din lista închisă: " +
                 evenimente +
                 ". Nu primește numele, adresa de e-mail sau ce scrieți în formulare.",
+              ...(masurare === null ? [] : [masurare.cookie]),
             ],
           },
         ],

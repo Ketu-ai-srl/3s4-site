@@ -40,6 +40,31 @@
     0 0 26px rgba(5, 5, 7, 0.8);
 }
 
+/* GARDA DE PARSARE INCOMPLETA (CI 36310864983: CLS 0,178 pe automatizari-ai la 390, procesor x4, LCP bun).
+   Eroul e centrat vertical (`align-items: center`), deci inaltimea blocului hotaraste unde sta fiecare rand.
+   Pe un procesor lent navigatorul poate picta cand a parsat doar o parte din bloc; cand soseste restul, blocul
+   creste si se recentreaza, iar tot ce era deja pictat sare cu jumatate din crestere.
+   Masurat 30.09 (390 x 844, procesor x4), garda anulata prin CSS: cu documentul livrat in doua bucati, taiat
+   chiar dupa titlu, automatizari-ai 0,19 (blocul pictat intai pe 156 px, apoi pe 622), cautare-ai 0,083,
+   portal-clienti 0,069; taiat dupa subtitlul scris 0,16, in macheta 0,05, aproape de sfarsit 0,015. Fara nicio
+   taietura, pe o masina incarcata, 1 incarcare din 14 a picat singura pe jumatate parsat (0,05); cu garda, in
+   aceleasi conditii, 20 din 20 au ramas sub 0,01. Valoarea din CI (0,178) cade in aceeasi familie; cauza ei
+   nu e masurata direct, fiindca jurnalul CI n-are deplasarile.
+   Regula: cat timp blocul nu are ultimul copil (`[data-erou-sfarsit]`, pus de EroulCinema dupa continut),
+   parsarea nu s-a terminat, iar blocul sta ascuns cu `visibility` (isi pastreaza locul, deci nu misca nimic).
+   Cand ultimul copil exista, blocul se arata direct in forma finala: un element nepictat inca nu poate sari.
+   HTML-ul servit complet (roboti, fara JavaScript) il contine, deci nu se ascunde niciodata. Un navigator
+   fara `:has()` ignora regula intreaga si se poarta ca inainte. */
+.bloc:not(:has(> [data-erou-sfarsit])) {
+  visibility: hidden;
+}
+
+.sfarsit {
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+
 .eticheta {
   display: block;
   margin: 0 0 24px;

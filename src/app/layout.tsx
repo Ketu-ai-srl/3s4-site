@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Marck_Script, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import Analitica from "@/components/analitica/Analitica";
 import PunctConsimtamant from "@/components/consimtamant/PunctConsimtamant";
 import Antet from "@/components/global/Antet";
 import { CULOARE_MARCA } from "@/components/global/culoare-marca";
 import Subsol from "@/components/global/Subsol";
 import TranzitieVedere from "@/components/global/TranzitieVedere";
+import AlternateHreflang from "@/components/seo/AlternateHreflang";
 import DateStructurateSite from "@/components/seo/DateStructurateSite";
 import { META_ACASA } from "@/content/acasa";
 import { BRAND } from "@/content/entitate";
@@ -111,6 +113,13 @@ export default function RootLayout({
         <TranzitieVedere />
         <DateStructurateSite />
         <PunctConsimtamant />
+        {/* MAI MULTE DOMENII (felia multi-domeniu): acelasi cod ruleaza pe mai multe domenii, fiecare cu
+            variabilele lui. `Analitica` pune scriptul de statistica proprie (fara cookie, prin calea
+            `/a/`) numai cu `UMAMI_URL` si `UMAMI_WEBSITE_ID`; `AlternateHreflang` pune legaturile
+            hreflang spre celelalte domenii numai cu `SITE_ALTERNATE`. Fara variabile, niciuna nu
+            randeaza nimic. */}
+        <Analitica />
+        <AlternateHreflang />
       </body>
     </html>
   );

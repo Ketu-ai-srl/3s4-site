@@ -77,7 +77,12 @@ export default function EroulCinema({ children, forma, samanta, cuScriere = true
     <ContextErou.Provider value={{ faza, laScris }}>
       <section className={[s.erou, className].filter(Boolean).join(" ")} data-sectiune="erou" data-faza={faza}>
         <FormaHartii forma={forma} samanta={samanta} />
-        <div className={[s.bloc, blocClassName].filter(Boolean).join(" ")}>{children}</div>
+        <div className={[s.bloc, blocClassName].filter(Boolean).join(" ")}>
+          {children}
+          {/* Ultimul copil al blocului: cat timp lipseste din DOM, parsarea nu a ajuns la capatul lui si CSS-ul
+              tine blocul ascuns (garda din EroulCinema.module.css). Gol, fara inaltime, ascuns cititoarelor. */}
+          <span className={s.sfarsit} data-erou-sfarsit="" aria-hidden="true" />
+        </div>
       </section>
     </ContextErou.Provider>
   );
