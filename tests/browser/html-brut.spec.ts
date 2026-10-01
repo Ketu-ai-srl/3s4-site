@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { masoaraHtmlBrut } from './ajutor/detectori'
 import { pornesteFixturile, type ServerFixturi } from './ajutor/fixturi'
 import { rutePublice } from './ajutor/proiect'

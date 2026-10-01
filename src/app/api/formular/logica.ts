@@ -2,6 +2,9 @@
 // si o destinatie date (Next nu permite alte exporturi in fisierul rutei).
 //
 // REGULA (planul valului S4, §9-§10; decizia owner-ului din 24.09.2026, "Nimeni deocamdata"):
+//   - PRIMUL test: domeniul are formularele oprite (`"formulare": false` in `CANALE_JSON`,
+//     `src/content/canale.ts`) -> 404, fara sa citeasca corpul, inaintea operatorului si a destinatiei.
+//     Pe un asemenea domeniu punctul nu exista pentru nimeni, deci raspunsul nu spune de ce;
 //   - fara operator de date COMPLET, punctul raspunde "inactiv" FARA sa citeasca corpul cererii si
 //     fara sa scrie ceva in jurnal: nimic nu se primeste, nimic nu se stocheaza, nimic nu pleaca;
 //   - fara destinatie valida in mediu (`FORMULARE_DESTINATIE`), tot "inactiv";
@@ -19,6 +22,7 @@
 
 import type { Formular } from "@/components/consimtamant/evenimente";
 import { stareFormular } from "@/components/formular/stare";
+import { CANALE } from "@/content/canale";
 import { DURATA_MINIMA_MS, citesteCorp, valideaza } from "@/components/formular/validare";
 import { FORMULAR, POLITICA } from "@/content/formular";
 import { INREGISTRARE } from "@/content/conversie";
@@ -38,6 +42,8 @@ export const ANTET_SECRET = "X-Formular-Secret";
 const LIMITA = new LimitaRata();
 
 export type Mediu = {
+  /** Formularele domeniului sunt pornite; implicit `CANALE.formulare`. Parametru pentru probe. */
+  formulare?: boolean;
   operator: Operator | null;
   destinatie: string | undefined;
   trimite?: typeof fetch;
@@ -91,6 +97,9 @@ function json(corp: Record<string, unknown>, status: number): Response {
 }
 
 export async function trateazaCerere(cerere: Request, mediu: Mediu): Promise<Response> {
+  if (!(mediu.formulare ?? CANALE.formulare)) {
+    return json({ stare: "inexistent" }, 404);
+  }
   if (!operatorComplet(mediu.operator)) {
     return json({ stare: "inactiv", motiv: "fara-operator" }, 503);
   }

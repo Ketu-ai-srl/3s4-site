@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Browser, type Page } from '@playwright/test'
+import type { Browser, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { SCENARII } from '../../src/content/acasa-constructor'
 import { IMPACTURI_BLOCANTE } from './ajutor/detectori'
 

@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "porti:probe": "python .claude/scripts/porti/probe/proba-completitudine.py && python .claude/scripts/porti/probe/proba-porti-proces.py && python .claude/scripts/porti/probe/proba-juridic.py && python .claude/scripts/porti/probe/proba-seo.py && python .claude/scripts/porti/probe/proba-regresie.py",
-    "porti:sursa": "python .claude/scripts/porti/poarta-scurgeri.py && python .claude/scripts/porti/poarta-rute.py && python .claude/scripts/porti/poarta-identificatori.py && python .claude/scripts/porti/poarta-legaturi-md.py && python .claude/scripts/porti/poarta-tipografie.py && python .claude/scripts/porti/poarta-limba.py && python .claude/scripts/porti/poarta-afirmatii.py && python .claude/scripts/porti/poarta-evidenta.py && python .claude/scripts/porti/poarta-registru-rute.py && python .claude/scripts/porti/poarta-regresie.py",
+    "porti:sursa": "python .claude/scripts/porti/poarta-scurgeri.py && python .claude/scripts/porti/poarta-rute.py && python .claude/scripts/porti/poarta-identificatori.py && python .claude/scripts/porti/poarta-legaturi-md.py && python .claude/scripts/porti/poarta-tipografie.py && python .claude/scripts/porti/poarta-limba.py && python .claude/scripts/porti/poarta-afirmatii.py && python .claude/scripts/porti/poarta-evidenta.py && python .claude/scripts/porti/poarta-registru-rute.py && python .claude/scripts/porti/poarta-regresie.py && python .claude/scripts/porti/poarta-navigare.py",
     "porti:build": "python .claude/scripts/porti/poarta-seo.py && python .claude/scripts/porti/poarta-juridic.py",
     "porti:browser": "node .claude/scripts/porti/browser-toate.mjs",
     "porti": "pnpm porti:sursa && pnpm build && pnpm porti:build",

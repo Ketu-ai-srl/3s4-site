@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 
 /**
  * Pagina de start la 1440 si 390 (felia `fundatie`): ordinea sectiunilor, inaltimile cioturilor

@@ -1,4 +1,5 @@
-import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test'
+import type { Browser, BrowserContext, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { CALE_EVIDENTA } from '../../src/components/consimtamant/evidenta'
 import { CHEIE_ALEGERE } from '../../src/components/consimtamant/stocare'
 import { stareAnalitica } from '../../src/lib/analitica'

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { VARIABILA_FAMILIE_JURIDICA, citesteFamilie } from '../src/content/juridic/familie'
 import { ruteJuridice } from '../src/content/juridic/publicare'
 import { VARIABILA_OPERATOR, VARIABILA_OPERATOR_NUMIT, citesteOperatorNumit, configurareOperatorDinMediu, operatorNumitInMediu } from '../src/lib/operator-mediu'
 import { SURSA_FISIER, alegeOperator, citesteOperator, lipsuriInformare, type Operator } from '../src/lib/operator'
@@ -294,10 +295,45 @@ describe('cautarea Ctrl+K: pachetul de browser primeste valoarea calculata la co
       vi.stubEnv('OPERATOR_JSON', json)
       return (await import('../next.config')).default
     }
-    expect((await configCu(jsonOperator(OPERATOR_SINTETIC))).env).toEqual({ [VARIABILA_OPERATOR_NUMIT]: 'true' })
-    expect((await configCu('{"operator": null}')).env).toEqual({ [VARIABILA_OPERATOR_NUMIT]: 'false' })
-    // Nesetat: cheia exista oricum ("null"), ca o valoare pusa de altcineva in mediul build-ului sa nu ajunga in pachet
-    expect((await configCu('')).env).toEqual({ [VARIABILA_OPERATOR_NUMIT]: 'null' })
+    // Felia 73: langa ea, mereu, familia textelor juridice ("see" / "md" / "null"), din operatorul rezolvat
+    expect((await configCu(jsonOperator(OPERATOR_SINTETIC))).env).toEqual({ [VARIABILA_OPERATOR_NUMIT]: 'true', [VARIABILA_FAMILIE_JURIDICA]: 'see' })
+    expect((await configCu('{"operator": null}')).env).toEqual({ [VARIABILA_OPERATOR_NUMIT]: 'false', [VARIABILA_FAMILIE_JURIDICA]: 'null' })
+    // Nesetat: cheia exista oricum ("null"), ca o valoare pusa de altcineva in mediul build-ului sa nu ajunga in pachet;
+    // familia vine atunci din fisier (azi fara operator)
+    const fisier = await import('../config/operator.json')
+    expect((await configCu('')).env).toEqual({
+      [VARIABILA_OPERATOR_NUMIT]: 'null',
+      [VARIABILA_FAMILIE_JURIDICA]: fisier.default.operator === null ? 'null' : expect.stringMatching(/^(see|md)$/),
+    })
+  })
+
+  it('next.config.ts: familia "md" pentru un operator din Republica Moldova; o tara fara familie opreste construirea', async () => {
+    const configCu = async (json: string) => {
+      vi.resetModules()
+      vi.stubEnv('OPERATOR_JSON', json)
+      return (await import('../next.config')).default
+    }
+    const moldova: Operator = { ...OPERATOR_SINTETIC, tara: ['Republica', 'Moldova'].join(' ') }
+    expect((await configCu(jsonOperator(moldova))).env).toEqual({ [VARIABILA_OPERATOR_NUMIT]: 'true', [VARIABILA_FAMILIE_JURIDICA]: 'md' })
+    await expect(configCu(jsonOperator({ ...OPERATOR_SINTETIC, tara: ['Statele', 'Unite'].join(' ') }))).rejects.toThrow(/reprezentant/)
+  })
+
+  it('citesteFamilie: "see", "md" si "null" sunt raspunsuri; orice altceva lasa sursele de dinainte sa decida', () => {
+    expect(citesteFamilie('see')).toBe('see')
+    expect(citesteFamilie('md')).toBe('md')
+    expect(citesteFamilie('null')).toBeNull()
+    for (const valoare of [undefined, '', 'MD', ' see', 'ro']) expect(citesteFamilie(valoare), JSON.stringify(valoare)).toBeUndefined()
+  })
+
+  it('pachetul de browser al unui domeniu md: operator numit, dar nicio pagina /juridic (acelea sunt ale familiei SEE)', async () => {
+    vi.stubEnv(VARIABILA_FAMILIE_JURIDICA, 'md')
+    const { publicare, rute } = await ruteInBrowser('true')
+    expect(publicare.FAMILIE_JURIDICA).toBe('md')
+    expect(cai(rute.RUTE).filter((c) => c === '/juridic' || c.startsWith('/juridic/'))).toEqual([])
+    // Controlul: aceleasi module, cu familia "see", au cele opt pagini
+    vi.stubEnv(VARIABILA_FAMILIE_JURIDICA, 'see')
+    const see = await ruteInBrowser('true')
+    for (const cale of JURIDICE) expect(cai(see.rute.RUTE), cale).toContain(cale)
   })
 
   it('martor POZITIV (pachetul de browser): cu "true", fara OPERATOR_JSON si cu fisierul pe null, RUTE are cele opt pagini juridice', async () => {
@@ -347,6 +383,8 @@ describe('cautarea Ctrl+K: pachetul de browser primeste valoarea calculata la co
     const expresie = 'process.env.' + VARIABILA_OPERATOR_NUMIT
     const cod = faraComentarii(readFileSync(join(__dirname, '..', 'src', 'content', 'juridic', 'publicare.ts'), 'utf8'))
     expect(cod).toContain(expresie)
+    // Felia 73: familia textelor juridice, acelasi tipar
+    expect(cod).toContain('process.env.' + VARIABILA_FAMILIE_JURIDICA)
     // O citire dinamica (`process.env[nume]`) ar ramane nedefinita in browser, fara nicio eroare
     expect(cod).not.toMatch(/process\.env\s*\[/)
     // Martorii curatarii: expresia din cod ramane, cea pomenita doar intr-un comentariu dispare

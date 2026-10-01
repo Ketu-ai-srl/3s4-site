@@ -1,0 +1,287 @@
+// Documentul dpa, in romana, pentru operatorul din Republica Moldova (familia md).
+// Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
+// Sursa: 05-dpa.ro.md, sha256 8723ae9058f9d06f6b9a4d554cad7d6182171987f0f7b8626c9b9b9aeb3b4b8f.
+// Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
+// Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
+
+import type { DocumentJuridic } from "../tipuri";
+
+export default function dpaRo(): DocumentJuridic {
+  return {
+    cheie: "dpa",
+    limba: "ro",
+    titlu: "Acord de prelucrare a datelor (DPA)",
+    versiune: "2026-10-01",
+    introducere: "",
+    preambul: [
+      { jurisdictie: null, paragrafe: ["3S Demerzel SRL este în curs de înregistrare. Până la înregistrare nu emitem oferte, nu încheiem contracte și nu deschidem conturi. Pagina arată acordul pe care îl vom aplica."] },
+      { jurisdictie: null, paragrafe: ["Acordul descrie cum prelucrează 3S Demerzel SRL, ca persoană împuternicită de operator, datele personale din Documentele Clientului. Se aplică împreună cu [Termenii și condițiile pentru clienți profesioniști](cale:termeni). Clienții cu sediul în Republica Moldova sunt acoperiți de Anexa 1 (Legea nr. 195/2024), cei cu sediul în Uniunea Europeană sau în Spațiul Economic European de Anexa 2 (Regulamentul (UE) 2016/679 și clauzele contractuale standard din Decizia (UE) 2021/914). Anexele 3, 4 și 5 sunt comune.", "**Pe scurt** (rezumat fără valoare contractuală; contează textul de mai jos)"], lista: { elemente: ["Clientul este operator, 3S este persoană împuternicită de operator (Articolul 1).", "3S prelucrează Documentele Clientului numai ca să furnizeze Serviciul și numai după instrucțiunile Clientului (Articolele 3 și 4).", "Documentele se stochează la Amazon Web Services, într-o singură regiune din Germania. Furnizorii care prelucrează conținutul lor și țările lor sunt în pagina [Subîmputerniciții platformei](cale:subimputerniciti) (Articolele 7 și 8).", "O schimbare a subîmputerniciților se anunță cu cel puțin 30 de zile înainte, iar Clientul se poate opune (Articolul 7).", "Un incident de securitate se comunică Clientului în cel mult 48 de ore de la luarea la cunoștință (Articolul 10).", "La încetarea Serviciului Clientul are cel puțin 30 de zile să-și recupereze datele; 3S le șterge din sistemele active în cel mult 30 de zile după aceea, iar copiile de siguranță expiră în cel mult 90 de zile de la ștergerea din sistemele active (Articolul 13).", "Acordul urmează legea Republicii Moldova. Clauzele standard pentru Clienții din UE/SEE sunt guvernate de dreptul României, iar litigiile privind ele se soluționează la București (Articolul 17)."] } },
+    ],
+    sectiuni: [
+      {
+        cheie: "art-1", titlu: "Articolul 1. Părțile, rolurile și încheierea acordului",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**1.1 Părțile.** „Clientul” este societatea sau alt profesionist care deschide un Cont 3S și acceptă acordul; datele lui de identificare sunt cele din formularul de acceptare. „3S” este furnizorul Serviciului:"], tabel: { forma: "cu-antet", titlu: "Articolul 1. Părțile, rolurile și încheierea acordului", antet: ["Element", "Date"], randuri: [["Denumirea", "3S Demerzel SRL"], ["Țara", "Republica Moldova"], ["Numărul de identificare de stat (IDNO)", "[în curs de înregistrare]"], ["Codul fiscal", "[în curs de înregistrare]"], ["Sediul (adresa juridică)", "[în curs de înregistrare]"], ["E-mail", "contact@3s.md"], ["Telefon", "+373 68 055 599"]] }, dupa: ["**1.2 Rolurile.** Pentru datele personale din Documentele Clientului, Clientul este operator, iar 3S este persoană împuternicită de operator, în sensul art. 28 din Regulamentul (UE) 2016/679 („GDPR”) și al art. 28 din Legea nr. 195/2024 privind protecția datelor cu caracter personal („Legea 195/2024”). Jurnalul de activitate din arhivă (ce Utilizator a deschis ce document, ce căutări a făcut și când) face parte din Documentele Clientului. Datele Utilizatorilor pentru Cont (nume, funcție, adresa de e-mail profesională, rolul în Cont, datele de autentificare și jurnalele de securitate ale Contului) și datele Clientului pentru contract și facturare 3S le prelucrează ca operator, potrivit [Politicii de confidențialitate](cale:confidentialitate); acordul nu le privește.", "**1.3 Clientul care acționează ca împuternicit.** Dacă Clientul prelucrează Documentele în numele propriilor clienți, de exemplu un birou de contabilitate sau o societate de avocatură, o declară în formularul de acceptare. Atunci Clientul este persoană împuternicită de operator, 3S este subîmputernicit, iar în Anexa 2 se aplică Modulul Trei (punctul 3 îi enumeră adaptările). Clientul garantează că i-a impus lui 3S aceleași obligații de protecție a datelor pe care le are față de operatorii lui, că a pus la dispoziția 3S instrucțiunile operatorilor înainte de prelucrare și că a obținut de la ei autorizarea de a folosi 3S și subîmputernicii din Lista agreată.", "**1.4 Încheierea.** Acordul se încheie când Clientul îl acceptă în Cont: administratorul Contului se autentifică, completează formularul de acceptare, bifează caseta separată „Accept Acordul de prelucrare a datelor” și introduce codul de unică folosință trimis la adresa de e-mail a societății [N20: fluxul de acceptare din Cont]. Formularul cuprinde datele Clientului și ale reprezentantului lui, rolul Clientului (operator sau persoană împuternicită, Articolul 1.3), adresa pentru notificări, punctul de contact pentru incidente (Articolul 10.1) și, pentru Clienții din UE/SEE, statul de sediu și autoritatea de supraveghere competentă (Anexa 3, partea C); când se aplică Modulul Trei, cuprinde și contactul fiecărui operator pentru notificările din Anexa 2, punctul 3. Părțile convin că acceptarea prin acești pași ține loc de semnătură și produce efectele semnăturii olografe pentru acest acord (Legea nr. 124/2022 privind identificarea electronică și serviciile de încredere, art. 40 alin. (2) și (3)). Metoda de verificare este autentificarea în Cont plus codul de unică folosință. Administratorul Contului care acceptă declară și garantează că este împuternicit să încheie acordul în numele Clientului (Legea nr. 124/2022, art. 43 alin. (1) lit. a)). Clientul păstrează secrete datele de acces și codurile și răspunde pentru folosirea lor abuzivă până în momentul în care anunță 3S că au fost compromise. 3S păstrează confidențiale și protejate împotriva modificării dovada acceptării și codurile de unică folosință și răspunde pentru prejudiciul cauzat prin încălcarea acestor obligații, potrivit Articolului 15. Clientul poate cere ca acordul să fie semnat cu semnătură electronică calificată sau olografă, iar 3S acceptă. Imediat după acceptare, 3S trimite Clientului o copie PDF a acordului în versiunea acceptată, cu lista completă a subîmputerniciților în vigoare, și păstrează dovada acceptării (data și ora, contul și Utilizatorul, versiunea și amprenta textului, adresa IP și celelalte elemente din Termeni, secțiunea 4.9) cât durează acordul și 3 ani după încetare.", "**1.5 Intrarea în vigoare.** Acordul produce efecte de la data acceptării, dovedită prin jurnalul de la Articolul 1.4, și se aplică în versiunea acceptată, cu modificările făcute după Articolul 18.", "**1.6 Ordinea documentelor.** Acordul, cu anexele lui, face parte din contractul dintre Client și 3S, alături de Termeni și de Ofertă (Termeni, secțiunea 1.6). Pentru prelucrarea datelor personale prevalează acordul. În Anexa 2, clauzele contractuale standard prevalează asupra oricărei alte prevederi a contractului (Clauza 5).", "**1.7 Clienții din alte state.** Clienții cu sediul în alt stat decât Republica Moldova, un stat membru al Uniunii Europene sau un stat din Spațiul Economic European pot folosi Serviciul numai după un acord scris separat cu 3S privind regimul aplicabil datelor lor personale.", "**1.8 Limba.** Acordul există în română și în engleză, cu același conținut juridic, și se încheie în oricare dintre ele. Dacă versiunile diferă, prevalează cea acceptată de Client. Dacă a acceptat ambele, prevalează versiunea în limba română în litigiile soluționate de instanțele din Republica Moldova sau din România."] },
+        ],
+      },
+      {
+        cheie: "art-2", titlu: "Articolul 2. Definiții",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Termenii „date personale”, „prelucrare”, „persoană vizată”, „operator”, „persoană împuternicită de operator”, „încălcarea securității datelor cu caracter personal” și „autoritate de supraveghere” au sensul din art. 4 GDPR și din art. 4 Legea 195/2024. Termenii „Serviciul”, „Contul”, „Utilizatorul”, „Oferta” și „zi lucrătoare” au sensul din Termeni. În acord, mai înseamnă:"], lista: { elemente: ["**Termenii:** [Termenii și condițiile pentru clienți profesioniști](cale:termeni);", "**Documentele Clientului:** ce definesc Termenii (fișierele, textul extras din ele, metadatele lor și orice alt conținut încărcat sau generat în Cont), la care acordul adaugă întrebările puse asistentului, răspunsurile lui și jurnalul de activitate din arhivă;", "**Administratorul Contului:** Utilizatorul cu drepturi de administrare a Contului, care acceptă acordul în numele Clientului (Articolul 1.4);", "**Legea aplicabilă:** Legea 195/2024 și, pentru Clienții din UE/SEE, GDPR;", "**Subîmputernicit:** alt furnizor pe care 3S sau alt subîmputernicit al ei îl folosește pentru o parte din prelucrarea Documentelor Clientului;", "**Lista agreată:** lista subîmputerniciților în vigoare (Articolul 7.1);", "**Clauzele standard:** clauzele contractuale standard din anexa la Decizia de punere în aplicare (UE) 2021/914 a Comisiei;", "**UE/SEE:** Uniunea Europeană și statele din Spațiul Economic European."] } },
+        ],
+      },
+      {
+        cheie: "art-3", titlu: "Articolul 3. Obiectul, natura, scopul și durata prelucrării",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**3.1 Obiectul.** Păstrarea, indexarea și căutarea Documentelor Clientului în Serviciul 3S. Digitizarea (scanarea) și păstrarea fizică a documentelor nu fac obiectul acordului; se contractează separat, dacă se oferă (Termeni, secțiunea 3.2).", "**3.2 Natura.** Stocarea Documentelor, extragerea textului din ele (recunoașterea optică a caracterelor), indexarea, căutarea, generarea de răspunsuri cu un sistem de inteligență artificială (cu indicarea documentului din care provin și, când sistemul o poate da, a paginii; Termeni, secțiunea 3.4), afișarea, exportul, ștergerea și asistența la distanță. Cum generează sistemul răspunsurile și ce limite are scrie în pagina [Inteligența artificială în serviciile 3S](cale:inteligenta-artificiala).", "**3.3 Scopul.** Numai furnizarea Serviciului către Client, după instrucțiunile lui.", "**3.4 Datele și persoanele.** Tipurile de date personale și categoriile de persoane vizate sunt în Anexa 3, partea B.", "**3.5 Durata.** Cât timp Clientul are Cont, plus perioadele de recuperare și de ștergere din Articolul 13.", "**3.6 Canalele de contact.** Acordul privește Documentele Clientului din Serviciu. Mesajele pe care Clientul sau Utilizatorii le trimit lui 3S prin e-mail, WhatsApp sau telefon sunt canale de contact: 3S le prelucrează ca operator, potrivit Politicii de confidențialitate. Clientul nu trimite pe aceste canale documente care conțin date personale ale unor terți; documentele se încarcă în Serviciu. Canalul WhatsApp al asistentului, dacă oferta îl include (Termeni, secțiunea 3.1), face parte din Serviciu, nu din canalele de contact: furnizorii lui intră în Lista agreată înainte să primească date. Furnizorii prin care trec mesajele de contact nu primesc Documentele încărcate în Serviciu și nu sunt subîmputerniciți ai acestora [N21: confirmarea că niciunul nu are acces la Documentele încărcate în Serviciu]; ei sunt în tabelul B din pagina [Subîmputerniciții platformei](cale:subimputerniciti)."] },
+        ],
+      },
+      {
+        cheie: "art-4", titlu: "Articolul 4. Instrucțiunile Clientului",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**4.1** 3S prelucrează datele personale ale Clientului numai pe baza instrucțiunilor lui documentate, inclusiv în ceea ce privește transferurile către o țară terță (art. 28 alin. (3) lit. a) GDPR și Legea 195/2024). Instrucțiunile Clientului sunt acordul, Termenii, comenzile și setările date prin Serviciu (încărcare, ștergere, permisiuni, configurări) și cererile scrise trimise de administratorul Contului sau de o persoană pe care acesta a autorizat-o.", "**4.2** Dacă legea căreia i se supune 3S o obligă să prelucreze datele altfel decât cer instrucțiunile, 3S îl informează pe Client înainte de prelucrare, cu excepția cazului în care legea interzice informarea din motive importante de interes public. Cererile autorităților sunt reglementate în Articolul 12. Pentru Clienții din UE/SEE acest alineat nu adaugă nicio excepție la clauzele standard: instrucțiunile o obligă pe 3S așa cum prevede Clauza 8.1, iar ce se întâmplă când o lege sau o cerere dintr-o țară terță intră în conflict cu ele se reglează numai prin Clauzele 14 și 15 din Anexa 2.", "**4.3** 3S îl informează imediat pe Client dacă, în opinia ei, o instrucțiune încalcă legislația privind protecția datelor sau dacă nu poate urma o instrucțiune. 3S poate suspenda executarea instrucțiunii până când Clientul o confirmă sau o modifică.", "**4.4** 3S nu prelucrează datele personale ale Clientului în scopuri proprii și nu le vinde. Dacă stabilește ea însăși scopurile sau mijloacele unei prelucrări, devine operator pentru acea prelucrare (art. 28 alin. (10) GDPR; art. 28 alin. (9) Legea 195/2024).", "**4.5** 3S nu folosește Documentele Clientului pentru a antrena sau a îmbunătăți modele de inteligență artificială, ale ei sau ale unor terți, fără instrucțiunea scrisă a Clientului. Un furnizor de model intră în Lista agreată numai după ce 3S a verificat în scris că termenii lui interzic folosirea documentelor pentru antrenarea modelelor [N1: confirmă furnizorul platformei termenii furnizorilor de modele].", "**4.6** Clientul răspunde pentru legalitatea prelucrării ca operator, inclusiv pentru temeiul legal și pentru informarea persoanelor vizate, și pentru caracterul licit al instrucțiunilor lui."] },
+        ],
+      },
+      {
+        cheie: "art-5", titlu: "Articolul 5. Confidențialitatea și personalul",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**5.1** 3S dă acces la datele personale ale Clientului numai membrilor personalului ei, adică angajaților și colaboratorilor persoane fizice care lucrează sub autoritatea ei, și numai în măsura strict necesară pentru executarea, administrarea și monitorizarea contractului. O societate care furnizează servicii lui 3S și are acces la aceste date este subîmputernicit și figurează în Lista agreată [N21: cine are acces la Documente: angajați, colaboratori sau societăți].", "**5.2** 3S se asigură că persoanele pe care le autorizează să prelucreze date cu caracter personal s-au angajat să respecte confidențialitatea sau au o obligație legală adecvată de confidențialitate; angajamentul continuă după încetarea raporturilor lor cu 3S [N2: angajamentele semnate cu personalul 3S și cu personalul furnizorilor].", "**5.3** 3S nu divulgă Documentele Clientului și nu le transmite terților, în afară de subîmputerniciții din Lista agreată și de cazurile din Articolul 12. Clientul autorizează aceste transmiteri."] },
+        ],
+      },
+      {
+        cheie: "art-6", titlu: "Articolul 6. Securitatea",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**6.1** 3S se angajează să ofere garanții suficiente pentru punerea în aplicare a unor măsuri tehnice și organizatorice adecvate, astfel încât prelucrarea să respecte cerințele Legii aplicabile și să protejeze drepturile persoanelor vizate (art. 28 alin. (1) GDPR și Legea 195/2024). Adoptă toate măsurile necesare în conformitate cu art. 32 GDPR și art. 32 Legea 195/2024, cel puțin cele din Anexa 4, și verifică periodic că ele asigură în continuare un nivel adecvat de securitate.", "**6.2** 3S poate schimba măsurile din Anexa 4 numai dacă nivelul de protecție rămâne cel puțin la fel de ridicat; schimbarea se reflectă în anexă.", "**6.3** Clientul răspunde de securitatea din partea lui: parolele și accesul Utilizatorilor, permisiunile pe care le stabilește în Cont și dispozitivele proprii."] },
+        ],
+      },
+      {
+        cheie: "art-7", titlu: "Articolul 7. Subîmputerniciții",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**7.1 Autorizarea generală.** Clientul autorizează în scris 3S să folosească subîmputerniciții din Lista agreată (art. 28 alin. (2) GDPR și Legea 195/2024; Clauza 9(a), Opțiunea 2, din Anexa 2). Lista agreată este lista completă pe care 3S o trimite Clientului odată cu copia PDF a acordului: versiunea pe care pagina [Subîmputerniciții platformei](cale:subimputerniciti) o publică la data acceptării, completată cu denumirea subîmputerniciților pe care pagina îi arată numai prin categorie și cu adresa și persoana de contact ale fiecărui subîmputernicit. Pentru fiecare subîmputernicit ea arată denumirea, adresa, persoana de contact, țara în care se prelucrează datele, prelucrarea încredințată și mecanismul de transfer [N3: denumirea, adresa și persoana de contact ale fiecărui subîmputernicit, din fișa scrisă a furnizorului platformei].", "**7.2 Preavizul.** Cu cel puțin 30 de zile înainte de a adăuga un subîmputernicit sau de a înlocui unul din listă, 3S îl anunță în scris pe Client, prin e-mail la adresa pentru notificări din formularul de acceptare (în lipsă, la administratorul Contului), și actualizează pagina „Subîmputerniciții platformei”, cu datele de la 7.1 despre noul subîmputernicit și cu data de la care el începe prelucrarea. Când se aplică Modulul Trei, 3S dă anunțul și operatorului Clientului, la contactul indicat de Client în acest scop în formularul de acceptare, și îl informează pe Client despre angajarea noului subîmputernicit (Clauza 9(a), Opțiunea 2); opoziția operatorului are efectul opoziției Clientului.", "**7.3 Opoziția.** Clientul se poate opune, în scris și din motive rezonabile legate de protecția datelor, oricând până la data la care noul subîmputernicit începe prelucrarea. Cât timp obiecția nu e soluționată, 3S nu transmite datele Clientului noului subîmputernicit. Părțile caută o soluție în cel mult 30 de zile de la obiecție. Dacă nu o găsesc, Clientul poate înceta fără penalități Serviciul afectat, iar datele lui se returnează și se șterg după Articolul 13; 3S poate folosi noul subîmputernicit pentru ceilalți Clienți [N4: 3S poate exclude datele unui Client de la un subîmputernicit nou; dacă platforma nu permite, alineatul se rescrie]. Dacă Clientul nu se opune până la data de începere, 3S poate folosi noul subîmputernicit, în temeiul autorizării generale din Articolul 7.1.", "**7.4 Contractul cu subîmputernicitul.** 3S încheie cu fiecare subîmputernicit un contract scris care impune, în esență, aceleași obligații de protecție a datelor ca acest acord (art. 28 alin. (4) GDPR și Legea 195/2024; Clauza 9(b)), inclusiv drepturile persoanelor vizate ca terți beneficiari, și care îl obligă să anunțe 3S fără întârziere despre orice încălcare a securității datelor, ca 3S să poată respecta Articolul 10 [N22: termenul contractual de anunțare al subîmputerniciților]. Aceleași obligații le impune fiecare subîmputernicit propriilor subîmputerniciți, care figurează și ei în Lista agreată.", "**7.5 Copia contractului.** La cererea Clientului, 3S îi dă o copie a contractului cu subîmputernicitul și a modificărilor lui. Poate masca părțile care conțin secrete comerciale sau alte informații confidențiale (Clauza 9(c)).", "**7.6 Răspunderea.** 3S răspunde deplin față de Client pentru îndeplinirea obligațiilor subîmputernicitului și îl anunță dacă un subîmputernicit nu își îndeplinește obligațiile din contractul cu 3S (Clauza 9(d)). 3S convine cu subîmputernicitul o clauză de terț beneficiar: dacă 3S a dispărut în fapt, și-a încetat existența juridică sau a devenit insolvabilă, Clientul poate rezilia contractul cu subîmputernicitul și îi poate cere să șteargă sau să returneze datele (Clauza 9(e)).", "**7.7 Identitatea subîmputerniciților.** Clientul are oricând la dispoziție identitatea (denumirea, adresa și persoana de contact) tuturor subîmputerniciților care prelucrează datele lui, iar 3S ține informația la zi din proprie inițiativă, fără să fie cerută."] },
+        ],
+      },
+      {
+        cheie: "art-8", titlu: "Articolul 8. Locul prelucrării și transferurile",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**8.1 Stocarea.** Documentele Clientului se stochează la Amazon Web Services, într-o singură regiune din Germania. Celelalte etape ale prelucrării (recunoașterea textului, modelele de inteligență artificială) se fac la furnizorii din Lista agreată, în țările arătate pentru fiecare.", "**8.2 Accesul la distanță.** Personalul 3S poate accesa la distanță datele personale ale Clientului numai pentru asistență, administrare, rezolvarea incidentelor și evaluarea unei notificări sau a unui ordin, după instrucțiunea din Termeni (secțiunea 6.5), în limitele Articolului 5 și ale Anexei 4, din țările indicate în Anexa 3, partea B [N5: rolurile cu acces, instrumentul și țările din care se accesează datele]. Pentru Clienții din UE/SEE, accesul din afara UE/SEE, inclusiv din Republica Moldova, este transfer către o țară terță și e acoperit de Anexa 2.", "**8.3 Transferurile ulterioare.** 3S nu dezvăluie Documentele Clientului unui terț din afara UE/SEE, inclusiv din Republica Moldova, și nu permite subîmputerniciților să le transfere în afara UE/SEE decât către subîmputerniciții din Lista agreată, în țările și pe mecanismele arătate în ea și numai pe baza instrucțiunilor Clientului (Articolul 4). Pentru Clienții din UE/SEE se aplică Clauza 8.8 din Anexa 2, iar pentru cei din Republica Moldova art. 46 din Legea 195/2024 (Anexa 1).", "**8.4 Informarea.** La cererea Clientului, 3S îi comunică locul stocării și țările din care se accesează datele lui.", "**8.5 Schimbarea locului.** O schimbare a regiunii sau a țării de stocare se anunță ca o schimbare a Listei agreate, după Articolul 7.2."] },
+        ],
+      },
+      {
+        cheie: "art-9", titlu: "Articolul 9. Cererile persoanelor vizate",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**9.1** Dacă 3S primește o cerere a unei persoane vizate privind datele din Documentele Clientului, o transmite Clientului fără întârziere și în cel mult 5 zile lucrătoare și nu răspunde ea însăși fără autorizarea Clientului, în afară de confirmarea primirii (Clauza 10(a)).", "**9.2** Ținând seama de natura prelucrării, 3S oferă Clientului asistență prin măsuri tehnice și organizatorice adecvate, în măsura în care acest lucru este posibil, pentru îndeplinirea obligației lui de a răspunde cererilor de exercitare a drepturilor persoanelor vizate (acces, rectificare, ștergere, restricționare, portabilitate, opoziție). Măsurile sunt în Anexa 4, partea B, iar asistența se dă în cel mult 10 zile lucrătoare de la cererea Clientului. Clientul identifică persoana și îi răspunde în termenul legal de o lună (art. 12 alin. (3) GDPR și Legea 195/2024).", "**9.3** La cererile primite, 3S urmează instrucțiunile Clientului (Clauza 10(c))."] },
+        ],
+      },
+      {
+        cheie: "art-10", titlu: "Articolul 10. Încălcarea securității datelor",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**10.1** 3S îl anunță pe Client fără întârzieri nejustificate și în cel mult 48 de ore de la luarea la cunoștință despre o încălcare a securității care privește datele lui, indiferent dacă s-a produs la 3S sau la un subîmputernicit (art. 33 alin. (2) GDPR și Legea 195/2024; Clauza 8.6(c)). Anunțul se trimite la punctul de contact pentru incidente din formularul de acceptare (în lipsă, la administratorul Contului) [N6: procedura de incident scrisă și o adresă care poate trimite și primi mesaje].", "**10.2** Anunțul cuprinde, pe cât se poate: un punct de contact; natura încălcării, cu categoriile și numărul aproximativ de persoane și de înregistrări afectate; consecințele probabile; măsurile luate sau propuse, inclusiv cele de atenuare. Ce nu se știe la primul anunț se comunică pe măsură ce se află.", "**10.3** 3S ia măsurile potrivite ca să remedieze încălcarea și să îi limiteze efectele, îl ajută pe Client să își îndeplinească obligațiile de notificare către autoritate, în 72 de ore, și către persoanele vizate (art. 33-34 GDPR și Legea 195/2024) și ține evidența incidentelor.", "**10.4** Notificarea autorității și a persoanelor vizate revine Clientului. 3S nu o face în locul lui fără acordul lui, în afară de cazul în care legea o obligă."] },
+        ],
+      },
+      {
+        cheie: "art-11", titlu: "Articolul 11. Asistență, evidențe și cooperare cu autoritățile",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**11.1** 3S ajută Clientul să respecte obligațiile din art. 32-36 GDPR și din art. 32-36 Legea 195/2024 (securitatea, incidentele, evaluarea impactului asupra protecției datelor, consultarea prealabilă a autorității), ținând seama de natura prelucrării și de informațiile pe care le are. Informațiile cerute pentru o evaluare a impactului se dau în cel mult 15 zile lucrătoare de la cerere.", "**11.2** 3S ține evidența categoriilor de activități de prelucrare desfășurate în numele Clientului (art. 30 alin. (2) GDPR și Legea 195/2024) și o pune la dispoziția autorității de supraveghere, la cerere.", "**11.3** 3S cooperează, la cerere, cu autoritatea de supraveghere competentă (art. 31 GDPR și Legea 195/2024; Clauza 13(b))."] },
+        ],
+      },
+      {
+        cheie: "art-12", titlu: "Articolul 12. Cererile autorităților publice",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**12.1** Dacă o autoritate publică cere lui 3S accesul la datele Clientului sau le accesează direct, 3S îl anunță pe Client fără întârziere, cu datele cerute, autoritatea, temeiul legal și răspunsul dat, în măsura în care legea permite. Dacă legea interzice anunțul, 3S depune eforturi rezonabile ca să obțină ridicarea interdicției și le documentează. Când legea permite, 3S îndrumă autoritatea să ceară datele direct Clientului.", "**12.2** 3S verifică legalitatea cererii și o contestă dacă, după o analiză atentă, are motive rezonabile să o considere nelegală. Furnizează cel mai mic volum de date permis de o interpretare rezonabilă a cererii. Documentează analiza și o pune la dispoziția Clientului, în măsura în care legea permite.", "**12.3** Pentru Clienții din UE/SEE se aplică integral Clauzele 14 și 15 din Anexa 2."] },
+        ],
+      },
+      {
+        cheie: "art-13", titlu: "Articolul 13. Returnarea și ștergerea datelor",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**13.1 Alegerea Clientului.** Pe durata contractului Clientul poate exporta Documentele oricând. La încetarea Serviciului alege între returnarea și ștergerea datelor.", "**13.2 Perioada de recuperare.** Cel puțin 30 de zile calendaristice de la încetarea Serviciului sau, dacă Clientul trece la alt furnizor, de la sfârșitul perioadei de tranziție prevăzute în Termeni (secțiunea 15). În această perioadă 3S returnează datele la cerere, într-un format structurat, uzual, care poate fi citit automat [N7: forma exportului: Documentele originale, textul extras, metadatele]. La cererea Clientului, datele se șterg imediat după returnare.", "**13.3 Ștergerea.** După perioada de recuperare, sau imediat după returnare dacă Clientul cere, 3S șterge datele din sistemele active, împreună cu copiile existente, în cel mult 30 de zile. Copiile de siguranță expiră prin rotația lor, în cel mult 90 de zile de la ștergerea din sistemele active [N8: durata copiilor de siguranță ale furnizorului platformei]. Dacă Clientul nu alege, 3S șterge datele după perioada de recuperare.", "**13.4 Confirmarea.** După ștergerea din sistemele active, 3S o confirmă Clientului în scris (Clauza 8.5); la expirarea copiilor de siguranță confirmă și ștergerea lor. Până atunci 3S continuă să respecte acordul pentru datele rămase în copii. 3S cere subîmputerniciților să șteargă datele în aceleași termene și obține confirmarea lor.", "**13.5 Excepția legală.** Dacă legea obligă 3S să păstreze anumite date, ea le păstrează numai cât și în măsura cerută de lege, continuă să respecte acordul pentru ele și îl informează pe Client (Clauza 8.5).", "**13.6 Comutarea.** Termenii comutării către alt furnizor, cu preavizul și tranziția, sunt cei din Termeni (secțiunea 15); acest articol nu îi scurtează."] },
+        ],
+      },
+      {
+        cheie: "art-14", titlu: "Articolul 14. Informații și audit",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**14.1** 3S pune la dispoziția Clientului toate informațiile necesare ca să demonstreze respectarea obligațiilor din acord, permite desfășurarea auditurilor, inclusiv a inspecțiilor, efectuate de Client sau de un alt auditor mandatat de el, și contribuie la ele. Răspunde prompt întrebărilor Clientului despre prelucrare. Poate folosi, în acest scop, certificări sau rapoarte independente relevante, dacă există.", "**14.2 Auditul Clientului.** Clientul, sau un auditor independent mandatat de el și obligat la confidențialitate, poate audita prelucrarea, inclusiv prin inspecții la sediul 3S, o dată pe an, cu preaviz scris de 30 de zile, în programul de lucru și fără să perturbe nejustificat activitatea 3S.", "**14.3 Audituri suplimentare.** Clientul mai poate cere un audit după un incident de securitate care privește datele lui, când există indicii de neconformitate cu acordul sau când o cere autoritatea de supraveghere, cu preaviz de 10 zile lucrătoare.", "**14.4 Limite.** Auditul nu privește datele altor Clienți. Rezultatele rămân confidențiale, în afară de comunicarea lor către autoritatea competentă.", "**14.5 Costuri.** Fiecare parte își suportă propriile costuri. Dacă auditul arată o neconformitate substanțială a 3S, aceasta o remediază pe cheltuiala ei, într-un termen convenit.", "**14.6 Subîmputerniciții.** Pentru un subîmputernicit, 3S poate răspunde unei cereri de audit prin rapoartele lui independente, acolo unde există, în afară de cazul în care legea sau autoritatea cere o inspecție directă.", "**14.7 Autoritatea.** La cerere, 3S pune informațiile și rezultatele auditurilor la dispoziția autorității de supraveghere competente (Clauza 8.9(e) în Modulul Doi, Clauza 8.9(g) în Modulul Trei)."] },
+        ],
+      },
+      {
+        cheie: "art-15", titlu: "Articolul 15. Răspunderea",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**15.1 Față de persoanele vizate.** Răspunderea față de persoanele vizate urmează art. 82 GDPR și art. 76 Legea 195/2024. 3S, ca persoană împuternicită, răspunde pentru prejudiciul cauzat de prelucrare numai dacă nu și-a respectat obligațiile care îi revin în mod specific persoanelor împuternicite sau dacă a acționat în afara ori în contradicție cu instrucțiunile legale ale Clientului. Partea care a plătit integral o despăgubire poate cere celeilalte părți partea corespunzătoare răspunderii ei.", "**15.2 Între părți.** Răspunderea pentru încălcarea acordului urmează regulile din Termeni (secțiunea 13). Nicio limitare sau excludere de răspundere din Termeni nu se aplică: (a) răspunderii față de persoanele vizate; (b) răspunderii pentru încălcarea clauzelor standard din Anexa 2, care urmează Clauza 12; (c) prejudiciului cauzat intenționat sau din culpă gravă.", "**15.3 Clauzele standard.** Pentru Clienții din UE/SEE, răspunderea pentru încălcarea clauzelor standard urmează Clauza 12 din Anexa 2."] },
+        ],
+      },
+      {
+        cheie: "art-16", titlu: "Articolul 16. Durata și încetarea",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**16.1** Acordul începe la acceptare și durează cât timp 3S prelucrează datele Clientului, adică cât timp Contul e activ, plus perioadele din Articolul 13. Obligațiile de confidențialitate, de returnare și de ștergere continuă până la îndeplinire.", "**16.2** Încetarea Termenilor duce la încetarea acordului după îndeplinirea Articolului 13.", "**16.3 Neexecutarea.** Pentru Clienții din UE/SEE, suspendarea transferului și încetarea pentru încălcarea clauzelor standard urmează Clauza 16 din Anexa 2. Pentru Clienții din Republica Moldova, oricare parte poate rezilia acordul dacă cealaltă încalcă substanțial obligațiile privind protecția datelor și nu remediază încălcarea într-un termen rezonabil, de cel mult 30 de zile de la notificarea scrisă. Termenul nu se aplică încălcărilor care nu se pot remedia."] },
+        ],
+      },
+      {
+        cheie: "art-17", titlu: "Articolul 17. Legea aplicabilă, instanța și nulitatea parțială",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**17.1 Acordul.** Acordul este guvernat de legea materială a Republicii Moldova, în afară de clauzele standard din Anexa 2 (Articolul 17.2). Litigiile care îl privesc se soluționează după regulile din Termeni (secțiunea 16).", "**17.2 Clauzele standard (Clienții din UE/SEE).** Clauzele standard din Anexa 2 sunt guvernate de dreptul României (Clauza 17, Opțiunea 1), iar litigiile care le privesc se soluționează de instanțele din București, România (Clauza 18(b)). Persoana vizată poate introduce acțiune și la instanțele din statul în care își are reședința obișnuită (Clauza 18(c)).", "**17.3 Nulitatea parțială.** Dacă o prevedere este declarată nulă, celelalte rămân valabile."] },
+        ],
+      },
+      {
+        cheie: "art-18", titlu: "Articolul 18. Modificările",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**18.1** Acordul se modifică prin acord scris al părților, inclusiv în formă electronică.", "**18.2** 3S poate modifica acordul unilateral numai pentru schimbări ale legii, ale deciziilor sau clauzelor standard ale Comisiei Europene ori ale îndrumărilor autorității de supraveghere, pentru schimbări ale Listei agreate făcute după Articolul 7 și pentru îmbunătățiri ale măsurilor de securitate care nu reduc nivelul de protecție. Anunță modificarea cu minimum 30 de zile înainte, prin e-mail și în Cont [N20: dacă platforma nu are anunțuri în Cont, se scoate „și în Cont”]. Clientul poate înceta Serviciul fără penalități înainte de data intrării ei în vigoare.", "**18.3** Textul clauzelor standard nu se modifică; se pot actualiza numai anexele (Clauza 2(a)). Nicio modificare nu poate contrazice clauzele standard."] },
+        ],
+      },
+      {
+        cheie: "art-19", titlu: "Articolul 19. Contact",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Întrebările despre acord, notificările și cererile privind datele personale se trimit în scris la contact@3s.md; telefonul +373 68 055 599 poate fi folosit pentru situații urgente și nu ține loc de notificare scrisă. Același punct de contact primește plângerile persoanelor vizate (Clauza 11(a))."] },
+        ],
+      },
+      {
+        cheie: "anexa-1", titlu: "Anexa 1. Clienți cu sediul în Republica Moldova (Legea 195/2024)",
+        blocuri: [
+
+        ],
+      },
+      {
+        cheie: "anexa-1-s1", titlu: "1. Contractul", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Acordul este contractul scris, inclusiv în format electronic, cerut de art. 28 alin. (3) și (8) din Legea 195/2024, încheiat în temeiul legislației Republicii Moldova. Este un contract individual între operator și persoana împuternicită; nu se bazează pe clauze standard aprobate de Centrul Național pentru Protecția Datelor cu Caracter Personal, numit în continuare „Centrul” (art. 28 alin. (6)-(7)). Legea 195/2024 se aplică lui 3S și pentru Clienții din UE/SEE, fiindcă privește prelucrarea în contextul activităților unui sediu al persoanei împuternicite pe teritoriul Republicii Moldova (art. 3 alin. (1)); pentru ei, corpul acordului ține loc de contractul cerut de art. 28 din lege, alături de clauzele standard din Anexa 2."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s2", titlu: "2. Unde se regăsesc cerințele art. 28 alin. (3)", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "2. Unde se regăsesc cerințele art. 28 alin. (3)", antet: ["Cerința din art. 28 alin. (3) din Legea 195/2024", "Unde în acord"], randuri: [["obiectul, durata, natura și scopul prelucrării, tipul de date și categoriile de persoane vizate", "Articolul 3, Anexa 3"], ["lit. a) instrucțiuni documentate, inclusiv privind transferurile; informarea despre obligația legală", "Articolele 4, 8 și 12"], ["lit. b) confidențialitatea persoanelor autorizate", "Articolul 5"], ["lit. c) măsurile de securitate (art. 32)", "Articolul 6, Anexa 4"], ["lit. d) condițiile pentru alți împuterniciți (alin. (2) și (4))", "Articolul 7, Anexa 5"], ["lit. e) asistența la exercitarea drepturilor persoanelor vizate", "Articolul 9"], ["lit. f) asistența pentru art. 32-36", "Articolele 10 și 11"], ["lit. g) ștergerea sau returnarea datelor", "Articolul 13"], ["lit. h) informații, audit și informarea despre o instrucțiune ilegală", "Articolul 14 și Articolul 4.3"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-1-s3", titlu: "3. Transferurile (capitolul V)", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Stocarea în Germania este un transfer către un stat din Spațiul Economic European; capitolul V nu se aplică unui asemenea transfer, care nu cere autorizări speciale (art. 44 alin. (2)). Către alte state, 3S transferă numai cu garanții adecvate (art. 46). Clauzele standard aprobate de Centru sau adoptate de Comisia Europeană sunt o asemenea garanție, fără autorizare specifică (art. 46 alin. (2) lit. c)). Deciziile Comisiei Europene privind caracterul adecvat sunt un element de care Centrul ține cont, nu un efect automat (art. 45 alin. (2) lit. d)). Mecanismul fiecărui subîmputernicit este în Lista agreată."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s4", titlu: "4. Legea nr. 284/2004", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Clientul autorizează expres transmiterea Documentelor către subîmputerniciții din Lista agreată, inclusiv în sensul art. 13 alin. (3) lit. b) din Legea nr. 284/2004 privind serviciile societății informaționale. 3S nu are obligația să verifice autenticitatea documentelor încărcate sau conformitatea lor cu legea (art. 13 alin. (4))."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s5", titlu: "5. Autoritatea de supraveghere", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Centrul Național pentru Protecția Datelor cu Caracter Personal (CNPDCP), MD-2004, mun. Chișinău, str. Serghei Lazo nr. 48, centru@datepersonale.md, [datepersonale.md](https://datepersonale.md)."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s6", titlu: "6. Legea și instanța", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Articolul 17.1."] },
+        ],
+      },
+      {
+        cheie: "anexa-2", titlu: "Anexa 2. Clienți cu sediul în UE/SEE (clauzele contractuale standard)",
+        blocuri: [
+
+        ],
+      },
+      {
+        cheie: "anexa-2-s1", titlu: "1. Când se aplică", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Clientul are sediul într-un stat membru al Uniunii Europene sau într-un stat din Spațiul Economic European, iar prelucrarea datelor lui intră sub GDPR. 3S are sediul în Republica Moldova, care la data publicării nu figurează printre țările cu decizie de adecvare a Comisiei Europene ([lista Comisiei](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en)). Transferul către 3S cere de aceea garanții adecvate, în sensul art. 46 GDPR."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s2", titlu: "2. Instrumentul", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Garanția o dau clauzele contractuale standard din anexa la Decizia de punere în aplicare (UE) 2021/914 a Comisiei din 4 iunie 2021 (JO L 199, 7.6.2021, p. 31), în versiunea lingvistică a limbii în care Clientul a acceptat acordul. Ele sunt încorporate în acord prin trimitere, cu modulul, opțiunile și completările de mai jos. Textul este public la adresa [https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj](https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj). La cererea unei persoane vizate, Clientul îi dă gratuit o copie a clauzelor așa cum au fost aplicate, cu anexele completate (Clauza 8.3), iar 3S îl sprijină."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s3", titlu: "3. Modulul", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Se aplică Modulul Doi (transfer de la operator la persoană împuternicită de operator), fiindcă în situația obișnuită Clientul este operator al Documentelor lui, iar 3S le prelucrează în numele lui. Modulul Trei (transfer de la persoană împuternicită la subîmputernicit) se aplică dacă Clientul a declarat că acționează ca împuternicit (Articolul 1.3), fiindcă atunci 3S prelucrează în numele unui împuternicit. În acest caz corpul acordului se citește împreună cu aceste adaptări ale Modulului Trei: instrucțiunile operatorilor Clientului se pun la dispoziția 3S înainte de prelucrare (Clauza 8.1(a)); 3S anunță incidentele Clientului și, când e potrivit și posibil, operatorul acestuia (Clauza 8.6(c)); 3S dă anunțul despre schimbările Listei agreate operatorului, la contactul indicat în formularul de acceptare, și îl informează pe Client despre angajarea noului subîmputernicit (Clauza 9(a), Opțiunea 2); o copie a contractului cu un subîmputernicit se dă la cererea Clientului sau a operatorului (Clauza 9(c)); cererile persoanelor vizate se comunică Clientului și, când e potrivit, operatorului, iar 3S asistă operatorul (Clauza 10(a)-(b)); informațiile, auditurile și informațiile pentru autoritate din Articolul 14 urmează Clauza 8.9(c)-(g). O prevedere a corpului acordului care dă Clientului un anunț, un drept sau o informație se citește ca dându-le și operatorului, oriunde clauzele o cer. Modulele Unu și Patru nu se aplică.", "Subîmputerniciții din afara UE/SEE. Un subîmputernicit cu sediul în afara UE/SEE primește date numai potrivit Clauzei 8.8 (Articolul 8.3): dacă o decizie de adecvare acoperă transferul; sau dacă a acceptat, în contractul cu 3S, clauzele standard în modulul potrivit (Modulul Trei); sau dacă se aplică alte garanții adecvate potrivit art. 46 sau 47 GDPR. Mecanismul se arată pentru fiecare subîmputernicit în Lista agreată (Anexa 5). Un subîmputernicit din UE/SEE nu e un transfer ulterior (Clauza 8.8 și notele ei de subsol)."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s4", titlu: "4. Opțiunile alese", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "4. Opțiunile alese", antet: ["Clauza", "Alegerea părților"], randuri: [["Clauza 7 (clauza de aderare, opțională)", "Se aplică."], ["Clauza 9(a)", "Opțiunea 2, autorizare scrisă generală. Termenul de preaviz: 30 de zile (Articolul 7.2). Lista agreată: Anexa 5."], ["Clauza 11(a), limbajul opțional (organism independent de soluționare a litigiilor)", "Nu se aplică. Punctul de contact pentru plângeri: contact@3s.md."], ["Clauza 13(a)", "Primul alineat (exportatorul de date este stabilit în UE/SEE). Autoritatea competentă: Anexa 3, partea C."], ["Clauza 17", "Opțiunea 1. Dreptul României."], ["Clauza 18(b)", "Instanțele din București, România."], ["Anexele I, II și III ale clauzelor", "Anexa 3 (părțile A, B și C), Anexa 4 și Anexa 5 ale acestui acord."]] } },
+        ],
+      },
+      {
+        cheie: "anexa-2-s5", titlu: "5. Completări", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Părțile completează clauzele standard cu următoarele, în limitele Clauzei 2(a):"], lista: { elemente: ["notificarea incidentelor în cel mult 48 de ore (Articolul 10, împreună cu Clauza 8.6(c));", "preavizul de 30 de zile pentru subîmputerniciți (Articolul 7, împreună cu Clauza 9(a));", "modalitățile de audit (Articolul 14, împreună cu Clauza 8.9(c)-(d) din Modulul Doi și Clauza 8.9(c)-(f) din Modulul Trei);", "termenele de returnare și de ștergere (Articolul 13, împreună cu Clauza 8.5);", "termenele de asistență la cererile persoanelor vizate (Articolul 9, împreună cu Clauza 10)."] }, dupa: ["Completările nu contrazic clauzele standard. În caz de conflict prevalează clauzele (Clauza 5)."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s6", titlu: "6. Evaluarea transferului", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["3S documentează evaluarea prevăzută de Clauza 14(b)-(d), o ține la zi și o pune la dispoziția Clientului și a autorității de supraveghere competente, la cerere [N9: evaluarea scrisă a transferului către Republica Moldova și harta accesului]. Evaluarea ține seama, printre altele, de locul stocării (Germania), de accesul la distanță al personalului 3S, de lanțul de subîmputerniciți, de legile Republicii Moldova privind accesul autorităților la date și de măsurile din Anexa 4."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s7", titlu: "7. Domeniul clauzelor", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Clauzele standard se aplică prelucrării 3S care nu intră în domeniul de aplicare al GDPR (Decizia (UE) 2021/914, art. 1 alin. (1)). Dacă o autoritate sau o instanță stabilește că prelucrarea 3S intră sub GDPR, părțile convin fără întârziere un alt instrument de transfer potrivit. Până atunci se aplică clauzele, iar Clientul poate suspenda transferul și înceta Serviciul potrivit Clauzei 16."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s8", titlu: "8. Persoanele vizate", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Persoanele vizate pot invoca și aplica clauzele ca terți beneficiari, potrivit Clauzei 3."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s9", titlu: "9. Acceptarea", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Prin acceptarea acordului (Articolul 1.4), părțile aprobă clauzele standard și semnează Anexa I.A (Anexa 3, partea A), cu data și ora acceptării înregistrate."] },
+        ],
+      },
+      {
+        cheie: "anexa-3", titlu: "Anexa 3. Descrierea prelucrării (Anexa I a clauzelor standard)",
+        blocuri: [
+
+        ],
+      },
+      {
+        cheie: "anexa-3-a", titlu: "A. Lista părților", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "A. Lista părților", antet: ["Element", "Exportatorul de date (Clientul)", "Importatorul de date (3S)"], randuri: [["Nume", "denumirea din formularul de acceptare", "3S Demerzel SRL"], ["Adresă", "adresa din formularul de acceptare", "[în curs de înregistrare]"], ["Numele, funcția și datele de contact ale persoanei de contact; responsabilul cu protecția datelor sau reprezentantul în UE, dacă există", "cele din formularul de acceptare", "punctul de contact pentru protecția datelor al 3S; contact@3s.md; +373 68 055 599 [N10: numele și funcția persoanei]"], ["Activități relevante pentru datele transferate", "încărcarea, păstrarea și folosirea Documentelor în Serviciul 3S", "furnizarea Serviciului: stocare, extragerea textului, indexare, căutare, răspunsuri generate, asistență"], ["Rol", "operator (Modulul Doi) sau persoană împuternicită (Modulul Trei), după declarația din formularul de acceptare", "persoană împuternicită (Modulul Doi) sau subîmputernicit (Modulul Trei)"], ["Semnătura și data", "acceptarea electronică din Cont, cu data și ora înregistrate (Articolul 1.4)", "publicarea acordului în versiunea acceptată și confirmarea acceptării trimisă Clientului (Articolul 1.4)"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-3-b", titlu: "B. Descrierea transferului", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "B. Descrierea transferului", antet: ["Element", "Descriere"], randuri: [["Categorii de persoane vizate", "persoanele ale căror date apar în Documentele Clientului: angajații, foștii angajați și candidații Clientului, clienții, furnizorii și partenerii lui, reprezentanții și semnatarii acestora, alte persoane menționate în documente; Utilizatorii Contului Clientului, în jurnalul de activitate din arhivă"], ["Categorii de date personale", "cele din documente, la alegerea Clientului: date de identificare și de contact (nume, funcție, adresă, e-mail, telefon, număr de identificare), date din contracte și facturi (semnături, conturi bancare, sume), date din actele de personal, corespondență; în jurnalul de activitate: identificatorul Utilizatorului, documentul deschis sau căutarea făcută, data și ora"], ["Date sensibile și restricții sau garanții", "pot apărea în documente, de exemplu date privind sănătatea în dosarele de personal, apartenența sindicală sau condamnări penale. Clientul încarcă categorii speciale de date numai dacă are un temei legal (art. 9 și 10 GDPR; art. 9 și 10 Legea 195/2024). Garanții: limitarea strictă a scopului (Articolul 3), accesul personalului 3S limitat la strictul necesar (Articolul 5), măsurile din Anexa 4 [N11: garanții suplimentare pentru date sensibile: roluri și jurnal]. 3S nu verifică conținutul documentelor"], ["Frecvența transferului", "continuă, cât timp Contul este activ; accesul la distanță al personalului 3S: la cererea Clientului, pentru asistență și administrare, pentru rezolvarea unui incident sau, după instrucțiunea din Termeni (secțiunea 6.5), pentru evaluarea unei notificări sau a unui ordin (Articolul 8.2)"], ["Locul prelucrării și al accesului", "stocare: Germania (Articolul 8.1); celelalte etape ale prelucrării: țările arătate în Lista agreată (Anexa 5); accesul la distanță al personalului 3S: din [N5: țările din care se accesează datele] (Articolul 8.2)"], ["Natura prelucrării", "Articolul 3.2"], ["Scopurile transferului și ale prelucrării ulterioare", "Articolul 3.3"], ["Perioada de păstrare", "cât timp Contul este activ, apoi perioada de recuperare de cel puțin 30 de zile, ștergerea din sistemele active în cel mult 30 de zile și expirarea copiilor de siguranță în cel mult 90 de zile de la ștergerea din sistemele active (Articolul 13)"], ["Transferuri către subîmputerniciți (obiect, natură, durată)", "Lista agreată (Anexa 5): fiecare subîmputernicit prelucrează, pe durata acordului, partea din prelucrare descrisă în dreptul lui"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-3-c", titlu: "C. Autoritatea de supraveghere competentă", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "C. Autoritatea de supraveghere competentă", antet: ["Clientul", "Autoritatea"], randuri: [["Cu sediul în UE/SEE (Clauza 13(a), primul alineat)", "autoritatea de supraveghere responsabilă cu respectarea GDPR de către Client, din statul în care este stabilit, indicată de Client în formularul de acceptare. Pentru un Client cu sediul în România: Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal, [dataprotection.ro](https://www.dataprotection.ro)"], ["Cu sediul în Republica Moldova", "Anexa 1, punctul 5"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-4", titlu: "Anexa 4. Măsurile tehnice și organizatorice (Anexa II a clauzelor standard)",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Măsurile de mai jos sunt cele pe care 3S le aplică pentru un nivel adecvat de securitate (Articolul 6). 3S nu declară nicio certificare pentru sine; certificările subîmputerniciților se indică numai după verificare."] },
+        ],
+      },
+      {
+        cheie: "anexa-4-a", titlu: "A. Măsurile de securitate", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "A. Măsurile de securitate", antet: ["Domeniu", "Măsura"], randuri: [["Găzduire și locul datelor", "Documentele se stochează la Amazon Web Services, într-o singură regiune din Germania."], ["Criptare", "Fișierele sunt criptate AES-256 la stocare și circulă numai prin conexiuni TLS 1.2 sau mai noi [N12: configurarea reală, confirmată de furnizorul platformei]."], ["Separarea datelor între Clienți", "Arhiva fiecărui Client este separată de a celorlalți, iar căutarea nu trece în arhiva altui Client [N13: afirmație retrasă din pagina de produs; se confirmă de owner și de furnizorul platformei]."], ["Identificarea și autorizarea Utilizatorilor", "Accesul se dă nominal, pe persoană și pe dosar, cu rolurile stabilite de Client [N14: mecanismele de autentificare și rolurile implicite]."], ["Accesul personalului 3S și al subîmputerniciților", "Numai în măsura strict necesară, pe baza rolului, pentru asistență, administrare, rezolvarea incidentelor și evaluarea unei notificări sau a unui ordin (Articolele 5 și 8.2) [N5, N21]."], ["Jurnale", "Fiecare căutare și fiecare document deschis se înscriu în jurnalul de activitate, cu Utilizatorul și ora, iar jurnalul este la dispoziția Clientului [N15: confirmă furnizorul platformei]."], ["Confidențialitatea personalului", "Articolul 5, cu angajamentele de confidențialitate ale personalului [N2]."], ["Copii de siguranță și restaurare", "[N16: existența, frecvența și locul copiilor de siguranță; capacitatea de restaurare în timp util]."], ["Verificarea măsurilor", "3S verifică periodic eficacitatea măsurilor (Articolul 6.1) [N17: procesul: frecvența și forma]."], ["Gestionarea incidentelor", "Procedură scrisă de răspuns la incidente, cu anunțarea Clientului în cel mult 48 de ore (Articolul 10) [N6]."], ["Ștergere și portabilitate", "Exportul și ștergerea datelor, după Articolul 13 [N7, N8]."], ["Subîmputerniciți", "Contract cu obligații echivalente pentru fiecare subîmputernicit (Articolul 7.4) [N3, N22]; certificările lor se citează numai după verificare [N18]."]] } },
+        ],
+      },
+      {
+        cheie: "anexa-4-b", titlu: "B. Asistența pentru Client (Clauzele 8.6(d) și 10(b))", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], lista: { elemente: ["3S transmite Clientului cererile primite, în cel mult 5 zile lucrătoare (Articolul 9.1).", "3S ajută Clientul să găsească datele unei persoane în documentele lui, să le extragă, să le rectifice sau să le șteargă, cu funcțiile Serviciului sau manual, în cel mult 10 zile lucrătoare de la cererea Clientului [N19: funcțiile Serviciului pentru căutarea după persoană, export, rectificare și ștergere].", "Decizia asupra cererii și răspunsul către persoana vizată aparțin Clientului.", "Pentru o încălcare a securității datelor și pentru o evaluare a impactului, 3S dă Clientului informațiile pe care le are, inclusiv extrase din jurnale, în termenele din Articolele 10.1 și 11.1 [N6, N15]."] } },
+        ],
+      },
+      {
+        cheie: "anexa-5", titlu: "Anexa 5. Lista subîmputerniciților (Anexa III a clauzelor standard)",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Lista agreată (Articolul 7.1) este tabelul A de pe pagina [Subîmputerniciții platformei](cale:subimputerniciti), în versiunea de la data acceptării, completat în lista trimisă Clientului cu adresa și persoana de contact ale fiecărui subîmputernicit. Pentru fiecare subîmputernicit se indică denumirea, adresa, persoana de contact cu funcția și datele de contact, descrierea prelucrării (cu delimitarea clară a responsabilităților când sunt mai mulți subîmputerniciți), țara datelor și mecanismul de transfer. 3S trimite Clientului lista completă odată cu copia PDF a acordului și o actualizează după Articolul 7. Un subîmputernicit intră în listă înainte să primească date."] },
+        ],
+      },
+    ],
+  };
+}

@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { EROU } from '../../src/content/acasa'
 import { MACHETA, TUR } from '../../src/content/acasa-erou'
 import { masoaraAccesibilitatea } from './ajutor/detectori'

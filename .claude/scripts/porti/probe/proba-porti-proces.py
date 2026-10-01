@@ -723,6 +723,26 @@ def cazuri_registru_rute():
     caz('poarta-registru-rute.py', 'arbore fara rute.ts: cod 3, nu 0', gol, NEMASURAT, 'lipseste')
 
 
+def cazuri_navigare():
+    modul = "'@playwright/" + "test'"
+
+    def arbore(importul):
+        def construieste(d):
+            b = os.path.join(d, 'tests', 'browser')
+            scrie(os.path.join(b, 'ajutor', 'baza.ts'),
+                  'import { test as t } from ' + modul + '\n'
+                  + 'export const test = t.extend({ x: [async ({}, use) => use(), '
+                  + "{ scope: 'worker', auto: " + 'true } ] })\n')
+            scrie(os.path.join(b, 'a.spec.ts'), importul + '\n')
+        return construieste
+
+    caz('poarta-navigare.py', 'proba importa test direct din Playwright: cod 1, mesajul o numeste',
+        arbore('import { expect, ' + 'test } from ' + modul), PICAT, 'N-01')
+    caz('poarta-navigare.py', 'proba importa test din ajutor/baza: cod 0',
+        arbore("import { expect, test } from './ajutor/baza'"), CURAT)
+    caz('poarta-navigare.py', 'arbore fara tests/browser: cod 3, nu 0', gol, NEMASURAT, 'NEMASURAT')
+
+
 CAZURI = {
     'poarta-afirmatii.py': cazuri_afirmatii,
     'poarta-evidenta.py': cazuri_evidenta,
@@ -730,6 +750,7 @@ CAZURI = {
     'poarta-legaturi-md.py': cazuri_legaturi_md,
     'poarta-juridic.py': cazuri_juridic,
     'poarta-limba.py': cazuri_limba,
+    'poarta-navigare.py': cazuri_navigare,
     'poarta-regresie.py': cazuri_regresie,
     'poarta-registru-rute.py': cazuri_registru_rute,
     'poarta-rute.py': cazuri_rute,

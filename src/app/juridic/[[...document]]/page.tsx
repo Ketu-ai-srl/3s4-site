@@ -10,6 +10,10 @@
 //
 // De ce un singur segment optional `[[...document]]` si nu opt directoare: o pagina statica se
 // construieste si se serveste oricare ar fi operatorul. Aici pagina exista exact cand exista ruta.
+//
+// FAMILIA (felia 73): paginile de aici sunt ale familiei SEE. Un operator din Republica Moldova (familia
+// `md`) nu le publica: documentele lui au adresele din `config/juridic-rute.json` si alte pagini;
+// `verificaComutator` le construieste totusi la fiecare build, ca o eroare a lor sa opreasca build-ul.
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,7 +24,7 @@ import ZonaJuridica from "@/components/juridic/ZonaJuridica";
 import s from "@/components/juridic/juridic.module.css";
 import FirPagina from "@/components/primitive/FirPagina";
 import { metadataPagina } from "@/components/seo/metadata";
-import { juridicPublicat, verificaComutator } from "@/content/juridic/comutator";
+import { familiePublicata, verificaComutator } from "@/content/juridic/comutator";
 import { CHEI_ART13 } from "@/content/juridic/confidentialitate";
 import { CHEI_L284 } from "@/content/juridic/cookie-uri";
 import { documentPentruSlug, texteJuridice } from "@/content/juridic/index";
@@ -44,7 +48,7 @@ type Parametri = { params: Promise<{ document?: string[] }> };
 export function generateStaticParams(): { document: string[] }[] {
   // Operator numit dar incomplet: construirea se opreste aici (src/content/juridic/comutator.ts).
   verificaComutator();
-  if (!juridicPublicat()) {
+  if (familiePublicata() !== "see") {
     return [];
   }
   return [{ document: [] }, ...DOCUMENTE_JURIDICE.map((d) => ({ document: [d.slug] }))];
@@ -65,14 +69,14 @@ const MARCAJE: Partial<Record<SlugJuridic, MarcajSectiuni>> = {
 
 export async function generateMetadata({ params }: Parametri): Promise<Metadata> {
   const pagina = paginaCeruta((await params).document);
-  if (pagina === undefined || !juridicPublicat()) notFound();
+  if (pagina === undefined || familiePublicata() !== "see") notFound();
   if (pagina === null) return metadataPagina({ ...META_INDEX_JURIDIC, cale: CALE_JURIDIC });
   return metadataPagina({ ...META_DOCUMENTE[pagina.slug], cale: caleDocument(pagina.slug) });
 }
 
 export default async function PaginaJuridica({ params }: Parametri) {
   const pagina = paginaCeruta((await params).document);
-  const texte = texteJuridice();
+  const texte = familiePublicata() === "see" ? texteJuridice(undefined, { limba: "ro" }) : null;
   if (pagina === undefined || texte === null) notFound();
 
   if (pagina === null) {

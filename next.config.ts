@@ -3,6 +3,7 @@ import type { NextConfig } from 'next'
 import { AVERTISMENT_FARA_OPERATOR, rescrieriAnalitica, stareAnaliticaProprie } from './src/components/analitica/config'
 import { alegeOperator, operatorComplet } from './src/lib/operator'
 import { VARIABILA_OPERATOR_NUMIT, operatorNumitInMediu } from './src/lib/operator-mediu'
+import { VARIABILA_FAMILIE_JURIDICA, familieJuridica } from './src/content/juridic/familie'
 
 // De ce e `output` conditionat: pe Windows fara drept de legaturi simbolice,
 // `standalone` cade cu EPERM la copierea fisierelor urmarite (masurat 2026-09-05,
@@ -42,6 +43,12 @@ export function anteteSecuritate(mediu: string | undefined = process.env.SITE_EN
 // 30.09.2026, avertismentul aparea de doua ori in jurnalul build-ului).
 let avertizatFaraOperator = false
 
+/** Valoarea lui `NEXT_PUBLIC_FAMILIE_JURIDICA`: familia operatorului rezolvat, sau "null" fara operator complet. */
+function familieCalculata(): string {
+  const operator = alegeOperator().operator
+  return operatorComplet(operator) ? familieJuridica(operator) : 'null'
+}
+
 const nextConfig: NextConfig = {
   output: standalone ? 'standalone' : undefined,
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
@@ -58,7 +65,14 @@ const nextConfig: NextConfig = {
   // pachetele, iar `src/content/juridic/publicare.ts` o citeste inaintea variabilei si a fisierului. Cheia e
   // definita mereu, chiar pe "null": o valoare pusa de altcineva in mediul build-ului n-are cum s-o inlocuiasca.
   // Se citeste la CONSTRUIRE, ca tot ce tine de operator (`src/lib/operator-mediu.ts`).
-  env: { [VARIABILA_OPERATOR_NUMIT]: String(operatorNumitInMediu()) },
+  // FAMILIA TEXTELOR JURIDICE (felia 73, `src/content/juridic/familie.ts`): "see", "md" sau "null" (niciun
+  // operator complet), din operatorul REZOLVAT (`OPERATOR_JSON`, altfel fisierul), citita LITERAL in
+  // `src/content/juridic/publicare.ts`. Definita mereu, ca si cheia de mai sus; un operator dintr-o tara fara
+  // familie opreste construirea chiar aici, cu mesajul despre reprezentant.
+  env: {
+    [VARIABILA_OPERATOR_NUMIT]: String(operatorNumitInMediu()),
+    [VARIABILA_FAMILIE_JURIDICA]: familieCalculata(),
+  },
   // ANALITICA PROPRIE PE CALE PROPRIE (felia multi-domeniu): cu `UMAMI_URL` si `UMAMI_WEBSITE_ID` in
   // mediu SI cu un operator numit si complet (planul §9: analitica prelucreaza date personale, deci cere
   // operator, ca GA4), `/a/script.js` si `/a/api/send` sunt transmise de serverul site-ului spre instanta de

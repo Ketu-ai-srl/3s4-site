@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { expect, test, type Page } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { citesteArticolele, type ArticolComplet } from '../../src/content/blog/conducta'
 import { CALE_BLOG, caiArticole, caleArticol, caleCategorie, categoriiCuArticole } from '../../src/content/blog/registru'
 import { numarArticole } from '../../src/components/blog/format'
@@ -8,7 +9,19 @@ import { ARTICOL, CATEGORII, LISTARE } from '../../src/content/blog/texte'
 import { masoaraAccesibilitatea, masoaraHtmlBrut, masoaraLegaturiSiImagini } from './ajutor/detectori'
 import { PRAG_PARITATE, masoaraParitatea } from './ajutor/geo'
 import { asteaptaHidratarea } from './ajutor/hidratare'
-import { INCERCARI_NAVIGARE, PAUZA_REINCERCARE_MS, esuateDeTransport, navigheaza, reincarca, stareaMasinii, urmareste } from './ajutor/navigare'
+import {
+  CONTOR_NAVIGARE,
+  INCERCARI_NAVIGARE,
+  PAUZA_REINCERCARE_MS,
+  RELUARE_INSTALATA,
+  areReluare,
+  esuateDeTransport,
+  instaleazaReluarea,
+  navigheaza,
+  reincarca,
+  stareaMasinii,
+  urmareste,
+} from './ajutor/navigare'
 import { RADACINA } from './ajutor/proiect'
 
 /**
@@ -274,9 +287,10 @@ test('cand toate reincarcarile cad pe transport, masuratoarea e NEMASURATA, iar 
 // --- Poarta pe navigarea bruta din ajutoarele comune (`ajutor/*.ts`) -----------------------------------------
 //
 // Un `page.goto` brut intr-un ajutor comun expune deodata toate probele care trec prin el (detectorii de HTML
-// brut, de terti si cei GEO: sute de probe), pe cand unul dintr-o proba expune una. De aceea poarta cerceteaza
-// ajutoarele si probele acestei felii. Probele celorlalte felii au inca apeluri brute: ele raman ale feliilor lor,
-// iar mutarea lor pe `navigheaza` e o decizie a dispecerului.
+// brut, de terti si cei GEO: sute de probe), pe cand unul dintr-o proba expune una. De la infasurarea de pe
+// prototip (`ajutor/baza.ts`) si navigarea bruta dintr-o proba reia pe transport, deci poarta cerceteaza TOT
+// directorul `ajutor/`, fara lista scrisa de mana: un ajutor nou intra singur sub ea. Singura exceptie e
+// `navigare.ts`, care e bucla insasi. Martorii instalarii pe prototip sunt dupa poarta.
 
 /** Liniile de COD (nu de comentariu) care cheama `.goto(` sau `.reload(` direct. */
 function navigariBrute(sursa: string): string[] {
@@ -310,20 +324,104 @@ test('martor NEGATIV: poarta lasa in pace navigheaza, reincarca, comentariile si
   expect(navigariBrute(sursa)).toEqual([])
 })
 
-test('poarta: ajutoarele comune si probele acestei felii navigheaza prin ajutor/navigare.ts, nu cu goto sau reload brut', () => {
+test('poarta: ajutoarele comune navigheaza prin ajutor/navigare.ts, nu cu goto sau reload brut', () => {
   const dir = join(RADACINA, 'tests', 'browser')
-  const fisiere = [
-    ...readdirSync(join(dir, 'ajutor'))
-      .filter((f) => f.endsWith('.ts') && f !== 'navigare.ts')
-      .map((f) => 'ajutor/' + f),
-    'blog-articole.spec.ts',
-    'cinema-1.spec.ts',
-  ]
-  // Controlul cercetarii: ajutoarele chiar au fost gasite (detectori, geo, fixturi, proiect ...), nu o lista goala.
-  expect(fisiere.filter((f) => f.startsWith('ajutor/')).length).toBeGreaterThanOrEqual(5)
+  const fisiere = readdirSync(join(dir, 'ajutor'))
+    .filter((f) => f.endsWith('.ts') && f !== 'navigare.ts')
+    .map((f) => 'ajutor/' + f)
+  // Controlul cercetarii: ajutoarele chiar au fost gasite (baza, detectori, geo, fixturi, proiect ...), nu o lista goala.
+  expect(fisiere.length).toBeGreaterThanOrEqual(5)
+  expect(fisiere).toContain('ajutor/baza.ts')
   const brute = fisiere.flatMap((f) => navigariBrute(readFileSync(join(dir, f), 'utf8')).map((linie) => f + ': ' + linie))
   console.log('[poarta navigare] cercetate ' + fisiere.length + ' fisiere | apeluri brute ' + brute.length)
   expect(brute, 'foloseste navigheaza() / reincarca() din ajutor/navigare.ts (CI 36286812854, 36310864983)').toEqual([])
+})
+
+// --- Reluarea instalata pe prototip (`ajutor/baza.ts`) ---------------------------------------------------------
+//
+// Martorii de mai sus masoara bucla pe pagini fabricate. Aici se masoara ca bucla chiar sta pe drumul paginilor
+// REALE: daca o actualizare Playwright muta `goto` in alta parte, infasurarea nu mai e pe drum si martorii POZITIVI
+// cad imediat, in loc sa ramana verde o proba neacoperita.
+
+test('martor POZITIV: pe pagina fixturii, page.goto poarta marcajul reluarii, iar o navigare reala creste contorul cu 1', async ({ page }) => {
+  expect(areReluare(page.goto), 'goto infasurat pe prototip').toBe(true)
+  expect(areReluare(page.reload), 'reload infasurat pe prototip').toBe(true)
+  const inainte = { ...CONTOR_NAVIGARE }
+  const r = await page.goto('/')
+  expect(r?.status()).toBe(200)
+  expect(CONTOR_NAVIGARE.navigari).toBe(inainte.navigari + 1)
+  expect(CONTOR_NAVIGARE.reluate).toBe(inainte.reluate)
+  // navigheaza() pe o pagina deja infasurata numara tot o navigare. Contorul sta numai pe infasurarea de pe prototip, deci
+  // aici nu poate vedea o bucla dubla: garda din navigheaza() o dovedeste martorul cu metoda marcata, mai jos.
+  await navigheaza(page, '/')
+  expect(CONTOR_NAVIGARE.navigari).toBe(inainte.navigari + 2)
+})
+
+test('martor POZITIV: o pagina deschisa din browser.newContext() poarta si ea marcajul reluarii', async ({ browser }) => {
+  const context = await browser.newContext()
+  try {
+    const pagina = await context.newPage()
+    expect(areReluare(pagina.goto)).toBe(true)
+    expect(areReluare(pagina.reload)).toBe(true)
+  } finally {
+    await context.close()
+  }
+})
+
+// Portul 1 e pe lista de porturi refuzate de Chromium: navigarea cade cu net::ERR_UNSAFE_PORT (masurat pe
+// Playwright 1.63.0: o cerere, o cadere), adica o eroare care nu e de transport, deci nu are voie sa fie reluata.
+test('martor NEGATIV: o navigare spre un port inchis (127.0.0.1:1) cade la prima incercare, cu zero reluari', async ({ page }) => {
+  const inainte = { ...CONTOR_NAVIGARE }
+  const cereriCazute: string[] = []
+  page.on('requestfailed', (c) => cereriCazute.push(c.failure()?.errorText ?? '?'))
+  await expect(page.goto('http://127.0.0.1:1/')).rejects.toThrow(/net::ERR_UNSAFE_PORT/)
+  expect(CONTOR_NAVIGARE.navigari).toBe(inainte.navigari + 1)
+  expect(CONTOR_NAVIGARE.reluate).toBe(inainte.reluate)
+  expect(CONTOR_NAVIGARE.epuizate).toBe(inainte.epuizate)
+  // O singura cerere a plecat si a cazut: nicio reincercare ascunsa pe langa contor.
+  expect(cereriCazute).toEqual(['net::ERR_UNSAFE_PORT'])
+})
+
+// Garda din navigheaza() si reincarca(): pe o pagina a carei metoda poarta deja marcajul, ajutorul o cheama O DATA, fara
+// bucla proprie (altfel 4 x 4 = 16 incercari pe o pagina reala). Metoda fabricata poarta marcajul dar NU reia: arunca
+// direct eroarea de transport, deci numarul de apeluri spune cate bucle sunt - 1 cu garda, INCERCARI_NAVIGARE fara ea.
+function metodaMarcata(apeluri: { n: number }): () => Promise<null> {
+  const metoda = async (): Promise<null> => {
+    apeluri.n++
+    throw new Error('page.goto: net::ERR_NO_BUFFER_SPACE')
+  }
+  Object.defineProperty(metoda, RELUARE_INSTALATA, { value: true })
+  return metoda
+}
+
+test('martor: navigheaza() si reincarca() nu pun a doua bucla peste o metoda care reia deja', async () => {
+  const apeluriGoto = { n: 0 }
+  const apeluriReload = { n: 0 }
+  const pagina = {
+    goto: metodaMarcata(apeluriGoto),
+    reload: metodaMarcata(apeluriReload),
+    url: () => 'http://exemplu.test/x',
+    waitForTimeout: async () => {},
+  } as unknown as Page
+  const jurnal: string[] = []
+  const scrie = (m: string) => void jurnal.push(m)
+  await expect(navigheaza(pagina, 'http://exemplu.test/x', undefined, scrie, () => 'stare')).rejects.toThrow(/ERR_NO_BUFFER_SPACE/)
+  await expect(reincarca(pagina, undefined, scrie, () => 'stare')).rejects.toThrow(/ERR_NO_BUFFER_SPACE/)
+  expect(apeluriGoto.n, 'goto chemat o data; fara garda ar fi ' + INCERCARI_NAVIGARE).toBe(1)
+  expect(apeluriReload.n, 'reload chemat o data; fara garda ar fi ' + INCERCARI_NAVIGARE).toBe(1)
+  expect(jurnal, 'nicio reincercare scrisa de bucla ajutorului').toEqual([])
+})
+
+test('martor: instaleazaReluarea e idempotenta - a doua instalare nu mai infasoara nimic', () => {
+  const proto: Record<'goto' | 'reload', unknown> = { goto: async () => null, reload: async () => null }
+  expect(instaleazaReluarea(proto)).toBe(2)
+  const goto = proto.goto
+  const reload = proto.reload
+  expect(areReluare(goto)).toBe(true)
+  expect(areReluare(reload)).toBe(true)
+  expect(instaleazaReluarea(proto)).toBe(0)
+  expect(proto.goto).toBe(goto)
+  expect(proto.reload).toBe(reload)
 })
 
 // --- Asteptarea hidratarii (`ajutor/hidratare.ts`) ------------------------------------------------------------

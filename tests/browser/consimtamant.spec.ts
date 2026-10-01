@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { STOCARE_ALEGERE, masoaraTerti, stocareNedeclarata } from './ajutor/detectori'
 import {
   GAZDA_STRAINA_PIXEL,

@@ -1,4 +1,5 @@
-import { expect, test, type Browser, type Page } from '@playwright/test'
+import type { Browser, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { COMPARATIE_STOCARE } from '../../src/content/comparatii'
 import { TIPAR as TEXTE_TIPAR } from '../../src/content/termene/date'
 import { IMPACTURI_BLOCANTE, masoaraAccesibilitatea } from './ajutor/detectori'

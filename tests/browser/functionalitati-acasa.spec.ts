@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { MACHETA_REGISTRU } from '../../src/content/acasa-functionalitati'
+import { TIMEOUT_HIDRATARE_MS } from './ajutor/hidratare'
 
 /**
  * Functionalitatile de pe start, piesa completa (felia `functionalitati-acasa`, S4-2), pe
@@ -1125,6 +1127,15 @@ function textIntregLizibil(masuri: Masura[], minimMasurate: number) {
 
 /** Pista de la 390: marginea ei de sus in pagina si cursa. */
 async function pozitiaPistei(page: Page) {
+  // `data-pista` nu e in HTML-ul servit: il pune componenta dupa montare (`cuPista = montat && !redus`), deci
+  // `networkidle` nu garanteaza ca exista, iar citirea de mai jos ar cadea cu "Cannot read properties of null
+  // (reading 'firstElementChild')". Se asteapta elementul, nu un timp ales, cu plafonul hidratarii.
+  await page
+    .locator(SECTIUNE + ' [data-pista]')
+    .waitFor({ state: 'attached', timeout: TIMEOUT_HIDRATARE_MS })
+    .catch((eroare: unknown) => {
+      throw new Error('pista nu s-a montat in ' + TIMEOUT_HIDRATARE_MS + ' ms (' + SECTIUNE + ' [data-pista] lipseste): ' + String(eroare))
+    })
   return page.evaluate((sel) => {
     const p = document.querySelector(sel + ' [data-pista]')!.firstElementChild as HTMLElement
     const f = p.firstElementChild as HTMLElement

@@ -77,23 +77,43 @@ export type OptiuniNavigare = Parameters<Page['goto']>[1]
 export type OptiuniReincarcare = Parameters<Page['reload']>[0]
 
 /**
- * Bucla comuna a lui `navigheaza` si `reincarca`: reia `apel` numai pe eroarea de transport, cu pauza
- * crescatoare, si scrie in jurnal fiecare reincercare. `url` si `ce` doar spun in jurnal si in mesajul
- * NEMASURAT ce se incerca.
+ * Contorul navigarilor reale ale unui proces de probe: cate navigari au trecut prin infasurarea de pe
+ * prototip, cate reincercari s-au facut pe transport si cate navigari au epuizat incercarile. Paginile
+ * fabricate ale martorilor nu intra aici: ele cheama bucla fara contor.
  */
-async function reiaPeTransport(
+export type ContorNavigare = { navigari: number; reluate: number; epuizate: number }
+
+/** Contorul procesului, citit de fixtura din `baza.ts` la teardown si de martorii ei. */
+export const CONTOR_NAVIGARE: ContorNavigare = { navigari: 0, reluate: 0, epuizate: 0 }
+
+/** Linia de jurnal a contorului, aceeasi forma in fiecare rulare, ca sa se poata cauta in jurnalul CI. */
+export function linieContor(c: ContorNavigare = CONTOR_NAVIGARE): string {
+  return '[navigare] navigari ' + c.navigari + ' | reluate ' + c.reluate + ' | epuizate ' + c.epuizate
+}
+
+/**
+ * Bucla comuna a lui `navigheaza`, `reincarca` si a infasurarii de pe prototip: reia `apel` numai pe
+ * eroarea de transport, cu pauza crescatoare, si scrie in jurnal fiecare reincercare. `url` si `ce` doar
+ * spun in jurnal si in mesajul NEMASURAT ce se incerca. Cu `contor`, numara navigarea, reincercarile si
+ * epuizarea.
+ */
+export async function reiaPeTransport(
   page: Pick<Page, 'waitForTimeout'>,
   url: string,
   apel: () => Promise<Response | null>,
   jurnal: (mesaj: string) => void,
   stare: () => string,
   ce: 'navigarea spre' | 'reincarcarea paginii',
+  contor?: ContorNavigare,
 ): Promise<Response | null> {
+  if (contor) contor.navigari++
   for (let incercare = 1; incercare <= INCERCARI_NAVIGARE; incercare++) {
     try {
       return await apel()
     } catch (eroare) {
       if (!esteEroareDeTransport(eroare)) throw eroare
+      if (contor && incercare < INCERCARI_NAVIGARE) contor.reluate++
+      if (contor && incercare === INCERCARI_NAVIGARE) contor.epuizate++
       jurnal(
         '[navigare] ' + url + ': incercarea ' + incercare + ' din ' + INCERCARI_NAVIGARE +
           ' a cazut pe transport (net::ERR_NO_BUFFER_SPACE)' + (incercare < INCERCARI_NAVIGARE ? ', reiau' : ''),
@@ -108,9 +128,56 @@ async function reiaPeTransport(
   )
 }
 
+/** Marcajul infasurarii de pe prototip: o metoda care il poarta reia deja pe transport. */
+export const RELUARE_INSTALATA: unique symbol = Symbol.for('3s.probe.reluare-pe-transport')
+
+/** Poarta metoda marcajul infasurarii? Pe o pagina fabricata (obiect simplu) raspunsul e nu. */
+export function areReluare(metoda: unknown): boolean {
+  return typeof metoda === 'function' && (metoda as unknown as Record<symbol, unknown>)[RELUARE_INSTALATA] === true
+}
+
+type MetodaNavigare = (this: Page, ...argumente: unknown[]) => Promise<Response | null>
+
+/**
+ * Inlocuieste `goto` si `reload` pe prototipul clasei Page a clientului cu o functie care cheama
+ * originalul prin `reiaPeTransport`, cu `CONTOR_NAVIGARE`. Idempotenta: o metoda care poarta deja
+ * marcajul nu se mai infasoara (altfel fiecare instalare ar inmulti incercarile). Intoarce cate metode
+ * a infasurat ACUM (0 la a doua instalare).
+ *
+ * De ce pe prototip: prinde deodata pagina fixturii `page`, paginile din `browser.newContext()` si pe cele
+ * din `browser.newPage()`, fara sa atinga vreun apel din probe. Limita: `frame.goto` si cererile din afara
+ * paginii (`page.request`, `fetch` din Node) nu trec pe aici.
+ */
+export function instaleazaReluarea(proto: Record<'goto' | 'reload', unknown>): number {
+  let infasurate = 0
+  const originalGoto = proto.goto as MetodaNavigare
+  if (typeof originalGoto === 'function' && !areReluare(originalGoto)) {
+    const goto = async function (this: Page, url: string, optiuni?: OptiuniNavigare) {
+      return reiaPeTransport(this, url, () => originalGoto.call(this, url, optiuni), console.log, stareaMasinii, 'navigarea spre', CONTOR_NAVIGARE)
+    }
+    Object.defineProperty(goto, RELUARE_INSTALATA, { value: true })
+    proto.goto = goto
+    infasurate++
+  }
+  const originalReload = proto.reload as MetodaNavigare
+  if (typeof originalReload === 'function' && !areReluare(originalReload)) {
+    const reload = async function (this: Page, optiuni?: OptiuniReincarcare) {
+      return reiaPeTransport(this, this.url(), () => originalReload.call(this, optiuni), console.log, stareaMasinii, 'reincarcarea paginii', CONTOR_NAVIGARE)
+    }
+    Object.defineProperty(reload, RELUARE_INSTALATA, { value: true })
+    proto.reload = reload
+    infasurate++
+  }
+  return infasurate
+}
+
 /**
  * `page.goto` cu reincercare pe eroarea de transport. Semnatura ii este cea a lui `page.goto`; al patrulea
  * argument (`jurnal`) exista ca proba sa poata vedea reincercarile fara sa scrie in consola.
+ *
+ * Pe o pagina reala, dupa fixtura din `baza.ts`, `page.goto` reia deja: aici se cheama direct, altfel
+ * cele doua bucle s-ar inmulti (4 x 4 = 16 incercari). `jurnal` si `stare` conteaza atunci numai pe
+ * paginile fabricate.
  */
 export async function navigheaza(
   page: Pick<Page, 'goto' | 'waitForTimeout'>,
@@ -119,6 +186,7 @@ export async function navigheaza(
   jurnal: (mesaj: string) => void = console.log,
   stare: () => string = stareaMasinii,
 ): Promise<Response | null> {
+  if (areReluare(page.goto)) return page.goto(url, optiuni)
   return reiaPeTransport(page, url, () => page.goto(url, optiuni), jurnal, stare, 'navigarea spre')
 }
 
@@ -133,6 +201,7 @@ export async function reincarca(
   jurnal: (mesaj: string) => void = console.log,
   stare: () => string = stareaMasinii,
 ): Promise<Response | null> {
+  if (areReluare(page.reload)) return page.reload(optiuni)
   return reiaPeTransport(page, page.url(), () => page.reload(optiuni), jurnal, stare, 'reincarcarea paginii')
 }
 

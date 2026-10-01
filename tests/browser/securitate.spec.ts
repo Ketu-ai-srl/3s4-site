@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { expect, test, type Page } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { anteteSecuritate } from '../../next.config'
 import { CALE_SECURITY_TXT, ZILE_VALABILITATE } from '../../src/app/.well-known/security.txt/continut'
 import { CAMP_CAPCANA } from '../../src/components/formular/validare'

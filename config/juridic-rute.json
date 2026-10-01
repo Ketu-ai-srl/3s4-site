@@ -1,0 +1,18 @@
+{
+  "poarta_curenta": "B",
+  "documente": {
+    "informatii-legale": { "en": "/legal/legal-information", "ro": "/ro/juridic/informatii-legale", "poarta": "B" },
+    "confidentialitate": { "en": "/legal/privacy", "ro": "/ro/juridic/confidentialitate", "poarta": "B" },
+    "cookie-uri": { "en": "/legal/cookies", "ro": "/ro/juridic/cookies", "poarta": "B" },
+    "termeni": { "en": "/legal/terms", "ro": "/ro/juridic/termeni", "poarta": "B" },
+    "dpa": { "en": "/legal/dpa", "ro": "/ro/juridic/dpa", "poarta": "C" },
+    "subimputerniciti": { "en": "/legal/subprocessors", "ro": "/ro/juridic/subimputerniciti", "poarta": "C" },
+    "notificare-si-actiune": { "en": "/legal/notice-and-action", "ro": "/ro/juridic/notificare-si-actiune", "poarta": "B" },
+    "inteligenta-artificiala": { "en": "/legal/ai-notice", "ro": "/ro/juridic/inteligenta-artificiala", "poarta": "B" }
+  },
+  "pagini_legate": {
+    "preturi": { "en": "/pricing", "ro": "/pricing", "publicata": false },
+    "securitate-si-locul-datelor": { "en": null, "ro": null, "publicata": false },
+    "comutare-si-export": { "en": null, "ro": null, "publicata": false }
+  }
+}

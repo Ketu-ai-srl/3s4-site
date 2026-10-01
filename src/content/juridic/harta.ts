@@ -5,12 +5,13 @@
 // Aceleasi rute ca harta XML (`rutePentruHarta`), deci o pagina scoasa din index nu apare nici aici.
 // Grupele sunt cele ale coloanelor din subsol; fiecare ruta cade in EXACT o grupa, dupa cale:
 // solutiile in Sectoare, blogul in Resurse, contactul in Companie, paginile juridice, harta si
-// accesibilitatea in Juridic, restul in Produs. O grupa fara nicio ruta nu se randeaza.
+// accesibilitatea in Juridic, restul in Produs. Grupa Juridic recunoaste si adresele familiei `md`
+// (felia 73): `/legal` (engleza) si `/ro/juridic` (romana, pe domeniul international). O grupa fara nicio ruta nu se randeaza.
 
 import { caleArticol, type ArticolBlog } from "@/content/blog/registru";
 import type { Ruta } from "@/content/rute";
 import { GRUPE_HARTA, type GrupaHarta } from "./pagini";
-import { CALE_JURIDIC } from "./publicare";
+import { CALE_JURIDIC, CALE_JURIDIC_EN, CALE_JURIDIC_RO_MD } from "./publicare";
 
 export type LegaturaHarta = { cale: string; text: string };
 export type GrupaCuLegaturi = { titlu: GrupaHarta; legaturi: LegaturaHarta[] };
@@ -24,7 +25,14 @@ export function grupaPentruCale(cale: string): GrupaHarta {
   if (subCale(cale, "/solutii")) return "Sectoare";
   if (subCale(cale, "/blog")) return "Resurse";
   if (cale === "/contact") return "Companie";
-  if (subCale(cale, CALE_JURIDIC) || cale === "/harta-site" || cale === "/accesibilitate") return "Juridic";
+  if (
+    subCale(cale, CALE_JURIDIC) ||
+    subCale(cale, CALE_JURIDIC_EN) ||
+    subCale(cale, CALE_JURIDIC_RO_MD) ||
+    cale === "/harta-site" ||
+    cale === "/accesibilitate"
+  )
+    return "Juridic";
   return "Produs";
 }
 

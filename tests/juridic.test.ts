@@ -101,7 +101,7 @@ function operatorPartial(): Operator {
 const BAZA = 'https://3s4.ke2.in'
 
 function texte(operator: Operator = operatorSintetic()): TexteJuridice {
-  const t = texteJuridice(operator, BAZA)
+  const t = texteJuridice(operator, { limba: 'ro', baza: BAZA })
   if (t === null) throw new Error('textele juridice nu s-au construit pentru operatorul sintetic')
   return t
 }
@@ -130,7 +130,7 @@ describe('comutatorul paginilor juridice', () => {
   it('martor POZITIV: un operator numit dar incomplet NU publica paginile', () => {
     expect(ruteJuridice(juridicPublicat(operatorSintetic({ email: '' })))).toEqual([])
     expect(ruteJuridice(juridicPublicat(operatorSintetic({ sediu: 'de completat' })))).toEqual([])
-    expect(texteJuridice(operatorSintetic({ tara: '' }), BAZA)).toBeNull()
+    expect(texteJuridice(operatorSintetic({ tara: '' }), { baza: BAZA })).toBeNull()
   })
 
   it('invariantul: un operator numit dar incomplet OPRESTE construirea; null si complet trec', () => {

@@ -20,9 +20,10 @@
 // cu comanda de verificare scrisa in `docs/ziua-operatorului.md`.
 
 import type { NumeEveniment } from "@/components/consimtamant/evenimente";
-import { lipsuriInformare, type Operator } from "@/lib/operator";
+import { SURSA_OPERATOR, lipsuriInformare, type Operator } from "@/lib/operator";
 import { VERSIUNE_ANALITICA, texteAnalitica } from "./analitica";
 import { AUTORITATI, type Autoritate } from "./autoritati";
+import { inSee } from "./familie";
 import { FURNIZORI } from "./furnizori";
 import type { DocumentJuridic } from "./tipuri";
 
@@ -51,33 +52,20 @@ export const PASTRARE = {
   formulareCuOferta: "cel mult 36 de luni",
 } as const;
 
-/** Statele Spatiului Economic European, cum le scrie un om (fara diacritice, litere mici). */
-const TARI_SEE = [
-  "austria", "belgia", "bulgaria", "cehia", "cipru", "croatia", "danemarca", "estonia", "finlanda",
-  "franta", "germania", "grecia", "irlanda", "islanda", "italia", "letonia", "liechtenstein",
-  "lituania", "luxemburg", "malta", "norvegia", "olanda", "tarile de jos", "polonia", "portugalia",
-  "romania", "slovacia", "slovenia", "spania", "suedia", "ungaria",
-];
+// Lista SEE si `inSee` stau din felia 73 in `./familie.ts`, unde se alege familia textelor dupa tara
+// operatorului; exportul ramane si aici, pentru cine il importa de la adresa veche.
+export { inSee };
 
-function fara(text: string): string {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
-}
-
-/** Tara operatorului e in SEE: atunci nu e nevoie de reprezentant in Republica Moldova. */
-export function inSee(tara: string): boolean {
-  return TARI_SEE.includes(fara(tara));
-}
-
-/** Verifica operatorul inainte de a scrie textul: un text cu locuri goale nu se construieste. */
-export function verificaOperatorPentruTexte(operator: Operator): void {
+/**
+ * Verifica operatorul inainte de a scrie textul: un text cu locuri goale nu se construieste. Numai
+ * COMPLETITUDINEA: jurisdictia (SEE, Republica Moldova sau alta tara, care opreste construirea) o
+ * decide `familieJuridica` din `./familie.ts`, inaintea oricarui text. Mesajul numeste sursa reala a
+ * operatorului (`OPERATOR_JSON` sau `config/operator.json`), nu mereu fisierul.
+ */
+export function verificaOperatorPentruTexte(operator: Operator, sursa: string = SURSA_OPERATOR): void {
   const lipsuri = lipsuriInformare(operator);
   if (lipsuri.length > 0) {
-    throw new Error("textele juridice cer campurile " + lipsuri.join(", ") + " din config/operator.json");
-  }
-  if (!inSee(operator.tara)) {
-    throw new Error(
-      "operatorul nu are sediul in SEE: Legea 195/2024 art. 27 cere atunci un reprezentant in Republica Moldova, cu datele lui in politica",
-    );
+    throw new Error("textele juridice cer campurile " + lipsuri.join(", ") + " din " + sursa);
   }
 }
 

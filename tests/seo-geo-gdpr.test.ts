@@ -31,7 +31,8 @@ import { AUTORITATI } from '../src/content/juridic/autoritati'
 import { CHEI_ART13, DESCRIERE_EVENIMENTE, inSee } from '../src/content/juridic/confidentialitate'
 import { CHEI_L284 } from '../src/content/juridic/cookie-uri'
 import { COOKIE_ALEGERE, FURNIZORI, MECANISME_MD, MECANISME_UE } from '../src/content/juridic/furnizori'
-import { texteJuridice } from '../src/content/juridic/index'
+import { familieJuridica } from '../src/content/juridic/familie'
+import { documentPentruSlug, texteJuridice } from '../src/content/juridic/index'
 import { textIntreg, type DocumentJuridic } from '../src/content/juridic/tipuri'
 import { CALE_INREGISTRARE, toateLegaturileNavigatiei } from '../src/content/navigatie'
 import { RUTE, rutePentruHarta } from '../src/content/rute'
@@ -597,7 +598,7 @@ describe('comutatorul operatorului si al analiticii (plan §9-§10)', () => {
       const operator = operatorSintetic({ [camp]: valoare })
       expect(lipsuriInformare(operator), camp + ': ' + valoare).toEqual([])
       expect(stareAnalitica(operator, ID_GA4_SINTETIC).activa, camp + ': ' + valoare).toBe(true)
-      expect(texteJuridice(operator, 'https://3s4.ke2.in'), camp + ': ' + valoare).not.toBeNull()
+      expect(texteJuridice(operator, { baza: 'https://3s4.ke2.in' }), camp + ': ' + valoare).not.toBeNull()
     }
   })
 
@@ -779,9 +780,10 @@ describe('evidenta consimtamantului', () => {
 // ---------------------------------------------------------------------------------------------
 
 describe('textele juridice (plan §9-§10, nepublicate)', () => {
-  const texte = texteJuridice(operatorSintetic(), 'https://3s4.ke2.in')
-  const politica = texte?.confidentialitate as DocumentJuridic
-  const cookie = texte?.cookie as DocumentJuridic
+  const texte = texteJuridice(operatorSintetic(), { baza: 'https://3s4.ke2.in' })
+  const politica = texte && documentPentruSlug(texte, 'confidentialitate')
+  const cookie = texte && documentPentruSlug(texte, 'cookies')
+  if (!politica || !cookie) throw new Error('textele SEE nu s-au construit pentru operatorul sintetic')
   const sectiune = (d: DocumentJuridic, cheie: string) => d.sectiuni.find((s) => s.cheie === cheie)
   const textSectiune = (d: DocumentJuridic, cheie: string) =>
     (sectiune(d, cheie)?.blocuri ?? []).flatMap((b) => b.paragrafe).join(' ')
@@ -848,6 +850,18 @@ describe('textele juridice (plan §9-§10, nepublicate)', () => {
     expect(inSee('Germania')).toBe(true)
     expect(inSee('Statele Unite')).toBe(false)
     expect(() => texteJuridice(operatorSintetic({ tara: 'Statele Unite' }))).toThrow(/reprezentant/)
+  })
+
+  it('G-MD-02, cazul pozitiv (felia 73): un operator din Republica Moldova primeste familia md, fara exceptie', () => {
+    // Datele de proba sunt ale operatorului sintetic; se schimba numai tara
+    const moldova = operatorSintetic({ tara: ['Republica', 'Moldova'].join(' ') })
+    expect(inSee(moldova.tara)).toBe(false)
+    expect(familieJuridica(moldova)).toBe('md')
+    const ro = texteJuridice(moldova, { limba: 'ro', masurare: { stare: 'S0', ga4: false } })
+    expect(ro?.size).toBe(6)
+    expect(ro?.has('confidentialitate')).toBe(true)
+    // Martorul ramane adevarat: aceeasi forma, cu alta tara din afara SEE, tot se opreste
+    expect(() => familieJuridica(operatorSintetic({ tara: 'Statele Unite' }))).toThrow(/reprezentant/)
   })
 
   /** Tiparul L-10 al portii juridice (si G-MD-09), aplicat pe textul normalizat. */

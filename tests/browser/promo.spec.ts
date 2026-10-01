@@ -1,4 +1,5 @@
-import { expect, test, type Browser, type Page } from '@playwright/test'
+import type { Browser, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { CAUTARE } from '../../src/content/promo'
 import { masoaraAccesibilitatea, masoaraDerapaj } from './ajutor/detectori'
 import { nemasurat } from './ajutor/proiect'

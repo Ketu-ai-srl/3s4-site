@@ -8,6 +8,16 @@
 // sectiune poate avea titlu de nivel 3 (articolele anexei din termeni) si un separator cu ancora
 // inaintea ei. Campurile noi sunt optionale, deci textele feliei 44 raman valide asa cum sunt.
 //
+// COMPLETAREA FELIEI 73 (familia `md`, operatorul din Republica Moldova), tot numai campuri optionale,
+// deci textele SEE raman valide si neschimbate: limba documentului; o CONDITIE pe sectiune si pe bloc
+// (starea masurarii, `./masurare.ts`: blocul intra in document numai daca toate cheile ei sunt active);
+// cheia documentului in registrul familiei; un preambul (blocurile dintre introducere si prima
+// sectiune, cum le au documentele pachetului: blocul temporar, rezumatul "pe scurt"); subelementele
+// unei liste. LEGATURA INTERNA PE CHEIE: in marcajul in linie, `[text](cale:<cheie>)` si
+// `[text](cale-ro:<cheie>)` nu sunt adrese, ci chei; le rezolva `./index.ts` la construire: cheie
+// publicata -> adresa ei, cheie cunoscuta dar nepublicata -> text fara legatura, cheie necunoscuta ->
+// construirea se opreste. Starea S-C (`umami-c` in pachet) NU are cheie de conditie: nu se compune.
+//
 // MARCAJUL IN LINIE, singurul permis in siruri: `**text**` = accent (`strong`) si
 // `[text](adresa)` = legatura. `textSimplu` il scoate; `fragmenteInLinie` il desface pentru pagina.
 
@@ -17,7 +27,19 @@ export type ListaJuridica = {
   /** `true` = lista numerotata (`ol`); altfel cu buline (`ul`). */
   numerotata?: boolean;
   elemente: string[];
+  /** Subelementele (lista cu buline) de sub elementul cu indexul dat. */
+  subelemente?: Record<number, string[]>;
 };
+
+/** Cheile de conditie ale blocurilor din familia `md` (tabelul starilor din pachetul juridic). */
+export const CONDITII_MASURARE = ["banner", "ga4", "umami", "umami-b", "activ", "s0", "linkedin"] as const;
+export type ConditieMasurare = (typeof CONDITII_MASURARE)[number];
+
+/** Limba unui document: SEE are numai romana; `md` are romana si engleza americana. */
+export type LimbaJuridica = "ro" | "en";
+
+/** O legatura interna pe cheie, ca adresa in marcajul in linie: `cale:<cheie>` sau `cale-ro:<cheie>`. */
+export const TIPAR_LEGATURA_INTERNA = /^(cale|cale-ro):([a-z0-9-]+)$/;
 
 /** O celula de tabel: text, sau un nume in `strong` cu un rand de detaliu in `small` (sablon §6). */
 export type CelulaJuridica = string | { text: string; detaliu: string };
@@ -41,6 +63,8 @@ export type BlocJuridic = {
   tabel?: TabelJuridic;
   /** Paragrafele de dupa lista sau tabel. */
   dupa?: string[];
+  /** Blocul intra in document numai cand toate aceste conditii sunt active (familia `md`). */
+  conditie?: ConditieMasurare[];
 };
 
 export type SectiuneJuridica = {
@@ -50,6 +74,8 @@ export type SectiuneJuridica = {
   nivel?: 2 | 3;
   /** Un separator (`hr`) inaintea sectiunii, cu acest `id`: tinta unei legaturi interne. */
   ancoraInainte?: string;
+  /** Sectiunea intra in document numai cand toate aceste conditii sunt active (familia `md`). */
+  conditie?: ConditieMasurare[];
   blocuri: BlocJuridic[];
 };
 
@@ -60,6 +86,12 @@ export type DocumentJuridic = {
   sectiuni: SectiuneJuridica[];
   /** Data versiunii textului, ISO `YYYY-MM-DD`; o schimba oricine schimba textul. */
   versiune?: string;
+  /** Cheia documentului in registrul familiei `md`; lipseste la textele SEE. */
+  cheie?: string;
+  /** Limba textului; lipseste la textele SEE (romana). */
+  limba?: LimbaJuridica;
+  /** Blocurile dintre introducere si prima sectiune (familia `md`). */
+  preambul?: BlocJuridic[];
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -104,7 +136,7 @@ export function textBloc(b: BlocJuridic): string[] {
   return [
     ...(b.eticheta ? [textSimplu(b.eticheta)] : []),
     ...b.paragrafe.map(textSimplu),
-    ...(b.lista?.elemente ?? []).map(textSimplu),
+    ...(b.lista?.elemente ?? []).flatMap((e, i) => [e, ...(b.lista?.subelemente?.[i] ?? [])]).map(textSimplu),
     ...(b.tabel ? [textSimplu(b.tabel.titlu), ...(b.tabel.antet ?? []).map(textSimplu), ...b.tabel.randuri.flat().flatMap(textCelula)] : []),
     ...(b.dupa ?? []).map(textSimplu),
   ];
@@ -118,6 +150,7 @@ export function textIntreg(d: DocumentJuridic): string {
   return [
     textSimplu(d.titlu),
     textSimplu(d.introducere),
+    ...(d.preambul ?? []).flatMap(textBloc),
     ...d.sectiuni.flatMap((s) => [textSimplu(s.titlu), ...s.blocuri.flatMap(textBloc)]),
   ].join("\n");
 }
@@ -135,6 +168,7 @@ export function textPentruAmprenta(d: DocumentJuridic, linieVersiune: string): s
     textSimplu(d.titlu),
     linieVersiune,
     ...(d.introducere === "" ? [] : [textSimplu(d.introducere)]),
+    ...(d.preambul ?? []).flatMap(textBloc),
     ...d.sectiuni.flatMap((s) => [textSimplu(s.titlu), ...s.blocuri.flatMap(textBloc)]),
   ];
   return bucati.join("").replace(/\s+/g, "");

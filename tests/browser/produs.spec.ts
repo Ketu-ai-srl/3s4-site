@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Browser, type Page } from '@playwright/test'
+import type { Browser, Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { CANALE_SEIF } from '../../src/components/produs/seif-canale'
 import { INTREBARI_PLATFORMA } from '../../src/content/produs/platforma'
 import { SEIF, VERIFICARE_BROWSER } from '../../src/content/produs/securitate'

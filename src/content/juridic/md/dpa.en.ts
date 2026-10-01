@@ -1,0 +1,287 @@
+// Documentul dpa, in engleza americana, pentru operatorul din Republica Moldova (familia md).
+// Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
+// Sursa: 05-dpa.en.md, sha256 4034e9673adb8e9893c8bbf285be23eb66c958ce3494568d50719580d61f5635.
+// Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
+// Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
+
+import type { DocumentJuridic } from "../tipuri";
+
+export default function dpaEn(): DocumentJuridic {
+  return {
+    cheie: "dpa",
+    limba: "en",
+    titlu: "Data Processing Agreement (DPA)",
+    versiune: "2026-10-01",
+    introducere: "",
+    preambul: [
+      { jurisdictie: null, paragrafe: ["3S Demerzel SRL is in the process of registration. Until it is registered we issue no offers, enter into no contracts and open no accounts. This page shows the agreement we will apply."] },
+      { jurisdictie: null, paragrafe: ["This agreement describes how 3S Demerzel SRL, as a processor, processes the personal data in the Client Documents. It applies together with the [Terms and conditions for professional clients](cale:termeni). Clients established in the Republic of Moldova are covered by Annex 1 (Law No. 195/2024); those established in the European Union or the European Economic Area by Annex 2 (Regulation (EU) 2016/679 and the standard contractual clauses in Decision (EU) 2021/914). Annexes 3, 4 and 5 are common.", "**In brief** (a summary with no contractual value; the text below governs)"], lista: { elemente: ["The Client is the controller, 3S is the processor (Article 1).", "3S processes the Client Documents only to provide the Service and only on the Client's instructions (Articles 3 and 4).", "The documents are stored at Amazon Web Services, in a single region in Germany. The providers that process their content, and their countries, are on the page [Sub-processors of the platform](cale:subimputerniciti) (Articles 7 and 8).", "A change of sub-processors is announced at least 30 days in advance, and the Client may object (Article 7).", "A security incident is communicated to the Client within 48 hours at most of becoming aware of it (Article 10).", "When the Service ends, the Client has at least 30 days to retrieve its data; 3S erases it from its active systems within 30 days at most after that, and backups expire within 90 days at most of the erasure from the active systems (Article 13).", "The agreement follows the law of the Republic of Moldova. The standard clauses for EU/EEA Clients are governed by Romanian law, and disputes concerning them are settled in Bucharest (Article 17)."] } },
+    ],
+    sectiuni: [
+      {
+        cheie: "art-1", titlu: "Article 1. The parties, the roles and the conclusion of the agreement",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**1.1 The parties.** \"The Client\" is the company or other professional that opens a 3S Account and accepts the agreement; its identification details are those in the acceptance form. \"3S\" is the provider of the Service:"], tabel: { forma: "cu-antet", titlu: "Article 1. The parties, the roles and the conclusion of the agreement", antet: ["Item", "Value"], randuri: [["Name", "3S Demerzel SRL"], ["Country", "Republic of Moldova"], ["State identification number (IDNO)", "[pending registration]"], ["Tax code", "[pending registration]"], ["Registered office (legal address)", "[pending registration]"], ["E-mail", "contact@3s.md"], ["Telephone", "+373 68 055 599"]] }, dupa: ["**1.2 The roles.** For the personal data in the Client Documents, the Client is the controller and 3S is the processor, within the meaning of Art. 28 of Regulation (EU) 2016/679 (\"GDPR\") and Art. 28 of Law No. 195/2024 on personal data protection (\"Law 195/2024\"). The activity log in the archive (which User opened which document, which searches they made and when) is part of the Client Documents. The Users' data for the Account (name, position, professional e-mail address, role in the Account, authentication data and the security logs of the Account) and the Client's contract and invoicing data are processed by 3S as controller, under the [Privacy policy](cale:confidentialitate); the agreement does not cover them.", "**1.3 A Client acting as processor.** If the Client processes the Documents on behalf of its own clients, for example an accounting firm or a law firm, it declares this in the acceptance form. The Client is then a processor, 3S is a sub-processor, and Module Three applies in Annex 2 (item 3 lists its adaptations). The Client warrants that it has imposed on 3S the same data protection obligations that it has toward its controllers, that it has made the controllers' instructions available to 3S before processing and that it has obtained from them the authorization to use 3S and the sub-processors on the Agreed List.", "**1.4 Conclusion.** The agreement is concluded when the Client accepts it in the Account: the Account administrator logs in, completes the acceptance form, ticks the separate box \"I accept the Data Processing Agreement\" and enters the one-time code sent to the company's e-mail address [N20: the acceptance flow in the Account]. The form contains the details of the Client and of its representative, the Client's role (controller or processor, Article 1.3), the address for notices, the contact point for incidents (Article 10.1) and, for EU/EEA Clients, the State of establishment and the competent supervisory authority (Annex 3, part C); where Module Three applies, it also contains the contact of each controller for the notices in Annex 2, item 3. The parties agree that acceptance through these steps stands in place of a signature and produces the effects of a handwritten signature for this agreement (Law No. 124/2022 on electronic identification and trust services, Art. 40(2) and (3)). The method of verification is authentication in the Account plus the one-time code. The Account administrator who accepts declares and warrants that they are authorized to conclude the agreement on behalf of the Client (Law No. 124/2022, Art. 43(1)(a)). The Client keeps the access data and the codes secret and answers for their abusive use until it tells 3S that they have been compromised. 3S keeps the acceptance proof and the one-time codes confidential and protected against alteration, and answers for damage caused by breaching these obligations, under Article 15. The Client may ask for the agreement to be signed with a qualified electronic signature or by hand, and 3S accepts. Immediately after acceptance, 3S sends the Client a PDF copy of the agreement in the accepted version, with the complete list of the sub-processors in force, and keeps the proof of acceptance (date and time, the account and the User, the version and the fingerprint of the text, the IP address and the other items listed in the Terms, section 4.9) for as long as the agreement lasts and 3 years after it ends.", "**1.5 Entry into force.** The agreement produces effects from the date of acceptance, proved by the log in Article 1.4, and applies in the accepted version, with the changes made under Article 18.", "**1.6 Order of the documents.** The agreement, with its annexes, is part of the contract between the Client and 3S, together with the Terms and the Offer (Terms, section 1.6). For the processing of personal data the agreement prevails. In Annex 2, the standard contractual clauses prevail over any other provision of the contract (Clause 5).", "**1.7 Clients in other states.** Clients established in a state other than the Republic of Moldova, a Member State of the European Union or a State of the European Economic Area may use the Service only after a separate written agreement with 3S on the regime applicable to their personal data.", "**1.8 Language.** The agreement exists in Romanian and in English, with the same legal content, and can be concluded in either. If the versions differ, the one accepted by the Client prevails. If the Client accepted both, the Romanian version prevails in disputes settled by the courts of the Republic of Moldova or of Romania."] },
+        ],
+      },
+      {
+        cheie: "art-2", titlu: "Article 2. Definitions",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The terms \"personal data\", \"processing\", \"data subject\", \"controller\", \"processor\", \"personal data breach\" and \"supervisory authority\" have the meaning in Art. 4 GDPR and in Art. 4 of Law 195/2024. The terms \"Service\", \"Account\", \"User\", \"Offer\" and \"working day\" have the meaning in the Terms. In the agreement, the following also mean:"], lista: { elemente: ["**The Terms:** the [Terms and conditions for professional clients](cale:termeni);", "**Client Documents:** what the Terms define (the files, the text extracted from them, their metadata and any other content uploaded or generated in the Account), to which the agreement adds the questions put to the assistant, its answers and the activity log in the archive;", "**Account administrator:** the User with administration rights over the Account, who accepts the agreement on the Client's behalf (Article 1.4);", "**Applicable law:** Law 195/2024 and, for EU/EEA Clients, the GDPR;", "**Sub-processor:** another provider that 3S, or one of its other sub-processors, uses for part of the processing of the Client Documents;", "**Agreed List:** the list of sub-processors in force (Article 7.1);", "**The standard clauses:** the standard contractual clauses in the annex to Commission Implementing Decision (EU) 2021/914;", "**EU/EEA:** the European Union and the States of the European Economic Area."] } },
+        ],
+      },
+      {
+        cheie: "art-3", titlu: "Article 3. Subject matter, nature, purpose and duration of the processing",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**3.1 Subject matter.** Keeping, indexing and searching the Client Documents in the 3S Service. Digitization (scanning) and physical storage of documents are outside the agreement; they are contracted separately, if offered (Terms, section 3.2).", "**3.2 Nature.** Storing the Documents, extracting the text from them (optical character recognition), indexing, searching, generating answers with an artificial intelligence system (indicating the document they come from and, where the system can give it, the page; Terms, section 3.4), display, export, erasure and remote assistance. How the system generates answers and what its limits are is set out on the page [Artificial intelligence in 3S services](cale:inteligenta-artificiala).", "**3.3 Purpose.** Only providing the Service to the Client, on its instructions.", "**3.4 Data and persons.** The types of personal data and the categories of data subjects are in Annex 3, part B.", "**3.5 Duration.** As long as the Client has an Account, plus the retrieval and erasure periods in Article 13.", "**3.6 Contact channels.** The agreement concerns the Client Documents in the Service. The messages that the Client or the Users send to 3S by e-mail, WhatsApp or telephone go through contact channels: 3S processes them as controller, under the Privacy policy. The Client does not send documents containing personal data of third parties through these channels; documents are uploaded in the Service. The assistant's WhatsApp channel, if the offer includes it (Terms, section 3.1), is part of the Service, not of the contact channels: its providers enter the Agreed List before they receive data. The providers through which contact messages pass do not receive the Documents uploaded in the Service and are not sub-processors for them [N21: confirmation that none of them has access to the Documents uploaded in the Service]; they are in table B on the page [Sub-processors of the platform](cale:subimputerniciti)."] },
+        ],
+      },
+      {
+        cheie: "art-4", titlu: "Article 4. The Client's instructions",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**4.1** 3S processes the Client's personal data only on its documented instructions, including with regard to transfers to a third country (Art. 28(3)(a) GDPR and Law 195/2024). The Client's instructions are the agreement, the Terms, the orders and the settings given through the Service (upload, erasure, permissions, configuration) and written requests sent by the Account administrator or by a person the administrator has authorized.", "**4.2** If the law to which 3S is subject requires it to process the data otherwise than the instructions require, 3S informs the Client before processing, unless the law prohibits such information on important grounds of public interest. Requests from authorities are governed by Article 12. For EU/EEA Clients this paragraph adds no exception to the standard clauses: the instructions bind 3S as Clause 8.1 provides, and what happens when a third-country law or request conflicts with them is governed only by Clauses 14 and 15 in Annex 2.", "**4.3** 3S informs the Client immediately if, in its opinion, an instruction infringes data protection law or if it cannot follow an instruction. 3S may suspend the execution of the instruction until the Client confirms or modifies it.", "**4.4** 3S does not process the Client's personal data for its own purposes and does not sell it. If it determines the purposes or means of a processing itself, it becomes a controller for that processing (Art. 28(10) GDPR; Art. 28(9) Law 195/2024).", "**4.5** 3S does not use the Client Documents to train or improve artificial intelligence models, its own or third parties', without the Client's written instruction. A model provider enters the Agreed List only after 3S has verified in writing that its terms forbid using the documents to train models [N1: the platform provider confirms the model providers' terms].", "**4.6** The Client answers for the lawfulness of the processing as controller, including the legal basis and the information given to data subjects, and for the lawfulness of its instructions."] },
+        ],
+      },
+      {
+        cheie: "art-5", titlu: "Article 5. Confidentiality and personnel",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**5.1** 3S gives access to the Client's personal data only to members of its personnel, that is employees and individual collaborators who work under its authority, and only to the extent strictly necessary for the performance, administration and monitoring of the contract. A company that provides services to 3S and has access to this data is a sub-processor and appears on the Agreed List [N21: who has access to the Documents: employees, collaborators or companies].", "**5.2** 3S ensures that the persons authorized to process the personal data have committed themselves to confidentiality or are under an appropriate statutory obligation of confidentiality; the commitment continues after their relationship with 3S ends [N2: the undertakings signed with 3S personnel and with the providers' personnel].", "**5.3** 3S does not disclose the Client Documents and does not pass them to third parties, other than the sub-processors on the Agreed List and the cases in Article 12. The Client authorizes these transmissions."] },
+        ],
+      },
+      {
+        cheie: "art-6", titlu: "Article 6. Security",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**6.1** 3S undertakes to provide sufficient guarantees to implement appropriate technical and organizational measures, so that the processing meets the requirements of the Applicable law and protects the rights of data subjects (Art. 28(1) GDPR and Law 195/2024). It takes all measures required under Art. 32 GDPR and Art. 32 of Law 195/2024, at least those in Annex 4, and verifies periodically that they continue to ensure an appropriate level of security.", "**6.2** 3S may change the measures in Annex 4 only if the level of protection remains at least as high; the change is reflected in the annex.", "**6.3** The Client is responsible for security on its side: the passwords and access of the Users, the permissions it sets in the Account and its own devices."] },
+        ],
+      },
+      {
+        cheie: "art-7", titlu: "Article 7. Sub-processors",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**7.1 General authorization.** The Client authorizes 3S in writing to use the sub-processors on the Agreed List (Art. 28(2) GDPR and Law 195/2024; Clause 9(a), Option 2, in Annex 2). The Agreed List is the complete list that 3S sends the Client together with the PDF copy of the agreement: the version that the page [Sub-processors of the platform](cale:subimputerniciti) publishes on the date of acceptance, completed with the name of the sub-processors that the page shows only by category and with the address and the contact person of each sub-processor. For each sub-processor it shows the name, the address, the contact person, the country in which the data is processed, the processing entrusted and the transfer mechanism [N3: the name, address and contact person of each sub-processor, from the platform provider's written sheet].", "**7.2 Notice.** At least 30 days before adding a sub-processor or replacing one on the list, 3S notifies the Client in writing, by e-mail to the address for notices in the acceptance form (failing that, to the Account administrator), and updates the page \"Sub-processors of the platform\", with the details in 7.1 about the new sub-processor and the date from which it starts processing. Where Module Three applies, 3S gives the notice also to the Client's controller, at the contact the Client indicated for this purpose in the acceptance form, and informs the Client of the engagement of the new sub-processor (Clause 9(a), Option 2); an objection of the controller has the effect of an objection of the Client.", "**7.3 Objection.** The Client may object, in writing and on reasonable data protection grounds, at any time up to the date on which the new sub-processor starts processing. As long as the objection is not resolved, 3S does not pass the Client's data to the new sub-processor. The parties seek a solution within 30 days at most of the objection. If they find none, the Client may terminate the affected Service without penalty, and its data is returned and erased under Article 13; 3S may use the new sub-processor for other Clients [N4: 3S can exclude a Client's data from a new sub-processor; if the platform does not allow it, the paragraph is rewritten]. If the Client does not object by the start date, 3S may use the new sub-processor, under the general authorization in Article 7.1.", "**7.4 Contract with the sub-processor.** 3S concludes with each sub-processor a written contract that imposes, in substance, the same data protection obligations as this agreement (Art. 28(4) GDPR and Law 195/2024; Clause 9(b)), including the rights of data subjects as third-party beneficiaries, and that obliges it to notify 3S without delay of any personal data breach, so that 3S can comply with Article 10 [N22: the contractual notice period of the sub-processors]. Each sub-processor imposes the same obligations on its own sub-processors, which also appear on the Agreed List.", "**7.5 Copy of the contract.** At the Client's request, 3S gives it a copy of the contract with the sub-processor and of its amendments. It may redact the parts that contain trade secrets or other confidential information (Clause 9(c)).", "**7.6 Liability.** 3S remains fully responsible to the Client for the performance of the sub-processor's obligations and notifies the Client if a sub-processor fails to fulfill its obligations under its contract with 3S (Clause 9(d)). 3S agrees a third-party beneficiary clause with the sub-processor: if 3S has factually disappeared, ceased to exist in law or become insolvent, the Client may terminate the contract with the sub-processor and instruct it to erase or return the data (Clause 9(e)).", "**7.7 Identity of the sub-processors.** The Client has at any time the identity (name, address and contact person) of all sub-processors that process its data, and 3S keeps the information up to date on its own initiative, without being asked."] },
+        ],
+      },
+      {
+        cheie: "art-8", titlu: "Article 8. Place of processing and transfers",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**8.1 Storage.** The Client Documents are stored at Amazon Web Services, in a single region in Germany. The other processing steps (text recognition, artificial intelligence models) are carried out by the providers on the Agreed List, in the countries shown for each.", "**8.2 Remote access.** 3S personnel may access the Client's personal data remotely only for support, administration, the resolution of incidents and the assessment of a notice or an order, on the instruction given in the Terms (section 6.5), within the limits of Article 5 and Annex 4, from the countries indicated in Annex 3, part B [N5: the roles with access, the tool and the countries from which the data is accessed]. For EU/EEA Clients, access from outside the EU/EEA, including from the Republic of Moldova, is a transfer to a third country and is covered by Annex 2.", "**8.3 Onward transfers.** 3S does not disclose the Client Documents to a third party outside the EU/EEA, including in the Republic of Moldova, and does not allow sub-processors to transfer them outside the EU/EEA, except to the sub-processors on the Agreed List, in the countries and on the mechanisms shown in it, and only on the Client's instructions (Article 4). For EU/EEA Clients, Clause 8.8 in Annex 2 applies; for Clients in the Republic of Moldova, Art. 46 of Law 195/2024 (Annex 1).", "**8.4 Information.** At the Client's request, 3S tells it the place of storage and the countries from which its data is accessed.", "**8.5 Change of place.** A change of the region or the country of storage is announced as a change to the Agreed List, under Article 7.2."] },
+        ],
+      },
+      {
+        cheie: "art-9", titlu: "Article 9. Requests from data subjects",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**9.1** If 3S receives a request from a data subject concerning the data in the Client Documents, it forwards it to the Client without delay and within 5 working days at most, and does not answer it itself without the Client's authorization, except to acknowledge receipt (Clause 10(a)).", "**9.2** Taking into account the nature of the processing, 3S assists the Client by appropriate technical and organizational measures, insofar as this is possible, for the fulfillment of its obligation to respond to requests to exercise data subjects' rights (access, rectification, erasure, restriction, portability, objection). The measures are in Annex 4, part B, and the assistance is given within 10 working days at most of the Client's request. The Client identifies the person and answers within the legal period of one month (Art. 12(3) GDPR and Law 195/2024).", "**9.3** On requests received, 3S follows the Client's instructions (Clause 10(c))."] },
+        ],
+      },
+      {
+        cheie: "art-10", titlu: "Article 10. Personal data breach",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**10.1** 3S notifies the Client without undue delay and within 48 hours at most of becoming aware of a security breach concerning its data, whether it occurred at 3S or at a sub-processor (Art. 33(2) GDPR and Law 195/2024; Clause 8.6(c)). The notice is sent to the contact point for incidents in the acceptance form (failing that, to the Account administrator) [N6: the written incident procedure and an address that can send and receive messages].", "**10.2** The notice contains, as far as possible: a contact point; the nature of the breach, with the categories and approximate number of persons and records concerned; the likely consequences; the measures taken or proposed, including mitigation measures. What is not known at the first notice is communicated as it becomes known.", "**10.3** 3S takes the appropriate measures to remedy the breach and limit its effects, helps the Client to fulfill its obligations to notify the authority, within 72 hours, and the data subjects (Arts. 33-34 GDPR and Law 195/2024) and keeps a record of incidents.", "**10.4** Notifying the authority and the data subjects is the Client's task. 3S does not do so in its place without its agreement, unless the law requires it."] },
+        ],
+      },
+      {
+        cheie: "art-11", titlu: "Article 11. Assistance, records and cooperation with authorities",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**11.1** 3S helps the Client to comply with the obligations in Arts. 32-36 GDPR and in Arts. 32-36 of Law 195/2024 (security, incidents, the data protection impact assessment, prior consultation of the authority), taking into account the nature of the processing and the information available to it. The information required for an impact assessment is given within 15 working days at most of the request.", "**11.2** 3S keeps a record of the categories of processing activities carried out on behalf of the Client (Art. 30(2) GDPR and Law 195/2024) and makes it available to the supervisory authority on request.", "**11.3** 3S cooperates, on request, with the competent supervisory authority (Art. 31 GDPR and Law 195/2024; Clause 13(b))."] },
+        ],
+      },
+      {
+        cheie: "art-12", titlu: "Article 12. Requests from public authorities",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**12.1** If a public authority asks 3S for access to the Client's data or accesses it directly, 3S notifies the Client without delay, with the data requested, the authority, the legal basis and the response given, to the extent the law permits. If the law prohibits the notice, 3S makes reasonable efforts to obtain the lifting of the prohibition and documents them. Where the law permits, 3S directs the authority to request the data directly from the Client.", "**12.2** 3S verifies the lawfulness of the request and challenges it if, after careful assessment, it has reasonable grounds to consider it unlawful. It provides the minimum amount of data permitted by a reasonable interpretation of the request. It documents the assessment and makes it available to the Client, to the extent the law permits.", "**12.3** For EU/EEA Clients, Clauses 14 and 15 in Annex 2 apply in full."] },
+        ],
+      },
+      {
+        cheie: "art-13", titlu: "Article 13. Return and erasure of data",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**13.1 The Client's choice.** During the contract the Client may export the Documents at any time. When the Service ends it chooses between the return and the erasure of the data.", "**13.2 Retrieval period.** At least 30 calendar days from the end of the Service or, if the Client switches to another provider, from the end of the transition period provided in the Terms (section 15). In this period 3S returns the data on request, in a structured, commonly used, machine-readable format [N7: the form of the export: original Documents, extracted text, metadata]. At the Client's request, the data is erased immediately after return.", "**13.3 Erasure.** After the retrieval period, or immediately after return if the Client so asks, 3S erases the data from its active systems, together with existing copies, within 30 days at most. Backups expire by their rotation, within 90 days at most of the erasure from the active systems [N8: the duration of the platform provider's backups]. If the Client does not choose, 3S erases the data after the retrieval period.", "**13.4 Confirmation.** After erasure from the active systems, 3S confirms it to the Client in writing (Clause 8.5); when the backups expire it also confirms their erasure. Until then 3S continues to comply with the agreement for the data remaining in backups. 3S asks the sub-processors to erase the data within the same periods and obtains their confirmation.", "**13.5 Legal exception.** If the law requires 3S to keep certain data, it keeps it only for as long and to the extent required by law, continues to comply with the agreement for it and informs the Client (Clause 8.5).", "**13.6 Switching.** The terms of switching to another provider, with the notice and the transition, are those in the Terms (section 15); this article does not shorten them."] },
+        ],
+      },
+      {
+        cheie: "art-14", titlu: "Article 14. Information and audit",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**14.1** 3S makes available to the Client all information necessary to demonstrate compliance with the obligations in the agreement, allows for and contributes to audits, including inspections, conducted by the Client or another auditor mandated by it. It answers the Client's questions about the processing promptly. It may use, for this purpose, relevant independent certifications or reports, where they exist.", "**14.2 The Client's audit.** The Client, or an independent auditor mandated by it and bound by confidentiality, may audit the processing, including by inspections at 3S's premises, once a year, on 30 days' written notice, during working hours and without unreasonably disrupting 3S's activity.", "**14.3 Additional audits.** The Client may also request an audit after a security incident concerning its data, when there are indications of non-compliance with the agreement or when the supervisory authority requires it, on 10 working days' notice.", "**14.4 Limits.** The audit does not cover other Clients' data. The results remain confidential, except for their communication to the competent authority.", "**14.5 Costs.** Each party bears its own costs. If the audit shows a substantial non-compliance by 3S, it remedies it at its own expense, within an agreed period.", "**14.6 Sub-processors.** For a sub-processor, 3S may answer an audit request with the sub-processor's independent reports, where they exist, unless the law or the authority requires a direct inspection.", "**14.7 The authority.** On request, 3S makes the information and the results of audits available to the competent supervisory authority (Clause 8.9(e) in Module Two, Clause 8.9(g) in Module Three)."] },
+        ],
+      },
+      {
+        cheie: "art-15", titlu: "Article 15. Liability",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**15.1 To data subjects.** Liability to data subjects follows Art. 82 GDPR and Art. 76 of Law 195/2024. 3S, as processor, is liable for the damage caused by processing only where it has not complied with obligations specifically directed to processors or where it has acted outside or contrary to the Client's lawful instructions. A party that has paid full compensation may claim back from the other party the part corresponding to its responsibility.", "**15.2 Between the parties.** Liability for breach of the agreement follows the rules in the Terms (section 13). No limitation or exclusion of liability in the Terms applies to: (a) liability to data subjects; (b) liability for breach of the standard clauses in Annex 2, which follows Clause 12; (c) damage caused intentionally or by gross negligence.", "**15.3 The standard clauses.** For EU/EEA Clients, liability for breach of the standard clauses follows Clause 12 in Annex 2."] },
+        ],
+      },
+      {
+        cheie: "art-16", titlu: "Article 16. Duration and termination",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**16.1** The agreement starts on acceptance and lasts as long as 3S processes the Client's data, that is as long as the Account is active, plus the periods in Article 13. The obligations of confidentiality, return and erasure continue until performed.", "**16.2** Termination of the Terms leads to termination of the agreement after Article 13 has been performed.", "**16.3 Non-performance.** For EU/EEA Clients, suspension of the transfer and termination for breach of the standard clauses follow Clause 16 in Annex 2. For Clients in the Republic of Moldova, either party may terminate the agreement if the other substantially breaches its data protection obligations and does not remedy the breach within a reasonable period, of 30 days at most from the written notice. The period does not apply to breaches that cannot be remedied."] },
+        ],
+      },
+      {
+        cheie: "art-17", titlu: "Article 17. Governing law, courts and partial invalidity",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**17.1 The agreement.** The agreement is governed by the substantive law of the Republic of Moldova, except for the standard clauses in Annex 2 (Article 17.2). Disputes concerning it are settled under the rules in the Terms (section 16).", "**17.2 The standard clauses (EU/EEA Clients).** The standard clauses in Annex 2 are governed by the law of Romania (Clause 17, Option 1), and disputes concerning them are settled by the courts of Bucharest, Romania (Clause 18(b)). A data subject may also bring proceedings before the courts of the State in which they have their habitual residence (Clause 18(c)).", "**17.3 Partial invalidity.** If a provision is declared void, the others remain valid."] },
+        ],
+      },
+      {
+        cheie: "art-18", titlu: "Article 18. Amendments",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["**18.1** The agreement is amended by written agreement of the parties, including in electronic form.", "**18.2** 3S may amend the agreement unilaterally only for changes in law, in decisions or standard clauses of the European Commission or in the guidance of the supervisory authority, for changes to the Agreed List made under Article 7 and for improvements to the security measures that do not reduce the level of protection. It announces the amendment at least 30 days in advance, by e-mail and in the Account [N20: if the platform has no in-Account notices, \"and in the Account\" is removed]. The Client may terminate the Service without penalty before the date on which the amendment takes effect.", "**18.3** The text of the standard clauses is not modified; only the annexes may be updated (Clause 2(a)). No amendment may contradict the standard clauses."] },
+        ],
+      },
+      {
+        cheie: "art-19", titlu: "Article 19. Contact",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Questions about the agreement, notices and requests concerning personal data are sent in writing to contact@3s.md; the telephone +373 68 055 599 can be used for urgent matters and does not replace the written notice. The same contact point receives complaints from data subjects (Clause 11(a))."] },
+        ],
+      },
+      {
+        cheie: "anexa-1", titlu: "Annex 1. Clients established in the Republic of Moldova (Law 195/2024)",
+        blocuri: [
+
+        ],
+      },
+      {
+        cheie: "anexa-1-s1", titlu: "1. The contract", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The agreement is the written contract, including in electronic format, required by Art. 28(3) and (8) of Law 195/2024, concluded under the legislation of the Republic of Moldova. It is an individual contract between the controller and the processor; it is not based on standard clauses approved by the National Center for Personal Data Protection, called \"the Center\" below (Art. 28(6)-(7)). Law 195/2024 applies to 3S also for EU/EEA Clients, because it concerns processing in the context of the activities of an establishment of the processor on the territory of the Republic of Moldova (Art. 3(1)); for them, the body of the agreement stands in place of the contract required by Art. 28 of the law, alongside the standard clauses in Annex 2."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s2", titlu: "2. Where the requirements of Art. 28(3) are found", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "2. Where the requirements of Art. 28(3) are found", antet: ["Requirement in Art. 28(3) of Law 195/2024", "Where in the agreement"], randuri: [["subject matter, duration, nature and purpose of the processing, type of data and categories of data subjects", "Article 3, Annex 3"], ["point (a) documented instructions, including on transfers; information about the legal requirement", "Articles 4, 8 and 12"], ["point (b) confidentiality of authorized persons", "Article 5"], ["point (c) security measures (Art. 32)", "Article 6, Annex 4"], ["point (d) conditions for other processors (paras. (2) and (4))", "Article 7, Annex 5"], ["point (e) assistance with the exercise of data subjects' rights", "Article 9"], ["point (f) assistance for Arts. 32-36", "Articles 10 and 11"], ["point (g) erasure or return of data", "Article 13"], ["point (h) information, audit and information about an unlawful instruction", "Article 14 and Article 4.3"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-1-s3", titlu: "3. Transfers (Chapter V)", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Storage in Germany is a transfer to a State of the European Economic Area; Chapter V does not apply to such a transfer, which requires no special authorization (Art. 44(2)). To other states, 3S transfers only with appropriate safeguards (Art. 46). Standard clauses approved by the Center or adopted by the European Commission are such a safeguard, without specific authorization (Art. 46(2)(c)). European Commission adequacy decisions are an element the Center takes into account, not an automatic effect (Art. 45(2)(d)). The mechanism for each sub-processor is on the Agreed List."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s4", titlu: "4. Law No. 284/2004", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The Client expressly authorizes the transmission of the Documents to the sub-processors on the Agreed List, including for the purposes of Art. 13(3)(b) of Law No. 284/2004 on information society services. 3S has no obligation to verify the authenticity of the uploaded documents or their compliance with the law (Art. 13(4))."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s5", titlu: "5. Supervisory authority", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The National Center for Personal Data Protection (CNPDCP), MD-2004, Chisinau, str. Serghei Lazo no. 48, centru@datepersonale.md, [datepersonale.md](https://datepersonale.md)."] },
+        ],
+      },
+      {
+        cheie: "anexa-1-s6", titlu: "6. Law and courts", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Article 17.1."] },
+        ],
+      },
+      {
+        cheie: "anexa-2", titlu: "Annex 2. Clients established in the EU/EEA (standard contractual clauses)",
+        blocuri: [
+
+        ],
+      },
+      {
+        cheie: "anexa-2-s1", titlu: "1. When it applies", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The Client is established in a Member State of the European Union or in a State of the European Economic Area, and the processing of its data falls under the GDPR. 3S is established in the Republic of Moldova, which at the date of publication is not among the countries with a European Commission adequacy decision ([the Commission's list](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en)). The transfer to 3S therefore requires appropriate safeguards, within the meaning of Art. 46 GDPR."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s2", titlu: "2. The instrument", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The safeguard is provided by the standard contractual clauses in the annex to Commission Implementing Decision (EU) 2021/914 of 4 June 2021 (OJ L 199, 7.6.2021, p. 31), in the language version of the language in which the Client accepted the agreement. They are incorporated into the agreement by reference, with the module, options and completions below. The text is public at [https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj](https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj). At a data subject's request, the Client gives them free of charge a copy of the clauses as applied, with the annexes completed (Clause 8.3), and 3S supports it."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s3", titlu: "3. The module", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Module Two applies (transfer from controller to processor), because in the usual situation the Client is the controller of its Documents and 3S processes them on its behalf. Module Three (transfer from processor to sub-processor) applies if the Client has declared that it acts as a processor (Article 1.3), because 3S then processes on behalf of a processor. In that case the body of the agreement is read together with these adaptations of Module Three: the instructions of the Client's controllers are made available to 3S before processing (Clause 8.1(a)); 3S notifies incidents to the Client and, where appropriate and feasible, to its controller (Clause 8.6(c)); 3S gives the notice of changes to the Agreed List to the controller, at the contact indicated in the acceptance form, and informs the Client of the engagement of the new sub-processor (Clause 9(a), Option 2); a copy of a sub-processor contract is given at the request of the Client or of the controller (Clause 9(c)); requests from data subjects are notified to the Client and, where appropriate, to the controller, and 3S assists the controller (Clause 10(a)-(b)); the information, the audits and the information for the authority under Article 14 follow Clause 8.9(c)-(g). A provision of the body that gives the Client a notice, a right or information is read as giving it also to the controller wherever the clauses so require. Modules One and Four do not apply.", "Sub-processors outside the EU/EEA. A sub-processor established outside the EU/EEA receives data only under Clause 8.8 (Article 8.3): where an adequacy decision covers the transfer; or where it has accepted, in its contract with 3S, the standard clauses under the appropriate Module (Module Three); or where other appropriate safeguards under Art. 46 or 47 GDPR apply. The mechanism is shown for each sub-processor on the Agreed List (Annex 5). A sub-processor in the EU/EEA is not an onward transfer (Clause 8.8 and its footnotes)."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s4", titlu: "4. The options chosen", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "4. The options chosen", antet: ["Clause", "The parties' choice"], randuri: [["Clause 7 (docking clause, optional)", "Applies."], ["Clause 9(a)", "Option 2, general written authorization. Notice period: 30 days (Article 7.2). Agreed List: Annex 5."], ["Clause 11(a), optional language (independent dispute resolution body)", "Does not apply. Contact point for complaints: contact@3s.md."], ["Clause 13(a)", "First paragraph (the data exporter is established in the EU/EEA). Competent authority: Annex 3, part C."], ["Clause 17", "Option 1. The law of Romania."], ["Clause 18(b)", "The courts of Bucharest, Romania."], ["Annexes I, II and III of the clauses", "Annex 3 (parts A, B and C), Annex 4 and Annex 5 of this agreement."]] } },
+        ],
+      },
+      {
+        cheie: "anexa-2-s5", titlu: "5. Completions", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The parties supplement the standard clauses with the following, within the limits of Clause 2(a):"], lista: { elemente: ["notification of incidents within 48 hours at most (Article 10, together with Clause 8.6(c));", "the 30 days' notice for sub-processors (Article 7, together with Clause 9(a));", "the audit arrangements (Article 14, together with Clause 8.9(c)-(d) in Module Two and Clause 8.9(c)-(f) in Module Three);", "the periods for return and erasure (Article 13, together with Clause 8.5);", "the periods for assistance with data subjects' requests (Article 9, together with Clause 10)."] }, dupa: ["The completions do not contradict the standard clauses. In case of conflict the clauses prevail (Clause 5)."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s6", titlu: "6. The transfer assessment", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["3S documents the assessment provided for in Clause 14(b)-(d), keeps it up to date and makes it available to the Client and to the competent supervisory authority, on request [N9: the written assessment of the transfer to the Republic of Moldova and the access map]. The assessment takes into account, among other things, the place of storage (Germany), the remote access by 3S personnel, the chain of sub-processors, the laws of the Republic of Moldova on authorities' access to data and the measures in Annex 4."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s7", titlu: "7. Scope of the clauses", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The standard clauses apply to 3S's processing that does not fall within the scope of the GDPR (Decision (EU) 2021/914, Art. 1(1)). If an authority or a court finds that 3S's processing falls under the GDPR, the parties agree without delay on another suitable transfer instrument. Until then the clauses apply, and the Client may suspend the transfer and terminate the Service under Clause 16."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s8", titlu: "8. Data subjects", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["Data subjects may invoke and enforce the clauses as third-party beneficiaries, under Clause 3."] },
+        ],
+      },
+      {
+        cheie: "anexa-2-s9", titlu: "9. Acceptance", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["By accepting the agreement (Article 1.4), the parties approve the standard clauses and sign Annex I.A (Annex 3, part A), with the date and time of acceptance recorded."] },
+        ],
+      },
+      {
+        cheie: "anexa-3", titlu: "Annex 3. Description of the processing (Annex I of the standard clauses)",
+        blocuri: [
+
+        ],
+      },
+      {
+        cheie: "anexa-3-a", titlu: "A. List of parties", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "A. List of parties", antet: ["Item", "Data exporter (the Client)", "Data importer (3S)"], randuri: [["Name", "the name in the acceptance form", "3S Demerzel SRL"], ["Address", "the address in the acceptance form", "[pending registration]"], ["Name, position and contact details of the contact person; data protection officer or EU representative, if any", "those in the acceptance form", "the 3S data protection contact point; contact@3s.md; +373 68 055 599 [N10: the name and position of the person]"], ["Activities relevant to the data transferred", "uploading, keeping and using the Documents in the 3S Service", "providing the Service: storage, text extraction, indexing, search, generated answers, support"], ["Role", "controller (Module Two) or processor (Module Three), per the declaration in the acceptance form", "processor (Module Two) or sub-processor (Module Three)"], ["Signature and date", "electronic acceptance in the Account, with the date and time recorded (Article 1.4)", "publication of the agreement in the accepted version and the confirmation of acceptance sent to the Client (Article 1.4)"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-3-b", titlu: "B. Description of the transfer", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "B. Description of the transfer", antet: ["Item", "Description"], randuri: [["Categories of data subjects", "persons whose data appears in the Client Documents: the Client's employees, former employees and candidates, its customers, suppliers and partners, their representatives and signatories, other persons mentioned in documents; the Users of the Client's Account, in the activity log in the archive"], ["Categories of personal data", "those in the documents, at the Client's choice: identification and contact data (name, position, address, e-mail, telephone, identification number), data from contracts and invoices (signatures, bank accounts, amounts), data from personnel records, correspondence; in the activity log: the User's identifier, the document opened or the search made, the date and time"], ["Sensitive data and applied restrictions or safeguards", "may appear in documents, for example health data in personnel files, trade union membership or criminal convictions. The Client uploads special categories of data only if it has a legal basis (Arts. 9 and 10 GDPR; Arts. 9 and 10 of Law 195/2024). Safeguards: strict purpose limitation (Article 3), 3S personnel's access limited to what is strictly necessary (Article 5), the measures in Annex 4 [N11: additional safeguards for sensitive data: roles and log]. 3S does not verify the content of documents"], ["Frequency of the transfer", "continuous, as long as the Account is active; remote access by 3S personnel: at the Client's request, for support and administration, to resolve an incident or, on the instruction in the Terms (section 6.5), to assess a notice or an order (Article 8.2)"], ["Place of processing and of access", "storage: Germany (Article 8.1); other processing steps: the countries shown on the Agreed List (Annex 5); remote access by 3S personnel: from [N5: the countries from which the data is accessed] (Article 8.2)"], ["Nature of the processing", "Article 3.2"], ["Purposes of the transfer and further processing", "Article 3.3"], ["Retention period", "as long as the Account is active, then a retrieval period of at least 30 days, erasure from active systems within 30 days at most and expiry of backups within 90 days at most of the erasure from the active systems (Article 13)"], ["Transfers to sub-processors (subject matter, nature, duration)", "the Agreed List (Annex 5): each sub-processor processes, for the duration of the agreement, the part of the processing described against its name"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-3-c", titlu: "C. Competent supervisory authority", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "C. Competent supervisory authority", antet: ["The Client", "The authority"], randuri: [["Established in the EU/EEA (Clause 13(a), first paragraph)", "the supervisory authority responsible for ensuring the Client's compliance with the GDPR, of the State in which it is established, indicated by the Client in the acceptance form. For a Client established in Romania: the National Supervisory Authority for Personal Data Processing, [dataprotection.ro](https://www.dataprotection.ro)"], ["Established in the Republic of Moldova", "Annex 1, item 5"]] } },
+        ],
+      },
+      {
+        cheie: "anexa-4", titlu: "Annex 4. Technical and organizational measures (Annex II of the standard clauses)",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The measures below are those 3S applies for an appropriate level of security (Article 6). 3S does not declare any certification for itself; the sub-processors' certifications are indicated only after verification."] },
+        ],
+      },
+      {
+        cheie: "anexa-4-a", titlu: "A. Security measures", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], tabel: { forma: "cu-antet", titlu: "A. Security measures", antet: ["Area", "Measure"], randuri: [["Hosting and location of data", "The Documents are stored at Amazon Web Services, in a single region in Germany."], ["Encryption", "Files are encrypted with AES-256 at rest and travel only over TLS 1.2 or newer connections [N12: the actual configuration, confirmed by the platform provider]."], ["Separation of data between Clients", "Each Client's archive is separate from the others', and search does not cross into another Client's archive [N13: claim withdrawn from the product page; to be confirmed by the owner and the platform provider]."], ["Identification and authorization of Users", "Access is granted by person and by folder, with the roles set by the Client [N14: the authentication mechanisms and the default roles]."], ["Access by 3S personnel and sub-processors", "Only to the extent strictly necessary, on the basis of role, for support, administration, resolving incidents and assessing a notice or an order (Articles 5 and 8.2) [N5, N21]."], ["Logs", "Every search and every document opened is recorded in the activity log, with the User and the time, and the log is available to the Client [N15: confirmed by the platform provider]."], ["Personnel confidentiality", "Article 5, with the personnel's confidentiality undertakings [N2]."], ["Backups and restoration", "[N16: existence, frequency and location of backups; ability to restore in a timely manner]."], ["Verification of measures", "3S periodically verifies the effectiveness of the measures (Article 6.1) [N17: the process: frequency and form]."], ["Incident management", "A written incident response procedure, with notice to the Client within 48 hours at most (Article 10) [N6]."], ["Erasure and portability", "Export and erasure of data, under Article 13 [N7, N8]."], ["Sub-processors", "A contract with equivalent obligations for each sub-processor (Article 7.4) [N3, N22]; their certifications are cited only after verification [N18]."]] } },
+        ],
+      },
+      {
+        cheie: "anexa-4-b", titlu: "B. Assistance to the Client (Clauses 8.6(d) and 10(b))", nivel: 3,
+        blocuri: [
+          { jurisdictie: null, paragrafe: [], lista: { elemente: ["3S forwards to the Client the requests it receives, within 5 working days at most (Article 9.1).", "3S helps the Client find a person's data in its documents, extract, rectify or erase it, with the Service's functions or manually, within 10 working days at most of the Client's request [N19: the Service's functions for search by person, export, rectification and erasure].", "The decision on the request and the answer to the data subject are the Client's.", "For a personal data breach and for an impact assessment, 3S gives the Client the information it has, including extracts from the logs, within the periods in Articles 10.1 and 11.1 [N6, N15]."] } },
+        ],
+      },
+      {
+        cheie: "anexa-5", titlu: "Annex 5. List of sub-processors (Annex III of the standard clauses)",
+        blocuri: [
+          { jurisdictie: null, paragrafe: ["The Agreed List (Article 7.1) is table A on the page [Sub-processors of the platform](cale:subimputerniciti), in the version on the date of acceptance, completed in the list sent to the Client with the address and the contact person of each sub-processor. For each sub-processor the name, the address, the contact person with position and contact details, the description of the processing (with a clear delimitation of responsibilities when several sub-processors are authorized), the country of the data and the transfer mechanism are indicated. 3S sends the Client the complete list together with the PDF copy of the agreement and updates it under Article 7. A sub-processor enters the list before it receives data."] },
+        ],
+      },
+    ],
+  };
+}

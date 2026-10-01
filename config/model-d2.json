@@ -1,0 +1,6 @@
+{
+  "decizie": "D2",
+  "sursa": "docs/audit/3s-md-plan-2026-09-30.md §0, 30.09.2026",
+  "campuri": ["sediu", "numar_orc", "cod_fiscal"],
+  "marcaj": { "ro": "[în curs de înregistrare]", "en": "[pending registration]" }
+}

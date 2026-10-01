@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Page } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { expect, test } from './ajutor/baza'
 import { LOT, TOTAL_LOT } from '../../src/content/functionalitati/semnatura-calificata'
 import { IMPACTURI_BLOCANTE, masoaraAccesibilitatea } from './ajutor/detectori'
 

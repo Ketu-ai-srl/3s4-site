@@ -84,3 +84,19 @@ titlu cu marcajul de martor pozitiv, si unul cu cel negativ. Cerinta lui e pe RE
 `proba-completitudine.py` o ridica la fiecare fisier in parte, fiindca un spec ai carui martori
 traiesc in alt fisier nu e el insusi masurat. Un spec nou care nu-i poarta pe amandoi inroseste
 `pnpm porti:probe`, adica inainte sa apuce sa porneasca vreun browser.
+
+## Probele importa `test` din `ajutor/baza`
+
+Fiecare spec ia `test` si `expect` din `./ajutor/baza`, nu din `@playwright/test`; tipurile raman
+de acolo, ca `import type`. Motivul: pe runner-ul Windows al CI, navigarea a cazut de cateva ori
+pe `net::ERR_NO_BUFFER_SPACE` inainte ca pagina sa raspunda. `ajutor/baza.ts` are o fixtura
+automata de worker care pune pe prototipul clasei Page reluarea din `ajutor/navigare.ts` (numai pe
+acea semnatura, cel mult 4 incercari, fiecare in jurnal), deci orice `page.goto` si `page.reload`
+din orice pagina a procesului o primeste, fara sa se atinga vreun apel. O proba care ar importa
+`test` direct ar fi acoperita numai daca alta a instalat deja reluarea in acelasi proces, adica
+dupa ordinea fisierelor; `poarta-navigare.py` (in `porti:sursa`) refuza importul direct.
+
+La inchiderea fiecarui proces de probe apare in jurnal
+`[navigare] navigari N | reluate k | epuizate e`: o linie pe proces de worker, deci cand un worker
+porneste din nou dupa o proba picata, liniile se aduna. `retries` ramane 0: o proba care pica pe alta
+eroare ramane rosie. Nu trec prin reluare `frame.goto`, `page.request` si `fetch` din Node.

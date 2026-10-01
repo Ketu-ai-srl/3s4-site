@@ -11,8 +11,9 @@
 // `config/brand.json`: cat timp owner-ul nu confirma una, pagina nu arata nicio adresa.
 
 import { ACTE, legaturaAct } from "./acte";
+import type { CheieMd } from "./md/registru";
 import type { SlugJuridic } from "./publicare";
-import { dataInCuvinte } from "./tipuri";
+import { dataInCuvinte, type LimbaJuridica } from "./tipuri";
 
 export type MetaPagina = { titlu: string; descriere: string };
 
@@ -225,3 +226,67 @@ export function declaratieAccesibilitate(gazda: string, adresa: string | null): 
 
 /** Textul standardului, pentru probe: forma scurta si adresa din care a fost citit. */
 export const STANDARD_ACCESIBILITATE = ACTE.wcag22;
+
+// ---------------------------------------------------------------------------------------------
+// Familia md (felia 73): linia versiunii si metadata, pe limba
+// ---------------------------------------------------------------------------------------------
+
+const LUNI_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/** Linia de sub titlul unui document `md`: formula pachetului juridic, cu data versiunii (EN: data americana). */
+export function linieVersiuneMd(iso: string, limba: LimbaJuridica): string {
+  if (limba === "ro") return "Ultima actualizare: " + dataInCuvinte(iso);
+  // Aceeasi validare a formei ca in romana; din ea se iau numai cifrele.
+  dataInCuvinte(iso);
+  const [an, luna, zi] = iso.split("-").map(Number);
+  return "Last updated: " + LUNI_EN[luna - 1] + " " + zi + ", " + an;
+}
+
+/** Titlul si descrierea paginii fiecarui document `md`, pe limba (pragurile portii SEO: 15-65, 50-160). */
+export const META_DOCUMENTE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, MetaPagina>>> = {
+  "informatii-legale": {
+    ro: { titlu: "Informații legale | 3S", descriere: "Cine furnizează serviciul 3S, cum ne contactați și ce autorități supraveghează serviciul, după legea Republicii Moldova." },
+    en: { titlu: "Legal notice | 3S", descriere: "Who provides the 3S service, how to contact us and which authorities oversee the service under the law of the Republic of Moldova." },
+  },
+  confidentialitate: {
+    ro: { titlu: "Politica de confidențialitate | 3S", descriere: "Ce date personale prelucrează 3S, în ce scop, pe ce temei, cât timp, cui le transmite și cum vă exercitați drepturile." },
+    en: { titlu: "Privacy policy | 3S", descriere: "What personal data 3S processes, for what purpose, on what legal basis, for how long, who receives it and how to exercise your rights." },
+  },
+  "cookie-uri": {
+    ro: { titlu: "Politica de cookie-uri | 3S", descriere: "Ce stochează sau citește site-ul 3S în browserul dumneavoastră, cum măsurăm vizitele și cum vă răzgândiți." },
+    en: { titlu: "Cookie policy | 3S", descriere: "What the 3S website stores or reads in your browser, how we measure visits and how you can change your mind." },
+  },
+  termeni: {
+    ro: { titlu: "Termeni și condiții pentru clienți profesioniști | 3S", descriere: "Condițiile în care 3S furnizează serviciul clienților profesioniști: contractul, prețul, datele, încetarea și legea aplicabilă." },
+    en: { titlu: "Terms and conditions for professional clients | 3S", descriere: "The terms on which 3S provides the service to professional clients: the contract, the price, the data, termination and governing law." },
+  },
+  dpa: {
+    ro: { titlu: "Acord de prelucrare a datelor (DPA) | 3S", descriere: "Cum prelucrează 3S, ca persoană împuternicită de operator, datele personale din documentele clienților săi." },
+    en: { titlu: "Data Processing Agreement (DPA) | 3S", descriere: "How 3S, as a processor, processes the personal data contained in the documents its clients upload to the service." },
+  },
+  subimputerniciti: {
+    ro: { titlu: "Subîmputerniciții platformei | 3S", descriere: "Furnizorii care prelucrează conținutul documentelor clienților 3S, cu rolul și țara fiecăruia." },
+    en: { titlu: "Sub-processors of the platform | 3S", descriere: "The providers that process the content of 3S client documents, with the role and the country of each one." },
+  },
+  "notificare-si-actiune": {
+    ro: { titlu: "Notificare și acțiune | 3S", descriere: "Cum ne semnalați o informație ilicită din serviciile 3S, cum hotărâm, ce urmează și regulile de utilizare acceptabilă." },
+    en: { titlu: "Notice and action | 3S", descriere: "How to report unlawful information in the 3S services, how we decide, what follows and the acceptable use rules." },
+  },
+  "inteligenta-artificiala": {
+    ro: { titlu: "Inteligența artificială în serviciile 3S", descriere: "Cum funcționează asistentul de inteligență artificială al 3S, ce limite are și cum vorbiți oricând cu un om." },
+    en: { titlu: "Artificial intelligence in 3S services", descriere: "How the 3S artificial intelligence assistant works, what its limits are and how you can always speak to a person." },
+  },
+};
