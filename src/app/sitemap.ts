@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { ARTICOLE, caleArticol } from "@/content/blog/registru";
-import { rutePentruHarta } from "@/content/rute";
+import { editiaRutei, rutePentruHarta } from "@/content/rute";
+import { editiaInBuild } from "@/lib/editii";
 import { dataUltimuluiCommit, surseleRutei } from "@/lib/istoric-git";
 import { adresaSite, urlAbsolut } from "@/lib/site";
 
@@ -18,6 +19,10 @@ import { adresaSite, urlAbsolut } from "@/lib/site";
 // `new Date()` la construire ar declara ca TOATE paginile s-au schimbat la fiecare build, ceea ce e
 // neadevarat si face campul sa fie ignorat. Un camp lipsa e mai onest decat unul inventat.
 //
+// PE EDITIE (fundatia editiilor): `rutePentruHarta()` da rutele editiilor acestui build, iar articolele intra
+// numai cand editia `ro-RO` e in build - sunt pagini romanesti, deci pe build-ul international ar fi fost
+// adrese care raspund 404.
+//
 // `changeFrequency` si `priority` lipsesc deliberat: Google le ignora, iar ca declaratii despre
 // viitor nu le putem sustine.
 
@@ -31,9 +36,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     intrari.push(lastModified === null ? { url } : { url, lastModified });
   };
   for (const ruta of rutePentruHarta()) {
-    adauga(urlAbsolut(ruta.cale, baza), dataUltimuluiCommit(surseleRutei(ruta.cale)));
+    adauga(urlAbsolut(ruta.cale, baza), dataUltimuluiCommit(surseleRutei(ruta.cale, undefined, editiaRutei(ruta))));
   }
-  for (const articol of ARTICOLE) {
+  for (const articol of editiaInBuild("ro-RO") ? ARTICOLE : []) {
     adauga(urlAbsolut(caleArticol(articol), baza), articol.data);
   }
   return intrari;

@@ -19,7 +19,7 @@ const Birou3D = lazy(() => import("./Birou3D"));
 export default function BirouInteractiv({ activ }: { activ: boolean }) {
   const idEticheta = useId();
   const [dispozitive, setDispozitive] = useState(BIROU.initial);
-  const [plan, setPlan] = useState<CheiePlan>("start");
+  const [plan, setPlan] = useState<CheiePlan>("starter");
   const plin = dispozitive >= BIROU.maxim;
   const conturi = PLANURI.find((p) => p.cheie === plan)?.conturi ?? PLANURI[0].conturi;
 

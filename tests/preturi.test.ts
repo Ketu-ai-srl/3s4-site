@@ -123,8 +123,8 @@ describe('formula calculatorului (fisa §6b)', () => {
 
   it('pachetul potrivit: primul cu destule conturi; peste cel mai mare, niciunul', () => {
     const nume = (p: number) => planPentru(p, PLANURI)?.nume ?? null
-    expect([1, 5, 6, 10, 11, 20].map(nume)).toEqual(['Start', 'Start', 'Plus', 'Plus', 'Pro', 'Pro'])
-    // Runda 1 a criticului: la 21-50 de persoane iesirea spunea "Se potriveste Pro" (20 de conturi).
+    expect([1, 5, 6, 10, 11, 20].map(nume)).toEqual(['Starter', 'Starter', 'Pro', 'Pro', 'Business', 'Business'])
+    // Runda 1 a criticului: la 21-50 de persoane iesirea recomanda pachetul cel mare (20 de conturi).
     expect(planPentru(21, PLANURI)).toBeNull()
     expect(planPentru(50, PLANURI)).toBeNull()
     const r = calculeaza({ persoane: 21, minute: 30, tarif: 70 }, 'anual', PLANURI, 22)
@@ -256,13 +256,26 @@ describe('contractul de continut', () => {
     expect(COMUTATOR.insigna).toContain('0\u00a0RON')
   })
 
-  it('trei pachete, 5 / 10 / 20 de conturi, unul singur recomandat', () => {
-    expect(PLANURI.map((p) => [p.nume, p.conturi])).toEqual([
-      ['Start', 5],
-      ['Plus', 10],
-      ['Pro', 20],
+  it('trei pachete, Starter / Pro / Business cu 5 / 10 / 20 de conturi, unul singur recomandat (decizia 21)', () => {
+    expect(PLANURI.map((p) => [p.cheie, p.nume, p.conturi])).toEqual([
+      ['starter', 'Starter', 5],
+      ['pro', 'Pro', 10],
+      ['business', 'Business', 20],
     ])
-    expect(PLANURI.filter((p) => p.recomandat).map((p) => p.nume)).toEqual(['Start'])
+    expect(PLANURI.filter((p) => p.recomandat).map((p) => p.nume)).toEqual(['Starter'])
+  })
+
+  it('cheia "pro" inseamna 10 conturi peste tot: celulele tabelului urmeaza cheia, nu pozitia', () => {
+    // Cheia "pro" si-a schimbat sensul la redenumire (20 -> 10 conturi). Un loc uitat ar pune
+    // 20 sub Pro fara nicio eroare de tip, deci perechea se citeste din tabel pe fiecare cheie.
+    const rand = continut.COMPARATIE.categorii
+      .flatMap((c) => c.randuri)
+      .find((r) => r.functie === 'Conturi pentru echipă')
+    expect(rand).toBeDefined()
+    for (const p of PLANURI) {
+      expect(rand?.celule[p.cheie]).toEqual({ fel: 'valoare', text: String(p.conturi) })
+    }
+    expect(Object.keys(rand?.celule ?? {}).sort()).toEqual(['business', 'pro', 'starter'])
   })
 
   it('fiecare pachet are 9 randuri; primul spune conturile, al saselea are explicatia "i"', () => {

@@ -35,6 +35,14 @@ paginii. Nume de registru: `os.path.basename` fara extensie, comparat cu `lower(
 nu face, iar o poarta care raporteaza ce nu se intampla e dezarmata in cateva saptamani. Aici un
 fals negativ exotic e mai ieftin decat un fals pozitiv.
 
+PE EDITIE (fundatia editiilor, `src/lib/editii.ts`). Arborele tine mai multe site-uri: romanesc
+(`page.tsx` sub `layout.tsx`), international (`page.en.tsx` sub `layout.en.tsx`, grupul `(en)`) si
+romana pentru Republica Moldova (`page.romd.tsx` sub `layout.romd.tsx`, grupul `(romd)`). O pagina se
+randeaza NUMAI cu layout-urile editiei ei (pe build-ul international `layout.tsx` nu exista), deci
+radacinile ei sunt fisierul paginii plus layout-urile cu ACELASI sufix de pe drum. Caile se citesc din
+toate manifestele (`rute.ts`, `rute-en*.ts`, `rute-ro-md.ts`), iar ID-01/ID-02 se masoara pe editie:
+aceeasi cale in doua editii e doua site-uri, nu o coliziune.
+
 CUM SE PAZESTE POARTA PE EA INSASI. Detectoarele se probeaza pe fixturi in memorie, cu
 `rezolva`/`citeste` injectate. Peste ele sta un martor CAP LA CAP (`martor_cap_la_cap`) care
 scrie un arbore mic in `tempfile.mkdtemp()` si il masoara prin ACEEASI `masoara_arbore` prin
@@ -102,6 +110,20 @@ TIPAR_ID = re.compile(r'\bid="([^"]+)"')
 TIPAR_IMPORT = re.compile(r'from\s+"(@/[^"]+)"')
 
 EXTENSII_MODUL = ('.tsx', '.ts', '.mdx', '.json', '/index.tsx', '/index.ts')
+
+# Fisierul de pagina al fiecarei editii si layout-ul ei (catalogul din `src/lib/editii.ts`).
+PAGINA_LAYOUT = (('page.tsx', 'layout.tsx'), ('page.en.tsx', 'layout.en.tsx'), ('page.romd.tsx', 'layout.romd.tsx'))
+
+
+def editia_manifestului(nume):
+    """Editia unui fisier `src/content/rute*.ts` dupa nume, sau None (acelasi criteriu ca poarta-rute)."""
+    if nume == 'rute.ts':
+        return 'ro-RO'
+    if nume == 'rute-en.ts' or (nume.startswith('rute-en-') and nume.endswith('.ts')):
+        return 'en'
+    if nume == 'rute-ro-md.ts':
+        return 'ro-MD'
+    return None
 
 
 # --- extractoare pure ------------------------------------------------------------------------
@@ -319,6 +341,12 @@ def martor_cap_la_cap():
         scrie('src/components/Adanc.tsx', '<p id="continut">\n')
         scrie('src/app/curata/page.tsx', '<div id="doar-aici">\n')
         scrie('src/content/afirmatii/proba.json', '[]\n')
+        # Editia en: aceeasi cale ca o ruta romaneasca (doua site-uri, NU ID-01), plus o pagina
+        # page.en.tsx al carei id se repeta in layout.en.tsx (ID-04 vazut DOAR daca pagina si layout-ul
+        # cu sufix sunt invatate), si un layout.tsx romanesc care nu are voie sa intre in pagina EN.
+        scrie('src/content/rute-en-proba.ts', 'export const RUTE_EN_PROBA = [\n  { cale: "/curata" },\n];\n')
+        scrie('src/app/(en)/layout.en.tsx', '<body id="corp-en">\n')
+        scrie('src/app/(en)/pret/page.en.tsx', '<main id="corp-en">\n<p id="corp">\n')
 
         try:
             gasiri, cifre = masoara_arbore(lucru)
@@ -326,8 +354,8 @@ def martor_cap_la_cap():
             return ('martorul cap la cap: masuratoarea a refuzat arborele fabricat (' + str(e) +
                     '), deci martorul nu a apucat sa masoare nimic')
         coduri = sorted(c for c, _ in gasiri)
-        if coduri != ['ID-01', 'ID-03', 'ID-04', 'ID-04']:
-            return ('martorul cap la cap: pe arborele fabricat asteptam ID-01, ID-03 si DOUA '
+        if coduri != ['ID-01', 'ID-03', 'ID-04', 'ID-04', 'ID-04']:
+            return ('martorul cap la cap: pe arborele fabricat asteptam ID-01, ID-03 si TREI '
                     'ID-04, si am primit ' + repr(gasiri))
         id04 = [m for c, m in gasiri if c == 'ID-04']
         if not any('`continut`' in m for m in id04):
@@ -339,7 +367,16 @@ def martor_cap_la_cap():
         if any('/curata/' in m for m in id04):
             return ('martorul cap la cap, negativ: pagina cu id-uri unice sub acelasi layout a '
                     'fost raportata duplicata')
-        asteptat = {'cai': 3, 'ancore': 2, 'pagini': 2, 'id_uri': 9, 'registre': 1}
+        if not any('`corp-en`' in m and 'page.en.tsx' in m for m in id04):
+            return ('martorul cap la cap: duplicatul dintre page.en.tsx si layout.en.tsx nu a fost prins - '
+                    'paginile si layout-urile cu sufix de editie nu sunt citite')
+        if any('`corp`' in m for m in id04):
+            return ('martorul cap la cap, negativ: layout.tsx romanesc a fost pus in pagina EN (id-ul '
+                    '`corp` apare o singura data in pagina EN si o data in layout-ul RO)')
+        if any(c == 'ID-01' and '/curata' in m for c, m in gasiri):
+            return ('martorul cap la cap, negativ: aceeasi cale in doua editii a fost raportata ca '
+                    'duplicat (sunt doua site-uri)')
+        asteptat = {'cai': 4, 'ancore': 2, 'pagini': 3, 'id_uri': 12, 'registre': 1}
         if cifre != asteptat:
             return ('martorul cap la cap: cifrele masurate pe arborele fabricat nu sunt cele '
                     'scrise in fixtura (asteptat ' + repr(asteptat) + ', primit ' + repr(cifre) +
@@ -370,28 +407,30 @@ def citeste_real(cale):
 
 
 def pagini_reale(dosar_app=DOSAR_APP, radacina=RADACINA):
-    """(cale relativa a paginii, radacinile ei) pentru fiecare `page.tsx` din `src/app`.
+    """(cale relativa a paginii, radacinile ei) pentru fiecare fisier de pagina din `src/app`.
 
-    Radacinile unei pagini sunt `page.tsx` PLUS fiecare `layout.tsx` de pe drumul catre `src/app`:
-    layout-ul e randat in aceeasi pagina, deci un `id` din el se ciocneste cu unul din pagina.
-    Parametrii exista ca martorul cap la cap sa exercite chiar bucla asta pe un arbore fabricat.
+    Radacinile unei pagini sunt fisierul ei (`page.tsx`, `page.en.tsx` sau `page.romd.tsx`) PLUS
+    fiecare layout al ACELEIASI editii (`layout.tsx`, `layout.en.tsx`, `layout.romd.tsx`) de pe drumul
+    catre `src/app`: layout-ul e randat in aceeasi pagina, deci un `id` din el se ciocneste cu unul din
+    pagina. Parametrii exista ca martorul cap la cap sa exercite chiar bucla asta pe un arbore fabricat.
     """
     rezultat = []
     for rad, directoare, nume in os.walk(dosar_app):
         directoare[:] = [d for d in directoare if d not in ('node_modules', '__pycache__')]
-        if 'page.tsx' not in nume:
-            continue
-        pagina = os.path.join(rad, 'page.tsx')
-        radacini = [pagina]
-        drum = rad
-        while True:
-            candidat = os.path.join(drum, 'layout.tsx')
-            if os.path.isfile(candidat):
-                radacini.append(candidat)
-            if os.path.normpath(drum) == os.path.normpath(dosar_app):
-                break
-            drum = os.path.dirname(drum)
-        rezultat.append((os.path.relpath(pagina, radacina).replace(os.sep, '/'), radacini))
+        for fisier_pagina, fisier_layout in PAGINA_LAYOUT:
+            if fisier_pagina not in nume:
+                continue
+            pagina = os.path.join(rad, fisier_pagina)
+            radacini = [pagina]
+            drum = rad
+            while True:
+                candidat = os.path.join(drum, fisier_layout)
+                if os.path.isfile(candidat):
+                    radacini.append(candidat)
+                if os.path.normpath(drum) == os.path.normpath(dosar_app):
+                    break
+                drum = os.path.dirname(drum)
+            rezultat.append((os.path.relpath(pagina, radacina).replace(os.sep, '/'), radacini))
     return sorted(rezultat)
 
 
@@ -417,19 +456,29 @@ def masoara_arbore(radacina):
         raise Preconditie('lipseste src/app')
 
     text_manifest = io.open(manifest, encoding='utf-8').read()
-    cai = cai_din_manifest(text_manifest)
     ancore = ancore_din_manifest(text_manifest)
-    if not cai:
+    cai_pe_editie = {}
+    dosar_continut = os.path.dirname(manifest)
+    for nume in sorted(os.listdir(dosar_continut)):
+        editie = editia_manifestului(nume)
+        if editie is None:
+            continue
+        text = io.open(os.path.join(dosar_continut, nume), encoding='utf-8').read()
+        cai_pe_editie.setdefault(editie, []).extend(cai_din_manifest(text))
+    cai = [c for lista in cai_pe_editie.values() for c in lista]
+    if not cai_pe_editie.get('ro-RO'):
         raise Preconditie('zero cai citite din rute.ts')
 
     gasiri = []
-    for cale, cate in duplicate_exacte(cai):
-        gasiri.append(('ID-01', 'calea `' + cale + '` apare de ' + str(cate) + ' ori in RUTE: '
-                                'doua felii au ales aceeasi adresa, si git n-are cum s-o vada'))
-    for _, lista in coliziuni_de_registru(cai):
-        gasiri.append(('ID-02', 'caile ' + ', '.join('`' + c + '`' for c in lista) + ' difera doar '
-                                'prin litere mari/mici: URI-uri diferite (RFC 3986), dar un singur '
-                                'director in src/app pe Windows si pe macOS'))
+    for editie in sorted(cai_pe_editie):
+        unde = 'RUTE' if editie == 'ro-RO' else 'manifestul editiei ' + editie
+        for cale, cate in duplicate_exacte(cai_pe_editie[editie]):
+            gasiri.append(('ID-01', 'calea `' + cale + '` apare de ' + str(cate) + ' ori in ' + unde + ': '
+                                    'doua felii au ales aceeasi adresa, si git n-are cum s-o vada'))
+        for _, lista in coliziuni_de_registru(cai_pe_editie[editie]):
+            gasiri.append(('ID-02', 'caile ' + ', '.join('`' + c + '`' for c in lista) + ' (' + unde + ') difera '
+                                    'doar prin litere mari/mici: URI-uri diferite (RFC 3986), dar un singur '
+                                    'director in src/app pe Windows si pe macOS'))
     for ancora, cate in duplicate_exacte(ancore):
         gasiri.append(('ID-03', 'ancora `#' + ancora + '` apare de ' + str(cate) +
                        ' ori in SECTIUNI_ACASA: subsolul ar scrie doua randuri catre acelasi loc'))

@@ -92,3 +92,45 @@ jobs:
             exit 0
           fi
           curl -sf -X POST "$COOLIFY_DEPLOY_URL"
+
+  # AL DOILEA BUILD: aplicatia 3s.md (fundatia editiilor, `src/lib/editii.ts`). Acelasi cod se construieste cu
+  # variabilele din `config/profil-3s-md.json` (SITE_EDITII=en,ro-MD, operatorul-model, mediul de proba): pe acest
+  # profil arborele romanesc nu exista deloc, deci nimic din jobul de mai sus nu-l masoara. Aici se masoara ce
+  # serveste: poarta juridica pe build-ul lui si proba editiilor pe serverul lui (`tests/editii.test.ts`, blocul
+  # care cere `EDITII_ADRESA`). Job separat, in paralel cu cel de mai sus: concluzia rularii le cere pe amandoua.
+  # Fara `BUILD_STANDALONE`: serverul pornit aici e `next start`, iar iesirea standalone nu schimba paginile.
+  # Windows, ca jobul de mai sus. Durata: masurata la primul verdict, scrisa aici dupa aceea.
+  profil-3s-md:
+    name: Profil 3s.md
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: pnpm/action-setup@7088e561eb65bb68695d245aa206f005ef30921d # v4.1.0
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: |
+          echo "TEMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - run: pnpm install --frozen-lockfile
+      # Variabilele profilului intra in mediul pasilor urmatori; cheile cu `_` sunt note, o valoare obiect se scrie ca JSON.
+      - name: Variabilele aplicatiei 3s.md
+        run: |
+          node -e "const p=require('./config/profil-3s-md.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
+      - run: pnpm build
+      - run: python .claude/scripts/porti/poarta-juridic.py --mediu staging
+      - name: Proba editiilor, pe serverul build-ului 3s.md
+        run: |
+          pnpm exec next start -p 4750 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-md.log" 2>&1 &
+          for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:4750/robots.txt && break; sleep 1; done
+          EDITII_ADRESA=http://127.0.0.1:4750 pnpm exec vitest run tests/editii.test.ts
+      - name: Jurnalul serverului 3s.md
+        if: always()
+        run: cat "$RUNNER_TEMP/server-3s-md.log" || true

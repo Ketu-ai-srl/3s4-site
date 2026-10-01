@@ -27,8 +27,8 @@ export function valoareOre(ore: number, tarif: number): number {
 
 /**
  * Pachetul potrivit numarului de persoane: primul cu destule conturi. Cand nici cel mai mare nu
- * ajunge, null: runda 1 a criticului a masurat "Se potriveste Pro" la 50 de persoane, adica un
- * pachet de 20 de conturi recomandat unei echipe care nu incape in el.
+ * ajunge, null: runda 1 a criticului a masurat recomandarea pachetului cel mare (azi Business) la
+ * 50 de persoane, adica un pachet de 20 de conturi recomandat unei echipe care nu incape in el.
  */
 export function planPentru(persoane: number, planuri: readonly Plan[]): Plan | null {
   const ordonate = [...planuri].sort((a, b) => a.conturi - b.conturi);

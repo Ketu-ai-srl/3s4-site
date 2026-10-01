@@ -4,6 +4,7 @@ import { AVERTISMENT_FARA_OPERATOR, rescrieriAnalitica, stareAnaliticaProprie } 
 import { alegeOperator, operatorComplet } from './src/lib/operator'
 import { VARIABILA_OPERATOR_NUMIT, operatorNumitInMediu } from './src/lib/operator-mediu'
 import { VARIABILA_FAMILIE_JURIDICA, familieJuridica } from './src/content/juridic/familie'
+import { VARIABILA_EDITII_PUBLICA, cuNegasitGlobal, editiiDinText, extensiiPagini, origineSite, perechiAlternate, problemeCoerenta } from './src/lib/editii'
 
 // De ce e `output` conditionat: pe Windows fara drept de legaturi simbolice,
 // `standalone` cade cu EPERM la copierea fisierelor urmarite (masurat 2026-09-05,
@@ -49,9 +50,36 @@ function familieCalculata(): string {
   return operatorComplet(operator) ? familieJuridica(operator) : 'null'
 }
 
+// EDITIILE (fundatia editiilor, `src/lib/editii.ts`): ce arbori de pagini exista in acest build, din
+// `SITE_EDITII` citita la CONSTRUIRE. Pe profilul implicit (`ro-RO`) `pageExtensions` e lista de dinainte de
+// editii si nu exista nicio cheie `experimental`, deci build-ul romanesc iese identic (proba
+// `tests/invarianta-ro.test.ts`). Pe profilul international `tsx` simplu iese din lista: arborele romanesc nu
+// se construieste, raman `page.en.tsx` / `page.romd.tsx` si rutele `.ts`, iar 404-ul vine din
+// `global-not-found.en.tsx`. Un profil gresit, sau o lista de alternate care numeste domeniul pentru o limba
+// pe care profilul implicit nu o are, opreste construirea aici, inainte de compilare.
+const SITE_EDITII_SCRISA = (process.env.SITE_EDITII ?? '').trim() !== ''
+const EDITII_BUILD = editiiDinText(process.env.SITE_EDITII)
+const BAZA_SITE = origineSite(process.env.SITE_URL)
+if (BAZA_SITE !== null) {
+  const probleme = problemeCoerenta(EDITII_BUILD, perechiAlternate(process.env.SITE_ALTERNATE), BAZA_SITE, SITE_EDITII_SCRISA)
+  if (probleme.length > 0) throw new Error(probleme.join(' | '))
+}
+// Profilul pentru pachetul de browser (vezi `env` mai jos). O valoare pusa din afara in mediu, diferita de profilul
+// calculat, ar ajunge in pachete langa `pageExtensions` calculate din `SITE_EDITII`: serverul ar construi un site,
+// iar lista de rute din browser ar descrie altul. Construirea se opreste.
+const EDITII_PUBLICE = EDITII_BUILD.join(',')
+const EDITII_PUSE_DIN_AFARA = (process.env[VARIABILA_EDITII_PUBLICA] ?? '').trim()
+if (EDITII_PUSE_DIN_AFARA !== '' && EDITII_PUSE_DIN_AFARA !== EDITII_PUBLICE) {
+  throw new Error(
+    VARIABILA_EDITII_PUBLICA + '="' + EDITII_PUSE_DIN_AFARA + '" e pusa in mediu, dar profilul calculat din SITE_EDITII e "' + EDITII_PUBLICE +
+      '". Variabila nu se seteaza de mana: o calculeaza next.config.ts. Se sterge din mediu.',
+  )
+}
+
 const nextConfig: NextConfig = {
   output: standalone ? 'standalone' : undefined,
-  pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
+  pageExtensions: extensiiPagini(EDITII_BUILD),
+  ...(cuNegasitGlobal(EDITII_BUILD) ? { experimental: { globalNotFound: true } } : {}),
   poweredByHeader: false,
   reactStrictMode: true,
   async headers() {
@@ -69,9 +97,14 @@ const nextConfig: NextConfig = {
   // operator complet), din operatorul REZOLVAT (`OPERATOR_JSON`, altfel fisierul), citita LITERAL in
   // `src/content/juridic/publicare.ts`. Definita mereu, ca si cheia de mai sus; un operator dintr-o tara fara
   // familie opreste construirea chiar aici, cu mesajul despre reprezentant.
+  // EDITIILE PENTRU PACHETUL DE BROWSER (`NEXT_PUBLIC_SITE_EDITII`): profilul validat, in ordinea canonica, citit
+  // LITERAL de `editiiBuild()`. Definit numai pe un profil diferit de cel implicit: pe `ro-RO` browserul cade singur
+  // pe implicit (nicio variabila), iar cheile de pe build-ul romanesc raman cele de dinainte de editii (proba
+  // `tests/multi-domeniu-operator.test.ts` le cere exact). O valoare pusa din afara, diferita, opreste construirea (mai sus).
   env: {
     [VARIABILA_OPERATOR_NUMIT]: String(operatorNumitInMediu()),
     [VARIABILA_FAMILIE_JURIDICA]: familieCalculata(),
+    ...(EDITII_PUBLICE === 'ro-RO' ? {} : { [VARIABILA_EDITII_PUBLICA]: EDITII_PUBLICE }),
   },
   // ANALITICA PROPRIE PE CALE PROPRIE (felia multi-domeniu): cu `UMAMI_URL` si `UMAMI_WEBSITE_ID` in
   // mediu SI cu un operator numit si complet (planul §9: analitica prelucreaza date personale, deci cere

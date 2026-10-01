@@ -1,11 +1,12 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { editiiBuild, type CodEditie } from '../../../src/lib/editii'
 import type { DeclaratieRaspuns } from './geo'
 
 /**
  * Declaratiile de raspuns ale rutelor (poarta G-AI-02: cercetarea cautare-agenti-ai, P2; planul E5,
  * pasul 26), UN FISIER PE FELIE: `config/seo/<felia>.json`, cu numele marcajului sub care sta ruta in
- * `src/content/rute.ts` (comentariul cu numele feliei, cel pe care il descrie antetul acelui fisier;
+ * manifestul de rute (comentariul cu numele feliei, cel pe care il descrie antetul lui `src/content/rute.ts`;
  * nu-l scriu aici pe litere, ca acest fisier sa nu devina el insusi un marcaj pentru cine le cauta).
  * Fiecare fisier are obiectul `raspuns_autonom`:
  * cheia e calea, valoarea intrebarea la care raspunde pagina si entitatile care trebuie sa apara in
@@ -15,17 +16,24 @@ import type { DeclaratieRaspuns } from './geo'
  * fisier comun, `rute.ts`, cu marcaje; un JSON nu poate avea marcaje, deci cinci felii paralele care
  * adauga chei in acelasi obiect s-ar ciocni la pliere. Aici fiecare felie scrie numai fisierul ei.
  *
+ * MANIFESTUL E PE EDITIE (fundatia editiilor, `src/lib/editii.ts`): rutele romanesti in `src/content/rute.ts`,
+ * cele in engleza in `src/content/rute-en-<grup>.ts`, cele pentru Republica Moldova in
+ * `src/content/rute-ro-md.ts`, fiecare fisier cu marcajele feliilor lui. Marcajele se citesc din TOATE, deci
+ * `config/seo/en-<grup>.json` e al feliei care scrie `rute-en-<grup>.ts`. O declaratie pentru o ruta a unei
+ * editii care NU e in build-ul de fata se verifica numai ca forma (ruta exista sub marcajul feliei, declaratia
+ * are campurile cerute); in `declaratii` intra numai rutele editiilor din build, cele pe care le masoara proba.
+ *
  * REGULILE, verificate de `citesteDeclaratiile` (fiecare incalcare e o abatere cu nume):
- *   - fisierul poarta numele unei felii care are marcaj in `rute.ts`;
+ *   - fisierul poarta numele unei felii care are marcaj in manifest;
  *   - o ruta se declara numai in fisierul feliei sub al carei marcaj sta, deci nu poate avea doua
  *     declaratii si o felie nu poate scrie declaratia alteia;
  *   - fiecare ruta din `RUTE` are declaratia ei (asta o cere proba, pe ruta, cu fisierul asteptat);
  *   - regula primului paragraf (30-80 de cuvinte) se ridica pentru o ruta numai cu motivul scris in
  *     `fara_regula_paragrafului`; entitatile si titlul nu se ridica niciodata.
  *
- * `rute.ts` se citeste ca TEXT (ca portile de rute), fiindca marcajele sunt comentarii. Controlul
- * citirii: rutele gasite in text trebuie sa fie exact cele din modulul `RUTE`; o intrare construita
- * altfel decat `cale: "..."` sub un marcaj iese abatere, nu trece nevazuta.
+ * Manifestul se citeste ca TEXT (ca portile de rute), fiindca marcajele sunt comentarii. Controlul
+ * citirii: rutele gasite in textul fisierelor editiilor din build trebuie sa fie exact cele din modulul
+ * `RUTE`; o intrare construita altfel decat `cale: "..."` sub un marcaj iese abatere, nu trece nevazuta.
  */
 
 /** Dosarul declaratiilor, relativ la radacina. */
@@ -33,6 +41,8 @@ export const DOSAR_DECLARATII = 'config/seo'
 
 const MARCAJ = /\/\/\s*<<felie:([a-z0-9-]+)>>/
 const CALE = /\bcale:\s*"([^"]*)"/
+/** Inceputul listei de rute dintr-un manifest: `export const RUTE: Ruta[] = [`, `const RUTE_RO_RO: Ruta[] = [`... */
+const START_LISTA = /^(?:export\s+)?const\s+RUTE\w*\b[^=\n]*=\s*\[\s*$/m
 
 export type FeliileRutelor = {
   /** Feliile, in ordinea marcajelor. */
@@ -42,15 +52,19 @@ export type FeliileRutelor = {
   abateri: string[]
 }
 
-/** Citeste din textul lui `rute.ts`, numai din lista `RUTE`, carei felii ii apartine fiecare ruta. */
-export function feliileRutelor(textRute: string): FeliileRutelor {
+/**
+ * Citeste din textul unui manifest, numai din lista lui de rute, carei felii ii apartine fiecare ruta.
+ * `fisier` e numele din mesaje (implicit manifestul romanesc).
+ */
+export function feliileRutelor(textRute: string, fisier: string = 'src/content/rute.ts'): FeliileRutelor {
   const abateri: string[] = []
   const felii: string[] = []
   const rute = new Map<string, string>()
-  const start = textRute.indexOf('export const RUTE')
+  const gasit = START_LISTA.exec(textRute)
+  const start = gasit === null ? -1 : gasit.index
   const stop = start < 0 ? -1 : textRute.indexOf('\n];', start)
   if (start < 0 || stop < 0) {
-    abateri.push('src/content/rute.ts: nu gasesc lista `export const RUTE` ... `];`')
+    abateri.push(fisier + ': nu gasesc lista `export const RUTE` ... `];`')
     return { felii, rute, abateri }
   }
   let curenta: string | null = null
@@ -64,14 +78,37 @@ export function feliileRutelor(textRute: string): FeliileRutelor {
     const cale = CALE.exec(rand)
     if (!cale) continue
     if (curenta === null) {
-      abateri.push('src/content/rute.ts: ruta ' + cale[1] + ' sta inaintea oricarui marcaj de felie')
+      abateri.push(fisier + ': ruta ' + cale[1] + ' sta inaintea oricarui marcaj de felie')
     } else if (rute.has(cale[1])) {
-      abateri.push('src/content/rute.ts: ruta ' + cale[1] + ' apare de doua ori')
+      abateri.push(fisier + ': ruta ' + cale[1] + ' apare de doua ori')
     } else {
       rute.set(cale[1], curenta)
     }
   }
   return { felii, rute, abateri }
+}
+
+/** Editia unui fisier de manifest dupa nume (acelasi criteriu ca portile de rute), sau `null`. */
+export function editiaManifestului(nume: string): CodEditie | null {
+  if (nume === 'rute.ts') return 'ro-RO'
+  if (nume === 'rute-en.ts' || (nume.startsWith('rute-en-') && nume.endsWith('.ts'))) return 'en'
+  if (nume === 'rute-ro-md.ts') return 'ro-MD'
+  return null
+}
+
+type Manifest = { fisier: string; editie: CodEditie } & FeliileRutelor
+
+/** Manifestele de rute ale depozitului: `rute.ts` intai (obligatoriu), apoi celelalte, in ordinea numelor. */
+function manifestele(radacina: string): Manifest[] {
+  const dosar = join(radacina, 'src', 'content')
+  const nume = ['rute.ts', ...readdirSync(dosar).filter((f) => f !== 'rute.ts' && editiaManifestului(f) !== null).sort()]
+  return nume.map((f) => {
+    const fisier = 'src/content/' + f
+    const text = readFileSync(join(dosar, f), 'utf8')
+    // Agregatorul unei editii (`rute-en.ts`) nu are lista proprie si nicio ruta: nu e o abatere.
+    const citit = START_LISTA.test(text) ? feliileRutelor(text, fisier) : { felii: [], rute: new Map<string, string>(), abateri: [] }
+    return { fisier, editie: editiaManifestului(f) as CodEditie, ...citit }
+  })
 }
 
 /** Forma unei declaratii: intrebare, entitati nevide, motivul optional, nimic altceva. */
@@ -94,11 +131,15 @@ export type Declaratii = {
 
 /**
  * Aduna declaratiile din `config/seo/*.json`. `caiRute` sunt caile din modulul `RUTE`: controlul
- * citirii textuale a lui `rute.ts`.
+ * citirii textuale a manifestului. `editii` sunt editiile build-ului (implicit cele din mediu, ca `RUTE`).
  */
-export function citesteDeclaratiile(radacina: string, caiRute: readonly string[]): Declaratii {
-  const { felii, rute, abateri } = feliileRutelor(readFileSync(join(radacina, 'src', 'content', 'rute.ts'), 'utf8'))
-  const dinText = [...rute.keys()].sort()
+export function citesteDeclaratiile(radacina: string, caiRute: readonly string[], editii: readonly CodEditie[] = editiiBuild()): Declaratii {
+  const manifeste = manifestele(radacina)
+  const abateri = manifeste.flatMap((m) => m.abateri)
+  const felii = [...new Set(manifeste.flatMap((m) => m.felii))]
+  const dinBuild = manifeste.filter((m) => editii.includes(m.editie))
+
+  const dinText = dinBuild.flatMap((m) => [...m.rute.keys()]).sort()
   const dinModul = [...caiRute].sort()
   if (JSON.stringify(dinText) !== JSON.stringify(dinModul)) {
     abateri.push(
@@ -108,7 +149,7 @@ export function citesteDeclaratiile(radacina: string, caiRute: readonly string[]
   }
 
   const declaratii = new Map<string, DeclaratieRaspuns>()
-  const fisierAsteptat = new Map([...rute].map(([cale, felie]) => [cale, DOSAR_DECLARATII + '/' + felie + '.json']))
+  const fisierAsteptat = new Map(dinBuild.flatMap((m) => [...m.rute].map(([cale, felie]): [string, string] => [cale, DOSAR_DECLARATII + '/' + felie + '.json'])))
   const dosar = join(radacina, ...DOSAR_DECLARATII.split('/'))
   const fisiere = existsSync(dosar) ? readdirSync(dosar).filter((f) => f.endsWith('.json')).sort() : []
   for (const fisier of fisiere) {
@@ -132,14 +173,17 @@ export function citesteDeclaratiile(radacina: string, caiRute: readonly string[]
     }
     for (const [cale, declaratie] of Object.entries(bloc)) {
       if (cale.startsWith('_')) continue
-      const a = rute.get(cale)
-      if (a === undefined) {
+      // Manifestele in care ruta exista; a feliei care declara are intaietate (aceeasi cale poate fi in doua editii).
+      const unde = manifeste.filter((m) => m.rute.has(cale))
+      const aFeliei = unde.find((m) => m.rute.get(cale) === felie)
+      if (unde.length === 0) {
         abateri.push(rel + ': ruta ' + cale + ' nu e in RUTE')
-      } else if (a !== felie) {
-        abateri.push(rel + ': ruta ' + cale + ' e a feliei ' + a + ', deci se declara in ' + fisierAsteptat.get(cale))
+      } else if (aFeliei === undefined) {
+        const a = unde[0].rute.get(cale) as string
+        abateri.push(rel + ': ruta ' + cale + ' e a feliei ' + a + ', deci se declara in ' + (fisierAsteptat.get(cale) ?? DOSAR_DECLARATII + '/' + a + '.json'))
       } else if (!formaDeclaratiei(declaratie)) {
         abateri.push(rel + ': declaratia rutei ' + cale + ' nu are forma { intrebare, entitati, fara_regula_paragrafului? }')
-      } else {
+      } else if (editii.includes(aFeliei.editie)) {
         declaratii.set(cale, declaratie)
       }
     }

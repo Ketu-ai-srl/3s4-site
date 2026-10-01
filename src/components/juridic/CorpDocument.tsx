@@ -7,10 +7,15 @@
 //
 // Textul randat aici e EXACT textul din model (`textIntreg` si amprenta din `tipuri.ts` il citesc in
 // aceeasi ordine): componenta nu adauga niciun cuvant, ca amprenta sa fie a textului de pe pagina.
+//
+// TIPUL COMUN (felia 79): componenta primeste corpul din modelul comun (`src/content/model/tipuri.ts`),
+// nu `DocumentJuridic`. Orice document juridic e atribuibil acelui corp (garantie verificata de
+// compilator acolo), deci paginile juridice raman neschimbate, iar paginile de continut EN folosesc
+// acelasi randator prin `CorpPagina`. Un bloc fara jurisdictie (`null` sau lipsa) nu primeste `div`.
 
 import Proza from "@/components/primitive/Proza";
 import TabelDate from "@/components/primitive/TabelDate";
-import type { BlocJuridic, CelulaJuridica, DocumentJuridic, SectiuneJuridica } from "@/content/juridic/tipuri";
+import type { BlocComun, CelulaComuna, CorpComun, SectiuneComuna } from "@/content/model/tipuri";
 import TextInLinie from "./TextInLinie";
 import s from "./juridic.module.css";
 
@@ -21,7 +26,7 @@ export type MarcajSectiuni = {
   chei: readonly string[];
 };
 
-function Celula({ celula }: { celula: CelulaJuridica }) {
+function Celula({ celula }: { celula: CelulaComuna }) {
   if (typeof celula === "string") return <TextInLinie text={celula} />;
   return (
     <>
@@ -35,7 +40,7 @@ function Celula({ celula }: { celula: CelulaJuridica }) {
   );
 }
 
-function Bloc({ bloc }: { bloc: BlocJuridic }) {
+function Bloc({ bloc }: { bloc: BlocComun }) {
   const continut = (
     <>
       {bloc.eticheta ? (
@@ -82,10 +87,10 @@ function Bloc({ bloc }: { bloc: BlocJuridic }) {
       ))}
     </>
   );
-  return bloc.jurisdictie === null ? continut : <div data-jurisdictie={bloc.jurisdictie}>{continut}</div>;
+  return bloc.jurisdictie == null ? continut : <div data-jurisdictie={bloc.jurisdictie}>{continut}</div>;
 }
 
-function Sectiune({ sectiune, marcaj }: { sectiune: SectiuneJuridica; marcaj?: MarcajSectiuni }) {
+function Sectiune({ sectiune, marcaj }: { sectiune: SectiuneComuna; marcaj?: MarcajSectiuni }) {
   const Titlu = sectiune.nivel === 3 ? "h3" : "h2";
   const atribute: Record<string, string> =
     marcaj && marcaj.chei.includes(sectiune.cheie)
@@ -106,7 +111,7 @@ function Sectiune({ sectiune, marcaj }: { sectiune: SectiuneJuridica; marcaj?: M
   );
 }
 
-export default function CorpDocument({ document, marcaj }: { document: DocumentJuridic; marcaj?: MarcajSectiuni }) {
+export default function CorpDocument({ document, marcaj }: { document: CorpComun; marcaj?: MarcajSectiuni }) {
   return (
     <Proza>
       {document.introducere === "" ? null : (

@@ -154,8 +154,10 @@ export default function Calculator({ perioada, analitica }: { perioada: Perioada
               // linia Enterprise (prin Tinta: ruta vine in S4-3b, pana atunci elementul e inert).
               <p className={s.frazaIesire + " " + s.frazaPlan}>
                 {e.inainte(intrari.persoane + cuDe(intrari.persoane))}
+                {/* Numele intreg al liniei ("3S Enterprise", textul legaturii): eticheta scurta a cardului din
+                    poarta e numai "Enterprise" (decizia 25), dar in fraza calculatorului linia isi pastreaza marca. */}
                 <Tinta legatura={POARTA_ENTERPRISE.tinta}>
-                  <strong>{POARTA_ENTERPRISE.nume}</strong>
+                  <strong>{POARTA_ENTERPRISE.tinta.text}</strong>
                 </Tinta>
                 {e.dupa}
               </p>

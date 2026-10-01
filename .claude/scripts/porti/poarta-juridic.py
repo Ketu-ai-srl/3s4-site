@@ -7,9 +7,17 @@ stie de ce e obligat, nu doar ca "asa zice scriptul". Un temei nescris se
 negociaza; unul scris se respecta.
 
 CE VERIFICA, cu codurile stabile din documentul de porti:
-  L-01  NUMAI cand `config/operator.json` numeste un operator: datele lui de
-        identificare sunt complete si apar in HTML-ul livrat pe FIECARE pagina
-        publica. Cu `"operator": null` regula nu cere nimic (vezi mai jos)
+  L-01  NUMAI cand operatorul REZOLVAT (`OPERATOR_JSON` nevida, altfel `config/operator.json`, ca
+        src/lib/operator.ts) numeste o firma: datele ei de identificare sunt complete si apar in
+        HTML-ul livrat. Familia SEE: pe FIECARE pagina publica. Familia `md` (tara Republica
+        Moldova, lista TARI_MD): pe pagina de informatii legale din fiecare limba publicata, iar pe
+        fiecare pagina o legatura spre informatiile legale in romana (Legea 284/2004 art. 12).
+        Modelul D2 (`"model": "D2"` la radacina configurarii): campurile din config/model-d2.json
+        care poarta EXACT marcajul decis ies AVERT pe orice mediu. Cu `"operator": null` regula nu
+        cere nimic (vezi mai jos)
+  J-01  marcajele `[...]` vizibile pe paginile juridice construite, in afara legaturilor si a
+        registrului MARCAJE_ADMISE (AVERT pe staging, OPRESTE la productie); acoladele duble in
+        orice HTML construit OPRESC oricand
   L-05  temeiul formularului de contact nu e consimtamantul
   L-09  zero trimiteri catre platforma SOL / ODR (abrogata, deci link mort)
   L-10  site-ul NU afiseaza numar de inregistrare ca operator de date
@@ -19,7 +27,8 @@ CE VERIFICA, cu codurile stabile din documentul de porti:
         operatorul, politica de cookie-uri (`cookies`) din clipa in care HTML-ul construit
         poarta bannerul de consimtamant (`data-consimtamant`): banner inseamna un instrument
         ne-esential, iar informarea despre el se cere inaintea acordului
-  C-01  zero scripturi si resurse de la terti in sursa si in HTML-ul construit. O singura
+  C-01  zero scripturi si resurse de la terti in sursa si in HTML-ul construit (un `<link>` cu
+        `rel` numai din REL_FARA_INCARCARE, ca canonical si alternate, nu e resursa). O singura
         exceptie, in SURSA si numai pe nume (EXCEPTII_TERTI): incarcatorul GA4, pregatit din
         decizia owner-ului din 24.09.2026 (plan S4 sectiunile 8-10). In HTML-ul construit nu
         exista nicio exceptie, iar ca scriptul pleaca numai dupa accept se masoara in browser
@@ -67,6 +76,14 @@ CONTROALE, la fiecare rulare:
                   articol cu "cookies" sau "termeni" in adresa NU tine loc de politica
                   (OPRESTE la productie), iar paginile construite la locul lor, fara
                   fisier in sursa, sunt recunoscute
+  martorii noi    (felia 72) L-10 pe un identificator de cod (negativ); C-01 dupa `rel`
+                  (canonical si alternate negativ, `alternate stylesheet` si `preconnect`
+                  pozitiv); mediul: operatorul numai in dictionarul primit e vazut, `{"operator":
+                  null}` din mediu bate fisierul, o variabila goala nu schimba nimic; J-01 pozitiv,
+                  negativ si acoladele duble. Toti ceilalti martori primesc un mediu GOL
+DE UNDE VINE MEDIUL. `OPERATOR_JSON` se citeste O SINGURA DATA, in main(), si se transmite ca
+parametru (`mediu_proces`). Daca analizeaza() ar citi `os.environ`, pe o rulare cu profilul 3s.md
+martorul "fara operator" ar vedea operatorul din mediu si poarta ar iesi 3 pe orice arbore.
 Tiparele interzise se asambleaza din bucati la RULARE: un link ODR scris intreg
 in corpul acestui fisier ar fi chiar defectul pe care poarta il vaneaza.
 
@@ -85,7 +102,16 @@ Intrebarea pe care o pune de fapt, pe cod:
         identifica furnizorul, ci ca owner-ul a decis sa nu numeasca inca unul.
   L-05  "apare undeva sintagma care numeste temeiul, si lipseste tiparul de consimtamant?"
         Ce face formularul in realitate nu se citeste.
-  L-09, L-10  cautare de tipare in text. O trimitere construita din bucati la randare trece.
+  L-01 md  "pagina de informatii legale e in build la adresa din config/juridic-rute.json si are
+        valorile?" si "fiecare pagina are un <a href> spre adresa romaneasca?". Engleza se cere numai
+        cand o pagina construita are `<html lang="en">`; vizibilitatea legaturii (ascunsa, in subsol)
+        nu se masoara. Familia se deduce din tara cu lista TARI_MD; orice alta tara pastreaza regulile
+        SEE (o tara fara texte opreste construirea site-ului, nu poarta).
+  J-01  "apare in textul vizibil al paginii juridice un [...] cu litere, in afara unui <a> si a formei
+        [text](adresa)?" Paginile juridice sunt cele din config/juridic-rute.json si cele de sub
+        /juridic. Un marcaj scris altfel (intre acolade, intre paranteze rotunde) trece.
+  L-09, L-10  cautare de tipare in text. O trimitere construita din bucati la randare trece. L-10
+        nu prinde un "numar" lipit de `_`, de cifra sau precedat de `.` (identificator de cod).
   L-15  "exista rutele juridice?" Nimic despre continutul lor: o pagina goala trece. Cu
         operatorul null nu cere nimic: verde nu inseamna ca site-ul are politici publicate.
         Pagina se recunoaste numai la locurile numite (TIPARE_PAGINA_JURIDICA in sursa,
@@ -113,8 +139,13 @@ LA ROSU: CE AI VOIE SA EDITEZI
       GAZDE_PROPRII si NUME_TERTI prin ADAUGARE, cu motiv scris pe rand.
       EXCEPTII_TERTI numai cu o decizie a owner-ului citata pe rand si cu proba de browser
       care arata ca fisierul exceptat nu contacteaza tertul inainte de accept.
+      MARCAJE_ADMISE prin ADAUGARE, numai cu decizia citata pe rand (marcajul reprezentantului
+      in UE: numai cu confirmarea scrisa a juristului).
+      `"model"` iese din configurare in ziua extrasului; marcajele din config/model-d2.json nu
+      se schimba din configurarea unui domeniu.
   NU  RUTE_JURIDICE, RUTA_COOKIE, MARCAJ_BANNER, CAMPURI_IDENTITATE, TIPAR_SUBSTITUENT, temeiurile
-      citate, gradarea pe mediu, stergerea unui nume din NUME_TERTI, controale().
+      citate, gradarea pe mediu, stergerea unui nume din NUME_TERTI, REL_FARA_INCARCARE prin
+      adaugare, TARI_MD (o urmeaza pe cea din familie.ts), controale().
 
 IESIRE
     0 = curat (avertismentele se tiparesc, dar nu opresc)
@@ -211,7 +242,19 @@ def loc_gol(valoare):
 
 # Gazdele proprii. O resursa incarcata de aici nu e "tert". Lista e scurta si
 # motivata: doar mediile noastre. O gazda adaugata aici trebuie sa vina cu motiv.
-GAZDE_PROPRII = {'3s4.ke2.in', '3s.ro', 'localhost', '127.0.0.1'}
+#   3s4.ke2.in          mediul de proba
+#   3s.md, 3s.com.ro    domeniile site-ului (adaugate 01.10.2026, felia 72)
+#   localhost, 127.0.0.1  serverul local al probelor
+# Scoasa pe 01.10.2026: `3s.ro`. Masurat atunci, domeniul nu e al nostru (parcat, al unui tert), deci
+# o resursa incarcata de acolo era scutita de C-01 pe nedrept.
+GAZDE_PROPRII = {'3s4.ke2.in', '3s.md', '3s.com.ro', 'localhost', '127.0.0.1'}
+
+# C-01 numara elementele care INCARCA ceva. Un `<link>` al carui `rel` are numai valori din lista de mai
+# jos nu incarca nimic si nu deschide nicio conexiune: canonical si alternate spre celelalte domenii ale
+# site-ului (SITE_ALTERNATE) erau numarate drept resurse de la un tert, pe fiecare pagina. Orice alta
+# valoare (stylesheet, preload, modulepreload, prefetch, preconnect, dns-prefetch, icon, manifest)
+# pastreaza elementul ca resursa, inclusiv in combinatii ca `alternate stylesheet`.
+REL_FARA_INCARCARE = {'canonical', 'alternate', 'author', 'license', 'prev', 'next'}
 
 # Furnizori de urmarire cunoscuti, cautati si in sursa, nu doar in HTML: un
 # `import` de SDK nu produce neaparat un `<script src>` absolut in build.
@@ -267,12 +310,37 @@ def tipare_sol():
 TEMEI_SOL = ('Reg. (UE) 2024/3228 a abrogat Reg. (UE) 524/2013, platforma s-a inchis 20.07.2025. '
              'Un link mort e informatie inexacta, sanctionata de Legea 365/2002 art. 21 lit. a)')
 
-TIPAR_OPERATOR = re.compile(r'\bnum[ae]r\w*\b.{0,120}?\boperator', re.S)
+# L-10 cauta CUVANTUL "numar" (numarul, numere...), nu un identificator de cod. Pana la 01.10.2026
+# tiparul era `\bnum[ae]r\w*\b`, iar `\w` cuprinde `_`: cheia registrului comertului din configurare,
+# urmata la mai putin de 120 de caractere de o proprietate `operator`, il aprindea pe SURSA fara nimic
+# vizibil pe pagina (felia 73, ocolit atunci in cod). Acum cuvantul e numai din litere, nu e lipit de
+# `_`, de cifra sau de un `.` in fata (acces la o proprietate). Textul vizibil ramane prins: martorul
+# pozitiv din controale() si cel negativ pe identificator stau langa martorii de absenta.
+TIPAR_OPERATOR = re.compile(r'(?<![\w.])num[ae]r[^\W\d_]*(?!\w).{0,120}?\boperator', re.S)
 TEMEI_OPERATOR = ('Registrul operatorilor de date a fost desfiintat. Nu afisam numarul fiindca nu '
                   'putem dovedi ca mai exista, nu fiindca am citit actul de abrogare (L-10)')
 
 TEMEI_IDENTITATE = ('Legea 365/2002 republicata, art. 5 alin. (1) lit. a)-e). Sanctiuni: art. 22 lit. b), '
                     'amenda 1.000-50.000 lei, si art. 21 lit. a), nulitatea relativa a contractului')
+# Familia `md` (operator din Republica Moldova): identificarea prestatorului.
+TEMEI_IDENTITATE_MD = 'Legea 284/2004 a Republicii Moldova, art. 12 alin. (1) lit. a)-c)'
+TEMEI_LEGATURA_MD = ('Legea 284/2004 art. 12: datele prestatorului accesibile direct si permanent; pe 3s.md '
+                     'datele stau numai pe pagina de informatii legale (decizia 5 a owner-ului, 30.09.2026), '
+                     'deci fiecare pagina publica trimite la ea, in romana')
+MESAJ_D2 = ('poarta marcajul decis; riscul Legii 284/2004 art. 12 e acceptat de owner (plan 3s-md §0, D2)')
+
+# Variabila de mediu cu operatorul domeniului, aceeasi schema ca fisierul (src/lib/operator-mediu.ts).
+VARIABILA_OPERATOR = 'OPERATOR_JSON'
+# Modelul D2: campurile care pot purta marcajul si marcajele pe limba (citit si de site).
+CALE_MODEL_D2 = ('config', 'model-d2.json')
+# Adresele documentelor familiei `md`, pe limba, si poarta la care se publica fiecare.
+CALE_RUTE_MD = ('config', 'juridic-rute.json')
+ORDINE_PORTI = ('B', 'C')
+
+# Numele Republicii Moldova in campul `tara`: lista INCHISA, aceeasi ca TARI_MD din
+# src/content/juridic/familie.ts (proba-juridic.py le compara). Orice alta tara pastreaza regulile de
+# dinainte (familia SEE); o tara fara texte o opreste construirea site-ului, nu poarta.
+TARI_MD = ('republica moldova', 'moldova')
 TEMEI_FARA_OPERATOR = ('decizia owner-ului din 24.09.2026 (planul valului S4, sectiunile 7 si 9-10): niciun '
                        'operator numit pana la infiintarea firmei, pe site doar brandul; riscul Legii 365/2002 '
                        'art. 5 la lansarea publica e numit acolo si e al owner-ului')
@@ -359,20 +427,34 @@ def cauta_absenta(documente, tipare, cod, temei, eticheta):
     return g
 
 
+def link_fara_incarcare(atribute):
+    """`<link>` care nu incarca nimic: `rel` exista si TOATE valorile lui sunt in REL_FARA_INCARCARE.
+    Fara `rel`, sau cu `rel` gol, elementul ramane resursa: nu stim ce face, deci il numaram."""
+    m = re.search(r'\brel\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'>]+))', atribute, re.I)
+    if m is None:
+        return False
+    valori = (m.group(1) or m.group(2) or m.group(3) or '').lower().split()
+    return bool(valori) and all(v in REL_FARA_INCARCARE for v in valori)
+
+
 def verifica_terti(construite, sursa):
     """C-01. In HTML se cauta resursele SUB-INCARCATE (script/link/iframe/img), nu
     orice adresa absoluta: un `<a href>` catre un site extern e link normal, nu
     tert incarcat in echipamentul vizitatorului."""
     g = []
-    tipar_resursa = re.compile(
-        r'<(script|iframe|img|link|source|video|audio)\b[^>]*?\b(?:src|href)\s*=\s*["\'](https?://[^"\']+)["\']',
-        re.I | re.S)
+    tipar_element = re.compile(r'<(script|iframe|img|link|source|video|audio)\b([^>]*)>', re.I | re.S)
+    tipar_adresa = re.compile(r'\b(?:src|href)\s*=\s*["\'](https?://[^"\']+)["\']', re.I | re.S)
     for nume, text in construite:
         # comentariile HTML se scot inainte: un `<script src="...">` citat intr-un
         # comentariu nu incarca nimic, dar ar produce un defect fantoma
         curat = re.sub(r'<!--.*?-->', ' ', text, flags=re.S)
-        for m in tipar_resursa.finditer(curat):
-            adresa = m.group(2)
+        for m in tipar_element.finditer(curat):
+            gasita = tipar_adresa.search(m.group(2))
+            if gasita is None:
+                continue
+            if m.group(1).lower() == 'link' and link_fara_incarcare(m.group(2)):
+                continue
+            adresa = gasita.group(1)
             gazda = re.sub(r'^https?://', '', adresa).split('/')[0].split(':')[0].lower()
             if gazda not in GAZDE_PROPRII:
                 g.append((OPRESTE, 'C-01', nume + ': resursa <' + m.group(1).lower() + '> incarcata de la tertul '
@@ -438,27 +520,110 @@ TIPARE_HTML_JURIDIC = ('.next/server/app/%s.html', '.next/server/app/ro/%s.html'
                        '.next/server/app/juridic/%s.html')
 
 
+def cai_pagini_sursa(radacina):
+    """Adresele paginilor din `src/app`, cum le serveste Next: segmentele de grup `(nume)` nu intra in
+    adresa. O pagina e `page.tsx`, `page.mdx`, `page.ts` sau `page.<sufix>.tsx` (pagina unei editii,
+    de pilda `page.en.tsx`, servita numai de build-ul editiei ei)."""
+    baza = os.path.join(radacina, 'src', 'app')
+    cai = set()
+    if not os.path.isdir(baza):
+        return cai
+    for r, directoare, nume in os.walk(baza):
+        directoare[:] = [d for d in directoare if d not in SARITE]
+        if not any(re.fullmatch(r'page(?:\.[a-z0-9-]+)?\.tsx|page\.(?:mdx|ts)', n) for n in nume):
+            continue
+        segmente = os.path.relpath(r, baza).replace(os.sep, '/').split('/')
+        cai.add('/' + '/'.join(s for s in segmente if s not in ('.', '') and not re.fullmatch(r'\(.*\)', s)))
+    return cai
+
+
 def ruta_juridica_exista(radacina, construite, ruta):
     """Pagina rutei exista in sursa sau in build, pe CALEA INTREAGA. Pana la 25.09.2026 numele
     fisierelor construite se comparau pe subsir, deci un articol cu "cookies" in adresa tinea loc
     de politica de cookie-uri (constatarea criticului, masurata pe fabrica_arbore)."""
     if any(os.path.isfile(os.path.join(radacina, tipar % ruta)) for tipar in TIPARE_PAGINA_JURIDICA):
         return True
+    # Aceleasi locuri, si cu pagina unei editii (`page.<sufix>.tsx`) sau sub un grup de rute.
+    surse = cai_pagini_sursa(radacina)
+    if any(('/' + tipar % ruta).replace('/src/app', '', 1).rsplit('/', 1)[0] in surse for tipar in TIPARE_PAGINA_JURIDICA):
+        return True
     cai = {tipar % ruta for tipar in TIPARE_HTML_JURIDIC}
     return any(nume.replace(os.sep, '/') in cai for nume, _ in construite)
 
 
-def verifica_rute_juridice(radacina, construite, sever_prezenta):
+def html_pentru_cale(cale):
+    """Fisierul in care `next build` scrie pagina statica a unei adrese (`/legal/x` -> `legal/x.html`)."""
+    return '.next/server/app' + ('/index' if cale == '/' else cale.rstrip('/')) + '.html'
+
+
+def pagina_md_exista(radacina, construite, cale, surse):
+    if cale in surse:
+        return True
+    return any(nume.replace(os.sep, '/') == html_pentru_cale(cale) for nume, _ in construite)
+
+
+def incarca_json(radacina, cale_rel):
+    """Un fisier JSON din depozit, sau (None, motivul)."""
+    cale = os.path.join(radacina, *cale_rel)
+    if not os.path.isfile(cale):
+        return None, 'lipseste ' + '/'.join(cale_rel)
+    try:
+        return json.loads(citeste(cale)), None
+    except ValueError as e:
+        return None, '/'.join(cale_rel) + ' nu e JSON valid: ' + str(e)
+
+
+def rute_md(radacina):
+    """`config/juridic-rute.json`, validat cat ii trebuie portii: (documente, poarta curenta) sau (None, motiv)."""
+    rute, motiv = incarca_json(radacina, CALE_RUTE_MD)
+    if rute is None:
+        return None, motiv
+    documente = rute.get('documente') if isinstance(rute, dict) else None
+    poarta = rute.get('poarta_curenta') if isinstance(rute, dict) else None
+    if (not isinstance(documente, dict) or poarta not in ORDINE_PORTI
+            or 'informatii-legale' not in documente
+            or not all(isinstance(d, dict) and isinstance(d.get('ro'), str) and isinstance(d.get('en'), str)
+                       and d.get('poarta') in ORDINE_PORTI for d in documente.values())):
+        return None, '/'.join(CALE_RUTE_MD) + ' nu are forma asteptata (poarta_curenta B/C; documente cu en, ro, poarta)'
+    return (documente, poarta), None
+
+
+def publicate_md(documente, poarta):
+    """Cheile publicate la poarta curenta (o poarta mai tarzie le include pe cele dinainte)."""
+    return [c for c, d in documente.items() if ORDINE_PORTI.index(d['poarta']) <= ORDINE_PORTI.index(poarta)]
+
+
+def limbi_publicate(construite):
+    """Limbile in care se publica documentele familiei `md`: romana mereu (legatura de pe fiecare pagina
+    duce la pagina romaneasca), engleza din clipa in care o pagina construita e servita cu
+    `<html lang="en...">` (editia engleza a domeniului)."""
+    limbi = ['ro']
+    if any(re.search(r'<html\b[^>]*\blang\s*=\s*["\']en\b', text, re.I) for _, text in construite):
+        limbi.append('en')
+    return limbi
+
+
+def familie_din_tara(tara):
+    """'md' pentru Republica Moldova (lista inchisa TARI_MD), altfel None: regulile familiei SEE."""
+    if not isinstance(tara, str):
+        return None
+    n = re.sub(r'\s+', ' ', fara_diacritice(tara)).strip().lower()
+    return 'md' if n in TARI_MD else None
+
+
+def verifica_rute_juridice(radacina, construite, sever_prezenta, mediu_proces=None):
     g = []
     cerute = []
     # Paginile juridice se cer numai de la un site care are operator: fara el, politica n-ar avea
     # cine sa numeasca, iar decizia owner-ului e ca paginile sa nu se publice (TEMEI_L15_FARA_OPERATOR).
-    stare, _ = stare_operator(radacina)
+    stare, date, _, _ = stare_operator(radacina, mediu_proces)
+    cu_banner = pagini_cu_banner(construite)
+    if stare == 'numit' and familie_din_tara(date.get('tara')) == 'md':
+        return verifica_rute_md(radacina, construite, sever_prezenta, cu_banner)
     if stare != 'null':
         temei = TEMEI_ART13 + '; identificarea comerciantului, Legea 365/2002 art. 5'
         cerute.extend((ruta, temei) for ruta in RUTE_JURIDICE)
     # Politica de cookie-uri se cere dupa banner, oricare ar fi starea operatorului (RUTA_COOKIE).
-    cu_banner = pagini_cu_banner(construite)
     if cu_banner:
         cerute.append((RUTA_COOKIE, TEMEI_L15_COOKIE + ' (bannerul e, de pilda, in ' + cu_banner[0] + ')'))
     for ruta, temei in cerute:
@@ -467,30 +632,118 @@ def verifica_rute_juridice(radacina, construite, sever_prezenta):
     return g
 
 
-def stare_operator(radacina):
-    """Ce spune comutatorul: ('lipsa' | 'invalid' | 'null' | 'numit', date sau mesaj)."""
+def verifica_rute_md(radacina, construite, sever_prezenta, cu_banner):
+    """L-15 in familia `md`: documentele publicate la poarta curenta, in fiecare limba publicata, la
+    adresele din `config/juridic-rute.json` (nu din tiparele fixe ale familiei SEE)."""
+    rute, motiv = rute_md(radacina)
+    if rute is None:
+        return [(OPRESTE, 'L-15', 'familia md: ' + motiv + ' | TEMEI: ' + TEMEI_ART13)]
+    documente, poarta = rute
+    chei = publicate_md(documente, poarta)
+    if cu_banner and 'cookie-uri' in documente and 'cookie-uri' not in chei:
+        chei.append('cookie-uri')
+    surse = cai_pagini_sursa(radacina)
+    g = []
+    for cheie in chei:
+        for limba in limbi_publicate(construite):
+            cale = documente[cheie][limba]
+            if not pagina_md_exista(radacina, construite, cale, surse):
+                g.append((sever_prezenta, 'L-15', 'familia md: lipseste pagina juridica ' + cale + ' (' + cheie
+                          + ', ' + limba + ', poarta ' + documente[cheie]['poarta'] + ') | TEMEI: ' + TEMEI_ART13
+                          + '; ' + TEMEI_IDENTITATE_MD))
+    return g
+
+
+def configurare_operator(radacina, mediu_proces):
+    """Configurarea comutatorului si de unde vine: `OPERATOR_JSON` din `mediu_proces` daca e setata si
+    nevida, altfel `config/operator.json` (aceeasi precedenta ca src/lib/operator.ts). Intoarce
+    (cfg | None, sursa, motiv): None cu motivul 'lipsa' pentru fisierul absent, altfel textul erorii.
+    `mediu_proces` e un dictionar PRIMIT, niciodata `os.environ`: martorii din controale() trec unul gol."""
+    brut = (mediu_proces or {}).get(VARIABILA_OPERATOR)
+    if brut is not None and brut.strip() != '':
+        try:
+            return json.loads(brut), VARIABILA_OPERATOR, None
+        except ValueError as e:
+            return None, VARIABILA_OPERATOR, 'nu e JSON valid: ' + str(e)
+    rel = '/'.join(CALE_OPERATOR)
     cale = os.path.join(radacina, *CALE_OPERATOR)
     if not os.path.isfile(cale):
-        return 'lipsa', None
+        return None, rel, 'lipsa'
     try:
-        cfg = json.loads(citeste(cale))
+        return json.loads(citeste(cale)), rel, None
     except ValueError as e:
-        return 'invalid', 'nu e JSON valid: ' + str(e)
+        return None, rel, 'nu e JSON valid: ' + str(e)
+
+
+def stare_operator(radacina, mediu_proces=None):
+    """Ce spune comutatorul: (stare, date sau mesaj, sursa, cfg), cu stare 'lipsa' | 'invalid' | 'null' |
+    'numit' si sursa `OPERATOR_JSON` sau `config/operator.json`. Fara `mediu_proces` = dictionar gol."""
+    cfg, sursa, motiv = configurare_operator(radacina, mediu_proces)
+    if motiv == 'lipsa':
+        return 'lipsa', None, sursa, None
+    if motiv is not None:
+        return 'invalid', motiv, sursa, None
     if not isinstance(cfg, dict) or 'operator' not in cfg:
-        return 'invalid', 'lipseste cheia "operator" (null sau obiectul firmei)'
+        return 'invalid', 'lipseste cheia "operator" (null sau obiectul firmei)', sursa, cfg
     if cfg['operator'] is None:
-        return 'null', None
+        return 'null', None, sursa, cfg
     if not isinstance(cfg['operator'], dict):
-        return 'invalid', '"operator" trebuie sa fie null sau un obiect, nu ' + type(cfg['operator']).__name__
-    return 'numit', cfg['operator']
+        return ('invalid', '"operator" trebuie sa fie null sau un obiect, nu ' + type(cfg['operator']).__name__,
+                sursa, cfg)
+    return 'numit', cfg['operator'], sursa, cfg
 
 
-def verifica_identitate(radacina, construite, sever_prezenta):
+def model_d2(radacina, cfg, sursa):
+    """Modelul D2 din configurare: ("model" la RADACINA, langa "operator"; nu in obiectul firmei, unde
+    src/lib/operator.ts il refuza drept camp necunoscut). Intoarce (date_model | None, constatari)."""
+    if not isinstance(cfg, dict) or 'model' not in cfg:
+        return None, []
+    if cfg['model'] != 'D2':
+        return None, [(OPRESTE, 'L-01', sursa + ': model necunoscut ' + json.dumps(cfg['model'], ensure_ascii=False)
+                       + ' (singura valoare admisa: "D2"; configurarea poate doar aprinde modelul, nu il poate '
+                       'schimba) | TEMEI: ' + TEMEI_IDENTITATE_MD)]
+    model, motiv = incarca_json(radacina, CALE_MODEL_D2)
+    ok_forma = (isinstance(model, dict) and isinstance(model.get('campuri'), list)
+                and isinstance(model.get('marcaj'), dict)
+                and all(isinstance(model['marcaj'].get(l), str) and model['marcaj'][l].strip() for l in ('ro', 'en')))
+    if not ok_forma:
+        return None, [(OPRESTE, 'L-01', sursa + ': "model": "D2", dar ' + (motiv or '/'.join(CALE_MODEL_D2)
+                       + ' nu are forma asteptata (campuri, marcaj.ro, marcaj.en)') + ' | TEMEI: ' + TEMEI_IDENTITATE_MD)]
+    return model, []
+
+
+def nfc(text):
+    return unicodedata.normalize('NFC', str(text)).strip()
+
+
+def este_marcaj_d2(model, camp, valoare):
+    """Campul e unul admis de model si valoarea, NFC si fara spatii la capete, e EXACT marcajul romanesc."""
+    return model is not None and camp in model['campuri'] and isinstance(valoare, str) \
+        and nfc(valoare) == nfc(model['marcaj']['ro'])
+
+
+def are_legatura(text, cale):
+    """Pagina are un `<a href>` spre `cale`: relativ, sau absolut pe o gazda proprie."""
+    for m in re.finditer(r'<a\b[^>]*?\bhref\s*=\s*["\']([^"\']*)["\']', text, re.I | re.S):
+        adresa = m.group(1)
+        absoluta = re.match(r'^https?://([^/?#]+)(.*)$', adresa, re.I)
+        if absoluta:
+            if absoluta.group(1).split(':')[0].lower() not in GAZDE_PROPRII:
+                continue
+            adresa = absoluta.group(2) or '/'
+        adresa = re.split(r'[?#]', adresa)[0]
+        if adresa.rstrip('/') == cale.rstrip('/'):
+            return True
+    return False
+
+
+def verifica_identitate(radacina, construite, sever_prezenta, mediu_proces=None):
     """L-01, conditionat de operator: datele de identificare se cer numai de la o firma care
     exista. Cu operator null nu se cere nimic (decizia owner-ului, TEMEI_FARA_OPERATOR)."""
     g = []
-    rel = '/'.join(CALE_OPERATOR)
-    stare, date = stare_operator(radacina)
+    stare, date, rel, cfg = stare_operator(radacina, mediu_proces)
+    model, gm = model_d2(radacina, cfg, rel)
+    g.extend(gm)
     if stare == 'null':
         return g
     if stare == 'lipsa':
@@ -502,10 +755,18 @@ def verifica_identitate(radacina, construite, sever_prezenta):
         g.append((OPRESTE, 'L-01', rel + ': ' + date))
         return g
 
+    md = familie_din_tara(date.get('tara')) == 'md'
+    temei = TEMEI_IDENTITATE_MD if md else TEMEI_IDENTITATE
     goale = [camp for camp in CAMPURI_IDENTITATE if loc_gol(date.get(camp))]
+    # Exceptia D2: campul admis care poarta EXACT marcajul decis e AVERT pe orice mediu. Orice alt loc
+    # gol (alt text intre paranteze, marcajul pe alt camp, fara diacritice, fara "model") ramane gradat.
+    cu_marcaj = [camp for camp in goale if este_marcaj_d2(model, camp, date.get(camp))]
+    for camp in cu_marcaj:
+        g.append((AVERT, 'L-01', 'model D2: ' + camp + ' ' + MESAJ_D2))
+    goale = [camp for camp in goale if camp not in cu_marcaj]
     if goale:
         g.append((sever_prezenta, 'L-01', rel + ': operatorul e numit, dar are loc gol la ' + ', '.join(goale)
-                  + ' | TEMEI: ' + TEMEI_IDENTITATE))
+                  + ' | TEMEI: ' + temei))
         return g
 
     # Configurarea e completa: de aici incolo obligatia e sa APARA pe fiecare
@@ -513,6 +774,9 @@ def verifica_identitate(radacina, construite, sever_prezenta):
     if not construite:
         g.append((AVERT, 'L-01', 'datele firmei sunt complete, dar nu exista HTML construit '
                   'in care sa verific ca apar pe fiecare pagina. Ruleaza pnpm build'))
+        return g
+    if md:
+        g.extend(verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, model))
         return g
     for nume, text in construite:
         n = normalizeaza(text)
@@ -524,8 +788,115 @@ def verifica_identitate(radacina, construite, sever_prezenta):
     return g
 
 
-def analizeaza(radacina, mediu):
-    """Verdictul complet. Aceeasi functie ruleaza pe proiectul real si pe martori."""
+def verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, model):
+    """L-01 in familia `md`: datele pe pagina de informatii legale din FIECARE limba publicata (campul
+    cu marcajul D2 se cauta ca marcajul limbii paginii), iar pe fiecare pagina publica o legatura spre
+    informatiile legale in romana. Cererea "pe fiecare pagina" ramane numai familiei SEE."""
+    rute, motiv = rute_md(radacina)
+    if rute is None:
+        return [(OPRESTE, 'L-01', 'familia md: ' + motiv + ' | TEMEI: ' + TEMEI_IDENTITATE_MD)]
+    documente, _ = rute
+    g = []
+    dupa_nume = {nume.replace(os.sep, '/'): text for nume, text in construite}
+    for limba in limbi_publicate(construite):
+        cale = documente['informatii-legale'][limba]
+        text = dupa_nume.get(html_pentru_cale(cale))
+        if text is None:
+            g.append((sever_prezenta, 'L-01', 'familia md: lipseste pagina de informatii legale in limba ' + limba
+                      + ' (' + cale + '), unde se cer datele prestatorului | TEMEI: ' + TEMEI_IDENTITATE_MD))
+            continue
+        n = normalizeaza(text)
+        for camp in CAMPURI_IDENTITATE:
+            valoare = model['marcaj'][limba] if este_marcaj_d2(model, camp, date.get(camp)) else date[camp]
+            if normalizeaza(str(valoare)) not in n:
+                g.append((OPRESTE, 'L-01', html_pentru_cale(cale) + ': campul ' + camp + ' din ' + rel
+                          + ' nu apare pe pagina de informatii legale (' + limba + ') | TEMEI: ' + TEMEI_IDENTITATE_MD))
+    cale_ro = documente['informatii-legale']['ro']
+    for nume, text in construite:
+        if not are_legatura(text, cale_ro):
+            g.append((sever_prezenta, 'L-01', nume + ': familia md: nicio legatura spre informatiile legale in '
+                      'romana (' + cale_ro + ') | TEMEI: ' + TEMEI_LEGATURA_MD))
+    return g
+
+
+# --- J-01: marcajele din corpul paginilor juridice ----------------------------------------------
+# Un text intre paranteze drepte pe o pagina juridica publicata e o informatie lipsa scrisa ca text
+# (README-ul pachetului juridic, sectiunea 5). Se publica numai marcajele din registrul de mai jos,
+# fiecare cu decizia lui pe rand; marcajul D2 (din config/model-d2.json) numai cu "model": "D2".
+# NU intra: N23 (tara gazdei, conditie de fapt a portii B), marcajul reprezentantului in UE (P-22 tine
+# de poarta B; intra numai cu confirmarea scrisa a juristului), data publicarii (se inlocuieste la
+# publicare). Adaugarea se face numai cu decizia citata pe rand.
+MARCAJE_ADMISE = {
+    '[de publicat înainte de primul client]': 'pachetul juridic, README §2, 04: publicabila la poarta B cu '
+                                              'cele trei marcaje, pana la paginile de la poarta C',
+    '[to be published before the first client]': 'perechea EN a marcajului de mai sus, aceeasi decizie',
+}
+TEMEI_MARCAJ = ('un marcaj pe o pagina juridica publicata spune ca informatia lipseste; se publica numai '
+                'marcajele cu decizie (MARCAJE_ADMISE si marcajul D2 cu modelul aprins)')
+TEMEI_ACOLADE = 'un token de compunere nerezolvat in pagina livrata (acolade duble) e text stricat, nu informare'
+
+
+def text_vizibil(html_text, fara_legaturi=False):
+    """Textul pe care il vede omul: fara comentarii, scripturi (si payload-ul RSC din ele), stiluri si
+    etichete; entitatile decodate, NFC. Cu `fara_legaturi`, continutul elementelor `<a>` iese si el."""
+    import html as modul_html
+    t = re.sub(r'<!--.*?-->', ' ', html_text, flags=re.S)
+    t = re.sub(r'<(script|style|template)\b[^>]*>.*?</\1\s*>', ' ', t, flags=re.S | re.I)
+    if fara_legaturi:
+        t = re.sub(r'<a\b[^>]*>.*?</a\s*>', ' ', t, flags=re.S | re.I)
+    t = re.sub(r'<[^>]+>', ' ', t)
+    return unicodedata.normalize('NFC', modul_html.unescape(t))
+
+
+def html_fara_cod(html_text):
+    """HTML-ul fara comentarii, scripturi si stiluri: etichetele si atributele raman."""
+    t = re.sub(r'<!--.*?-->', ' ', html_text, flags=re.S)
+    return re.sub(r'<(script|style)\b[^>]*>.*?</\1\s*>', ' ', t, flags=re.S | re.I)
+
+
+def pagini_juridice(radacina, construite):
+    """Paginile construite care sunt documente juridice: adresele familiei `md` din
+    `config/juridic-rute.json` si locurile familiei SEE (`/juridic` si tot ce e sub el)."""
+    cai = {tipar % ruta for tipar in TIPARE_HTML_JURIDIC for ruta in RUTE_JURIDICE + (RUTA_COOKIE,)}
+    cai.add('.next/server/app/juridic.html')
+    rute, _ = rute_md(radacina)
+    if rute is not None:
+        for d in rute[0].values():
+            cai.update(html_pentru_cale(d[l]) for l in ('ro', 'en'))
+    return [(nume, text) for nume, text in construite
+            if nume.replace(os.sep, '/') in cai or nume.replace(os.sep, '/').startswith('.next/server/app/juridic/')]
+
+
+def verifica_marcaje(radacina, construite, sever_prezenta, mediu_proces=None):
+    g = []
+    _, _, rel, cfg = stare_operator(radacina, mediu_proces)
+    model, _ = model_d2(radacina, cfg, rel)
+    admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())
+    if model is not None:
+        for limba in ('ro', 'en'):
+            admise[nfc(model['marcaj'][limba])] = 'modelul D2 (plan 3s-md §0, D2)'
+    for nume, text in pagini_juridice(radacina, construite):
+        vazute = {}
+        for m in re.finditer(r'\[([^\[\]]{1,300})\](?!\()', text_vizibil(text, fara_legaturi=True)):
+            if not re.search(r'[^\W\d_]', m.group(1)):
+                continue
+            marcaj = '[' + re.sub(r'\s+', ' ', m.group(1)).strip() + ']'
+            if nfc(marcaj) not in admise:
+                vazute[marcaj] = vazute.get(marcaj, 0) + 1
+        for marcaj, numar in sorted(vazute.items()):
+            g.append((sever_prezenta, 'J-01', nume + ': marcaj fara decizie pe pagina juridica ' + marcaj
+                      + (' (de ' + str(numar) + ' ori)' if numar > 1 else '') + ' | TEMEI: ' + TEMEI_MARCAJ))
+    # Acoladele duble: oricand OPRESTE, pe orice pagina construita (absenta, gratuita de satisfacut).
+    for nume, text in construite:
+        if '{{' in html_fara_cod(text):
+            g.append((OPRESTE, 'J-01', nume + ': acolade duble in HTML-ul construit | TEMEI: ' + TEMEI_ACOLADE))
+    return g
+
+
+def analizeaza(radacina, mediu, mediu_proces=None):
+    """Verdictul complet. Aceeasi functie ruleaza pe proiectul real si pe martori. `mediu_proces` =
+    variabilele procesului, citite O SINGURA DATA in main(); martorii primesc un dictionar gol."""
+    mediu_proces = mediu_proces or {}
     sever_prezenta = OPRESTE if mediu == 'productie' else AVERT
 
     sursa = [(os.path.relpath(c, radacina).replace(os.sep, '/'), citeste(c)) for c in fisiere_sursa(radacina)]
@@ -541,8 +912,9 @@ def analizeaza(radacina, mediu):
                            'L-10', TEMEI_OPERATOR, 'numar de inregistrare ca operator de date'))
     g.extend(verifica_terti(construite, sursa))
     g.extend(verifica_formular(toate, sever_prezenta))
-    g.extend(verifica_rute_juridice(radacina, construite, sever_prezenta))
-    g.extend(verifica_identitate(radacina, construite, sever_prezenta))
+    g.extend(verifica_rute_juridice(radacina, construite, sever_prezenta, mediu_proces))
+    g.extend(verifica_identitate(radacina, construite, sever_prezenta, mediu_proces))
+    g.extend(verifica_marcaje(radacina, construite, sever_prezenta, mediu_proces))
     return g, len(toate)
 
 
@@ -796,6 +1168,70 @@ def controale():
         if not any(c == 'C-01' and 'index.html' in m and 'incarcata de la tertul' in m for _, c, m in gh):
             return 'martorul pozitiv al exceptiei C-01: scriptul Google static din HTML nu a fost prins'
 
+        # --- martorii L-10 pe identificator (felia 72) ---
+        # NEGATIV: cheia registrului comertului si o proprietate `operator`, ca in codul unei pagini.
+        # Pozitivul (propozitia vizibila) e in martorul pozitiv de la inceput.
+        cod_sursa = 'randuri.push(["IDNO", campFirma(c, "numar' + '_orc")], ["Firma", c.oper' + 'ator.denumire]);'
+        if cauta_absenta([('martor.ts', normalizeaza(cod_sursa))], [(TIPAR_OPERATOR, 'numar langa operator')],
+                         'L-10', TEMEI_OPERATOR, 'martor'):
+            return 'martorul negativ L-10: un identificator de cod a fost luat drept numar de operator'
+
+        # --- martorii C-01 dupa `rel` (felia 72): canonical si alternate nu incarca nimic ---
+        def cu_head(radacina, element):
+            cale = os.path.join(radacina, '.next', 'server', 'app', 'index.html')
+            scrie(cale, citeste(cale).replace('<html><body>', '<html><head>' + element + '</head><body>'))
+        straina = 'https://gazda-' + 'straina.test/pagina'
+        rel_negativ = os.path.join(temp, 'rel-negativ')
+        fabrica_arbore(rel_negativ, defect=False)
+        cu_head(rel_negativ, '<link rel="canonical" href="' + straina + '"/><link rel="alternate" hreflang="en" '
+                'href="' + straina + '"/>')
+        gr, _ = analizeaza(rel_negativ, 'productie')
+        if any(c == 'C-01' for _, c, _ in gr):
+            return 'martorul negativ C-01: canonical sau alternate spre alta gazda a fost numarat drept resursa'
+        for rel in ('alternate stylesheet', 'preconnect'):
+            rel_pozitiv = os.path.join(temp, 'rel-' + rel.replace(' ', '-'))
+            fabrica_arbore(rel_pozitiv, defect=False)
+            cu_head(rel_pozitiv, '<link rel="' + rel + '" href="' + straina + '"/>')
+            gr, _ = analizeaza(rel_pozitiv, 'staging')
+            if not any(c == 'C-01' for _, c, _ in gr):
+                return 'martorul pozitiv C-01: <link rel="' + rel + '"> spre un tert nu a fost prins'
+
+        # --- martorii mediului: OPERATOR_JSON vine numai din dictionarul primit (felia 72) ---
+        # POZITIV: fisierul pe null, operator incomplet numai in mediu -> L-01 il vede.
+        incomplet = {'operator': {'denumire': 'Trei S Arhivare SRL', 'sediu': '', 'email': 'contact@exemplu-3s.test'}}
+        gm, _ = analizeaza(fara_operator, 'staging', {VARIABILA_OPERATOR: json.dumps(incomplet)})
+        if not any(c == 'L-01' and sev == AVERT and VARIABILA_OPERATOR in m for sev, c, m in gm):
+            return 'martorul mediului: operatorul din ' + VARIABILA_OPERATOR + ' nu a fost citit'
+        # NEGATIV: fisierul numeste operatorul, mediul spune null -> nimic de cerut, nici la productie.
+        gm, _ = analizeaza(negativ, 'productie', {VARIABILA_OPERATOR: '{"operator": null}'})
+        if any(c in ('L-01', 'L-15') for _, c, _ in gm):
+            return 'martorul mediului: {"operator": null} din mediu nu a avut prioritate fata de fisier'
+        # NEGATIV: variabila goala inseamna nesetata (decide fisierul): arborele curat ramane curat.
+        gm, _ = analizeaza(negativ, 'productie', {VARIABILA_OPERATOR: '  '})
+        if gm:
+            return 'martorul mediului: o variabila goala a schimbat verdictul fisierului'
+
+        # --- martorii J-01: marcajele din paginile juridice (felia 72) ---
+        marcaje = os.path.join(temp, 'marcaje')
+        fabrica_arbore(marcaje, defect=False, cu_rute=False)
+        admis = next(iter(MARCAJE_ADMISE))
+        construita(marcaje, 'juridic/termeni.html', '<html><body><p>Sediul: [sediul ' + 'firmei, de ' + 'aflat]</p>'
+                   '<p>' + admis + '</p><p><a href="/juridic/confidentialitate">[Politica]</a></p></body></html>')
+        construita(marcaje, 'juridic/confidentialitate.html', '<html><body><p>' + admis + '</p></body></html>')
+        gs, _ = analizeaza(marcaje, 'staging')
+        gp, _ = analizeaza(marcaje, 'productie')
+        j01 = [m for _, c, m in gp if c == 'J-01']
+        if not any(c == 'J-01' and sev == AVERT for sev, c, _ in gs) or len(j01) != 1 or 'termeni' not in j01[0] \
+                or not any(c == 'J-01' and sev == OPRESTE for sev, c, _ in gp):
+            return ('martorii J-01: un marcaj fara decizie trebuie sa iasa o data, AVERT pe staging si OPRESTE la '
+                    'productie, iar cel admis si legatura nu: ' + '; '.join(j01))
+        acolade = os.path.join(temp, 'acolade')
+        fabrica_arbore(acolade, defect=False)
+        construita(acolade, 'despre.html', '<html><body><p>Vezi ' + '{' * 2 + 'cale:termeni' + '}' * 2 + '</p></body></html>')
+        ga, _ = analizeaza(acolade, 'staging')
+        if not any(c == 'J-01' and sev == OPRESTE for sev, c, _ in ga):
+            return 'martorul J-01: acoladele duble din HTML-ul construit nu au OPRIT pe staging'
+
         # al patrulea martor: prospetimea build-ului. Arborele curat de mai sus are
         # HTML-ul scris ULTIMUL, deci proaspat - nu trebuie raportat invechit. Acelasi
         # arbore cu HTML-ul imbatranit cu o ora trebuie raportat invechit.
@@ -818,6 +1254,10 @@ def main():
                    default=('productie' if os.environ.get('SITE_ENV') == 'productie' else 'staging'),
                    help='la productie, locurile goale OPRESC in loc sa avertizeze')
     a = p.parse_args()
+    # Mediul procesului, citit O SINGURA DATA, aici, si transmis ca parametru. Martorii din controale()
+    # nu il vad: pe o rulare cu profilul 3s.md (OPERATOR_JSON setata), martorul "fara operator" ar vedea
+    # altfel operatorul din mediu, iar poarta ar iesi 3 pe orice arbore.
+    mediu_proces = {VARIABILA_OPERATOR: os.environ.get(VARIABILA_OPERATOR)}
 
     motiv = controale()
     if motiv:
@@ -829,7 +1269,7 @@ def main():
         print('poarta-juridic: HTML-ul construit e mai vechi decat sursa - as masura un site '
               'care nu mai exista. Ruleaza pnpm build.', file=sys.stderr)
         return 3
-    gasiri, numar = analizeaza(radacina, a.mediu)
+    gasiri, numar = analizeaza(radacina, a.mediu, mediu_proces)
     if numar == 0:
         print('poarta-juridic: niciun fisier de citit - masuratoarea e invalida, nu curata', file=sys.stderr)
         return 3
@@ -843,18 +1283,32 @@ def main():
 
     print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de mediu OK, martor fara operator OK, '
           'martori L-15 dupa operator OK, martori L-15 politica de cookie-uri dupa banner OK, '
-          'martori L-15 pe calea intreaga a paginii OK, martori exceptie C-01 OK')
+          'martori L-15 pe calea intreaga a paginii OK, martori exceptie C-01 OK, martor L-10 pe identificator OK, '
+          'martori C-01 dupa rel OK, martori OPERATOR_JSON OK, martori J-01 OK')
     print('MEDIU: ' + a.mediu + ' (la productie, avertismentele de mai sus devin opriri)')
-    stare, _ = stare_operator(radacina)
+    stare, date, sursa, cfg = stare_operator(radacina, mediu_proces)
+    print('operator: ' + stare + ', din ' + sursa)
     if stare == 'null':
         # Tiparit la fiecare rulare, ca verdele sa nu fie citit drept "firma e identificata".
-        print('L-01: NU SE APLICA - ' + '/'.join(CALE_OPERATOR) + ' are "operator": null; '
+        print('L-01: NU SE APLICA - ' + sursa + ' are "operator": null; '
               'datele de identificare se cer din ziua in care operatorul e numit | TEMEI: ' + TEMEI_FARA_OPERATOR)
         # La fel pentru L-15: verde nu inseamna "politicile sunt publicate".
         print('L-15: NU SE APLICA - fara operator paginile juridice nu se publica | TEMEI: ' + TEMEI_L15_FARA_OPERATOR)
     else:
         print('L-01: se aplica - operator: ' + stare)
         print('L-15: se aplica - operator: ' + stare)
+    if stare == 'numit':
+        if familie_din_tara(date.get('tara')) == 'md':
+            print('familie juridica: md (tara ' + str(date.get('tara')) + '); datele se cer pe pagina de informatii '
+                  'legale din fiecare limba publicata, pe fiecare pagina o legatura spre ea in romana | TEMEI: '
+                  + TEMEI_IDENTITATE_MD)
+        else:
+            print('familie juridica: SEE sau nedeclarata (tara ' + json.dumps(date.get('tara'), ensure_ascii=False)
+                  + '); datele se cer pe fiecare pagina | TEMEI: ' + TEMEI_IDENTITATE)
+    if isinstance(cfg, dict) and cfg.get('model') == 'D2':
+        # Linie separata la fiecare rulare: verdele nu inseamna "firma e identificata".
+        print('model D2: aprins din ' + sursa + '; campurile cu marcajul decis ies AVERT pe orice mediu, '
+              'firma NU e identificata din extras; modelul iese din configurare in ziua extrasului')
     cu_banner = pagini_cu_banner([(c, citeste(c)) for c in fisiere_construite(radacina)])
     if cu_banner:
         print('L-15 /' + RUTA_COOKIE + ': se aplica - bannerul de consimtamant e in ' + str(len(cu_banner))

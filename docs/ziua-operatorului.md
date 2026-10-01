@@ -11,6 +11,17 @@ completarea unui fisier, cateva variabile de mediu si verificari, nu constructie
 asteptat. Un pas a carui verificare nu iese cum scrie aici opreste pasii de dupa el: nu se trece
 mai departe "urmand sa revenim".
 
+**Doua drumuri, dupa tara operatorului** (familia textelor juridice, `src/content/juridic/familie.ts`):
+
+| | Operator din SEE (de pilda `3s.com.ro`) | `3s.md`, operator din Republica Moldova, pe modelul D2 |
+|---|---|---|
+| Unde sta operatorul | `config/operator.json` sau `OPERATOR_JSON` | `OPERATOR_JSON` in aplicatia domeniului; `config/operator.json` ramane `null` |
+| Textele juridice | familia `see` (`/juridic` si cele 7 documente) | familia `md`: 8 documente in romana si engleza, adresele din `config/juridic-rute.json`, 6 publicate la poarta B |
+| Datele firmei (L-01) | pe fiecare pagina livrata (Legea 365/2002 art. 5) | pe pagina de informatii legale din fiecare limba publicata, iar pe fiecare pagina o legatura spre ea in romana (Legea 284/2004 art. 12; decizia owner-ului: datele numai in paginile juridice) |
+| Campuri inca inexistente | nu se admit: locul gol OPRESTE la productie | `sediu`, `numar_orc`, `cod_fiscal` cu marcajul din `config/model-d2.json`, plus `"model": "D2"` la radacina JSON-ului: AVERT pe orice mediu, pana in ziua extrasului |
+
+Pasii de mai jos spun, unde difera, ce face fiecare drum.
+
 ## Ce se schimba, dintr-o privire
 
 | Piesa | Azi (operator `null`) | Dupa pasii de mai jos |
@@ -24,7 +35,7 @@ mai departe "urmand sa revenim".
 | Textele juridice (`src/content/juridic/`) | construite, nepublicate (`texteJuridice()` intoarce `null`) | randate de paginile feliei `juridic` |
 | Paginile juridice (`/juridic` si cele 7 documente) | in cod, dar neconstruite: 404, absente din `RUTE`, din harta XML si din subsol | construite si publicate singure, prin `ruteJuridice()` (`src/content/juridic/publicare.ts`) |
 | Harta site-ului si declaratia de accesibilitate | publicate | publicate, iar harta primeste singura cele 8 pagini |
-| Poarta juridica L-01, L-15 | nu cer nimic | cer datele firmei pe fiecare pagina si paginile juridice; politica de cookie-uri o cere din clipa in care bannerul e in HTML-ul construit. **Numai pe operatorul din `config/operator.json`**: pe un domeniu cu `OPERATOR_JSON` poarta nu il vede (vezi "`OPERATOR_JSON`: ce trebuie stiut") |
+| Poarta juridica L-01, L-15 | nu cer nimic | cer datele firmei (pe fiecare pagina la SEE, pe informatiile legale plus legatura la `md`) si paginile juridice; politica de cookie-uri o cere din clipa in care bannerul e in HTML-ul construit. Judeca operatorul REZOLVAT: `OPERATOR_JSON` inaintea lui `config/operator.json`, ca site-ul (vezi "`OPERATOR_JSON`: ce trebuie stiut") |
 
 Conditia de aparitie a bannerului si a GA4 e una singura, in `src/lib/analitica.ts`: operator
 numit **si complet** (denumire, sediu, adresa de contact, tara) **si** `NEXT_PUBLIC_GA4_ID` in
@@ -52,12 +63,19 @@ Pentru punctul 4 nu exista comanda: acordul juristului se noteaza in scris, cu d
 
 ## Pasul 1. Completeaza comutatorul
 
-In `config/operator.json`, cheia `operator` devine un obiect cu exact campurile din `_forma`
-(`denumire`, `sediu`, `email`, `telefon`, `numar_orc`, `cod_fiscal`, `tara`, `dpo`), copiate din
-certificat, nu din memorie. `email` e adresa de la pasul 0. `tara` e tara sediului: textele
-pornesc de la un operator din Spatiul Economic European; unul din afara lui are nevoie de un
-reprezentant in Republica Moldova (Legea 195/2024 art. 27, poarta G-MD-02), iar textele refuza sa
-se construiasca pana atunci.
+In `config/operator.json` (sau in `OPERATOR_JSON`, pentru un domeniu anume), cheia `operator`
+devine un obiect cu exact campurile din `_forma` (`denumire`, `sediu`, `email`, `telefon`,
+`numar_orc`, `cod_fiscal`, `tara`, `dpo`), copiate din certificat, nu din memorie. `email` e adresa
+de la pasul 0. `tara` e tara sediului si alege familia textelor: un stat din SEE -> familia `see`;
+`Republica Moldova` (sau `Moldova`) -> familia `md`. Pentru orice alta tara nu exista texte, iar
+construirea se opreste cu mesajul care numeste tara (Legea 195/2024 art. 27 ar cere un reprezentant
+in Republica Moldova).
+
+**Pe modelul D2 (`3s.md`, pana la extras):** `sediu`, `numar_orc` si `cod_fiscal` poarta EXACT
+marcajul romanesc din `config/model-d2.json`, iar JSON-ul are `"model": "D2"` la RADACINA, langa
+`"operator"`, nu in obiectul firmei (acolo `src/lib/operator.ts` il refuza drept camp necunoscut si
+construirea se opreste). Configurarea poate doar aprinde modelul: marcajele si campurile admise stau in
+`config/model-d2.json`, iar alta valoare decat `"D2"` la `model` opreste poarta (L-01).
 
 Un camp gol sau un substituent (`TODO`, `de completat`, `<...>`) lasa analitica OPRITA si textele
 neconstruite: informarea din politica ar avea locuri goale. Mai mult, `next build` se OPRESTE cu
@@ -73,24 +91,38 @@ pnpm typecheck
 python .claude/scripts/porti/poarta-juridic.py --mediu productie
 ```
 
-Asteptat: probele trec; poarta juridica tipareste "L-01: se aplica - operator: numit" si
-"L-15: se aplica - operator: numit" (in loc de "NU SE APLICA") si cere datele firmei pe fiecare
-pagina (L-01) si paginile juridice (L-15). Pana la pasii 2 si 3 poarta e rosie la productie. E
-comportamentul voit.
+Asteptat: probele trec; poarta juridica tipareste "operator: numit, din config/operator.json" (sau
+"din OPERATOR_JSON", cand variabila e setata in mediul comenzii), "L-01: se aplica - operator: numit"
+si "L-15: se aplica - operator: numit" (in loc de "NU SE APLICA") si cere datele firmei (L-01) si
+paginile juridice (L-15). Pana la pasii 2 si 3 poarta e rosie la productie. E comportamentul voit.
 
-**Numai daca operatorul e in `config/operator.json`.** Poarta juridica citeste operatorul numai din
-fisier, nu din `OPERATOR_JSON`: pentru un domeniu al carui operator vine din mediu, aceasta verificare
-NU se aplica asa (vezi "`OPERATOR_JSON`: ce trebuie stiut", punctul despre poarta juridica).
+Pentru un domeniu cu `OPERATOR_JSON`, comanda se ruleaza cu aceeasi valoare in mediu:
+`OPERATOR_JSON='<valoarea din aplicatie>' python .claude/scripts/porti/poarta-juridic.py --mediu productie`.
+Cu modelul D2, iesirea are in plus linia "model D2: aprins din OPERATOR_JSON" si cate un AVERT L-01
+"model D2: <camp> poarta marcajul decis" pentru fiecare dintre cele trei campuri, si la productie: verdele
+NU inseamna ca firma e identificata din extras.
 
-## Pasul 2. Datele firmei pe fiecare pagina (L-01)
+## Pasul 2. Datele firmei (L-01)
 
-Legea 365/2002 art. 5 alin. (1) lit. a)-e) cere identificarea furnizorului pe site: denumire,
-sediu, e-mail, telefon, numar de ordine in registrul comertului, cod fiscal. Poarta le cere
-prezente in HTML-ul livrat al fiecarei pagini publice. Piesa care le afiseaza (subsolul, pagina de
-informatii legale) e a feliilor `fundatie` si `juridic`; datele vin numai din operatorul rezolvat al
+**Familia `see`.** Legea 365/2002 art. 5 alin. (1) lit. a)-e) cere identificarea furnizorului pe
+site: denumire, sediu, e-mail, telefon, numar de ordine in registrul comertului, cod fiscal. Poarta le
+cere prezente in HTML-ul livrat al fiecarei pagini publice. Piesa care le afiseaza (subsolul, pagina
+de informatii legale) e a feliilor `fundatie` si `juridic`; datele vin numai din operatorul rezolvat al
 domeniului (`OPERATOR_JSON` inaintea lui `config/operator.json`, `src/lib/operator.ts`), nu se scriu
-in pagini. Poarta, in schimb, le verifica numai pe cele din fisier (Pasul 1 si "`OPERATOR_JSON`: ce
-trebuie stiut").
+in pagini. Poarta judeca acelasi operator rezolvat.
+
+**Familia `md` (`3s.md`).** Datele firmei stau numai pe pagina de informatii legale (decizia
+owner-ului), deci poarta NU le cere pe fiecare pagina. Cere, in schimb (Legea 284/2004 art. 12 alin. (1)
+lit. a)-c)):
+
+1. fiecare camp pe pagina de informatii legale din FIECARE limba publicata (adresele din
+   `config/juridic-rute.json`: `informatii-legale`, `ro` si `en`). Engleza conteaza din clipa in care o
+   pagina construita e servita cu `<html lang="en">`. Un camp cu marcajul D2 se cauta pe pagina engleza ca
+   marcajul englezesc din `config/model-d2.json`, nu ca valoarea romaneasca din operator;
+2. pe fiecare pagina publica, o legatura (`<a href>`) spre pagina de informatii legale IN ROMANA.
+
+Lipsa paginii sau a legaturii e AVERT pe staging si OPRESTE la productie; un camp absent de pe o pagina
+de informatii legale care exista OPRESTE pe orice mediu (e o neconcordanta, nu un loc gol).
 
 **Verificare:**
 
@@ -99,7 +131,8 @@ pnpm build
 python .claude/scripts/porti/poarta-juridic.py --mediu productie
 ```
 
-Asteptat: zero constatari L-01.
+Asteptat: zero constatari L-01 care opresc. Pe modelul D2 raman cele trei AVERT "model D2", pana in ziua
+extrasului.
 
 ## Pasul 3. Publica paginile juridice (L-15)
 
@@ -111,6 +144,24 @@ acolo ajung singure in harta XML, in harta site-ului, in coloana Juridic din sub
 ele; subimputernicitii si indexul se leaga din pagini) si in legaturile bannerului. Cu operatorul
 `null`, aceeasi pagina nu construieste nimic (`generateStaticParams` intoarce lista goala, iar
 `dynamicParams = false` da 404 pe orice cale de sub `/juridic`).
+
+**Familia `md` (`3s.md`): 8 chei, 6 publicate la poarta B.** Paginile de mai sus sunt ale familiei
+`see`; un operator din Republica Moldova nu le publica. Documentele lui sunt cele 8 chei din
+`config/juridic-rute.json` (`informatii-legale`, `confidentialitate`, `cookie-uri`, `termeni`, `dpa`,
+`subimputerniciti`, `notificare-si-actiune`, `inteligenta-artificiala`), fiecare cu adresa engleza si
+cea romaneasca si cu poarta la care se publica. La poarta B (`"poarta_curenta": "B"`) se publica 6;
+`dpa` si `subimputerniciti` asteapta poarta C, iar legaturile spre ele devin text fara legatura. Poarta
+juridica le cere (L-15) la adresele din acelasi fisier, in fiecare limba publicata, nu pe tiparele fixe
+ale familiei `see`; o pagina se recunoaste in build (`.next/server/app/<adresa>.html`) sau in sursa,
+inclusiv ca `page.<sufix>.tsx` sub un grup de rute (`src/app/(en)/legal/privacy/page.en.tsx`).
+
+**Marcajele din paginile juridice (J-01).** Un text intre paranteze drepte, vizibil pe o pagina juridica
+construita si care nu e o legatura, e AVERT pe staging si OPRESTE la productie, cu exceptia marcajelor
+din registrul portii (`MARCAJE_ADMISE`, fiecare cu decizia lui pe rand): cele trei
+`[de publicat înainte de primul client]` din termeni, cu perechea engleza, si marcajul D2 cat timp
+modelul e aprins. Marcajul reprezentantului in UE, N23 si data publicarii NU sunt admise: se rezolva
+inainte de publicare. Acoladele duble (un token de compunere nerezolvat) OPRESC pe orice pagina
+construita, pe orice mediu.
 
 Politica de cookie-uri (`/juridic/cookies`) se publica acum, odata cu celelalte, nu dupa GA4: din
 clipa in care bannerul apare in HTML-ul construit (pasul 6), poarta juridica o cere (L-15) si
@@ -289,7 +340,9 @@ adauga in etapa `builder`, inaintea lui `RUN pnpm build`.
 Acelasi cod ruleaza ca aplicatii separate in Coolify, cate una pe domeniu: mediul de proba
 (`3s4.ke2.in`), site-ul pentru clientii internationali (`3s.md`, in engleza si romana) si, mai
 tarziu, `3s.com.ro`. Ce difera de la un domeniu la altul sta in variabilele de mai jos, nu in cod.
-Fara valori reale: exemplele sunt de forma si nu apartin nimanui.
+In tabel, valorile dintre ghilimele (`"..."`) sunt de forma; sunt reale numai numele domeniilor
+(`3s4.ke2.in`, `3s.md`, `3s.com.ro`) si adresa implicita a raportarilor de securitate
+(`security@3s.com.ro`). Ce e de forma si ce e real in blocul de exemple e spus chiar deasupra lui.
 
 **Toate se citesc la CONSTRUIRE**, deci orice schimbare cere un build nou; exceptiile sunt scrise
 in coloana "Citita la". In Coolify se pun ca variabile obisnuite (build si rulare), nu "numai build".
@@ -306,7 +359,11 @@ in coloana "Citita la". In Coolify se pun ca variabile obisnuite (build si rular
 | `INDEXNOW_KEY` | Cheia IndexNow a domeniului (8-128 de caractere: a-z, A-Z, 0-9, cratima). `/indexnow.txt` o intoarce ca text simplu, iar motoarele o citesc ca sa verifice ca domeniul e al celui care trimite adresele. O cheie de alta forma opreste construirea (mesajul nu repeta valoarea). Nu trimite nimic singura: trimiterea e `scripts/indexnow.mjs`, la comanda | `/indexnow.txt` raspunde 404 | construire | la lansarea publica a domeniului |
 | `CANALE_JSON` | Canalele de contact ale domeniului, ca JSON: `{"formulare": false, "whatsapp": "...", "telefon": "...", "email": "...", "emailSecuritate": "..."}`. `formulare` porneste sau opreste formularele de pe /contact si /enterprise si punctul `/api/formular`: cu `false`, formularul nu trimite oricare ar fi operatorul, iar `/api/formular` raspunde 404 inaintea oricarei alte verificari. `whatsapp` = 8-15 cifre fara plus (forma legaturii wa.me), `telefon` = forma E.164 cu plus, `email` = adresa de contact (o cheie prezenta si goala inseamna fara adresa pe domeniu), `emailSecuritate` = adresa raportarilor de securitate. `formulare` e `true` sau `false`. Fiecare cheie e optionala si ia implicitul din coloana alaturata. Un JSON stricat, o cheie necunoscuta, un tip gresit sau un numar ori o adresa de alta forma opresc construirea, cu un mesaj care numeste variabila si campul; la fel `formulare: false` fara niciun canal nevid (whatsapp, telefon sau email). Legaturile catre canale le face `src/content/canale.ts`, cu codul `ref` al paginii in text | formulare pornite (decide operatorul), fara WhatsApp si fara telefon, adresa din `config/brand.json`, `emailSecuritate` = `security@3s.com.ro` | construire SI rulare, aceeasi valoare in ambele: `/api/formular` o citeste la rulare | la crearea aplicatiei unui domeniu care nu primeste formulare (`3s.md`); adresa de contact se adauga cand e confirmata |
 
-Valori de forma, pentru un domeniu ca `3s.md` (nu sunt reale):
+Pentru un domeniu ca `3s.md`. De FORMA, nu reale: `OPERATOR_JSON` (firma, strada si adresa pe domeniul
+rezervat `.test`; operatorul real al lui `3s.md` e pe modelul D2, Pasul 1), `UMAMI_URL`, `UMAMI_WEBSITE_ID`
+si `INDEXNOW_KEY`. REALE: domeniile din `SITE_URL` si `SITE_ALTERNATE`, valoarea `productie` a lui
+`SITE_ENV` (cea care se pune la lansare, nu inainte) si tot `CANALE_JSON` (numarul publicat pe site si
+adresa de securitate):
 
 ```
 SITE_URL=https://3s.md
@@ -412,6 +469,12 @@ lucruri raman de hotarat, iar textele NU sunt validate juridic:
    inghetata (`src/components/consimtamant`): orice schimbare de text sau de comportament al lui trece prin
    dispecer, iar analitica proprie nu se atinge pana la decizia juristului.
 
+   **Pentru `3s.md`, intrebarea 3 e inchisa de decizia 13 a owner-ului (30.09.2026): masurarea B,
+   analitica proprie numai dupa acord**, adica iesirea (c), cu textele juridice ale familiei `md` compuse in
+   starea S-B. Schimbarea de cod (pornirea dupa acceptul din banner) e a unei felii urmatoare; pana atunci
+   `UMAMI_URL` si `UMAMI_WEBSITE_ID` nu se pun pe aplicatia `3s.md`, fiindca, cu operator numit, masurarea
+   ar porni fara acord, contra deciziei. Pentru celelalte domenii intrebarea ramane la jurist.
+
 **Verificare** (dupa deploy):
 
 ```
@@ -433,10 +496,9 @@ de pe un telefon pe date mobile trebuie sa apara cu tara corecta, nu cu cea a se
 - **Build si rulare, aceeasi valoare.** Paginile (juridice, formulare, banner) se decid la build; ruta
   `/api/formular` si middleware-ul citesc valoarea la rulare. O valoare doar la build lasa formularul
   aratat ca activ si raspunzand "inactiv".
-- **Operator din afara SEE.** Textele juridice cer un operator cu sediul in Spatiul Economic European
-  (`verificaOperatorPentruTexte`, `confidentialitate.ts`): pentru un operator din Republica Moldova
-  construirea se opreste cu mesajul acela, fiindca textele pentru el nu exista. Decizia e a feliei
-  `juridic` si a owner-ului.
+- **Operator din afara SEE.** Familia textelor se alege dupa `tara` (`familieJuridica`,
+  `src/content/juridic/familie.ts`): un operator din Republica Moldova primeste familia `md` (cele 8
+  documente, Pasul 3), nu mai opreste construirea. Numai o tara din afara SEE si a Moldovei o opreste.
 - **Cautarea Ctrl+K.** Pachetul de browser nu primeste variabilele care nu incep cu `NEXT_PUBLIC_`, deci
   fara o valoare calculata lista de rute din browser ar decide dupa `config/operator.json`, nu dupa
   `OPERATOR_JSON`. Masurat pe 30.09.2026, INAINTE de reparatie, pe o copie cu fisierul pe `null` si
@@ -448,22 +510,17 @@ de pe un telefon pe date mobile trebuie sa apara cu tara corecta, nu cu cea a se
   Probele: `tests/multi-domeniu-operator.test.ts` (valoarea din `next.config.ts` in cele trei stari, lista
   de rute pe simulacrul pachetului de browser, expresia literala din `publicare.ts`) si
   `tests/browser/multi-domeniu.spec.ts` (Ctrl+K pe o copie cu operatorul numai in mediu).
-- **Poarta juridica citeste numai fisierul (NEREPARAT: portile sunt ale dispecerului).**
-  `.claude/scripts/porti/poarta-juridic.py` cauta operatorul in `config/operator.json`
-  (`stare_operator`), nu in `OPERATOR_JSON`. Masurat pe 30.09.2026, pe o copie cu `SITE_URL=https://3s.md`
-  si operatorul numai in `OPERATOR_JSON` (cele opt pagini juridice sunt publicate): "L-01: NU SE APLICA" si
-  "L-15: NU SE APLICA - fara operator". Pe acelasi HTML, cu operatorul pus si in fisier: "L-01: se aplica",
-  "L-15: se aplica" si un OPRESTE L-01 pe campurile lasate goale ale fixturii (`telefon`, `numar_orc`,
-  `cod_fiscal`). Datele operatorului apar pe `/contact` si pe paginile juridice, dar nu pe `/`, `/preturi`,
-  `/blog` si `/harta-site` (0 aparitii): L-01 le cere pe fiecare pagina, iar piesa care le afiseaza e a
-  feliilor `fundatie` si `juridic` (Pasul 2). Deci, pana cand poarta citeste operatorul rezolvat
-  (`OPERATOR_JSON` inaintea fisierului), **nicio verificare a unui domeniu cu `OPERATOR_JSON` nu e dovada de
-  conformitate juridica**. Verificare provizorie: o copie a arborelui in care `config/operator.json` poarta
-  acelasi operator ca `OPERATOR_JSON`, construita cu aceleasi variabile, si
-  `python .claude/scripts/porti/poarta-juridic.py --radacina <copie> --mediu productie`. Pe orice build de
-  domeniu, in plus, C-01 iese rosu (canonical si alternate numarate drept resursa de la un tert; Pasul 7):
-  290 de constatari pe copia masurata (58 de pagini, cate 5), fata de 0 la `poarta-seo.py` pe acelasi build,
-  deci raportul portii pe un domeniu se citeste cu ambele defecte in minte.
+- **Poarta juridica judeca operatorul rezolvat (REPARAT, 01.10.2026).** Pana atunci
+  `.claude/scripts/porti/poarta-juridic.py` citea numai `config/operator.json`: masurat pe 30.09.2026, pe o
+  copie cu operatorul numai in `OPERATOR_JSON`, tiparea "L-01: NU SE APLICA" peste cele opt pagini juridice
+  publicate. Acum `stare_operator` primeste mediul ca parametru, citit o singura data la pornire, cu aceeasi
+  precedenta ca site-ul (`OPERATOR_JSON` nevida inaintea fisierului; goala = nesetata; `{"operator": null}`
+  e o valoare); un JSON stricat in variabila OPRESTE L-01. Iesirea spune de unde vine operatorul
+  ("operator: numit, din OPERATOR_JSON"). Martorii interni ai portii nu vad mediul (altfel, pe un build cu
+  `OPERATOR_JSON`, martorul "fara operator" ar vedea operatorul si poarta ar iesi 3 pe orice arbore), iar
+  proba `proba-juridic.py` ruleaza poarta cu `OPERATOR_JSON` si `SITE_ENV` scoase din mediu, cu cazuri care
+  le pun explicit. Deci comanda de verificare a unui domeniu se ruleaza cu valoarea lui in mediu (Pasul 1).
+  Pe un build de domeniu, canonical si alternate nu mai sunt numarate drept terti (Pasul 7).
 
 ### Trimiterea la IndexNow
 
@@ -487,14 +544,16 @@ ca cererea a fost primita, nu ca paginile s-au indexat.
 
 ## Pasul 7. Domeniul nou in portile si piesele care il stiu
 
-1. `.claude/scripts/porti/poarta-juridic.py`, `GAZDE_PROPRII`: se ADAUGA gazdele de productie
-   (`www.3s.com.ro`, `3s.com.ro`, `3s.md`), cu motivul pe rand, cum cere antetul portii. Altfel C-01
-   citeste canonical-ul de pe domeniul nou (`<link href>` absolut) drept resursa de la un tert. Acelasi
-   lucru pentru fiecare gazda din `SITE_ALTERNATE`: elementele `<link rel="alternate" href>` spre celelalte
-   domenii intra in aceeasi cautare (masurat pe 30.09.2026, pe un build cu `SITE_URL` si `SITE_ALTERNATE`:
-   poarta a raportat C-01 pentru canonical si pentru fiecare alternata, pe fiecare pagina). Un `<link>` cu
-   `rel="canonical"` sau `rel="alternate"` nu incarca nimic, deci reparatia potrivita e in poarta (le exclude),
-   nu o lista de gazde care creste cu fiecare domeniu; e treaba dispecerului, nu a acestui pas.
+1. **C-01 pe canonical si alternate: REPARAT in poarta (01.10.2026).** Masurat pe 30.09.2026, pe un build
+   cu `SITE_URL` si `SITE_ALTERNATE`: poarta raporta C-01 pentru canonical si pentru fiecare alternata, pe
+   fiecare pagina, fiindca un `<link href>` absolut spre alt domeniu era numarat drept resursa de la un tert.
+   Acum un `<link>` al carui `rel` are NUMAI valori care nu incarca nimic (`canonical`, `alternate`,
+   `author`, `license`, `prev`, `next`) nu mai e resursa; `stylesheet`, `preload`, `modulepreload`,
+   `prefetch`, `preconnect`, `dns-prefetch`, `icon`, `manifest` raman resurse, inclusiv in combinatii ca
+   `alternate stylesheet`. In `GAZDE_PROPRII` (pentru `img` sau `script` absolute pe domeniul propriu) sunt
+   acum `3s.md` si `3s.com.ro`, iar `3s.ro` a iesit: masurat pe 01.10.2026, domeniul nu e al nostru, deci o
+   resursa de acolo era scutita de C-01 pe nedrept. `www.3s.com.ro` NU e in lista: se adauga, cu motivul pe
+   rand, in ziua in care `SITE_URL` il foloseste si o pagina incarca de acolo o resursa absoluta.
 2. **Facut in felia 67** (commitul `ee7563c`, "SEO tehnic: ... adresa de baza"): `FirPagina` si
    `FoaieTipar` compun acum adresele din `adresaSite()` (`src/lib/site.ts`), deci `BreadcrumbList`
    urmeaza `SITE_URL` si nu mai arata spre mediul de proba. Nu mai ramane nimic de facut la acest
@@ -579,3 +638,30 @@ zero constatari rosii.
 
 **Verificare:** raportul scanarii, salvat cu data, cu zero constatari rosii. Legatura cu fiecare
 verificare si cu proba care o acopera azi: `docs/gdpr/acoperire.md`.
+
+## Ziua extrasului (`3s.md`, iesirea din modelul D2)
+
+Dupa inregistrarea firmei din Republica Moldova, in ziua lucratoare in care apare in Registrul de stat.
+Poarta nu are o data de expirare a modelului: o constanta de timp scrisa de mana devine falsa singura.
+Modelul se stinge numai cand `"model"` iese din configurare, adica la pasii de mai jos.
+
+1. **Valorile din extras**, de pe pagina publica a Registrului de stat, nu din memorie: `sediu` = adresa
+   juridica; `numar_orc` = IDNO; `cod_fiscal` = acelasi numar; `denumire` = litera cu litera, daca
+   extrasul difera. `email`, `telefon` si `tara` raman.
+2. **Se scoate `"model": "D2"`** din `OPERATOR_JSON` (aplicatia `3s.md`), iar cele trei valori inlocuiesc
+   marcajul. Daca operatorul sta si in `config/operator.json`, se actualizeaza in acelasi commit: altfel
+   poarta si site-ul vad valori diferite.
+3. **Marcajele scrise in textul paginilor** (cele care nu vin din campuri: administratorul, codul TVA si
+   explicatia de sub tabelul firmei de pe pagina de informatii legale, plus blocurile temporare) se
+   inlocuiesc in aceeasi zi. Cu modelul stins, marcajul D2 nu mai e admis: unul ramas pe o pagina juridica
+   e J-01 si OPRESTE productia.
+
+**Verificare** (dupa un build cu valoarea noua):
+
+```
+OPERATOR_JSON='<valoarea noua>' python .claude/scripts/porti/poarta-juridic.py --mediu productie
+```
+
+Asteptat: nicio linie "model D2", niciun AVERT L-01 "model D2", zero constatari J-01 si zero OPRESTE pe
+L-01. Un camp care inca poarta marcajul, fara model, OPRESTE la productie: e locul gol al unei firme
+care exista.

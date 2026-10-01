@@ -3,7 +3,7 @@
   "raspuns_autonom": {
     "/preturi": {
       "intrebare": "Cât costă 3S și ce include fiecare pachet?",
-      "entitati": ["3S Business", "3S Enterprise", "0 RON"]
+      "entitati": ["Starter", "Business", "3S Enterprise", "0 RON"]
     }
   }
 }

@@ -55,6 +55,17 @@ PORTI = os.path.dirname(AICI)
 RULATOR = os.path.join(PORTI, 'browser-rulator.mjs')
 DETECTOR = os.path.join(PORTI, 'tipografie-liniute.py')
 
+# Variabilele de mediu pe care le citeste o poarta (poarta-juridic: OPERATOR_JSON si SITE_ENV), scoase din mediul
+# fiecarui subproces: o variabila ramasa in shell-ul care ruleaza proba ar schimba verdictul cazurilor fabricate
+# (masurat 01.10.2026, dupa poarta juridica pe familia md: cu OPERATOR_JSON in mediu proba cadea la 44/31; pe baza,
+# 75/0). Martorul lui sta in controale().
+SCOASE_DIN_MEDIU = ('OPERATOR_JSON', 'SITE_ENV')
+
+
+def mediu_curat():
+    """Mediul procesului, fara variabilele din SCOASE_DIN_MEDIU: mediul cu care pornesc portile in cazuri."""
+    return {k: v for k, v in os.environ.items() if k not in SCOASE_DIN_MEDIU}
+
 T = P = 0
 
 # Ce cod a fost CERUT efectiv, per poarta: {'poarta-x.py': {0, 1, 3}}. Se umple la rulare, din
@@ -200,7 +211,7 @@ def ruleaza(nume, radacina, argumente=(), mutatie=None):
             return None, 'MUTANT NEATERIZAT: substitutia nu s-a aplicat pe copie'
         comanda = [sys.executable, cale]
     r = subprocess.run(comanda + list(argumente), capture_output=True, text=True,
-                       encoding='utf-8', errors='replace')
+                       encoding='utf-8', errors='replace', env=mediu_curat())
     return r.returncode, (r.stdout or '') + (r.stderr or '')
 
 
@@ -743,12 +754,33 @@ def cazuri_navigare():
     caz('poarta-navigare.py', 'arbore fara tests/browser: cod 3, nu 0', gol, NEMASURAT, 'NEMASURAT')
 
 
+def cazuri_limba_en():
+    # Cuvantul britanic se asambleaza la rulare, ca fisierul asta sa nu-l poarte pe litere.
+    britanic = 'organis' + 'ation'
+
+    def modul_en(text):
+        return lambda d: scrie(os.path.join(d, 'src', 'content', 'en', 'pricing.ts'),
+                               'export const pagina = { h1: "' + text + '" };\n')
+
+    caz('poarta-limba-en.py', 'ortografie britanica intr-un modul EN: cod 1, mesajul o numeste',
+        modul_en('Your ' + britanic + ' keeps every invoice.'), PICAT, 'ortografie britanica')
+    caz('poarta-limba-en.py', 'modul EN in engleza americana: cod 0',
+        modul_en('Your organization keeps every invoice.'), CURAT)
+    # Controlul stricat pe o COPIE: detectorul de exclamare nu mai prinde nimic, deci martorul lui
+    # pozitiv pica si poarta trebuie sa iasa 3, nu 0.
+    caz('poarta-limba-en.py', 'control picat (detector dezactivat pe copie): cod 3, nu 0',
+        modul_en('Your organization keeps every invoice.'), NEMASURAT, 'CONTROL PICAT',
+        mutatie=('poarta-limba-en.py', "TIPAR_EXCLAMARE = re.compile(r'!(?![=\\[])')",
+                 "TIPAR_EXCLAMARE = re.compile(r'(?!x)x')"))
+
+
 CAZURI = {
     'poarta-afirmatii.py': cazuri_afirmatii,
     'poarta-evidenta.py': cazuri_evidenta,
     'poarta-identificatori.py': cazuri_identificatori,
     'poarta-legaturi-md.py': cazuri_legaturi_md,
     'poarta-juridic.py': cazuri_juridic,
+    'poarta-limba-en.py': cazuri_limba_en,
     'poarta-limba.py': cazuri_limba,
     'poarta-navigare.py': cazuri_navigare,
     'poarta-regresie.py': cazuri_regresie,
@@ -777,6 +809,23 @@ def controale():
     for nume in pe_disc:
         if 'return 3' not in sursa_portii(nume) and nume not in FARA_CAZ_DE_TREI:
             return nume + ' nu mai are ramura de cod 3; cazul de aici ar masura altceva'
+    # Martorul mediului: cu variabilele puse in procesul probei, un subproces pornit cu mediul cazurilor nu le vede.
+    vechi = {k: os.environ.get(k) for k in SCOASE_DIN_MEDIU}
+    try:
+        for k in SCOASE_DIN_MEDIU:
+            os.environ[k] = 'martor-mediu'
+        cod = ('import os, sys; sys.exit(1 if any(os.environ.get(k) for k in '
+               + repr(SCOASE_DIN_MEDIU) + ') else 0)')
+        r = subprocess.run([sys.executable, '-c', cod], env=mediu_curat())
+    finally:
+        for k, v in vechi.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+    if r.returncode != 0:
+        return ('mediul cazurilor pastreaza ' + ', '.join(SCOASE_DIN_MEDIU)
+                + ': verdictele ar depinde de shell-ul care ruleaza proba')
     return None
 
 

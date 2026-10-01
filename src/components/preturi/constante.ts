@@ -2,7 +2,7 @@
 // Stau intr-un modul fara "use client": o valoare exportata dintr-un modul de client ajunge intr-o
 // componenta de server ca referinta, nu ca sir.
 
-/** Titlul lumii pachetelor (h2 "3S Business"), tinta focusului dupa deschidere. */
+/** Titlul lumii pachetelor (h2 "Starter, Pro, Business"), tinta focusului dupa deschidere. */
 export const ID_TITLU_LUME = "pachete-titlu";
 
 /** Clasa pusa pe `html` cat se tipareste foaia de oferta (lista de preturi ca PDF). */

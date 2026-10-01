@@ -296,13 +296,13 @@ test.describe('poarta si lumea pachetelor la 1440 x 900, cu miscare', () => {
     // "25 minute pe zi" si "50 lei pe oră", iar la capete "50 persoane" si "1 persoane".
     const spuse = () => cursoare.evaluateAll((l) => l.map((c) => c.getAttribute('aria-valuetext')))
     expect(await spuse()).toEqual(['4 persoane', '25 de minute pe zi', '50 de lei pe oră'])
-    // valorile de pornire: 4 persoane, 25 min, 50 RON -> 37 h, 1.850 RON; pachetul Start, 0 RON, 0 h
+    // valorile de pornire: 4 persoane, 25 min, 50 RON -> 37 h, 1.850 RON; pachetul Starter, 0 RON, 0 h
     // (toContainText normalizeaza spatiile, inclusiv pe cel neseparabil dintre suma si moneda)
     await expect(iesire).toContainText(CALCULATOR.timpAcum.inainte.trim() + ' 1.850 RON lunar pentru cele 37 h')
     await expect(iesire).toContainText('1.850 RON')
-    await expect(iesire).toContainText('Se potrivește pachetul Start: 0 RON pe lună')
+    await expect(iesire).toContainText('Se potrivește pachetul Starter: 0 RON pe lună')
     // capetele din tastatura: 50 persoane, 120 min -> 2200 h; niciun pachet nu ajunge, deci iesirea
-    // trimite la Enterprise (inert fara ruta, legatura cu ea - dupa RUTE), nu recomanda Pro
+    // trimite la Enterprise (inert fara ruta, legatura cu ea - dupa RUTE), nu recomanda Business
     await cursoare.nth(0).press('End')
     await cursoare.nth(1).press('End')
     await expect(iesire).toContainText('pentru cele 2200 h în care')
@@ -319,7 +319,7 @@ test.describe('poarta si lumea pachetelor la 1440 x 900, cu miscare', () => {
     await expect.poll(spuse).toEqual(['50 de persoane', '120 de minute pe zi', '50 de lei pe oră'])
     // inapoi sub 20: pachetul revine; la 1, singularul
     await cursoare.nth(0).press('Home')
-    await expect(iesire).toContainText('Se potrivește pachetul Start: 0 RON pe lună')
+    await expect(iesire).toContainText('Se potrivește pachetul Starter: 0 RON pe lună')
     await expect.poll(spuse).toEqual(['1 persoană', '120 de minute pe zi', '50 de lei pe oră'])
     await cursoare.nth(0).press('End')
     await cursoare.nth(2).press('End')
@@ -613,8 +613,8 @@ test.describe('la 390 x 844', () => {
     expect(pornire.dreapta).toBe(5)
     expect(pornire.rand).toBeCloseTo(136, 0)
     const cursoare = grup.locator('input[type="range"]')
-    // persoanele pe 3, 8 si 15 (de la 1, cu sageata): pachetele Start, Plus si Pro
-    for (const [persoane, plan] of [[3, 'Start'], [8, 'Plus'], [15, 'Pro']] as const) {
+    // persoanele pe 3, 8 si 15 (de la 1, cu sageata): pachetele Starter, Pro si Business
+    for (const [persoane, plan] of [[3, 'Starter'], [8, 'Pro'], [15, 'Business']] as const) {
       await cursoare.nth(0).press('Home')
       for (let i = 1; i < persoane; i++) await cursoare.nth(0).press('ArrowRight')
       expect(await cursoare.nth(0).inputValue()).toBe(String(persoane))

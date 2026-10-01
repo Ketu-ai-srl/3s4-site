@@ -28,6 +28,16 @@
 // Comutatorul e un apel sub marcajul feliei; importul lui e singurul rand al feliei in afara marcajului.
 import { ruteJuridice } from "./juridic/publicare";
 
+// EDITIILE (fundatia editiilor, `src/lib/editii.ts`): `RUTE` sunt rutele editiilor ACESTUI build. Rutele
+// romanesti stau mai jos, in `RUTE_RO_RO`, cu marcajele lor; cele in engleza in `rute-en-<grup>.ts` (adunate de
+// `rute-en.ts`), cele pentru Republica Moldova in `rute-ro-md.ts`, cate un fisier pe grup, cu marcajul feliei
+// care il scrie, ca feliile paralele sa nu scrie in acelasi fisier si ca engleza sa nu stea in lista romaneasca.
+// Pe profilul implicit (`ro-RO`) `RUTE` e lista romaneasca de dinainte de editii, element cu element (proba
+// `tests/invarianta-ro.test.ts`). Portile de rute citesc TOATE fisierele `rute*.ts`, pe editie.
+import { editiiBuild, type CodEditie } from "../lib/editii";
+import { RUTE_EN } from "./rute-en";
+import { RUTE_RO_MD } from "./rute-ro-md";
+
 /** Adresa publica a site-ului. Din ea se compun canonical-urile, harta de site si robots. */
 export const ADRESA_BAZA = "https://3s4.ke2.in";
 
@@ -40,9 +50,30 @@ export type Ruta = {
   descriere: string;
   /** Intra in `sitemap.xml`? `false` doar pentru pagini care nu se indexeaza. */
   inHarta: boolean;
+  /** Editia paginii. Lipsa = `ro-RO`: rutele romanesti nu o scriu, ca lista lor sa ramana cea de dinainte de editii. */
+  editie?: CodEditie;
+  /**
+   * Identificatorul paginii peste editii (`preturi` pentru `/preturi` si pentru `/pricing`), cheia din
+   * `src/content/echivalente.ts`. Lipsa = calea insasi.
+   */
+  cheie?: string;
 };
 
-export const RUTE: Ruta[] = [
+/** O ruta a unei editii din afara site-ului romanesc: editia si cheia sunt obligatorii. */
+export type RutaEditie<E extends CodEditie> = Ruta & { editie: E; cheie: string };
+
+/** Editia unei rute (`ro-RO` cand campul lipseste). */
+export function editiaRutei(ruta: Ruta): CodEditie {
+  return ruta.editie ?? "ro-RO";
+}
+
+/** Cheia unei rute peste editii (calea, cand campul lipseste). */
+export function cheiaRutei(ruta: Ruta): string {
+  return ruta.cheie ?? ruta.cale;
+}
+
+/** Rutele editiei `ro-RO`, site-ul romanesc. */
+const RUTE_RO_RO: Ruta[] = [
   // <<felie:fundatie>>
   {
     cale: "/",
@@ -336,6 +367,18 @@ export const RUTE: Ruta[] = [
     inHarta: true,
   },
 ];
+
+/** Rutele editiilor date, in ordinea catalogului: romana, engleza, apoi romana pentru Republica Moldova. */
+export function ruteleEditiilor(editii: readonly CodEditie[]): Ruta[] {
+  return [
+    ...(editii.includes("ro-RO") ? RUTE_RO_RO : []),
+    ...(editii.includes("en") ? RUTE_EN : []),
+    ...(editii.includes("ro-MD") ? RUTE_RO_MD : []),
+  ];
+}
+
+/** Rutele editiilor acestui build (`SITE_EDITII`, la construire). Pe `ro-RO`, lista romaneasca. */
+export const RUTE: Ruta[] = ruteleEditiilor(editiiBuild());
 
 /** Rutele care intra in `sitemap.xml`. */
 export function rutePentruHarta(): Ruta[] {

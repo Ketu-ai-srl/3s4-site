@@ -36,6 +36,12 @@ omisiune - toate cele 22 de rute din `RUTE` sunt acoperite, inclusiv `/harta-sit
 in `termene-pagina.json`) si cele trei juridice (prin `src/content/juridic.ts`). O exceptie
 scrisa "preventiv" ar fi picat imediat pe RR-02.
 
+PE EDITIE (fundatia editiilor, `src/lib/editii.ts`). Rutele se citesc din toate manifestele
+(`rute.ts` pentru ro-RO, `rute-en*.ts` pentru en, `rute-ro-md.ts` pentru ro-MD), iar pagina unei rute
+e fisierul editiei ei: `page.tsx` direct sub `src/app/<cale>` pentru ro-RO (ca inainte), `page.en.tsx`
+sub grupul `(en)` si `page.romd.tsx` sub `(romd)`, gasite trecand prin grupurile de rute. Criteriul de
+acoperire e acelasi: fisierul paginii sau un modul `@/content/...` importat DIRECT de ea.
+
 CE NU VERIFICA (reziduuri - un zero de aici nu inseamna acoperire)
   - CATE afirmatii are o pagina: una singura satisface poarta. O pagina cu treizeci de fraze
     verificabile si o intrare in registru trece.
@@ -66,7 +72,9 @@ import io
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -79,6 +87,9 @@ DOSAR_REGISTRU = os.path.join(RADACINA, 'src', 'content', 'afirmatii')
 
 TIPAR_CALE = re.compile(r'\bcale:\s*"([^"]+)"')
 TIPAR_IMPORT_CONTINUT = re.compile(r'from\s+"(@/content/[^"]+)"')
+
+# Fisierul de pagina al editiilor din afara site-ului romanesc (catalogul din `src/lib/editii.ts`).
+PAGINA_EDITIE = {'en': 'page.en.tsx', 'ro-MD': 'page.romd.tsx'}
 
 # Rute fara afirmatii, declarate cu motiv. Goala azi, si asta e masurat: toate rutele din RUTE
 # sunt acoperite. O intrare pusa aici pentru o ruta acoperita pica pe RR-02, deliberat.
@@ -136,6 +147,47 @@ def acoperire(pagini, surse_pagina, surse_registru, exceptii):
                            'nu are pagina in RUTE: se sterge, altfel ramane o scutire care asteapta '
                            'sa prinda din nou ceva ce nimeni n-a mai revizuit'))
     return gasiri
+
+
+def editia_manifestului(nume):
+    """Editia unui fisier `src/content/rute*.ts` dupa nume, sau None (acelasi criteriu ca poarta-rute)."""
+    if nume == 'rute.ts':
+        return 'ro-RO'
+    if nume == 'rute-en.ts' or (nume.startswith('rute-en-') and nume.endswith('.ts')):
+        return 'en'
+    if nume == 'rute-ro-md.ts':
+        return 'ro-MD'
+    return None
+
+
+def rute_pe_editie(dosar_continut):
+    """[(ruta, editie)] din toate manifestele, in ordinea fisierelor si a intrarilor."""
+    rute = []
+    for nume in sorted(os.listdir(dosar_continut)):
+        editie = editia_manifestului(nume)
+        if editie is None:
+            continue
+        text = io.open(os.path.join(dosar_continut, nume), encoding='utf-8').read()
+        rute.extend((cale, editie) for cale in cai_din_manifest(text))
+    return rute
+
+
+def pagini_editiilor(dosar_app, radacina):
+    """{(ruta, editie): cale relativa a paginii} pentru `page.en.tsx` / `page.romd.tsx`, prin grupuri.
+    Segmentele dinamice se sar (n-au o cale fixa in manifest), la fel ca in poarta-rute."""
+    gasite = {}
+    for rad, directoare, nume in os.walk(dosar_app):
+        directoare[:] = [d for d in directoare if d not in ('node_modules', '__pycache__')]
+        for editie, fisier in PAGINA_EDITIE.items():
+            if fisier not in nume:
+                continue
+            rel = os.path.relpath(rad, dosar_app).replace(os.sep, '/')
+            segmente = [] if rel == '.' else [s for s in rel.split('/') if not (s.startswith('(') and s.endswith(')'))]
+            if any(s.startswith('[') for s in segmente):
+                continue
+            ruta = '/' + '/'.join(segmente) if segmente else '/'
+            gasite[(ruta, editie)] = os.path.relpath(os.path.join(rad, fisier), radacina).replace(os.sep, '/')
+    return gasite
 
 
 def cale_pagina(ruta):
@@ -230,6 +282,78 @@ def controale():
     if module_de_continut(sursa_fals) != ['@/content/segmente']:
         return ('martorul de extragere: modulele de continut citite gresit, sau un component a '
                 'fost luat drept modul de continut')
+    return martor_editii()
+
+
+def pagini_si_surse(rute_editii, radacina):
+    """({ruta: pagina}, {ruta: caile care o acopera}) pentru rutele care AU pagina pe disc.
+
+    Cheia e ruta; pe alta editie decat ro-RO poarta si editia, ca `/contact` pe ro-RO si `/contact`
+    pe en sa fie doua pagini, nu una. Lipsa paginii e defectul lui poarta-rute, nu al acesteia.
+    """
+    pagini_cu_sufix = pagini_editiilor(os.path.join(radacina, 'src', 'app'), radacina)
+    pagini = {}
+    surse_pagina = {}
+    for ruta_simpla, editie in rute_editii:
+        ruta = ruta_simpla if editie == 'ro-RO' else ruta_simpla + ' (' + editie + ')'
+        rel = cale_pagina(ruta_simpla) if editie == 'ro-RO' else pagini_cu_sufix.get((ruta_simpla, editie))
+        if rel is None:
+            continue
+        absolut = os.path.join(radacina, rel.replace('/', os.sep))
+        if not os.path.isfile(absolut):
+            continue
+        pagini[ruta] = rel
+        acceptate = {rel}
+        text = io.open(absolut, encoding='utf-8', errors='replace').read()
+        for spec in module_de_continut(text):
+            for ext in ('.ts', '.tsx'):
+                candidat = 'src/' + spec[2:] + ext
+                if os.path.isfile(os.path.join(radacina, candidat.replace('/', os.sep))):
+                    acceptate.add(candidat)
+        surse_pagina[ruta] = acceptate
+    return pagini, surse_pagina
+
+
+def martor_editii():
+    """Martor pe un arbore scris in temp, prin aceleasi functii ca arborele real (`rute_pe_editie`,
+    `pagini_editiilor`): ruta en din `rute-en-*.ts` trebuie sa-si gaseasca `page.en.tsx` de sub `(en)`,
+    iar un `page.tsx` simplu pus acolo NU e pagina editiei. Fara martor, o editie necitita ar face toate
+    rutele EN sa lipseasca din masuratoare, cu poarta iesind 0."""
+    lucru = tempfile.mkdtemp(prefix='poarta-registru-rute-')
+
+    def scrie(rel, continut):
+        cale = os.path.join(lucru, *rel.split('/'))
+        if not os.path.isdir(os.path.dirname(cale)):
+            os.makedirs(os.path.dirname(cale))
+        io.open(cale, 'w', encoding='utf-8', newline='\n').write(continut)
+
+    try:
+        scrie('src/content/rute.ts', 'const RUTE_RO_RO = [\n  { cale: "/" },\n];\n')
+        scrie('src/content/rute-en-proba.ts', 'export const R = [\n  { cale: "/pricing" },\n];\n')
+        scrie('src/content/rute-ro-md.ts', 'export const R = [\n  { cale: "/ro" },\n];\n')
+        scrie('src/app/(en)/simplu/page.tsx', 'x')
+        scrie('src/app/(romd)/ro/page.romd.tsx', 'x')
+        scrie('src/app/page.tsx', 'x')
+        scrie('src/app/(en)/pricing/date.ts', 'x')
+        scrie('src/content/en/pricing.ts', 'x')
+        scrie('src/app/(en)/pricing/page.en.tsx', 'import { P } from "@/content/en/pricing";\n')
+        rute = rute_pe_editie(os.path.join(lucru, 'src', 'content'))
+        if sorted(rute) != [('/', 'ro-RO'), ('/pricing', 'en'), ('/ro', 'ro-MD')]:
+            return 'martorul editiilor: rutele pe editie citite gresit (' + repr(rute) + ')'
+        pagini = pagini_editiilor(os.path.join(lucru, 'src', 'app'), lucru)
+        asteptat = {('/pricing', 'en'): 'src/app/(en)/pricing/page.en.tsx',
+                    ('/ro', 'ro-MD'): 'src/app/(romd)/ro/page.romd.tsx'}
+        if pagini != asteptat:
+            return 'martorul editiilor: paginile cu sufix citite gresit (' + repr(pagini) + ')'
+        legate, surse = pagini_si_surse(rute, lucru)
+        if legate != {'/': 'src/app/page.tsx', '/pricing (en)': 'src/app/(en)/pricing/page.en.tsx',
+                      '/ro (ro-MD)': 'src/app/(romd)/ro/page.romd.tsx'}:
+            return 'martorul editiilor: rutele legate gresit de paginile lor (' + repr(legate) + ')'
+        if surse.get('/pricing (en)') != {'src/app/(en)/pricing/page.en.tsx', 'src/content/en/pricing.ts'}:
+            return ('martorul editiilor: modulul de continut importat de page.en.tsx nu acopera ruta (' +
+                    repr(surse.get('/pricing (en)')) + ')')
+    finally:
+        shutil.rmtree(lucru, ignore_errors=True)
     return None
 
 
@@ -283,27 +407,12 @@ def main():
         print('CONTROL PICAT: ' + motiv, file=sys.stderr)
         return 3
 
-    rute = cai_din_manifest(io.open(MANIFEST, encoding='utf-8').read())
-    if not rute:
+    rute_editii = rute_pe_editie(os.path.dirname(MANIFEST))
+    rute = [c for c, e in rute_editii]
+    if not [c for c, e in rute_editii if e == 'ro-RO']:
         print('poarta-registru-rute: zero rute citite din rute.ts - NEMASURAT', file=sys.stderr)
         return 3
-
-    pagini = {}
-    surse_pagina = {}
-    for ruta in rute:
-        rel = cale_pagina(ruta)
-        absolut = os.path.join(RADACINA, rel.replace('/', os.sep))
-        if not os.path.isfile(absolut):
-            continue  # lipsa paginii e defectul lui poarta-rute, nu al acesteia
-        pagini[ruta] = rel
-        acceptate = {rel}
-        text = io.open(absolut, encoding='utf-8', errors='replace').read()
-        for spec in module_de_continut(text):
-            for ext in ('.ts', '.tsx'):
-                candidat = 'src/' + spec[2:] + ext
-                if os.path.isfile(os.path.join(RADACINA, candidat.replace('/', os.sep))):
-                    acceptate.add(candidat)
-        surse_pagina[ruta] = acceptate
+    pagini, surse_pagina = pagini_si_surse(rute_editii, RADACINA)
 
     if not pagini:
         print('poarta-registru-rute: nicio ruta din RUTE nu are pagina pe disc - NEMASURAT',
@@ -350,7 +459,7 @@ def main():
     print('CONTROALE: ancora externa (intrarea publicata in docstring-ul lui poarta-evidenta) OK, '
           'martori RR-01/RR-02/RR-03/RR-04 OK, martori negativi OK, extragere OK, punte pe disc '
           '(`exista_in_arbore` pozitiv pe rute.ts, negativ pe un nume generat la rulare) OK')
-    print('MASURAT: ' + str(len(rute)) + ' rute in RUTE, ' + str(len(pagini)) +
+    print('MASURAT: ' + str(len(rute)) + ' rute in manifeste (toate editiile), ' + str(len(pagini)) +
           ' cu pagina pe disc, ' + str(len(cai_registru)) + ' registre cu ' + str(intrari) +
           ' afirmatii care numesc ' + str(len(surse_registru)) + ' fisiere-sursa, ' +
           str(len(EXCEPTII)) + ' exceptii declarate')

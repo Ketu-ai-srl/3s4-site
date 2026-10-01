@@ -1,0 +1,27 @@
+{
+  "_nota": "Variabilele de construire ale aplicatiei 3s.md (site-ul international: engleza la radacina, romana pentru Republica Moldova sub /ro), folosite de jobul CI \"Profil 3s.md\" si de copia din tests/browser/ajutor/copie-3s-md.ts. Cheile care incep cu _ nu sunt variabile; o valoare obiect se scrie in mediu ca JSON. OPERATOR_JSON e modelul pachetului juridic: 3S Demerzel SRL, in curs de inregistrare, cu campurile D2 purtand marcajul din config/model-d2.json; \"model\": \"D2\" sta la radacina JSON-ului, langa \"operator\", fiindca src/lib/operator.ts refuza orice cheie necunoscuta in obiectul operatorului. SITE_ENV ramane staging pana la decizia de indexare a domeniului. CANALE_JSON are valoarea pusa pe aplicatia 3s.md in Coolify: formulare oprite, WhatsApp si telefon, e-mailul gol pana cand adresa domeniului poate raspunde.",
+  "SITE_URL": "https://3s.md",
+  "SITE_ENV": "staging",
+  "SITE_EDITII": "en,ro-MD",
+  "SITE_ALTERNATE": "en=https://3s.md,ro-MD=https://3s.md/ro,x-default=https://3s.md",
+  "OPERATOR_JSON": {
+    "model": "D2",
+    "operator": {
+      "denumire": "3S Demerzel SRL",
+      "sediu": "[în curs de înregistrare]",
+      "email": "contact@3s.md",
+      "telefon": "+373 68 055 599",
+      "numar_orc": "[în curs de înregistrare]",
+      "cod_fiscal": "[în curs de înregistrare]",
+      "tara": "Republica Moldova",
+      "dpo": ""
+    }
+  },
+  "CANALE_JSON": {
+    "formulare": false,
+    "whatsapp": "37368055599",
+    "telefon": "+37368055599",
+    "email": "",
+    "emailSecuritate": "security@3s.com.ro"
+  }
+}

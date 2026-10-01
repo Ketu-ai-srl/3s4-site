@@ -6,11 +6,11 @@
 Lista de mai jos e ce trebuie sa bifeze cineva care stie afacerea, inainte de publicare.
 Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 
-**De confirmat: 12 din 15**
+**De confirmat: 12 din 16**
 
 | # | Afirmatia, asa cum apare pe site | Unde |
 |---|---|---|
-| 1 | Trei pachete, Start, Plus și Pro, cu 5, 10 și 20 de conturi de utilizator | `src/content/preturi.ts` |
+| 1 | Trei pachete, cu 5, 10 și 20 de conturi de utilizator | `src/content/preturi.ts` |
 | 2 | Singurul lucru ales cu pachetul e numărul de conturi; funcțiile sunt aceleași în toate trei | `src/content/preturi.ts` |
 | 3 | Aparatele de pe care colegii își folosesc contul nu se numără, în orice pachet; același cont merge la birou, acasă sau pe drum, fără cost în plus | `src/content/preturi.ts` |
 | 4 | Prețul pachetului nu depinde de numărul de oameni sau de dispozitive care folosesc 3S | `src/content/preturi.ts` |

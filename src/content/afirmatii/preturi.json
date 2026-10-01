@@ -9,11 +9,20 @@
     "data": "2026-09-24"
   },
   {
+    "id": "preturi-nume-pachete",
+    "text": "Pachetele se numesc Starter, Pro și Business, în această ordine, de la cel mai mic la cel mai mare",
+    "unde": "src/content/preturi.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 21 a owner-ului (numele pachetelor, aceleași pe ambele site-uri: Starter, Pro, Business, plus Enterprise), 2026-09-30",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
     "id": "preturi-trei-pachete-conturi",
-    "text": "Trei pachete, Start, Plus și Pro, cu 5, 10 și 20 de conturi de utilizator",
+    "text": "Trei pachete, cu 5, 10 și 20 de conturi de utilizator",
     "unde": "src/content/preturi.ts",
     "stare": "neconfirmat",
-    "sursa": "de confirmat: structura vine din decizia D4c a planului valului S4 (planuri identice ca structură cu referința vizuală) și din sarcina feliei preturi (conturile 5 / 10 / 20); numele pachetelor sunt propuneri redacționale",
+    "sursa": "de confirmat: structura vine din decizia D4c a planului valului S4 (planuri identice ca structură cu referința vizuală) și din sarcina feliei preturi (conturile 5 / 10 / 20); numele pachetelor au intrarea lor, preturi-nume-pachete",
     "confirmat_de": "",
     "data": ""
   },

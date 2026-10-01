@@ -15,11 +15,46 @@
 // fiecare fisier ar primi data ultimului commit) nu se inventeaza nimic: `lastmod` pur si simplu
 // nu se scrie. Pasul care il aduce si in productie e scris in `docs/ziua-operatorului.md`.
 
+//
+// PE EDITIE (fundatia editiilor, `src/lib/editii.ts`). Pagina unei rute in engleza e un `page.en.tsx` sub
+// grupul `src/app/(en)`, iar una pentru Republica Moldova un `page.romd.tsx` sub `src/app/(romd)`. Fara
+// editie, cautarea de mai jos nu le-ar gasi, iar `lastmod` ar lipsi pe toate paginile EN fara nicio eroare.
+// Grupurile de rute `(nume)` nu produc segment de cale, deci se cauta prin toate.
+
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { EDITII, type CodEditie } from "./editii";
 
 const PAGINI = ["page.tsx", "page.ts", "page.mdx", "page.jsx", "page.js"];
+
+/** Fisierele de pagina ale unei editii, in ordinea in care se cauta. Pe `ro-RO`, lista de dinainte de editii. */
+function paginileEditiei(editie: CodEditie): string[] {
+  return editie === "ro-RO" ? PAGINI : ["page." + EDITII[editie].sufix];
+}
+
+/** Directoarele (relative, cu `/`) din `src/app` a caror cale publica e `cale`, trecand prin grupurile de rute. */
+function directoarePentruCale(cale: string, radacina: string): string[] {
+  const segmente = cale.split("/").filter(Boolean);
+  const gasite: string[] = [];
+  const mergi = (rel: string, rest: string[]) => {
+    if (rest.length === 0) gasite.push(rel);
+    let intrari: string[] = [];
+    try {
+      intrari = readdirSync(join(radacina, rel), { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => d.name);
+    } catch {
+      return;
+    }
+    for (const nume of intrari) {
+      if (nume.startsWith("(") && nume.endsWith(")")) mergi(rel + "/" + nume, rest);
+      else if (rest.length > 0 && nume === rest[0]) mergi(rel + "/" + nume, rest.slice(1));
+    }
+  };
+  mergi("src/app", segmente);
+  return gasite;
+}
 const EXTENSII_CONTINUT = [".ts", ".tsx", ".json", "/index.ts", "/index.tsx"];
 
 function git(argumente: string[], radacina: string): string {
@@ -48,10 +83,20 @@ export function istoricComplet(radacina: string = process.cwd()): boolean {
   return complet;
 }
 
-/** Fisierul paginii unei rute si modulele de continut importate direct de el (cai relative, cu `/`). */
-export function surseleRutei(cale: string, radacina: string = process.cwd()): string[] {
-  const director = cale === "/" ? "src/app" : "src/app" + cale;
-  const pagina = PAGINI.map((p) => director + "/" + p).find((p) => existsSync(join(radacina, p)));
+/**
+ * Fisierul paginii unei rute si modulele de continut importate direct de el (cai relative, cu `/`). `editie`
+ * alege extensia paginii (implicit `ro-RO`, ca inainte de editii). Pe `ro-RO` se cauta intai directorul cu
+ * aceeasi cale, exact ca inainte; abia apoi prin grupurile de rute.
+ */
+export function surseleRutei(cale: string, radacina: string = process.cwd(), editie: CodEditie = "ro-RO"): string[] {
+  const pagini = paginileEditiei(editie);
+  const inDirector = (d: string) => pagini.map((p) => d + "/" + p).find((p) => existsSync(join(radacina, p)));
+  const direct = cale === "/" ? "src/app" : "src/app" + cale;
+  const pagina =
+    inDirector(direct) ??
+    directoarePentruCale(cale, radacina)
+      .map(inDirector)
+      .find((p) => p !== undefined);
   if (pagina === undefined) return [];
   const text = readFileSync(join(radacina, pagina), "utf8");
   const surse = [pagina];

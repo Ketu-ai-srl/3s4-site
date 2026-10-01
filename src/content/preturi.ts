@@ -11,8 +11,11 @@
 //     declarate existente de owner (D4b), aceleasi in toate pachetele;
 //   - gazduirea si criptarea: Amazon, Germania, o singura regiune UE; AES-256 la stocare, TLS 1.2+
 //     in tranzit (D4c);
-//   - numele pachetelor (Start, Plus, Pro) si ale celor doua linii (3S Business, 3S Enterprise) sunt
-//     propuneri redactionale, trecute in registru ca neconfirmate.
+//   - numele pachetelor (Starter, Pro, Business) sunt decizia 21 a owner-ului (aceleasi pe ambele
+//     site-uri), trecute in registru ca confirmate. Titlul paginii, eticheta cardurilor din poarta si
+//     titlul liniei de baza poarta numele pachetelor si "Enterprise" (decizia 25 a owner-ului,
+//     01.10.2026), ca pachetul Business sa nu stea langa o linie de produs cu acelasi nume;
+//     "3S Enterprise" ramane in subtitlu si in calculator.
 // Fiecare fraza verificabila are intrare in `src/content/afirmatii/preturi.json`.
 //
 // LUNGIMILE din comentarii sunt ale referintei, pe acelasi rol: `[fisa]` = scrisa in fisa;
@@ -51,7 +54,7 @@ export const META_PRETURI = {
   titlu: "Prețurile 3S: toate pachetele costă 0\u00a0RON astăzi",
   // Prag de poarta: 50-160 caractere.
   descriere:
-    "Trei pachete 3S, Start, Plus și Pro, cu 5, 10 sau 20 de conturi și aceleași funcții. Astăzi toate costă 0\u00a0RON, iar contul se deschide fără card.",
+    "Trei pachete 3S, Starter, Pro și Business, cu 5, 10 sau 20 de conturi și aceleași funcții. Astăzi toate costă 0\u00a0RON, iar contul se deschide fără card.",
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -63,8 +66,8 @@ export const ANTET_PRETURI = {
     { text: "Acasă", cale: "/" },
     { text: "Prețuri", cale: CALE_PRETURI },
   ],
-  // Rol: numele celor doua linii de produs, legate prin "si", cu punct. Lungime: 39 [fisa].
-  titlu: "3S Business și 3S Enterprise",
+  // Rol: numele pachetelor si al liniei enterprise, legate prin "si". Lungime: 36 (decizia 25; fisa: 39).
+  titlu: "Starter, Pro, Business și Enterprise",
   // Rol: cele doua linii, pe scurt: cea de baza si pretul ei, cea enterprise si cand se alege.
   // Lungime: 212, 2 propozitii [fisa].
   // E primul paragraf din <main>: raspunsul paginii, 30-80 de cuvinte (poarta G-AI-02).
@@ -91,8 +94,8 @@ export type CardPoarta = {
 };
 
 export const POARTA_BAZA: CardPoarta = {
-  // Lungime: 16 [numarat].
-  nume: "3S Business",
+  // Lungime: 22 (decizia 25; referinta: 16 [numarat]).
+  nume: "Starter, Pro, Business",
   // Rol: titlul de beneficiu al liniei de baza (24/600, un rand la 1440). Lungime: 34 [numarat].
   titlu: "Toate funcțiile, la 0\u00a0RON",
   // Rol: textul cardului de baza (14/400, 2 randuri la 1440, 3 la 390). Lungime: 105 [numarat].
@@ -103,8 +106,8 @@ export const POARTA_BAZA: CardPoarta = {
 };
 
 export const POARTA_ENTERPRISE: CardPoarta & { tinta: Legatura } = {
-  // Lungime: 18 [numarat].
-  nume: "3S Enterprise",
+  // Lungime: 10 (decizia 25; referinta: 18 [numarat]).
+  nume: "Enterprise",
   // Rol: titlul cardului enterprise (24/600, doua randuri la 1440). Lungime: 52 [numarat].
   titlu: "Arhiva poate rămâne pe serverele firmei",
   // Rol: textul cardului enterprise (14/400). Lungime: 108 [numarat]. Scris din faptul declarat
@@ -122,8 +125,8 @@ export const POARTA_ENTERPRISE: CardPoarta & { tinta: Legatura } = {
 export const LINIA_DE_BAZA = {
   // Rol: intoarcerea la poarta (buton-text 14/500). Lungime: 17 [numarat].
   inapoi: "Cele două variante 3S",
-  // Rol: numele liniei (h2 38,4). Lungime: 16 [numarat].
-  titlu: "3S Business",
+  // Rol: numele liniei, adica pachetele ei (h2 38,4). Lungime: 22 (decizia 25; referinta: 16 [numarat]).
+  titlu: "Starter, Pro, Business",
   // Rol: promisiunea liniei (18/500, max 34ch, un rand). Lungime: 34 [numarat].
   promisiune: "Actele firmei, ordonate și ușor de găsit.",
   // Rol: pretul de astazi si ce primeste echipa in oricare pachet (16/400, max 62ch, doua randuri).
@@ -251,7 +254,7 @@ export const COMUTATOR = {
 // 6d. Grila de planuri (preturi.md §6d): 3 planuri, lista de 9 randuri, tooltip "i".
 // ---------------------------------------------------------------------------------------------
 
-export type CheiePlan = "start" | "plus" | "pro";
+export type CheiePlan = "starter" | "pro" | "business";
 
 /** Un rand din lista planului: text, cu o cifra ingrosata optionala in fata. */
 export type RandPlan = {
@@ -276,8 +279,8 @@ export type Plan = {
 
 export const PLANURI: Plan[] = [
   {
-    cheie: "start",
-    nume: "Start",
+    cheie: "starter",
+    nume: "Starter",
     // Rol: cui i se potriveste pachetul mic. Lungime: 104 [numarat].
     descriere: "Un birou mic, unde până la cinci oameni scanează, caută și trimit acte în fiecare zi, are aici tot necesarul.",
     pret: { lunar: 0, anual: 0 },
@@ -285,8 +288,8 @@ export const PLANURI: Plan[] = [
     recomandat: true,
   },
   {
-    cheie: "plus",
-    nume: "Plus",
+    cheie: "pro",
+    nume: "Pro",
     // Rol: cui i se potriveste pachetul mijlociu. Lungime: 112 [numarat].
     descriere: "Când același act trece prin mai multe mâini, de la contabilitate la vânzări și la conducere, zece conturi țin toată echipa în același loc.",
     pret: { lunar: 0, anual: 0 },
@@ -294,8 +297,8 @@ export const PLANURI: Plan[] = [
     recomandat: false,
   },
   {
-    cheie: "pro",
-    nume: "Pro",
+    cheie: "business",
+    nume: "Business",
     // Rol: cui i se potriveste pachetul mare. Lungime: 104 [numarat].
     descriere: "Când firma are mai multe departamente și fiecare echipă își păstrează dosarele și drepturile ei, douăzeci de conturi acoperă toată structura.",
     pret: { lunar: 0, anual: 0 },
@@ -420,7 +423,7 @@ export type RandTabel = { functie: string; celule: Record<CheiePlan, CelulaTabel
 export type CategorieTabel = { titlu: string; randuri: RandTabel[] };
 
 const DA: CelulaTabel = { fel: "da" };
-const toate = (c: CelulaTabel): Record<CheiePlan, CelulaTabel> => ({ start: c, plus: c, pro: c });
+const toate = (c: CelulaTabel): Record<CheiePlan, CelulaTabel> => ({ starter: c, pro: c, business: c });
 const valoare = (text: string): CelulaTabel => ({ fel: "valoare", text });
 
 export const COMPARATIE = {
@@ -447,7 +450,7 @@ export const COMPARATIE = {
         { functie: "Acces pe persoană și pe dosar", celule: toate(DA) },
         {
           functie: "Conturi pentru echipă",
-          celule: { start: valoare("5"), plus: valoare("10"), pro: valoare("20") },
+          celule: { starter: valoare("5"), pro: valoare("10"), business: valoare("20") },
         },
         { functie: "Portal pentru clienți", celule: toate(DA) },
         { functie: "Cost pe persoană", celule: toate(valoare("Inclus")) },
@@ -493,12 +496,12 @@ export const INTREBARI_PRETURI: { titlu: string; subtitlu: string; intrebari: In
     {
       intrebare: "Plătesc în plus pentru căutare sau WhatsApp?",
       raspuns:
-        "Nu. Căutarea cu sursa citată, răspunsurile pe WhatsApp, clasarea automată în dosare și termenele de păstrare calculate vin în fiecare pachet, fără vreo taxă adăugată. Ce alegi între Start, Plus și Pro e doar numărul de conturi, iar astăzi oricare dintre ele costă 0\u00a0RON.",
+        "Nu. Căutarea cu sursa citată, răspunsurile pe WhatsApp, clasarea automată în dosare și termenele de păstrare calculate vin în fiecare pachet, fără vreo taxă adăugată. Ce alegi între Starter, Pro și Business e doar numărul de conturi, iar astăzi oricare dintre ele costă 0\u00a0RON.",
     },
     {
       intrebare: "Ce pachet să aleg?",
       raspuns:
-        "Numără oamenii care lucrează cu actele firmei: până la 5, Start; până la 10, Plus; până la 20, Pro. Dacă ai nevoie de mai multe conturi, discută cu echipa 3S. Funcțiile sunt aceleași în toate trei.",
+        "Numără oamenii care lucrează cu actele firmei: până la 5, Starter; până la 10, Pro; până la 20, Business. Dacă ai nevoie de mai multe conturi, discută cu echipa 3S. Funcțiile sunt aceleași în toate trei.",
     },
     {
       intrebare: "Cât costă pachetele astăzi?",

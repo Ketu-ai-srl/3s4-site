@@ -171,7 +171,7 @@ const DE_COPIAT = ['src', 'public', 'config', 'package.json', 'pnpm-lock.yaml', 
 
 /** Variabilele feliei si ale domeniului: se sterg din mediul mostenit, ca masina sa nu poata schimba proba. */
 const VARIABILE_DOMENIU = [
-  'SITE_URL', 'SITE_ENV', 'SITE_ALTERNATE', 'OPERATOR_JSON', 'UMAMI_URL', 'UMAMI_WEBSITE_ID', 'INDEXNOW_KEY',
+  'SITE_URL', 'SITE_ENV', 'SITE_EDITII', 'SITE_ALTERNATE', 'OPERATOR_JSON', 'UMAMI_URL', 'UMAMI_WEBSITE_ID', 'INDEXNOW_KEY',
   'NEXT_PUBLIC_GA4_ID', 'FORMULARE_DESTINATIE', 'FORMULARE_SECRET', 'GOOGLE_SITE_VERIFICATION', 'BASIC_AUTH_USER', 'BASIC_AUTH_PASS',
 ]
 
@@ -320,6 +320,10 @@ test.beforeAll(async () => {
   fixturi = await pornesteFixturile()
   copie = await pornesteCopia({
     SITE_ENV: 'productie',
+    // Site-ul ROMANESC construit pe gazda internationala, ca sa se masoare alternatele si domeniul: profilul se
+    // scrie EXPLICIT, altfel verificarea de coerenta a editiilor (`src/lib/editii.ts`) opreste construirea, pe
+    // drept, fiindca lista de alternate numeste gazda asta pentru en si ro-MD.
+    SITE_EDITII: 'ro-RO',
     SITE_URL: INT,
     OPERATOR_JSON: JSON.stringify({ operator: OPERATOR }),
     SITE_ALTERNATE: LISTA_ALTERNATE,
