@@ -126,6 +126,8 @@ jobs:
           node -e "const p=require('./config/profil-3s-md.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
       - run: pnpm build
       - run: python .claude/scripts/porti/poarta-juridic.py --mediu staging
+      # Poarta de SEO pe HTML-ul build-ului 3s.md: CANALE_JSON din profil e in mediu, deci telefonul canalului e permis in JSON-LD, si numai el.
+      - run: python .claude/scripts/porti/poarta-seo.py
       - name: Proba editiilor, pe serverul build-ului 3s.md
         run: |
           pnpm exec next start -p 4750 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-md.log" 2>&1 &

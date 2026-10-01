@@ -1,5 +1,6 @@
 // Panoul meniului mare: foile Functionalitati si Solutii intr-un singur card. Primeste foile deja
 // filtrate pe caile existente (Antet.tsx); o foaie fara niciun element vizibil nu ajunge aici.
+// Un element fara descriere (meniurile editiei `en` au numai etichete) nu lasa un rand gol sub titlu.
 
 import Link from "next/link";
 import type { ElementMeniu, FoaieMeniu } from "@/content/navigatie";
@@ -36,7 +37,7 @@ function Element({ element, lider, curent }: { element: ElementMeniu; lider: boo
           {element.text}
           {element.marcajAi ? <span className={s.marcajAi}>AI</span> : null}
         </span>
-        <span className={s.descriere}>{element.descriere}</span>
+        {element.descriere === "" ? null : <span className={s.descriere}>{element.descriere}</span>}
       </span>
       {lider ? <Iconita nume="arrow-right" marime={14} contur={2} className={s.sageataLider} /> : null}
     </Link>

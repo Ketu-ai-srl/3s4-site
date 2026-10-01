@@ -1,7 +1,13 @@
 // Datele structurate (JSON-LD) ale site-ului, planul valului S4, §8.2. DOAR BRANDUL (§7): numele,
-// sigla, adresa site-ului si, cand exista una confirmata, adresa de e-mail a marcii. Nicio data de
-// firma - denumire legala, sediu, cod fiscal, registru, telefon - fiindca site-ul nu are operator si
-// nu vorbeste in numele unei firme. Poarta de SEO (S-09) refuza aceste campuri in orice nod.
+// sigla, adresa site-ului si canalele de contact ale domeniului (`CANALE_JSON`, `src/content/canale.ts`):
+// e-mailul numai din `CANALE.email`, telefonul numai din `CANALE.telefon`. Nicio data de firma - denumire
+// legala, sediu, cod fiscal, registru - fiindca site-ul nu vorbeste in numele unei firme. Poarta de SEO
+// (S-09) refuza aceste campuri in orice nod, iar telefonul il primeste numai pe un build al carui
+// `CANALE_JSON` are telefon (acelasi numar).
+//
+// PE EDITIE (felia metadata-hreflang): graful comun e al editiei de la radacina domeniului (`ro-RO` pe
+// build-ul romanesc, `en` pe cel international), cu `inLanguage` din catalogul editiilor. Graful startului
+// (aplicatia cu pretul in RON si intrebarile in romana) e numai al editiei `ro-RO`.
 //
 // UN SINGUR `@id` PER ENTITATE, pe tot site-ul: organizatia, site-ul si aplicatia au fiecare un
 // identificator fix, derivat din adresa site-ului. Paginile interioare le refera prin `@id`, nu le
@@ -18,9 +24,11 @@
 // dezambiguizarea entitatii si pentru motoarele care le citesc, nu ca parghie de clasare.
 
 import { INTREBARI, META_ACASA } from "@/content/acasa";
+import { CANALE, type Canale } from "@/content/canale";
 import { BRAND, adresaMarcii } from "@/content/entitate";
 import { SUBSOL } from "@/content/navigatie";
-import { adresaSite, urlAbsolut } from "@/lib/site";
+import { EDITII, type CodEditie } from "@/lib/editii";
+import { adresaSite, editiaRadacinii, limbileDomeniului, urlAbsolut } from "@/lib/site";
 
 export type NodJsonLd = { "@type": string } & Record<string, unknown>;
 export type GrafJsonLd = { "@context": "https://schema.org"; "@graph": NodJsonLd[] };
@@ -49,14 +57,40 @@ export const SISTEME_APLICATIE = "Web, Windows, macOS, Linux, Android, iOS, iPad
 export const TARI_DESERVITE = ["RO", "MD"] as const;
 
 /**
- * Organizatia (marca). `emailBrut` e campul `email` din `config/brand.json`, parametru numai pentru
- * probe (brand sintetic): cu o adresa confirmata apar `email` si `contactPoint`; fara ea, lipsesc
- * amandoua, fiindca un punct de contact fara nicio cale de contact n-ar spune nimic adevarat.
+ * Descrierea marcii in engleza, pentru graful editiei `en`: prima propozitie a rezumatului din `llms.txt`
+ * (textul aprobat al site-ului international). Fara cifre si fara preturi.
  */
-export function nodOrganizatie(baza: string = adresaSite(), emailBrut: string = BRAND.email): NodJsonLd {
+export const DESCRIERE_EN =
+  "3S keeps a company's documents in a digital archive and answers questions about them, showing the document each answer comes from.";
+
+export type OptiuniOrganizatie = {
+  /** Editia grafului; implicit, cea de la radacina domeniului. */
+  editie?: CodEditie;
+  /** Canalele domeniului; implicit, cele ale build-ului. */
+  canale?: Canale;
+  /** Limbile in care raspundem (`availableLanguage`); implicit, limbile domeniului. */
+  limbi?: string[];
+};
+
+/**
+ * Organizatia (marca). `emailBrut` e adresa de contact a domeniului (`CANALE.email`, care cade pe
+ * `config/brand.json` cand `CANALE_JSON` nu o da); parametru si pentru probe (brand sintetic). Telefonul vine
+ * din `CANALE.telefon`. Cu macar un canal apare `contactPoint`, cu canalele date; fara niciunul lipseste,
+ * fiindca un punct de contact fara nicio cale de contact n-ar spune nimic adevarat.
+ */
+export function nodOrganizatie(
+  baza: string = adresaSite(),
+  emailBrut: string = CANALE.email,
+  optiuni: OptiuniOrganizatie = {},
+): NodJsonLd {
   const id = iduri(baza);
+  const editie = optiuni.editie ?? editiaRadacinii().cod;
+  const canale = optiuni.canale ?? CANALE;
   const posta = adresaMarcii(emailBrut);
+  const telefon = canale.telefon === "" ? null : canale.telefon;
   const tari = TARI_DESERVITE.map((cod) => ({ "@type": "Country", name: cod }));
+  // Textele marcii: in romana din subsol; pe editia `en`, descrierea in engleza si fara slogan (n-are inca forma EN).
+  const texte = editie === "en" ? { description: DESCRIERE_EN } : { slogan: SUBSOL.brand.slogan, description: SUBSOL.brand.descriere };
   return {
     "@type": "Organization",
     "@id": id.organizatie,
@@ -72,32 +106,33 @@ export function nodOrganizatie(baza: string = adresaSite(), emailBrut: string = 
       contentUrl: urlAbsolut(BRAND.sigla.iconita, baza),
       caption: BRAND.nume,
     },
-    slogan: SUBSOL.brand.slogan,
-    description: SUBSOL.brand.descriere,
+    ...texte,
     areaServed: tari,
-    ...(posta === null
+    ...(posta === null ? {} : { email: posta }),
+    ...(telefon === null ? {} : { telephone: telefon }),
+    ...(posta === null && telefon === null
       ? {}
       : {
-          email: posta,
           contactPoint: {
             "@type": "ContactPoint",
             contactType: "customer support",
-            email: posta,
-            availableLanguage: ["ro"],
+            ...(posta === null ? {} : { email: posta }),
+            ...(telefon === null ? {} : { telephone: telefon }),
+            availableLanguage: optiuni.limbi ?? limbileDomeniului(),
             areaServed: tari,
           },
         }),
   };
 }
 
-export function nodSite(baza: string = adresaSite()): NodJsonLd {
+export function nodSite(baza: string = adresaSite(), editie: CodEditie = editiaRadacinii().cod): NodJsonLd {
   const id = iduri(baza);
   return {
     "@type": "WebSite",
     "@id": id.site,
     url: baza + "/",
     name: BRAND.nume,
-    inLanguage: "ro-RO",
+    inLanguage: EDITII[editie].inLanguage,
     publisher: { "@id": id.organizatie },
   };
 }
@@ -112,7 +147,7 @@ export function nodAplicatie(baza: string = adresaSite()): NodJsonLd {
     applicationCategory: "BusinessApplication",
     operatingSystem: SISTEME_APLICATIE,
     description: META_ACASA.descriere,
-    inLanguage: "ro-RO",
+    inLanguage: EDITII["ro-RO"].inLanguage,
     publisher: { "@id": id.organizatie },
     // Planul valului, D3: toate pachetele costa 0 RON astazi (afirmatia `acasa-pret-0-ron`).
     offers: { "@type": "Offer", price: "0", priceCurrency: "RON" },
@@ -127,7 +162,7 @@ export function nodIntrebariAcasa(baza: string = adresaSite()): NodJsonLd {
     "@id": id.intrebariAcasa,
     url: baza + "/",
     name: INTREBARI.titlu,
-    inLanguage: "ro-RO",
+    inLanguage: EDITII["ro-RO"].inLanguage,
     isPartOf: { "@id": id.site },
     mainEntity: INTREBARI.intrebari.map((i) => ({
       "@type": "Question",
@@ -137,12 +172,12 @@ export function nodIntrebariAcasa(baza: string = adresaSite()): NodJsonLd {
   };
 }
 
-/** Graful comun tuturor paginilor: organizatia si site-ul. */
-export function grafSite(baza: string = adresaSite()): GrafJsonLd {
-  return { "@context": "https://schema.org", "@graph": [nodOrganizatie(baza), nodSite(baza)] };
+/** Graful comun tuturor paginilor: organizatia si site-ul, pe editia data (implicit, cea de la radacina). */
+export function grafSite(baza: string = adresaSite(), editie: CodEditie = editiaRadacinii().cod): GrafJsonLd {
+  return { "@context": "https://schema.org", "@graph": [nodOrganizatie(baza, CANALE.email, { editie }), nodSite(baza, editie)] };
 }
 
-/** Graful propriu paginii de start: aplicatia, cu pretul, si intrebarile frecvente. */
+/** Graful propriu paginii de start romanesti: aplicatia, cu pretul in RON, si intrebarile frecvente. Numai pe `ro-RO`. */
 export function grafAcasa(baza: string = adresaSite()): GrafJsonLd {
   return { "@context": "https://schema.org", "@graph": [nodAplicatie(baza), nodIntrebariAcasa(baza)] };
 }

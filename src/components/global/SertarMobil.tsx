@@ -12,18 +12,22 @@
 //   pe BODY, iar Tab-ul urmator iesea pe legaturile paginii de sub fundal);
 // - capcana de Tab aduce inapoi orice focus ajuns in afara dialogului, pe orice cale.
 // Probele: tests/browser/fundatie-antet-intreg.spec.ts (pe o copie cu toate caile existente).
+//
+// PE EDITIE: contractul (`navigatie`, cu CTA-ul deja ales pentru pagina) si limbile paginii (`limbi`) vin de
+// la antet; implicitele sunt cele romanesti de azi.
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
-  ANTET,
   LIMBI,
+  NAVIGATIE_RO,
   PANOU_DESCARCA,
-  SERTAR,
   seVede,
   vizibile,
   type CaiExistente,
+  type ContractNavigatie,
   type GrupDescarca,
+  type Limba,
 } from "@/content/navigatie";
 import Buton from "@/components/primitive/Buton";
 import Iconita from "@/components/primitive/Iconita";
@@ -37,10 +41,24 @@ export type SertarMobilProps = {
   cale: string;
   foi: Record<string, FoaieVizibila | undefined>;
   grupuriDescarca: GrupDescarca[];
+  /** Contractul editiei, cu CTA-ul paginii curente; implicit cel romanesc. */
+  navigatie?: ContractNavigatie;
+  /** Optiunile de limba ale paginii curente; implicit lista romaneasca. */
+  limbi?: Limba[];
   onInchide: () => void;
 };
 
-export default function SertarMobil({ cai, cale, foi, grupuriDescarca, onInchide }: SertarMobilProps) {
+export default function SertarMobil({
+  cai,
+  cale,
+  foi,
+  grupuriDescarca,
+  navigatie = NAVIGATIE_RO,
+  limbi: limbiPagina = LIMBI,
+  onInchide,
+}: SertarMobilProps) {
+  const ANTET = navigatie.antet;
+  const SERTAR = navigatie.sertar;
   const [grupDeschis, setGrupDeschis] = useState<string | null>(null);
   const [limbaDeschisa, setLimbaDeschisa] = useState(false);
   const [vedereDescarca, setVedereDescarca] = useState(false);
@@ -107,8 +125,8 @@ export default function SertarMobil({ cai, cale, foi, grupuriDescarca, onInchide
   };
 
   const legaturi = vizibile(ANTET.legaturi, cai);
-  const limbi = vizibile(LIMBI, cai);
-  const activa = LIMBI.find((l) => l.activa);
+  const limbi = vizibile(limbiPagina, cai);
+  const activa = limbiPagina.find((l) => l.activa);
   const autentificare = seVede(ANTET.autentificare, cai) ? ANTET.autentificare : null;
   const cta = seVede(ANTET.cta, cai) ? ANTET.cta : null;
   const areDescarca = grupuriDescarca.length > 0;
@@ -118,7 +136,7 @@ export default function SertarMobil({ cai, cale, foi, grupuriDescarca, onInchide
       <div className={s.fundal} onClick={onInchide} aria-hidden="true" data-sertar-fundal="" />
       <div ref={sertar} className={s.sertar} role="dialog" aria-modal="true" aria-label={SERTAR.eticheta} data-sertar="">
         <div className={s.cap}>
-          <Link href="/" aria-label={ANTET.sigla.text} onClick={onInchide}>
+          <Link href={ANTET.sigla.href ?? "/"} aria-label={ANTET.sigla.text} onClick={onInchide}>
             {/* Iconita marcii, ca in antet (DIRECTIA.md, "Sigla"). */}
             <SiglaMarca inaltime={40} />
           </Link>
@@ -254,7 +272,7 @@ export default function SertarMobil({ cai, cale, foi, grupuriDescarca, onInchide
             ) : null}
             {areDescarca ? (
               <button ref={butonDescarca} type="button" className={s.descarca} onClick={intraInDescarca}>
-                <span>{ANTET.descarca.text}</span>
+                <span>{ANTET.descarca?.text}</span>
                 <Iconita nume="chevron-right" marime={12} contur={2} />
               </button>
             ) : null}

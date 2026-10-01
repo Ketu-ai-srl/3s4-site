@@ -11,6 +11,7 @@ import Constructor from "@/components/constructor/Constructor";
 import Erou from "@/components/erou/Erou";
 import FunctionalitatiAcasa from "@/components/functionalitati-acasa/FunctionalitatiAcasa";
 import CtaFinalInchis from "@/components/primitive/CtaFinalInchis";
+import { alternatePagina } from "@/components/seo/metadata";
 import { ANCORE_ACASA, META_ACASA } from "@/content/acasa";
 
 // Pagina de start (acasa.md, ordinea masurata a celor 13 sectiuni de sub antet).
@@ -23,7 +24,8 @@ import { ANCORE_ACASA, META_ACASA } from "@/content/acasa";
 export const metadata: Metadata = {
   title: { absolute: META_ACASA.titlu },
   description: META_ACASA.descriere,
-  alternates: { canonical: "/" },
+  // Canonical-ul si, cu `SITE_ALTERNATE`, legaturile hreflang: aceleasi reguli ca pe paginile interioare.
+  alternates: alternatePagina({ cale: "/" }),
 };
 
 export default function Acasa() {

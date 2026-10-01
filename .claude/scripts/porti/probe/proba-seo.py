@@ -87,16 +87,19 @@ def arbore(pagini):
     return d
 
 
-def ruleaza(radacina, poarta=None, argumente=()):
+def ruleaza(radacina, poarta=None, argumente=(), mediu=None):
+    # Mediul subprocesului fara CANALE_JSON mostenit: profilul portii il dau cazurile, explicit (`mediu`).
+    env = {k: v for k, v in os.environ.items() if k != 'CANALE_JSON'}
+    env.update(mediu or {})
     r = subprocess.run([sys.executable, poarta or POARTA, '--radacina', radacina] + list(argumente),
-                       capture_output=True, text=True, encoding='utf-8', errors='replace')
+                       capture_output=True, text=True, encoding='utf-8', errors='replace', env=env)
     return r.returncode, (r.stdout or '') + (r.stderr or '')
 
 
-def caz(nume, pagini, cod_asteptat, contine=None, argumente=()):
+def caz(nume, pagini, cod_asteptat, contine=None, argumente=(), mediu=None):
     d = arbore(pagini)
     try:
-        cod, iesire = ruleaza(d, argumente=argumente)
+        cod, iesire = ruleaza(d, argumente=argumente, mediu=mediu)
         if cod != cod_asteptat:
             nu(nume + ': cod ' + str(cod) + ', asteptam ' + str(cod_asteptat) + '\n' + iesire.strip())
             return
@@ -106,6 +109,88 @@ def caz(nume, pagini, cod_asteptat, contine=None, argumente=()):
         ok(nume)
     finally:
         shutil.rmtree(d, ignore_errors=True)
+
+
+# Telefonul marcii, cum il scrie `src/components/seo/date-structurate.ts` cand domeniul are canal de telefon.
+# Numerele si numele campului se lipesc la rulare.
+TELEFON = '+' + '3736' + '8' + '000' + '333'
+ALT_TELEFON = '+' + '3736' + '8' + '000' + '444'
+CAMP_TELEFON = 'tele' + 'phone'
+
+
+def canale(telefon):
+    return json.dumps({'formulare': False, 'whatsapp': TELEFON[1:], 'telefon': telefon})
+
+
+def organizatie_cu_telefon(numar):
+    return dict(ORGANIZATIE, **{CAMP_TELEFON: numar,
+                                'contactPoint': {'@type': 'ContactPoint', 'contactType': 'customer support',
+                                                 CAMP_TELEFON: numar}})
+
+
+def arbore_fara_pagini(manifest_pagini=(), manifest_vechi=False):
+    """Un build ca al site-ului international inainte de primele pagini EN: numai pagina de negasit si rute de
+    sistem, plus manifestele lui Next. `manifest_pagini` adauga pagini prerandate in manifest (fara HTML)."""
+    d = tempfile.mkdtemp(prefix='proba-seo-fara-pagini-')
+    app = {'/_not-found/page': '/_not-found', '/robots.txt/route': '/robots.txt', '/(en)/[negasit]/page': '/[negasit]'}
+    rute = {'/_not-found': {'srcRoute': '/_not-found'}, '/robots.txt': {'srcRoute': '/robots.txt'}}
+    for r in manifest_pagini:
+        app[r + '/page'] = r
+        rute[r] = {'srcRoute': r}
+    scrie(os.path.join(d, 'src', 'app', 'robots.ts'), 'export default function r() { return {} }\n')
+    scrie(os.path.join(d, '.next', 'server', 'app', '_not-found.html'), pagina())
+    scrie(os.path.join(d, '.next', 'app-path-routes-manifest.json'), json.dumps(app))
+    scrie(os.path.join(d, '.next', 'prerender-manifest.json'), json.dumps({'routes': rute, 'dynamicRoutes': {}}))
+    if manifest_vechi:
+        for n in ('app-path-routes-manifest.json', 'prerender-manifest.json'):
+            os.utime(os.path.join(d, '.next', n), (1000000000, 1000000000))
+    return d
+
+
+def caz_arbore(nume, d, cod_asteptat, contine=None):
+    try:
+        cod, iesire = ruleaza(d)
+        if cod != cod_asteptat:
+            nu(nume + ': cod ' + str(cod) + ', asteptam ' + str(cod_asteptat) + '\n' + iesire.strip())
+        elif contine and contine not in iesire:
+            nu(nume + ': iesirea nu contine "' + contine + '"\n' + iesire.strip())
+        else:
+            ok(nume)
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def mutant(nume, vechi, nou, pagini, mediu, cod_martor):
+    """Strica DELIBERAT, pe o COPIE a portii, ramura data, si o ruleaza pe cazul care o vaneaza. Bun: 3 (martorul
+    din poarta a prins mutatia) sau 0 (cazul a devenit verde, deci chiar ataca ramura). Rau: `cod_martor`, adica
+    defectul prins tot de alta ramura. Mutatia se verifica in copie (o substitutie neaplicata da fals verde)."""
+    director = tempfile.mkdtemp(prefix='mutant-seo-')
+    try:
+        sursa = open(POARTA, encoding='utf-8').read()
+        if sursa.count(vechi) != 1:
+            nu('MUTANT NEATERIZAT (' + nume + '): ancora apare de ' + str(sursa.count(vechi)) + ' ori in poarta')
+            return
+        copie = os.path.join(director, 'poarta-mutant.py')
+        with open(copie, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(sursa.replace(vechi, nou))
+        verificare = open(copie, encoding='utf-8').read()
+        if nou not in verificare or vechi in verificare:
+            nu('MUTANT NEATERIZAT (' + nume + '): substitutia nu se regaseste in copie')
+            return
+        d = arbore(pagini)
+        try:
+            cod, iesire = ruleaza(d, poarta=copie, mediu=mediu)
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+        if cod == 3 and 'CONTROL PICAT' in iesire:
+            ok('mutantul ' + nume + ' cade la 3: martorul din poarta l-a prins')
+        elif cod == 0:
+            ok('mutantul ' + nume + ' iese VERDE: cazul chiar ataca ramura')
+        else:
+            nu('mutantul ' + nume + ' a iesit ' + str(cod) + ' (asteptam 3 sau 0; ' + str(cod_martor)
+               + ' = defectul e prins de alta ramura)\n' + iesire.strip())
+    finally:
+        shutil.rmtree(director, ignore_errors=True)
 
 
 def main():
@@ -179,6 +264,30 @@ def main():
                                              descriere='Cum lucreaza arhiva care raspunde cu pagina din care vine raspunsul.',
                                              canonical='https://exemplu.test/despre')},
         0)
+
+    # --- S-09, telefonul: permis numai cu canalul de telefon al domeniului (CANALE_JSON), acelasi numar ---
+    cu_telefon = {'index': pagina(ld=graf(organizatie_cu_telefon(TELEFON), SITE))}
+    caz('telefon in JSON-LD pe un build fara CANALE_JSON opreste', cu_telefon, 1, 'n-are canal de telefon')
+    caz('telefon in JSON-LD cu CANALE_JSON fara telefon opreste', cu_telefon, 1, 'n-are canal de telefon',
+        mediu={'CANALE_JSON': canale('')})
+    caz('telefonul canalului din CANALE_JSON (mediu) trece', cu_telefon, 0, 'permis numai ca ' + TELEFON,
+        mediu={'CANALE_JSON': canale(TELEFON)})
+    caz('telefonul canalului din --canale-json trece', cu_telefon, 0,
+        argumente=('--canale-json', canale(TELEFON)))
+    caz('alt numar decat canalul opreste', cu_telefon, 1, 'diferit de canalul',
+        mediu={'CANALE_JSON': canale(ALT_TELEFON)})
+    numai_punct = dict(ORGANIZATIE, contactPoint={'@type': 'ContactPoint', CAMP_TELEFON: ALT_TELEFON})
+    caz('alt numar numai in contactPoint opreste', {'index': pagina(ld=graf(numai_punct, SITE))}, 1, 'diferit de canalul',
+        mediu={'CANALE_JSON': canale(TELEFON)})
+    caz('canalul de telefon nu scuteste un camp de firma', {'index': pagina(ld=graf(dict(firma, **{CAMP_TELEFON: TELEFON}), SITE))},
+        1, 'date de firma', mediu={'CANALE_JSON': canale(TELEFON)})
+    caz('CANALE_JSON care nu se citeste da 3', {'index': pagina()}, 3, 'NEMASURAT',
+        mediu={'CANALE_JSON': '{' + '"telefon": '})
+
+    # --- build fara nicio pagina (site-ul international inainte de paginile EN) ---
+    caz_arbore('build fara pagini, confirmat de manifest, iese 0', arbore_fara_pagini(), 0, 'SURSA: 0 pagini')
+    caz_arbore('manifest cu o pagina prerandata, fara HTML, da 3', arbore_fara_pagini(('/pricing',)), 3, '/pricing')
+    caz_arbore('manifest mai vechi decat src/ da 3', arbore_fara_pagini(manifest_vechi=True), 3, 'invalida')
 
     # --- S-03 e AVERT in tabelul de operare: se raporteaza, nu opreste ---
     caz('doi h1 avertizeaza, nu opresc',
@@ -257,6 +366,16 @@ def main():
                     shutil.rmtree(d, ignore_errors=True)
     finally:
         shutil.rmtree(mutant_dir, ignore_errors=True)
+
+    # --- MUTANTII TELEFONULUI (S-09): fiecare dezarmeaza o conditie a exceptiei, pe o copie a portii ---
+    mutant('fara conditia de canal (telefon permis oricand)',
+           'return camp == CAMP_TELEFON and bool(telefon_permis) and nod.get(camp) == telefon_permis',
+           'return camp == CAMP_TELEFON',
+           cu_telefon, {}, 1)
+    mutant('fara compararea numarului (orice telefon, cu canal)',
+           'return camp == CAMP_TELEFON and bool(telefon_permis) and nod.get(camp) == telefon_permis',
+           'return camp == CAMP_TELEFON and bool(telefon_permis)',
+           cu_telefon, {'CANALE_JSON': canale(ALT_TELEFON)}, 1)
 
     print('\nREZULTAT: ' + str(T) + ' trecute, ' + str(P) + ' picate')
     return 1 if P else 0

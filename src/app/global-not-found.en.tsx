@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import "./globals.css";
+import Antet from "@/components/global/Antet";
+import Subsol from "@/components/global/Subsol";
 import { BRAND } from "@/content/entitate";
+import { navigatieEn } from "@/content/navigatie-en";
 import { RUTE, editiaRutei } from "@/content/rute";
 import { EDITII } from "@/lib/editii";
+import { CLASE_FONTURI } from "@/lib/fonturi";
 
 // PAGINA DE NEGASIT a site-ului international (fundatia editiilor, `src/lib/editii.ts`). Pe build-ul cu `en`
 // exista doua layout-uri radacina (`(en)` si `(romd)`) si niciunul la `src/app`, deci o adresa care nu se
@@ -11,6 +16,10 @@ import { EDITII } from "@/lib/editii";
 //
 // Drumurile propuse vin din `RUTE` (rutele `en` din harta), deci apar singure cand feliile de pagini le adauga;
 // legatura spre romana apare numai cand editia `ro-MD` are index (`/ro`).
+//
+// Antetul si subsolul EN (felia navigatie-pe-editie) se monteaza aici, nu prin layout-ul `(en)`: pagina are
+// propriul `<html>`. Tot de aceea isi importa singura stilurile globale si fonturile. CTA-ul antetului foloseste
+// textul paginii de start (`en-home`): o adresa necunoscuta nu are intrare in tabelul de canale.
 
 export const metadata: Metadata = {
   title: "Page not found | " + BRAND.nume,
@@ -20,9 +29,11 @@ export const metadata: Metadata = {
 export default function NegasitGlobalEn() {
   const drumuri = RUTE.filter((r) => editiaRutei(r) === "en" && r.inHarta);
   const indexRoMd = RUTE.find((r) => editiaRutei(r) === "ro-MD" && r.cale === EDITII["ro-MD"].prefix);
+  const navigatie = navigatieEn();
   return (
-    <html lang={EDITII.en.lang}>
+    <html lang={EDITII.en.lang} className={CLASE_FONTURI}>
       <body>
+        <Antet navigatie={navigatie} />
         <main>
           <h1>Page not found</h1>
           <p>The address you followed does not exist on this site.</p>
@@ -43,6 +54,7 @@ export default function NegasitGlobalEn() {
             </p>
           ) : null}
         </main>
+        <Subsol navigatie={navigatie} />
       </body>
     </html>
   );

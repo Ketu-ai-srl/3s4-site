@@ -38,7 +38,15 @@ import { citesteDeclaratiile } from './browser/ajutor/raspunsuri'
  *
  * Fisierul ruleaza si in jobul obisnuit (fara `SITE_EDITII`), si in jobul 3s.md (cu `SITE_EDITII=en,ro-MD`):
  * de aceea nicio asteptare de mai jos nu depinde de profilul din mediu, in afara de blocul serverului.
+ *
+ * FONTURILE. Layout-urile editiilor si pagina de negasit EN importa `src/lib/fonturi.ts`, iar `next/font` ruleaza
+ * numai in compilatorul Next: in vitest functiile lui nu exista si importul ar pica inainte de orice caz. Proba le
+ * inlocuieste cu forma minima pe care o citesc layout-urile (`variable`); aspectul fonturilor nu e masurat aici.
  */
+vi.mock('next/font/google', () => {
+  const font = (optiuni: { variable: string }) => ({ variable: optiuni.variable, className: '', style: { fontFamily: '' } })
+  return { Plus_Jakarta_Sans: font, JetBrains_Mono: font, Marck_Script: font }
+})
 
 const RADACINA = join(__dirname, '..')
 const PROFIL = JSON.parse(readFileSync(join(RADACINA, 'config', 'profil-3s-md.json'), 'utf8')) as Record<string, unknown>
@@ -207,20 +215,31 @@ describe('manifestul de rute pe editie', () => {
 describe('layout-urile radacina si pagina de negasit (proba-sora a celei din tests/juridic.test.ts pe layout-ul RO)', () => {
   it('layout.en.tsx randeaza <html lang="en">, cu og:locale en_US din catalog', () => {
     const html = renderToStaticMarkup(createElement(RadacinaEn, null, createElement('p', null, 'x')))
-    expect(html).toMatch(/^<html lang="en"><head><\/head><body><p>x<\/p><\/body><\/html>$/)
+    // Layout-ul monteaza antetul si subsolul editiei in jurul copiilor, deci se masoara limba si prezenta copiilor,
+    // nu un corp care contine numai copiii.
+    expect(html).toMatch(/^<html lang="en"[^>]*>/)
+    expect(html).toContain('<p>x</p>')
     expect(metadataEn.openGraph).toMatchObject({ locale: 'en_US' })
   })
 
   it('layout.romd.tsx randeaza <html lang="ro">, cu og:locale ro_MD', () => {
-    expect(renderToStaticMarkup(createElement(RadacinaRoMd, null, 'x'))).toMatch(/^<html lang="ro">/)
+    expect(renderToStaticMarkup(createElement(RadacinaRoMd, null, 'x'))).toMatch(/^<html lang="ro"[^>]*>/)
     expect(metadataRoMd.openGraph).toMatchObject({ locale: 'ro_MD' })
   })
 
-  it('global-not-found.en.tsx: <html lang="en">, titlul in engleza, fara diacritice', () => {
+  it('global-not-found.en.tsx: <html lang="en">, titlul in engleza, fara diacritice (in afara listei albe)', () => {
     const html = renderToStaticMarkup(createElement(NegasitGlobalEn))
-    expect(html).toMatch(/^<html lang="en">/)
+    expect(html).toMatch(/^<html lang="en"[^>]*>/)
     expect(html).toContain('<h1>Page not found</h1>')
-    expect(/[^\x20-\x7e]/.test(html)).toBe(false)
+    // Lista alba explicita, pe TOATA pagina (antetul si subsolul inclusiv, nu numai <main>): semnul dreptului de
+    // autor din subsol si textul legaturii in romana spre informatiile legale (legatura e in limba operatorului, pe
+    // fiecare pagina EN, si apare cand ruta exista). Orice alt caracter in afara ASCII e text romanesc scapat in
+    // piesele EN - de pilda o eticheta de buton ramasa in romana.
+    const PERMISE = ['©', 'Informații legale']
+    const ramas = PERMISE.reduce((text, permis) => text.split(permis).join(''), html)
+    expect(/[^\x20-\x7e]/.test(ramas)).toBe(false)
+    // martor: subsolul chiar e pe pagina (randul drepturilor de autor), deci lista alba are pe ce sa lucreze
+    expect(html).toContain('©')
   })
 })
 

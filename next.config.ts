@@ -4,7 +4,7 @@ import { AVERTISMENT_FARA_OPERATOR, rescrieriAnalitica, stareAnaliticaProprie } 
 import { alegeOperator, operatorComplet } from './src/lib/operator'
 import { VARIABILA_OPERATOR_NUMIT, operatorNumitInMediu } from './src/lib/operator-mediu'
 import { VARIABILA_FAMILIE_JURIDICA, familieJuridica } from './src/content/juridic/familie'
-import { VARIABILA_EDITII_PUBLICA, cuNegasitGlobal, editiiDinText, extensiiPagini, origineSite, perechiAlternate, problemeCoerenta } from './src/lib/editii'
+import { EDITII, VARIABILA_EDITII_PUBLICA, cuNegasitGlobal, editiiDinText, extensiiPagini, origineSite, perechiAlternate, problemeCoerenta, type CodEditie } from './src/lib/editii'
 
 // De ce e `output` conditionat: pe Windows fara drept de legaturi simbolice,
 // `standalone` cade cu EPERM la copierea fisierelor urmarite (masurat 2026-09-05,
@@ -37,6 +37,23 @@ export function anteteSecuritate(mediu: string | undefined = process.env.SITE_EN
   ]
   if (mediu === 'productie') antete.push({ key: 'Strict-Transport-Security', value: HSTS })
   return antete
+}
+
+// LIMBA CONTINUTULUI pe editie (felia metadata-hreflang): `Content-Language` spune limba raspunsului, pe
+// fiecare cale. Pe build-ul international: limba editiei de la radacina (`en`) pe tot domeniul, iar sub prefixul
+// editiei RO-MD (`/ro` si tot ce e sub el) codul ei, `ro-MD`. Regula prefixului vine DUPA cea generala: cand doua
+// reguli pun aceeasi cheie pe aceeasi cale, Next o pastreaza pe ultima. Pe build-ul romanesc (`ro-RO`) nu se pune
+// nimic: antetele lui raman cele de dinainte de editii.
+export function anteteLimba(editii: readonly CodEditie[]): { source: string; headers: { key: string; value: string }[] }[] {
+  if (editii.includes('ro-RO')) return []
+  const reguli: { source: string; headers: { key: string; value: string }[] }[] = []
+  for (const cod of editii) {
+    const { prefix, inLanguage } = EDITII[cod]
+    const antet = [{ key: 'Content-Language', value: inLanguage }]
+    if (prefix === '') reguli.unshift({ source: '/:path*', headers: antet })
+    else reguli.push({ source: prefix, headers: antet }, { source: prefix + '/:cale*', headers: antet })
+  }
+  return reguli
 }
 
 // Avertismentul despre analitica fara operator iese o singura data pe proces: Next cheama `rewrites()` de doua
@@ -83,7 +100,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   async headers() {
-    return [{ source: '/:path*', headers: anteteSecuritate() }]
+    return [{ source: '/:path*', headers: anteteSecuritate() }, ...anteteLimba(EDITII_BUILD)]
   },
   // OPERATORUL, PENTRU PACHETUL DE BROWSER (felia multi-domeniu, runda 1 de reparatii). Next inlocuieste in
   // pachetul de browser numai variabilele `NEXT_PUBLIC_*`, deci `OPERATOR_JSON` nu ajunge acolo, iar lista de

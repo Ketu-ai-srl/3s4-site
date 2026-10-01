@@ -11,7 +11,8 @@
 
 .grila {
   display: grid;
-  grid-template-columns: 1.8fr repeat(5, 1fr);
+  /* 5 coloane de legaturi pe contractul romanesc; o editie cu alt numar il da prin variabila. */
+  grid-template-columns: 1.8fr repeat(var(--coloane-subsol, 5), 1fr);
   gap: 48px 40px;
   margin-bottom: 56px;
 }

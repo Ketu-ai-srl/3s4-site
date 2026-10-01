@@ -15,19 +15,32 @@
 // tot prin `adresaSite()` (felia seo-tehnic), deci `ADRESA_BAZA` nu mai are alt consumator decat
 // implicitul de aici. Proba: un build cu `SITE_URL` schimbat nu mai contine gazda de proba.
 //
-// ALTERNATELE HREFLANG (felia multi-domeniu): cand acelasi cod ruleaza pe mai multe domenii, fiecare
-// pagina trebuie sa spuna motoarelor ca are un echivalent pe celelalte. Regulile lui Google, citite pe
+// ALTERNATELE HREFLANG (felia multi-domeniu, apoi felia metadata-hreflang): cand acelasi cod ruleaza pe mai
+// multe domenii, fiecare pagina spune motoarelor ce echivalente are pe celelalte. Regulile lui Google, citite pe
 // 2026-09-30 in documentatia oficiala (https://developers.google.com/search/docs/specialty/international/localized-versions):
 // "Each language version must list itself as well as all other language versions" si "If two pages
 // don't both point to each other, the tags will be ignored"; adresele trebuie sa fie complete
 // (`https://...`), codurile sunt limba (ISO 639-1) cu regiune optionala (ISO 3166-1 alfa-2), iar
-// `x-default` e recomandat pentru vizitatorii carora nicio varianta nu li se potriveste. Lista vine din
-// `SITE_ALTERNATE`, la construire, si e ACEEASI pe toate domeniile: asa reciprocitatea iese din
-// constructie, iar fiecare domeniu isi gaseste singur locul in lista. Fara variabila nu se emite
-// nimic. Regulile listei: `alternateSite`, mai jos, si `docs/ziua-operatorului.md`.
+// `x-default` e recomandat pentru vizitatorii carora nicio varianta nu li se potriveste.
+//
+// Aici sta numai LISTA BAZELOR: `SITE_ALTERNATE`, citita la construire, aceeasi pe toate domeniile, validata
+// de `alternateSite`. Ce pagina are echivalent pe ce baza NU se mai deduce din cale (regula veche "aceeasi cale
+// pe fiecare varianta" s-a retras: `/preturi` si `/pricing` sunt aceeasi pagina, cu cai diferite): o decide
+// tabelul de echivalente (`src/content/echivalente.ts`), iar legaturile le scrie `metadataPagina`
+// (`src/components/seo/metadata.ts`), pe server, in `<head>`. Fara variabila nu se emite nimic. Regulile
+// listei: `alternateSite`, mai jos, si `docs/ziua-operatorului.md`.
 
-import { X_DEFAULT, type Alternata } from "@/components/seo/alternate-cale";
 import { ADRESA_BAZA } from "@/content/rute";
+import { EDITII, editiiBuild, type CodEditie, type Editie } from "@/lib/editii";
+
+/**
+ * O varianta a site-ului: codul hreflang si adresa de baza a variantei, adica originea domeniului
+ * plus, cand versiunea sta sub un prefix de cale, prefixul (`https://gazda/ro`). Fara bara la final.
+ */
+export type Alternata = { hreflang: string; adresa: string };
+
+/** Codul pentru "nicio varianta nu se potriveste vizitatorului" (Google: pagina de rezerva). */
+export const X_DEFAULT = "x-default";
 
 /**
  * Originea din text: doar `https://gazda`, fara cale, parametri sau credentiale. `nume` e variabila
@@ -130,9 +143,9 @@ function bazaVarianta(brut: string, nume: string): string {
  *     una sub `/ro`), varianta de la radacina e cea pe care o servim azi;
  *   - un cod apare o singura data;
  *   - `x-default` se poate da explicit ca pereche (`x-default=https://...`) si trebuie sa fie una dintre
- *     variantele listate (altfel pagina lui nu ar confirma inapoi); fara el, se emite automat spre PRIMA
- *     varianta din lista. Prima pozitie conteaza deci: o pui pe cea pentru care vrei sa cada
- *     vizitatorii fara varianta potrivita.
+ *     variantele listate; fara el, lista il pune spre PRIMA varianta. Paginile NU il mai iau de aici: dupa
+ *     tabelul de echivalente, `x-default` al unei pagini e echivalentul ei EN, cand exista, altfel pagina
+ *     insasi (`metadataPagina`). Perechea ramane validata, ca o lista scrisa gresit sa opreasca tot construirea.
  * Intoarce lista goala cand variabila lipseste sau e goala: nimic nu se emite. `x-default` vine ultimul.
  */
 export function alternateSite(
@@ -191,4 +204,22 @@ export function alternateSite(
     );
   }
   return [...limbi, { hreflang: X_DEFAULT, adresa: implicit ?? limbi[0].adresa }];
+}
+
+/**
+ * Editia de la radacina domeniului: `ro-RO` pe build-ul romanesc, `en` pe cel international (profilul admis are
+ * exact una la radacina, `src/lib/editii.ts`). Din ea vin graful comun de date structurate, `llms.txt`,
+ * `security.txt` si manifestul aplicatiei web, care sunt unul singur pe domeniu.
+ */
+export function editiaRadacinii(editii: readonly CodEditie[] = editiiBuild()): Editie {
+  const cod = editii.find((c) => EDITII[c].prefix === "");
+  if (cod === undefined) {
+    throw new Error("profilul " + editii.join(",") + " nu are nicio editie la radacina domeniului");
+  }
+  return EDITII[cod];
+}
+
+/** Limbile domeniului (`lang`, fara regiune, fara repetitii), in ordinea profilului: `["ro"]` sau `["en", "ro"]`. */
+export function limbileDomeniului(editii: readonly CodEditie[] = editiiBuild()): string[] {
+  return [...new Set(editii.map((c) => EDITII[c].lang))];
 }

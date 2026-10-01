@@ -19,9 +19,12 @@ import { RADACINA, nemasurat } from './ajutor/proiect'
  * adresa, deci "zero aparitii ale domeniului de proba" ar fi trecut si fara nicio schimbare.
  *
  * CE SE MASOARA, pe build-ul real si pe copie:
- *   1. alternatele hreflang in `<head>`-ul servit (fara JavaScript), pe trei rute: auto-referinta egala cu
- *      `canonical`, aceeasi cale pe fiecare varianta, prefixul `/ro` lipit fara `//`, x-default; la navigarea
- *      din browser se schimba odata cu calea; pagina de negasit nu primeste;
+ *   1. alternatele hreflang in `<head>`-ul servit (fara JavaScript), pe trei rute, scrise pe server de
+ *      `metadataPagina` din editia paginii si din tabelul de echivalente (felia metadata-hreflang; regula veche
+ *      "aceeasi cale pe fiecare varianta" s-a retras): o pagina romaneasca fara echivalent se listeaza numai pe
+ *      ea insasi (codul editiei, `ro-RO`) si x-default, cu adresa egala cu `canonical`; nicio legatura spre
+ *      celelalte domenii din lista (P-17); la navigarea din browser se schimba odata cu calea; pagina de negasit
+ *      nu primeste;
  *   2. analitica: scriptul si evenimentele merg numai spre originea site-ului, instanta le primeste prin proxy,
  *      niciun cookie si nicio cheie de stocare scrisa, Do Not Track opreste trimiterea; C-01 (zero terti) ramane
  *      verde cu analitica pornita si prinde o pagina care ar incarca trackerul direct de la instanta;
@@ -370,13 +373,15 @@ function alternateDinHtml(pagina: string): [string, string][] {
   return iesire
 }
 
-/** Ce trebuie sa emita o pagina, scris independent de cod: lista din cerinta plus calea. Radacina fara bara finala. */
+/**
+ * Ce trebuie sa emita o pagina a copiei, scris independent de cod: site-ul romanesc (editia `ro-RO`) pe gazda
+ * internationala, fara echivalente in tabel, deci numai pagina insasi, cu codul editiei ei, si x-default spre ea.
+ * Radacina fara bara finala.
+ */
 function asteptate(cale: string): [string, string][] {
   const sfarsit = cale === '/' ? '' : cale
   return [
-    ['ro-RO', RO + sfarsit],
-    ['en', INT + sfarsit],
-    ['ro-MD', INT + '/ro' + sfarsit],
+    ['ro-RO', INT + sfarsit],
     ['x-default', INT + sfarsit],
   ]
 }
@@ -410,13 +415,14 @@ test('copie: alternatele hreflang sunt in <head>-ul servit fara JavaScript, pe t
     const gasite = alternateDinHtml(pagina)
     console.log('[hreflang] ' + cale + ' -> ' + gasite.map(([c, h]) => c + ' ' + h).join(' | '))
     expect(gasite, cale).toEqual(asteptate(cale))
-    // auto-referinta: adresa paginii insesi pe domeniul ei (varianta `en`) e canonical-ul paginii
+    // auto-referinta: adresa paginii insesi, cu codul editiei ei, e canonical-ul paginii
     const canonical = /<link rel="canonical" href="([^"]+)"/.exec(pagina)?.[1]
-    expect(canonical, cale + ': canonical').toBe(gasite.find(([c]) => c === 'en')?.[1])
+    expect(canonical, cale + ': canonical').toBe(gasite.find(([c]) => c === 'ro-RO')?.[1])
     // fara `//` in afara schemei, si fara bara finala pe radacina
     for (const [, href] of gasite) expect(href.replace(/^https:\/\//, ''), href).not.toContain('//')
-    // Reciprocitate: lista e aceeasi pe fiecare domeniu, deci pagina de pe celalalt domeniu emite aceleasi adrese
-    expect(gasite.map(([c]) => c)).toEqual(['ro-RO', 'en', 'ro-MD', 'x-default'])
+    // Nicio legatura spre celelalte domenii ale listei (P-17: reciproca n-ar exista), desi lista le numeste
+    expect(gasite.some(([, h]) => h.startsWith(RO)), cale + ': spre ' + RO).toBe(false)
+    expect(LISTA_ALTERNATE).toContain(RO)
   }
 })
 
@@ -434,7 +440,7 @@ test('martor POZITIV: alternatele urmeaza calea la navigarea din browser, fara r
   await expect.poll(citeste, { timeout: 8000 }).toEqual(asteptate('/preturi'))
   // Controlul navigarii din browser: pagina nu s-a reincarcat, deci alternatele s-au schimbat prin React, nu prin HTML nou
   expect(await page.evaluate(() => (window as unknown as { __marcaj?: string }).__marcaj)).toBe('fara-reincarcare')
-  expect(await page.evaluate(() => document.head.querySelectorAll('link[rel="alternate"]').length)).toBe(4)
+  expect(await page.evaluate(() => document.head.querySelectorAll('link[rel="alternate"][hreflang]').length)).toBe(asteptate('/preturi').length)
   expect(erori).toEqual([])
 })
 
@@ -445,9 +451,9 @@ test('martor NEGATIV: pagina de negasit nu primeste alternate, nici in HTML-ul s
   await deschide(page, copie.baza + '/o-cale-care-nu-exista')
   await page.waitForTimeout(1500)
   expect(await page.evaluate(() => document.head.querySelectorAll('link[rel="alternate"]').length)).toBe(0)
-  // Controlul: aceeasi pagina de browser, pe o ruta care exista, are cele patru
+  // Controlul: aceeasi pagina de browser, pe o ruta care exista, are alternatele ei
   await deschide(page, copie.baza + '/preturi')
-  expect(await page.evaluate(() => document.head.querySelectorAll('link[rel="alternate"]').length)).toBe(4)
+  expect(await page.evaluate(() => document.head.querySelectorAll('link[rel="alternate"][hreflang]').length)).toBe(asteptate('/preturi').length)
 })
 
 test('copie: consola browserului ramane curata (fara erori de hidratare) pe pagini cu formular, cu documente juridice si cu banner', async ({ page }) => {

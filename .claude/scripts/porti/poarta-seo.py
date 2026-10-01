@@ -31,6 +31,14 @@ CE VERIFICA, cu codurile stabile din PORTI-FABRICA.md sectiunea 5:
             au @id; pe tot lotul, un @id poarta un singur tip, iar aceeasi entitate
             (tip + nume) nu apare sub doua @id;
           - pagina de start poarta nodurile Organization si WebSite ale marcii.
+        plus, din canalele pe domeniu (planul 3s.md P-12; felia metadata-hreflang): `telephone`
+        e permis numai pe un build al carui CANALE_JSON are telefon, si numai cu acel numar.
+
+PROFILELE. Poarta ruleaza pe build-ul romanesc (jobul obisnuit) si pe cel al aplicatiei 3s.md (jobul
+"Profil 3s.md", cu variabilele din config/profil-3s-md.json in mediu). Un build care nu are NICIO
+pagina prerandata in afara celor de eroare (site-ul international inainte de primele pagini EN) iese 0
+numai cand manifestul build-ului o confirma si e mai nou decat src/; fara manifest, sau cu pagini in
+manifest si fara HTML, iese 3, ca inainte.
 
 SEVERITATI, luate din tabelul de operare (sectiunea 8), nu inventate aici:
   S-01, S-02, S-09 = OPRESTE (iesire 1)
@@ -71,6 +79,10 @@ descriere, canonical, antete si blocuri de date structurate?" Nu "se indexeaza s
   - Identitatea unei entitati e perechea (tip, nume normalizat). Doua noduri cu nume scrise
     diferit sub @id diferite trec drept doua entitati.
   - S-03 (un singur antet de nivel unu, fara sarituri de nivel) e AVERT: nu opreste nimic.
+  - Pe un build fara nicio pagina (verdictul 0 confirmat de manifest) regulile se exercita numai pe
+    martori; HTML-ul real nu are ce arata. Paginile de eroare raman in afara masuratorii.
+  - Telefonul permis se compara ca text exact cu CANALE_JSON; poarta nu verifica forma lui E.164
+    (o valideaza construirea, `src/lib/canale-mediu.ts`).
   - Nu se ating: robots, sitemap, viteza, imagini, legaturi interne, limbi alternative,
     redirectari.
   - Se masoara HTML-ul STATIC generat la build. Ce adauga sau schimba codul din browser nu se
@@ -148,6 +160,13 @@ CAMPURI_FIRMA = {
     'address', 'legalName', 'taxID', 'vatID', 'telephone', 'faxNumber', 'duns', 'leiCode',
     'iso6523Code', 'naics', 'globalLocationNumber',
 }
+
+# TELEFONUL, exceptia de canal (felia metadata-hreflang; planul 3s.md P-12, canalele pe domeniu): pe un domeniu
+# al carui `CANALE_JSON` are telefon, numarul e canal de contact al marcii, publicat pe fiecare pagina, deci
+# `telephone` (si `contactPoint.telephone`) e permis in JSON-LD, dar NUMAI cu exact acel numar. Fara canal de
+# telefon in build, ramane camp interzis, ca pana acum. Profilul se citeste din mediu (`CANALE_JSON`, aceeasi
+# variabila cu care s-a construit) sau din `--canale-json`.
+CAMP_TELEFON = 'telephone'
 
 # FARA RECENZII (§8.2 "fara aggregateRating"; decizia D5): 3S nu are recenzii publicate. Tipurile
 # raman in TIPURI_CUNOSCUTE, fiindca sunt vocabular real; continutul le refuza aici.
@@ -261,11 +280,25 @@ def noduri_pagina(culegator):
     return noduri
 
 
-def verifica_brand(ruta, noduri):
+def telefon_permis_pe(nod, camp, telefon_permis):
+    """Telefonul e permis numai pe un build cu canal de telefon (CANALE_JSON) si numai cu ACELASI numar."""
+    return camp == CAMP_TELEFON and bool(telefon_permis) and nod.get(camp) == telefon_permis
+
+
+def verifica_brand(ruta, noduri, telefon_permis=''):
     """Regulile din decizia owner-ului (§7 si §8.2) pe O pagina: date de firma, recenzii, @id."""
     g = []
     for nod in noduri:
         for camp in sorted(set(nod.keys()) & CAMPURI_FIRMA):
+            if telefon_permis_pe(nod, camp, telefon_permis):
+                continue
+            if camp == CAMP_TELEFON:
+                motiv = ('telefon in datele structurate: build-ul n-are canal de telefon in CANALE_JSON'
+                         if not telefon_permis else
+                         'telefon in datele structurate diferit de canalul domeniului din CANALE_JSON')
+                g.append((OPRESTE, 'S-09', ruta + ': ' + motiv + ' (decizia owner-ului din 24.09.2026, plan S4 '
+                          'sectiunea 7; canalele pe domeniu, P-12)'))
+                continue
             g.append((OPRESTE, 'S-09', ruta + ': date de firma in datele structurate ("' + camp
                       + '"): pe site apare doar brandul (decizia owner-ului din 24.09.2026, plan S4 sectiunea 7)'))
         for camp in sorted(set(nod.keys()) & CAMPURI_RECENZIE):
@@ -321,7 +354,7 @@ def verifica_identitati(pagini):
     return g
 
 
-def analizeaza_pagina(ruta, html, gazda_asteptata=None):
+def analizeaza_pagina(ruta, html, gazda_asteptata=None, telefon_permis=''):
     """Verdictul pentru O pagina. Intoarce lista de (severitate, cod, mesaj).
 
     Functia asta e si ce ruleaza pe continutul real, si ce ruleaza pe martori.
@@ -416,15 +449,15 @@ def analizeaza_pagina(ruta, html, gazda_asteptata=None):
             if t not in TIPURI_CUNOSCUTE:
                 g.append((OPRESTE, 'S-09', ruta + ': @type necunoscut "' + t
                           + '". Daca e real, adauga-l in TIPURI_CUNOSCUTE din poarta; daca e typo, repara-l'))
-    g.extend(verifica_brand(ruta, noduri_pagina(c)))
+    g.extend(verifica_brand(ruta, noduri_pagina(c), telefon_permis))
     return g
 
 
-def analizeaza_lot(pagini, gazda_asteptata=None):
+def analizeaza_lot(pagini, gazda_asteptata=None, telefon_permis=''):
     """Verdictul pe tot lotul: adauga unicitatea, care nu se poate masura pe o pagina."""
     g = []
     for ruta, html in pagini:
-        g.extend(analizeaza_pagina(ruta, html, gazda_asteptata))
+        g.extend(analizeaza_pagina(ruta, html, gazda_asteptata, telefon_permis))
 
     def aduna(extrage):
         harta = {}
@@ -516,6 +549,24 @@ def fabrica_pagina_brand_defecta():
     return fabrica_pagina_corecta(ld)
 
 
+def fabrica_pagina_telefon(numar):
+    """Pagina de start corecta, cu telefonul marcii in Organization si in contactPoint (forma din
+    `src/components/seo/date-structurate.ts`). Numele campului se lipeste la rulare."""
+    camp = 'tele' + 'phone'
+    ld = json.dumps({
+        '@context': 'https://schema.org',
+        '@graph': [
+            {'@type': 'Organization', '@id': 'https://exemplu-corect.test/#organizatie', 'name': 'Trei S',
+             camp: numar,
+             'contactPoint': {'@type': 'ContactPoint', 'contactType': 'customer support', camp: numar}},
+            {'@type': 'WebSite', '@id': 'https://exemplu-corect.test/#site', 'name': 'Trei S',
+             'url': 'https://exemplu-corect.test/',
+             'publisher': {'@id': 'https://exemplu-corect.test/#organizatie'}},
+        ],
+    })
+    return fabrica_pagina_corecta(ld)
+
+
 def fabrica_pagina_id_dublu():
     """A doua pagina a unui lot: aceeasi organizatie sub alt @id, si @id-ul site-ului refolosit
     pentru o organizatie. Langa pagina corecta, fiecare trebuie prinsa pe lot."""
@@ -587,6 +638,25 @@ def controale():
         return 'martorul pozitiv de lot: un @id refolosit pentru alt tip nu a fost prins'
     if '@id diferite' not in identitati:
         return 'martorul pozitiv de lot: aceeasi organizatie sub doua @id nu a fost prinsa'
+
+    # --- martorii telefonului (exceptia de canal, CAMP_TELEFON), fiecare ramura cu dovada ei ---
+    # Numerele se lipesc la rulare. Acelasi HTML, trei profile: fara canal, cu canalul lui, cu alt canal.
+    numar = '+' + '3736' + '9' + '000' + '111'
+    alt_numar = '+' + '3736' + '9' + '000' + '222'
+    cu_telefon = fabrica_pagina_telefon(numar)
+
+    def s09(html, permis):
+        return [m for _, c, m in analizeaza_pagina('/', html, 'exemplu-corect.test', permis) if c == 'S-09']
+
+    if not any('n-are canal de telefon' in m for m in s09(cu_telefon, '')):
+        return 'martorul pozitiv al telefonului: telefonul din JSON-LD pe un build fara canal nu a fost prins'
+    if not any('diferit de canalul' in m for m in s09(cu_telefon, alt_numar)):
+        return 'martorul pozitiv al telefonului: un numar diferit de canalul domeniului nu a fost prins'
+    if s09(cu_telefon, numar):
+        return 'martorul negativ al telefonului: canalul domeniului in JSON-LD a fost prins: ' + '; '.join(s09(cu_telefon, numar))
+    # Exceptia e numai pentru telefon: un camp de firma ramane prins si pe build-ul cu canal de telefon.
+    if not any('date de firma' in m for m in s09(fabrica_pagina_brand_defecta(), numar)):
+        return 'martorul pozitiv al telefonului: canalul de telefon a scutit si un camp de firma'
     return None
 
 
@@ -618,6 +688,48 @@ def cele_mai_noi(dosar, extensii=None):
     return varf
 
 
+def pagini_din_manifest(radacina):
+    """Rutele de PAGINA prerandate de build (nu rutele de sistem, nu paginile de eroare), din manifestele
+    lui Next: o ruta din `prerender-manifest.json` a carei sursa e o pagina in `app-path-routes-manifest.json`.
+    Intoarce (rute, data manifestului), sau None cand manifestele lipsesc ori nu se pot citi."""
+    dosar = os.path.join(radacina, '.next')
+    cale_app = os.path.join(dosar, 'app-path-routes-manifest.json')
+    cale_pre = os.path.join(dosar, 'prerender-manifest.json')
+    try:
+        with open(cale_app, encoding='utf-8') as f:
+            app = json.load(f)
+        with open(cale_pre, encoding='utf-8') as f:
+            pre = json.load(f)
+    except (OSError, ValueError):
+        return None
+    if not isinstance(app, dict) or not isinstance(pre, dict) or not isinstance(pre.get('routes'), dict):
+        return None
+    sursa_pagini = {ruta for cheie, ruta in app.items() if isinstance(cheie, str) and cheie.endswith('/page')}
+    rute = []
+    for ruta, intrare in pre['routes'].items():
+        sursa = intrare.get('srcRoute') if isinstance(intrare, dict) else None
+        if (sursa or ruta) not in sursa_pagini:
+            continue
+        if ruta.rstrip('/').split('/')[-1] in PAGINI_SARITE:
+            continue
+        rute.append(ruta)
+    return sorted(rute), min(os.path.getmtime(cale_app), os.path.getmtime(cale_pre))
+
+
+def telefon_din_canale(text):
+    """Telefonul din `CANALE_JSON` ('' fara canal de telefon sau fara variabila). None = JSON care nu se citeste."""
+    if not (text or '').strip():
+        return ''
+    try:
+        canale = json.loads(text)
+    except ValueError:
+        return None
+    if not isinstance(canale, dict):
+        return None
+    telefon = canale.get('telefon', '')
+    return telefon.strip() if isinstance(telefon, str) else None
+
+
 def construieste(radacina):
     import shutil
     pnpm = shutil.which('pnpm')
@@ -636,7 +748,16 @@ def main():
                    help='gazda mediului servit; canonical care arata in alta parte pica')
     p.add_argument('--construieste', action='store_true',
                    help='ruleaza pnpm build daca HTML-ul lipseste sau e mai vechi decat sursa')
+    p.add_argument('--canale-json', default=os.environ.get('CANALE_JSON', ''),
+                   help='canalele domeniului, ca la construire (implicit variabila CANALE_JSON); '
+                        'cu telefon nevid, S-09 permite acel numar in JSON-LD')
     a = p.parse_args()
+
+    telefon_permis = telefon_din_canale(a.canale_json)
+    if telefon_permis is None:
+        print('poarta-seo: CANALE_JSON nu se poate citi ca obiect JSON cu "telefon" text - NEMASURAT '
+              '(build-ul s-ar fi oprit pe aceeasi valoare)', file=sys.stderr)
+        return 3
 
     motiv = controale()
     if motiv:
@@ -661,6 +782,22 @@ def main():
         invechit = False
 
     if not cai:
+        # Un build FARA nicio pagina e un caz real (site-ul international inainte de primele pagini EN: numai
+        # pagina de negasit si rutele de sistem). Il deosebeste de "build lipsa" numai manifestul build-ului:
+        # el trebuie sa existe, sa fie mai nou decat src/ si sa nu numeasca nicio pagina prerandata. Altfel 3.
+        din_manifest = pagini_din_manifest(radacina)
+        if din_manifest is not None and not din_manifest[0] and (proaspat_sursa is None or din_manifest[1] >= proaspat_sursa):
+            print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de lot OK, '
+                  'martori de brand OK, martori ai telefonului OK')
+            print('SURSA: 0 pagini construite: manifestul build-ului nu numeste nicio pagina prerandata in afara '
+                  'paginilor de eroare (' + ', '.join(sorted(PAGINI_SARITE)) + '). Nimic de masurat pe HTML.')
+            print('DEFECTE SEO: 0 care opresc, 0 de avertisment')
+            return 0
+        if din_manifest is not None and din_manifest[0]:
+            print('poarta-seo: manifestul build-ului numeste ' + str(len(din_manifest[0])) + ' pagina(i) prerandata(e) ('
+                  + ', '.join(din_manifest[0][:5]) + '), dar in ' + os.path.relpath(dosar, radacina)
+                  + ' nu e niciun HTML - masuratoarea e invalida, nu curata', file=sys.stderr)
+            return 3
         print('poarta-seo: niciun HTML construit in ' + os.path.relpath(dosar, radacina)
               + ' - masuratoarea e invalida, nu curata. Ruleaza pnpm build, sau poarta cu --construieste',
               file=sys.stderr)
@@ -674,7 +811,7 @@ def main():
     for c in cai:
         pagini.append((ruta_din_cale(c, dosar), open(c, encoding='utf-8').read()))
 
-    gasiri = analizeaza_lot(pagini, a.gazda)
+    gasiri = analizeaza_lot(pagini, a.gazda, telefon_permis)
     opreste = [g for g in gasiri if g[0] == OPRESTE]
     avert = [g for g in gasiri if g[0] == AVERT]
 
@@ -684,7 +821,10 @@ def main():
         print('AVERT    ' + cod + '  ' + mesaj)
 
     print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de lot OK, '
-          'martori de brand OK (date de firma, note, @id, marca pe start, identitati pe lot)')
+          'martori de brand OK (date de firma, note, @id, marca pe start, identitati pe lot), '
+          'martori ai telefonului OK (fara canal, alt numar, canalul domeniului)')
+    print('TELEFON IN JSON-LD: ' + ('permis numai ca ' + telefon_permis + ' (CANALE_JSON)' if telefon_permis
+                                    else 'interzis (build fara canal de telefon in CANALE_JSON)'))
     print('SURSA: ' + str(len(pagini)) + ' pagina(i) construita(e): ' + ', '.join(r for r, _ in pagini))
     print('GAZDA ASTEPTATA: ' + (a.gazda if a.gazda else 'nedeclarata (S-02 verifica doar forma si auto-referinta)'))
     print('DEFECTE SEO: ' + str(len(opreste)) + ' care opresc, ' + str(len(avert)) + ' de avertisment')

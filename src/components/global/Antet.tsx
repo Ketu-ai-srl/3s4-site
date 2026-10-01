@@ -18,6 +18,12 @@
 // MENIURILE (§2.4, §3.1): hover sau focus deschid; se inchid la iesirea mouse-ului, la iesirea
 // focusului din zona lor, la clicul in afara si la Escape. Escape intoarce focusul pe declansator
 // numai daca focusul era in zona, si o face fara sa redeschida (vezi `faraRedeschidere`).
+//
+// PE EDITIE (felia navigatie-pe-editie): contractul de navigatie si multimea cailor vin ca proprietati,
+// cu IMPLICITUL de azi (`NAVIGATIE_RO`, `CAI_EXISTENTE`), deci layout-ul romanesc randeaza ca inainte.
+// Editiile `en` si `ro-MD` dau contractul lor, construit pe server cu canalele domeniului: CTA-ul e
+// WhatsApp cu textul paginii curente (`ctaPeCale`), iar fara panoul de descarcare (`descarca: null`)
+// butonul Descarca lipseste. Selectorul de limba arata echivalentul paginii curente (`limbiPentruCale`).
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,14 +37,20 @@ import {
   type FocusEvent,
 } from "react";
 import { CAI_EXISTENTE } from "@/content/cai";
+import { ECHIVALENTE } from "@/content/echivalente";
 import {
-  ANTET,
+  NAVIGATIE_RO,
+  ctaPeCale,
+  limbiPentruCale,
   seVede,
   vizibile,
+  type CaiExistente,
+  type ContractNavigatie,
   type FoaieMeniu,
   type LegaturaAntet,
   type PlatformaDescarca,
 } from "@/content/navigatie";
+import { editiiBuild } from "@/lib/editii";
 import Buton from "@/components/primitive/Buton";
 import Iconita from "@/components/primitive/Iconita";
 import { antetulEstePlecat, ascultaAntetul } from "./antet-stare";
@@ -97,10 +109,17 @@ function laIesireaFocusului(inchide: () => void) {
   };
 }
 
-export default function Antet() {
+export type AntetProps = {
+  /** Contractul de navigatie al editiei; implicit cel romanesc. */
+  navigatie?: ContractNavigatie;
+  /** Caile care exista; implicit cele ale build-ului. */
+  cai?: CaiExistente;
+};
+
+export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }: AntetProps) {
+  const ANTET = navigatie.antet;
   const cale = usePathname() ?? "/";
-  const esteStart = cale === "/";
-  const cai = CAI_EXISTENTE;
+  const esteStart = cale === ANTET.sigla.href;
 
   const [derulat, setDerulat] = useState(false);
   const plecat = useSyncExternalStore(ascultaAntetul, antetulEstePlecat, faraPlecare);
@@ -269,10 +288,14 @@ export default function Antet() {
     }
   }
   const listaFoi = Object.values(foi).filter((f): f is FoaieVizibila => Boolean(f));
-  const grupuriDescarca = grupuriVizibile(cai);
+  const grupuriDescarca = ANTET.descarca === null ? [] : grupuriVizibile(cai);
   const autentificare = seVede(ANTET.autentificare, cai) ? ANTET.autentificare : null;
-  const cta = seVede(ANTET.cta, cai) ? ANTET.cta : null;
+  const ctaPagina = ctaPeCale(ANTET.cta, cale);
+  const cta = seVede(ctaPagina, cai) ? ctaPagina : null;
   const areDescarca = grupuriDescarca.length > 0;
+  const limbi = limbiPentruCale(navigatie.limbi, cale, ECHIVALENTE, editiiBuild());
+  // Sertarul primeste contractul cu CTA-ul deja ales pentru pagina curenta.
+  const navigatiePagina: ContractNavigatie = { ...navigatie, antet: { ...ANTET, cta: ctaPagina } };
 
   const esteActiva = (l: LegaturaAntet): boolean => {
     if (l.foaie) {
@@ -290,7 +313,7 @@ export default function Antet() {
     <>
       <header className={clase} data-antet={plecat ? "plecat" : pastila ? "pastila" : "plat"} inert={plecat ? true : undefined}>
         <div className={s.container}>
-          <Link href="/" className={s.sigla} aria-label={ANTET.sigla.text}>
+          <Link href={ANTET.sigla.href ?? "/"} className={s.sigla} aria-label={ANTET.sigla.text}>
             <SiglaMarca inaltime={40} prioritar />
           </Link>
 
@@ -301,7 +324,7 @@ export default function Antet() {
             onMouseEnter={anuleazaInchiderea}
             onBlur={laIesireaFocusului(() => setFoaieActiva(null))}
           >
-            <nav aria-label="Meniul principal">
+            <nav aria-label={ANTET.meniu}>
               <ul className={s.nav}>
                 {legaturi.map((l) => {
                   const areFoaie = Boolean(foi[l.text]);
@@ -360,7 +383,7 @@ export default function Antet() {
                 {ANTET.cautare.tasta}
               </span>
             </button>
-            <SelectorLimba cai={cai} />
+            <SelectorLimba cai={cai} limbi={navigatie.limbi} eticheta={navigatie.selector.eticheta} />
             {autentificare ? (
               <>
                 <span className={s.separator} aria-hidden="true" />
@@ -395,7 +418,7 @@ export default function Antet() {
                     }
                   }}
                 >
-                  <span>{ANTET.descarca.text}</span>
+                  <span>{ANTET.descarca?.text}</span>
                   <Iconita nume="chevron-down" marime={12} contur={2} className={s.chevron} />
                 </button>
                 {descarcaDeschis ? <PanouDescarca id={idDescarca} grupuri={grupuriDescarca} detectata={platforma} /> : null}
@@ -430,9 +453,17 @@ export default function Antet() {
         </div>
       </header>
 
-      {paletaDeschisa ? <PaletaCautare cai={cai} onInchide={inchidePaleta} /> : null}
+      {paletaDeschisa ? <PaletaCautare cai={cai} paleta={navigatie.paleta} onInchide={inchidePaleta} /> : null}
       {sertarDeschis ? (
-        <SertarMobil cai={cai} cale={cale} foi={foi} grupuriDescarca={grupuriDescarca} onInchide={inchideSertar} />
+        <SertarMobil
+          cai={cai}
+          cale={cale}
+          foi={foi}
+          grupuriDescarca={grupuriDescarca}
+          navigatie={navigatiePagina}
+          limbi={limbi}
+          onInchide={inchideSertar}
+        />
       ) : null}
     </>
   );

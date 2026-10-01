@@ -6,21 +6,38 @@
 // fiecare rand (DIRECTIA.md, "Sigla"), si drepturile in numele marcii. Nicio data de firma - nici
 // denumire, nici sediu, registru, cod fiscal sau telefon - si niciun bloc de identificare. Adresa
 // de e-mail apare numai daca `config/brand.json` are una confirmata; altfel randul lipseste.
+//
+// PE EDITIE (felia navigatie-pe-editie): contractul si multimea cailor vin ca proprietati, cu IMPLICITUL de
+// azi (`NAVIGATIE_RO`, `CAI_EXISTENTE`), deci layout-ul romanesc randeaza ca inainte. Contractul unei
+// editii poate aduce coloana de canale (WhatsApp cu textul paginii, numarul ca text si `tel:` numai pe
+// mobil, e-mailul numai cu adresa domeniului), o legatura in limba tarii firmei, in randul de jos si
+// eticheta butonului de setari cookie. Campurile goale (slogan, descriere, insigne) nu lasa elemente goale.
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import LegaturaCanal from "@/components/canale/LegaturaCanal";
+import Telefon from "@/components/canale/Telefon";
 import SetariCookie from "@/components/consimtamant/SetariCookie";
 import { CAI_EXISTENTE } from "@/content/cai";
 import { stareAnalitica } from "@/lib/analitica";
-import { ANTET, SUBSOL, seVede, vizibile, type Legatura } from "@/content/navigatie";
+import { NAVIGATIE_RO, seVede, vizibile, type CaiExistente, type ContractNavigatie, type Legatura } from "@/content/navigatie";
 import Iconita from "@/components/primitive/Iconita";
 import SiglaTert from "@/components/primitive/SiglaTert";
 import SelectorLimba from "./SelectorLimba";
 import SiglaMarca from "./SiglaMarca";
 import s from "./Subsol.module.css";
 
+/**
+ * Tinta e in afara routerului site-ului (posta, telefon, alt domeniu)? Atunci legatura e un `<a>` simplu, nu
+ * `Link`: routerul ar trata `tel:+...` ca pe o cale interna.
+ */
+export function esteExterna(href: string): boolean {
+  return /^(mailto:|tel:|https?:)/.test(href);
+}
+
 function Legaturi({ legatura, className }: { legatura: Legatura; className: string }) {
   const href = legatura.href ?? "/";
-  if (/^(mailto:|https?:)/.test(href)) {
+  if (esteExterna(href)) {
     return (
       <a href={href} className={className}>
         {legatura.text}
@@ -45,30 +62,54 @@ export const INALTIME_SIGLA_SUBSOL = 56;
  * Primul rand al drepturilor, mereu in numele marcii (plan §7): anul, marca si, daca exista,
  * mentiunea. Mentiunea goala nu lasa separatorul in urma.
  */
-export function randDrepturi(an: number): string {
-  const { detinator, mentiune } = SUBSOL.copyright;
+export function randDrepturi(
+  an: number,
+  copyright: ContractNavigatie["subsol"]["copyright"] = NAVIGATIE_RO.subsol.copyright,
+): string {
+  const { detinator, mentiune } = copyright;
   return "© " + an + " " + detinator + (mentiune.trim() === "" ? "" : " · " + mentiune);
 }
 
-export default function Subsol() {
-  const cai = CAI_EXISTENTE;
+export type SubsolProps = {
+  /** Contractul de navigatie al editiei; implicit cel romanesc. */
+  navigatie?: ContractNavigatie;
+  /** Caile care exista; implicit cele ale build-ului. */
+  cai?: CaiExistente;
+};
+
+export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }: SubsolProps) {
+  const SUBSOL = navigatie.subsol;
+  const ANTET = navigatie.antet;
   const coloane = SUBSOL.coloane
     .map((c) => ({ ...c, legaturi: vizibile(c.legaturi, cai) }))
     .filter((c) => c.legaturi.length > 0);
   const retele = vizibile(SUBSOL.retele, cai);
   const posta = seVede(SUBSOL.brand.posta, cai) ? SUBSOL.brand.posta : null;
   const an = new Date().getFullYear();
+  const contact = SUBSOL.contact ?? null;
+  const areContact = contact !== null && (contact.whatsapp !== null || contact.telefon !== null || contact.email !== null);
+  const locala = SUBSOL.legaturaLocala && seVede(SUBSOL.legaturaLocala, cai) ? SUBSOL.legaturaLocala : null;
+  // Grila are 5 coloane de legaturi pe contractul romanesc (fara coloana de canale si fara atribut de stil);
+  // pe un contract cu canale, numarul de coloane trece prin variabila CSS. Atributul lipseste cu totul pe contractul
+  // romanesc: un `style` nedefinit ar intra totusi in datele paginii (masurat pe proba de invarianta RO).
+  const nrColoane = coloane.length + (areContact ? 1 : 0);
+  // Selectorul si butonul de setari sunt piese de browser: tot ce primesc ajunge in datele paginii. Pe contractul
+  // romanesc nu primesc nimic in plus (implicitele lor sunt aceleasi valori), deci HTML-ul servit ramane identic.
+  const limbaContract = navigatie === NAVIGATIE_RO ? {} : { limbi: navigatie.limbi, eticheta: navigatie.selector.eticheta };
+  const textSetari = SUBSOL.setariCookie === undefined ? {} : { text: SUBSOL.setariCookie };
+  const stilGrila: CSSProperties | undefined =
+    SUBSOL.contact === undefined ? undefined : ({ "--coloane-subsol": Math.max(nrColoane, 1) } as CSSProperties);
 
   return (
     <footer className={s.subsol}>
       <div className="container-site">
-        <div className={s.grila}>
+        <div className={s.grila} {...(stilGrila === undefined ? {} : { style: stilGrila })}>
           <div className={s.brand}>
-            <Link href="/" className={s.brandSigla} aria-label={ANTET.sigla.text}>
+            <Link href={ANTET.sigla.href ?? "/"} className={s.brandSigla} aria-label={ANTET.sigla.text}>
               <SiglaMarca inaltime={INALTIME_SIGLA_SUBSOL} />
             </Link>
-            <p className={s.slogan}>{SUBSOL.brand.slogan}</p>
-            <p className={s.descriere}>{SUBSOL.brand.descriere}</p>
+            {SUBSOL.brand.slogan === "" ? null : <p className={s.slogan}>{SUBSOL.brand.slogan}</p>}
+            {SUBSOL.brand.descriere === "" ? null : <p className={s.descriere}>{SUBSOL.brand.descriere}</p>}
             {posta ? (
               <a href={posta.href ?? undefined} className={s.posta}>
                 <Iconita nume="mail" marime={14} contur={2} />
@@ -89,27 +130,63 @@ export default function Subsol() {
               </ul>
             </nav>
           ))}
+
+          {areContact && contact !== null ? (
+            <nav aria-label={contact.titlu} data-subsol-contact="">
+              <h2 className={s.coloanaTitlu}>{contact.titlu}</h2>
+              <ul className={s.lista}>
+                {contact.whatsapp !== null ? (
+                  <li>
+                    <LegaturaCanal legatura={contact.whatsapp.legatura} canal="whatsapp" className={s.legatura}>
+                      {contact.whatsapp.text}
+                    </LegaturaCanal>
+                  </li>
+                ) : null}
+                {contact.telefon !== null ? (
+                  <li>
+                    <Telefon text={contact.telefon.text} href={contact.telefon.href} className={s.legatura} />
+                  </li>
+                ) : null}
+                {contact.email !== null ? (
+                  <li>
+                    <LegaturaCanal legatura={contact.email.legatura} canal="email" className={s.legatura}>
+                      {contact.email.text}
+                    </LegaturaCanal>
+                  </li>
+                ) : null}
+              </ul>
+            </nav>
+          ) : null}
         </div>
 
-        <ul className={s.insigne}>
-          {SUBSOL.insigne.map((i) => (
-            <li key={i.text} className={s.insigna}>
-              <Iconita nume={i.iconita} marime={14} contur={2} className={s.insignaIconita} />
-              <span>{i.text}</span>
-            </li>
-          ))}
-        </ul>
+        {SUBSOL.insigne.length === 0 ? null : (
+          <ul className={s.insigne}>
+            {SUBSOL.insigne.map((i) => (
+              <li key={i.text} className={s.insigna}>
+                <Iconita nume={i.iconita} marime={14} contur={2} className={s.insignaIconita} />
+                <span>{i.text}</span>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className={s.jos}>
           <div className={s.drepturi}>
-            <p>{randDrepturi(an)}</p>
+            <p>{randDrepturi(an, SUBSOL.copyright)}</p>
             <p>{SUBSOL.copyright.drepturi}</p>
+            {locala !== null ? (
+              <p>
+                <Link href={locala.href ?? "/"} className={s.legatura} lang={locala.lang} hrefLang={locala.hrefLang}>
+                  {locala.text}
+                </Link>
+              </p>
+            ) : null}
             {/* Retragerea consimtamantului, pe orice pagina (felia seo-geo-gdpr, plan S4 §9): numai
                 cand analitica e pornita, fiindca altfel n-ar avea ce setari sa deschida. */}
-            {stareAnalitica().activa ? <SetariCookie className={s.setariCookie} /> : null}
+            {stareAnalitica().activa ? <SetariCookie className={s.setariCookie} {...textSetari} /> : null}
           </div>
           <div className={s.dreapta}>
-            <SelectorLimba cai={cai} directie="sus" />
+            <SelectorLimba cai={cai} directie="sus" {...limbaContract} />
             {retele.length > 0 ? (
               <>
                 <span className={s.urmariti}>{SUBSOL.urmariti}</span>

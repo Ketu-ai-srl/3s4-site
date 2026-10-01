@@ -6,13 +6,16 @@
 //
 // Se randeaza pe server, deci exista in HTML-ul brut al paginii (`data-cookie-settings`), si numai
 // cand analitica e pornita - fara ea n-ar avea ce sa deschida.
+//
+// `text` (optional): eticheta in limba paginii, data de contractul de navigatie al editiei; lipsa = textul
+// romanesc de azi.
 
 import { TEXT_LEGATURA_SUBSOL, deschideSetarile } from "./semnal";
 
-export default function SetariCookie({ className }: { className?: string }) {
+export default function SetariCookie({ className, text = TEXT_LEGATURA_SUBSOL }: { className?: string; text?: string }) {
   return (
     <button type="button" className={className} data-cookie-settings="" onClick={deschideSetarile}>
-      {TEXT_LEGATURA_SUBSOL}
+      {text}
     </button>
   );
 }

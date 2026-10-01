@@ -1,26 +1,25 @@
-import { createElement } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { X_DEFAULT, adresaAlternata, type Alternata } from '../src/components/seo/alternate-cale'
-import { alternateSite } from '../src/lib/site'
-
-// Piesa de browser citeste calea si segmentele arborelui din Next; proba le da din afara, ca sa poata randa
-// piesa pe orice cale, inclusiv pe pagina de negasit (calea ceruta in browser, segmentul `/_not-found`).
-const pagina = vi.hoisted(() => ({ cale: '/' as string | null, segmente: [] as string[] }))
-vi.mock('next/navigation', () => ({ usePathname: () => pagina.cale, useSelectedLayoutSegments: () => pagina.segmente }))
-
-// Importurile dinamice ale componentelor transforma fisierele la prima folosire: plafonul e al fisierului, nu al unui caz.
-vi.setConfig({ testTimeout: 60_000 })
+import { adresaPagina, alternatePagina, metadataPagina, type ContextAlternate } from '../src/components/seo/metadata'
+import type { CaiPeEditie } from '../src/content/echivalente'
+import { X_DEFAULT, alternateSite, type Alternata } from '../src/lib/site'
 
 /**
- * Felia multi-domeniu, punctul 2: ALTERNATELE HREFLANG configurabile (`SITE_ALTERNATE`). Proba de browser
- * (`tests/browser/multi-domeniu.spec.ts`) le masoara in `<head>`-ul unui build real, pe trei rute, si la
- * navigarea din browser; aici se masoara regulile listei si compunerea adreselor, pe module.
+ * ALTERNATELE HREFLANG. Doua straturi:
+ *   1. lista bazelor, `SITE_ALTERNATE` (felia multi-domeniu): forma, normalizarea, validarea - neschimbate;
+ *   2. legaturile fiecarei pagini (felia metadata-hreflang): scrise pe server de `metadataPagina`, din editia
+ *      paginii si din tabelul de echivalente (`src/content/echivalente.ts`). Regula veche, "aceeasi cale pe
+ *      fiecare varianta", si piesa de browser care o aplica s-au retras: `/preturi` si `/pricing` sunt aceeasi
+ *      pagina, cu cai diferite.
+ * Proba de browser (`tests/browser/multi-domeniu.spec.ts`) le masoara in `<head>`-ul servit al unui build real;
+ * aici se masoara regulile, pe module, cu tabele de echivalente FABRICATE (tabelul real e gol pana la primele
+ * perechi juridice).
  *
- * REGULILE lui Google (documentatia oficiala, citita pe 2026-09-30, linkul e in `src/lib/site.ts`):
- * fiecare varianta se listeaza pe ea insasi si pe celelalte, variantele se refera una la alta, adresele
- * sunt complete, codurile sunt limba cu regiune optionala. Ce nu se poate masura de aici: ca Google le
- * si accepta; asta se vede in Search Console, dupa lansare.
+ * REGULILE lui Google (documentatia oficiala, citita pe 2026-09-30, linkul e in `src/lib/site.ts`): fiecare
+ * varianta se listeaza pe ea insasi si pe celelalte, variantele se refera una la alta, adresele sunt complete,
+ * codurile sunt limba cu regiune optionala. Ce nu se poate masura de aici: ca Google le si accepta; asta se vede
+ * in Search Console, dupa lansare.
  */
 
 // Domeniile din cerinta: Romania, site-ul international (engleza) si versiunea romaneasca a lui, sub /ro.
@@ -28,9 +27,6 @@ const RO = 'https://3s.com.ro'
 const INT = 'https://3s.md'
 const LISTA = ['ro-RO=' + RO, 'en=' + INT, 'ro-MD=' + INT + '/ro'].join(',')
 const LISTA_CU_IMPLICIT = LISTA + ',x-default=' + INT
-
-/** Rutele pe care se masoara: radacina (cazul special), o pagina statica, o categorie de blog cu trei segmente. */
-const RUTE_PROBA = ['/', '/preturi', '/blog/categorie/it']
 
 function mesaj(f: () => unknown): string {
   try {
@@ -43,8 +39,6 @@ function mesaj(f: () => unknown): string {
 
 afterEach(() => {
   vi.unstubAllEnvs()
-  pagina.cale = '/'
-  pagina.segmente = []
 })
 
 describe('SITE_ALTERNATE: forma listei', () => {
@@ -78,25 +72,17 @@ describe('SITE_ALTERNATE: forma listei', () => {
     expect(lista.map((a) => a.hreflang)).toEqual(['ro-RO', 'en', 'ro-MD', 'x-default'])
   })
 
-  it('prefixul se lipeste fara "//": bara finala din valoare se scoate, iar calea incepe cu una singura', () => {
+  it('prefixul ramane fara bara finala, oricum ar fi scris; baza fara prefix iese originea goala', () => {
     for (const cu of [INT + '/ro', INT + '/ro/', INT + '/ro//']) {
       const md = alternateSite('en=' + INT + ',ro-MD=' + cu, INT).find((a) => a.hreflang === 'ro-MD')
       expect(md?.adresa, cu).toBe(INT + '/ro')
     }
-    // Baza fara prefix: si "https://gazda" si "https://gazda/" dau aceeasi adresa
     expect(alternateSite('en=' + INT + '/', INT)[0].adresa).toBe(INT)
-    // Prefix pe mai multe segmente
     expect(alternateSite('en=' + INT + ',ro-MD=' + INT + '/ro/md', INT)[1].adresa).toBe(INT + '/ro/md')
-    // Compunerea: radacina fara bara finala (ca `canonical`), restul caii intreg
-    expect(adresaAlternata(INT + '/ro', '/')).toBe(INT + '/ro')
-    expect(adresaAlternata(INT + '/ro', '/preturi')).toBe(INT + '/ro/preturi')
-    expect(adresaAlternata(INT, '/')).toBe(INT)
-    expect(adresaAlternata(INT, '/blog/categorie/it')).toBe(INT + '/blog/categorie/it')
-    for (const cale of RUTE_PROBA) {
-      for (const a of alternateSite(LISTA_CU_IMPLICIT, INT)) {
-        expect(adresaAlternata(a.adresa, cale).replace(/^https:\/\//, ''), a.hreflang + ' ' + cale).not.toContain('//')
-      }
-    }
+    // Adresa unei pagini: radacina fara bara finala (ca `canonical`), restul caii intreg, niciodata `//`
+    expect(adresaPagina(INT, '/')).toBe(INT)
+    expect(adresaPagina(INT, '/pricing')).toBe(INT + '/pricing')
+    expect(adresaPagina(INT, '/ro/juridic/confidentialitate')).toBe(INT + '/ro/juridic/confidentialitate')
   })
 
   it('martor POZITIV: o lista gresita opreste construirea, cu variabila si motivul in mesaj', () => {
@@ -143,116 +129,120 @@ describe('SITE_ALTERNATE: forma listei', () => {
   })
 })
 
-describe('SITE_ALTERNATE: reciprocitate si auto-referinta pe trei rute', () => {
-  const DOMENII = [RO, INT]
+// ---------------------------------------------------------------------------------------------
+// Legaturile paginii, din echivalente
+// ---------------------------------------------------------------------------------------------
 
-  /** Multimea `hreflang -> adresa` a unei pagini, asa cum o emite domeniul `baza`. */
-  function emise(baza: string, cale: string): Record<string, string> {
-    return Object.fromEntries(alternateSite(LISTA_CU_IMPLICIT, baza).map((a) => [a.hreflang, adresaAlternata(a.adresa, cale)]))
-  }
+/** Un tabel de echivalente FABRICAT: o pereche juridica en/ro-MD, preturile pe toate trei editiile, o pagina numai EN. */
+const TABEL: Record<string, CaiPeEditie> = {
+  confidentialitate: { en: '/legal/privacy', 'ro-MD': '/ro/juridic/confidentialitate' },
+  preturi: { 'ro-RO': '/preturi', en: '/pricing', 'ro-MD': '/ro/preturi' },
+  despre: { en: '/about' },
+}
 
-  it('martor POZITIV: fiecare pagina se refera la ea insasi si la aceeasi cale pe celelalte domenii, iar listele coincid', () => {
-    for (const cale of RUTE_PROBA) {
-      const multimi = DOMENII.map((d) => ({ domeniu: d, emise: emise(d, cale) }))
-      for (const { domeniu, emise: e } of multimi) {
-        const adrese = Object.values(e)
-        // auto-referinta: adresa paginii insesi, pe domeniul ei, e printre cele emise
-        expect(adrese, domeniu + ' ' + cale + ' se refera la ea insasi').toContain(adresaAlternata(domeniu, cale))
-        // fiecare varianta din lista e prezenta, cu calea cerut de pagina
-        expect(Object.keys(e).sort()).toEqual(['en', 'ro-MD', 'ro-RO', 'x-default'])
-        expect(e['ro-RO']).toBe(adresaAlternata(RO, cale))
-        expect(e.en).toBe(adresaAlternata(INT, cale))
-        expect(e['ro-MD']).toBe(adresaAlternata(INT + '/ro', cale))
-      }
-      // reciprocitate: A o listeaza pe B si B pe A; cum lista e aceeasi, multimile sunt egale
-      const [a, b] = multimi
-      expect(Object.values(a.emise), 'A o listeaza pe B').toContain(adresaAlternata(b.domeniu, cale))
-      expect(Object.values(b.emise), 'B o listeaza pe A').toContain(adresaAlternata(a.domeniu, cale))
-      expect(a.emise).toEqual(b.emise)
+/** Contextul build-ului 3s.md (en si ro-MD pe acelasi domeniu), cu lista din cerinta. */
+function ctx3sMd(schimbari: Partial<ContextAlternate> = {}): ContextAlternate {
+  return { alternate: alternateSite(LISTA_CU_IMPLICIT, INT), baza: INT, editii: ['en', 'ro-MD'], echivalente: TABEL, ...schimbari }
+}
+
+/** Multimea `hreflang -> adresa` din rezultat. */
+function limbi(a: ReturnType<typeof alternatePagina>): Record<string, string> {
+  return (a.languages ?? {}) as Record<string, string>
+}
+
+describe('alternatePagina: legaturile scrise pe server, din echivalente', () => {
+  it('martor NEGATIV: fara SITE_ALTERNATE, numai canonical-ul, pe orice editie (HTML-ul romanesc nu se schimba)', () => {
+    for (const [cale, editie, cheie] of [
+      ['/preturi', undefined, undefined],
+      ['/', undefined, undefined],
+      ['/pricing', 'en', 'preturi'],
+      ['/ro/juridic/confidentialitate', 'ro-MD', 'confidentialitate'],
+    ] as const) {
+      expect(alternatePagina({ cale, editie, cheie }, ctx3sMd({ alternate: [] })), cale).toEqual({ canonical: cale })
     }
   })
 
-  it('martor POZITIV: cu ro-MD sub /ro, versiunea romaneasca a site-ului international e aceeasi cale, sub prefix', () => {
-    expect(emise(INT, '/preturi')['ro-MD']).toBe('https://3s.md/ro/preturi')
-    expect(emise(INT, '/')['ro-MD']).toBe('https://3s.md/ro')
-    expect(emise(INT, '/blog/categorie/it')['ro-MD']).toBe('https://3s.md/ro/blog/categorie/it')
+  it('pereche en/ro-MD: fiecare pagina se listeaza pe ea, pe cealalta si x-default spre EN; cele doua multimi sunt egale (reciprocitate)', () => {
+    const en = limbi(alternatePagina({ cale: '/legal/privacy', editie: 'en', cheie: 'confidentialitate' }, ctx3sMd()))
+    const md = limbi(alternatePagina({ cale: '/ro/juridic/confidentialitate', editie: 'ro-MD', cheie: 'confidentialitate' }, ctx3sMd()))
+    const asteptat = { en: INT + '/legal/privacy', 'ro-MD': INT + '/ro/juridic/confidentialitate', 'x-default': INT + '/legal/privacy' }
+    expect(en).toEqual(asteptat)
+    expect(md).toEqual(asteptat)
+    // auto-referinta: adresa fiecarei pagini e printre cele emise de ea
+    expect(Object.values(en)).toContain(INT + '/legal/privacy')
+    expect(Object.values(md)).toContain(INT + '/ro/juridic/confidentialitate')
   })
 
-  it('martor NEGATIV: un domeniu care lipseste din lista nu primeste alternate si nu poate fi confirmat de celelalte', () => {
-    // Fara domeniul curent in lista, construirea se opreste (mesajul e verificat mai sus): nicio pagina nu iese fara auto-referinta
-    expect(mesaj(() => alternateSite(LISTA_CU_IMPLICIT, 'https://3s-altul.test'))).toMatch(/nu contine adresa acestui site/)
+  it('o pagina fara echivalent (sau fara cheie) se listeaza numai pe ea, cu x-default spre ea insasi; canonical-ul ramane calea', () => {
+    const despre = alternatePagina({ cale: '/about', editie: 'en', cheie: 'despre' }, ctx3sMd())
+    expect(despre).toEqual({ canonical: '/about', languages: { en: INT + '/about', 'x-default': INT + '/about' } })
+    expect(limbi(alternatePagina({ cale: '/ro/contact', editie: 'ro-MD' }, ctx3sMd()))).toEqual({ 'ro-MD': INT + '/ro/contact', 'x-default': INT + '/ro/contact' })
+  })
+
+  it('ro-RO nu se leaga de editiile 3s.md, in niciun sens (P-17), desi tabelul si lista il au', () => {
+    const en = limbi(alternatePagina({ cale: '/pricing', editie: 'en', cheie: 'preturi' }, ctx3sMd()))
+    expect(Object.keys(en).sort()).toEqual(['en', 'ro-MD', 'x-default'])
+    expect(Object.values(en).some((a) => a.startsWith(RO))).toBe(false)
+    // Pagina romaneasca, pe gazda ei, cu aceeasi lista: numai ea insasi
+    const ro = limbi(alternatePagina({ cale: '/preturi', cheie: 'preturi' }, { ...ctx3sMd(), baza: RO, editii: ['ro-RO'] }))
+    expect(ro).toEqual({ 'ro-RO': RO + '/preturi', 'x-default': RO + '/preturi' })
+    // Martor POZITIV al aceluiasi tabel: randul chiar are calea ro-RO (deci absenta ei de mai sus vine din regula)
+    expect(TABEL.preturi['ro-RO']).toBe('/preturi')
+  })
+
+  it('o editie pe care build-ul nu o construieste nu intra, desi lista are baza ei pe acelasi domeniu', () => {
+    const doarEn = limbi(alternatePagina({ cale: '/legal/privacy', editie: 'en', cheie: 'confidentialitate' }, ctx3sMd({ editii: ['en'] })))
+    expect(doarEn).toEqual({ en: INT + '/legal/privacy', 'x-default': INT + '/legal/privacy' })
+  })
+
+  it('o editie fara baza in lista nu intra; o pagina ro-MD fara EN in lista isi ia x-default pe ea insasi', () => {
+    const faraEn: Alternata[] = [
+      { hreflang: 'ro-MD', adresa: INT + '/ro' },
+      { hreflang: 'ro-RO', adresa: RO },
+      { hreflang: X_DEFAULT, adresa: RO },
+    ]
+    const md = limbi(alternatePagina({ cale: '/ro/juridic/confidentialitate', editie: 'ro-MD', cheie: 'confidentialitate' }, ctx3sMd({ alternate: faraEn })))
+    expect(md).toEqual({ 'ro-MD': INT + '/ro/juridic/confidentialitate', 'x-default': INT + '/ro/juridic/confidentialitate' })
+  })
+
+  it('martor POZITIV: un tabel care contrazice pagina, sau o cale care nu sta sub prefixul bazei ei, opresc construirea', () => {
+    expect(mesaj(() => alternatePagina({ cale: '/pricing-vechi', editie: 'en', cheie: 'preturi' }, ctx3sMd()))).toMatch(
+      /tabelul de echivalente da pentru cheia preturi si editia en calea \/pricing/,
+    )
+    const stricat = { confidentialitate: { en: '/legal/privacy', 'ro-MD': '/juridic/confidentialitate' } }
+    expect(mesaj(() => alternatePagina({ cale: '/legal/privacy', editie: 'en', cheie: 'confidentialitate' }, ctx3sMd({ echivalente: stricat })))).toMatch(
+      /nu sta sub prefixul \/ro/,
+    )
+    // Martor NEGATIV: tabelul bun trece
+    expect(mesaj(() => alternatePagina({ cale: '/legal/privacy', editie: 'en', cheie: 'confidentialitate' }, ctx3sMd()))).toBe('(nu a aruncat)')
+  })
+
+  it('metadataPagina scrie alternatele din mediu: fara SITE_ALTERNATE numai canonical, cu ea pagina proprie si x-default', () => {
+    const date = { titlu: 'Prețurile 3S pentru arhiva firmei', descriere: 'Pachetele 3S pentru arhiva firmei, cu ce include fiecare și prețul pe lună.', cale: '/preturi' }
+    vi.stubEnv('SITE_ALTERNATE', '')
+    expect(metadataPagina(date).alternates).toEqual({ canonical: '/preturi' })
+    vi.stubEnv('SITE_ALTERNATE', LISTA_CU_IMPLICIT)
+    vi.stubEnv('SITE_URL', INT)
+    vi.stubEnv('SITE_EDITII', 'ro-RO')
+    expect(metadataPagina(date).alternates).toEqual({ canonical: '/preturi', languages: { 'ro-RO': INT + '/preturi', 'x-default': INT + '/preturi' } })
   })
 })
 
-describe('AlternateHreflang si piesa de browser', () => {
-  /** Legaturile `<link rel="alternate">` din HTML-ul randat, ca perechi hreflang -> href. */
-  function legaturi(html: string): Record<string, string> {
-    const iesire: Record<string, string> = {}
-    for (const m of html.matchAll(/<link rel="alternate" hrefLang="([^"]+)" href="([^"]+)"\/>/g)) iesire[m[1]] = m[2]
-    return iesire
-  }
+describe('piesa de browser retrasa', () => {
+  const RADACINA = join(__dirname, '..')
 
-  it('martor NEGATIV: fara SITE_ALTERNATE, componenta serverului nu randeaza nimic', async () => {
-    vi.stubEnv('SITE_ALTERNATE', '')
-    const { default: AlternateHreflang } = await import('../src/components/seo/AlternateHreflang')
-    expect(AlternateHreflang()).toBeNull()
-  })
-
-  it('martor POZITIV: cu SITE_ALTERNATE, componenta serverului da variantele piesei de browser, care le randeaza pe calea curenta', async () => {
-    vi.stubEnv('SITE_ALTERNATE', LISTA_CU_IMPLICIT)
-    vi.stubEnv('SITE_URL', INT)
-    const { default: AlternateHreflang } = await import('../src/components/seo/AlternateHreflang')
-    const { default: Client } = await import('../src/components/seo/AlternateHreflangClient')
-    const element = AlternateHreflang()
-    expect(element).not.toBeNull()
-    expect(element?.type).toBe(Client)
-    const alternate = (element?.props as { alternate: Alternata[] }).alternate
-    expect(alternate.map((a) => a.hreflang)).toEqual(['ro-RO', 'en', 'ro-MD', 'x-default'])
-    for (const cale of RUTE_PROBA) {
-      pagina.cale = cale
-      const html = renderToStaticMarkup(createElement(Client, { alternate }))
-      const iesire = legaturi(html)
-      expect(Object.keys(iesire), cale).toEqual(['ro-RO', 'en', 'ro-MD', 'x-default'])
-      for (const a of alternate) expect(iesire[a.hreflang], cale + ' ' + a.hreflang).toBe(adresaAlternata(a.adresa, cale))
-      // exact patru elemente, fara altceva in jur
-      expect(html.match(/<link /g)).toHaveLength(4)
+  it('componentele hreflang de browser nu mai exista, iar layout-ul romanesc nu le mai monteaza', () => {
+    for (const f of ['AlternateHreflang.tsx', 'AlternateHreflangClient.tsx', 'alternate-cale.ts']) {
+      expect(existsSync(join(RADACINA, 'src', 'components', 'seo', f)), f).toBe(false)
     }
+    const layout = readFileSync(join(RADACINA, 'src', 'app', 'layout.tsx'), 'utf8')
+    expect(layout).not.toMatch(/AlternateHreflang/)
+    // Controlul cautarii: acelasi fisier chiar e layout-ul cu analitica (deci zeroul de mai sus nu e un fisier gresit)
+    expect(layout).toContain('<Analitica />')
   })
 
-  it('martor NEGATIV: paginile interne Next (/_not-found) si lipsa unei cai nu primesc alternate', async () => {
-    const { default: Client } = await import('../src/components/seo/AlternateHreflangClient')
-    const alternate = alternateSite(LISTA_CU_IMPLICIT, INT)
-    for (const cale of ['/_not-found', '/_error', null]) {
-      pagina.cale = cale
-      expect(renderToStaticMarkup(createElement(Client, { alternate })), String(cale)).toBe('')
-    }
-    // Controlul: aceeasi randare, pe o cale obisnuita, produce elementele
-    pagina.cale = '/preturi'
-    pagina.segmente = ['preturi']
-    expect(renderToStaticMarkup(createElement(Client, { alternate }))).toContain('hrefLang="en"')
-  })
-
-  it('martor NEGATIV: in browser, pe pagina de negasit, calea e cea ceruta de om, dar segmentul arborelui ramane /_not-found: fara alternate', async () => {
-    const { default: Client } = await import('../src/components/seo/AlternateHreflangClient')
-    const alternate = alternateSite(LISTA_CU_IMPLICIT, INT)
-    pagina.cale = '/o-cale-care-nu-exista'
-    pagina.segmente = ['/_not-found']
-    expect(renderToStaticMarkup(createElement(Client, { alternate }))).toBe('')
-    // Martor POZITIV al aceleiasi cai: cand segmentul e al unei pagini care exista, aceeasi cale primeste alternate
-    pagina.segmente = ['o-cale-care-exista']
-    expect(renderToStaticMarkup(createElement(Client, { alternate })).match(/<link /g)).toHaveLength(4)
-  })
-
-  it('piesa de browser nu importa manifestul de rute: doar modulul fara importuri si Next', async () => {
-    const { readFileSync } = await import('node:fs')
-    const { join } = await import('node:path')
-    const sursa = readFileSync(join(__dirname, '..', 'src', 'components', 'seo', 'AlternateHreflangClient.tsx'), 'utf8')
-    const importuri = [...sursa.matchAll(/^import .* from "([^"]+)";$/gm)].map((m) => m[1])
-    expect(importuri.sort()).toEqual(['./alternate-cale', 'next/navigation'])
-    // Controlul: modulul serverului chiar importa `@/lib/site` (cautarea de mai sus nu e oarba)
-    const server = readFileSync(join(__dirname, '..', 'src', 'components', 'seo', 'AlternateHreflang.tsx'), 'utf8')
-    expect(server).toContain('@/lib/site')
-    const comun = readFileSync(join(__dirname, '..', 'src', 'components', 'seo', 'alternate-cale.ts'), 'utf8')
-    expect(comun).not.toMatch(/^import /m)
+  it('startul isi scrie alternatele prin acelasi helper ca paginile interioare', () => {
+    const start = readFileSync(join(RADACINA, 'src', 'app', 'page.tsx'), 'utf8')
+    expect(start).toMatch(/alternates: alternatePagina\(\{ cale: "\/" \}\)/)
   })
 })

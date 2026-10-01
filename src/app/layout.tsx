@@ -7,11 +7,11 @@ import Antet from "@/components/global/Antet";
 import { CULOARE_MARCA } from "@/components/global/culoare-marca";
 import Subsol from "@/components/global/Subsol";
 import TranzitieVedere from "@/components/global/TranzitieVedere";
-import AlternateHreflang from "@/components/seo/AlternateHreflang";
 import DateStructurateSite from "@/components/seo/DateStructurateSite";
 import { META_ACASA } from "@/content/acasa";
 import { BRAND } from "@/content/entitate";
 import { indexareaEstePermisa } from "@/content/rute";
+import { EDITII } from "@/lib/editii";
 import { adresaSite } from "@/lib/site";
 
 // Layout-ul comun (directia REF-N, ADR-0007): fonturile, antetul, subsolul si tranzitia de vedere.
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   robots: indexareaEstePermisa() ? { index: true, follow: true } : { index: false, follow: false },
   openGraph: {
     type: "website",
-    locale: "ro_RO",
+    locale: EDITII["ro-RO"].ogLocale,
     siteName: BRAND.nume,
     title: META_ACASA.titlu,
     description: META_ACASA.descriere,
@@ -115,11 +115,9 @@ export default function RootLayout({
         <PunctConsimtamant />
         {/* MAI MULTE DOMENII (felia multi-domeniu): acelasi cod ruleaza pe mai multe domenii, fiecare cu
             variabilele lui. `Analitica` pune scriptul de statistica proprie (fara cookie, prin calea
-            `/a/`) numai cu `UMAMI_URL` si `UMAMI_WEBSITE_ID`; `AlternateHreflang` pune legaturile
-            hreflang spre celelalte domenii numai cu `SITE_ALTERNATE`. Fara variabile, niciuna nu
-            randeaza nimic. */}
+            `/a/`) numai cu `UMAMI_URL` si `UMAMI_WEBSITE_ID`; fara ele nu randeaza nimic. Legaturile
+            hreflang nu mai stau aici: le scrie fiecare pagina, prin `metadataPagina`. */}
         <Analitica />
-        <AlternateHreflang />
       </body>
     </html>
   );

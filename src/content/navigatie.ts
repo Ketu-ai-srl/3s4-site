@@ -27,7 +27,15 @@
 // textul referintei, pentru lungime si rol, niciodata pentru cuvinte. Textul de aici e cel al
 // feliei `text-acasa`, scris pentru 3S, cu adresarea „tu” (decizia D15); fiecare afirmatie
 // verificabila are intrare in `src/content/afirmatii/acasa.json`.
+//
+// CONTRACTUL PE EDITIE (felia navigatie-pe-editie). Piesele globale primesc contractul ca proprietate
+// (`ContractNavigatie`); IMPLICITUL e `NAVIGATIE_RO`, adica exact constantele de mai jos, deci layout-ul
+// romanesc, care nu da nicio proprietate, randeaza ca inainte. Editiile `en` si `ro-MD` isi construiesc
+// contractul pe server (`navigatie-en.ts`, `navigatie-ro-md.ts`), cu canalele domeniului deja rezolvate:
+// legaturile de canal poarta codul `ref` al paginii, deci depind de calea curenta (`LegaturaPeCale`).
 
+import type { CodEditie } from "../lib/editii";
+import type { CaiPeEditie } from "./echivalente";
 import { postaMarcii } from "./entitate";
 
 /** Numele unei iconite din setul Lucide (licenta ISC), in forma kebab-case. Nu desenele referintei. */
@@ -104,7 +112,69 @@ export type Limba = Legatura & {
   cod: string;
   /** Limba paginii curente (bifa si culoarea activa). */
   activa: boolean;
+  /**
+   * Editia pe care o deschide optiunea. Lipsa (contractul romanesc) = lista e fixa, ca inainte de editii.
+   * Cu editie, tinta si bifa se calculeaza din tabelul de echivalente pe pagina curenta (`limbiPentruCale`).
+   */
+  editie?: CodEditie;
 };
+
+/**
+ * Optiunile selectorului pe pagina `cale`.
+ *
+ * Contractul fara editii (romanesc) ramane exact lista data: pe un build cu o singura editie selectorul arata
+ * ca azi. Cu editii, optiunile sunt editiile din build care au o pagina echivalenta cu cea curenta, cu tinta
+ * pe echivalent; pagina fara echivalent (sau cu un singur capat in build) nu are selector: lista e goala.
+ */
+export function limbiPentruCale(
+  limbi: readonly Limba[],
+  cale: string,
+  echivalente: Readonly<Record<string, CaiPeEditie>>,
+  editii: readonly CodEditie[],
+): Limba[] {
+  if (!limbi.some((l) => l.editie !== undefined)) {
+    return [...limbi];
+  }
+  const intrare = Object.values(echivalente).find((e) => Object.values(e).includes(cale));
+  if (intrare === undefined) {
+    return [];
+  }
+  const optiuni = limbi.flatMap((l): Limba[] => {
+    if (l.editie === undefined || !editii.includes(l.editie)) return [];
+    const tinta = intrare[l.editie];
+    if (tinta === undefined) return [];
+    return [{ ...l, href: tinta, ruta: tinta, activa: tinta === cale }];
+  });
+  return optiuni.length > 1 ? optiuni : [];
+}
+
+// ---------------------------------------------------------------------------------------------
+// Legaturile care depind de pagina curenta: canalele de contact cu codul `ref` al paginii
+// (`src/content/canale.ts`). Se rezolva pe server, ca date; componenta de browser alege dupa cale.
+// ---------------------------------------------------------------------------------------------
+
+/** Tinta unei legaturi de canal pe fiecare pagina: intrarile exacte, apoi prefixele, apoi implicitul. */
+export type LegaturaPeCale = {
+  /** Tinta pe o pagina fara intrare proprie; `null` = legatura nu se randeaza. */
+  implicit: string | null;
+  /** `prefix: true` = intrarea acopera si paginile de sub cale (`/ro/juridic/...`). */
+  pagini: ReadonlyArray<{ cale: string; prefix: boolean; href: string }>;
+};
+
+/** Tinta pe pagina `cale`: intrarea exacta, altfel prefixul cel mai lung, altfel implicitul. */
+export function alegePeCale(legatura: LegaturaPeCale, cale: string): string | null {
+  const exacta = legatura.pagini.find((p) => p.cale === cale);
+  if (exacta !== undefined) {
+    return exacta.href;
+  }
+  let aleasa: { cale: string; href: string } | null = null;
+  for (const p of legatura.pagini) {
+    if (p.prefix && cale.startsWith(p.cale + "/") && (aleasa === null || p.cale.length > aleasa.cale.length)) {
+      aleasa = p;
+    }
+  }
+  return aleasa === null ? legatura.implicit : aleasa.href;
+}
 
 export const LIMBI: Limba[] = [
   {
@@ -455,17 +525,33 @@ export type LegaturaAntet = Legatura & {
   foaie: FoaieMeniu | null;
 };
 
-export const ANTET: {
+/** Butonul plin din antet; cu `peCale`, tinta se alege dupa pagina curenta (canalul cu `ref`-ul paginii). */
+export type CtaAntet = Legatura & { peCale?: LegaturaPeCale };
+
+/** Antetul, ca parte a contractului pe editie. `descarca: null` = editia nu are panoul de descarcare. */
+export type ContractAntet = {
   sigla: Legatura;
+  /** Eticheta accesibila a meniului principal. */
+  meniu: string;
   legaturi: LegaturaAntet[];
   cautare: { eticheta: string; tasta: string };
   autentificare: Legatura;
-  descarca: { text: string };
-  cta: Legatura;
+  descarca: { text: string } | null;
+  cta: CtaAntet;
   hamburger: { deschide: string; inchide: string };
-} = {
+};
+
+/** CTA-ul antetului pe pagina `cale`: tinta aleasa dupa cale, cand contractul o cere. */
+export function ctaPeCale(cta: CtaAntet, cale: string): Legatura {
+  const { peCale, ...legatura } = cta;
+  return peCale === undefined ? legatura : { ...legatura, href: alegePeCale(peCale, cale) };
+}
+
+export const ANTET: ContractAntet & { descarca: { text: string } } = {
   // Rol: eticheta accesibila a siglei 3S (imaginea e activ de produs, nu text).
   sigla: { text: "3S Scan Store Solve, pagina de start", href: "/", ruta: "/" },
+  // Rol: eticheta accesibila a meniului principal (nevizibila).
+  meniu: "Meniul principal",
   legaturi: [
     // Lungime: 5 [numarat].
     { text: "Acasă", href: "/", ruta: "/", foaie: null },
@@ -515,21 +601,27 @@ export type GrupPaleta = {
   elemente: Legatura[];
 };
 
-export const PALETA: {
+export type ContractPaleta = {
   eticheta: string;
   campExemplu: string;
   tastaInchidere: string;
+  /** Eticheta accesibila a tastei de inchidere. */
+  inchide: string;
   grupuri: GrupPaleta[];
   grupArticole: string;
   faraRezultate: string;
   ajutor: { sageti: string; enter: string; scurtatura: string };
-} = {
+};
+
+export const PALETA: ContractPaleta = {
   // Rol: eticheta accesibila a ferestrei de cautare.
   eticheta: "Căutare pe site",
   // Rol: textul-exemplu din camp. Lungime: 15 [numarat].
   campExemplu: "Scrie un cuvânt",
   // Rol: tasta de inchidere din dreapta campului. Lungime: 3 [numarat].
   tastaInchidere: "esc",
+  // Rol: eticheta accesibila a tastei de inchidere (nevizibila).
+  inchide: "Închide căutarea",
   grupuri: [
     {
       // Lungime: 6 [numarat].
@@ -611,14 +703,43 @@ export type ReteaSociala = Legatura & {
 // nu se randeaza deloc (plan S4 §7; masurat 24.09: vechea adresa nu primea posta).
 const POSTA: Legatura = postaMarcii();
 
-export const SUBSOL: {
+/** Un canal cu tinta pe pagina (WhatsApp, e-mail): eticheta si legatura rezolvata pe server. */
+export type CanalPeCale = { text: string; legatura: LegaturaPeCale };
+
+/** Telefonul: numarul afisat (text crawlabil) si legatura `tel:` (activa numai pe mobil, prin CSS). */
+export type CanalTelefon = { text: string; href: string };
+
+/**
+ * Coloana Contact a subsolului (arhitectura EN §4.2): WhatsApp, numarul ca text, e-mailul numai cand
+ * domeniul are adresa. Un canal gol al domeniului e `null` si nu se randeaza.
+ */
+export type ContactSubsol = {
+  titlu: string;
+  whatsapp: CanalPeCale | null;
+  telefon: CanalTelefon | null;
+  email: CanalPeCale | null;
+};
+
+/** Subsolul, ca parte a contractului pe editie. Campurile optionale lipsesc din contractul romanesc. */
+export type ContractSubsol = {
   brand: { slogan: string; descriere: string; posta: Legatura };
   coloane: ColoanaSubsol[];
+  /** Coloana de canale, dupa coloanele de legaturi. */
+  contact?: ContactSubsol | null;
   insigne: InsignaSubsol[];
   copyright: { detinator: string; mentiune: string; drepturi: string };
   urmariti: string;
   retele: ReteaSociala[];
-} = {
+  /**
+   * O legatura in alta limba decat a paginii, in randul de jos (pe 3s.md: informatiile legale in romana,
+   * cerute in romana de legea Republicii Moldova). `lang` e limba textului, `hrefLang` a paginii tinta.
+   */
+  legaturaLocala?: (Legatura & { lang: string; hrefLang: string }) | null;
+  /** Eticheta butonului de setari cookie; lipsa = textul de azi al butonului (romana). */
+  setariCookie?: string;
+};
+
+export const SUBSOL: ContractSubsol = {
   brand: {
     // Rol: sloganul de sub sigla (14/600). Lungime: 35 [numarat].
     slogan: "Arhiva care răspunde cu sursa citată",
@@ -853,3 +974,38 @@ export function toateLegaturileNavigatiei(): Legatura[] {
     ...SUBSOL.retele,
   ];
 }
+
+// ---------------------------------------------------------------------------------------------
+// Contractul intreg, pe editie, si bara de canale de pe mobil.
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Bara fixa de jos pe mobil (arhitectura EN §4.7): WhatsApp si apel. Se randeaza numai cu cel putin
+ * un canal nevid; contractul romanesc nu o are.
+ */
+export type ContractBara = {
+  eticheta: string;
+  whatsapp: CanalPeCale | null;
+  telefon: { text: string; href: string } | null;
+};
+
+export type ContractNavigatie = {
+  antet: ContractAntet;
+  limbi: Limba[];
+  selector: { eticheta: string };
+  paleta: ContractPaleta;
+  sertar: { eticheta: string; inchide: string };
+  subsol: ContractSubsol;
+  bara: ContractBara | null;
+};
+
+/** Contractul site-ului romanesc: IMPLICITUL pieselor globale. Aceleasi obiecte ca mai sus, nimic in plus. */
+export const NAVIGATIE_RO: ContractNavigatie = {
+  antet: ANTET,
+  limbi: LIMBI,
+  selector: SELECTOR_LIMBA,
+  paleta: PALETA,
+  sertar: SERTAR,
+  subsol: SUBSOL,
+  bara: null,
+};

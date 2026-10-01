@@ -1,0 +1,81 @@
+/* Piesele de canal: telefonul (text pe desktop, legatura pe mobil), adresa cu copiere, cardul de canal.
+   Pragul mobilului e cel al site-ului: 767 px. */
+
+.doarMobil {
+  display: none;
+}
+
+.doarDesktop {
+  display: inline;
+}
+
+@media (max-width: 767px) {
+  .doarMobil {
+    display: inline;
+  }
+
+  .doarDesktop {
+    display: none;
+  }
+}
+
+.adresa {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.adresaText {
+  user-select: all;
+}
+
+.copiaza {
+  padding: 2px 10px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  color: var(--color-cerneala-2);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.copiaza:hover {
+  color: var(--color-cerneala);
+}
+
+.copiaza:focus-visible {
+  outline: 2px solid var(--color-albastru);
+  outline-offset: 2px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border: 1px solid var(--color-ardezie-2);
+  border-radius: 16px;
+  background: var(--color-alb);
+}
+
+.cardTitlu {
+  margin: 0;
+  color: var(--color-cerneala);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.cardDescriere {
+  margin: 0;
+  color: var(--color-ardezie-6);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.cardActiune {
+  margin-top: 8px;
+}
