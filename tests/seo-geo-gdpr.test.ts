@@ -578,8 +578,9 @@ describe('comutatorul operatorului si al analiticii (plan §9-§10)', () => {
   it('operator incomplet sau fara ID: oprit; operator complet si ID: pornit', () => {
     expect(stareAnalitica(operatorSintetic({ email: '' }), ID_GA4_SINTETIC)).toEqual({ activa: false, motiv: 'operator-incomplet' })
     expect(stareAnalitica(operatorSintetic({ sediu: 'de completat' }), ID_GA4_SINTETIC).activa).toBe(false)
-    expect(stareAnalitica(operatorSintetic(), null)).toEqual({ activa: false, motiv: 'fara-id' })
-    expect(stareAnalitica(operatorSintetic(), ID_GA4_SINTETIC)).toEqual({ activa: true, idGa4: ID_GA4_SINTETIC })
+    expect(stareAnalitica(operatorSintetic(), null, {})).toEqual({ activa: false, motiv: 'fara-id' })
+    // Masurarea S-B: starea poarta si analitica proprie; fara UMAMI_* in mediul dat, `umami` e null.
+    expect(stareAnalitica(operatorSintetic(), ID_GA4_SINTETIC, {})).toEqual({ activa: true, idGa4: ID_GA4_SINTETIC, umami: null })
   })
 
   // Substituentii scurti (N/A, TODO, TBD, lorem) sunt cuvinte, nu bucati de cuvant. Masurat de critic

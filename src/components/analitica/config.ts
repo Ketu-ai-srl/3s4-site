@@ -3,6 +3,13 @@
 // mediul are ambele variabile, `UMAMI_URL` si `UMAMI_WEBSITE_ID`, SI domeniul are un operator de date
 // numit si complet; fara ele nu exista niciun script, nicio rescriere, nimic in HTML.
 //
+// NUMAI DUPA ACORD (masurarea S-B, decizia 13 din 30.09.2026): si pornita, analitica proprie nu pune scriptul
+// in layout. Il insereaza bannerul de consimtamant abia dupa acceptul categoriei "Statistica"
+// (`src/components/consimtamant/incarcator-umami.ts`), iar retragerea opreste trimiterea pe loc, prin
+// `data-before-send`. Rescrierile de mai jos raman pe server si nu produc nicio cerere pana la accept.
+// Modulul de aici decide numai daca analitica e CONFIGURATA si are operator (`stareAnaliticaProprie`); bannerul o
+// primeste prin `stareAnalitica` (`src/lib/analitica.ts`).
+//
 // FARA OPERATOR, NIMIC (planul §9, decizia owner-ului din 24.09.2026: "analitica prelucreaza date
 // personale (cookie-uri, IP), deci cere operator"; aceeasi regula o aplica GA4 in `src/lib/analitica.ts`).
 // Statistica proprie primeste de la browser adresa paginii, limba si dimensiunea ecranului, iar adresa IP a

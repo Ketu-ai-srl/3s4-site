@@ -5,9 +5,10 @@
    variabile locale; restul vin din tokenii site-ului. Contraste calculate: #5e6266 pe alb 6,15:1,
    pe #f0f4f7 5,56:1, pe ceata-albastra 5,59:1; alb pe albastru 5,17:1; comutatorul oprit #667481
    fata de #f0f4f7 4,33:1 (element de interfata, prag 3:1).
-   ABATERE DE LA SURSA: acceptul si refuzul poarta amandoua `.butonPlin` (albastru, 5,17:1 fata de
-   banner), in banner si in panou; `.butonDeschis` (ceata-albastra, 1,10:1 fata de alb) ramane numai
-   pe "Setari cookie-uri" si "Salvati setarile". Motivul, in Consimtamant.tsx. */
+   ABATERE DE LA SURSA: toate cele trei butoane poarta `.butonPlin` (albastru, 5,17:1 fata de banner),
+   in banner si in panou: acceptul, refuzul si "Setari cookie-uri" / "Salveaza setarile" (masurarea S-B,
+   varianta (ii): acelasi nivel vizual pentru fiecare cale). Stilul deschis al sursei (ceata-albastra,
+   1,10:1 fata de alb) nu mai e folosit. Motivul, in Consimtamant.tsx. */
 
 .banner,
 .panou {
@@ -128,17 +129,6 @@
 
 .butonPlin:hover {
   background: var(--color-albastru-apasat);
-}
-
-.butonDeschis {
-  background: var(--color-ceata-albastra);
-  color: var(--c-text);
-}
-
-.butonDeschis:hover {
-  background: var(--color-albastru-pal);
-  border-color: var(--c-chenar);
-  color: #000000;
 }
 
 .picior {

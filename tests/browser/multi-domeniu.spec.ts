@@ -475,14 +475,44 @@ test('copie: consola browserului ramane curata (fara erori de hidratare) pe pagi
 // ---------------------------------------------------------------------------------------------
 // 2. Analitica proprie, fara cookie
 // ---------------------------------------------------------------------------------------------
+//
+// MASURAREA S-B (decizia 13): scriptul analiticii proprii nu mai sta in pagina la deschidere; il pune bannerul,
+// dupa accept. Cazurile de mai jos apasa INTAI acceptul din banner, apoi masoara ce masurau inainte. Cererile
+// catre alte gazde se blocheaza la retea (copia are si GA4, pornit de acelasi accept): ce se masoara aici e
+// analitica proprie, iar un script Google incarcat ar pune cookie-uri care nu sunt ale ei. Ce se intampla
+// INAINTE de accept si dupa retragere masoara `tests/browser/umami-acord.spec.ts`.
+
+/** Context nou, cu cererile catre alte gazde decat copia si instanta (proxy-ul serverului) blocate la retea. */
+async function contextFaraStraine(
+  browser: import('@playwright/test').Browser,
+  initializare?: () => void,
+): Promise<import('@playwright/test').BrowserContext> {
+  const context = await browser.newContext()
+  if (initializare) await context.addInitScript(initializare)
+  const proprie = new URL(copie.baza).host
+  await context.route('**/*', (ruta) => {
+    const gazda = new URL(ruta.request().url()).host
+    return gazda === proprie ? ruta.continue() : ruta.abort('blockedbyclient')
+  })
+  return context
+}
+
+/** Apasa acceptul din banner si asteapta sa se ascunda bannerul (alegerea s-a facut). */
+async function accepta(page: Page): Promise<void> {
+  const banner = page.locator('[data-consimtamant]')
+  await expect(banner, 'bannerul nu apare').toBeVisible()
+  await banner.locator('[data-accept]').click()
+  await expect(banner).toBeHidden()
+}
 
 test('martor POZITIV: analitica - scriptul vine de pe originea site-ului, iar evenimentul ajunge la instanta prin proxy', async ({ browser }) => {
-  const context = await browser.newContext()
+  const context = await contextFaraStraine(browser)
   const page = await context.newPage()
   const cereri: string[] = []
   page.on('request', (r) => cereri.push(r.url()))
   const inainte = fixturi.primite.length
   await deschide(page, copie.baza + '/preturi')
+  await accepta(page)
   const evenimente = await evenimentePentru(copie.baza + '/preturi', inainte)
 
   // Ce a facut BROWSERUL: cerere numai catre originea site-ului
@@ -501,33 +531,36 @@ test('martor POZITIV: analitica - scriptul vine de pe originea site-ului, iar ev
   expect(evenimente).toHaveLength(1)
   expect(evenimente[0]).toMatchObject({ website: ID_SITE, url: copie.baza + '/preturi', language: expect.any(String), screen: expect.stringMatching(/^\d+x\d+$/) })
   expect(evenimente[0].title.length).toBeGreaterThan(5)
-  // Fara cookie: nici cererile spre instanta nu poarta unul, nici browserul nu are vreunul
+  // Fara cookie: nici cererile spre instanta nu poarta unul, nici browserul nu are vreunul; in stocare numai alegerea
+  // din banner (strict necesara, scrisa de accept), nicio cheie a analiticii
   expect(primite.every((p) => p.cookie === null)).toBe(true)
   expect(await context.cookies()).toEqual([])
-  expect(await page.evaluate(() => Object.keys(localStorage).concat(Object.keys(sessionStorage)))).toEqual([])
+  const { CHEIE_ALEGERE } = await import('../../src/components/consimtamant/stocare')
+  expect(await page.evaluate(() => Object.keys(localStorage).concat(Object.keys(sessionStorage)))).toEqual([CHEIE_ALEGERE])
   await context.close()
 })
 
 test('martor POZITIV: Do Not Track opreste orice trimitere, iar fara el evenimentul pleaca (controlul masuratorii)', async ({ browser }) => {
   const adresa = copie.baza + '/blog'
   const startDnt = fixturi.primite.length
-  const cuDnt = await browser.newContext()
-  await cuDnt.addInitScript(() => {
+  const cuDnt = await contextFaraStraine(browser, () => {
     Object.defineProperty(Navigator.prototype, 'doNotTrack', { get: () => '1' })
   })
   const pagDnt = await cuDnt.newPage()
   await deschide(pagDnt, adresa)
+  await accepta(pagDnt)
   // Controlul injectiei: browserul chiar raporteaza DNT, iar scriptul a fost incarcat (atributul e in pagina)
   expect(await pagDnt.evaluate(() => navigator.doNotTrack)).toBe('1')
-  expect(await pagDnt.locator('script[src="/a/script.js"][data-do-not-track="true"]').count()).toBe(1)
+  await expect(pagDnt.locator('script[src="/a/script.js"][data-do-not-track="true"]')).toHaveCount(1)
   await pagDnt.waitForTimeout(2500)
   expect(await evenimentePentru(adresa, startDnt, 500), 'niciun eveniment cu DNT').toEqual([])
   await cuDnt.close()
 
   const startFara = fixturi.primite.length
-  const fara = await browser.newContext()
+  const fara = await contextFaraStraine(browser)
   const pagFara = await fara.newPage()
   await deschide(pagFara, adresa)
+  await accepta(pagFara)
   expect(await evenimentePentru(adresa, startFara), 'fara DNT evenimentul pleaca').toHaveLength(1)
   await fara.close()
 })

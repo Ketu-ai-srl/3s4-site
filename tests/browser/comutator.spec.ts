@@ -199,6 +199,10 @@ async function asteaptaLinistea(pagina: Page, ms = 2000): Promise<void> {
 /** Contrastul minim al marginii unui buton fata de banner (WCAG 1.4.11, componente de interfata). */
 const CONTRAST_MARGINE_MINIM = 3
 
+/** Cele trei butoane ale primului strat si ale piciorului panoului (masurarea S-B, varianta (ii)). */
+const TREI_BANNER = ['[data-accept]', '[data-refuz]', '[data-setari]']
+const TREI_PANOU = ['[data-accept]', '[data-refuz]', '[data-salveaza]']
+
 /** Ce se masoara la fiecare buton, cu JavaScript, in pagina deschisa. */
 type MasuraButon = {
   tag: string
@@ -220,18 +224,23 @@ type MasuraButon = {
 }
 
 /**
- * Acceptul si refuzul din `container`, masurate cu acelasi cod pe copia reala si pe martori.
+ * Butoanele din `container` (implicit acceptul si refuzul; cu al treilea selector, si "Setari cookie-uri" sau
+ * "Salveaza setarile"), masurate cu acelasi cod pe copia reala si pe martori.
  * Marginea butonului fata de suport e cea mai tare dintre fundal si chenar; un fundal care nu e
  * opac nu se masoara (NaN), deci nu trece drept buton plin.
  */
-async function masoaraButoane(pagina: Page, container: string): Promise<[MasuraButon, MasuraButon]> {
+async function masoaraButoane(
+  pagina: Page,
+  container: string,
+  selectori: string[] = ['[data-accept]', '[data-refuz]'],
+): Promise<MasuraButon[]> {
   // Cursorul se muta in colt: un buton aflat sub cursor are culoarea de hover, iar proba ar vedea
   // un fundal diferit care nu e al butonului in repaus. Masurat pe 25.09.2026, la capturi: refuzul
   // din panoul de 390, sub cursorul lasat de clicul pe "Setari cookie-uri", avea rgb(29, 78, 216),
   // iar dupa mutarea cursorului rgb(37, 99, 235), ca acceptul.
   await pagina.mouse.move(0, 0)
-  const [accept, refuz] = await Promise.all(
-    ['[data-accept]', '[data-refuz]'].map((sel) =>
+  return Promise.all(
+    selectori.map((sel) =>
       pagina.locator(container + ' ' + sel).evaluate((el): MasuraButon => {
         const canale = (culoare: string) => {
           const m = culoare.match(/^rgba?\(([^)]+)\)$/)
@@ -306,31 +315,62 @@ async function masoaraButoane(pagina: Page, container: string): Promise<[MasuraB
       }),
     ),
   )
-  return [accept, refuz]
 }
 
 /**
  * Ce deosebeste refuzul de accept, ca nivel vizual. Lista goala = acelasi nivel. `cutie` false
  * scuteste numai marimea: in piciorul panoului, la latime mare, butoanele au latimea textului lor.
+ * `setari` (masurarea S-B, varianta (ii): trei butoane egale ca greutate vizuala): al treilea buton se
+ * compara cu acceptul dupa aceleasi reguli, iar abaterile lui poarta numele "setarile".
  */
-function abateriSimetrie(accept: MasuraButon, refuz: MasuraButon, { cutie = true } = {}): string[] {
+function abateriSimetrie(
+  accept: MasuraButon,
+  refuz: MasuraButon,
+  { cutie = true, setari }: { cutie?: boolean; setari?: MasuraButon } = {},
+): string[] {
+  const a = abateriPereche(accept, refuz, 'refuzul', 'refuzului', cutie)
+  if (setari !== undefined) {
+    // Al treilea buton nu cere ACELASI nivel DOM, ci cel mult acelasi: in piciorul panoului, "Salveaza
+    // setarile" sta dupa grupul accept/refuz, aliniat la dreapta (forma sursei, `justify-content:
+    // space-between`), deci cu un nivel MAI SUS (masurat: 5 fata de 6, la 1440 si la 390). Nivelul DOM a
+    // intrat in proba ca sa prinda un refuz ascuns mai adanc decat acceptul; un buton mai putin adanc nu
+    // e retrogradat. Greutatea vizuala ceruta de varianta (ii) ramane masurata integral: fundal, chenar,
+    // font, contrast, opacitate, in ecran.
+    a.push(
+      ...abateriPereche(accept, setari, 'setarile', 'setarilor', cutie, false).filter((x) => !x.startsWith('acceptul')),
+    )
+    if (setari.adancime > accept.adancime) a.push('nivel DOM mai adanc (setarile): ' + accept.adancime + ' / ' + setari.adancime)
+  }
+  return a
+}
+
+/** Abaterile unui buton fata de accept (pentru refuz, mesajele sunt cele de dinainte de al treilea buton). */
+function abateriPereche(
+  accept: MasuraButon,
+  refuz: MasuraButon,
+  numeRefuz: string,
+  genitiv: string,
+  cutie: boolean,
+  acelasiNivel = true,
+): string[] {
   const a: string[] = []
   const la = ' la ' + accept.innerWidth
-  for (const [nume, b] of [['acceptul', accept], ['refuzul', refuz]] as const) {
+  for (const [nume, b] of [['acceptul', accept], [numeRefuz, refuz]] as const) {
     if (b.tag !== 'BUTTON') a.push(nume + ' nu e <button>, e <' + b.tag.toLowerCase() + '>')
     if (b.opacitate !== 1) a.push(nume + ' are opacitatea ' + b.opacitate + la)
-    if (!(b.contrast >= CONTRAST_MINIM)) a.push('textul ' + (nume === 'acceptul' ? 'acceptului' : 'refuzului') + ' are contrast ' + b.contrast.toFixed(2) + ':1' + la)
+    if (!(b.contrast >= CONTRAST_MINIM)) a.push('textul ' + (nume === 'acceptul' ? 'acceptului' : genitiv) + ' are contrast ' + b.contrast.toFixed(2) + ':1' + la)
     if (!(b.contrastMargine >= CONTRAST_MARGINE_MINIM)) {
       a.push(nume + ' se desprinde de suport doar ' + b.contrastMargine.toFixed(2) + ':1 (minim ' + CONTRAST_MARGINE_MINIM + ':1)' + la)
     }
     if (!b.inEcran) a.push(nume + ' iese din ecran' + la)
   }
-  if (cutie && Math.abs(refuz.latime - accept.latime) > 1) a.push('latimi diferite' + la + ': ' + accept.latime + ' / ' + refuz.latime)
-  if (cutie && Math.abs(refuz.inaltime - accept.inaltime) > 1) a.push('inaltimi diferite' + la + ': ' + accept.inaltime + ' / ' + refuz.inaltime)
-  if (refuz.font !== accept.font) a.push('font diferit' + la + ': ' + accept.font + ' / ' + refuz.font)
-  if (refuz.adancime !== accept.adancime) a.push('nivel DOM diferit: ' + accept.adancime + ' / ' + refuz.adancime)
-  if (refuz.fundal !== accept.fundal) a.push('fundal diferit' + la + ': acceptul ' + accept.fundal + ', refuzul ' + refuz.fundal)
-  if (refuz.chenar !== accept.chenar) a.push('chenar diferit' + la + ': acceptul ' + accept.chenar + ', refuzul ' + refuz.chenar)
+  const sufix = numeRefuz === 'refuzul' ? '' : ' (' + numeRefuz + ')'
+  if (cutie && Math.abs(refuz.latime - accept.latime) > 1) a.push('latimi diferite' + sufix + la + ': ' + accept.latime + ' / ' + refuz.latime)
+  if (cutie && Math.abs(refuz.inaltime - accept.inaltime) > 1) a.push('inaltimi diferite' + sufix + la + ': ' + accept.inaltime + ' / ' + refuz.inaltime)
+  if (refuz.font !== accept.font) a.push('font diferit' + sufix + la + ': ' + accept.font + ' / ' + refuz.font)
+  if (acelasiNivel && refuz.adancime !== accept.adancime) a.push('nivel DOM diferit' + sufix + ': ' + accept.adancime + ' / ' + refuz.adancime)
+  if (refuz.fundal !== accept.fundal) a.push('fundal diferit' + sufix + la + ': acceptul ' + accept.fundal + ', ' + numeRefuz + ' ' + refuz.fundal)
+  if (refuz.chenar !== accept.chenar) a.push('chenar diferit' + sufix + la + ': acceptul ' + accept.chenar + ', ' + numeRefuz + ' ' + refuz.chenar)
   return a
 }
 
@@ -560,20 +600,21 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
     // chenar, text de cel putin 4,5:1, marginea de cel putin 3:1 fata de banner, opacitate 1,
     // amandoua in ecran, fara niciun clic. Fundalul si marginea sunt din runda a doua a criticului
     // (25.09.2026): cutia si fontul erau egale, dar acceptul era plin (5,17:1 fata de banner) si
-    // refuzul o pata aproape alba (1,10:1), adica alt nivel vizual.
+    // refuzul o pata aproape alba (1,10:1), adica alt nivel vizual. Din masurarea S-B (varianta (ii)),
+    // si al treilea buton, "Setari cookie-uri", la acelasi nivel cu acceptul.
     for (const latime of [1280, 390]) {
       await pagina.setViewportSize({ width: latime, height: 844 })
       await expect.poll(() => pagina.evaluate(() => window.innerWidth), { message: 'latimea ceruta nu s-a aplicat' }).toBe(latime)
       // Bannerul apare cu o tranzitie de opacitate: se asteapta starea finala, nu un cadru din ea.
       await expect
-        .poll(async () => (await masoaraButoane(pagina, '[data-consimtamant]')).map((b) => b.opacitate), { timeout: 5_000 })
-        .toEqual([1, 1])
-      const [accept, refuz] = await masoaraButoane(pagina, '[data-consimtamant]')
+        .poll(async () => (await masoaraButoane(pagina, '[data-consimtamant]', TREI_BANNER)).map((b) => b.opacitate), { timeout: 5_000 })
+        .toEqual([1, 1, 1])
+      const [accept, refuz, setari] = await masoaraButoane(pagina, '[data-consimtamant]', TREI_BANNER)
       console.log(
         '[copie, simetrie] ceruta ' + latime + ' | innerWidth CITIT: ' + accept.innerWidth + ' | accept: ' +
-          JSON.stringify(accept) + ' | refuz: ' + JSON.stringify(refuz),
+          JSON.stringify(accept) + ' | refuz: ' + JSON.stringify(refuz) + ' | setari: ' + JSON.stringify(setari),
       )
-      expect(abateriSimetrie(accept, refuz), 'refuzul nu e la nivelul acceptului, la ' + accept.innerWidth).toEqual([])
+      expect(abateriSimetrie(accept, refuz, { setari }), 'refuzul sau setarile nu sunt la nivelul acceptului, la ' + accept.innerWidth).toEqual([])
     }
 
     // Tastatura: refuzul vine imediat dupa accept (abaterea declarata in antet).
@@ -656,16 +697,19 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
     // se pune intai pe refuz, deliberat: masuratoarea trebuie sa vada butonul in repaus, nu starea
     // de hover (controlul mutarii cursorului din masoaraButoane).
     await panou.locator('[data-refuz]').hover()
-    const butoaneMari = await masoaraButoane(pagina, 'dialog[data-consimtamant-setari]')
+    const butoaneMari = await masoaraButoane(pagina, 'dialog[data-consimtamant-setari]', TREI_PANOU)
     await pagina.setViewportSize({ width: 390, height: 844 })
     await expect.poll(async () => (await cutie()).innerWidth).toBe(390)
     const mic = await cutie()
-    const butoaneMici = await masoaraButoane(pagina, 'dialog[data-consimtamant-setari]')
+    const butoaneMici = await masoaraButoane(pagina, 'dialog[data-consimtamant-setari]', TREI_PANOU)
     await context.close()
     console.log('[copie, panou] ceruta 1440 x 900 | CITIT: ' + JSON.stringify(mare) + ' || ceruta 390 x 844 | CITIT: ' + JSON.stringify(mic))
-    for (const [accept, refuz] of [butoaneMari, butoaneMici]) {
-      console.log('[copie, panou, simetrie] innerWidth CITIT: ' + accept.innerWidth + ' | accept: ' + JSON.stringify(accept) + ' | refuz: ' + JSON.stringify(refuz))
-      expect(abateriSimetrie(accept, refuz, { cutie: false }), 'refuzul din panou, la ' + accept.innerWidth).toEqual([])
+    for (const [accept, refuz, salveaza] of [butoaneMari, butoaneMici]) {
+      console.log(
+        '[copie, panou, simetrie] innerWidth CITIT: ' + accept.innerWidth + ' | accept: ' + JSON.stringify(accept) + ' | refuz: ' +
+          JSON.stringify(refuz) + ' | salveaza: ' + JSON.stringify(salveaza),
+      )
+      expect(abateriSimetrie(accept, refuz, { cutie: false, setari: salveaza }), 'refuzul sau salvarea din panou, la ' + accept.innerWidth).toEqual([])
     }
 
     expect(Math.abs(mare.latime - 688), 'latimea panoului la ' + mare.innerWidth).toBeLessThanOrEqual(2)
@@ -879,5 +923,47 @@ test.describe('detectoarele: fonturile Google, stocarea IndexedDB si simetria bu
 
   test('martor NEGATIV: acceptul si refuzul deschise, cu chenar de peste 3:1, NU trebuie prinse', async ({ browser }) => {
     expect(await simetrieFixtura(browser, '/simetrie/bun-chenar')).toEqual([])
+  })
+
+  // Al treilea buton (masurarea S-B, varianta (ii)): "Setari cookie-uri" la acelasi nivel cu acceptul si refuzul.
+  // Fixturile se asambleaza aici, la rulare, cu aceleasi cutii si culori ca fixturile de mai sus (culorile
+  // bannerului real); pagina se pune direct in browser, fara server.
+  const BUTON_FIXTURA = 'width:250px;height:42px;font:600 13px/1.15 Arial,sans-serif;border-radius:6px;'
+  const PLIN_FIXTURA = BUTON_FIXTURA + 'background:#2563eb;color:#ffffff;border:1px solid transparent'
+  const DESCHIS_FIXTURA = BUTON_FIXTURA + 'background:#f0f4ff;color:#2c2f31;border:1px solid transparent'
+
+  /** Abaterile unui banner cu trei butoane, cu stilul dat al celui de-al treilea. */
+  async function simetrieTrei(browser: Browser, stilSetari: string, adancSetari = false): Promise<string[]> {
+    const context = await browser.newContext()
+    const pagina = await context.newPage()
+    const buton = (atribut: string, stil: string, text: string) => '<button ' + atribut + ' type="button" style="' + stil + '">' + text + '</button>'
+    await pagina.setContent(
+      '<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>fixtura</title></head><body style="margin:0;background:#ffffff">' +
+        '<section data-consimtamant style="position:fixed;left:0;right:0;bottom:0;padding:16px;background:#ffffff;color:#1a1a1a"><div>' +
+        buton('data-accept', PLIN_FIXTURA, 'Accept tot') + ' ' + buton('data-refuz', PLIN_FIXTURA, 'Refuz tot') + ' ' +
+        (adancSetari ? '<span><span>' : '') + buton('data-setari', stilSetari, 'Setari cookie-uri') + (adancSetari ? '</span></span>' : '') +
+        '</div></section></body></html>',
+    )
+    const [accept, refuz, setari] = await masoaraButoane(pagina, '[data-consimtamant]', TREI_BANNER)
+    await context.close()
+    const abateri = abateriSimetrie(accept, refuz, { setari })
+    console.log('[simetrie trei butoane] setari: ' + setari.fundal + ' | abateri: ' + (abateri.join('; ') || '(niciuna)'))
+    return abateri
+  }
+
+  test('martor POZITIV: acceptul si refuzul pline, "Setari cookie-uri" deschis (forma de dinainte de S-B) TREBUIE prins', async ({ browser }) => {
+    const abateri = await simetrieTrei(browser, DESCHIS_FIXTURA)
+    // Acceptul si refuzul sunt egale: numai al treilea buton e prins, pe margine si pe fundal.
+    expect(abateri).toHaveLength(2)
+    expect(abateri[0]).toMatch(/^setarile se desprinde de suport doar 1\.10:1/)
+    expect(abateri[1]).toMatch(/^fundal diferit \(setarile\)/)
+  })
+
+  test('martor NEGATIV: toate trei butoanele pline, in aceeasi culoare, NU trebuie prinse', async ({ browser }) => {
+    expect(await simetrieTrei(browser, PLIN_FIXTURA)).toEqual([])
+  })
+
+  test('martor POZITIV: "Setari cookie-uri" plin, dar ascuns cu doua niveluri mai adanc decat acceptul, TREBUIE prins', async ({ browser }) => {
+    expect(await simetrieTrei(browser, PLIN_FIXTURA, true)).toEqual(['nivel DOM mai adanc (setarile): 5 / 7'])
   })
 })

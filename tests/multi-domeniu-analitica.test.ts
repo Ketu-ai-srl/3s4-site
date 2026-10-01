@@ -20,7 +20,10 @@ vi.hoisted(() => {
 /**
  * Felia multi-domeniu, punctul 3: ANALITICA FARA COOKIE, GAZDUITA DE NOI (`UMAMI_URL` + `UMAMI_WEBSITE_ID`).
  * Scriptul se incarca prin CALE PROPRIE a site-ului, cu atributul do-not-track, fara cookie si fara stocare
- * scrisa; fara variabile, nimic. Proba de browser (`tests/browser/multi-domeniu.spec.ts`) masoara pe un
+ * scrisa; fara variabile, nimic. De la masurarea S-B (decizia 13) scriptul NU mai sta in layout: il pune
+ * bannerul, dupa accept (`incarcator-umami.ts`, proba lui in `tests/analitica-s-b.test.ts`); aici "elementul din
+ * pagina" devine analitica proprie din starea bannerului (`stareAnalitica(...).umami`), iar `Analitica` nu mai
+ * randeaza nimic, cu sau fara variabile. Proba de browser (`tests/browser/multi-domeniu.spec.ts`) masoara pe un
  * build real ca browserul vorbeste numai cu originea site-ului (poarta C-01), ca evenimentele ajung la
  * instanta prin proxy, ca nu se scrie niciun cookie si nicio cheie de stocare; aici se masoara regulile
  * variabilelor, rescrierile din `next.config.ts`, elementul din pagina si textele juridice.
@@ -167,10 +170,15 @@ describe('fara operator, analitica proprie nu porneste, chiar cu variabile (plan
     expect(Analitica({ operator: null })).toBeNull()
   })
 
-  it('elementul din pagina exista numai cu operator numit si complet; un operator incomplet sau cu substituent nu ajunge', () => {
+  it('analitica proprie ajunge in starea bannerului numai cu operator numit si complet; un operator incomplet sau cu substituent nu ajunge', () => {
     vi.stubEnv('UMAMI_URL', INSTANTA)
     vi.stubEnv('UMAMI_WEBSITE_ID', ID)
-    for (const [caz, operator, asteptat] of CAZURI) expect(Analitica({ operator }) !== null, caz).toBe(asteptat)
+    for (const [caz, operator, asteptat] of CAZURI) {
+      const stare = stareAnalitica(operator, null, MEDIU)
+      expect(stare.activa && stare.umami !== null, caz).toBe(asteptat)
+      // Masurarea S-B: componenta din layout nu mai pune nimic in pagina, in niciun caz
+      expect(Analitica({ operator }), caz).toBeNull()
+    }
   })
 
   it('aceeasi regula ca la GA4: pe aceiasi operatori, `stareAnalitica` si analitica proprie dau acelasi raspuns', () => {
@@ -214,14 +222,23 @@ describe('fara operator, analitica proprie nu porneste, chiar cu variabile (plan
 })
 
 describe('cu modulele reale: operatorul e cel rezolvat, OPERATOR_JSON inaintea fisierului', () => {
-  /** Reincarca componenta si configurarea Next cu un `OPERATOR_JSON` dat (`''` = nesetat) si cu variabilele analiticii. */
+  /**
+   * Reincarca starea bannerului si configurarea Next cu un `OPERATOR_JSON` dat (`''` = nesetat) si cu variabilele
+   * analiticii. `componenta` raspunde ca inainte la "e analitica proprie in pagina?", acum prin starea bannerului
+   * (masurarea S-B: scriptul il pune bannerul dupa accept): `null` cand nu e, identificatorul cand e.
+   */
   async function incarca(operatorJson: string) {
     vi.resetModules()
     vi.stubEnv('OPERATOR_JSON', operatorJson)
     vi.stubEnv('UMAMI_URL', INSTANTA)
     vi.stubEnv('UMAMI_WEBSITE_ID', ID)
-    const componenta = (await import('../src/components/analitica/Analitica')).default
+    const { stareAnalitica: stareReala } = await import('../src/lib/analitica')
     const config = (await import('../next.config')).default
+    const componenta = (argumente: Record<string, never>) => {
+      void argumente
+      const stare = stareReala(undefined, null)
+      return stare.activa ? stare.umami : null
+    }
     return { componenta, config }
   }
   /** Fisierul de configurare cu un operator pus in el (mock, ca fisierul din depozit sa ramana neatins). */
@@ -287,21 +304,17 @@ describe('cu modulele reale: operatorul e cel rezolvat, OPERATOR_JSON inaintea f
   })
 })
 
-describe('elementul din pagina', () => {
-  it('martor POZITIV: un singur script, de pe cale proprie, cu identificatorul si do-not-track, dupa hidratare', () => {
+describe('elementul din pagina (masurarea S-B)', () => {
+  it('layout-ul nu mai pune scriptul; bannerul primeste numai identificatorul site-ului, nu adresa instantei', () => {
     vi.stubEnv('UMAMI_URL', INSTANTA)
     vi.stubEnv('UMAMI_WEBSITE_ID', ID)
-    const element = Analitica({ operator: OPERATOR_SINTETIC })
-    expect(element).not.toBeNull()
-    const props = element?.props as Record<string, unknown>
-    expect(props.src).toBe('/a/script.js')
-    expect(props.strategy).toBe('afterInteractive')
-    expect(props['data-website-id']).toBe(ID)
-    expect(props['data-do-not-track']).toBe('true')
-    // Nimic care sa duca browserul spre instanta sau sa schimbe adresa de trimitere
-    expect(Object.keys(props).sort()).toEqual(['data-do-not-track', 'data-website-id', 'src', 'strategy'])
-    expect(JSON.stringify(props)).not.toContain(INSTANTA)
-    expect(String(props.src).startsWith('/')).toBe(true)
+    expect(Analitica({ operator: OPERATOR_SINTETIC })).toBeNull()
+    const stare = stareAnalitica(OPERATOR_SINTETIC, null, { UMAMI_URL: INSTANTA, UMAMI_WEBSITE_ID: ID })
+    // Controlul: cu aceleasi intrari analitica proprie chiar e pornita, deci `null` de mai sus nu vine dintr-o stare oprita
+    expect(stare).toEqual({ activa: true, idGa4: null, umami: { idSite: ID } })
+    // Nimic care sa duca browserul spre instanta: in pagina ajunge numai identificatorul, scriptul se cere de pe cale proprie
+    expect(JSON.stringify(stare)).not.toContain(INSTANTA)
+    expect(CALE_SCRIPT.startsWith('/')).toBe(true)
   })
 })
 

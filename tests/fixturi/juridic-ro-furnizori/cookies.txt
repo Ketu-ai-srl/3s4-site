@@ -1,0 +1,62 @@
+001	Juridic
+002	Mențiuni legale
+003	Politica de confidențialitate
+004	Termeni și condiții
+005	Cookie-uri
+006	Reguli publice
+007	Licența aplicației
+008	Subîmputerniciții platformei
+009	Acasă
+010	Documente juridice
+011	Politica de cookie-uri
+012	Politica de cookie-uri
+013	Versiunea din 25 septembrie 2026
+014	Aici aflați ce informații stochează sau citește site-ul în browserul dumneavoastră, de ce, cine le primește și cum vă puteți răzgândi. Datele operatorului și drepturile complete sunt în politica de confidențialitate.
+015	Pe ce temei
+016	Pentru vizitatorii din România și din Uniunea Europeană, orice informație stocată sau citită din browser, în afara celor strict necesare, se folosește numai cu acordul dumneavoastră, cerut după ce ați primit informațiile de mai jos (Legea nr. 506/2004, art. 4 alin. (5); excepția pentru ce e strict necesar, art. 4 alin. (6)).
+017	Pentru vizitatorii din Republica Moldova, informațiile de mai jos răspund art. 10 alin. (2) lit. b)-h) din Legea nr. 284/2004 privind comerțul electronic, iar cookie-urile care permit identificarea se folosesc numai cu consimțământ, potrivit Legii nr. 195/2024.
+018	Ce informații colectăm și de ce
+019	Strict necesară, fără acord, e numai 3s-consimtamant. Cu acordul dumneavoastră pentru statistică se adaugă _ga și _ga_ urmat de codul măsurătorii, care rămân cel mult 2 ani. Tabelul arată fiecare informație, cu durata și rostul ei.
+020	Informațiile păstrate în browser
+021	Numele
+022	Categoria
+023	Cât rămâne
+024	Pentru ce
+025	3s-consimtamant
+026	stocare locală
+027	Strict necesară
+028	6 luni
+029	Ține minte ce ați ales în bannerul de cookie-uri, ca să nu vă întrebăm la fiecare pagină.
+030	_ga
+031	cookie
+032	Statistică, cu acord
+033	2 ani
+034	Deosebește vizitatorii între ei, fără nume sau adresă de e-mail.
+035	_ga_ urmat de codul măsurătorii
+036	cookie
+037	Statistică, cu acord
+038	2 ani
+039	Ține minte sesiunea de navigare în curs.
+040	Cu acordul pentru statistică, Google Analytics 4 primește adresa paginii, pagina de pe care ați venit, tipul de dispozitiv și de browser, țara și orașul aproximate din adresa IP, plus acțiunile din lista închisă: clicurile pe butoanele către contul gratuit și către pagina de contact; începerea completării unui formular; formularele trimise; domeniul de activitate ales în constructorul de arhivă de pe pagina de start; folosirea calculatorului de pe pagina de prețuri. Nu primește numele, adresa de e-mail sau ce scrieți în formulare.
+041	Drepturile dumneavoastră
+042	Puteți cere oricând accesul la date sau ștergerea lor și vă puteți opune prelucrării; lista completă a drepturilor și modul de exercitare sunt în politica de confidențialitate. Cererile le primim la date@operator-3s.test.
+043	Cui pot ajunge datele
+044	Pentru vizitatorii din România și din Uniunea Europeană
+045	Google Analytics 4, numai după acordul dumneavoastră: Google Ireland Limited (Irlanda), cu prelucrare și de către Google LLC (Statele Unite). Google LLC e certificată în cadrul EU-U.S. Data Privacy Framework, recunoscut de Comisia Europeană prin decizia din 10 iulie 2023; Google poate folosi și clauzele contractuale standard.
+046	Pentru vizitatorii din Republica Moldova
+047	Google Analytics 4: Pentru vizitatorii din Republica Moldova, transferul către Statele Unite se face pe baza clauzelor contractuale standard adoptate de Comisia Europeană prin Decizia (UE) 2021/914, potrivit art. 46 alin. (2) lit. c) din Legea nr. 195/2024.
+048	Alegerea din banner rămâne în browserul dumneavoastră; pe server se păstrează doar rândul de evidență descris în politica de confidențialitate. Lista tuturor destinatarilor: Amazon Web Services (AWS); Google Ireland Limited (Irlanda), cu prelucrare și de către Google LLC (Statele Unite).
+049	Punctul de contact
+050	Pentru orice întrebare despre cookie-uri scrieți la date@operator-3s.test, adresa operatorului Operator Sintetic Furnizori SRL.
+051	Cum cerem consimțământul
+052	La prima vizită, bannerul de cookie-uri spune ce folosim și vă lasă să alegeți între „Accept tot”, „Refuz tot” și „Setări cookie-uri”, trei butoane de aceeași mărime. Până nu alegeți, nu se încarcă nimic de la Google și nu se scrie niciun cookie.
+053	În setări, categoria „Statistică” pornește oprită; o porniți numai dumneavoastră. Vă întrebăm din nou după 6 luni sau când se schimbă textul acestei informări.
+054	Dreptul de a refuza
+055	Refuzul costă un singur clic, pe „Refuz tot”. Site-ul funcționează la fel și fără statistică: nicio pagină și nicio funcție nu depind de acordul dumneavoastră.
+056	Cum vă retrageți acordul
+057	Legătura „Setări cookie-uri” din subsolul oricărei pagini deschide din nou alegerea. Butonul „Refuz tot” sau oprirea categoriei „Statistică” opresc măsurarea pe loc și șterg cookie-urile de statistică din browser. Datele site-ului se pot șterge oricând și din setările browserului.
+058	Cum protejăm datele
+059	Site-ul folosește HTTPS. Fonturile sunt găzduite pe același domeniu cu site-ul, deci nu pleacă nicio cerere către un serviciu de fonturi al altcuiva. Înainte de acordul dumneavoastră, paginile nu contactează niciun terț; lucrul acesta se verifică automat, la fiecare versiune a site-ului, înainte de publicare.
+060	Evidența alegerilor păstrează doar prefixul rețelei, nu adresa IP completă, iar codul de statistică nu primește date de publicitate: semnalele pentru publicitate rămân dezactivate.
+061	Amprenta textului (SHA-256)
+062	32807dbde99cd9b4…

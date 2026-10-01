@@ -3,41 +3,48 @@
 // Bannerul de consimtamant si panoul de setari (forma masurata a sursei: `componente-globale.md` §7,
 // in depozitul fabricii; biblioteca sursei se reproduce vizual, nu se importa).
 //
-// SE RANDEAZA NUMAI cand analitica e pornita (`src/lib/analitica.ts`: operator numit + ID GA4), si
-// numai atunci ajunge si codul lui in pagina: `ConsimtamantLenes` il cere ca bucata separata de
-// JavaScript, iar incarcatorul GA4 se cere abia la accept (`import()` mai jos). Cu analitica
+// SE RANDEAZA NUMAI cand analitica e pornita (`src/lib/analitica.ts`: operator numit + ID GA4 sau
+// Umami), si numai atunci ajunge si codul lui in pagina: `ConsimtamantLenes` il cere ca bucata separata
+// de JavaScript, iar incarcatoarele (GA4, Umami) se cer abia la accept (`import()` mai jos). Cu analitica
 // oprita, nici bannerul, nici codul lui nu sunt in pagina; proba e tests/browser/comutator.spec.ts,
 // pe JavaScript-ul incarcat de fiecare ruta.
 //
+// MASURAREA S-B (decizia 13): analitica proprie (Umami) porneste numai dupa acceptul categoriei
+// "Statistica", ca GA4, si se opreste pe loc la retragere, fara reincarcare: incarcatorul ei cere
+// bannerului, inainte de fiecare trimitere, daca statistica e acceptata ACUM (`statisticaDorita`).
+// Textele vin rezolvate de pe server (`informare`), in limba paginii si pentru uneltele care ruleaza.
+//
 // CE E CORECT JURIDIC, pe langa forma sursei (Legea 506/2004 art. 4 alin. (5); GDPR art. 4 alin.
 // (11) si art. 7; raportul EDPB pe bannere, 17.01.2023):
-//   - primul strat are trei butoane de aceeasi marime; "Refuz tot" e buton, langa "Accept tot",
-//     nu o legatura ascunsa, si la ACELASI nivel vizual: amandoua pline, in albastrul site-ului
-//     (gdprscan SITE-04, "acelasi nivel de vizibilitate"). "Setari cookie-uri" ramane secundar;
-//     in panou, la fel: acceptul si refuzul pline, "Salvati setarile" secundar;
+//   - primul strat are trei butoane de aceeasi marime si la ACELASI nivel vizual: "Refuz tot" e buton,
+//     langa "Accept tot", nu o legatura ascunsa, iar "Setari cookie-uri" are acelasi stil, toate trei
+//     pline, in albastrul site-ului (gdprscan SITE-04, "acelasi nivel de vizibilitate"; varianta (ii)
+//     a masurarii S-B: nicio cale nu e impinsa vizual inaintea alteia). In panou, la fel: acceptul,
+//     refuzul si "Salveaza setarile" pline; etichetele raman cele de pana acum;
 //   - singura categorie cu acord ("Statistica") porneste OPRITA; categoria strict necesara nu are
 //     caseta, are un indicator blocat, deci nicio caseta nu vine bifata;
-//   - nimic de la Google nu se incarca inainte de accept (modul de baza, `incarcator-ga4.ts`), si
-//     nici codul care l-ar incarca;
+//   - nimic de la Google nu se incarca inainte de accept (modul de baza, `incarcator-ga4.ts`), nici
+//     scriptul analiticii proprii (`incarcator-umami.ts`), si nici codul care le-ar incarca;
 //   - retragerea e la fel de simpla ca acordul: legatura din subsolul oricarei pagini redeschide
-//     panoul, iar "Refuz tot" opreste masurarea si sterge cookie-urile ei pe loc;
+//     panoul, iar "Refuz tot" opreste masurarea (GA4 si Umami) si sterge cookie-urile GA4 pe loc;
 //   - fiecare alegere lasa un rand de evidenta pe server (`evidenta.ts`), cu versiunea informarii.
 //
-// Trei abateri de la sursa, deliberate: bannerul NU se ascunde fata de browserele automatizate
-// (sursa il ascunde, deci un scaner de conformitate nu l-ar vedea), textele sunt in romana, iar
-// refuzul e plin ca acceptul. La sursa numai acceptul e plin si refuzul sta pe ceata albastra, la
+// Patru abateri de la sursa, deliberate: bannerul NU se ascunde fata de browserele automatizate
+// (sursa il ascunde, deci un scaner de conformitate nu l-ar vedea), textele sunt in limba paginii,
+// refuzul e plin ca acceptul, iar "Setari cookie-uri" e plin ca ele. La sursa numai acceptul e plin si refuzul sta pe ceata albastra, la
 // 1,10:1 fata de bannerul alb, cand acceptul are 5,17:1: ierarhia primar/secundar ar trece inaintea
 // cerintei ca refuzul sa fie la fel de vizibil (masurat de critic pe copia cu operator, 25.09.2026).
 // Proba: tests/browser/comutator.spec.ts, simetria, cu martori pentru fundal si pentru margine.
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { COOKIE_ALEGERE, furnizoriCategorie, type CookieDeclarat } from "@/content/juridic/furnizori";
-import { urmaresteCta } from "./evenimente";
+import type { RandPanou } from "@/content/juridic/furnizori";
+import type { UmamiActiv } from "@/lib/analitica";
+import { urmaresteCta, urmaresteUmami } from "./evenimente";
 import { trimiteEvidenta } from "./evidenta";
 import { SEMNAL_DESCHIDE_SETARI } from "./semnal";
 import { opresteGa4 } from "./stare-ga4";
 import { citesteAlegere, idNou, idPastrat, scrieAlegere, type Alegere, type Metoda } from "./stocare";
-import { TEXTE_BANNER, TEXTE_PANOU, insignaServicii } from "./texte";
+import type { InformareConsimtamant, TextePanou } from "./texte";
 import s from "./Consimtamant.module.css";
 
 /**
@@ -53,6 +60,19 @@ function pornesteGa4LaAccept(id: string, dorita: { current: boolean }): void {
     .catch(() => {});
 }
 
+/**
+ * Porneste analitica proprie cerand incarcatorul abia acum, la accept. `dorita` e alegerea de ACUM: un refuz
+ * dat cat timp bucata se descarca o gaseste falsa si nu se porneste nimic; dupa pornire, incarcatorul o citeste
+ * inainte de fiecare trimitere, deci retragerea opreste masurarea pe loc, fara reincarcare.
+ */
+function pornesteUmamiLaAccept(umami: UmamiActiv, dorita: { current: boolean }): void {
+  import("./incarcator-umami")
+    .then((m) => {
+      if (dorita.current) m.pornesteUmami(umami.idSite, () => dorita.current);
+    })
+    .catch(() => {});
+}
+
 /** Adresele politicilor, sau `null` cat timp pagina lor nu exista pe site. */
 export type LegaturiPolitici = {
   confidentialitate: string | null;
@@ -60,14 +80,16 @@ export type LegaturiPolitici = {
 };
 
 export type ConsimtamantProps = {
-  /** ID-ul de masurare GA4, deja validat pe server. */
-  idGa4: string;
-  /** Versiunea informarii (`VERSIUNE_INFORMARE`), purtata de fiecare alegere. */
+  /** ID-ul de masurare GA4, deja validat pe server; `null` cand GA4 nu ruleaza pe domeniu. */
+  idGa4: string | null;
+  /** Analitica proprie (Umami), deja validata pe server; `null` cand nu ruleaza pe domeniu. */
+  umami: UmamiActiv | null;
+  /** Versiunea informarii (`versiuneInformare`), purtata de fiecare alegere. */
   versiune: string;
   legaturi: LegaturiPolitici;
+  /** Textele si randurile panoului, in limba paginii, pentru uneltele care ruleaza. */
+  informare: InformareConsimtamant;
 };
-
-const SERVICII_STATISTICA = furnizoriCategorie("statistica");
 
 function Chevron() {
   return (
@@ -94,14 +116,16 @@ type CategorieProps = {
   insignaPastila: boolean;
   descriere: string;
   serviciu: string;
-  cookieuri: CookieDeclarat[];
+  cookieuri: RandPanou[];
+  coloane: Pick<TextePanou, "coloanaNume" | "coloanaDurata" | "coloanaScop">;
+  numaiCitit: string;
   /** `null` = categorie blocata (strict necesara), fara caseta. */
   activa: boolean | null;
   onSchimba?: (activa: boolean) => void;
   cheie: string;
 };
 
-function Categorie({ titlu, insigna, insignaPastila, descriere, serviciu, cookieuri, activa, onSchimba, cheie }: CategorieProps) {
+function Categorie({ titlu, insigna, insignaPastila, descriere, serviciu, cookieuri, coloane, numaiCitit, activa, onSchimba, cheie }: CategorieProps) {
   const [deschisa, setDeschisa] = useState(false);
   const idTitlu = useId();
   const idDetalii = useId();
@@ -142,15 +166,15 @@ function Categorie({ titlu, insigna, insignaPastila, descriere, serviciu, cookie
           <caption className={s.tabelTitlu}>{serviciu}</caption>
           <thead>
             <tr>
-              <th scope="col">{TEXTE_PANOU.coloanaNume}</th>
-              <th scope="col">{TEXTE_PANOU.coloanaDurata}</th>
-              <th scope="col">{TEXTE_PANOU.coloanaScop}</th>
+              <th scope="col">{coloane.coloanaNume}</th>
+              <th scope="col">{coloane.coloanaDurata}</th>
+              <th scope="col">{coloane.coloanaScop}</th>
             </tr>
           </thead>
           <tbody>
             {cookieuri.map((c) => (
               <tr key={c.nume}>
-                <td className={s.numeCookie}>{c.nume}</td>
+                <td className={s.numeCookie}>{c.numaiCitit ? c.nume + " (" + numaiCitit + ")" : c.nume}</td>
                 <td>{c.durata}</td>
                 <td>{c.scop}</td>
               </tr>
@@ -162,13 +186,17 @@ function Categorie({ titlu, insigna, insignaPastila, descriere, serviciu, cookie
   );
 }
 
-export default function Consimtamant({ idGa4, versiune, legaturi }: ConsimtamantProps) {
+export default function Consimtamant({ idGa4, umami, versiune, legaturi, informare }: ConsimtamantProps) {
+  const { banner: TEXTE_BANNER, panou: TEXTE_PANOU } = informare;
   // `undefined` = inca necitita (pe server si la prima randare); `null` = nicio alegere valabila.
   const [alegere, setAlegere] = useState<Alegere | null | undefined>(undefined);
   const [aparut, setAparut] = useState(false);
   const [statisticaPanou, setStatisticaPanou] = useState(false);
   const panou = useRef<HTMLDialogElement>(null);
-  /** Statistica acceptata ACUM; o citeste incarcatorul cand ajunge, ca sa nu porneasca dupa un refuz. */
+  /**
+   * Statistica acceptata ACUM; o citeste incarcatorul GA4 cand ajunge, ca sa nu porneasca dupa un refuz, si
+   * incarcatorul Umami inainte de fiecare trimitere.
+   */
   const statisticaDorita = useRef(false);
   const idTitlu = useId();
   const idDescriere = useId();
@@ -178,8 +206,11 @@ export default function Consimtamant({ idGa4, versiune, legaturi }: Consimtamant
     const pastrata = citesteAlegere(versiune);
     setAlegere(pastrata);
     statisticaDorita.current = pastrata?.statistica === true;
-    if (statisticaDorita.current) pornesteGa4LaAccept(idGa4, statisticaDorita);
-  }, [idGa4, versiune]);
+    if (statisticaDorita.current) {
+      if (idGa4 !== null) pornesteGa4LaAccept(idGa4, statisticaDorita);
+      if (umami !== null) pornesteUmamiLaAccept(umami, statisticaDorita);
+    }
+  }, [idGa4, umami, versiune]);
 
   // Aparitia: clasa se pune la cadrul urmator, ca tranzitia de 0,25 s sa aiba de unde porni.
   useEffect(() => {
@@ -200,9 +231,14 @@ export default function Consimtamant({ idGa4, versiune, legaturi }: Consimtamant
   }, [deschidePanou]);
 
   useEffect(() => {
-    if (!alegere?.statistica) return;
+    if (!alegere?.statistica || idGa4 === null) return;
     return urmaresteCta();
-  }, [alegere]);
+  }, [alegere, idGa4]);
+
+  useEffect(() => {
+    if (!alegere?.statistica || umami === null) return;
+    return urmaresteUmami();
+  }, [alegere, umami]);
 
   const alege = useCallback(
     (statistica: boolean, metoda: Metoda) => {
@@ -214,19 +250,24 @@ export default function Consimtamant({ idGa4, versiune, legaturi }: Consimtamant
         metoda,
       };
       scrieAlegere(noua);
+      // Intai fanionul: de aici incolo incarcatorul Umami nu mai lasa nimic sa plece (`data-before-send`).
       statisticaDorita.current = statistica;
-      if (statistica) pornesteGa4LaAccept(idGa4, statisticaDorita);
-      else opresteGa4(idGa4);
+      if (statistica) {
+        if (idGa4 !== null) pornesteGa4LaAccept(idGa4, statisticaDorita);
+        if (umami !== null) pornesteUmamiLaAccept(umami, statisticaDorita);
+      } else if (idGa4 !== null) {
+        opresteGa4(idGa4);
+      }
       trimiteEvidenta(noua, window.location.pathname);
       setAlegere(noua);
       panou.current?.close();
     },
-    [alegere, idGa4, versiune],
+    [alegere, idGa4, umami, versiune],
   );
 
   const vizibil = alegere === null;
-  const statistica = SERVICII_STATISTICA.flatMap((f) => f.cookieuri);
-  const numeServicii = SERVICII_STATISTICA.map((f) => f.serviciu).join(", ");
+  const statistica = informare.statistica.flatMap((f) => f.randuri);
+  const numeServicii = informare.statistica.map((f) => f.serviciu).join(", ");
 
   return (
     <>
@@ -253,7 +294,7 @@ export default function Consimtamant({ idGa4, versiune, legaturi }: Consimtamant
             <button type="button" className={s.buton + " " + s.butonPlin} data-refuz="" onClick={() => alege(false, "refuz-tot")}>
               {TEXTE_BANNER.refuz}
             </button>
-            <button type="button" className={s.buton + " " + s.butonDeschis} data-setari="" onClick={deschidePanou}>
+            <button type="button" className={s.buton + " " + s.butonPlin} data-setari="" onClick={deschidePanou}>
               {TEXTE_BANNER.setari}
             </button>
           </div>
@@ -288,17 +329,21 @@ export default function Consimtamant({ idGa4, versiune, legaturi }: Consimtamant
               insignaPastila={false}
               descriere={TEXTE_PANOU.necesareText}
               serviciu="3S"
-              cookieuri={[COOKIE_ALEGERE]}
+              cookieuri={[informare.alegere]}
+              coloane={TEXTE_PANOU}
+              numaiCitit={informare.numaiCitit}
               activa={null}
             />
             <Categorie
               cheie="statistica"
               titlu={TEXTE_PANOU.statisticaTitlu}
-              insigna={insignaServicii(SERVICII_STATISTICA.length)}
+              insigna={informare.insigna}
               insignaPastila
               descriere={TEXTE_PANOU.statisticaText}
               serviciu={numeServicii}
               cookieuri={statistica}
+              coloane={TEXTE_PANOU}
+              numaiCitit={informare.numaiCitit}
               activa={statisticaPanou}
               onSchimba={setStatisticaPanou}
             />
@@ -322,7 +367,7 @@ export default function Consimtamant({ idGa4, versiune, legaturi }: Consimtamant
               {TEXTE_BANNER.refuz}
             </button>
           </div>
-          <button type="button" className={s.buton + " " + s.butonDeschis} data-salveaza="" onClick={() => alege(statisticaPanou, "setari")}>
+          <button type="button" className={s.buton + " " + s.butonPlin} data-salveaza="" onClick={() => alege(statisticaPanou, "setari")}>
             {TEXTE_PANOU.salveaza}
           </button>
         </div>

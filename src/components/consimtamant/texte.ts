@@ -13,6 +13,8 @@
 // Adresarea e cea a site-ului: persoana a II-a singular (decizia D15). Butoanele vorbesc cu vocea
 // vizitatorului ("Accept tot"), ca in fixtura portii C-01.
 
+import { ALEGERE_PANOU, serviciiStatistica, type RandPanou, type ServiciuPanou } from "@/content/juridic/furnizori";
+
 export const TEXTE_BANNER = {
   // Rol: titlul bannerului (16,8/600). Lungime la sursa: 14.
   titlu: "Cookie-uri de statistică",
@@ -56,10 +58,163 @@ export const TEXTE_PANOU = {
   salveaza: "Salvează setările",
 } as const;
 
-/** Insigna categoriei cu servicii: "1 serviciu", "2 servicii" (acordul in romana). */
-export function insignaServicii(cate: number): string {
+/** Insigna categoriei cu servicii: "1 serviciu", "2 servicii" (acordul in romana); in engleza "1 service". */
+export function insignaServicii(cate: number, limba: LimbaBanner = "ro"): string {
+  if (limba === "en") return cate === 1 ? "1 service" : cate + " services";
   return cate === 1 ? "1 serviciu" : cate + " servicii";
+}
+
+// ---------------------------------------------------------------------------------------------
+// SETURILE DE TEXTE, pe uneltele active si pe limba (masurarea S-B, decizia 13)
+// ---------------------------------------------------------------------------------------------
+//
+// Sursa: politica de cookie-uri a lui 3s.md, documentul 03, sectiunea 6 (textele bannerului si ale panoului
+// pentru varianta B), in romana si in engleza. Se schimba numai ce schimba sectiunea 6: titlul, descrierea si
+// textul categoriei "Statistica". Etichetele butoanelor raman cele de azi ("Etichetele butoanelor raman"), ca
+// politica sa le poata numi.
+//
+//   romana:  numai GA4 (setul de pana acum, neschimbat) | numai Umami | Umami si GA4
+//   engleza: numai Umami | Umami si GA4
+//
+// Engleza cu GA4 FARA Umami nu are set: GA4 nu ruleaza pe 3s.md (decizia 26), iar site-ul romanesc e numai in
+// romana, deci combinatia nu are pagina; un text juridic nevalidat nu se traduce. Ceruta, opreste construirea
+// (`texteConsimtamant`), cu un mesaj care o numeste. Restul textelor din engleza (panoul, legaturile) sunt
+// traducerea celor romanesti de mai sus; adresarea e "you", ca pe site-ul EN.
+
+export type LimbaBanner = "ro" | "en";
+
+export type TexteBanner = { [K in keyof typeof TEXTE_BANNER]: string };
+export type TextePanou = { [K in keyof typeof TEXTE_PANOU]: string };
+
+/** Uneltele care ruleaza pe domeniu (aceeasi forma ca `UnelteActive` din furnizori). */
+export type UnelteBanner = { ga4: boolean; umami: boolean };
+
+const BANNER_RO_UMAMI: TexteBanner = {
+  ...TEXTE_BANNER,
+  titlu: "Măsurarea vizitelor",
+  descriere:
+    "Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică, fără cookie-uri. Îl poți retrage oricând, din subsolul oricărei pagini.",
+};
+
+const BANNER_RO_UMAMI_GA4: TexteBanner = {
+  ...TEXTE_BANNER,
+  titlu: "Statistică",
+  descriere:
+    "Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică și cu Google Analytics, care pune cookie-uri. Îl poți retrage oricând, din subsolul oricărei pagini.",
+};
+
+const STATISTICA_RO_UMAMI =
+  "Aplicația noastră de statistică măsoară vizitele și paginile citite, fără cookie-uri. Se încarcă numai dacă permiți.";
+
+const PANOU_RO_UMAMI: TextePanou = { ...TEXTE_PANOU, statisticaText: STATISTICA_RO_UMAMI };
+
+const PANOU_RO_UMAMI_GA4: TextePanou = {
+  ...TEXTE_PANOU,
+  statisticaText: STATISTICA_RO_UMAMI + " Google Analytics 4 pune cookie-uri, iar datele pot ajunge în Statele Unite.",
+};
+
+const BANNER_EN_BAZA: TexteBanner = {
+  titlu: "Measuring visits",
+  descriere:
+    "With your consent, we measure visits with our own analytics tool, which uses no cookies. You can withdraw consent at any time from the footer of any page.",
+  accept: "Accept all",
+  refuz: "Reject all",
+  setari: "Cookie settings",
+  politicaConfidentialitate: "Privacy policy",
+  politicaCookie: "Cookie policy",
+};
+
+const BANNER_EN_UMAMI_GA4: TexteBanner = {
+  ...BANNER_EN_BAZA,
+  titlu: "Statistics",
+  descriere:
+    "With your consent, we measure visits with our own analytics tool and with Google Analytics, which sets cookies. You can withdraw consent at any time from the footer of any page.",
+};
+
+const STATISTICA_EN_UMAMI = "Our own analytics tool measures visits and the pages read, without cookies. It loads only if you allow it.";
+
+const PANOU_EN_UMAMI: TextePanou = {
+  titlu: "Cookie settings",
+  inchide: "Close settings",
+  optiuniTitlu: "Your options",
+  optiuniText: "Choose which cookies you allow on this site. You can change your mind later, from the footer of any page.",
+  necesareTitlu: "Strictly necessary",
+  necesareInsigna: "Always active",
+  necesareText: "They remember the choice you make here. Without them, the banner would appear again on every page. They are not sent anywhere.",
+  statisticaTitlu: "Statistics",
+  statisticaText: STATISTICA_EN_UMAMI,
+  coloanaNume: "Name",
+  coloanaDurata: "Duration",
+  coloanaScop: "Purpose",
+  informatiiTitlu: "More information",
+  informatiiText: "The providers, the country of each and your rights are described in the",
+  informatiiLegatura: "cookie policy",
+  informatiiSi: "and in the",
+  informatiiLegatura2: "privacy policy",
+  salveaza: "Save settings",
+};
+
+const PANOU_EN_UMAMI_GA4: TextePanou = {
+  ...PANOU_EN_UMAMI,
+  statisticaText: STATISTICA_EN_UMAMI + " Google Analytics 4 sets cookies, and data may reach the United States.",
+};
+
+/** Eticheta unei chei pe care site-ul numai o citeste (randul `umami.disabled` din panou). */
+export const ETICHETA_NUMAI_CITIT: Readonly<Record<LimbaBanner, string>> = { ro: "numai citit", en: "read only" };
+
+/** Mesajul opririi pe combinatia fara set: engleza cu GA4 si fara Umami. */
+export const MESAJ_EN_FARA_UMAMI =
+  "bannerul de consimtamant in engleza are texte numai pentru Umami si pentru Umami cu GA4: combinatia engleza + GA4 fara Umami " +
+  "nu are pagina (GA4 nu ruleaza pe 3s.md, decizia 26; site-ul RO are o singura limba, RO) si nu se traduce un text juridic nevalidat. " +
+  "Domeniul se construieste fara NEXT_PUBLIC_GA4_ID sau cu UMAMI_URL si UMAMI_WEBSITE_ID";
+
+/**
+ * Textele bannerului si ale panoului pentru uneltele care ruleaza si pentru limba paginii. Opreste construirea
+ * pe engleza cu GA4 fara Umami (fara set) si pe "nicio unealta" (fara banner nu se cer texte).
+ */
+export function texteConsimtamant(limba: LimbaBanner, unelte: UnelteBanner): { banner: TexteBanner; panou: TextePanou } {
+  if (!unelte.ga4 && !unelte.umami) {
+    throw new Error("texteConsimtamant: nicio unealta de masurare activa, deci niciun banner de scris");
+  }
+  if (limba === "ro") {
+    if (!unelte.umami) return { banner: TEXTE_BANNER, panou: TEXTE_PANOU };
+    return unelte.ga4 ? { banner: BANNER_RO_UMAMI_GA4, panou: PANOU_RO_UMAMI_GA4 } : { banner: BANNER_RO_UMAMI, panou: PANOU_RO_UMAMI };
+  }
+  if (!unelte.umami) {
+    throw new Error(MESAJ_EN_FARA_UMAMI);
+  }
+  return unelte.ga4 ? { banner: BANNER_EN_UMAMI_GA4, panou: PANOU_EN_UMAMI_GA4 } : { banner: BANNER_EN_BAZA, panou: PANOU_EN_UMAMI };
 }
 
 // Textul legaturii din subsol ("Setari cookie-uri") sta in `semnal.ts`, nu aici: modulul asta e al
 // bannerului si nu trebuie sa ajunga in bucata comuna a layout-ului.
+
+/**
+ * Tot ce arata bannerul si panoul, rezolvat pe server pentru uneltele care ruleaza si pentru limba paginii:
+ * textele, randul alegerii (strict necesare), serviciile de statistica active cu randurile lor, insigna si
+ * eticheta "numai citit". Componenta de browser primeste rezultatul, nu seturile: in bucata bannerului nu ajung
+ * textele altei limbi sau ale altei stari.
+ */
+export type InformareConsimtamant = {
+  limba: LimbaBanner;
+  banner: TexteBanner;
+  panou: TextePanou;
+  alegere: RandPanou;
+  statistica: ServiciuPanou[];
+  insigna: string;
+  numaiCitit: string;
+};
+
+export function informareConsimtamant(limba: LimbaBanner, unelte: UnelteBanner): InformareConsimtamant {
+  const { banner, panou } = texteConsimtamant(limba, unelte);
+  const statistica = serviciiStatistica(unelte, limba);
+  return {
+    limba,
+    banner,
+    panou,
+    alegere: ALEGERE_PANOU[limba],
+    statistica,
+    insigna: insignaServicii(statistica.length, limba),
+    numaiCitit: ETICHETA_NUMAI_CITIT[limba],
+  };
+}

@@ -30,7 +30,7 @@ Pasii de mai jos spun, unde difera, ce face fiecare drum.
 | Bannerul de consimtamant | nu exista in pagina | apare, daca exista si ID-ul GA4 |
 | Legatura "Setari cookie-uri" din subsol | nu exista | pe fiecare pagina |
 | GA4 | nu se incarca niciodata | se incarca numai dupa acceptul categoriei Statistica |
-| Analitica proprie, fara cookie (`UMAMI_URL` + `UMAMI_WEBSITE_ID`) | nu porneste, chiar cu variabilele date: niciun script, nicio rescriere `/a/`; jurnalul build-ului spune de ce | porneste la urmatorul build, cu paragraful despre ea in politicile publicate; nu asteapta bannerul |
+| Analitica proprie, fara cookie (`UMAMI_URL` + `UMAMI_WEBSITE_ID`) | nu porneste, chiar cu variabilele date: niciun script, nicio rescriere `/a/`; jurnalul build-ului spune de ce | porneste NUMAI DUPA ACORD (masurarea S-B, decizia 13): de la urmatorul build bannerul exista si numai cu ea, iar scriptul se incarca abia dupa acceptul categoriei Statistica si se opreste pe loc la retragere; pe site-ul romanesc cere intai randul ei in `FURNIZORI` (`src/content/juridic/furnizori.ts`), cu tara gazdei instantei |
 | Evidenta consimtamantului (`/api/consimtamant`) | calea raspunde 404 | un rand JSON in jurnalul serverului la fiecare alegere |
 | Textele juridice (`src/content/juridic/`) | construite, nepublicate (`texteJuridice()` intoarce `null`) | randate de paginile feliei `juridic` |
 | Paginile juridice (`/juridic` si cele 7 documente) | in cod, dar neconstruite: 404, absente din `RUTE`, din harta XML si din subsol | construite si publicate singure, prin `ruteJuridice()` (`src/content/juridic/publicare.ts`) |

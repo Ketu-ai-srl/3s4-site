@@ -34,7 +34,8 @@ export type CerereEvidenta = {
 
 const CAMPURI = ["cale", "id", "metoda", "statistica", "versiune"];
 const FORMA_ID = /^[A-Za-z0-9-]{8,64}$/;
-const FORMA_VERSIUNE = /^ro-[0-9a-f]{8}$/;
+/** Versiunea informarii: limba bannerului (`ro`, `en`) si amprenta (`versiuneInformare`, `src/lib/analitica.ts`). */
+const FORMA_VERSIUNE = /^(ro|en)-[0-9a-f]{8}$/;
 const FORMA_CALE = /^\/[A-Za-z0-9\-._~/]{0,199}$/;
 
 /** Cererea, daca are exact forma asteptata; altfel `null`. */

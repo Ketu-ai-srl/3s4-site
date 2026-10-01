@@ -1,0 +1,60 @@
+001	Juridic
+002	Mențiuni legale
+003	Politica de confidențialitate
+004	Termeni și condiții
+005	Cookie-uri
+006	Reguli publice
+007	Licența aplicației
+008	Subîmputerniciții platformei
+009	Acasă
+010	Documente juridice
+011	Politica de confidențialitate
+012	Politica de confidențialitate
+013	Versiunea din 25 septembrie 2026
+014	Aici aflați ce date personale prelucrează site-ul 3s4.ke2.in al mărcii 3S Scan Store Solve, în ce scop, pe ce temei, cui le transmitem și ce drepturi aveți. Textul urmează Regulamentul (UE) 2016/679 (GDPR) și Legea nr. 190/2018 pentru vizitatorii din România și din Uniunea Europeană, iar Legea nr. 195/2024 pentru cei din Republica Moldova.
+015	Cine prelucrează datele
+016	Operatorul datelor este Operator Sintetic Furnizori SRL, cu sediul în Strada Exemplului 1, Pitesti, România.
+017	Ne puteți scrie la date@operator-3s.test. Aceeași adresă primește și cererile privind datele personale.
+018	Operatorul are sediul într-un stat din Spațiul Economic European, deci nu are obligația de a desemna un reprezentant în Republica Moldova (Legea nr. 195/2024, art. 27 alin. (2)).
+019	Responsabilul cu protecția datelor
+020	Nu a fost desemnat un responsabil cu protecția datelor: prelucrările făcute prin acest site nu intră în cazurile în care legea îl cere (GDPR art. 37 alin. (1); Legea nr. 195/2024, art. 37 alin. (1)). Întrebările despre date le primim la date@operator-3s.test.
+021	Ce date prelucrăm, în ce scop și pe ce temei
+022	Afișarea și securitatea site-ului. La fiecare vizită, serverul primește adresa IP, pagina cerută, data și ora, browserul și sistemul de operare. Le folosim ca să vă livrăm paginile și ca să apărăm site-ul de abuzuri. Temeiul este interesul legitim (GDPR art. 6 alin. (1) lit. f)).
+023	Statistica vizitelor. Numai dacă acceptați categoria „Statistică” din bannerul de cookie-uri, Google Analytics 4 măsoară vizitele, paginile citite și câteva acțiuni dintr-o listă închisă: clicurile pe butoanele către contul gratuit și către pagina de contact; începerea completării unui formular; formularele trimise; domeniul de activitate ales în constructorul de arhivă de pe pagina de start; folosirea calculatorului de pe pagina de prețuri. Temeiul este consimțământul dumneavoastră (GDPR art. 6 alin. (1) lit. a)), cerut înainte de orice stocare în browser (Legea nr. 506/2004, art. 4 alin. (5)).
+024	Evidența alegerii din bannerul de cookie-uri. Când alegeți, serverul notează un identificator aleator al dispozitivului, momentul, versiunea textului afișat, alegerea făcută, pagina și prefixul rețelei, fără adresa IP completă. Temeiul este obligația legală de a putea dovedi consimțământul (GDPR art. 6 alin. (1) lit. c), coroborat cu art. 7 alin. (1)).
+025	Cererile trimise prin formulare. Datele din formularul de contact, din cel de înregistrare și din cel pentru companii le folosim ca să vă răspundem și, dacă ne cereți, să vă facem o ofertă. Temeiul îl constituie demersurile precontractuale făcute la cererea dumneavoastră (GDPR art. 6 alin. (1) lit. b)), nu consimțământul. Acordul de a primi noutăți, dacă îl dați separat, are ca temei consimțământul și îl puteți retrage oricând.
+026	Interesele legitime
+027	Invocăm interesul legitim numai pentru jurnalele serverului: ca site-ul să funcționeze, să poată fi depanat și să fie apărat de atacuri. Datele din jurnale nu se folosesc pentru publicitate și nu se combină cu alte surse.
+028	Cine primește datele
+029	Găzduirea platformei 3S: Amazon Web Services (AWS). Găzduiește contul, fișierele încărcate și arhiva digitală, într-o singură regiune din Germania. Datele stau în Germania.
+030	Google Analytics 4: Google Ireland Limited (Irlanda), cu prelucrare și de către Google LLC (Statele Unite). Măsoară vizitele și paginile citite pe site, ca să știm ce e util. Pornește numai după acordul dumneavoastră pentru categoria „Statistică”. Datele stau în Statele Unite ale Americii.
+031	Datele se comunică autorităților publice numai când legea o cere. Nu vindem date personale și nu le cedăm nimănui pentru publicitate.
+032	Transferuri în afara Spațiului Economic European
+033	Pentru vizitatorii din România și din Uniunea Europeană
+034	Găzduirea platformei 3S: Datele rămân în Uniunea Europeană, deci nu există transfer în afara Spațiului Economic European.
+035	Google Analytics 4: Google LLC e certificată în cadrul EU-U.S. Data Privacy Framework, recunoscut de Comisia Europeană prin decizia din 10 iulie 2023; Google poate folosi și clauzele contractuale standard.
+036	Pentru vizitatorii din Republica Moldova
+037	Găzduirea platformei 3S: Transferul către un stat din Spațiul Economic European e liber și nu cere autorizare, potrivit art. 44 alin. (2) din Legea nr. 195/2024.
+038	Google Analytics 4: Pentru vizitatorii din Republica Moldova, transferul către Statele Unite se face pe baza clauzelor contractuale standard adoptate de Comisia Europeană prin Decizia (UE) 2021/914, potrivit art. 46 alin. (2) lit. c) din Legea nr. 195/2024.
+039	O copie a garanțiilor de transfer o puteți cere la date@operator-3s.test.
+040	Cât timp păstrăm datele
+041	Jurnalele serverului: cel mult 30 de zile.
+042	Datele din Google Analytics 4 legate de cookie-uri și de identificatorul dispozitivului: 2 luni, cea mai scurtă perioadă pe care o permite serviciul. Rapoartele agregate, de pildă numărul de vizite pe pagină, rămân în cont, fără identificatori. Cookie-urile de statistică rămân în browser cel mult 2 ani; unele browsere le șterg mai devreme.
+043	Alegerea din bannerul de cookie-uri: 6 luni în browser, apoi vă întrebăm din nou. Rândul de evidență de pe server: 36 de luni de la alegere, termenul general de prescripție (Codul civil, art. 2.517).
+044	Cererile din formulare: cel mult 12 luni de la ultima discuție dacă nu devin ofertă și cel mult 36 de luni dacă ați primit o ofertă.
+045	Drepturile dumneavoastră
+046	Aveți dreptul de acces la date (art. 15), de rectificare (art. 16), de ștergere (art. 17), de restricționare a prelucrării (art. 18), de a afla cui le-am comunicat (art. 19), la portabilitatea datelor (art. 20), de opoziție (art. 21) și dreptul de a nu face obiectul unei decizii bazate exclusiv pe prelucrare automată (art. 22). Articolele sunt aceleași în GDPR și în Legea nr. 195/2024.
+047	Cererile le trimiteți la date@operator-3s.test. Vă răspundem fără întârzieri nejustificate, în cel mult o lună de la primire; pentru cereri complexe, termenul se poate prelungi cu două luni, iar prelungirea și motivele ei vi le comunicăm în prima lună (GDPR art. 12 alin. (3); Legea nr. 195/2024, art. 12 alin. (3)). Răspunsul este gratuit.
+048	Retragerea consimțământului
+049	Consimțământul pentru statistică îl puteți retrage oricând, la fel de simplu cum l-ați dat: legătura „Setări cookie-uri” din subsolul oricărei pagini redeschide alegerea, iar butonul „Refuz tot” oprește măsurarea pe loc. Retragerea nu afectează legalitatea prelucrării făcute înainte de ea.
+050	Plângere la autoritatea de supraveghere
+051	Pentru România și Uniunea Europeană: Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru 28-30, sector 1, cod poștal 010336, București, România; anspdcp@dataprotection.ro; https://www.dataprotection.ro.
+052	Plângerea se poate depune și la autoritatea din statul membru în care locuiți sau lucrați ori în care a avut loc pretinsa încălcare (GDPR art. 77).
+053	Pentru Republica Moldova: Centrul Național pentru Protecția Datelor cu Caracter Personal (CNPDCP), str. Serghei Lazo nr. 48, MD-2004, mun. Chișinău, Republica Moldova; centru@datepersonale.md; https://datepersonale.md.
+054	Vă puteți adresa și instanței de judecată.
+055	Dacă trebuie să ne dați datele
+056	Nu există nicio obligație legală sau contractuală de a ne da date prin acest site. Formularele cer numai datele fără de care nu v-am putea răspunde; fără ele, cererea nu poate primi răspuns. Statistica e opțională: dacă o refuzați, site-ul funcționează la fel.
+057	Decizii automate
+058	Site-ul nu ia decizii bazate exclusiv pe prelucrare automată și nu creează profiluri care să producă efecte juridice asupra dumneavoastră sau să vă afecteze în mod similar (GDPR art. 22).
+059	Amprenta textului (SHA-256)
+060	af4e1d77a9b0816e…

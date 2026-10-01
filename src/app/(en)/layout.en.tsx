@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
 import BaraMobil from "@/components/canale/BaraMobil";
+import PunctConsimtamant from "@/components/consimtamant/PunctConsimtamant";
 import Antet from "@/components/global/Antet";
 import Subsol from "@/components/global/Subsol";
 import DateStructurateSite from "@/components/seo/DateStructurateSite";
@@ -51,6 +52,7 @@ export default function RadacinaEn({ children }: Readonly<{ children: ReactNode 
           {children}
         </div>
         <Subsol navigatie={navigatie} />
+        <PunctConsimtamant limba="en" />
         <BaraMobil bara={navigatie.bara} />
         <DateStructurateSite />
       </body>

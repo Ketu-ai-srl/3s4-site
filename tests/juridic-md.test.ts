@@ -144,13 +144,19 @@ describe('starea masurarii', () => {
     expect([...conditiiActive(S0)]).toEqual(['s0'])
   })
 
-  it('S-C refuzata pe drumul real: modelul cu UMAMI_* in mediu nu construieste textele; fara ele, da', () => {
+  it('drumul real cu UMAMI_* in mediu: S-B si textele se construiesc; fara asteptarea acordului, S-C e refuzata', () => {
+    // Pana la felia masurarii S-B, UMAMI_ASTEAPTA_ACORDUL era false si cazul cerea refuzul S-C pe drumul real (textele si
+    // comutatorul). De atunci constanta e true (decizia 13: Umami porneste numai dupa acord), deci acelasi drum da S-B si
+    // construieste textele. Refuzul S-C ramane aparat aici pe intrarile reale, cu asteptarea acordului scoasa explicit, si pe
+    // build de mutantul din tests/analitica-s-b.test.ts.
     const umami = { UMAMI_URL: 'https://' + ['statistica', 'proba', 'test'].join('.'), UMAMI_WEBSITE_ID: '0f1e2d3c-4b5a-4968-8776-a5b4c3d2e1f0' }
     expect(intrariMasurare(operatorModel(), umami).umami).toBe(true)
+    expect(masurareDin(intrariMasurare(operatorModel(), umami)).stare).toBe('S-B')
+    expect(() => masurareDin(intrariMasurare(operatorModel(), umami, false))).toThrow(MESAJ_S_C)
     vi.stubEnv('UMAMI_URL', umami.UMAMI_URL)
     vi.stubEnv('UMAMI_WEBSITE_ID', umami.UMAMI_WEBSITE_ID)
-    expect(() => texteJuridice(operatorModel(), { limba: 'en' })).toThrow(MESAJ_S_C)
-    expect(() => verificaComutator(operatorModel())).toThrow(MESAJ_S_C)
+    expect(texteJuridice(operatorModel(), { limba: 'en' })?.size).toBe(6)
+    expect(() => verificaComutator(operatorModel())).not.toThrow()
     vi.unstubAllEnvs()
     expect(texteJuridice(operatorModel(), { limba: 'en' })?.size).toBe(6)
     expect(() => verificaComutator(operatorModel())).not.toThrow()
