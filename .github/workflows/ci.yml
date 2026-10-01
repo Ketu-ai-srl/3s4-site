@@ -125,7 +125,18 @@ jobs:
         run: |
           node -e "const p=require('./config/profil-3s-md.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
       - run: pnpm build
-      - run: python .claude/scripts/porti/poarta-juridic.py --mediu staging
+      # Poarta juridica pe build-ul 3s.md, cu paginile juridice EN si RO-MD construite. Pe staging e blocanta, iar
+      # iesirea trebuie sa poarte linia modelului D2 (operatorul-model din profil a fost citit, nu sarit).
+      - name: Poarta juridica 3s.md (staging, blocant)
+        run: |
+          python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-staging.log"
+          grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-staging.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
+      # Pe productie, INFORMATIV pana la poarta B: raman intentionat marcajele reprezentantului UE si N23 (tara gazdei),
+      # care asteapta juristul si contractul gazdei. Pasul nu pica jobul; iesirea numeste ce mai opreste publicarea.
+      # Trecerea lui pe blocant e pasul portii B, nu al feliei.
+      - name: Poarta juridica 3s.md (productie, informativ)
+        run: |
+          python .claude/scripts/porti/poarta-juridic.py --mediu productie || echo "poarta juridica pe productie a iesit $? (informativ pana la poarta B)"
       # Poarta de SEO pe HTML-ul build-ului 3s.md: CANALE_JSON din profil e in mediu, deci telefonul canalului e permis in JSON-LD, si numai el.
       - run: python .claude/scripts/porti/poarta-seo.py
       - name: Proba editiilor, pe serverul build-ului 3s.md

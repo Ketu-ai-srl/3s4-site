@@ -9,22 +9,21 @@ import { RADACINA } from './ajutor/proiect'
 
 /**
  * Navigatia pe editie pe site-ul 3s.md (felia navigatie-pe-editie): antetul si subsolul EN pe pagina de negasit
- * EN si pe o pagina EN de proba, antetul si subsolul RO-MD pe o pagina RO-MD de proba, canalele domeniului
- * (WhatsApp cu textul paginii, telefonul ca text si `tel:` numai pe mobil, bara de jos pe mobil) si nimic
- * din site-ul romanesc (niciun formular).
+ * EN si pe o pagina EN de proba, antetul si subsolul RO-MD pe pagina RO-MD a informatiilor legale, canalele
+ * domeniului (WhatsApp cu textul paginii, telefonul ca text si `tel:` numai pe mobil, bara de jos pe mobil) si
+ * nimic din site-ul romanesc (niciun formular).
  *
- * COPIA. Build-ul real al probelor e cel romanesc, iar pe profilul 3s.md nu exista azi nicio pagina EN sau RO-MD:
- * orice adresa raspunde din pagina de negasit, deci layout-urile `(en)` si `(romd)` nu s-ar randa nicaieri.
+ * COPIA. Build-ul real al probelor e cel romanesc, deci layout-urile `(en)` si `(romd)` nu se randeaza acolo.
  * Proba construieste o copie a arborelui cu variabilele aplicatiei 3s.md (`config/profil-3s-md.json`, prin
- * `mediuProfil3sMd` din `ajutor/copie-3s-md.ts`) si cu DOUA fisiere de proba asamblate aici, la rulare:
- *   - o pagina EN, `/proba-navigatie`, ca layout-ul EN sa se randeze;
- *   - pagina RO-MD `/ro/juridic/informatii-legale` si intrarea ei in `rute-ro-md.ts`, ca layout-ul RO-MD sa se
- *     randeze si ca legatura spre informatiile legale in romana sa treaca de filtrul pe rute (azi pagina nu
- *     exista: o aduce felia paginilor juridice).
+ * `mediuProfil3sMd` din `ajutor/copie-3s-md.ts`) si cu UN fisier de proba asamblat aici, la rulare: o pagina EN,
+ * `/proba-navigatie`, ca layout-ul EN sa se randeze pe o pagina fara intrare in tabelul de canale. Pagina RO-MD
+ * `/ro/juridic/informatii-legale` e cea reala, adusa de felia paginilor juridice (80), cu operatorul-model din
+ * profil; pana la ea proba o injecta, impreuna cu intrarea ei in `rute-ro-md.ts`, iar injectia a fost scoasa
+ * cand pagina a devenit reala (altfel copia ar fi avut aceeasi cale de doua ori, static si in segmentul juridic).
  * `ajutor/copie-3s-md.ts` nu primeste fisiere de proba (copiaza sursa neschimbata), de aceea copia se face aici,
  * cu acelasi mediu. Sursa depozitului nu se atinge.
  *
- * CONTROALE, fiecare cu esec zgomotos: injectiile au aterizat (fisierele copiei contin marcajul probei), build-ul
+ * CONTROALE, fiecare cu esec zgomotos: injectia a aterizat (fisierul copiei contine marcajul probei), build-ul
  * copiei iese 0, serverul raspunde la `robots.txt`.
  */
 
@@ -49,20 +48,6 @@ export default function ProbaNavigatie() {
   );
 }
 `
-
-const PAGINA_RO_MD = `// ${MARCAJ}: pagina RO-MD de proba, numai in copie.
-export default function ProbaJuridicRoMd() {
-  return (
-    <main>
-      <h1>Pagină de probă</h1>
-    </main>
-  );
-}
-`
-
-const INTRARE_RO_MD =
-  '  // ' + MARCAJ + '\n' +
-  '  { cale: "' + CALE_JURIDIC_RO + '", scurt: "Proba", descriere: "Pagina de proba a copiei.", inHarta: false, editie: "ro-MD", cheie: "informatii-legale" },\n'
 
 type Copie = { baza: string; opreste: () => Promise<void> }
 let copie: Copie
@@ -105,21 +90,11 @@ async function pornesteCopia(): Promise<Copie> {
     }
     symlinkSync(join(RADACINA, 'node_modules'), join(director, 'node_modules'), 'junction')
 
-    // Injectiile, cu control: fiecare fisier rescris trebuie sa poarte marcajul.
+    // Injectia, cu control: fisierul scris trebuie sa poarte marcajul.
     const dosarEn = join(director, 'src', 'app', '(en)', 'proba-navigatie')
     mkdirSync(dosarEn, { recursive: true })
     writeFileSync(join(dosarEn, 'page.en.tsx'), PAGINA_EN)
-    const dosarRoMd = join(director, 'src', 'app', '(romd)', ...CALE_JURIDIC_RO.split('/').filter(Boolean))
-    mkdirSync(dosarRoMd, { recursive: true })
-    writeFileSync(join(dosarRoMd, 'page.romd.tsx'), PAGINA_RO_MD)
-    const fisierRute = join(director, 'src', 'content', 'rute-ro-md.ts')
-    const rute = readFileSync(fisierRute, 'utf8')
-    const ancora = '// <<felie:juridic-pagini-3s-md>>\n'
-    if (!rute.includes(ancora)) throw new Error('controlul injectiei a picat: rute-ro-md.ts nu mai are marcajul feliei juridice')
-    writeFileSync(fisierRute, rute.replace(ancora, ancora + INTRARE_RO_MD))
-    for (const f of [join(dosarEn, 'page.en.tsx'), join(dosarRoMd, 'page.romd.tsx'), fisierRute]) {
-      if (!readFileSync(f, 'utf8').includes(MARCAJ)) throw new Error('controlul injectiei a picat: ' + f)
-    }
+    if (!readFileSync(join(dosarEn, 'page.en.tsx'), 'utf8').includes(MARCAJ)) throw new Error('controlul injectiei a picat: ' + dosarEn)
 
     const env: NodeJS.ProcessEnv = { ...process.env, BUILD_STANDALONE: '', NEXT_TELEMETRY_DISABLED: '1' }
     for (const v of VARIABILE_DOMENIU) delete env[v]
@@ -291,7 +266,7 @@ test.describe('martorii, pe serverul real al probelor (build-ul romanesc, contra
 })
 
 test.describe('3s.md: antetul si subsolul RO-MD', () => {
-  test('pagina RO-MD de proba: CTA "Mesaj pe WhatsApp" cu textul paginilor juridice, coloanele Juridic si Contact', async () => {
+  test('pagina RO-MD a informatiilor legale: CTA "Mesaj pe WhatsApp" cu textul paginilor juridice, coloanele Juridic si Contact', async () => {
     const { status, html } = await servit(CALE_JURIDIC_RO)
     expect(status).toBe(200)
     expect(html).toMatch(/<html[^>]*\blang="ro"/)

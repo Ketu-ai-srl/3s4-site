@@ -1,6 +1,6 @@
 // Documentul informatii-legale, in engleza americana, pentru operatorul din Republica Moldova (familia md).
 // Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
-// Sursa: 01-legal-notice.en.md, sha256 46f9b07a526f20ea3cbad1e6cc82e535299eddb22d036f6f5de701492d83dfc8.
+// Sursa: 01-legal-notice.en.md, sha256 8d3cf916ec47237356e1332936f42fe3f67ffa8eb88856095122f1a1b544bcfd.
 // Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
 // Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
 
@@ -37,7 +37,7 @@ export default function informatiiLegaleEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s4", titlu: "4. Prices, tariffs and commercial terms",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["The 3S service is offered in the Starter, Pro, Business and Enterprise packages. The indicative prices of the packages are published in euros (EUR) on the [Pricing](cale:preturi) page. The final tariff is confirmed by a written, individual offer, which, once the company is registered, we send on request. The services are provided online, with no shipping.", "Prices exclude VAT; where VAT applies, it is added to the invoice.", "Each offer states:"], lista: { elemente: ["the package and the services offered, with the tariff for each;", "the currency of the tariff (EUR);", "any discounts granted against the indicative price;", "whether the price includes taxes (VAT) or not, and their amount;", "whether the price includes delivery or other costs. Online services carry no delivery costs."] }, dupa: ["Payment is due within 14 days of the invoice date; subscriptions are paid in advance. The offer and the price in it remain valid for 30 days from the date of issue, unless the offer sets another period. The contract is concluded under the [Terms and conditions](cale:termeni)."] },
+          { jurisdictie: null, paragrafe: ["The 3S service is offered in the Starter, Pro, Business and Enterprise packages. The indicative prices of the packages are published in euros (EUR) on the [Pricing](cale:preturi) page. The final tariff is confirmed by a written, individual offer, which, once the company is registered, we send on request. The 3S service is provided online, with no shipping. The preparation and scanning of paper documents and the physical storage of the originals are quoted separately; the conditions and costs of these services are set out in the individual offer.", "Prices exclude VAT; where VAT applies, it is added to the invoice.", "Each offer states:"], lista: { elemente: ["the package and the services offered, with the tariff for each;", "the currency of the tariff (EUR);", "any discounts granted against the indicative price;", "whether the price includes taxes (VAT) or not, and their amount;", "whether the price includes delivery or other costs. Online services carry no delivery costs."] }, dupa: ["Payment is due within 14 days of the invoice date; subscriptions are paid in advance. The offer and the price in it remain valid for 30 days from the date of issue, unless the offer sets another period. The contract is concluded under the [Terms and conditions](cale:termeni)."] },
         ],
       },
       {

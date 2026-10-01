@@ -10,7 +10,12 @@ import NegasitGlobalEn from '../src/app/global-not-found.en'
 import { ECHIVALENTE } from '../src/content/echivalente'
 import { familieJuridica } from '../src/content/juridic/familie'
 import { RUTE_EN } from '../src/content/rute-en'
-import { RUTE_RO_MD } from '../src/content/rute-ro-md'
+import { RUTE_EN_JURIDIC, ruteJuridiceEn } from '../src/content/rute-en-juridic'
+import { RUTE_EN_NUCLEU } from '../src/content/rute-en-nucleu'
+import { RUTE_EN_PRODUS } from '../src/content/rute-en-produs'
+import { RUTE_EN_REFERINTA } from '../src/content/rute-en-referinta'
+import { RUTE_EN_SEGMENTE } from '../src/content/rute-en-segmente'
+import { RUTE_RO_MD, ruteJuridiceRoMd } from '../src/content/rute-ro-md'
 import { ruteleEditiilor } from '../src/content/rute'
 import {
   EDITII,
@@ -177,10 +182,38 @@ describe('manifestul de rute pe editie', () => {
     expect(ruteleEditiilor(['en', 'ro-MD']).some((r) => ro.includes(r))).toBe(false)
   })
 
-  it('la fundatie fisierele EN si RO-MD sunt goale, cu marcajul feliei care le umple; echivalentele, goale', () => {
-    expect(RUTE_EN).toEqual([])
-    expect(RUTE_RO_MD).toEqual([])
-    expect(ECHIVALENTE).toEqual({})
+  it('rutele EN intra numai prin grupuri, fiecare fisier cu marcajul feliei care il umple; echivalentele leaga numai rute ale editiilor', () => {
+    // La fundatie (felia 75) cazul cerea fisierele EN si RO-MD si echivalentele GOALE: o constatare de stare, care
+    // s-a inrosit corect la prima felie care a umplut un grup (80, paginile juridice 3s.md). Ce apara cazul, si
+    // ramane: agregatorul EN nu scrie rute, fiecare fisier de grup isi pastreaza marcajul, iar o pereche din
+    // echivalente nu trimite spre o cale pe care editia ei n-o are. Un grup inca gol nu se mai cere gol aici: o
+    // lista scrisa de mana s-ar inrosi la fiecare felie care isi umple grupul, iar o ruta fara pagina o opreste
+    // poarta de rute. Exactitatea grupului juridic e in `tests/juridic-3s-md.test.ts`.
+    expect(RUTE_EN).toEqual([...RUTE_EN_NUCLEU, ...RUTE_EN_PRODUS, ...RUTE_EN_SEGMENTE, ...RUTE_EN_REFERINTA, ...RUTE_EN_JURIDIC])
+    // Manifestele editiilor cu familia md publicata, oricare ar fi profilul din mediu (jobul obisnuit nu o are).
+    const caiPeEditie: Record<string, string[]> = {
+      'ro-RO': ruteleEditiilor(['ro-RO']).map((r) => r.cale),
+      en: [...RUTE_EN, ...ruteJuridiceEn(true, 'md')].map((r) => r.cale),
+      'ro-MD': [...RUTE_RO_MD, ...ruteJuridiceRoMd(true, 'md')].map((r) => r.cale),
+    }
+    const orfane = (tabel: Readonly<Record<string, Record<string, string | undefined>>>): string[] => {
+      const iesire: string[] = []
+      for (const [cheie, cai] of Object.entries(tabel)) {
+        const editii = Object.entries(cai).filter(([, cale]) => cale !== undefined)
+        if (editii.length < 2) iesire.push(cheie + ': o singura editie')
+        for (const [editie, cale] of editii) {
+          if (!(caiPeEditie[editie] ?? []).includes(cale as string)) iesire.push(cheie + ': ' + editie + ' ' + cale)
+        }
+      }
+      return iesire
+    }
+    // martor POZITIV: o pereche spre cai inexistente si una cu o singura editie sunt prinse
+    expect(orfane({ x: { en: '/nu-exista', 'ro-MD': '/ro/nu-exista' }, y: { en: ruteJuridiceEn(true, 'md')[0].cale } })).toEqual([
+      'x: en /nu-exista',
+      'x: ro-MD /ro/nu-exista',
+      'y: o singura editie',
+    ])
+    expect(orfane(ECHIVALENTE)).toEqual([])
     const marcaj = (felie: string) => '// <<' + 'felie:' + felie + '>>'
     const grupuri: Record<string, string> = { nucleu: 'en-nucleu', produs: 'en-produs', segmente: 'en-segmente', referinta: 'en-referinta', juridic: 'juridic-pagini-3s-md' }
     for (const [grup, felie] of Object.entries(grupuri)) {

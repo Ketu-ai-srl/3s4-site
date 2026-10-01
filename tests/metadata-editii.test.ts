@@ -271,7 +271,17 @@ describe('copia 3s.md, servita', () => {
     const r = await cere('/llms.txt')
     expect(r.status).toBe(200)
     expect(r.corp.startsWith('# 3S Scan Store Solve\n\n> 3S keeps a company')).toBe(true)
-    expect(r.corp).not.toContain('](')
+    // Pana la felia 80 copia n-avea nicio pagina EN si cazul cerea zero legaturi (`](`): o constatare de stare, care
+    // s-a inrosit corect la paginile juridice 3s.md. Ce apara cazul e titlul lui: fiecare legatura e pe domeniul
+    // 3s.md si calea ei e servita cu 200 de copie. Controlul extragerii: cate randuri de lista, atatea legaturi.
+    const legaturi = [...r.corp.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1])
+    expect(legaturi.length).toBe(r.corp.split('\n').filter((l) => l.startsWith('- [')).length)
+    const stari: Record<string, number> = {}
+    for (const adresa of legaturi) {
+      stari[adresa] = adresa.startsWith(INT + '/') ? (await cere(adresa.slice(INT.length))).status : -1
+    }
+    console.log('[llms.txt 3s.md] legaturi: ' + JSON.stringify(stari))
+    expect(Object.entries(stari).filter(([, s]) => s !== 200)).toEqual([])
     expect(numaraRon(r.corp)).toBe(0)
   })
 

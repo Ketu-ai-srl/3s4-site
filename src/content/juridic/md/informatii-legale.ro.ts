@@ -1,6 +1,6 @@
 // Documentul informatii-legale, in romana, pentru operatorul din Republica Moldova (familia md).
 // Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
-// Sursa: 01-informatii-legale.ro.md, sha256 20795cf25684b188f21dc8fb510bbea209702f80241c11204d51067c067237ff.
+// Sursa: 01-informatii-legale.ro.md, sha256 0beee026d9c15ba2d75ec25878631f2918c4289b84d2cbef77aed7e4ddc457c6.
 // Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
 // Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
 
@@ -37,7 +37,7 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s4", titlu: "4. Prețuri, tarife și condiții comerciale",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Serviciul 3S se oferă în pachetele Starter, Pro, Business și Enterprise. Prețurile orientative ale pachetelor sunt publicate în euro (EUR) pe pagina [Prețuri](cale:preturi). Tariful final îl confirmă oferta scrisă și individuală, pe care, după înregistrarea societății, o trimitem la cerere. Serviciile se prestează online, fără expediere.", "Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.", "Fiecare ofertă arată:"], lista: { elemente: ["pachetul și serviciile oferite, cu tariful fiecăruia;", "moneda tarifului (EUR);", "reducerile acordate față de prețul orientativ, dacă există;", "dacă prețul include sau nu taxele (TVA) și valoarea lor;", "dacă prețul include cheltuieli de livrare sau alte cheltuieli. Serviciile online nu au cheltuieli de livrare."] }, dupa: ["Termenul de plată este de 14 zile de la data facturii; abonamentele se plătesc în avans. Oferta și prețul din ea rămân valabile 30 de zile de la emitere, dacă oferta nu prevede alt termen. Contractul se încheie în condițiile din [Termeni și condiții](cale:termeni)."] },
+          { jurisdictie: null, paragrafe: ["Serviciul 3S se oferă în pachetele Starter, Pro, Business și Enterprise. Prețurile orientative ale pachetelor sunt publicate în euro (EUR) pe pagina [Prețuri](cale:preturi). Tariful final îl confirmă oferta scrisă și individuală, pe care, după înregistrarea societății, o trimitem la cerere. Serviciul 3S se prestează online, fără expediere. Pregătirea și scanarea documentelor pe hârtie și păstrarea fizică a originalelor se ofertează separat; condițiile și costurile acestor servicii se stabilesc în oferta individuală.", "Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.", "Fiecare ofertă arată:"], lista: { elemente: ["pachetul și serviciile oferite, cu tariful fiecăruia;", "moneda tarifului (EUR);", "reducerile acordate față de prețul orientativ, dacă există;", "dacă prețul include sau nu taxele (TVA) și valoarea lor;", "dacă prețul include cheltuieli de livrare sau alte cheltuieli. Serviciile online nu au cheltuieli de livrare."] }, dupa: ["Termenul de plată este de 14 zile de la data facturii; abonamentele se plătesc în avans. Oferta și prețul din ea rămân valabile 30 de zile de la emitere, dacă oferta nu prevede alt termen. Contractul se încheie în condițiile din [Termeni și condiții](cale:termeni)."] },
         ],
       },
       {

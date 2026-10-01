@@ -4,8 +4,30 @@
 // regula ca in `rute.ts`). Fiecare intrare are `editie: "ro-MD"`, `cheie` (`src/content/echivalente.ts`) si o
 // cale care incepe cu `/ro`; pagina ei e un `page.romd.tsx` sub `src/app/(romd)/ro`. Portile de rute citesc
 // fisierul ca text, pe editia `ro-MD`.
+//
+// GRUPUL JURIDIC (felia juridic-pagini-3s-md): documentele familiei `md` publicate la poarta curenta, cu adresa
+// romaneasca din `config/juridic-rute.json`, numai cu operator numit din familia `md` (aceeasi regula ca
+// `rute-en-juridic.ts`). Pagina e segmentul `src/app/(romd)/ro/juridic/[[...document]]/page.romd.tsx`; caile nu
+// se scriu literal, din acelasi motiv ca acolo.
+import { caleMd, cheiPublicate } from "./juridic/md/registru";
+import { DESCRIERE_MD, FAMILIE_JURIDICA, OPERATOR_NUMIT, SCURT_MD } from "./juridic/publicare";
+import type { FamilieJuridica } from "./juridic/familie";
 import type { RutaEditie } from "./rute";
+
+/** Rutele juridice RO-MD: documentele `md` publicate la poarta curenta, numai cand familia publicata e `md`. */
+export function ruteJuridiceRoMd(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"ro-MD">[] {
+  if (!publicat || familie !== "md") return [];
+  return cheiPublicate().map((cheie) => ({
+    cale: caleMd(cheie, "ro"),
+    scurt: SCURT_MD[cheie].ro,
+    descriere: DESCRIERE_MD[cheie].ro,
+    inHarta: true,
+    editie: "ro-MD",
+    cheie,
+  }));
+}
 
 export const RUTE_RO_MD: RutaEditie<"ro-MD">[] = [
   // <<felie:juridic-pagini-3s-md>>
+  ...ruteJuridiceRoMd(),
 ];
