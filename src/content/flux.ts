@@ -1,7 +1,7 @@
 // Textele si datele paginii /flux-documente (flux-documente.md, sablonul interior-880 cu poveste
 // derulata). Scrise din faptele 3S (registrul `src/content/afirmatii/flux-efacturare.json`):
 // canalele de intrare (e-mail, WhatsApp, scanare, incarcare), regulile automate, cautarea cu sursa
-// citata, portalul clientilor, evidenta cu termene de pastrare si gazduirea in Germania.
+// citata, portalul clientilor, evidenta cu termene de pastrare si gazduirea in UE (decizia 42).
 //
 // Toate numele de fisiere, persoanele, sumele si dosarele din machete sunt FICTIVE si se declara ca
 // exemplu (plan D9). Comentariile `Rol:` numesc functia blocului, nu textul altcuiva.
@@ -106,10 +106,10 @@ export const SCENA = {
     },
     {
       titlu: "Rămâne în arhivă",
-      nota: "jurnal · păstrare · Germania",
+      nota: "jurnal · păstrare · UE",
       stampila: "păstrat · jurnal #A-2291",
       descriere:
-        "Criptat pe servere Amazon din Germania, actul se regăsește și peste ani printr-o întrebare simplă. Cine l-a deschis apare în jurnal, iar ștergerea vine la capătul termenului, cu evidență.",
+        "Criptat pe servere Amazon din UE, actul se regăsește și peste ani printr-o întrebare simplă. Cine l-a deschis apare în jurnal, iar ștergerea vine la capătul termenului, cu evidență.",
       iconita: "shield-check",
     },
   ] satisfies PasSistem[],

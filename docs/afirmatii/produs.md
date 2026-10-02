@@ -10,7 +10,7 @@ Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 
 | # | Afirmatia, asa cum apare pe site | Unde |
 |---|---|---|
-| 1 | Fișierele păstrate de 3S sunt criptate AES-256 la stocare, pe serverele din Germania, și circulă doar prin conexiuni TLS 1.2 sau mai noi între dispozitivul clientului și serverele 3S, deci pe o rețea Wi-Fi publică cine ascultă rețeaua vede doar date criptate | `src/content/produs/platforma.ts, src/content/produs/securitate.ts` |
+| 1 | Fișierele păstrate de 3S sunt criptate AES-256 la stocare, pe serverele din Uniunea Europeană, și circulă doar prin conexiuni TLS 1.2 sau mai noi între dispozitivul clientului și serverele 3S, deci pe o rețea Wi-Fi publică cine ascultă rețeaua vede doar date criptate | `src/content/produs/platforma.ts, src/content/produs/securitate.ts` |
 | 2 | Pe stocarea proprie, fișierele stau în contul firmei și nu trebuie copiate în altă parte, iar colegii lucrează pe web și pe WhatsApp ca până atunci: întrebările cu pagina citată, accesul pe persoană și pe dosar și jurnalul deschiderilor rămân în 3S | `src/content/produs/securitate.ts, src/content/produs/platforma.ts, src/content/produs/integrari.ts` |
 | 3 | 3S scoate textul din paginile scanate, trece fiecare act în registrul arhivei cu o categorie și îi scoate datele în câmpuri, pe care programele firmei le citesc prin API | `src/content/produs/platforma.ts` |
 | 4 | Actele intră în 3S ca hârtie scanată la 3S, fișiere încărcate, e-mailuri, poze de pe telefon, mesaje pe WhatsApp și cereri prin API | `src/content/produs/platforma.ts` |

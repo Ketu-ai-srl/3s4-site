@@ -9,7 +9,7 @@
 //     prin conturile incluse, 5 / 10 / 20 (sarcina feliei). Limitele referintei (spatiu, spatii de
 //     lucru, casute, marcaje, costuri suplimentare) NU se copiaza: in locul lor stau functiile 3S
 //     declarate existente de owner (D4b), aceleasi in toate pachetele;
-//   - gazduirea si criptarea: Amazon, Germania, o singura regiune UE; AES-256 la stocare, TLS 1.2+
+//   - gazduirea si criptarea: Amazon, in UE, regiunea principala Frankfurt (decizia 42); AES-256 la stocare, TLS 1.2+
 //     in tranzit (D4c);
 //   - numele pachetelor (Starter, Pro, Business) sunt decizia 21 a owner-ului (aceleasi pe ambele
 //     site-uri), trecute in registru ca confirmate. Titlul paginii, eticheta cardurilor din poarta si
@@ -245,9 +245,9 @@ export const COMUTATOR = {
   // Rol: insigna de economie din butonul anual (11/600 verde). La referinta un procent; la 3S nu
   // exista nicio diferenta de pret, deci insigna spune exact asta, fara procent. Lungime: 15.
   insigna: "Tot 0\u00a0RON astăzi",
-  // Rol: nota de sub comutator (14/400, centrata). Lungime: 89 [numarat]. Scrisa din faptele 3S
-  // (D4c): gazduirea si criptarea sunt aceleasi in toate pachetele.
-  nota: "Găzduirea în Germania și criptarea AES-256 a fișierelor intră în prețul oricărui pachet.",
+  // Rol: nota de sub comutator (14/400, centrata). Lungime: 82 [numarat]. Scrisa din faptele 3S
+  // (D4c si decizia 42): gazduirea si criptarea sunt aceleasi in toate pachetele.
+  nota: "Găzduirea în UE și criptarea AES-256 a fișierelor intră în prețul oricărui pachet.",
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ export function randuriPlan(plan: Plan): RandPlan[] {
         "3S trece fiecare act în registrul arhivei și îi calculează termenul de păstrare după categoria lui. Așa vezi din timp ce documente pot fi scoase din arhivă și ce trebuie păstrat mai departe.",
     },
     { cifra: null, text: "Portal pentru clienți", explicatie: null },
-    { cifra: null, text: "Găzduire în Germania, UE", explicatie: null },
+    { cifra: null, text: "Găzduire în UE, la Frankfurt", explicatie: null },
     { cifra: null, text: "Aplicația pe toate platformele", explicatie: null },
   ];
 }
@@ -440,7 +440,7 @@ export const COMPARATIE = {
     {
       titlu: "Unde și cum stau fișierele",
       randuri: [
-        { functie: "Locul fișierelor", celule: toate(valoare("Germania")) },
+        { functie: "Locul fișierelor", celule: toate(valoare("UE, Frankfurt")) },
         { functie: "Criptarea fișierelor", celule: toate(valoare("AES-256")) },
       ],
     },
@@ -516,7 +516,7 @@ export const INTREBARI_PRETURI: { titlu: string; subtitlu: string; intrebari: In
     {
       intrebare: "Unde sunt păstrate fișierele?",
       raspuns:
-        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Fișierele sunt criptate AES-256 la stocare și circulă doar prin conexiuni TLS 1.2 sau mai noi. Locul și criptarea sunt aceleași în toate pachetele.",
+        "În Uniunea Europeană, pe serverele Amazon, cu regiunea principală Frankfurt. Fișierele sunt criptate AES-256 la stocare și circulă doar prin conexiuni TLS 1.2 sau mai noi. Locul și criptarea sunt aceleași în toate pachetele.",
     },
     {
       intrebare: "Pot folosi 3S de pe telefon?",

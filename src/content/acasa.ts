@@ -110,13 +110,14 @@ export const EROU: Erou = {
     },
   },
   popover: {
-    // Trei motive de incredere + legatura spre securitate. Lungimi: 91 / 40 / 62 [fisa].
+    // Trei motive de incredere + legatura spre securitate. Lungimi: 91 / 68 / 62 [fisa; al doilea rescris pe
+    // decizia 42, numarat].
     randuri: [
       {
         iconita: "lock",
         text: "Fișierele sunt criptate AES-256 pe disc și circulă doar prin conexiuni TLS 1.2 sau mai noi.",
       },
-      { iconita: "globe", text: "Documentele stau la Amazon, în Germania." },
+      { iconita: "globe", text: "Documentele stau la Amazon, în UE, cu regiunea principală Frankfurt." },
       { iconita: "code", text: "Se leagă de e-mail și de facturare, iar pe WhatsApp îți răspunde." },
     ],
     // Rol: spre pagina de securitate. Lungime: 29 [fisa].
@@ -503,9 +504,9 @@ export const CIFRE: PerecheCifra[] = [
   // Rol: la referinta, un procent de clasificare automata. Aici criptarea la stocare (plan D4c).
   // Pereche: 40 [numarat].
   { cifra: "AES-256", eticheta: "pe disc, iar transferul prin TLS 1.2+" },
-  // Rol: la referinta, regiunile de pastrare. Aici una singura, in Germania (plan D4c: nu se
-  // scrie "doua regiuni"). Pereche: 36 [numarat].
-  { cifra: "1 regiune UE", eticheta: "la Amazon, în Germania" },
+  // Rol: la referinta, regiunile de pastrare. Aici regiunea principala a gazduirii, in UE (decizia
+  // 42; celelalte regiuni UE nu se numesc pe site). Pereche: 36 [numarat].
+  { cifra: "Frankfurt", eticheta: "regiunea principală, în UE" },
 ];
 
 // ---------------------------------------------------------------------------------------------
@@ -645,11 +646,11 @@ export type CardEnterprise = {
 export const CARD_SECURITATE: CardSecuritate = {
   // Rol: grija legata de securitatea documentelor (16/600). Lungime: 42 [numarat].
   titlu: "Cât de bine sunt păzite actele firmei?",
-  // Rol: criptare, regiuni UE, acces controlat pe document (14/400, doua randuri). Lungime: 145
+  // Rol: criptare, regiunea UE, acces controlat pe document (14/400, doua randuri). Lungime: 138
   // [numarat].
   // Accesul e spus ca mecanism al aplicatiei (acasa-acces-pe-persoana-si-dosar), nu ca promisiune
   // ca nimeni altcineva nu deschide dosarele: vezi raspunsul 2 de la intrebari.
-  text: "Găzduirea e la Amazon, în Germania, cu fișierele criptate AES-256 și transferul prin TLS 1.2+. În aplicație, accesul la fiecare dosar îl dai tu.",
+  text: "Găzduirea e la Amazon, în UE, cu fișierele criptate AES-256 și transferul prin TLS 1.2+. În aplicație, accesul la fiecare dosar îl dai tu.",
   // Rol: spre comparatia modurilor de stocare (legatura-sageata). Lungime: 42 [numarat].
   legatura: {
     text: "Vezi unde pot sta documentele firmei",
@@ -719,12 +720,12 @@ export const INTREBARI: SectiuneIntrebari = {
   // Intrebarile sunt cu vocea clientului (persoana intai), raspunsurile i se adreseaza lui.
   intrebari: [
     {
-      // Rol: unde stau documentele. Lungime: 35 [numarat].
-      intrebare: "În ce țară stau fișierele mele?",
-      // Rol: furnizorul si locul, criptarea automata (4 randuri la 1440). Lungime: 307 [numarat].
-      // Pe faptele din plan D4c: o singura regiune, in Germania.
+      // Rol: unde stau documentele. Lungime: 25 [numarat].
+      intrebare: "Unde stau fișierele mele?",
+      // Rol: furnizorul si locul, criptarea automata (4 randuri la 1440). Lungime: 296 [numarat].
+      // Pe decizia 42: in UE, regiunea principala Frankfurt.
       raspuns:
-        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc, fișierele sunt criptate AES-256, iar între calculatorul tău și server circulă prin conexiuni TLS 1.2 sau mai noi. Dacă ne predai și originalele pe hârtie, acestea stau într-un depozit, pe bază de proces-verbal.",
+        "În Uniunea Europeană, pe serverele Amazon, cu regiunea principală Frankfurt. Pe disc, fișierele sunt criptate AES-256, iar între calculatorul tău și server circulă prin conexiuni TLS 1.2 sau mai noi. Dacă ne predai și originalele pe hârtie, acestea stau într-un depozit, pe bază de proces-verbal.",
     },
     {
       // Rol: intrebarea despre cine altcineva ajunge la documente. Lungime: 48 [numarat].

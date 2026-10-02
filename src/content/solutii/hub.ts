@@ -79,7 +79,7 @@ export const HUB: {
     subtitlu: "Constructori, contabili, avocați sau notari: 3S citește actele fiecărei meserii și îți răspunde cu documentul potrivit.",
     // Rol: randul de dovada (14/500 ardezie-5, un rand). Lungime: 102. Fapte ale produsului (canalele
     // pe care se intreaba arhiva si gazduirea), fara nicio cifra de clienti.
-    dovada: "Aceeași arhivă pe web, pe desktop, pe telefon și pe WhatsApp, cu găzduire Amazon în Germania.",
+    dovada: "Aceeași arhivă pe web, pe desktop, pe telefon și pe WhatsApp, cu găzduire Amazon în UE.",
     // Rol: butonul plin. Lungime: 17. Tinta: formularul (cont gratuit).
     butonPrincipal: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE },
     // Rol: butonul-fantoma, spre pagina care explica stratul AI. Tinta 3S echivalenta (plan §6.6):
@@ -168,8 +168,8 @@ export const HUB: {
     // Textele scurte si ordinea tin asezarea masurata la referinta: 5 + 3 la 1440, 6 randuri la 390
     // (caseta 145 / 283 px). Masurat pe pagina: cu textele lungi ieseau 4 + 4 si 8 randuri (352 px).
     insigne: [
-      "Găzduire Amazon, în Germania",
-      "O singură regiune UE",
+      "Găzduire Amazon, în UE",
+      "Regiunea principală Frankfurt",
       "Stocare proprie",
       "Portal clienți",
       "Reguli automate",
@@ -210,7 +210,7 @@ export const HUB: {
         // Alegerea locului (stocarea firmei sau Amazon), apoi accesul, apoi criptarea de pe Amazon.
         intrebare: "Unde stau datele firmei?",
         raspuns:
-          "Acolo unde alegi: pe stocarea firmei, dacă o ai deja, fiindcă 3S poate lucra direct pe ea, sau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene. În ambele cazuri, accesul se dă pe persoană și pe dosar. Pe serverele Amazon, fișierele sunt criptate AES-256 pe disc și circulă numai prin TLS, versiunea 1.2 sau una mai nouă.",
+          "Acolo unde alegi: pe stocarea firmei, dacă o ai deja, fiindcă 3S poate lucra direct pe ea, sau pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt. În ambele cazuri, accesul se dă pe persoană și pe dosar. Pe serverele Amazon, fișierele sunt criptate AES-256 pe disc și circulă numai prin TLS, versiunea 1.2 sau una mai nouă.",
       },
       {
         // Pleaca de la WhatsApp si de la browserul fara instalare; aplicatia vine la urma.

@@ -61,10 +61,10 @@ export const SECTOR_COMUN: {
       // Rol: unde stau documentele. Lungime: 35; un rand la 1440, doua la 390, ca la referinta
       // (masurat: randul inchis 55 / 76 px).
       intrebare: "Unde stau fișierele pe care le încarci în 3S?",
-      // Rol: furnizorul, locul, criptarea (4 randuri la 1440). Lungime: 357. Faptele: D4c (o singura
-      // regiune, Germania), criptarea aleasa in D4c (neconfirmata), stocarea proprie (D4b).
+      // Rol: furnizorul, locul, criptarea (4 randuri la 1440). Lungime: 357. Faptele: decizia 42 (in UE,
+      // regiunea principala Frankfurt), criptarea aleasa in D4c (neconfirmata), stocarea proprie (D4b).
       raspuns:
-        "Pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene. Pe disc, fișierele sunt criptate AES-256, iar spre server circulă numai prin TLS, versiunea 1.2 sau una mai nouă. Dacă firma are deja stocarea ei, 3S poate lucra direct pe ea. În aplicație, accesul se dă pe persoană și pe dosar.",
+        "Pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt. Pe disc, fișierele sunt criptate AES-256, iar spre server circulă numai prin TLS, versiunea 1.2 sau una mai nouă. Dacă firma are deja stocarea ei, 3S poate lucra direct pe ea. În aplicație, accesul se dă pe persoană și pe dosar.",
     },
     {
       // Rol: intrebarea despre stratul AI. Raspunsul: 3 randuri la 1440, lungime 323 la referinta.

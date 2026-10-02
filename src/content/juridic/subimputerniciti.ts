@@ -3,9 +3,9 @@
 // art. 28 alin. (2) si (4), citit pe EUR-Lex pe 25.09.2026). Aceeasi lista intra ca tabel in
 // articolul 5 al anexei din termeni.
 //
-// SURSA UNICA pentru fapte: `furnizori.ts`. Gazduirea platformei (Amazon, Germania, o singura
-// regiune; decizia D4c a owner-ului, afirmatia `acasa-gazduire-amazon-germania`) e singurul
-// subimputernicit CONFIRMAT azi. Nu se trec aici, pana nu le confirma owner-ul cu numele si tara:
+// SURSA UNICA pentru fapte: `furnizori.ts`. Gazduirea platformei (Amazon, in Uniunea Europeana, cu
+// regiunea principala Frankfurt; decizia 42 a owner-ului, afirmatia `acasa-gazduire-amazon-germania`)
+// e singurul subimputernicit CONFIRMAT azi. Nu se trec aici, pana nu le confirma owner-ul cu numele si tara:
 // furnizorul modelelor de inteligenta artificiala, cel de posta electronica si cel prin care trece
 // canalul WhatsApp. Pasul e in docs/ziua-operatorului.md, iar pagina spune cinstit regula: un
 // furnizor intra in tabel INAINTE sa primeasca date.
@@ -23,7 +23,7 @@ export const VERSIUNE_SUBIMPUTERNICITI = "2026-09-25";
 export type Subimputernicit = {
   /** Firma care primeste datele. */
   furnizor: string;
-  /** Tara in care stau datele. */
+  /** Tara in care stau datele (la gazduirea platformei: Uniunea Europeana). */
   tara: string;
   /** Ce face pentru platforma. */
   scop: string;
@@ -39,8 +39,19 @@ function dinFurnizor(f: Furnizor, scop: string, date: string): Subimputernicit {
     tara: f.tara,
     scop,
     date,
-    loc: f.inSee ? f.tara + ", în Uniunea Europeană" : f.tara,
+    loc: locul(f),
   };
+}
+
+/**
+ * Locul datelor, spus cum il citeste clientul: tara (cu "în Uniunea Europeană" cand e un stat SEE numit)
+ * si, daca furnizorul o are, regiunea principala. Cand `tara` e chiar Uniunea Europeana (gazduirea
+ * platformei, decizia 42), nu se mai adauga nimic, altfel textul ar repeta Uniunea Europeana.
+ */
+function locul(f: Furnizor): string {
+  const ue = "Uniunea Europeană";
+  const tara = f.inSee && f.tara !== ue ? f.tara + ", în " + ue : f.tara;
+  return f.regiune ? tara + ", regiunea principală " + f.regiune : tara;
 }
 
 /** Subimputernicitii confirmati azi, in ordinea importantei lor pentru platforma. */
@@ -52,7 +63,7 @@ export function subimputerniciti(): Subimputernicit[] {
   return [
     dinFurnizor(
       gazduire,
-      "Găzduiește platforma: conturile, fișierele încărcate și arhiva digitală, într-o singură regiune.",
+      "Găzduiește platforma: conturile, fișierele încărcate și arhiva digitală.",
       "Tot ce încarcă clientul, cu datele personale din documente, și datele utilizatorilor contului.",
     ),
   ];
@@ -65,7 +76,7 @@ export function tabelSubimputerniciti(): TabelJuridic {
     titlu: "Subîmputerniciții platformei 3S",
     antet: ["Furnizorul", "Ce face", "Ce date primește", "Unde stau datele"],
     randuri: subimputerniciti().map((s): CelulaJuridica[] => [
-      { text: s.furnizor, detaliu: "Țara datelor: " + s.tara },
+      { text: s.furnizor, detaliu: "Locul datelor: " + s.tara },
       s.scop,
       s.date,
       s.loc,

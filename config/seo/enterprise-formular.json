@@ -3,7 +3,7 @@
   "raspuns_autonom": {
     "/enterprise": {
       "intrebare": "Ce primește o organizație cu arhivă mare de la 3S, în afara contului?",
-      "entitati": ["3S", "Amazon", "Germania", "nivelul de serviciu"]
+      "entitati": ["3S", "Amazon", "Frankfurt", "nivelul de serviciu"]
     }
   }
 }

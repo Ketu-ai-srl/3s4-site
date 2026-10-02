@@ -20,7 +20,7 @@ export const META_PLATFORMA = {
   // Felia seo-tehnic (auditul SEO M3): numele categoriei de produs cautate, cu marca la final.
   titlu: "Program de arhivare electronică a documentelor | 3S",
   descriere:
-    "Cum lucrează 3S: preia actele pe hârtie și fișierele, le citește, le păstrează criptat în Germania și răspunde cu sursa citată, pe web, WhatsApp și API.",
+    "Cum lucrează 3S: preia actele pe hârtie și fișierele, le citește, le păstrează criptat în UE și răspunde cu sursa citată, pe web, WhatsApp și API.",
 };
 
 /** Firul de pagina, cu numele din meniul site-ului. */
@@ -37,7 +37,7 @@ export const EROU_PLATFORMA = {
   // Rol: unde stau actele azi si ce face 3S cu ele (4 randuri la 1440, 7 la 390). Primul paragraf
   // din <main>: 30-80 de cuvinte (poarta G-AI-02).
   subtitlu:
-    "Actele unei firme stau de obicei împrăștiate: bibliorafturi, un folder comun, e-mailuri și poze de pe telefon. 3S le adună într-o singură arhivă, le citește, le păstrează criptat în Germania și răspunde la întrebări cu pagina citată, pe web, pe WhatsApp și prin API.",
+    "Actele unei firme stau de obicei împrăștiate: bibliorafturi, un folder comun, e-mailuri și poze de pe telefon. 3S le adună într-o singură arhivă, le citește, le păstrează criptat în Uniunea Europeană și răspunde la întrebări cu pagina citată, pe web, pe WhatsApp și prin API.",
   butonPrincipal: { text: "Testează gratuit", href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE } as Legatura,
   butonSecundar: { text: "Cere o demonstrație", href: "/contact", ruta: "/contact" } as Legatura,
 };
@@ -45,7 +45,7 @@ export const EROU_PLATFORMA = {
 /**
  * Macheta stratului: fisierele care intra, miezul 3S, campurile care ies. Date fictive (D9).
  * Jetoanele numesc canalele 3S (scanarea, documentul, poza, e-mailul), iar insignele numesc
- * fapte 3S (Germania, registrul, jurnalul, WhatsApp), nu setul de etichete al referintei.
+ * fapte 3S (UE, registrul, jurnalul, WhatsApp), nu setul de etichete al referintei.
  */
 export const MACHETA_STRAT = {
   declaratie:
@@ -54,7 +54,7 @@ export const MACHETA_STRAT = {
   fisiere: ["TIFF", "PDF", "PNG", "EML"],
   miez: "3S",
   campuri: ['"tip": "proces-verbal"', '"data": "2026-09-14"', '"pagina": "2 din 3"'],
-  insigne: ["Germania", "Registru", "Jurnal", "WhatsApp"],
+  insigne: ["UE", "Registru", "Jurnal", "WhatsApp"],
 };
 
 // --- 2. Fraza-ancora si pilonii ------------------------------------------------------------------
@@ -73,7 +73,7 @@ export const PILONI_PLATFORMA = {
       numar: "02",
       iconita: "scut-bifa" as IconitaProdus,
       titlu: "Copia și originalul",
-      text: "Copia digitală stă criptată AES-256 pe servere Amazon din Germania, iar originalul pe hârtie rămâne în depozitul 3S, cu proces-verbal.",
+      text: "Copia digitală stă criptată AES-256 pe servere Amazon din UE, iar originalul pe hârtie rămâne în depozitul 3S, cu proces-verbal.",
     },
     {
       numar: "03",
@@ -160,7 +160,7 @@ export const BLOC_ARHIVA = {
     },
     {
       eticheta: "Copia scanată",
-      valoare: "Stă pe serverele Amazon din Germania, într-o singură regiune a UE, criptată AES-256, și îți ajunge pe ecran doar prin TLS 1.2 sau mai nou.",
+      valoare: "Stă pe serverele Amazon din UE, cu regiunea principală Frankfurt, criptată AES-256, și îți ajunge pe ecran doar prin TLS 1.2 sau mai nou.",
     },
     {
       eticheta: "Termen de păstrare",
@@ -215,7 +215,7 @@ export const COMPARATIE_PLATFORMA = {
   randuri: [
     { dimensiune: "Originalul pe hârtie", alternativa: "Se întoarce în bibliorafturi", noi: "Păstrat în depozitul 3S" },
     { dimensiune: "Evidența actelor", alternativa: "Un tabel completat de mână", noi: "Registrul arhivei, la zi" },
-    { dimensiune: "Locul fișierelor", alternativa: "Pe un calculator din birou", noi: "Criptate, în Germania" },
+    { dimensiune: "Locul fișierelor", alternativa: "Pe un calculator din birou", noi: "Criptate, în UE" },
     { dimensiune: "O întrebare de pe teren", alternativa: "Un telefon dat la birou", noi: "Pe WhatsApp, cu pagina citată" },
     { dimensiune: "Actele unui client", alternativa: "Trimise din nou pe e-mail", noi: "Văzute de el în portal" },
   ],
@@ -227,14 +227,14 @@ export const COMPARATIE_PLATFORMA = {
 
 export const SUVERANITATE_PLATFORMA = {
   eticheta: "Locul datelor",
-  titlu: "Copia, în Germania. Originalul, în depozitul 3S.",
+  titlu: "Copia, în UE. Originalul, în depozitul 3S.",
   subtitlu: "Un act predat spre arhivare are două locuri, iar pe amândouă le poți numi oricui te întreabă.",
   proza: [
-    "Hârtia predată spre arhivare se preia pe bază de proces-verbal și stă în depozitul 3S până o ceri înapoi. Copia ei scanată intră în arhiva digitală, unde textul și datele actului se citesc o singură dată, apoi stă pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, criptată AES-256.",
+    "Hârtia predată spre arhivare se preia pe bază de proces-verbal și stă în depozitul 3S până o ceri înapoi. Copia ei scanată intră în arhiva digitală, unde textul și datele actului se citesc o singură dată, apoi stă pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt, criptată AES-256.",
     "Între dispozitivul tău și server, fișierul circulă numai prin conexiuni TLS 1.2 sau mai noi. Serverele sunt ale companiei Amazon, o firmă cu sediul în Statele Unite. Legea americană cunoscută drept CLOUD Act poate obliga un astfel de furnizor să păstreze și să predea datele pe care le are în grijă, chiar dacă serverele lui sunt în afara SUA. Originalul pe hârtie nu trece prin niciun server: rămâne pe raft, în depozitul 3S, până când îl ceri.",
   ],
   evidentiat:
-    "Fiecare act are un rând în registrul arhivei, cu categoria și termenul lui de păstrare, iar jurnalul arată cine a deschis copia digitală și la ce oră. Dacă un client, un auditor sau un inspector întreabă unde se află un act, răspunsul e același de fiecare dată: copia în Germania, originalul, dacă l-ai predat, în depozitul 3S.",
+    "Fiecare act are un rând în registrul arhivei, cu categoria și termenul lui de păstrare, iar jurnalul arată cine a deschis copia digitală și la ce oră. Dacă un client, un auditor sau un inspector întreabă unde se află un act, răspunsul e același de fiecare dată: copia în Uniunea Europeană, originalul, dacă l-ai predat, în depozitul 3S.",
   legatura: { text: "Citește pagina de securitate", href: "/securitate", ruta: "/securitate" } as Legatura,
   carduri: [
     {
@@ -354,7 +354,7 @@ export const CAZURI_PLATFORMA = {
 export const CONFORMITATE_PLATFORMA = {
   titlu: "Ce întreabă un auditor, 3S poate arăta pe loc",
   text: "Registrul actelor și termenul fiecăruia se văd din 3S oricând, la zi, fără pregătiri înaintea unui control.",
-  insigne: ["AES-256", "TLS 1.2+", "UE", "Germania", "Amazon", "Jurnal"],
+  insigne: ["AES-256", "TLS 1.2+", "UE", "Frankfurt", "Amazon", "Jurnal"],
 };
 
 // --- 13. Intrebari frecvente ---------------------------------------------------------------------
@@ -373,9 +373,9 @@ export const INTREBARI_PLATFORMA: BlocIntrebari = {
         "Da. Pe WhatsApp, ca și pe web, întrebi în cuvintele tale și primești răspunsul din acte, cu documentul și pagina din care vine.",
     },
     {
-      intrebare: "În ce țară și la ce furnizor stau fișierele noastre?",
+      intrebare: "Unde și la ce furnizor stau fișierele noastre?",
       raspuns:
-        "În Germania, pe serverele Amazon, într-o singură regiune a Uniunii Europene. Pe disc sunt criptate AES-256, iar pe drum circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predai, stau în depozitul 3S.",
+        "În Uniunea Europeană, pe serverele Amazon, cu regiunea principală Frankfurt. Pe disc sunt criptate AES-256, iar pe drum circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predai, stau în depozitul 3S.",
     },
     {
       intrebare: "De unde știm că un răspuns e corect?",

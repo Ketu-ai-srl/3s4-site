@@ -4,7 +4,8 @@
 // raportarea problemelor, intrebarile frecvente) si seiful. Pagina nu are CTA-ul final inchis:
 // seiful ii tine locul.
 //
-// Specificatiile sunt numai cele din decizia D4c (Amazon, Germania, o regiune; AES-256 si TLS 1.2+);
+// Specificatiile sunt numai cele din deciziile owner-ului (Amazon in UE, regiunea principala Frankfurt,
+// decizia 42; AES-256 si TLS 1.2+, D4c);
 // insignele spun numai lucruri pe care le spune si restul paginii, fara certificari.
 //
 // Abaterile de la referinta (defecte masurate care nu se copiaza):

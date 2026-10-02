@@ -323,9 +323,22 @@ describe('pagina /enterprise: ruta, metadata, continut', () => {
     expect(DRUM_DOCUMENT.nota.startsWith('Exemplu fictiv')).toBe(true)
   })
 
-  it('fara regiuni multiple si fara oras de gazduire (D4c)', () => {
+  // Decizia 42 (in locul formularii D4c): gazduirea e "in UE, regiunea principala Frankfurt". Frankfurt se
+  // cere; Germania ca loc al gazduirii, "o singura regiune" si regiunile in plus numite (doua regiuni, Irlanda)
+  // nu apar. Pe aceasta pagina Germania nu are alt sens, deci orice aparitie e una de gazduire.
+  const GAZDUIRE_INTERZISA = /\bGermania\b|singur[aă] regiune|dou[aă] regiuni|\bIrland/i
+  it('martori: tiparul gazduirii interzise prinde formularea veche si lasa formularea deciziei 42', () => {
+    expect(GAZDUIRE_INTERZISA.test('stau în ' + 'Germa' + 'nia')).toBe(true)
+    expect(GAZDUIRE_INTERZISA.test('într-o ' + 'singură ' + 'regiune UE')).toBe(true)
+    expect(GAZDUIRE_INTERZISA.test('în ' + 'două ' + 'regiuni')).toBe(true)
+    expect(GAZDUIRE_INTERZISA.test('copia din ' + 'Irlan' + 'da')).toBe(true)
+    expect(GAZDUIRE_INTERZISA.test('în UE, cu regiunea principală Frankfurt')).toBe(false)
+  })
+
+  it('gazduirea pe decizia 42: Frankfurt, fara Germania, fara o singura regiune si fara regiuni numite in plus', () => {
     const tot = JSON.stringify({ EROU_ENTERPRISE, DRUM_DOCUMENT, LIVRABILE, META_ENTERPRISE })
-    expect(tot).not.toMatch(/două regiuni|doua regiuni|Frankfurt/i)
+    expect(tot).toContain('Frankfurt')
+    expect(tot).not.toMatch(GAZDUIRE_INTERZISA)
   })
 
   it('formularul foloseste evenimentele din lista inchisa si un tip de formular cunoscut', () => {

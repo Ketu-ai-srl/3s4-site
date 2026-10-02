@@ -254,7 +254,7 @@ const RUTE_RO_RO: Ruta[] = [
     cale: "/platforma",
     scurt: "Platforma",
     descriere:
-      "Cum preia 3S actele pe hârtie și fișierele, cum le citește, le păstrează în Germania și răspunde cu sursa citată.",
+      "Cum preia 3S actele pe hârtie și fișierele, cum le citește, le păstrează în UE și răspunde cu sursa citată.",
     inHarta: true,
   },
   {
@@ -293,7 +293,7 @@ const RUTE_RO_RO: Ruta[] = [
     cale: "/comparatie-stocare",
     scurt: "Stocarea actelor, comparată",
     descriere:
-      "În ce țară stau actele și cum sunt criptate în 3S, într-un bucket S3 propriu și în Google Drive.",
+      "Unde stau actele și cum sunt criptate în 3S, într-un bucket S3 propriu și în Google Drive.",
     inHarta: true,
   },
   {

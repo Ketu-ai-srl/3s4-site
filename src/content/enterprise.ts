@@ -2,8 +2,8 @@
 // masurate; textul e scris pentru 3S, din faptele din registrul de afirmatii
 // (`src/content/afirmatii/enterprise-formular.json`) si din deciziile D4b / D4c ale planului.
 //
-// Faptele pe care se sprijina: functionalitatile exista (D4b); gazduire Amazon, Germania, o singura
-// regiune UE (D4c); AES-256 la stocare si TLS 1.2+ in tranzit (D4c, neconfirmat de dezvoltator);
+// Faptele pe care se sprijina: functionalitatile exista (D4b); gazduire Amazon in UE, regiunea
+// principala Frankfurt (decizia 42, in locul formularii din D4c); AES-256 la stocare si TLS 1.2+ in tranzit (D4c, neconfirmat de dezvoltator);
 // integrarile (D4c) si WhatsApp; digitizarea si arhivarea fizica sunt servicii ale marcii 3S (D10).
 // Documentul din banda e FICTIV si e declarat ca exemplu pe pagina (D9).
 
@@ -12,9 +12,9 @@ import type { Legatura } from "./navigatie";
 export const META_ENTERPRISE = {
   // Lungime: 50 [numarat]; pragul portii 15-65.
   titlu: "3S pentru organizații: migrare, reguli și contract",
-  // Lungime: 137 [numarat]; pragul portii 50-160.
+  // Lungime: 131 [numarat]; pragul portii 50-160.
   descriere:
-    "Pentru arhive mari: echipa 3S scanează hârtia, mută dosarele și leagă programele firmei. Implicit, fișierele stau în Germania, pe Amazon.",
+    "Pentru arhive mari: echipa 3S scanează hârtia, mută dosarele și leagă programele firmei. Implicit, fișierele stau la Amazon, în UE.",
 };
 
 export const CALE_ENTERPRISE = "/enterprise";
@@ -31,15 +31,15 @@ export const EROU_ENTERPRISE = {
   inapoi: { text: "Înapoi la planuri", href: "/preturi", ruta: "/preturi" } satisfies Legatura,
   // Rol: titlul de beneficiu, 3 randuri la 20ch. Lungime: 74 [numarat].
   titlu: "3S pentru organizații: arhiva de hârtie răspunde cu actul și pagina exactă",
-  // Rol: raspunsul paginii, 3 randuri la 640 px (G-AI-02: 30-80 de cuvinte; 31 aici). Lungime: 189 [numarat].
+  // Rol: raspunsul paginii, 3 randuri la 640 px (G-AI-02: 30-80 de cuvinte; 31 aici). Lungime: 184 [numarat].
   subtitlu:
-    "Pentru firmele cu mii de dosare, echipa 3S scanează hârtia, mută arhiva și leagă programele pe care le folosești; nivelul de serviciu se trece în contract. Implicit, datele stau în Germania.",
+    "Pentru firmele cu mii de dosare, echipa 3S scanează hârtia, mută arhiva și leagă programele pe care le folosești; nivelul de serviciu se trece în contract. Implicit, datele stau în UE.",
   // Rol: butonul spre formular. Lungime: 21 [numarat].
   buton: "Programează o discuție",
   // Rol: legatura secundara spre pagina platformei.
   secundara: { text: "Cum lucrează platforma", href: "/platforma", ruta: "/platforma" } satisfies Legatura,
   // Rol: randul de incredere, 4 elemente scurte.
-  incredere: ["Găzduire în Germania", "Amazon, o regiune UE", "AES-256 și TLS 1.2+", "WhatsApp inclus"],
+  incredere: ["Găzduire în UE", "Amazon, Frankfurt", "AES-256 și TLS 1.2+", "WhatsApp inclus"],
 };
 
 export type ElementDrum = { text: string };
@@ -63,7 +63,7 @@ export const DRUM_DOCUMENT = {
   },
   stocare: {
     eticheta: "Păstrare",
-    pastile: ["Amazon, Germania", "o regiune UE", "AES-256"],
+    pastile: ["Amazon, UE", "regiunea Frankfurt", "AES-256"],
   },
   iesire: {
     eticheta: "Livrare",
@@ -113,8 +113,8 @@ export const LIVRABILE = {
       text: "Echipa 3S scanează hârtia și o citește, iar o întrebare despre un act vechi primește răspuns cu sursa citată, ca la unul digital.",
     },
     {
-      titlu: "Găzduire implicită în Germania",
-      text: "Fișierele stau pe Amazon, în Germania, într-o singură regiune UE, criptate AES-256 la stocare și transmise prin TLS 1.2 sau mai nou.",
+      titlu: "Găzduire implicită în UE",
+      text: "Fișierele stau pe Amazon, în Uniunea Europeană, cu regiunea principală Frankfurt, criptate AES-256 la stocare și transmise prin TLS 1.2 sau mai nou.",
     },
     {
       titlu: "Arhiva întrebată din WhatsApp",

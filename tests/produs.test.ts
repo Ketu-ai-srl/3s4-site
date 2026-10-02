@@ -32,8 +32,9 @@ import { RUTE } from '../src/content/rute'
  *
  * ASTEPTARILE VIN DIN AFARA CODULUI: valorile seifului (roata la 0,30 si 0,40, usa la 0,55 / 0,60 /
  * 0,70, eticheta intre 0,50 si 0,51) sunt cifrele masurate in fisa `securitate.md` §13, nu ale
- * functiilor de aici; specificatiile de securitate sunt cele din decizia D4c (Amazon, Germania, o
- * regiune; AES-256 si TLS 1.2+).
+ * functiilor de aici; specificatiile de securitate sunt cele din deciziile owner-ului: gazduirea
+ * Amazon in Uniunea Europeana, cu regiunea principala Frankfurt (decizia 42, care inlocuieste
+ * formularea D4c "Germania, o regiune"), AES-256 si TLS 1.2+ (D4c).
  *
  * Fiecare detector scris aici are martorii lui: un caz care TREBUIE prins si unul care nu.
  * Fixturile cu ce vanam se lipesc la rulare, ca fisierul probei sa nu fie el insusi o instanta.
@@ -79,7 +80,15 @@ const LINIUTE_LUNGI = new RegExp('[' + String.fromCharCode(0x2013) + String.from
 // in documentele juridice, care nu sunt printre paginile acestei probe.
 const PRONUME_FORMALE = /(^|[^\p{L}])(dumneavoastr\p{L}*|vă|vi)(?=$|[^\p{L}])/iu
 const NUME_INTERZISE = new RegExp('\\b(' + ['mac' + 'OS', 'i' + 'OS', 'App ' + 'Store'].join('|') + ')\\b')
-const ORASE = /\b(Frankfurt|Berlin|München|Munchen|Hamburg|Dublin|Paris|Amsterdam|Stockholm|Milano)\b/
+// Decizia 42: Frankfurt e regiunea principala si se CERE pe /securitate; orice alt oras de gazduire ramane
+// interzis (celelalte regiuni UE, copia de siguranta si modelele, nu se numesc pe site).
+const ORASE = /\b(Berlin|München|Munchen|Hamburg|Dublin|Paris|Amsterdam|Stockholm|Milano)\b/
+// Formularea veche a gazduirii (D4c), cazuta prin decizia 42: Germania ca loc al gazduirii, "o singura
+// regiune" si tema "o singura casa". Pe paginile feliei Germania nu apare in alt sens, deci orice aparitie
+// e una de gazduire.
+const GAZDUIRE_VECHE = /\bGermania\b|singur[aă] regiune|singur[aă] cas[aă]|un singur loc/i
+// Irlanda (regiunea copiei saptamanale) nu se numeste pe paginile de marketing: o poarta textul juridic.
+const IRLANDA = /\bIrland/i
 const CERTIFICARI = /\b(SOC ?[123]|ISO ?\d{4,5}|PCI DSS|99[.,]9)/
 const IDENTIFICATORI = [
   /\b[A-Z]{2}\d{2}[A-Z]{4}[0-9A-Z]{12,}\b/, // IBAN
@@ -108,6 +117,24 @@ const STORECOVE_RETEA = /re[țt]elele[^.;]*Storecove|re[țt]eaua\s+Storecove|Sto
 // Tiparul se lipeste la rulare, ca fisierul probei sa nu contina el insusi numele.
 const NUME_FIRMA_MAMA = new RegExp('\\b' + 'AD' + 'RIA' + '\\b', 'i')
 
+/**
+ * Inversa proiectiei hartii (`public/produs/harta-europa.svg`, 800 x 480): Lambert azimutala echivalenta cu
+ * centrul in 10 E / 50 N (scris in fisierul SVG). Scara (838,06 px pe raza Pamantului) si originea (356,46 /
+ * 244,67 px) nu sunt scrise in SVG: s-au potrivit prin cele mai mici patrate pe centrele a 13 insule din contur
+ * (Sicilia, Sardinia, Corsica, Creta, Mallorca, Gotland si altele), cu abaterea sub 1 px. Intoarce [lon, lat].
+ */
+function geoDinReper(xProcent: number, yProcent: number): [number, number] {
+  const rad = Math.PI / 180
+  const [l0, p0] = [10 * rad, 50 * rad]
+  const X = ((xProcent / 100) * 800 - 356.464) / 838.057
+  const Y = (244.665 - (yProcent / 100) * 480) / 838.057
+  const rho = Math.hypot(X, Y)
+  const c = 2 * Math.asin(rho / 2)
+  const lat = Math.asin(Math.cos(c) * Math.sin(p0) + (Y * Math.sin(c) * Math.cos(p0)) / rho)
+  const lon = l0 + Math.atan2(X * Math.sin(c), rho * Math.cos(p0) * Math.cos(c) - Y * Math.sin(p0) * Math.sin(c))
+  return [lon / rad, lat / rad]
+}
+
 describe('detectorii probei, pe martori', () => {
   it('prind ce trebuie si lasa ce nu trebuie', () => {
     expect(LINIUTE_LUNGI.test('a ' + String.fromCharCode(0x2014) + ' b')).toBe(true)
@@ -117,8 +144,14 @@ describe('detectorii probei, pe martori', () => {
     expect(PRONUME_FORMALE.test('tu, tabel, taxa, totale, văzut, vie')).toBe(false)
     expect(NUME_INTERZISE.test('aplicația pentru ' + 'i' + 'OS')).toBe(true)
     expect(NUME_INTERZISE.test('Windows, Linux, Android')).toBe(false)
-    expect(ORASE.test('regiunea ' + 'Frank' + 'furt')).toBe(true)
-    expect(ORASE.test('Germania')).toBe(false)
+    expect(ORASE.test('regiunea ' + 'Ber' + 'lin')).toBe(true)
+    expect(ORASE.test('regiunea principală Frankfurt')).toBe(false)
+    expect(GAZDUIRE_VECHE.test('stau în ' + 'Germa' + 'nia')).toBe(true)
+    expect(GAZDUIRE_VECHE.test('într-o ' + 'singură ' + 'regiune')).toBe(true)
+    expect(GAZDUIRE_VECHE.test('o ' + 'singură ' + 'casă')).toBe(true)
+    expect(GAZDUIRE_VECHE.test('în Uniunea Europeană, cu regiunea principală Frankfurt')).toBe(false)
+    expect(IRLANDA.test('copia din ' + 'Irlan' + 'da')).toBe(true)
+    expect(IRLANDA.test('Frankfurt, în Uniunea Europeană')).toBe(false)
     expect(CERTIFICARI.test('certificat ' + 'ISO ' + '27001')).toBe(true)
     expect(CERTIFICARI.test('AES-256 și TLS 1.2')).toBe(false)
     const iban = 'RO' + '49' + 'AAAA' + '1B31007593840000'
@@ -128,7 +161,7 @@ describe('detectorii probei, pe martori', () => {
     expect(pesteD4c('Actul ajunge pe servere ' + 'deja ' + 'criptat')).toBe(true)
     expect(pesteD4c('Nu aveți ' + 'nimic de ' + 'activat')).toBe(true)
     expect(pesteD4c('căutarea nu trece în ' + 'arhiva altei ' + 'firme')).toBe(true)
-    expect(pesteD4c('Fișierele stocate pe serverele din Germania sunt criptate AES-256.')).toBe(false)
+    expect(pesteD4c('Fișierele stocate pe serverele din Uniunea Europeană sunt criptate AES-256.')).toBe(false)
     expect(STORECOVE_RETEA.test('Rețelele ' + 'Peppol și ' + 'Storecove aduc facturile')).toBe(true)
     expect(STORECOVE_RETEA.test('Facturile vin din rețeaua Peppol, direct sau prin Storecove.')).toBe(false)
     expect(NUME_FIRMA_MAMA.test('stau în depozitul ' + 'Ad' + 'ria')).toBe(true)
@@ -197,11 +230,23 @@ describe('textul paginilor', () => {
     }
   })
 
-  it('specificatiile de securitate sunt numai cele din D4c: fara certificari, fara cifre de durabilitate', () => {
+  it('specificatiile de securitate sunt numai cele din decizii (D4c, 42): fara certificari, fara cifre de durabilitate', () => {
     for (const [nume, h] of Object.entries(html)) expect(CERTIFICARI.test(text(h)), nume).toBe(false)
     const valori = securitate.BLOC_INFRASTRUCTURA.specificatii.map((r) => (r.mono ?? '') + r.valoare).join(' | ')
     expect(securitate.BLOC_INFRASTRUCTURA.specificatii).toHaveLength(4)
-    for (const fapt of ['Amazon', 'Germania, o singură regiune', 'AES-256', 'TLS 1.2']) expect(valori).toContain(fapt)
+    for (const fapt of ['Amazon', 'Uniunea Europeană, cu regiunea principală Frankfurt', 'AES-256', 'TLS 1.2']) expect(valori).toContain(fapt)
+    expect(valori).not.toMatch(GAZDUIRE_VECHE)
+  })
+
+  it('decizia 42: nicio gazduire in Germania sau intr-o singura regiune si nicio Irlanda, in continut si in HTML; Frankfurt pe /securitate', () => {
+    expect(TEXTE.filter((t) => GAZDUIRE_VECHE.test(t))).toEqual([])
+    expect(TEXTE.filter((t) => IRLANDA.test(t))).toEqual([])
+    for (const [nume, h] of Object.entries(html)) {
+      expect(GAZDUIRE_VECHE.test(text(h)), nume).toBe(false)
+      expect(IRLANDA.test(text(h)), nume).toBe(false)
+    }
+    expect(text(html.securitate)).toContain('Frankfurt')
+    expect(text(html.securitate)).toContain('Uniunea Europeană')
   })
 
   it('nimic peste D4c: nici in continut, nici in HTML-ul randat al celor trei pagini', () => {
@@ -250,15 +295,25 @@ describe('textul paginilor', () => {
     expect(p![1]).not.toContain('doar-cititor')
   })
 
-  it('harta are o singura regiune, in Germania, fara oras', () => {
+  it('harta are un singur reper, la Frankfurt, regiunea principala (decizia 42), fara alt oras', () => {
     const h = html.securitate
     expect(ORASE.test(text(h))).toBe(false)
-    expect(securitate.BLOC_INFRASTRUCTURA.harta.eticheta).toBe('Germania')
-    const { x, y } = securitate.BLOC_INFRASTRUCTURA.harta.reper
+    const harta = securitate.BLOC_INFRASTRUCTURA.harta
+    expect(harta.eticheta).toBe('Frankfurt')
+    expect(harta.legenda).toBe('Regiunea principală (UE)')
+    expect(GAZDUIRE_VECHE.test([harta.descriere, harta.eticheta, harta.legenda, harta.nota].join(' '))).toBe(false)
+    const { x, y } = harta.reper
     for (const v of [x, y]) {
       expect(v).toBeGreaterThan(0)
       expect(v).toBeLessThan(100)
     }
+    // Reperul cade pe Frankfurt (8,68 E / 50,11 N) in proiectia hartii; martorul: reperul de dinainte
+    // (centrul Germaniei) cade la peste 1 grad de el, deci verificarea deosebeste locurile.
+    const [lon, lat] = geoDinReper(x, y)
+    expect(Math.abs(lon - 8.68)).toBeLessThan(0.1)
+    expect(Math.abs(lat - 50.11)).toBeLessThan(0.1)
+    const [lonVechi, latVechi] = geoDinReper(45.076, 47.39)
+    expect(Math.abs(lonVechi - 8.68) + Math.abs(latVechi - 50.11)).toBeGreaterThan(1)
     expect((h.match(/src="\/produs\/harta-europa\.svg"/g) ?? []).length).toBe(1)
     expect(h).toMatch(/<img[^>]*alt=""[^>]*role="presentation"|<img[^>]*role="presentation"[^>]*alt=""/)
     const svg = citeste('public/produs/harta-europa.svg')

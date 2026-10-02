@@ -53,10 +53,14 @@ const OPERATOR_SINTETIC = {
 }
 const ID_GA4 = ['G', 'FURNIZORI' + String(78)].join('-')
 
-/** SHA-256 al capturii de pe baza (textul pe un rand, cu randul final), pe pagina. */
+/**
+ * SHA-256 al capturii de pe baza (textul pe un rand, cu randul final), pe pagina. `confidentialitate` e
+ * recapturata pe decizia 42 (gazduirea "in UE, regiunea principala Frankfurt"): fata de captura de dinainte
+ * difera numai nodul gazduirii platformei si sigiliul; `cookies` e captura neschimbata.
+ */
 const AMPRENTA_BAZA: Record<(typeof PAGINI)[number], string> = {
   cookies: 'e1f9b15c601ca8808d6fb81abe774c6fc85c85b97971cff8eed11cd7a72f6978',
-  confidentialitate: '48eac9833e25b3322c816f877c3a429ddb749325ab66379b97f8afa6f5052bee',
+  confidentialitate: 'ca3c7f30705586762d1c2992f6eaee8f1a79759b49e7a3402557cbcce1e84cf5',
 }
 
 const ENTITATI: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#x27;': "'", '&#39;': "'", '&nbsp;': ' ' }

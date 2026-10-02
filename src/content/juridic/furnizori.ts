@@ -7,8 +7,10 @@
 // spatele comutatorului operatorului; paginile le face felia `juridic` (valul S4-4).
 //
 // FAPTE, cu sursa lor (verificate 24.09.2026):
-//   - gazduirea platformei: Amazon, Germania, o singura regiune UE - decizia owner-ului D4c, in
-//     registrul de afirmatii ca `acasa-gazduire-amazon-germania`;
+//   - gazduirea platformei: Amazon, in Uniunea Europeana, cu regiunea principala Frankfurt - decizia
+//     42 a owner-ului (01.10.2026), care inlocuieste formularea din D4c ("Germania, o singura regiune"),
+//     confirmata de furnizorul platformei (02.10.2026); in registrul de afirmatii ca
+//     `acasa-gazduire-amazon-germania` (id-ul ramane, e cheie stabila);
 //   - Google LLC e certificata in EU-U.S. Data Privacy Framework si poate folosi si clauzele
 //     contractuale standard (business.safety.google/adsdatatransfers);
 //   - cookie-urile GA4 si durata lor, 2 ani (support.google.com/analytics/answer/11397207);
@@ -54,8 +56,10 @@ export type Furnizor = {
   /** Firma care primeste datele. */
   destinatar: string;
   rol: string;
-  /** Tara in care stau datele. */
+  /** Tara in care stau datele; pentru gazduirea platformei, Uniunea Europeana (decizia 42). */
   tara: string;
+  /** Regiunea principala, cand furnizorul o are numita (gazduirea platformei: Frankfurt, decizia 42). */
+  regiune?: string;
   inSee: boolean;
   mecanismUe: MecanismUe;
   mecanismMd: MecanismMd;
@@ -73,8 +77,9 @@ export const FURNIZORI: Furnizor[] = [
     cheie: "gazduire-platforma",
     serviciu: "Găzduirea platformei 3S",
     destinatar: "Amazon Web Services (AWS)",
-    rol: "Găzduiește contul, fișierele încărcate și arhiva digitală, într-o singură regiune din Germania.",
-    tara: "Germania",
+    rol: "Găzduiește contul, fișierele încărcate și arhiva digitală, cu regiunea principală Frankfurt.",
+    tara: "Uniunea Europeană",
+    regiune: "Frankfurt",
     inSee: true,
     mecanismUe: "see",
     mecanismMd: "see",

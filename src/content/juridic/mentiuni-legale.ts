@@ -115,9 +115,10 @@ export function mentiuniLegale(operator: Operator): DocumentJuridic {
             paragrafe: [
               "Platforma 3S, cu conturile, fișierele încărcate și arhiva digitală, rulează la " +
                 platforma.destinatar +
-                ", într-o singură regiune din " +
+                ", în " +
                 platforma.tara +
-                ", în Uniunea Europeană. Fiecare firmă care primește date de la platformă, cu țara în care le ține, apare în [Subîmputerniciții platformei](/juridic/subimputerniciti).",
+                (platforma.regiune ? ", cu regiunea principală " + platforma.regiune : "") +
+                ". Fiecare firmă care primește date de la platformă, cu țara în care le ține, apare în [Subîmputerniciții platformei](/juridic/subimputerniciti).",
             ],
           },
         ],

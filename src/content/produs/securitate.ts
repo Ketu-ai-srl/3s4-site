@@ -1,12 +1,13 @@
 // Contractul de continut al paginii `/securitate` (felia `produs`, sablonul "interior-880" cu noua
 // blocuri numerotate si seiful; fisa de masurare `securitate.md`).
 //
-// SPECIFICATIILE vin DOAR din decizia D4c a owner-ului: gazduire Amazon, Germania, o singura regiune
-// a Uniunii Europene; AES-256 la stocare si TLS 1.2 sau mai nou in tranzit. Ce declara referinta in
-// plus (a doua regiune, durabilitati, disponibilitate tinta, certificari ale furnizorului, echipe de
+// SPECIFICATIILE vin DOAR din deciziile owner-ului: gazduire Amazon in Uniunea Europeana, cu regiunea
+// principala Frankfurt (decizia 42, care inlocuieste formularea din D4c); AES-256 la stocare si TLS 1.2
+// sau mai nou in tranzit (D4c). Celelalte regiuni UE (copia de siguranta, modelele) nu se numesc pe
+// site; le poarta textele juridice. Ce declara referinta in plus (o a doua regiune numita, durabilitati, disponibilitate tinta, certificari ale furnizorului, echipe de
 // garda, izolarea pe client, autorizarea la fiecare cerere, criptarea pornita implicit, cheile
-// gestionate de furnizor) NU apare: 3S nu l-a confirmat. Harta are o singura regiune, in Germania,
-// fara oras. Izolarea pe firma si autorizarea pe cerere au fost retrase din registru si revin numai
+// gestionate de furnizor) NU apare: 3S nu l-a confirmat. Harta are un singur reper, regiunea
+// principala, la Frankfurt. Izolarea pe firma si autorizarea pe cerere au fost retrase din registru si revin numai
 // dupa confirmarea owner-ului.
 //
 // Matricea rolurilor e un EXEMPLU declarat pe pagina (decizia D9): drepturile implicite ale unui cont
@@ -29,9 +30,9 @@ import type { BlocIntrebari } from "./intrebari";
 export const CALE_SECURITATE = "/securitate";
 
 export const META_SECURITATE = {
-  titlu: "Securitate 3S: AES-256, TLS 1.2+ și date în Germania",
+  titlu: "Securitate 3S: AES-256, TLS 1.2+ și date în UE",
   descriere:
-    "Cum protejează 3S actele firmei: criptare AES-256 la stocare, TLS 1.2+ în tranzit, servere Amazon în Germania, acces nominal și jurnal pentru fiecare act.",
+    "Cum protejează 3S actele firmei: criptare AES-256 la stocare, TLS 1.2+ în tranzit, servere Amazon în UE, acces nominal și jurnal pentru fiecare act.",
 };
 
 export const FIR_SECURITATE = [
@@ -45,7 +46,7 @@ export const EROU_SECURITATE = {
   // Rol: subtitlul eroului (3 randuri la 1440). Primul paragraf din
   // <main>: 30-80 de cuvinte (poarta G-AI-02).
   subtitlu:
-    "În 3S, fișierele stau criptate AES-256 pe serverele Amazon din Germania și circulă doar prin TLS 1.2 sau mai nou. Accesul se dă pe persoană și pe dosar, iar originalele rămân în depozitul 3S.",
+    "În 3S, fișierele stau criptate AES-256 pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt, și circulă doar prin TLS 1.2 sau mai nou. Accesul se dă pe persoană și pe dosar, iar originalele rămân în depozitul 3S.",
 };
 
 /** Titlul ascuns al pilonilor: tine ierarhia de titluri (h1, apoi h2, apoi titlurile pilonilor). */
@@ -64,8 +65,8 @@ export const PILONI_SECURITATE: { iconita: IconitaProdus; titlu: string; text: s
   },
   {
     iconita: "glob",
-    titlu: "Un singur loc: Germania",
-    text: "Fișierele stau pe serverele Amazon din Germania, într-o singură regiune a UE.",
+    titlu: "Regiunea principală: Frankfurt",
+    text: "Fișierele stau pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt.",
   },
   {
     iconita: "lacat",
@@ -78,31 +79,35 @@ export const PILONI_SECURITATE: { iconita: IconitaProdus; titlu: string; text: s
 
 export const BLOC_INFRASTRUCTURA = {
   numar: "01",
-  titlu: "Actele stau în Germania, pe serverele Amazon",
+  titlu: "Actele stau în Uniunea Europeană, pe serverele Amazon",
   subtitlu:
-    "Arhiva 3S are o singură casă: o regiune Amazon din Germania, în Uniunea Europeană. Acolo stau fișierele păstrate de 3S, criptate AES-256, și de acolo pleacă spre tine numai prin conexiuni TLS 1.2 sau mai noi.",
+    "Arhiva 3S rulează pe infrastructura Amazon, în Uniunea Europeană, cu regiunea principală Frankfurt. Fișierele păstrate de 3S stau criptate AES-256 și pleacă spre tine numai prin conexiuni TLS 1.2 sau mai noi.",
   harta: {
-    descriere: "Harta Europei cu o singură regiune de găzduire, în Germania.",
-    eticheta: "Germania",
-    // Pozitia reperului pe harta, in procente din cadru (proiectia hartii, `public/produs/harta-europa.svg`).
-    reper: { x: 45.076, y: 47.39 },
-    legenda: "Germania (UE)",
-    nota: "O singură regiune: aici stau fișierele păstrate de 3S.",
+    descriere: "Harta Europei cu regiunea principală de găzduire, Frankfurt, în Uniunea Europeană.",
+    eticheta: "Frankfurt",
+    // Pozitia reperului pe harta, in procente din cadru, pentru Frankfurt (8,68 E / 50,11 N), din
+    // proiectia hartii (`public/produs/harta-europa.svg`: Lambert azimutala echivalenta, centru 10 E /
+    // 50 N). Scara si originea s-au potrivit pe centrele a 13 insule ale conturului (abatere sub 1 px,
+    // Marea Britanie 2,6 px); controlul: reperul vechi, 45,076 / 47,39, cade pe 10,45 E / 51,17 N,
+    // centrul geografic al Germaniei.
+    reper: { x: 43.01, y: 50.614 },
+    legenda: "Regiunea principală (UE)",
+    nota: "Aici, la Frankfurt, stau fișierele păstrate de 3S; datele rămân în Uniunea Europeană.",
   },
   specificatii: [
     {
       termen: "Furnizor de infrastructură",
-      valoare: "Amazon, care găzduiește platforma 3S pe servere din Germania.",
+      valoare: "Amazon, care găzduiește platforma 3S pe servere din Uniunea Europeană.",
       mono: null,
     },
     {
       termen: "Locul datelor",
-      valoare: "Germania, o singură regiune a Uniunii Europene.",
+      valoare: "Uniunea Europeană, cu regiunea principală Frankfurt.",
       mono: null,
     },
     {
       termen: "Criptare la stocare",
-      valoare: ", pentru fișierele păstrate pe serverele din Germania.",
+      valoare: ", pentru fișierele păstrate pe serverele din Uniunea Europeană.",
       mono: "AES-256",
     },
     {
@@ -170,12 +175,12 @@ export const BLOC_CRIPTARE = {
   numar: "03",
   titlu: "Actele circulă criptat și stau criptate",
   subtitlu:
-    "Între tine și 3S, actele trec prin conexiuni TLS 1.2 sau mai noi, iar pe serverele Amazon din Germania stau criptate AES-256, până la termen.",
+    "Între tine și 3S, actele trec prin conexiuni TLS 1.2 sau mai noi, iar pe serverele Amazon din Uniunea Europeană stau criptate AES-256, până la termen.",
   flux: {
     noduri: [
       { iconita: "ecran" as IconitaProdus, eticheta: "Calculator și telefon", sub: null as string | null },
       { iconita: "server" as IconitaProdus, eticheta: "Serverele 3S", sub: null as string | null },
-      { iconita: "cilindru" as IconitaProdus, eticheta: "Arhiva criptată", sub: "Germania" as string | null },
+      { iconita: "cilindru" as IconitaProdus, eticheta: "Arhiva criptată", sub: "UE, Frankfurt" as string | null },
     ],
     legaturi: ["TLS 1.2+", "AES-256"],
   },
@@ -188,12 +193,12 @@ export const BLOC_CRIPTARE = {
     {
       eticheta: "Pe disc",
       titlu: "AES-256",
-      text: "Fișierele stocate pe serverele din Germania sunt criptate AES-256. Criptarea le apără pe disc, cât timp rămân în arhiva 3S, de la preluare până la termen.",
+      text: "Fișierele stocate pe serverele din Uniunea Europeană sunt criptate AES-256. Criptarea le apără pe disc, cât timp rămân în arhiva 3S, de la preluare până la termen.",
     },
     {
       eticheta: "Locul",
-      titlu: "Germania, o singură regiune",
-      text: "Arhiva criptată stă pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, aceeași pe care o arată harta de mai sus.",
+      titlu: "Frankfurt, regiunea principală",
+      text: "Arhiva criptată stă pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt, cea pe care o arată harta de mai sus.",
     },
   ],
 };
@@ -252,7 +257,7 @@ export const BLOC_CICLU = {
     "Știi în fiecare clipă unde e un act, cât mai stă în arhivă și cine hotărăște când iese. Hotărârea de a scoate un act rămâne întotdeauna a firmei, nu a 3S.",
   pasi: [
     { numar: "01", iconita: "incarcare" as IconitaProdus, titlu: "Preluare", text: "Hârtia, pe bază de proces-verbal; fișierele, prin TLS 1.2 sau mai nou." },
-    { numar: "02", iconita: "cilindru" as IconitaProdus, titlu: "Păstrare", text: "Criptat AES-256, pe serverele din Germania." },
+    { numar: "02", iconita: "cilindru" as IconitaProdus, titlu: "Păstrare", text: "Criptat AES-256, pe serverele din UE." },
     { numar: "03", iconita: "arhiva" as IconitaProdus, titlu: "Evidență", text: "Trecut în registrul arhivei, cu categoria și dosarul lui." },
     { numar: "04", iconita: "ceas" as IconitaProdus, titlu: "Termen", text: "Păstrat atât cât cere categoria în care a intrat actul." },
     { numar: "05", iconita: "iesire" as IconitaProdus, titlu: "Ieșire din arhivă", text: "Ce a trecut de termen apare din timp, iar hotărârea îți aparține." },
@@ -267,17 +272,17 @@ export const BLOC_REGLEMENTARE = {
   subtitlu:
     "Când cineva din afara firmei, un auditor sau un client, întreabă de acte, răspunsul se scoate din 3S, nu din sertare.",
   insigne: [
-    { marca: "UE", nume: "Germania", nota: "o singură regiune" },
+    { marca: "UE", nume: "Frankfurt", nota: "regiunea principală" },
     { marca: "AES-256", nume: "La stocare", nota: "fișiere criptate" },
     { marca: "TLS 1.2+", nume: "În tranzit", nota: "pe toate conexiunile" },
-    { marca: "Amazon", nume: "Infrastructura", nota: "servere în Germania" },
+    { marca: "Amazon", nume: "Infrastructura", nota: "servere în UE" },
     { marca: "Jurnal", nume: "Acces", nota: "cu nume și oră" },
     { marca: "Registru", nume: "Evidența actelor", nota: "categorie și termen" },
   ],
   carduri: [
     {
-      titlu: "Țara actelor, știută dinainte",
-      text: "Fișierele stau în Germania, într-o singură regiune a Uniunii Europene, pe infrastructura Amazon. Știi dinainte, și poți spune oricui întreabă, în ce țară sunt actele firmei.",
+      titlu: "Locul actelor, știut dinainte",
+      text: "Fișierele stau în Uniunea Europeană, cu regiunea principală Frankfurt, pe infrastructura Amazon. Știi dinainte, și poți spune oricui întreabă, unde sunt actele firmei.",
     },
     {
       titlu: "Registrul arhivei, la zi",
@@ -350,14 +355,14 @@ export const INTREBARI_SECURITATE: BlocIntrebari & { numar: string } = {
   titlu: "Întrebări frecvente despre securitate",
   intrebari: [
     {
-      intrebare: "În ce țară și la ce furnizor stau fișierele?",
+      intrebare: "Unde și la ce furnizor stau fișierele?",
       raspuns:
-        "Pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene, cea marcată pe harta de mai sus. Fișierele sunt criptate AES-256 pe disc și circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predai spre arhivare, stau în depozitul 3S.",
+        "Pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt, cea marcată pe harta de mai sus. Fișierele sunt criptate AES-256 pe disc și circulă doar prin conexiuni TLS 1.2 sau mai noi. Originalele pe hârtie, dacă le predai spre arhivare, stau în depozitul 3S.",
     },
     {
       intrebare: "Cum sunt criptate fișierele?",
       raspuns:
-        "Pe serverele din Germania, fișierele stau criptate AES-256 cât timp sunt în arhivă. Între dispozitivul tău și 3S circulă numai prin TLS 1.2 sau o versiune mai nouă.",
+        "Pe serverele din Uniunea Europeană, fișierele stau criptate AES-256 cât timp sunt în arhivă. Între dispozitivul tău și 3S circulă numai prin TLS 1.2 sau o versiune mai nouă.",
     },
     {
       intrebare: "Cine poate vedea un dosar?",

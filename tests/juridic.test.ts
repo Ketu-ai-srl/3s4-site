@@ -517,6 +517,43 @@ describe('paginile juridice randate', () => {
     expect(html).toMatch(/<span[^>]*aria-current="page"[^>]*>Documente juridice</)
   })
 
+  it('gazduirea (decizia 42): toate cele sapte pagini randate, fara UE repetata, fara regiune unica, fara Germania ca loc', async () => {
+    // Tiparele se lipesc din bucati: proba nu poarta pe litere formularile pe care le vaneaza.
+    const ue = 'uniunea ' + 'europeana'
+    const ueRepetata = new RegExp(ue + ', in ' + ue)
+    const regiuneUnica = new RegExp('singur' + 'a regiune')
+    const tara = 'german' + 'ia'
+    const cuvinteGazduire = /gazdu|ruleaza|regiun|amazon|aws/
+    /** Fragmentele de text ale paginii: fiecare element si fiecare propozitie, separat, normalizate. */
+    const fragmente = (html: string) =>
+      textDinHtml(html.replace(/<[^>]+>/g, '\n'))
+        .split(/[.\n]/)
+        .map(normalizat)
+        .filter((f) => f.trim() !== '')
+    const defecte = (html: string) =>
+      fragmente(html).filter((f) => ueRepetata.test(f) || regiuneUnica.test(f) || (f.includes(tara) && cuvinteGazduire.test(f)))
+
+    // Martor POZITIV, asamblat la rulare: fiecare dintre cele trei forme vechi e prinsa.
+    const UE = 'Uniunea Europeană'
+    expect(defecte('<p>Locul: Amazon, ' + UE + ', în ' + UE + '</p>')).toHaveLength(1)
+    expect(defecte('<p>Rulează într-o ' + 'singur' + 'ă regiune din ' + UE + '</p>')).toHaveLength(1)
+    expect(defecte('<td>Găzduiește arhiva în ' + 'Germ' + 'ania</td>')).toHaveLength(1)
+    // Martor NEGATIV: forma deciziei 42 trece.
+    expect(defecte('<p>Amazon Web Services, în ' + UE + ', cu regiunea principală Frankfurt.</p>')).toEqual([])
+
+    let cuFrankfurt = 0
+    for (const slug of SLUGURI_JURIDICE) {
+      const html = await paginaCuOperator(slug, operatorSintetic())
+      // Controlul: pagina chiar s-a randat, cu documentul ei.
+      expect(html, slug).toMatch(/<article data-document="/)
+      expect(defecte(html), slug).toEqual([])
+      if (fragmente(html).some((f) => f.includes('frankfurt'))) cuFrankfurt++
+    }
+    // Nodul de gazduire chiar e pe pagini (altfel proba ar trece pe absenta lui): termeni, informatii
+    // legale, subimputerniciti si confidentialitate il poarta azi.
+    expect(cuFrankfurt).toBeGreaterThanOrEqual(3)
+  })
+
   it('martor NEGATIV: fara operator, pagina cere 404 si nu randeaza nimic', async () => {
     await expect(paginaCuOperator('termeni', null)).rejects.toThrow(/NEXT_HTTP_ERROR_FALLBACK;404|NEXT_NOT_FOUND/)
   })

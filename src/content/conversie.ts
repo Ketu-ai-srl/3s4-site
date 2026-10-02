@@ -86,7 +86,7 @@ export const CONTACT = {
       {
         iconita: "shield-check",
         titlu: "Securitate și găzduire",
-        descriere: "Serverele Amazon din Germania, criptarea actelor și cine are voie să le deschidă.",
+        descriere: "Serverele Amazon din UE, criptarea actelor și cine are voie să le deschidă.",
         legatura: { text: "/securitate", href: "/securitate", ruta: "/securitate" },
       },
       {
@@ -165,7 +165,7 @@ export const CONTACT = {
         titlu: "Platforma 3S",
         rol: "Unde stau actele și cum sunt apărate",
         fapte: [
-          { eticheta: "Găzduire", valoare: "Amazon, Germania, o singură regiune UE", mono: false },
+          { eticheta: "Găzduire", valoare: "Amazon, în UE, regiunea principală Frankfurt", mono: false },
           { eticheta: "Criptare la stocare", valoare: "AES-256", mono: true },
           { eticheta: "Criptare în tranzit", valoare: "TLS 1.2+", mono: true },
         ],

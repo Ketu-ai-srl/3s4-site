@@ -13,7 +13,7 @@ export const CALE_CALENDAR = "/instrumente/termene.ics";
 export const META_EFACTURARE = {
   titlu: "e-Factura și arhiva facturilor, în România și în UE | 3S",
   descriere:
-    "RO e-Factura, SAF-T și calendarul e-facturării în UE, verificate la sursa oficială. 3S păstrează facturile emise și primite, căutabile, în Germania.",
+    "RO e-Factura, SAF-T și calendarul e-facturării în UE, verificate la sursa oficială. 3S păstrează facturile emise și primite, căutabile, în UE.",
 };
 
 export const FIR_EFACTURARE = [
@@ -40,7 +40,7 @@ export const MACHETA_DRUM = {
   canale: ["Peppol", "Storecove", "E-mail", "WhatsApp", "Încărcare"],
   arhiva: "Arhiva 3S",
   ani: "2026 → 2034",
-  insigne: ["AES-256", "Germania", "Jurnal"],
+  insigne: ["AES-256", "UE, Frankfurt", "Jurnal"],
 };
 
 // Rol: fraza-ancora, o idee, 3 randuri centrate.
@@ -110,7 +110,7 @@ export const EMITEREA = {
     "RO e-Factura nu ține loc de arhivă: potrivit ghidului ANAF din 2023, fișierele se descarcă direct 60 de zile, apoi se cer la ANAF. În multe firme, copiile ajung pe mai multe calculatoare, în atașamente trimise mai departe și în foldere cu nume diferite. Unele se pierd, altele se dublează, iar la control nimeni nu mai știe care e originalul. Iar când omul care le-a descărcat pleacă din firmă, dosarul lui poate pleca odată cu el, rămas pe un laptop pe care nu-l mai deschide nimeni.",
   ],
   rezolvare:
-    "În 3S, fiecare factură intră în arhiva firmei cu originalul neschimbat, criptată AES-256 pe servere Amazon din Germania și transmisă doar prin TLS 1.2 sau mai nou. Regula de păstrare se aplică pe categorie, ștergerea de la final lasă evidență, iar fiecare deschidere rămâne în jurnal, cu numele și ora.",
+    "În 3S, fiecare factură intră în arhiva firmei cu originalul neschimbat, criptată AES-256 pe servere Amazon din UE și transmisă doar prin TLS 1.2 sau mai nou. Regula de păstrare se aplică pe categorie, ștergerea de la final lasă evidență, iar fiecare deschidere rămâne în jurnal, cu numele și ora.",
   legatura: { text: "Cum păstrează 3S fișierele", href: "/securitate", ruta: "/securitate" } satisfies Legatura,
 };
 

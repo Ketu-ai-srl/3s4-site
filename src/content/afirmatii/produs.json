@@ -10,16 +10,16 @@
   },
   {
     "id": "produs-gazduire-amazon-germania",
-    "text": "Platforma 3S e găzduită de Amazon, în Germania, într-o singură regiune a Uniunii Europene, iar fișierele păstrate de 3S stau acolo",
+    "text": "Platforma 3S e găzduită de Amazon, în Uniunea Europeană, cu regiunea principală Frankfurt, iar fișierele păstrate de 3S stau acolo",
     "unde": "src/content/produs/platforma.ts, src/content/produs/securitate.ts, src/content/produs/integrari.ts, src/content/rute.ts",
     "stare": "confirmat",
-    "sursa": "declarația owner-ului, decizia D4c din planul valului S4: găzduire Amazon, Germania, o singură regiune (nu două regiuni); planul valului, §6.2: platforma 3S = Amazon, Germania, o regiune UE",
-    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
-    "data": "2026-09-24"
+    "sursa": "decizia 42 a owner-ului (01.10.2026): găzduirea platformei se scrie „în UE, regiunea principală Frankfurt”, în locul formulării din decizia D4c (Germania, o singură regiune); fișa P-14 din codul platformei (A-08, A-13): fișierele, baza de date, OCR-ul și e-mailul în regiunea Frankfurt, copia de siguranță și modelele în alte regiuni din UE; confirmată de furnizorul platformei la punctul 3 al întrebărilor tehnice (02.10.2026)",
+    "confirmat_de": "owner-ul proiectului 3S și furnizorul platformei, 2026-10-02",
+    "data": "2026-10-02"
   },
   {
     "id": "produs-criptare-aes-256-tls",
-    "text": "Fișierele păstrate de 3S sunt criptate AES-256 la stocare, pe serverele din Germania, și circulă doar prin conexiuni TLS 1.2 sau mai noi între dispozitivul clientului și serverele 3S, deci pe o rețea Wi-Fi publică cine ascultă rețeaua vede doar date criptate",
+    "text": "Fișierele păstrate de 3S sunt criptate AES-256 la stocare, pe serverele din Uniunea Europeană, și circulă doar prin conexiuni TLS 1.2 sau mai noi între dispozitivul clientului și serverele 3S, deci pe o rețea Wi-Fi publică cine ascultă rețeaua vede doar date criptate",
     "unde": "src/content/produs/platforma.ts, src/content/produs/securitate.ts",
     "stare": "neconfirmat",
     "sursa": "de confirmat: varianta aleasă în decizia D4c a planului valului S4; configurarea reală o confirmă dezvoltatorul platformei",

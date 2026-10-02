@@ -238,7 +238,7 @@ export const COMPARATIE_DRIVE = {
   stocare: {
     // Rol: capul diagramei; h2 si paragraful pe 1 rand la 1440 si pe 2 la 390 [fisa].
     titlu: "Unde pot sta fișierele cu care lucrează 3S",
-    text: "3S lucrează pe un bucket S3, pe Google Drive sau pe stocarea 3S din Germania.",
+    text: "3S lucrează pe un bucket S3, pe Google Drive sau pe stocarea 3S din UE.",
     // Sub-titlul primului card: 1 rand la 1440, 2 la 390 (card de 92 px); celelalte, 1 rand [fisa].
     optiuni: [
       {
@@ -247,7 +247,7 @@ export const COMPARATIE_DRIVE = {
         sub: "În contul Amazon al firmei sau la alt furnizor compatibil S3",
       },
       { iconita: "cloud", titlu: "Google Drive, cont de firmă", sub: "Legat prin contul Google Workspace" },
-      { iconita: "database", titlu: "Stocarea 3S", sub: "Pe serverele Amazon din Germania" },
+      { iconita: "database", titlu: "Stocarea 3S", sub: "Pe serverele Amazon din UE" },
     ] as { iconita: "server" | "cloud" | "database"; titlu: string; sub: string }[],
     nod: "3S",
     // Eticheta accesibila a diagramei (liniile sunt decorative).
@@ -489,15 +489,15 @@ export const COMPARATIE_STOCARE = {
   fir: [
     { text: "Acasă", cale: "/" },
     // Rol: numele paginii, 5 cuvinte [fisa].
-    { text: "În ce țară stau actele", cale: CALE_COMPARATIE_STOCARE },
+    { text: "Unde stau actele", cale: CALE_COMPARATIE_STOCARE },
   ],
   erou: {
     // Rol: intrebarea paginii, care numeste cele trei variante; 3 randuri la 1440 si 4 la 390 [fisa].
-    // Aici intrebarea e despre tara in care stau actele; lungimea e potrivita pe randuri, masurat.
-    titlu: "În ce țară și pe ce servere stau actele firmei în 3S, într-un bucket S3 propriu sau în Google Drive?",
+    // Aici intrebarea e despre locul in care stau actele; lungimea e potrivita pe randuri, masurat.
+    titlu: "Unde și pe ce servere stau actele firmei în 3S, într-un bucket S3 propriu sau în Google Drive?",
     // Rol: raspunsul pentru 3S si ce urmeaza pe pagina; 2 randuri la 1440, 4 la 390.
     subtitlu:
-      "În 3S, actele stau pe serverele Amazon din Germania, într-o singură regiune UE. Mai jos, fiecare variantă pusă lângă celelalte, cu sursa fiecărui marcaj.",
+      "În 3S, actele stau pe serverele Amazon din UE, cu regiunea principală Frankfurt. Mai jos, fiecare variantă pusă lângă celelalte, cu sursa fiecărui marcaj.",
   },
   // Randurile cardurilor, masurate la 390 (textul are 308 px si la 1440, deci aceleasi randuri):
   // descriere 2 / 1 / 2, verdict 2 / 2 / 2, lista 2+2+2+2 / 3+2+3 / 3+2+2, adica 409 / 378 / 378
@@ -506,7 +506,7 @@ export const COMPARATIE_STOCARE = {
     {
       titlu: "3S",
       descriere: "Arhiva firmei, cu registrul și termenele fiecărui act.",
-      verdict: "Stă în Germania, criptată AES-256 pe disc și transmisă prin TLS.",
+      verdict: "Stă în UE, criptată AES-256 pe disc și transmisă prin TLS.",
       noi: true,
       elemente: [
         "Fiecare act intră în registru, cu termenul legal calculat după tipul lui",
@@ -641,7 +641,7 @@ export const COMPARATIE_STOCARE = {
       jetoane: ["Registru", "Termene", "Căutare cu sursă", "WhatsApp"],
     },
     optiuni: [
-      { cod: "nor", buton: "Stocarea 3S", titlu: "Stocarea 3S", adresa: "AWS · Germania" },
+      { cod: "nor", buton: "Stocarea 3S", titlu: "Stocarea 3S", adresa: "AWS · UE, Frankfurt" },
       {
         cod: "s3",
         buton: "Bucket-ul S3 al firmei",
@@ -649,7 +649,7 @@ export const COMPARATIE_STOCARE = {
         adresa: "s3://exemplu-arhiva-01",
       },
     ] satisfies OptiuneStocare[],
-    nota: "Stocarea 3S e în Germania; un bucket propriu stă în regiunea aleasă de firmă.",
+    nota: "Stocarea 3S e în UE, cu regiunea principală Frankfurt; un bucket propriu stă în regiunea aleasă de firmă.",
   },
   caseta: {
     // Rol: blocul pentru cine are deja stocare S3; titlul pe 1 rand, paragraful pe 3 randuri la
@@ -660,7 +660,7 @@ export const COMPARATIE_STOCARE = {
   cta: {
     titlu: "Încearcă arhiva pe actele firmei",
     // Rol: paragraful cutiei, 1 rand la 1440 si 3 la 390 (cutie de 368) [fisa].
-    text: "Contul costă 0 RON azi. Leagă bucketul firmei sau urcă primele acte în stocarea 3S din Germania.",
+    text: "Contul costă 0 RON azi. Leagă bucketul firmei sau urcă primele acte în stocarea 3S din UE.",
     buton: BUTON_CONT,
   },
 };

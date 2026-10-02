@@ -6,7 +6,9 @@
 // nord stinse in gradient. Generatorul nu sta in depozit (e un script de o singura folosire); valorile
 // lui sunt in comentariul din fisierul SVG. Nu e conturul referintei vizuale.
 //
-// O SINGURA REGIUNE, in Germania, fara oras (decizia D4c: gazduire Amazon, Germania, o regiune).
+// UN SINGUR REPER, la Frankfurt, regiunea principala (decizia 42: gazduire Amazon in UE, regiunea
+// principala Frankfurt, in locul formularii D4c "Germania, o regiune"). Pozitia vine din
+// `src/content/produs/securitate.ts`, calculata din proiectia hartii.
 // Reperul si eticheta sunt HTML asezat peste imagine, in procente din cadru, ca eticheta sa ramana
 // la 11 px si lizibila la orice latime; la referinta textul din SVG ajungea la ~4 px la 390.
 // Imaginea e decor (text alternativ gol, `role="presentation"`); ce arata harta spune legenda.

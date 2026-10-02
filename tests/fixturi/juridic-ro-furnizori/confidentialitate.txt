@@ -26,7 +26,7 @@
 026	Interesele legitime
 027	Invocăm interesul legitim numai pentru jurnalele serverului: ca site-ul să funcționeze, să poată fi depanat și să fie apărat de atacuri. Datele din jurnale nu se folosesc pentru publicitate și nu se combină cu alte surse.
 028	Cine primește datele
-029	Găzduirea platformei 3S: Amazon Web Services (AWS). Găzduiește contul, fișierele încărcate și arhiva digitală, într-o singură regiune din Germania. Datele stau în Germania.
+029	Găzduirea platformei 3S: Amazon Web Services (AWS). Găzduiește contul, fișierele încărcate și arhiva digitală, cu regiunea principală Frankfurt. Datele stau în Uniunea Europeană.
 030	Google Analytics 4: Google Ireland Limited (Irlanda), cu prelucrare și de către Google LLC (Statele Unite). Măsoară vizitele și paginile citite pe site, ca să știm ce e util. Pornește numai după acordul dumneavoastră pentru categoria „Statistică”. Datele stau în Statele Unite ale Americii.
 031	Datele se comunică autorităților publice numai când legea o cere. Nu vindem date personale și nu le cedăm nimănui pentru publicitate.
 032	Transferuri în afara Spațiului Economic European
@@ -57,4 +57,4 @@
 057	Decizii automate
 058	Site-ul nu ia decizii bazate exclusiv pe prelucrare automată și nu creează profiluri care să producă efecte juridice asupra dumneavoastră sau să vă afecteze în mod similar (GDPR art. 22).
 059	Amprenta textului (SHA-256)
-060	af4e1d77a9b0816e…
+060	aa727798d58c97c4…

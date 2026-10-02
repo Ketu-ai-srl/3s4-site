@@ -3,11 +3,11 @@
   "raspuns_autonom": {
     "/platforma": {
       "intrebare": "Ce face platforma 3S cu actele unei firme?",
-      "entitati": ["3S", "Germania", "WhatsApp", "API"]
+      "entitati": ["3S", "Uniunea Europeană", "WhatsApp", "API"]
     },
     "/securitate": {
       "intrebare": "Unde stau și cum sunt protejate actele firmei în 3S?",
-      "entitati": ["3S", "Germania", "AES-256", "TLS 1.2"]
+      "entitati": ["3S", "Uniunea Europeană", "Frankfurt", "AES-256", "TLS 1.2"]
     },
     "/integrari": {
       "intrebare": "De ce programe se leagă 3S?",

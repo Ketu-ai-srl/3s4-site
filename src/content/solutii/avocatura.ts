@@ -12,7 +12,7 @@ export const AVOCATURA: Sector = {
   meta: {
     titlu: "Arhiva cabinetului de avocatură, cu pagina citată | 3S",
     descriere:
-      "Dosarele cauzelor, cu actele primite și data sosirii lor, găsite după sens și cu pagina citată. Fișierele stau la Amazon, în Germania.",
+      "Dosarele cauzelor, cu actele primite și data sosirii lor, găsite după sens și cu pagina citată. Fișierele stau la Amazon, în UE.",
   },
   erou: {
     // Rol: h1, un rand. Lungime: 40.
@@ -123,7 +123,7 @@ export const AVOCATURA: Sector = {
       // Lungimi: intrebarea 58, raspunsul 367. O intrebare a sectorului, pe acces si gazduire.
       intrebare: "Cine din cabinet vede dosarele unui client?",
       raspuns:
-        "Accesul îl stabilești tu, pe persoană și pe dosar: un avocat vede cauzele la care lucrează, iar un coleg nou vede doar ce îi deschizi. Fiecare document deschis se trece în jurnal, cu numele și ora. Fișierele stau pe serverele Amazon din Germania, într-o singură regiune a Uniunii Europene.",
+        "Accesul îl stabilești tu, pe persoană și pe dosar: un avocat vede cauzele la care lucrează, iar un coleg nou vede doar ce îi deschizi. Fiecare document deschis se trece în jurnal, cu numele și ora. Fișierele stau pe serverele Amazon din Uniunea Europeană, cu regiunea principală Frankfurt.",
     },
   ],
 };

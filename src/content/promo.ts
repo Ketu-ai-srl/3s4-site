@@ -8,7 +8,7 @@
 //
 // CIFRELE (plan §6.3, D5): nicio cifra de tractiune, client sau recenzie. Contoarele si cardul de cifre
 // poarta numai fapte din registru: pretul de azi (0 RON), integrarile numarate din afirmatia confirmata
-// (10, cu WhatsApp), regiunea de gazduire (una, Germania), criptarea (AES-256, TLS 1.2+).
+// (10, cu WhatsApp), gazduirea (in UE, regiunea principala Frankfurt; decizia 42), criptarea (AES-256, TLS 1.2+).
 //
 // TESTIMONIALUL pastreaza forma (ghilimeaua, fraza italica, atribuirea), fara persoana si fara citat: e
 // declaratia marcii 3S despre produs (D4b). Nu se atribuie firmei-mame: decizia D10 (25.09) scoate numele
@@ -31,7 +31,7 @@ export const META_PROMO = {
 export const META_SCANARE = {
   titlu: "Bonuri scanate cu telefonul, direct în dosar | 3S",
   descriere:
-    "Bonurile fotografiate cu aplicația 3S intră în arhiva firmei, criptate, pe servere din Germania, și se găsesc apoi întrebând pe web sau pe WhatsApp.",
+    "Bonurile fotografiate cu aplicația 3S intră în arhiva firmei, criptate, pe servere din UE, și se găsesc apoi întrebând pe web sau pe WhatsApp.",
 } as const;
 
 export const FIR_PROMO = [
@@ -185,8 +185,8 @@ export const CONTOARE: Contor[] = [
   // Rol: contorul care numara. Integrarile din afirmatia acasa-integrari-si-whatsapp: Gmail, Outlook,
   // Google Workspace, Microsoft 365, SAP Business One, Peppol, Storecove, Claude, ChatGPT si WhatsApp.
   { valoare: "10", eticheta: "integrări, cu tot cu WhatsApp", numara: 10 },
-  // Rol: al treilea contor, cu eticheta pe 2 randuri. Afirmatia acasa-gazduire-amazon-germania.
-  { valoare: "1 regiune", eticheta: "în UE: serverele Amazon din Germania" },
+  // Rol: al treilea contor, cu eticheta pe 2 randuri. Afirmatia promo-gazduire-germania (decizia 42).
+  { valoare: "Frankfurt", eticheta: "regiunea principală, pe serverele Amazon din UE" },
 ];
 
 export type TextCta = { titlu: TitluCuAccent; paragraf: string; buton: string; nota: string };
@@ -213,7 +213,7 @@ export const EROU_SCANARE = {
   } satisfies TitluCuAccent,
   // Rol: paragraful mare, 5 randuri; primul paragraf al paginii, deci raspunsul ei (30-80 de cuvinte).
   paragraf:
-    "Bonul fotografiat cu aplicația 3S intră în arhiva comună a firmei, criptat, pe serverele Amazon din Germania. Oricine din echipă îl găsește apoi întrebând pe web sau pe WhatsApp, iar răspunsul vine cu documentul, nu cu o listă de fișiere de răsfoit.",
+    "Bonul fotografiat cu aplicația 3S intră în arhiva comună a firmei, criptat, pe serverele Amazon din UE. Oricine din echipă îl găsește apoi întrebând pe web sau pe WhatsApp, iar răspunsul vine cu documentul, nu cu o listă de fișiere de răsfoit.",
   indiciu: "Derulează",
 } as const;
 
@@ -315,7 +315,7 @@ export const CARD_CIFRE = {
   titlu: "Arhiva lunii se face cât lucrezi",
   // Rol: paragraful cardului, 4 randuri.
   paragraf:
-    "Fișierele stau criptate pe serverele Amazon din Germania, într-o singură regiune a UE. Le găsești apoi după furnizor sau după lună, iar toate pachetele, cu aplicația de telefon cu tot, costă azi 0 RON.",
+    "Fișierele stau criptate pe serverele Amazon din UE, cu regiunea principală Frankfurt. Le găsești apoi după furnizor sau după lună, iar toate pachetele, cu aplicația de telefon cu tot, costă azi 0 RON.",
 } as const;
 
 export const DECLARATIE_SCANARE = {

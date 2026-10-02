@@ -223,7 +223,9 @@ describe('continutul', () => {
     const texte = registru.map((r) => r.text).join(' | ')
     expect(texte).toContain('0 RON')
     expect(texte).toContain('10 integrări')
-    expect(texte).toContain('Germania')
+    // Gazduirea pe decizia 42: regiunea principala Frankfurt, fara formularea veche (Germania).
+    expect(texte).toContain('Frankfurt')
+    expect(texte).not.toContain('Germania')
     expect(texte).toContain('AES-256')
     expect(PROMO.CONTOARE.find((c) => c.numara !== undefined)?.numara).toBe(10)
   })

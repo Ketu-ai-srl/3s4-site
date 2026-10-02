@@ -28,12 +28,12 @@
   },
   {
     "id": "promo-gazduire-germania",
-    "text": "Fișierele stau într-o singură regiune a Uniunii Europene, pe serverele Amazon din Germania",
+    "text": "Fișierele stau în Uniunea Europeană, pe serverele Amazon, cu regiunea principală Frankfurt",
     "unde": "src/content/promo.ts",
     "stare": "confirmat",
-    "sursa": "aceeași confirmare ca acasa-gazduire-amazon-germania: decizia D4c din planul valului S4 (găzduire Amazon, Germania, o singură regiune)",
-    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
-    "data": "2026-09-24"
+    "sursa": "decizia 42 a owner-ului (01.10.2026): găzduirea platformei se scrie „în UE, regiunea principală Frankfurt”, în locul formulării din decizia D4c (Germania, o singură regiune); fișa P-14 din codul platformei (A-08, A-13): fișierele, baza de date, OCR-ul și e-mailul în regiunea Frankfurt, copia de siguranță și modelele în alte regiuni din UE; confirmată de furnizorul platformei la punctul 3 al întrebărilor tehnice (02.10.2026)",
+    "confirmat_de": "owner-ul proiectului 3S și furnizorul platformei, 2026-10-02",
+    "data": "2026-10-02"
   },
   {
     "id": "promo-criptare-aes-256-tls",

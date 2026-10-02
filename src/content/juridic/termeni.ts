@@ -339,7 +339,7 @@ export function termeni(operator: Operator): DocumentJuridic {
             paragrafe: ["Furnizorul aplică măsuri tehnice și organizatorice potrivite riscului (art. 32 din regulament), între care:"],
             lista: {
               elemente: [
-                "**Găzduire în Uniunea Europeană:** platforma rulează la Amazon Web Services, într-o singură regiune din Germania.",
+                "**Găzduire în Uniunea Europeană:** platforma rulează la Amazon Web Services, cu regiunea principală Frankfurt.",
                 "**Criptare:** fișierele sunt criptate AES-256 pe disc și circulă numai prin conexiuni TLS 1.2 sau mai noi.",
                 "**Arhive despărțite:** fiecare client își vede numai arhiva lui, iar fiecare utilizator are în cont rolul dat de client.",
                 "**Confidențialitate:** cei care lucrează cu datele s-au obligat să le păstreze secrete.",

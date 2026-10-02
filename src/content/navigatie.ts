@@ -917,7 +917,7 @@ export const SUBSOL: ContractSubsol = {
   // Banda de 5 insigne: numai fapte din registrul de afirmatii (plan D4c, D5). Lungimile la
   // referinta: 12, 24, 16, 26, 18 [numarat]. Textul urmeaza iconita pastrata din contract.
   insigne: [
-    { text: "Germania, UE", iconita: "cloud" },
+    { text: "UE, Frankfurt", iconita: "cloud" },
     { text: "Fișiere criptate cu AES-256", iconita: "lock" },
     { text: "Conexiuni TLS 1.2+", iconita: "shield-check" },
     { text: "Răspunsuri cu sursa citată", iconita: "file-check" },
