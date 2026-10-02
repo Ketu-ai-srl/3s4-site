@@ -39,6 +39,7 @@ import { ANCORA_ANEXA } from '../src/content/juridic/termeni'
 import {
   dataInCuvinte,
   fragmenteInLinie,
+  legaturiInLinie,
   textIntreg,
   textPentruAmprenta,
   textSimplu,
@@ -273,8 +274,10 @@ describe('documentele juridice', () => {
     const navigatie = new Set(toateLegaturileNavigatiei().map((l) => l.ruta).filter((r): r is string => r !== null))
     const gasite: string[] = []
     const verifica = (sir: string, slug: string) => {
-      for (const f of fragmenteInLinie(sir)) {
-        if (f.fel !== 'legatura' || !f.adresa.startsWith('/')) continue
+      // Toate legaturile, inclusiv cele dintr-un accent (felia 94): iterata numai la primul nivel, bucla
+      // lasa neverificata o legatura moarta pusa intr-un accent.
+      for (const f of legaturiInLinie(sir)) {
+        if (!f.adresa.startsWith('/')) continue
         const ruta = f.adresa.split('#')[0]
         gasite.push(ruta)
         expect(juridice.has(ruta) || navigatie.has(ruta), slug + ': ' + f.adresa).toBe(true)

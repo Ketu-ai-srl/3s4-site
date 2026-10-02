@@ -17,7 +17,7 @@
 // "Dovada de gata" pct. 1 si 6 din arhitectura continutului EN; proba `tests/continut-en.test.ts` o
 // ruleaza pe fiecare modul.
 
-import type { DocumentJuridic } from "@/content/juridic/tipuri";
+import { textSimplu, type DocumentJuridic } from "@/content/juridic/tipuri";
 
 // ---------------------------------------------------------------------------------------------
 // Corpul comun
@@ -126,11 +126,13 @@ export type PaginaContinut = {
 // ---------------------------------------------------------------------------------------------
 
 const FORMA_CHEIE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const TIPAR_IN_LINIE = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
 
-/** Textul unui sir fara marcajul in linie: ce citeste omul. */
+/**
+ * Textul unui sir fara marcajul in linie: ce citeste omul. Refoloseste `textSimplu` (felia 94), deci
+ * aceeasi regula ca pagina, inclusiv legatura dintr-un accent; nicio copie a tiparului aici.
+ */
 function farMarcaj(sir: string): string {
-  return sir.replace(TIPAR_IN_LINIE, (_m, accent: string | undefined, text: string | undefined) => accent ?? text ?? "");
+  return textSimplu(sir);
 }
 
 /** Numarul de cuvinte al unui sir, fara marcaj. */

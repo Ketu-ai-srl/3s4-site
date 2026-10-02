@@ -98,12 +98,34 @@ export type DocumentJuridic = {
 // Marcajul in linie
 // ---------------------------------------------------------------------------------------------
 
+// LEGATURA IN ACCENT (felia 94): un accent poate contine o legatura intreaga (stelutele in afara,
+// parantezele inauntru) - forma titlului de card care e legatura. Accentul isi desface interiorul pe UN
+// singur nivel: numai text si legaturi, fara accent in accent. `text` ramane textul simplu al intregului
+// accent, deci `textSimplu` si orice cititor al lui `f.text` raman neschimbati; `fragmente` poarta
+// interiorul pentru pagina. Forma inversa (stelutele in textul legaturii) NU e suportata: textul
+// legaturii ar ramane cu stelute. E interzisa in sursa (detectorul din tests/marcaj-in-linie.test.ts).
+
 export type FragmentInLinie =
   | { fel: "text"; text: string }
-  | { fel: "accent"; text: string }
+  | { fel: "accent"; text: string; fragmente: readonly FragmentInLinie[] }
   | { fel: "legatura"; text: string; adresa: string };
 
 const TIPAR_IN_LINIE = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
+const TIPAR_LEGATURA = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+/** Interiorul unui accent: text si legaturi, in ordinea lor (fara accent in accent). */
+function fragmenteAccent(sir: string): FragmentInLinie[] {
+  const fragmente: FragmentInLinie[] = [];
+  let pozitie = 0;
+  for (const m of sir.matchAll(TIPAR_LEGATURA)) {
+    const inceput = m.index ?? 0;
+    if (inceput > pozitie) fragmente.push({ fel: "text", text: sir.slice(pozitie, inceput) });
+    fragmente.push({ fel: "legatura", text: m[1], adresa: m[2] });
+    pozitie = inceput + m[0].length;
+  }
+  if (pozitie < sir.length) fragmente.push({ fel: "text", text: sir.slice(pozitie) });
+  return fragmente;
+}
 
 /** Desface un sir in text simplu, accente si legaturi, in ordinea lor. */
 export function fragmenteInLinie(sir: string): FragmentInLinie[] {
@@ -112,12 +134,27 @@ export function fragmenteInLinie(sir: string): FragmentInLinie[] {
   for (const m of sir.matchAll(TIPAR_IN_LINIE)) {
     const inceput = m.index ?? 0;
     if (inceput > pozitie) fragmente.push({ fel: "text", text: sir.slice(pozitie, inceput) });
-    if (m[1] !== undefined) fragmente.push({ fel: "accent", text: m[1] });
-    else fragmente.push({ fel: "legatura", text: m[2], adresa: m[3] });
+    if (m[1] !== undefined) {
+      const interior = fragmenteAccent(m[1]);
+      fragmente.push({ fel: "accent", text: interior.map((f) => f.text).join(""), fragmente: interior });
+    } else fragmente.push({ fel: "legatura", text: m[2], adresa: m[3] });
     pozitie = inceput + m[0].length;
   }
   if (pozitie < sir.length) fragmente.push({ fel: "text", text: sir.slice(pozitie) });
   return fragmente;
+}
+
+/** Toate legaturile unui sir, inclusiv cele din accente, in ordinea lor. */
+export function legaturiInLinie(sir: string): { text: string; adresa: string }[] {
+  const legaturi: { text: string; adresa: string }[] = [];
+  const aduna = (fragmente: readonly FragmentInLinie[]) => {
+    for (const f of fragmente) {
+      if (f.fel === "legatura") legaturi.push({ text: f.text, adresa: f.adresa });
+      else if (f.fel === "accent") aduna(f.fragmente);
+    }
+  };
+  aduna(fragmenteInLinie(sir));
+  return legaturi;
 }
 
 /** Sirul fara marcaj: ce citeste omul pe pagina. */
