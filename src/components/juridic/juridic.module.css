@@ -369,3 +369,19 @@ a.grupaLegatura:hover {
     padding: 88px 0 56px;
   }
 }
+
+/* --- Preambulul si subpunctele documentelor md (felia 95) -------------------------------------- */
+/* Preambulul (blocul temporar, rezumatul "pe scurt") sta intre introducere si prima sectiune: o linie
+   ardezie-2 il desparte de articole. Subpunctele stau in elementul lor de lista, cu buline; selectorul
+   `li > ul` trece peste marginea de jos a listelor din `Proza`, fara sa atinga primitiva. */
+
+.preambul {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-ardezie-2);
+}
+
+li > ul.subelemente {
+  margin: 8px 0 0;
+  list-style: disc;
+}

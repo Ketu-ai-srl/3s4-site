@@ -12,10 +12,19 @@
 // nu `DocumentJuridic`. Orice document juridic e atribuibil acelui corp (garantie verificata de
 // compilator acolo), deci paginile juridice raman neschimbate, iar paginile de continut EN folosesc
 // acelasi randator prin `CorpPagina`. Un bloc fara jurisdictie (`null` sau lipsa) nu primeste `div`.
+//
+// PREAMBULUL SI SUBELEMENTELE (felia 95): documentele familiei `md` au blocuri intre introducere si
+// prima sectiune (`preambul`: blocul temporar despre inregistrarea firmei, rezumatul "pe scurt") si
+// subpuncte sub unele elemente de lista (`lista.subelemente`). Modelul comun le lasa deoparte (antetul
+// lui `model/tipuri.ts`), deci componenta isi declara mai jos tipul de intrare: corpul comun, largit pe
+// toata adancimea cu exact aceste doua campuri, optionale. Ordinea e cea din `textIntreg` si din
+// `textPentruAmprenta`: introducerea, preambulul, sectiunile; subpunctele imediat dupa elementul lor
+// (`textBloc`), ca lista cu buline in interiorul lui. Un document fara ele randeaza ca inainte, fara
+// niciun element gol.
 
 import Proza from "@/components/primitive/Proza";
 import TabelDate from "@/components/primitive/TabelDate";
-import type { BlocComun, CelulaComuna, CorpComun, SectiuneComuna } from "@/content/model/tipuri";
+import type { BlocComun, CelulaComuna, CorpComun, ListaComuna, SectiuneComuna } from "@/content/model/tipuri";
 import TextInLinie from "./TextInLinie";
 import s from "./juridic.module.css";
 
@@ -25,6 +34,38 @@ export type MarcajSectiuni = {
   /** Cheile care primesc atributul: exact lista portii. */
   chei: readonly string[];
 };
+
+/** Lista modelului comun, cu subpunctele de sub elementul cu indexul dat (familia `md`). */
+type ListaDocument = ListaComuna & { subelemente?: Readonly<Record<number, readonly string[]>> };
+type BlocDocument = Omit<BlocComun, "lista"> & { lista?: ListaDocument };
+type SectiuneDocument = Omit<SectiuneComuna, "blocuri"> & { blocuri: readonly BlocDocument[] };
+
+/**
+ * Intrarea componentei: corpul comun plus preambulul si subelementele. Atat `DocumentJuridic`, cat si
+ * corpul paginilor de continut sunt atribuibile ei (asertiune de tip in `tests/juridic-md.test.ts`).
+ */
+export type CorpDocumentIntrare = Omit<CorpComun, "sectiuni"> & {
+  sectiuni: readonly SectiuneDocument[];
+  /** Blocurile dintre introducere si prima sectiune; lipsa sau goala = nimic randat. */
+  preambul?: readonly BlocDocument[];
+};
+
+function Element({ text, subelemente }: { text: string; subelemente: readonly string[] | undefined }) {
+  return (
+    <li>
+      <TextInLinie text={text} />
+      {subelemente && subelemente.length > 0 ? (
+        <ul className={s.subelemente}>
+          {subelemente.map((r, j) => (
+            <li key={j}>
+              <TextInLinie text={r} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </li>
+  );
+}
 
 function Celula({ celula }: { celula: CelulaComuna }) {
   if (typeof celula === "string") return <TextInLinie text={celula} />;
@@ -40,7 +81,7 @@ function Celula({ celula }: { celula: CelulaComuna }) {
   );
 }
 
-function Bloc({ bloc }: { bloc: BlocComun }) {
+function Bloc({ bloc }: { bloc: BlocDocument }) {
   const continut = (
     <>
       {bloc.eticheta ? (
@@ -57,17 +98,13 @@ function Bloc({ bloc }: { bloc: BlocComun }) {
         bloc.lista.numerotata ? (
           <ol>
             {bloc.lista.elemente.map((e, i) => (
-              <li key={i}>
-                <TextInLinie text={e} />
-              </li>
+              <Element key={i} text={e} subelemente={bloc.lista?.subelemente?.[i]} />
             ))}
           </ol>
         ) : (
           <ul>
             {bloc.lista.elemente.map((e, i) => (
-              <li key={i}>
-                <TextInLinie text={e} />
-              </li>
+              <Element key={i} text={e} subelemente={bloc.lista?.subelemente?.[i]} />
             ))}
           </ul>
         )
@@ -90,7 +127,7 @@ function Bloc({ bloc }: { bloc: BlocComun }) {
   return bloc.jurisdictie == null ? continut : <div data-jurisdictie={bloc.jurisdictie}>{continut}</div>;
 }
 
-function Sectiune({ sectiune, marcaj }: { sectiune: SectiuneComuna; marcaj?: MarcajSectiuni }) {
+function Sectiune({ sectiune, marcaj }: { sectiune: SectiuneDocument; marcaj?: MarcajSectiuni }) {
   const Titlu = sectiune.nivel === 3 ? "h3" : "h2";
   const atribute: Record<string, string> =
     marcaj && marcaj.chei.includes(sectiune.cheie)
@@ -111,13 +148,21 @@ function Sectiune({ sectiune, marcaj }: { sectiune: SectiuneComuna; marcaj?: Mar
   );
 }
 
-export default function CorpDocument({ document, marcaj }: { document: CorpComun; marcaj?: MarcajSectiuni }) {
+export default function CorpDocument({ document, marcaj }: { document: CorpDocumentIntrare; marcaj?: MarcajSectiuni }) {
+  const preambul = document.preambul ?? [];
   return (
     <Proza>
       {document.introducere === "" ? null : (
         <p>
           <TextInLinie text={document.introducere} />
         </p>
+      )}
+      {preambul.length === 0 ? null : (
+        <div className={s.preambul} data-preambul="">
+          {preambul.map((b, i) => (
+            <Bloc key={i} bloc={b} />
+          ))}
+        </div>
       )}
       {document.sectiuni.map((sectiune) => (
         <Sectiune key={sectiune.cheie} sectiune={sectiune} marcaj={marcaj} />

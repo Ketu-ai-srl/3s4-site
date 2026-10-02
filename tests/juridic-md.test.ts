@@ -1,5 +1,9 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import { createElement, type ComponentType } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import modelD2 from '../config/model-d2.json'
 import rute from '../config/juridic-rute.json'
@@ -14,7 +18,9 @@ import { valoareCamp } from '../src/content/juridic/md/context'
 import { CHEI_MD, MARCAJ_SECTIUNI_MD, REGISTRU_MD, cheiPublicate, tintaLegatura, type CheieMd } from '../src/content/juridic/md/registru'
 import { META_DOCUMENTE_MD, linieVersiuneMd } from '../src/content/juridic/pagini'
 import { ruteJuridice, ruteJuridiceMd } from '../src/content/juridic/publicare'
-import { textIntreg, textSimplu, type BlocJuridic, type DocumentJuridic, type LimbaJuridica } from '../src/content/juridic/tipuri'
+import { textIntreg, textPentruAmprenta, textSimplu, type BlocJuridic, type DocumentJuridic, type LimbaJuridica } from '../src/content/juridic/tipuri'
+import CorpDocument, { type CorpDocumentIntrare } from '../src/components/juridic/CorpDocument'
+import type { PaginaContinut } from '../src/content/model/tipuri'
 import type { Operator } from '../src/lib/operator'
 
 /**
@@ -442,5 +448,154 @@ describe('registrul si rutele familiei md', () => {
     }
     verifica('confidentialitate', CHEI_ART13)
     verifica('cookie-uri', CHEI_L284)
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// H. Preambulul si subelementele pe pagina (felia 95)
+// ---------------------------------------------------------------------------------------------
+
+/** Cere compilatorului ca `A` sa fie atribuibil lui `B`; altfel typecheck-ul pica aici. */
+type Atribuibil<A extends B, B> = A extends B ? true : never
+
+describe('CorpDocument randeaza preambulul si subelementele documentelor md', () => {
+  type Randator = ComponentType<{ document: CorpDocumentIntrare }>
+
+  /** Textul randat, fara etichete si cu entitatile HTML ale lui React decodate: ce citeste omul. */
+  const textRandat = (html: string) =>
+    html
+      .replace(/<[^>]+>/g, '')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, '&')
+  const randeaza = (d: CorpDocumentIntrare, C: Randator = CorpDocument) => renderToStaticMarkup(createElement(C, { document: d }))
+
+  /** Sirurile unui bloc, cu marcaj, in ordinea din pagina (ca `textBloc`). */
+  const sirurileBlocului = (b: BlocJuridic) => [
+    ...(b.eticheta ? [b.eticheta] : []),
+    ...b.paragrafe,
+    ...(b.lista?.elemente ?? []).flatMap((e, i) => [e, ...(b.lista?.subelemente?.[i] ?? [])]),
+    ...(b.tabel ? [b.tabel.titlu, ...(b.tabel.antet ?? []), ...b.tabel.randuri.flat().flatMap((c) => (typeof c === 'string' ? [c] : [c.text, c.detaliu]))] : []),
+    ...(b.dupa ?? []),
+  ]
+  const subelementeDin = (d: DocumentJuridic) =>
+    [...(d.preambul ?? []), ...d.sectiuni.flatMap((x) => x.blocuri)].flatMap((b) => Object.values(b.lista?.subelemente ?? {}).flat())
+
+  /** Toate documentele md, la poarta C (cele 8 chei), in ambele limbi si in fiecare stare a masurarii. */
+  const toate = () =>
+    STARI.flatMap(({ nume, m, linkedin }) =>
+      (['ro', 'en'] as const).flatMap((limba) =>
+        [...(texteJuridice(operatorModel(), { limba, poarta: 'C', masurare: m, linkedin }) ?? [])].map(([cheie, d]) => ({ eticheta: cheie + '.' + limba + ' / ' + nume, d })),
+      ),
+    )
+
+  /** Corpul din amprenta: `textPentruAmprenta` fara titlu si fara linia versiunii (aici goala). */
+  function corpAmprenta(d: DocumentJuridic): string {
+    const tot = textPentruAmprenta(d, '')
+    const titlu = textSimplu(d.titlu).replace(/\s+/g, '')
+    if (!tot.startsWith(titlu)) throw new Error('amprenta nu incepe cu titlul')
+    return tot.slice(titlu.length)
+  }
+  const faraSpatii = (html: string) => textRandat(html).replace(/\s+/g, '')
+
+  /** Un document sintetic, asamblat la rulare: introducere, preambul cu o lista si o sectiune cu subelemente. */
+  function sintetic(): DocumentJuridic {
+    const cuv = (n: number) => ['Alfa', 'Beta', 'Gama', 'Delta', 'Epsilon', 'Zeta', 'Eta'][n] + ' ' + String(n * 13)
+    return {
+      titlu: 'Document ' + cuv(0),
+      introducere: 'Introducerea ' + cuv(1),
+      preambul: [{ jurisdictie: null, paragrafe: ['Preambulul ' + cuv(2)], lista: { elemente: ['Rezumat ' + cuv(3)] } }],
+      sectiuni: [
+        {
+          cheie: 's1',
+          titlu: 'Sectiunea ' + cuv(4),
+          blocuri: [{ jurisdictie: null, paragrafe: [], lista: { numerotata: true, elemente: ['Pasul ' + cuv(5)], subelemente: { 0: ['Subpunctul ' + cuv(6)] } } }],
+        },
+      ],
+    }
+  }
+
+  it('tipul de intrare primeste si DocumentJuridic, si corpul paginilor de continut (verificat de compilator)', () => {
+    const atribuibile: [Atribuibil<DocumentJuridic, CorpDocumentIntrare>, Atribuibil<{ introducere: string; sectiuni: PaginaContinut['sectiuni'] }, CorpDocumentIntrare>] = [true, true]
+    expect(atribuibile).toEqual([true, true])
+  })
+
+  it('fiecare sir din preambul si din subelemente apare in HTML-ul randat, pe fiecare document md', () => {
+    const lipsa: string[] = []
+    let cuPreambul = 0
+    let cuSubelemente = 0
+    let siruri = 0
+    for (const { eticheta, d } of toate()) {
+      const text = textRandat(randeaza(d))
+      const asteptate = [...(d.preambul ?? []).flatMap(sirurileBlocului), ...subelementeDin(d)].map(textSimplu)
+      if ((d.preambul ?? []).length > 0) cuPreambul++
+      if (subelementeDin(d).length > 0) cuSubelemente++
+      siruri += asteptate.length
+      const gasite = asteptate.filter((a) => text.includes(a))
+      if (gasite.length !== asteptate.length) lipsa.push(eticheta + ': ' + gasite.length + ' din ' + asteptate.length)
+    }
+    expect(lipsa).toEqual([])
+    // Controlul ca bucla a vazut campurile: 5 chei cu preambul si 1 cu subelemente, x 2 limbi x 4 stari.
+    expect(cuPreambul).toBe(5 * 2 * STARI.length)
+    expect(cuSubelemente).toBe(1 * 2 * STARI.length)
+    expect(siruri).toBeGreaterThan(cuPreambul)
+  })
+
+  it('martor POZITIV: preambulul si subpunctul unui document sintetic se randeaza; martor NEGATIV: fara preambul, niciun element gol', () => {
+    const d = sintetic()
+    const html = randeaza(d)
+    expect(html).toContain('data-preambul')
+    for (const a of [d.preambul?.[0].paragrafe[0], d.sectiuni[0].blocuri[0].lista?.subelemente?.[0][0]]) expect(textRandat(html)).toContain(a)
+    // Subpunctul sta IN elementul lui de lista, intr-o lista cu buline
+    expect(html).toMatch(/<li>Pasul [^<]*<ul class="[^"]*"><li>Subpunctul /)
+    const fara = { ...d, preambul: undefined, sectiuni: [{ ...d.sectiuni[0], blocuri: [{ jurisdictie: null, paragrafe: ['x'], lista: { elemente: ['y'] } }] }] }
+    const htmlFara = randeaza(fara)
+    expect(htmlFara).not.toContain('data-preambul')
+    expect(htmlFara).not.toMatch(/<ul[^>]*><\/ul>|<div[^>]*><\/div>/)
+    expect(randeaza({ ...fara, preambul: [] })).toBe(htmlFara)
+  })
+
+  it('ordinea: textul randat, fara spatii, e corpul din amprenta, pe fiecare document md', () => {
+    const diferite: string[] = []
+    let n = 0
+    for (const { eticheta, d } of toate()) {
+      n++
+      if (faraSpatii(randeaza(d)) !== corpAmprenta(d)) diferite.push(eticheta)
+    }
+    expect(diferite).toEqual([])
+    expect(n).toBe(8 * 2 * STARI.length)
+    // Martor POZITIV: documentul sintetic, cu introducere nevida, preambul si subelemente
+    expect(faraSpatii(randeaza(sintetic()))).toBe(corpAmprenta(sintetic()))
+  })
+
+  it('mutant: o copie a componentei cu preambulul inaintea introducerii inroseste proba ordinii', async () => {
+    const dosar = join(RADACINA, 'src', 'components', 'juridic')
+    const sursa = readFileSync(join(dosar, 'CorpDocument.tsx'), 'utf8')
+    const inceputIntro = sursa.indexOf('{document.introducere === ""')
+    const inceputPreambul = sursa.indexOf('{preambul.length === 0')
+    const inceputSectiuni = sursa.indexOf('{document.sectiuni.map')
+    expect([inceputIntro, inceputPreambul, inceputSectiuni].every((i) => i > 0) && inceputIntro < inceputPreambul && inceputPreambul < inceputSectiuni).toBe(true)
+    const intro = sursa.slice(inceputIntro, inceputPreambul)
+    const preambul = sursa.slice(inceputPreambul, inceputSectiuni)
+    const mutant = (sursa.slice(0, inceputIntro) + preambul + intro + sursa.slice(inceputSectiuni))
+      .replace('from "./TextInLinie"', 'from ' + JSON.stringify(pathToFileURL(join(dosar, 'TextInLinie.tsx')).href))
+      .replace('from "./juridic.module.css"', 'from ' + JSON.stringify(pathToFileURL(join(dosar, 'juridic.module.css')).href))
+    expect(mutant).not.toBe(sursa)
+    expect(mutant.indexOf('{preambul.length === 0')).toBeLessThan(mutant.indexOf('{document.introducere === ""'))
+    const d = mkdtempSync(join(tmpdir(), 'corp-mutant-'))
+    try {
+      const f = join(d, 'CorpDocument.tsx')
+      writeFileSync(f, mutant, 'utf8')
+      const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { default: Randator }
+      // Controlul ca mutantul randeaza: acelasi text, alta ordine
+      const html = randeaza(sintetic(), m.default)
+      expect(faraSpatii(html).length).toBe(corpAmprenta(sintetic()).length)
+      expect(faraSpatii(html)).not.toBe(corpAmprenta(sintetic()))
+    } finally {
+      rmSync(d, { recursive: true, force: true })
+    }
   })
 })
