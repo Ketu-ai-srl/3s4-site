@@ -27,7 +27,7 @@ import { editiaRadacinii, urlAbsolut } from "./site";
 /** Rezumatul in engleza (citatul de sub titlu): textul aprobat al site-ului international, fara cifre. */
 export const REZUMAT_EN =
   DESCRIERE_EN +
-  " It works in the browser; WhatsApp is available in pilot. Files are stored in Germany, in one EU region. 3S is operated from Moldova. Its plans are priced in euros.";
+  " It works in the browser. Files are stored in Germany, in one EU region. 3S is operated from Moldova. Its plans are priced in euros.";
 
 /** Textul unei legaturi Markdown, fara parantezele drepte care i-ar rupe forma. */
 function eticheta(text: string): string {

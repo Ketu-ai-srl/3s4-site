@@ -198,9 +198,8 @@ describe('contractul EN (navigatie-en.ts)', () => {
     expect(valori(en).filter((v) => interzise.test(v))).toEqual([])
     expect(en.antet.autentificare.href).toBeNull()
     expect(en.antet.descarca).toBeNull()
-    expect(en.antet.legaturi.map((l) => l.text)).toEqual(['Product', 'Solutions', 'Guides', 'Pricing', 'About & security'])
-    const solutii = en.antet.legaturi.find((l) => l.text === 'Solutions')!.foaie!.elemente.map((e) => e.href)
-    expect(solutii).toContain('/solutions/owners-of-romanian-companies')
+    // Fara "Solutions": paginile de segment au iesit de la lansare (decizia 38); proba grupului e in tests/en-nucleu.test.ts.
+    expect(en.antet.legaturi.map((l) => l.text)).toEqual(['Product', 'Guides', 'Pricing', 'About & security'])
   })
 
   it('coloana Legal: adresele din config/juridic-rute.json (editia en), cele 8 documente, in ordinea registrului', () => {

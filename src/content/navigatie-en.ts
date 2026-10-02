@@ -37,8 +37,9 @@ export const ETICHETA_WHATSAPP_EN = "Message us on WhatsApp";
 const SALUT = "Hello 3S, ";
 
 /**
- * Textele precompletate ale paginilor EN (§4.4), cu codul `ref` al fiecareia. P05-P07 raman in tabel pentru
- * revenirea paginilor; o pagina fara intrare (de pilda cele juridice, pagina de negasit) foloseste `en-home`.
+ * Textele precompletate ale paginilor EN (§4.4), cu codul `ref` al fiecareia; o pagina fara intrare (de pilda cele
+ * juridice, pagina de negasit) foloseste `en-home`. P04-P07 si S1-S4 nu mai au rand: au iesit de la lansare
+ * (deciziile 49, 43 si 38) si revin cu textul lor, odata cu pagina.
  */
 export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
   { cale: "/", ref: "en-home", text: "Hello 3S, I read your website [ref:en-home]. I would like to ask about a pilot." },
@@ -51,26 +52,6 @@ export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
     cale: "/features/search",
     ref: "en-search",
     text: "Hello 3S, I read your page on search with a cited source [ref:en-search]. I would like to see it on a sample of our documents.",
-  },
-  {
-    cale: "/features/whatsapp",
-    ref: "en-wa",
-    text: "Hello 3S, I read your page on asking the archive on WhatsApp [ref:en-wa]. I would like to ask about the pilot.",
-  },
-  {
-    cale: "/features/mobile-app",
-    ref: "en-mobile",
-    text: "Hello 3S, I read your page on the apps [ref:en-mobile]. I would like to ask how we would get access.",
-  },
-  {
-    cale: "/features/client-portal",
-    ref: "en-portal",
-    text: "Hello 3S, I read your page on the client portal [ref:en-portal]. I would like to ask about a pilot for our clients.",
-  },
-  {
-    cale: "/features/automations",
-    ref: "en-auto",
-    text: "Hello 3S, I read your page on automations [ref:en-auto]. I would like to ask what rules we could set up.",
   },
   { cale: "/pricing", ref: "en-price", text: "Hello 3S, I read your pricing page [ref:en-price]. I would like to ask for a quote." },
   {
@@ -87,26 +68,6 @@ export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
     cale: "/about",
     ref: "en-about",
     text: "Hello 3S, I read your page about 3S and data location [ref:en-about]. I have a question about security.",
-  },
-  {
-    cale: "/solutions/foreign-owned-companies",
-    ref: "en-seg-md",
-    text: "Hello 3S, I read your page for foreign-owned companies in Moldova [ref:en-seg-md]. I would like to ask about a pilot.",
-  },
-  {
-    cale: "/solutions/ngos-and-funded-projects",
-    ref: "en-seg-ngo",
-    text: "Hello 3S, I read your page for NGOs and funded projects [ref:en-seg-ngo]. I would like to ask about a pilot.",
-  },
-  {
-    cale: "/solutions/accounting-and-law-firms",
-    ref: "en-seg-acct",
-    text: "Hello 3S, I read your page for accounting and law firms [ref:en-seg-acct]. I would like to ask about a pilot with one of our clients.",
-  },
-  {
-    cale: "/solutions/owners-of-romanian-companies",
-    ref: "en-seg-ro",
-    text: "Hello 3S, I read your page for owners of Romanian companies [ref:en-seg-ro]. I would like to ask about a pilot.",
   },
   {
     cale: "/guides/e-invoice-archiving-eu",
@@ -158,7 +119,7 @@ function foaie(eticheta: string, elemente: ElementMeniu[]): FoaieMeniu {
 }
 
 /**
- * Declansatorul unui meniu fara pagina-index (Solutions, Guides): duce la primul element care exista. Fara
+ * Declansatorul unui meniu fara pagina-index (Guides): duce la primul element care exista. Fara
  * niciunul, tinta ramane pe primul element, care nu exista, deci declansatorul nu se randeaza.
  */
 function declansator(text: string, f: FoaieMeniu, cai: CaiExistente): LegaturaAntet {
@@ -169,18 +130,7 @@ function declansator(text: string, f: FoaieMeniu, cai: CaiExistente): LegaturaAn
 const FOAIE_PRODUS = foaie("3S product", [
   element("Platform", "/platform", "box"),
   element("Search with sources", "/features/search", "search"),
-  element("WhatsApp (pilot)", "/features/whatsapp", "message-circle"),
-  element("Client portal", "/platform#portal", "users"),
-  element("Automations", "/platform#rules", "zap"),
-  element("Apps", "/platform#devices", "smartphone"),
   element("Enterprise", "/enterprise", "building-2"),
-]);
-
-const FOAIE_SOLUTII = foaie("Solutions by client", [
-  element("Foreign-owned companies in Moldova", "/solutions/foreign-owned-companies", "globe"),
-  element("NGOs and funded projects", "/solutions/ngos-and-funded-projects", "file-badge"),
-  element("Accounting and law firms", "/solutions/accounting-and-law-firms", "scale"),
-  element("Owners of Romanian companies", "/solutions/owners-of-romanian-companies", "building"),
 ]);
 
 const FOAIE_GHIDURI = foaie("Guides", [
@@ -208,7 +158,6 @@ export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXI
       meniu: "Main menu",
       legaturi: [
         { text: "Product", href: "/platform", ruta: "/platform", foaie: FOAIE_PRODUS },
-        declansator("Solutions", FOAIE_SOLUTII, cai),
         declansator("Guides", FOAIE_GHIDURI, cai),
         { ...legatura("Pricing", "/pricing"), foaie: null },
         { ...legatura("About & security", "/about"), foaie: null },
@@ -259,10 +208,6 @@ export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXI
         {
           titlu: "Product",
           legaturi: FOAIE_PRODUS.elemente.map(({ text, href, ruta }) => ({ text, href, ruta })),
-        },
-        {
-          titlu: "Solutions",
-          legaturi: FOAIE_SOLUTII.elemente.map(({ text, href, ruta }) => ({ text, href, ruta })),
         },
         {
           titlu: "Guides",

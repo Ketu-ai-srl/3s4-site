@@ -1,6 +1,6 @@
 // Documentul notificare-si-actiune, in romana, pentru operatorul din Republica Moldova (familia md).
 // Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
-// Sursa: 07-notificare-si-utilizare.ro.md, sha256 dfc1c4b52d51b8b660d39e73e0a1e4d7e050d1fb8b65d0e42598679cb346eeeb.
+// Sursa: 07-notificare-si-utilizare.ro.md, sha256 9a5b135d235035308b812298a292280580265a9187fa192c5f05186f78ca65c4.
 // Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
 // Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
 
@@ -82,7 +82,7 @@ export default function notificareSiActiuneRo(): DocumentJuridic {
       {
         cheie: "s11", titlu: "11. Modificări",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Modificăm pagina după secțiunea 14 din Termeni. Clienții sunt anunțați în Cont și prin e-mail despre orice schimbare semnificativă (Regulamentul (UE) 2022/2065, art. 14 alin. (2))."] },
+          { jurisdictie: null, paragrafe: ["Modificăm pagina după secțiunea 14 din Termeni. Clienții sunt anunțați prin e-mail despre orice schimbare semnificativă (Regulamentul (UE) 2022/2065, art. 14 alin. (2))."] },
         ],
       },
       {

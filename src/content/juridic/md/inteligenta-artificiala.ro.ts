@@ -1,6 +1,6 @@
 // Documentul inteligenta-artificiala, in romana, pentru operatorul din Republica Moldova (familia md).
 // Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
-// Sursa: 08-nota-ia.ro.md, sha256 4f1659c47bffc075e76da38a7bc5ee315244119d8835fe923b1567df94a79e48.
+// Sursa: 08-nota-ia.ro.md, sha256 4a47bd3ac63abfddafa346ca95e89f061d57e852948b06e194c881a52f78ac0d.
 // Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
 // Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
 
@@ -27,7 +27,7 @@ export default function inteligentaArtificialaRo(): DocumentJuridic {
       {
         cheie: "s2", titlu: "2. Cum aflați că vorbiți cu un sistem de IA",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Asistentul vă spune de la început, clar, că este un sistem de IA și nu un om:"], lista: { elemente: ["în chatul din browser, printr-un mesaj la deschiderea conversației și printr-o insignă „IA” lângă câmpul de întrebare, vizibilă cât ține conversația;", "pe WhatsApp, dacă oferta include acest canal, în primul mesaj al asistentului și în descrierea profilului."] }, dupa: ["Această pagină completează informarea din chat; nu o înlocuiește (Regulamentul (UE) 2024/1689, art. 50 alin. (1) și (5))."] },
+          { jurisdictie: null, paragrafe: ["Asistentul vă spune de la început, clar, că este un sistem de IA și nu un om: în chatul din browser, printr-un mesaj la deschiderea conversației și printr-o insignă „IA” lângă câmpul de întrebare, vizibilă cât ține conversația.", "Această pagină completează informarea din chat; nu o înlocuiește (Regulamentul (UE) 2024/1689, art. 50 alin. (1) și (5))."] },
         ],
       },
       {
@@ -63,7 +63,7 @@ export default function inteligentaArtificialaRo(): DocumentJuridic {
       {
         cheie: "s8", titlu: "8. Documentele dumneavoastră și modelele de IA",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Modelele de IA primesc textul documentelor numai ca să furnizeze serviciul, în condițiile [acordului de prelucrare a datelor](cale:dpa) (DPA). Furnizorii modelelor care primesc documente apar în pagina [Subîmputerniciții platformei](cale:subimputerniciti) înainte să primească documente. Acordul cuprinde și angajamentul 3S privind antrenarea modelelor de IA (art. 4.5). Cum se prelucrează datele personale din documente e descris în DPA și în [Politica de confidențialitate](cale:confidentialitate)."] },
+          { jurisdictie: null, paragrafe: ["Modelele de IA primesc numai text: fragmentele din documente regăsite pentru întrebare sau extrase dintr-un document anume, titlurile, numele dosarelor, metadatele și istoricul conversației, iar la indexare textul documentelor, pe bucăți. Îl primesc numai ca să furnizeze serviciul, în condițiile [acordului de prelucrare a datelor](cale:dpa) (DPA). Modelele și recunoașterea textului rulează la un subîmputernicit din pagina [Subîmputerniciții platformei](cale:subimputerniciti); furnizorii modelelor nu primesc documentele. Acordul cuprinde și angajamentul 3S privind antrenarea modelelor de IA (art. 4.5). Cum se prelucrează datele personale din documente e descris în DPA și în [Politica de confidențialitate](cale:confidentialitate)."] },
         ],
       },
       {

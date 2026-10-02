@@ -1,4 +1,5 @@
-// Rutele editiei `en` (site-ul international, la radacina), grupul produs: paginile de produs (P03, P04).
+// Rutele editiei `en` (site-ul international, la radacina), grupul produs: paginile de produs. La lansare numai P03;
+// P04 (`/features/whatsapp`) a iesit prin decizia 49 (asistentul pe WhatsApp nu exista in platforma).
 //
 // Fisier GOL la fundatia editiilor: il umple felia al carei marcaj sta mai jos, NUMAI sub marcajul ei (aceeasi
 // regula ca in `rute.ts`). Fiecare intrare are `editie: "en"` si `cheie` (identificatorul paginii peste
@@ -9,4 +10,12 @@ import type { RutaEditie } from "./rute";
 
 export const RUTE_EN_PRODUS: RutaEditie<"en">[] = [
   // <<felie:en-produs>>
+  {
+    cale: "/features/search",
+    scurt: "Search with sources",
+    descriere: "Ask a question about your documents and check the source of each answer.",
+    inHarta: true,
+    editie: "en",
+    cheie: "features-search",
+  },
 ];

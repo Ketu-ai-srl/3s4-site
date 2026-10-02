@@ -1,0 +1,65 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor EN din grupul nucleu (src/content/rute-en-nucleu.ts), din arhitectura continutului EN, Anexa B. Pe /contact lipseste adresa de e-mail din Anexa B: pana la P-40 pagina nu o numeste (varianta fisei de dinainte de P-40). Rutele sunt ale editiei en, deci pe build-ul romanesc declaratiile se verifica numai ca forma (tests/browser/ajutor/raspunsuri.ts).",
+  "raspuns_autonom": {
+    "/": {
+      "intrebare": "What is 3S Scan Store Solve?",
+      "entitati": [
+        "3S Scan Store Solve",
+        "digital archive",
+        "cited source",
+        "Frankfurt",
+        "Moldova"
+      ]
+    },
+    "/platform": {
+      "intrebare": "How does the 3S platform work?",
+      "entitati": [
+        "3S",
+        "documents",
+        "archive",
+        "source"
+      ]
+    },
+    "/pricing": {
+      "intrebare": "How much does 3S cost?",
+      "entitati": [
+        "3S",
+        "Starter",
+        "Pro",
+        "Business",
+        "Enterprise",
+        "euros",
+        "pilot"
+      ]
+    },
+    "/enterprise": {
+      "intrebare": "What does 3S offer to organizations with large archives?",
+      "entitati": [
+        "3S Enterprise",
+        "user accounts",
+        "source",
+        "Frankfurt"
+      ]
+    },
+    "/contact": {
+      "intrebare": "How do I contact 3S?",
+      "entitati": [
+        "3S",
+        "WhatsApp",
+        "+373 68 055 599",
+        "English",
+        "Romanian"
+      ]
+    },
+    "/about": {
+      "intrebare": "What is 3S, who operates it and where are my documents stored?",
+      "entitati": [
+        "3S Scan Store Solve",
+        "Moldova",
+        "Frankfurt",
+        "Amazon Web Services",
+        "CLOUD Act"
+      ]
+    }
+  }
+}

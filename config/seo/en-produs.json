@@ -1,0 +1,16 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei en-produs: pagina EN P03, din Anexa B a arhitecturii continutului EN. P04 (/features/whatsapp) a iesit de la lansare prin decizia 49, deci nu are declaratie. Primul paragraf e capsula (54 de cuvinte).",
+  "raspuns_autonom": {
+    "/features/search": {
+      "intrebare": "How does 3S answer questions about my documents?",
+      "entitati": [
+        "3S",
+        "questions",
+        "documents",
+        "source",
+        "Romanian",
+        "pilot"
+      ]
+    }
+  }
+}

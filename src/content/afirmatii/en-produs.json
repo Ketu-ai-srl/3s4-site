@@ -1,0 +1,83 @@
+[
+  {
+    "id": "en-produs-comparatii-cautare-cu-sursa",
+    "text": "3S searches the content of your documents with AI and cites the source of each answer; the answer comes with the document it is taken from",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării comparatii-cautare-cu-sursa (aceeași stare și aceeași sursă): declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind deja în producție); pe pagina EN fără „pagina exactă”, care rămâne în pilot",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "en-produs-acasa-trei-pasi-scan-store-solve",
+    "text": "You ask a question and 3S answers from what the documents say; each uploaded document is prepared for search automatically; questions in Romanian are supported; files you already have as scans go straight into the platform",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării acasa-trei-pasi-scan-store-solve (aceeași stare și aceeași sursă): vocea mărcii aleasă de owner (decizia D15 din planul valului S4, 26.09), funcțiile descrise fiind confirmate prin decizia D4b",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-26",
+    "data": "2026-09-26"
+  },
+  {
+    "id": "en-produs-juridic-serviciu-web-si-whatsapp",
+    "text": "3S answers questions about the documents in your archive with the document the answer comes from, in the browser",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării juridic-serviciu-web-si-whatsapp (aceeași stare și aceeași sursă): deciziile D4b și D4c din planul valului S4. Decizia 49 (owner-ul, 2026-10-02, „nu avem acum whatsapp”; planul 3s.md, §0.1, rândul 49): asistentul pe WhatsApp a ieșit de pe paginile de lansare; pe paginile EN intrarea acoperă numai jumătatea despre browser.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "en-produs-cinema-cautare-web-si-whatsapp",
+    "text": "You ask your archive in the browser",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării cinema-cautare-web-si-whatsapp (aceeași stare și aceeași sursă): decizia D4c din planul valului S4. Decizia 49 (owner-ul, 2026-10-02, „nu avem acum whatsapp”; planul 3s.md, §0.1, rândul 49): asistentul pe WhatsApp a ieșit de pe paginile de lansare; pe paginile EN intrarea acoperă numai jumătatea despre browser.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "en-produs-enterprise-functii-in-productie",
+    "text": "3S recognizes the text of scanned documents",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării enterprise-functii-in-productie, NUMAI partea despre recunoașterea textului din actele scanate (aceeași stare și aceeași sursă: decizia D4b din planul valului S4); regulile automate, portalul și API-ul din aceeași intrare au ieșit de pe paginile de lansare prin decizia 43 a owner-ului (01.10.2026)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "en-produs-conversie-demonstratie-exemplu",
+    "text": "The example question and answer (Alpha Example SRL, Ana Exemplu, contract_alpha_example.pdf) use fictional data and are labeled as an example on the page; the English line is a translation of the question, not product output",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrărilor conversie-demonstratie-exemplu și enterprise-exemplu-fictiv: planul valului S4, deciziile D9 (machete cu date fictive declarate ca exemplu) și D11 (nume evident fictive, eticheta vizibilă „exemplu”)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "en-produs-pagina-si-engleza-in-pilot",
+    "text": "English questions over Romanian documents, and citation down to the page, are in pilot",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "propunerea en-pagina-si-engleza-in-pilot din arhitectura conținutului EN, Anexa A: decizia owner-ului din 30.09.2026; se schimbă după testul P-13 (prag 90%)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-produs-pilot-asistat",
+    "text": "3S starts with a free 30-day assisted pilot on the customer's own documents; the answers and their sources are checked together, then 3S quotes for the full archive",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "propunerea en-pilot-asistat din arhitectura conținutului EN, Anexa A: decizia 1 a owner-ului din 30.09.2026 (textul pilotului, pe documente reale) și decizia din 30.09.2026 ~23:55 (gratuit, 30 de zile); pilotul pornește după acceptarea Termenilor și a DPA-ului",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-produs-om-raspunde",
+    "text": "When you message 3S, a person on our team replies, in English or Romanian; no hours and no response time are published; the button opens the conversation with the team",
+    "unde": "src/content/en/features-search.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 3 a owner-ului din 30.09.2026 (răspunde un om, în engleză sau română, fără program și fără timp de răspuns); propunerea en-canale-de-contact din arhitectura conținutului EN, Anexa A, partea despre număr",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  }
+]

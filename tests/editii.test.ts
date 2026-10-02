@@ -351,7 +351,11 @@ describe('declaratiile G-AI-02 pe mai multe manifeste (tests/browser/ajutor/rasp
     // Controlul: pe un build cu en, aceeasi declaratie intra (deci absenta de mai sus vine din editie, nu din citire)
     const cuEn = cuCopie(
       { 'src/content/rute-en-proba.ts': manifest, 'config/seo/en-proba.json': JSON.stringify({ raspuns_autonom: { '/pricing': DECL } }) },
-      (d) => citesteDeclaratiile(d, ['/pricing'], ['en', 'ro-MD']),
+      // Rutele EN ale build-ului sunt cele scrise literal in grupuri plus ruta fixturii: cazul cerea numai `/pricing`,
+      // adica grupuri EN fara rute scrise, o constatare de stare inrosita corect de felia paginilor EN nucleu. Grupul
+      // juridic nu intra: rutele lui nu sunt scrise literal (segment dinamic), deci textul manifestului nu le are.
+      (d) =>
+        citesteDeclaratiile(d, [...RUTE_EN_NUCLEU, ...RUTE_EN_PRODUS, ...RUTE_EN_SEGMENTE, ...RUTE_EN_REFERINTA].map((x) => x.cale).concat('/pricing'), ['en', 'ro-MD']),
     )
     expect(cuEn.abateri).toEqual([])
     expect(cuEn.declaratii.get('/pricing')).toEqual(DECL)
@@ -383,9 +387,13 @@ describe('build-ul 3s.md, servit', () => {
     const r = await fetch(ADRESA + cale, { redirect: 'manual' })
     return { status: r.status, robots: r.headers.get('x-robots-tag') ?? '', text: await r.text() }
   }
-  const CAI = ['/', '/pricing', '/preturi', '/ro', '/ro/juridic', '/juridic', '/blog', '/o-cale-' + 'care-nu-exista']
+  // `/` si `/pricing` erau aici cat editia EN n-avea nicio pagina (segmentul `[negasit]` al fundatiei): o constatare
+  // de stare, inrosita corect de felia paginilor EN nucleu, care le aduce si scoate segmentul. Ce apara cazul, si
+  // ramane: caile romanesti, cele fara pagina si o cale inventata dau 404 in engleza, cu antetul de neindexare.
+  // Paginile EN (200, `lang="en"`) le masoara `tests/browser/en-nucleu.spec.ts`, pe copia 3s.md.
+  const CAI = ['/preturi', '/ro', '/ro/juridic', '/juridic', '/blog', '/o-cale-' + 'care-nu-exista']
 
-  it.runIf(ADRESA !== '')('startul si orice cale raspund 404, cu X-Robots-Tag noindex', async () => {
+  it.runIf(ADRESA !== '')('caile fara pagina EN raspund 404, cu X-Robots-Tag noindex', async () => {
     for (const cale of CAI) {
       const r = await cere(cale)
       expect(r.status, cale).toBe(404)

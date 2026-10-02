@@ -1,6 +1,6 @@
 // Documentul inteligenta-artificiala, in engleza americana, pentru operatorul din Republica Moldova (familia md).
 // Convertit o singura data din pachetul juridic 3s.md (blocul de text publicabil), cuvant cu cuvant.
-// Sursa: 08-ai-notice.en.md, sha256 c040e34e4282f09a6ea12e55d9a43ddee61492ad117a6184c202c1036d9cc6c1.
+// Sursa: 08-ai-notice.en.md, sha256 890712a2bae291f35ffa97f58e0c4b70580eefcebf87cacc0ccbb6e7201062b5.
 // Din ziua conversiei modulul e sursa unica a textului: se editeaza aici, iar pachetul ramane arhiva.
 // Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
 
@@ -27,7 +27,7 @@ export default function inteligentaArtificialaEn(): DocumentJuridic {
       {
         cheie: "s2", titlu: "2. How you know you are talking to an AI system",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["The assistant tells you clearly, from the start, that it is an AI system and not a person:"], lista: { elemente: ["in the browser chat, through a message when the conversation opens and an \"AI\" badge next to the question field, visible for as long as the conversation lasts;", "on WhatsApp, if the offer includes that channel, in the assistant's first message and in the profile description."] }, dupa: ["This page supplements the notice in the chat; it does not replace it (Regulation (EU) 2024/1689, Art. 50(1) and (5))."] },
+          { jurisdictie: null, paragrafe: ["The assistant tells you clearly, from the start, that it is an AI system and not a person: in the browser chat, through a message when the conversation opens and an \"AI\" badge next to the question field, visible for as long as the conversation lasts.", "This page supplements the notice in the chat; it does not replace it (Regulation (EU) 2024/1689, Art. 50(1) and (5))."] },
         ],
       },
       {
@@ -63,7 +63,7 @@ export default function inteligentaArtificialaEn(): DocumentJuridic {
       {
         cheie: "s8", titlu: "8. Your documents and the AI models",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["AI models receive the text of the documents only to provide the service, under the [data processing agreement](cale:dpa) (DPA). The providers of the models that receive documents appear on the page [Sub-processors of the platform](cale:subimputerniciti) before they receive documents. The agreement also contains 3S's commitment on the training of AI models (Art. 4.5). How the personal data in the documents is processed is described in the DPA and in the [Privacy policy](cale:confidentialitate)."] },
+          { jurisdictie: null, paragrafe: ["AI models receive only text: the passages of the documents retrieved for the question or extracted from a specific document, the titles, the folder names, the metadata and the conversation history, and, at indexing, the text of the documents, in chunks. They receive it only to provide the service, under the [data processing agreement](cale:dpa) (DPA). The models and the text recognition run at a sub-processor listed on the page [Sub-processors of the platform](cale:subimputerniciti); the model providers do not receive the documents. The agreement also contains 3S's commitment on the training of AI models (Art. 4.5). How the personal data in the documents is processed is described in the DPA and in the [Privacy policy](cale:confidentialitate)."] },
         ],
       },
       {
