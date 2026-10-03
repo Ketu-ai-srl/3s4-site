@@ -7,7 +7,9 @@ import { citesteArticolele } from '../../src/content/blog/conducta'
 import { caleArticol } from '../../src/content/blog/registru'
 import { CAI_EXISTENTE } from '../../src/content/cai'
 import { BRAND } from '../../src/content/entitate'
+import { cuFoileDeStil, foiLipsa, judecaLipsa, urmaresteFoile, type ProblemaFoaie } from './ajutor/foi-de-stil'
 import { asteaptaHidratarea } from './ajutor/hidratare'
+import { reincarca } from './ajutor/navigare'
 import { RADACINA, rutePublice } from './ajutor/proiect'
 
 /**
@@ -64,9 +66,38 @@ function defecteNavigatie(m: Awaited<ReturnType<typeof navigatiaPaginii>>): stri
   return defecte
 }
 
+/**
+ * Deschide `ruta` pentru masurarea tintelor numai cu toate foile de stil incarcate. CI 37075203263: pe
+ * /solutii/constructii la 1440 singura incalcare a fost `.Antet_lupaMobil`, butonul de cautare mobil, pe
+ * care foaia antetului il ascunde peste 1200 px; cu foaia antetului blocata, local, iese exact aceeasi
+ * incalcare. O incarcare fara foi nu se masoara: se reincarca numai daca foaia s-a pierdut pe drum,
+ * altfel pica pe loc (vezi `ajutor/foi-de-stil.ts`).
+ */
+async function deschideCuFoi(page: Page, ruta: string): Promise<void> {
+  const foi = urmaresteFoile(page)
+  await cuFoileDeStil('pagina ' + ruta, async (incercare) => {
+    // Problemele se judeca per incarcare: ce a cazut la cea dinainte nu explica lipsa de acum.
+    foi.probleme.length = 0
+    if (incercare === 1) await page.goto(ruta, { waitUntil: 'networkidle' })
+    else await reincarca(page, { waitUntil: 'networkidle' })
+    return { rezultat: undefined, lipsa: await foiLipsa(page), probleme: [...foi.probleme] }
+  })
+}
+
 async function tinteMici(page: Page): Promise<string[]> {
   const r = await new AxeBuilder({ page }).withRules(['target-size']).analyze()
   return r.violations.flatMap((v) => v.nodes.map((n) => v.id + ' ' + n.target.join(' ')))
+}
+
+/**
+ * Corpul cazului de tinte, intr-un singur loc: deschiderea cu controlul de foi, latimea si incalcarile.
+ * Testul parametrizat si martorii controlului de foi trec prin ACEEASI functie, ca o deschidere care ar
+ * ocoli controlul sa se inroseasca la martor, nu sa treaca tacut.
+ */
+async function masoaraTintele(page: Page, ruta: string): Promise<{ latime: number; mici: string[] }> {
+  await deschideCuFoi(page, ruta)
+  const latime = await page.evaluate(() => window.innerWidth)
+  return { latime, mici: await tinteMici(page) }
 }
 
 test.describe('livrare: completitudinea navigatiei pe fiecare pagina', () => {
@@ -117,9 +148,7 @@ test.describe('livrare: tintele de cel putin 24 x 24 (WCAG 2.5.8, axe target-siz
     for (const ruta of rute) {
       test('pagina reala ' + ruta + ' la ' + fereastra.width + ': axe target-size curat', async ({ page }) => {
         await page.setViewportSize(fereastra)
-        await page.goto(ruta, { waitUntil: 'networkidle' })
-        const l = await page.evaluate(() => window.innerWidth)
-        const mici = await tinteMici(page)
+        const { latime: l, mici } = await masoaraTintele(page, ruta)
         console.log('[livrare tinte] ' + ruta + ' innerWidth ' + l + ' | incalcari ' + (mici.join('; ') || '0'))
         expect(l).toBe(fereastra.width)
         expect(mici).toEqual([])
@@ -144,6 +173,124 @@ test.describe('livrare: tintele de cel putin 24 x 24 (WCAG 2.5.8, axe target-siz
     })
     const mici = await tinteMici(page)
     expect(mici.length).toBeGreaterThanOrEqual(2)
+  })
+  test('martor POZITIV al controlului de foi: fara foaia antetului, axe da semnatura din CI, iar controlul refuza pagina', async ({ page }) => {
+    test.setTimeout(120_000)
+    // Sirul se asambleaza la rulare: clasa butonului mobil, cu sufixul din build, sta numai in foaia antetului.
+    const marca = ['Antet', 'lupaMobil'].join('_')
+    await page.route(/\.css(\?|$)/, async (r) => {
+      const raspuns = await r.fetch()
+      if ((await raspuns.text()).includes(marca)) await r.abort()
+      else await r.fulfill({ response: raspuns })
+    })
+    await page.setViewportSize(LA_1440)
+    await page.goto('/solutii/constructii', { waitUntil: 'networkidle' })
+    const lipsa = await foiLipsa(page)
+    const mici = await tinteMici(page)
+    console.log('[livrare foi, martor pozitiv] lipsa ' + lipsa.join(' ; ') + ' | incalcari ' + (mici.join('; ') || '0'))
+    expect(lipsa).toHaveLength(1)
+    // Semnatura din CI 37075203263: numai butonul de cautare mobil, ramas vizibil si fara cei 33 x 33 ai lui.
+    expect(mici).toHaveLength(1)
+    expect(mici[0]).toContain(marca)
+    let refuz = ''
+    await masoaraTintele(page, '/solutii/constructii').catch((e: unknown) => {
+      refuz = e instanceof Error ? e.message : String(e)
+    })
+    console.log('[livrare foi, martor pozitiv] refuzul: ' + refuz.slice(0, 300))
+    expect(refuz).toContain('nicio incarcare din 3 nu a avut toate foile de stil')
+    expect(refuz).not.toContain('NEMASURAT')
+  })
+
+  test('martor NEGATIV al controlului de foi: aceeasi pagina la 1440, fara nimic blocat, are toate foile', async ({ page }) => {
+    await page.setViewportSize(LA_1440)
+    const { mici } = await masoaraTintele(page, '/solutii/constructii')
+    const declarate = await page.locator('link[rel="stylesheet"]').count()
+    console.log('[livrare foi, martor negativ] foi declarate ' + declarate + ' | incalcari ' + (mici.join('; ') || '0'))
+    expect(declarate).toBeGreaterThan(0)
+    expect(await foiLipsa(page)).toEqual([])
+    expect(mici).toEqual([])
+  })
+
+  test('martor POZITIV: foaia antetului raspunde HTTP 500 O SINGURA DATA, iar controlul pica pe loc, fara reluare', async ({ page }) => {
+    test.setTimeout(120_000)
+    // Un 500 intermitent pe o foaie e un defect al serverului site-ului: nu se ascunde sub o reluare.
+    const marca = ['Antet', 'lupaMobil'].join('_')
+    const cereri: string[] = []
+    let refuzate = 0
+    await page.route(/\.css(\?|$)/, async (r) => {
+      const raspuns = await r.fetch()
+      if (!(await raspuns.text()).includes(marca)) return r.fulfill({ response: raspuns })
+      cereri.push(r.request().url())
+      if (refuzate > 0) return r.fulfill({ response: raspuns })
+      refuzate++
+      return r.fulfill({ status: 500, contentType: 'text/plain', body: 'eroare de proba' })
+    })
+    await page.setViewportSize(LA_1440)
+    let refuz = ''
+    await masoaraTintele(page, '/solutii/constructii').catch((e: unknown) => {
+      refuz = e instanceof Error ? e.message : String(e)
+    })
+    console.log('[livrare foi, martor 500] cereri spre foaia antetului ' + cereri.length + ' | refuzul: ' + refuz.slice(0, 400))
+    expect(refuzate, 'fixtura a aterizat: foaia antetului a primit 500').toBe(1)
+    expect(refuz).toContain('HTTP 500')
+    expect(refuz).toContain('nu se reia')
+    expect(refuz).not.toContain('NEMASURAT')
+    // Nicio reincarcare: foaia antetului a fost ceruta o singura data.
+    expect(cereri).toHaveLength(1)
+  })
+})
+
+test.describe('controlul de foi: cand se reia si cand nu (judecata, fara navigator)', () => {
+  const u = 'http://127.0.0.1/_next/static/css/' + ['a', 'b'].join('') + '.css'
+  const alta = u.replace('.css', '2.css')
+  const retea = (url: string): ProblemaFoaie => ({ url, fel: 'retea', text: 'net::ERR_FAILED' })
+  const http = (url: string, cod: number): ProblemaFoaie => ({ url, fel: 'http', text: 'HTTP ' + cod })
+
+  test('judecaLipsa: numai caderea pe drum se reia', () => {
+    expect(judecaLipsa({ lipsa: [u], probleme: [retea(u)] }).reia).toBe(true)
+    expect(judecaLipsa({ lipsa: [u], probleme: [], punte: ['/x: fetch failed'] }).reia).toBe(true)
+    expect(judecaLipsa({ lipsa: [u], probleme: [http(u, 500)] }).reia).toBe(false)
+    expect(judecaLipsa({ lipsa: [u], probleme: [http(u, 404)] }).reia).toBe(false)
+    // HTTP are prioritate fata de o cadere in retea a aceleiasi foi.
+    expect(judecaLipsa({ lipsa: [u], probleme: [retea(u), http(u, 500)] }).reia).toBe(false)
+    // Nimic notat: cauza nu e dovedita, deci nu se reia.
+    expect(judecaLipsa({ lipsa: [u], probleme: [] }).reia).toBe(false)
+    // Fiecare foaie lipsa trebuie sa aiba cauza ei: o cadere pe alta foaie nu o explica.
+    expect(judecaLipsa({ lipsa: [u], probleme: [retea(alta)] }).reia).toBe(false)
+    expect(judecaLipsa({ lipsa: [u, alta], probleme: [retea(u)] }).reia).toBe(false)
+  })
+
+  test('cuFoileDeStil: un 500 o singura data pica la prima incarcare; o cadere in retea o singura data se reia', async () => {
+    const jurnal: string[] = []
+    let apeluri = 0
+    let refuz = ''
+    await cuFoileDeStil(
+      'martor 500',
+      async (n) => {
+        apeluri++
+        return n === 1 ? { rezultat: 'x', lipsa: [u], probleme: [http(u, 500)] } : { rezultat: 'x', lipsa: [], probleme: [] }
+      },
+      (m) => jurnal.push(m),
+    ).catch((e: unknown) => {
+      refuz = e instanceof Error ? e.message : String(e)
+    })
+    expect(apeluri).toBe(1)
+    expect(refuz).toContain('HTTP 500')
+    expect(jurnal).toEqual([])
+
+    apeluri = 0
+    const r = await cuFoileDeStil(
+      'martor retea',
+      async (n) => {
+        apeluri++
+        return n === 1 ? { rezultat: 'prima', lipsa: [u], probleme: [retea(u)] } : { rezultat: 'a doua', lipsa: [], probleme: [] }
+      },
+      (m) => jurnal.push(m),
+    )
+    expect(apeluri).toBe(2)
+    expect(r).toBe('a doua')
+    expect(jurnal).toHaveLength(1)
+    expect(jurnal[0]).toContain('reiau')
   })
 })
 

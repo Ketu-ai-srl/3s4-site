@@ -5,6 +5,7 @@ import { createServer, type Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { PORTAL, ROLURI_PORTAL, type RolPortal } from '../../src/content/functionalitati/portal-clienti'
 import { IMPACTURI_BLOCANTE, masoaraAccesibilitatea } from './ajutor/detectori'
+import { cuFoileDeStil, descrie, foiLipsa, urmaresteFoile, type IncarcareCuFoi } from './ajutor/foi-de-stil'
 import { esuateDeTransport, navigheaza, reincarca, urmareste, type Urmarire } from './ajutor/navigare'
 import { nemasurat } from './ajutor/proiect'
 
@@ -987,7 +988,16 @@ type LivrareInDouaBucati = {
 /** Regula care anuleaza garda din `EroulCinema.module.css`: blocul ramane vizibil cat timp nu i s-a parsat sfarsitul. */
 const STIL_GARDA_ANULATA = '<style>[class*="EroulCinema_bloc"]{visibility:visible !important}</style>'
 
-type OptiuniIncarcare = { deplasareTarzie?: boolean; raspunsTarziuMs?: number; doiBucati?: LivrareInDouaBucati }
+type OptiuniIncarcare = {
+  deplasareTarzie?: boolean
+  raspunsTarziuMs?: number
+  doiBucati?: LivrareInDouaBucati
+  /**
+   * Numai pentru martorul controlului de foi: foaia de stil al carei continut contine acest sir se
+   * blocheaza (cererea e anulata), ca pagina sa se incarce fara ea, cum s-a intamplat in CI.
+   */
+  blocheazaFoaiaCu?: string
+}
 
 /**
  * Un server local pus in fata serverului site-ului, care serveste `cale` in DOUA bucati (transfer in
@@ -1000,8 +1010,11 @@ async function serverInDouaBucati(
   baza: string,
   cale: string,
   livrare: LivrareInDouaBucati,
-): Promise<{ baza: string; taieturi: () => number; inchide: () => Promise<void> }> {
+): Promise<{ baza: string; taieturi: () => number; erori: () => string[]; inchide: () => Promise<void> }> {
   let taieturi = 0
+  // Cererile pe care puntea nu le-a putut aduce de la serverul site-ului: raspunsul lor e 502, deci
+  // navigatorul ramane fara resursa (o foaie de stil lipsa schimba toata asezarea).
+  const erori: string[] = []
   const server: Server = createServer((cerere, raspuns) => {
     void (async () => {
       const cai = (cerere.url ?? '/').split('?')[0]
@@ -1039,6 +1052,7 @@ async function serverInDouaBucati(
       raspuns.write(octeti.subarray(0, limita))
       setTimeout(() => raspuns.end(octeti.subarray(limita)), livrare.pauzaMs)
     })().catch((eroare) => {
+      erori.push((cerere.url ?? '/') + ': ' + String(eroare))
       raspuns.writeHead(502, { 'content-type': 'text/plain' })
       raspuns.end(String(eroare))
     })
@@ -1048,6 +1062,7 @@ async function serverInDouaBucati(
   return {
     baza: 'http://127.0.0.1:' + port,
     taieturi: () => taieturi,
+    erori: () => [...erori],
     inchide: () =>
       new Promise<void>((gata) => {
         server.close(() => gata())
@@ -1067,6 +1082,17 @@ async function serverInDouaBucati(
  * la ~1,4 s - masurat 25.09.)
  */
 async function incarcare(browser: Browser, baza: string, cale: string, optiuni: OptiuniIncarcare = {}): Promise<Incarcare> {
+  // O incarcare fara toate foile de stil masoara alta pagina (CI 37078308172, vezi `ajutor/foi-de-stil.ts`):
+  // nu se masoara, se reia.
+  return cuFoileDeStil('incarcarea ' + cale, () => incarcareOData(browser, baza, cale, optiuni))
+}
+
+async function incarcareOData(
+  browser: Browser,
+  baza: string,
+  cale: string,
+  optiuni: OptiuniIncarcare,
+): Promise<IncarcareCuFoi<Incarcare>> {
   const livrare = optiuni.doiBucati ? await serverInDouaBucati(baza, cale, optiuni.doiBucati) : null
   const context = await browser
     .newContext({ baseURL: livrare ? livrare.baza : baza, viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' })
@@ -1120,11 +1146,21 @@ async function incarcare(browser: Browser, baza: string, cale: string, optiuni: 
         })
       }
     }, optiuni)
+    const blocata = optiuni.blocheazaFoaiaCu
+    if (blocata) {
+      await context.route(/\.css(\?|$)/, async (r) => {
+        const raspuns = await r.fetch()
+        if ((await raspuns.text()).includes(blocata)) await r.abort()
+        else await r.fulfill({ response: raspuns })
+      })
+    }
     const page = await context.newPage()
+    const foi = urmaresteFoile(page)
     const cdp = await context.newCDPSession(page)
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: INCETINIRE_CPU })
     await navigheaza(page, cale, { waitUntil: 'load' })
     await page.waitForTimeout(cale === CALE_MARTOR ? 1500 : 6000)
+    const lipsa = await foiLipsa(page)
     const latime = await page.evaluate(() => window.innerWidth)
     const r = await page.evaluate(() => {
       const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number; __deplasari: { v: number; text: string }[] }
@@ -1133,7 +1169,13 @@ async function incarcare(browser: Browser, baza: string, cale: string, optiuni: 
       return { lcp: ultim ? ultim.t : -1, element: ultim ? ultim.el : '(niciun LCP)', cls: w.__cls, deplasari: mari.map((d) => d.text) }
     })
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
-    return { ...r, latime, bucati: livrare ? livrare.taieturi() : 0 }
+    const punte = livrare ? livrare.erori() : []
+    return {
+      rezultat: { ...r, latime, bucati: livrare ? livrare.taieturi() : 0 },
+      lipsa,
+      probleme: [...foi.probleme],
+      punte,
+    }
   } finally {
     await context.close()
     await livrare?.inchide()
@@ -1288,6 +1330,11 @@ test.describe('bugetele de la 390, procesor incetinit de 4 ori', () => {
 //
 // Reparatia e in componenta (garda din `EroulCinema.module.css`: blocul sta ascuns cu `visibility` cat timp
 // nu are ultimul copil), nu in prag: proba de mai jos o apara, iar martorii ei arata ca masoara mecanismul.
+//
+// Alta cauza, cu garda pe loc (CI 37078308172: automatizari-ai 0,38, LCP pe un `li` din cronologie): pagina
+// se incarcase FARA foaia de stil a eroului, deci fara garda si fara 100vh. Reprodus local cu foaia blocata,
+// deplasarile identice la pixel si o data chiar valoarea (0,3809). Nu e un defect al paginii: `incarcare`
+// nu masoara o incarcare careia ii lipsesc foi si o reia (`ajutor/foi-de-stil.ts`); martorii sunt mai jos.
 
 /** Taietura eroului: dupa primul titlu (`h1`) al lui; a doua bucata vine dupa 2,5 s, mult dupa prima pictare. */
 const TAIETURA_EROU: LivrareInDouaBucati = { taieDupa: '</h1>', pauzaMs: 2500 }
@@ -1314,6 +1361,50 @@ test.describe('eroul cand documentul soseste in doua bucati, 390, procesor incet
     console.log('[erou in doua bucati, martor pozitiv] bucati ' + r.bucati + ' | CLS ' + r.cls.toFixed(4) + ' | deplasari mari ' + (r.deplasari.join(' || ') || '-'))
     expect(r.bucati).toBe(1)
     expect(r.cls).toBeGreaterThan(PRAG_CLS)
+  })
+
+  test('martor POZITIV al controlului de foi: foaia eroului blocata da semnatura din CI, iar controlul refuza incarcarea', async ({ browser, baseURL }) => {
+    test.setTimeout(150_000)
+    // Sirul se asambleaza la rulare: clasa garzii, cu sufixul din build, sta numai in foaia eroului.
+    const marca = ['EroulCinema', 'bloc'].join('_')
+    const optiuni: OptiuniIncarcare = { doiBucati: TAIETURA_EROU, blocheazaFoaiaCu: marca }
+    const bruta = await incarcareOData(browser, baseURL ?? '', PAGINI[1], optiuni)
+    console.log(
+      '[foi de stil, martor pozitiv] lipsa ' + bruta.lipsa.join(' ; ') + ' | pe drum ' + (bruta.probleme.map(descrie).join(' ; ') || '-') +
+        ' | LCP ' + Math.round(bruta.rezultat.lcp) + ' ms (' + bruta.rezultat.element + ') | CLS ' + bruta.rezultat.cls.toFixed(4) +
+        ' | deplasari mari ' + (bruta.rezultat.deplasari.join(' || ') || '-'),
+    )
+    expect(bruta.rezultat.bucati, 'documentul a fost taiat').toBe(1)
+    expect(bruta.lipsa, 'exact foaia blocata lipseste').toHaveLength(1)
+    // Semnatura din CI 37078308172: fara foaia eroului, eroul nu mai are 100vh si LCP-ul cade pe cronologie.
+    expect(bruta.rezultat.element.startsWith('li '), 'LCP pe un `li` din cronologie, ca in CI').toBe(true)
+    let refuz = ''
+    await incarcare(browser, baseURL ?? '', PAGINI[1], optiuni).catch((e: unknown) => {
+      refuz = e instanceof Error ? e.message : String(e)
+    })
+    console.log('[foi de stil, martor pozitiv] refuzul: ' + refuz.slice(0, 300))
+    expect(refuz).toContain('nicio incarcare din 3 nu a avut toate foile de stil')
+    // Anularea din proba nu are semnatura de transport: foaia care lipseste mereu e PICATA, nu NEMASURATA.
+    expect(refuz).not.toContain('NEMASURAT')
+  })
+
+  test('martor NEGATIV al controlului de foi: aceeasi pagina, taiata, fara nimic blocat, are toate foile', async ({ browser, baseURL }) => {
+    test.setTimeout(90_000)
+    const r = await incarcareOData(browser, baseURL ?? '', PAGINI[1], { doiBucati: TAIETURA_EROU })
+    const context = await browser.newContext({ baseURL: baseURL ?? '', viewport: { width: 390, height: 844 } })
+    try {
+      const page = await context.newPage()
+      await navigheaza(page, PAGINI[1], { waitUntil: 'load' })
+      const declarate = await page.locator('link[rel="stylesheet"]').count()
+      console.log('[foi de stil, martor negativ] foi declarate ' + declarate + ' | lipsa la incarcarea taiata ' + (r.lipsa.join(' ; ') || '0'))
+      // Numarul foilor, ca o lista goala sa nu poata veni dintr-un selector care nu mai gaseste nimic.
+      expect(declarate).toBeGreaterThan(0)
+      expect(await foiLipsa(page)).toEqual([])
+    } finally {
+      await context.close()
+    }
+    expect(r.rezultat.bucati).toBe(1)
+    expect(r.lipsa).toEqual([])
   })
 
   test('martor NEGATIV: garda anulata, dar documentul servit INTREG, NU trebuie sa treaca de 0,1 (deplasarea vine din taietura)', async ({ browser, baseURL }) => {
