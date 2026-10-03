@@ -1,0 +1,22 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "P03",
+  "ro": "/functionalitati/cautare-ai",
+  "pagini_3s_md": [
+    "/features/search"
+  ],
+  "randuri": [
+    {
+      "tip": "camp",
+      "selector": "[class*=\"Fereastra_cip__\"]",
+      "ro": 10,
+      "en": 9,
+      "cod": "d49",
+      "motiv": "Avalansa: cipul 'WhatsApp' dintre canalele dosarului."
+    }
+  ],
+  "_nedeclarate": [
+    "Butonul CtaCinema spre /inregistrare devine butonul WhatsApp (acelasi loc, alt canal): nu schimba forma.",
+    "Forma paginii e de decis de owner (povestea sau sectiunile-intrebare EN)."
+  ]
+}

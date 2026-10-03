@@ -1,0 +1,46 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "P09",
+  "ro": "/enterprise",
+  "pagini_3s_md": [
+    "/enterprise"
+  ],
+  "randuri": [
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "Formular_sectiune",
+        "eticheta": "contact-form-titlu"
+      },
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"enterprise_livrabil__\"]",
+      "ro": 6,
+      "en": 3,
+      "cod": [
+        "d49",
+        "poarta-juridica-40-41"
+      ],
+      "motiv": "ListaLivrabile: ies 'Arhiva intrebata din WhatsApp', 'Cutiile din depozit, in aceeasi cautare' si 'Originalele, in arhiva fizica 3S'."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"enterprise_element__\"]",
+      "ro": 15,
+      "en": 9,
+      "cod": [
+        "poarta-juridica-40-41",
+        "d43",
+        "d49"
+      ],
+      "motiv": "BandaDrumDocument: ies 'Hartie scanata de 3S', 'Gmail si Outlook', 'WhatsApp', 'Microsoft 365 si Google Workspace', 'Reguli automate' si 'Raspuns pe WhatsApp'."
+    }
+  ],
+  "_nedeclarate": [
+    "In locul SectiuneFormular, blocul de canal WhatsApp: o radacina noua pe 3s.md; proba de azi nu are tip de rand pentru inlocuire, se adauga in felia paginii.",
+    "AES (d31) si 'o regiune UE' (d42): text."
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "P02",
+  "ro": "/platforma",
+  "pagini_3s_md": [
+    "/platform"
+  ],
+  "randuri": [
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "platforma-problema"
+      },
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Problema: hartia si scanarea facuta de 3S."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "platforma-bloc-01"
+      },
+      "cod": "poarta-juridica-40-41",
+      "motiv": "BlocDate: drumul dosarului pe hartie."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "platforma-apeluri"
+      },
+      "cod": "d43",
+      "motiv": "Apeluri: API-ul nu se gaseste in codul platformei."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"platforma_caz__\"]",
+      "ro": 5,
+      "en": 3,
+      "cod": [
+        "poarta-juridica-40-41",
+        "d43",
+        "d49"
+      ],
+      "motiv": "Cazuri: 'Scoli si universitati' (hartia predata) si 'Asigurari' (intrebarea pe WhatsApp) ies."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"platforma_cardIntrebare__\"]",
+      "ro": 4,
+      "en": 2,
+      "cod": [
+        "d49",
+        "d43"
+      ],
+      "motiv": "BlocIntrebari: cardurile 'Intrebari si de pe teren' (WhatsApp) si 'Termene si alerte' (alertele) ies."
+    },
+    {
+      "tip": "camp",
+      "selector": "a[href^=\"/solutii\"]",
+      "ro": 1,
+      "en": 0,
+      "cod": "d38",
+      "motiv": "Legatura spre paginile de segment."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_pas__\"]",
+      "ro": 2,
+      "en": 1,
+      "cod": "d49",
+      "motiv": "CtaFinalInchis: pasul 'Poza pe WhatsApp'."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_rezultat__\"]",
+      "ro": 1,
+      "en": 0,
+      "cod": "val-ro-i2",
+      "motiv": "CtaFinalInchis: rezultatul 'Pus in dosarul Transport' (clasarea automata)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_punctVerde",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultat",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatCutie",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatFisier",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatOra",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatStare",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatText",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    }
+  ],
+  "_nedeclarate": [
+    "Campurile extrase (val-ro-1.1), WhatsApp (d49), hartia (poarta-juridica-40-41), AES/TLS (d31) din erou, piloni, comparatie, suveranitate, conformitate si intrebari: schimbari de text in elemente care raman; se masoara cu textul, in felia paginii.",
+    "CtaFinalInchis: butonul 'Un tur prin aplicatie' (/incepe nu exista pe 3s.md) - fara cod de temei pana la raspunsul owner-ului."
+  ]
+}

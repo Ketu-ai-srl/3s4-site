@@ -1,0 +1,49 @@
+{
+  "_nota": "Lista INCHISA a codurilor de temei pentru randurile listelor de congruenta (config/congruenta/<pereche>.json). Un rand fara cod sau cu un cod care nu e aici e refuzat de tests/congruenta.test.ts. Codurile dNN sunt deciziile owner-ului proiectului; ultimele trei sunt reguli de lucru fara numar de decizie pana la raspunsul owner-ului, si se inlocuiesc cu numarul cand il primesc.",
+  "coduri": {
+    "d3": {
+      "fel": "decizie",
+      "rezumat": "Fara formulare pe 3s.md: contactul se face prin canale (WhatsApp, telefon, e-mail)."
+    },
+    "d29": {
+      "fel": "decizie",
+      "rezumat": "Editia /ro a lui 3s.md are text propriu, in romana de business, nu copia textului de pe site-ul RO."
+    },
+    "d31": {
+      "fel": "decizie",
+      "rezumat": "AES-256, TLS 1.2+ si accesul pe persoana si dosar raman in afara lansarii pe 3s.md."
+    },
+    "d38": {
+      "fel": "decizie",
+      "rezumat": "Paginile de segment (solutii pe industrie) nu se lanseaza pe 3s.md; nicio legatura spre ele."
+    },
+    "d42": {
+      "fel": "decizie",
+      "rezumat": "Gazduirea se descrie ca: in UE, regiunea principala Frankfurt."
+    },
+    "d43": {
+      "fel": "decizie",
+      "rezumat": "Functiile care nu se gasesc in codul platformei nu apar pe paginile de lansare (portal, API, reguli automate, stocare proprie, integrari)."
+    },
+    "d49": {
+      "fel": "decizie",
+      "rezumat": "Asistentul pe WhatsApp iese de pe 3s.md; WhatsApp ramane canal de contact cu un om."
+    },
+    "d54": {
+      "fel": "decizie",
+      "rezumat": "Pretul in EUR peste tot pe 3s.md; zero RON."
+    },
+    "val-ro-1.1": {
+      "fel": "regula",
+      "rezumat": "Faptele confirmate: eticheta automata de tip, fara campuri extrase din documente."
+    },
+    "val-ro-i2": {
+      "fel": "regula",
+      "rezumat": "Clasarea automata in dosare e o intrebare deschisa; nu se afirma pana la raspuns."
+    },
+    "poarta-juridica-40-41": {
+      "fel": "regula",
+      "rezumat": "Hartia, scanarea facuta de 3S si originalele: permise de deciziile 40-41, tinute deoparte pe 3s.md pana la rescrierea juridica."
+    }
+  }
+}

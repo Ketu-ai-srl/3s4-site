@@ -26,8 +26,9 @@
 //     de jos, etichetele lobilor se muta in partea libera a lobului; forma buclei ramane aceeasi;
 //   - popover-ul se inchide si cu Escape si nu iese din fereastra la 390 (§1.6.2, §1.7).
 
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { EROU } from "@/content/acasa";
+import type { Legatura, NumeIconita } from "@/content/navigatie";
 import Buton from "@/components/primitive/Buton";
 import Iconita from "@/components/primitive/Iconita";
 import Sigla from "@/components/primitive/Sigla";
@@ -67,8 +68,44 @@ function Coloana({ className }: { className: string }) {
   );
 }
 
-export default function Erou() {
-  const e = EROU;
+/**
+ * Continutul eroului, pe editie. Tipul e structural, declarat aici: constanta RO (`EROU`) il satisface
+ * fara nicio editare, iar campurile pe care alta editie nu le are sunt optionale si se randeaza numai
+ * cand exista (pe RO exista mereu, deci ramura da acelasi DOM).
+ */
+export type ContinutErou = {
+  pastile: {
+    intrebare: { text: string; iconita: NumeIconita };
+    /** Pastila-legatura; fara ea, ramane numai pastila cu popover-ul. */
+    legatura?: Legatura & { iconita: NumeIconita };
+  };
+  popover: { randuri: { iconita: NumeIconita; text: string }[]; legatura: Legatura };
+  titlu: { primaPropozitie: string; aDouaInainteDeAccent: string; accent: string };
+  subtitlu: string;
+  /** Butoanele implicite; ignorate cand pagina da `butoane`. */
+  butonPrincipal?: Legatura;
+  butonSecundar?: Legatura;
+  nota?: string;
+  bucla: {
+    lobStanga: string;
+    lobDreapta: string;
+    noduri: { pozitie: keyof typeof FRACTII_NODURI; eticheta: string; iconita: NumeIconita }[];
+    /** Eticheta si pastila centrului; fara ele, centrul arata numai sigla. */
+    centru?: { eticheta: string; pastila: string };
+    legenda?: string;
+  };
+};
+
+export type ErouProps = {
+  continut?: ContinutErou;
+  /** Locul butoanelor, cand editia are alt canal decat butoanele implicite. */
+  butoane?: ReactNode;
+  /** `false`: centrul buclei nu e buton si macheta nu se incarca (`ScenaErou`). Absenta pe RO. */
+  lansare?: boolean;
+};
+
+export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
+  const e = continut;
   const cometa = liniutaCometa(CAP_COMETA_STATIC);
 
   const desen = (
@@ -120,13 +157,13 @@ export default function Erou() {
     </Fragment>
   );
 
-  const legenda = (
+  const legenda = e.bucla.legenda ? (
     <p key="legenda" className={s.legenda}>
       <Coloana className={s.coloana} />
       <span className={s.legendaText}>{e.bucla.legenda}</span>
       <Coloana className={s.coloana} />
     </p>
-  );
+  ) : null;
 
   const popoverRanduri = e.popover.randuri.map((r) => ({
     text: r.text,
@@ -153,11 +190,13 @@ export default function Erou() {
                   </Tinta>
                 }
               />
-              <Tinta legatura={e.pastile.legatura} className={s.pastila}>
-                <Iconita nume={e.pastile.legatura.iconita} marime={14} contur={1.8} className={s.pastilaIconita} />
-                <span>{e.pastile.legatura.text}</span>
-                <Iconita nume="arrow-right" marime={12} contur={2.2} className={s.pastilaSageata} />
-              </Tinta>
+              {e.pastile.legatura ? (
+                <Tinta legatura={e.pastile.legatura} className={s.pastila}>
+                  <Iconita nume={e.pastile.legatura.iconita} marime={14} contur={1.8} className={s.pastilaIconita} />
+                  <span>{e.pastile.legatura.text}</span>
+                  <Iconita nume="arrow-right" marime={12} contur={2.2} className={s.pastilaSageata} />
+                </Tinta>
+              ) : null}
             </div>
 
             <div className={s.titluBloc}>
@@ -171,14 +210,22 @@ export default function Erou() {
 
             <div className={s.actiuni}>
               <div className={s.butoane}>
-                <Buton varianta="plin" marime="mare" sageata stralucire legatura={e.butonPrincipal}>
-                  {e.butonPrincipal.text}
-                </Buton>
-                <Buton varianta="contur" marime="mare" iconitaInainte="circle-play" legatura={e.butonSecundar}>
-                  {e.butonSecundar.text}
-                </Buton>
+                {butoane ?? (
+                  <>
+                    {e.butonPrincipal ? (
+                      <Buton varianta="plin" marime="mare" sageata stralucire legatura={e.butonPrincipal}>
+                        {e.butonPrincipal.text}
+                      </Buton>
+                    ) : null}
+                    {e.butonSecundar ? (
+                      <Buton varianta="contur" marime="mare" iconitaInainte="circle-play" legatura={e.butonSecundar}>
+                        {e.butonSecundar.text}
+                      </Buton>
+                    ) : null}
+                  </>
+                )}
               </div>
-              <p className={s.nota}>{e.nota}</p>
+              {e.nota ? <p className={s.nota}>{e.nota}</p> : null}
             </div>
           </div>
 
@@ -189,8 +236,8 @@ export default function Erou() {
               legenda={legenda}
               sigla={<Sigla key="sigla" forma="marca" inaltime={40} alt="" />}
               sageata={<Iconita key="sageata" nume="arrow-right" marime={12} contur={2.4} />}
-              etichetaCentru={e.bucla.centru.eticheta}
-              pastilaCentru={e.bucla.centru.pastila}
+              {...(e.bucla.centru ? { etichetaCentru: e.bucla.centru.eticheta, pastilaCentru: e.bucla.centru.pastila } : {})}
+              {...(lansare === false ? { lansare } : {})}
             />
           </div>
         </div>

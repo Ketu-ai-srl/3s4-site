@@ -1,0 +1,284 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "P01",
+  "ro": "/",
+  "pagini_3s_md": [
+    "/",
+    "/ro"
+  ],
+  "randuri": [
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "acasa_integrari",
+        "eticheta": "integrari-fraza"
+      },
+      "cod": "d43",
+      "motiv": "BandaIntegrari: integrarile nu se gasesc in codul platformei."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"Erou_pastile__\"] > [class*=\"Erou_pastila__\"]",
+      "ro": 1,
+      "en": 0,
+      "cod": "d43",
+      "motiv": "Erou: a doua pastila (legatura spre o functie scoasa)."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"Erou_popoverRand__\"]",
+      "ro": 3,
+      "en": 1,
+      "cod": [
+        "d31",
+        "d43",
+        "d49"
+      ],
+      "motiv": "Erou: randurile 1 (AES-256, TLS) si 3 (WhatsApp) ale popover-ului ies; ramane randul gazduirii."
+    },
+    {
+      "tip": "camp",
+      "selector": "[data-eticheta-nod]",
+      "ro": 4,
+      "en": 4,
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Erou: nodurile 'originale' si 'digitizare' isi schimba eticheta, nu numarul (geometria buclei are 4 pozitii)."
+    },
+    {
+      "tip": "camp",
+      "selector": "p[class*=\"Erou_legenda__\"]",
+      "ro": 1,
+      "en": 0,
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Erou: legenda buclei (drumul hartiei)."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"Machete_insignaVerde__\"]",
+      "ro": 4,
+      "en": 0,
+      "cod": "poarta-juridica-40-41",
+      "motiv": "FunctionalitatiAcasa: insigna 'Scanat de 3S' din macheta cautarii."
+    },
+    {
+      "tip": "camp",
+      "selector": "figure[class*=\"Machete_portal__\"]",
+      "ro": 2,
+      "en": 0,
+      "cod": "d43",
+      "motiv": "FunctionalitatiAcasa: macheta portalului clientilor (pasul Store), in varianta mobila si in cea lata."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"acasa_cifra__\"]",
+      "ro": 3,
+      "en": 2,
+      "cod": "d31",
+      "motiv": "BandaCifre: cifra AES-256."
+    },
+    {
+      "tip": "camp",
+      "selector": "#intrebari [class*=\"Acordeon_startElement__\"]",
+      "ro": 4,
+      "en": 3,
+      "cod": "poarta-juridica-40-41",
+      "motiv": "FaqAcasa: intrebarea despre hartie."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_pas__\"]",
+      "ro": 2,
+      "en": 1,
+      "cod": "d49",
+      "motiv": "CtaFinalInchis: pasul 'Poza pe WhatsApp'."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_rezultat__\"]",
+      "ro": 1,
+      "en": 0,
+      "cod": "val-ro-i2",
+      "motiv": "CtaFinalInchis: rezultatul 'Pus in dosarul Transport' (clasarea automata)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Erou_pastilaSageata",
+      "cod": "d43",
+      "motiv": "Sageata pastilei scoase; nu mai apare in alt loc al eroului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Erou_coloana",
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Clasa legendei buclei din erou, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Erou_legenda",
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Clasa legendei buclei din erou, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Erou_legendaText",
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Clasa legendei buclei din erou, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_insignaVerde",
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Clasa insignei 'Scanat de 3S', scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_avatar",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_cip",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_fNumar",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_fNume",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_folder",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_foldere",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_panou",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_portal",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_subsolDreapta",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_subsolPanou",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_subsolStanga",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_tInfo",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_tNume",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_tRol",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_tab",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_taburi",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Machete_vizibilPentru",
+      "cod": "d43",
+      "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_punctVerde",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultat",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatCutie",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatFisier",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatOra",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatStare",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatText",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    }
+  ],
+  "_nedeclarate": [
+    "CtaFinalInchis: butonul 'Un tur prin aplicatie' (/incepe nu exista pe 3s.md) - fara cod de temei pana la raspunsul owner-ului.",
+    "Erou: lansarea machetei (d43, d49) - se incarca dupa clic, nu e in HTML-ul servit; se masoara in felia startului.",
+    "Constructor, GrilaIndustrii, CardEnterprise - de decis de owner; nu se declara pana la decizie.",
+    "Testimonial: textul se schimba (d43, d49), forma ramane - nu e un rand de forma."
+  ]
+}

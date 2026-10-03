@@ -7,8 +7,16 @@ import Iconita from "@/components/primitive/Iconita";
 import Reveal from "@/components/primitive/Reveal";
 import s from "./acasa.module.css";
 
-export default function Testimonial() {
-  const t = TESTIMONIAL;
+/** Continutul testimonialului, pe editie; tip structural, constanta RO (`TESTIMONIAL`) il satisface. */
+export type ContinutTestimonial = {
+  esteCitat: boolean;
+  fraza: string;
+  continuare: string;
+  atribuire: { rol: string; firma: string };
+};
+
+export default function Testimonial({ continut = TESTIMONIAL }: { continut?: ContinutTestimonial }) {
+  const t = continut;
   const Fraza = t.esteCitat ? "blockquote" : "div";
   return (
     <section className={s.testimonial}>
