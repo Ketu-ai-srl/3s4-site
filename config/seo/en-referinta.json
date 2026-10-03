@@ -1,0 +1,37 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei en-referinta: paginile EN G1, G2 si G3, din Anexa B a arhitecturii continutului EN. Primul paragraf al fiecarei pagini e capsula (59, 59 si 50 de cuvinte).",
+  "raspuns_autonom": {
+    "/guides/e-invoice-archiving-eu": {
+      "intrebare": "How long must e-invoices be kept in the EU?",
+      "entitati": [
+        "e-invoice",
+        "archiving",
+        "Germany",
+        "France",
+        "Poland",
+        "Belgium",
+        "Romania"
+      ]
+    },
+    "/guides/records-retention-moldova": {
+      "intrebare": "How long must company records be kept in Moldova?",
+      "entitati": [
+        "Moldova",
+        "invoices",
+        "6 years",
+        "Order 57/2016",
+        "Law 287/2017"
+      ]
+    },
+    "/compare/3s-vs-google-and-box": {
+      "intrebare": "Should I choose 3S, Gemini Notebook, Gemini in Google Drive or Box AI?",
+      "entitati": [
+        "3S",
+        "Gemini Notebook",
+        "NotebookLM",
+        "Google Drive",
+        "Box AI"
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor RO-MD din grupul acasa si contact (src/content/rute-ro-md.ts): pagina de start /ro si pagina de contact /ro/contact de pe 3s.md. Pe /ro/contact lipseste adresa de e-mail: pana la P-40 pagina nu o numeste (varianta fisei de dinainte de P-40). Rutele sunt ale editiei ro-MD, deci pe build-ul romanesc declaratiile se verifica numai ca forma (tests/browser/ajutor/raspunsuri.ts); pe copia 3s.md le masoara tests/browser/ro-md-acasa-contact.spec.ts.",
+  "raspuns_autonom": {
+    "/ro": {
+      "intrebare": "Ce este 3S Scan Store Solve?",
+      "entitati": [
+        "3S Scan Store Solve",
+        "arhivă digitală",
+        "documentul-sursă",
+        "Frankfurt"
+      ]
+    },
+    "/ro/contact": {
+      "intrebare": "Cum contactez echipa 3S?",
+      "entitati": [
+        "3S",
+        "WhatsApp",
+        "+373 68 055 599",
+        "română",
+        "engleză"
+      ]
+    }
+  }
+}

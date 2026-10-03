@@ -29,12 +29,12 @@ export const pagina: PaginaContinut = {
   meta: {
     titlu: "3S Platform: A Document Archive That Answers With Sources",
     descriere:
-      "See how 3S takes in documents, keeps an archive register and answers questions with the source shown. Hosted in the EU (Frankfurt).",
+      "See how 3S takes in documents, lets you set a retention period per folder and answers questions with the source shown. Hosted in the EU (Frankfurt).",
     cale: "/platform",
   },
   h1: "The 3S platform: documents in, cited answers out",
   capsula:
-    "The 3S platform takes in the documents you upload from the browser, including files you already have as scans. It recognizes each one, logs who opens it and keeps the archive register. Then you ask questions, and each answer shows the source it came from.",
+    "The 3S platform takes in the documents you upload from the browser, including files you already have as scans. It recognizes each one and logs who opens it. You can set a retention period for each folder, and it applies to the documents in it. Then you ask questions, and each answer shows the source it came from.",
   sectiuni: [
     {
       cheie: "documents-in",
@@ -52,7 +52,7 @@ export const pagina: PaginaContinut = {
             titlu: "The path of a document through 3S",
             randuri: [
               ["In", "Upload from the browser, including files already scanned."],
-              ["In 3S", "Recognize, log who opens each document, keep the archive register."],
+              ["In 3S", "Recognize, log who opens each document, set a retention period per folder."],
               ["Out", "Answers with the source, export."],
             ],
           },
@@ -61,11 +61,11 @@ export const pagina: PaginaContinut = {
     },
     {
       cheie: "retention",
-      titlu: "Does 3S record how long each document is kept?",
+      titlu: "Can I set how long documents are kept?",
       blocuri: [
         {
           paragrafe: [
-            "Yes. 3S keeps the archive register, with a retention period for each document. Retention rules differ from country to country, so our guides give the primary source and the check date for [Moldova](/guides/records-retention-moldova) and for [e-invoices in the EU](/guides/e-invoice-archiving-eu).",
+            "Yes. You can set a retention period for each folder, and it applies to the documents in it. Retention rules differ from country to country, so our guides give the primary source and the check date for [Moldova](/guides/records-retention-moldova) and for [e-invoices in the EU](/guides/e-invoice-archiving-eu).",
           ],
         },
       ],
@@ -117,7 +117,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/platform",
       name: "3S Platform: A Document Archive That Answers With Sources",
       description:
-        "See how 3S takes in documents, keeps an archive register and answers questions with the source shown. Hosted in the EU (Frankfurt).",
+        "See how 3S takes in documents, lets you set a retention period per folder and answers questions with the source shown. Hosted in the EU (Frankfurt).",
       inLanguage: "en",
       isPartOf: { "@id": ID.site },
       about: { "@id": ID.organizatie },

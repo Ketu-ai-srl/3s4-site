@@ -24,10 +24,17 @@ import { DESCRIERE_EN } from "@/components/seo/date-structurate";
 import type { CodEditie } from "./editii";
 import { editiaRadacinii, urlAbsolut } from "./site";
 
-/** Rezumatul in engleza (citatul de sub titlu): textul aprobat al site-ului international, fara cifre. */
+/**
+ * Rezumatul in engleza (citatul de sub titlu): textul aprobat al site-ului international, fara cifre.
+ *
+ * GAZDUIREA (decizia 42 a owner-ului): platforma se descrie ca gazduita in UE, cu Frankfurt ca regiune
+ * principala, la fel ca paginile EN. Forma de dinainte, care numea tara si o singura regiune UE, e
+ * interzisa; o pazeste `tests/llms-en.test.ts`. Gazda serverului site-ului e alt fapt si nu se
+ * scrie aici.
+ */
 export const REZUMAT_EN =
   DESCRIERE_EN +
-  " It works in the browser. Files are stored in Germany, in one EU region. 3S is operated from Moldova. Its plans are priced in euros.";
+  " It works in the browser. Files are stored in the EU, with Frankfurt as the primary region. 3S is operated from Moldova. Its plans are priced in euros.";
 
 /** Textul unei legaturi Markdown, fara parantezele drepte care i-ar rupe forma. */
 function eticheta(text: string): string {

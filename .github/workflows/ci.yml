@@ -131,14 +131,19 @@ jobs:
         run: |
           python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-staging.log"
           grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-staging.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
-      # Pe productie, INFORMATIV pana la poarta B: raman intentionat marcajele reprezentantului UE si N23 (tara gazdei),
-      # care asteapta juristul si contractul gazdei. Pasul nu pica jobul; iesirea numeste ce mai opreste publicarea.
+      # Pe productie, INFORMATIV pana la poarta B: raman intentionat marcajele reprezentantului UE (asteapta juristul),
+      # N20 (acceptarea termenilor pe client) si N26 (stergerea completa a datelor unui client), cum le raporteaza
+      # poarta pe productie; N23 (tara gazdei) a iesit din textele juridice. Pasul nu pica jobul; iesirea numeste ce
+      # mai opreste publicarea.
       # Trecerea lui pe blocant e pasul portii B, nu al feliei.
       - name: Poarta juridica 3s.md (productie, informativ)
         run: |
           python .claude/scripts/porti/poarta-juridic.py --mediu productie || echo "poarta juridica pe productie a iesit $? (informativ pana la poarta B)"
       # Poarta de SEO pe HTML-ul build-ului 3s.md: CANALE_JSON din profil e in mediu, deci telefonul canalului e permis in JSON-LD, si numai el.
       - run: python .claude/scripts/porti/poarta-seo.py
+      # Reciprocitatea hreflang pe build-ul 3s.md: profilul (en, ro-MD) se citeste din build, perechile asteptate din
+      # src/content/echivalente.ts. Pe build-ul romanesc poarta ruleaza in porti:build si cere zero alternate.
+      - run: python .claude/scripts/porti/poarta-reciprocitate.py
       - name: Proba editiilor, pe serverul build-ului 3s.md
         run: |
           pnpm exec next start -p 4750 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-md.log" 2>&1 &

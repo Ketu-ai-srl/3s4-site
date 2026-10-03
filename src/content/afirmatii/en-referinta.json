@@ -1,0 +1,362 @@
+[
+  {
+    "id": "en-referinta-efacturare-ue-art-247",
+    "text": "Each EU Member State determines how long invoices are stored; a Member State may require the original form and the data that guarantee authenticity and integrity, may restrict storage in a country without a mutual-assistance or online-access instrument, and may ask for a translation only for control purposes; tax authorities may access, download and use invoices stored electronically with online access",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "Directiva 2006/112/CE, versiunea consolidată din 14.04.2025 (EUR-Lex, CELEX 02006L0112-20250414), art. 247 alin. (1)-(3), art. 248a și art. 249, citite la sursă pe 30.09.2026; intrare nouă propusă de fișa paginii G1. Rămâne neconfirmată până la reverificarea surselor dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-arhivare-de-8-ani",
+    "text": "Germany: invoices are kept 8 years, counted from the end of their calendar year of issue, and the period does not end while a dependent assessment period is still running",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "UStG § 14b alin. (1); AO § 147 alin. (1) pct. 4 și alin. (3)-(4) (gesetze-im-internet.de), citite pe 30.09.2026. Cifră de termen: neconfirmată până la reverificarea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-arhivare-fr-10-ani-comercial",
+    "text": "France: accounting documents and supporting documents, invoices included, are kept 10 years from the close of the financial year",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "Codul comercial francez, art. L123-22 (Legifrance); Service-Public, fișa F10029; citite pe 30.09.2026. Cifră de termen: neconfirmată până la reverificarea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-arhivare-fr-fiscal-6-10-ani",
+    "text": "France: the tax-control period is 6 years in the text in force today and 10 years for documents whose period expires after January 1, 2027 (Law 2026-534, art. 36); the BOFiP commentary in force since September 3, 2025, still says 6 years",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "Codul de procedură fiscală, art. L102 B; Legea 2026-534 din 25.06.2026, art. 36 (JORF 26.06.2026); BOFiP BOI-CF-COM-10-10-30 (versiunea din 03.09.2025), par. 1 și 10; citite pe 30.09.2026. BOFiP se recitește înainte de poarta B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-arhivare-pl-ksef-10-ani",
+    "text": "Poland: KSeF stores structured invoices for 10 years, counted from the end of their year of issue, a period linked to the input VAT correction periods",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "Legea TVA poloneză, art. 112aa alin. (1) (Dz. U. 2025 poz. 775); Ministerul Finanțelor, KSeF Q&A 10 și KSeF 2.0 Q&A 3 și 75; citite pe 30.09.2026. Cifră de termen: neconfirmată până la reverificarea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-arhivare-pl-in-afara-ksef",
+    "text": "Poland: outside KSeF, or after its 10 years, invoices are kept until the tax liability is time-barred, 5 years after the end of the calendar year when the tax payment was due",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "Legea TVA poloneză, art. 112, 112a și 112aa alin. (2); Ordonanța fiscală, art. 70 alin. 1 (Dz. U. 2025 poz. 111); KSeF 2.0 Q&A 82; citite pe 30.09.2026. Obligația proprie a contribuabilului se recitește înainte de poarta B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-arhivare-be-7-ani",
+    "text": "Belgium: invoices are kept 7 years from January 1 of the year after the invoice date, the same as paper invoices, and 15 or 25 years for invoices tied to VAT deduction on immovable investment goods let with VAT",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "Legea din 18.12.2025 (Justel, dosarul 2025121806), art. 97 și 101; BOSA, articolul despre păstrarea facturilor primite prin facturare electronică (08.04.2026); citite pe 30.09.2026. Textul consolidat al art. 60 par. 3 din Codul TVA nu s-a încărcat la citire: se citește înainte de poarta B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-ro-facturi-5-ani",
+    "text": "Romania: invoices are kept 5 years, starting on July 1 of the year that follows the close of the financial year in which they were prepared (10 years, and 50 for payroll statements, before January 15, 2023); documents on an asset with a useful life above 5 years are kept for that life, and records on capital goods until 5 years after the VAT adjustment period ends",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-ro-facturi-5-ani (confirmată pe site-ul RO): Legea nr. 82/1991, art. 25, în forma dată de Legea nr. 36/2023; Normele OMFP nr. 2.634/2015, anexa 1, pct. 40; Codul fiscal, art. 305 alin. (8); recitite pe 30.09.2026. Pe paginile de referință EN cifrele de termen rămân neconfirmate până la reverificarea dinaintea porții B (schimbările din 2026)",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-format-original-de-fr",
+    "text": "Germany and France expect the original structured file to be kept: in Germany at least the structured part, intact and in its original form; in France the original format, with conversions allowed for management if the original is also kept",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "UStG § 14 alin. (1); FAQ-ul Ministerului Federal de Finanțe (martie 2026), întrebările 7, 12a și 13; BOFiP BOI-CF-COM-10-10-30, par. 180 și 360; citite pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-format-pl-ro-be",
+    "text": "Poland: the invoice is the XML file held in KSeF, and a PDF used outside KSeF carries a QR code; Belgium and Romania allow any format, paper or electronic, if authenticity, integrity (and in Romania legibility) are ensured to the end of the retention period, and Belgium strongly recommends keeping the XML",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "KSeF 2.0 Q&A 3, 40, 70 și 75; BOSA, articolul despre păstrarea facturilor (08.04.2026); Codul fiscal român, art. 319 alin. (25) și (35); citite pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-ro-format",
+    "text": "The Romanian e-invoice is an XML file that meets EN 16931 and the national RO_CIUS rules; its original is the XML with the Ministry of Finance's electronic seal, and a PDF is not an e-invoice under these rules",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-ro-format (aceeași stare și aceeași sursă): ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. II pct. 1 și cap. IV, întrebările 2 și 4",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-stocare-locatie",
+    "text": "Germany, France, Poland, Belgium and Romania allow invoices to be stored electronically outside their territory under conditions, mainly online access for the tax authority; Belgium asks that invoices can be handed over without delay, and full online access if a Belgian business keeps them abroad",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "UStG § 14b alin. (2)-(5); BOFiP BOI-CF-COM-10-10-30, par. 360-430; Legea TVA poloneză, art. 112a alin. (2) și (3); BOSA, articolul despre păstrarea facturilor; Codul fiscal român, art. 319 alin. (32)-(34) și (37); Directiva 2006/112/CE, art. 247 alin. (3); citite pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-ro-60-zile",
+    "text": "In Romania, RO e-Factura keeps the XML files available for download for 60 days from publication, then archives them electronically and releases them on request",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-ro-60-zile (aceeași stare și aceeași sursă): ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. III pct. 5 (Arhivarea fișierelor XML)",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-de-calendar",
+    "text": "Germany: every domestic business must be able to receive e-invoices from January 1, 2025; for issuing, paper and another electronic format agreed by the recipient remain allowed to December 31, 2026, or December 31, 2027, for issuers with previous-year turnover up to EUR 800,000; XRechnung and ZUGFeRD 2.0.1 or later meet the requirements, except MINIMUM and BASIC-WL",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-de-calendar (aceeași stare și aceeași sursă): FAQ-ul Ministerului Federal de Finanțe despre e-factura obligatorie (martie 2026), întrebările 2, 7, 11 și 12, recitit pe 30.09.2026",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-fr-calendar",
+    "text": "France: since September 1, 2026, all businesses concerned have to be able to receive e-invoices; the duty to issue them, with e-reporting, started on the same date for large and mid-size companies; SMEs and micro-enterprises issue them from September 1, 2027; all through an accredited platform; the start-up guide says penalties are not applied automatically to companies making a serious effort, and the calendar is not postponed",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-fr-calendar (aceeași stare și aceeași sursă): DGFiP, ghidul practic de pornire a facturării electronice la 1 septembrie 2026, recitit pe 30.09.2026 (inclusiv întrebarea 29, despre sancțiuni)",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-pl-calendar",
+    "text": "Poland: KSeF is mandatory from February 1, 2026, for businesses with 2024 sales above PLN 200 million, VAT included, and from April 1, 2026, for all others; some simplifications run to December 31, 2026; the structure is FA(3), and KSeF 2.0 went into production on February 1, 2026",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-pl-calendar (aceeași stare și aceeași sursă): Ministerul Finanțelor, temeiul legal și datele-cheie KSeF; Legea din 05.08.2025 (Dz. U. 2025 poz. 1203); recitite pe 30.09.2026",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-be-calendar",
+    "text": "Belgium: structured e-invoices between Belgian VAT-registered businesses, over Peppol, are mandatory from January 1, 2026; a business that invoices only consumers must still be able to receive them; the general tolerance covered the first three months, and the self-billing tolerance ran to June 30, 2026",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-be-calendar (aceeași stare și aceeași sursă): BOSA, pagina de ansamblu și anunțul despre sfârșitul perioadei de toleranță (07.04.2026), recitite pe 30.09.2026",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-ro-etape-2024",
+    "text": "Romania: reporting of B2B invoices between businesses established in Romania in RO e-Factura from January 1, 2024, and sending through RO e-Factura from July 1, 2024, as XML that meets EN 16931 and RO_CIUS",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-ro-etape-2024 (aceeași stare și aceeași sursă): ANAF, Ghid privind utilizarea sistemului național RO e-Factura, cap. I (etapele I și II)",
+    "confirmat_de": "verificat la sursa oficială de felia flux-efacturare, 2026-09-25 (oglindă); recitit pe 2026-09-30, după fișa paginii G1",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-ue-vida",
+    "text": "Directive (EU) 2025/516: e-invoicing and digital reporting for supplies between Member States from July 1, 2030; states that had, or had authorized, a domestic real-time reporting system before January 1, 2024, may apply the new rules to domestic transactions as late as January 1, 2035",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
+    "stare": "neconfirmat",
+    "sursa": "intrarea efacturare-ue-vida (confirmată pe site-ul RO) acoperă data de 1 iulie 2030; data de 1 ianuarie 2035 vine din art. 6 alin. (5) al Directivei (UE) 2025/516 (EUR-Lex), citit pe 30.09.2026 de autorul fișei G1. Rămâne neconfirmată până la reverificarea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-efacturare-canale-3s",
+    "text": "You can download invoices as XML files from RO e-Factura and upload them to the 3S archive",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts, src/content/en/compare-3s-vs-google-and-box.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării efacturare-canale-3s, NUMAI încărcarea manuală a fișierelor XML (încărcarea de fișiere e funcție de bază, confirmată prin decizia D4b din planul valului S4). Decizia 43 (owner-ul, 2026-10-01) a scos Peppol și Storecove, decizia 49 (owner-ul, 2026-10-02, planul 3s.md §0.1, rândul 49) a scos WhatsApp; primirea pe e-mail a scos-o dispecerul pe aceeași regulă. Nu se afirmă nicio integrare directă cu ANAF sau KSeF",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24 (decizia D4b); îngustată prin deciziile 43 și 49",
+    "data": "2026-10-02"
+  },
+  {
+    "id": "en-referinta-comparatii-registru-termene",
+    "text": "In 3S, you can set a retention period for each folder, and it applies to the documents in it; the activity log records who opens and downloads documents; which period applies to a document is for the customer and their adviser to decide",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts, src/content/en/guides-records-retention-moldova.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării comparatii-registru-termene (decizia D4b din planul valului S4), în forma îngustată pe 02.10.2026 după decizia 43 (planul 3s.md §0.1): codul platformei nu are un registru al arhivei; termenul de păstrare se stabilește pe dosar și acoperă tot ce e sub el, iar jurnalul de activitate consemnează citirile și modificările, grupate pe ferestre de 15 minute sau o oră. Confirmat de furnizorul platformei pe 2026-10-02. Eliminarea la termen nu se scrie (întrebare deschisă pentru owner)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24 (decizia D4b); forma îngustată confirmată de furnizorul platformei, 2026-10-02",
+    "data": "2026-10-02"
+  },
+  {
+    "id": "en-referinta-termene-md-facturi-6-ani",
+    "text": "Moldova: invoices, tax invoices, purchase acts, handover certificates and advance settlements are kept 6 years, counted from January 1 of the year after the file is closed, and until the final judgment if a dispute arises",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-facturi-6-ani (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 228 și nota lui; Instrucțiunea, pct. 2.11 (legis.md, doc_id=125078); recitite pe 30.09.2026. Pe pagina G2 cifrele de termen rămân neconfirmate până la recitirea art. 228 dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-extrase-6-ani",
+    "text": "Moldova: bank documents are kept 6 years, as primary documents",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-extrase-6-ani (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 228; Legea nr. 287/2017, art. 17 alin. (1). Neconfirmată pe G2 până la recitirea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-registre-6-ani-situatii-nedefinite",
+    "text": "Moldova: accounting registers are kept 6 years; annual financial statements are permanent for Archive Fund sources, with no term for others; semi-annual statements and liquidation balance sheets of other organizations, 10 years",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-registre-6-ani-situatii-nedefinite (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 236, 224 și 225 (legis.md, doc_id=125078); recitite pe 30.09.2026. Neconfirmată pe G2 până la recitirea art. 236 dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-mijloace-fixe-6-ani",
+    "text": "Moldova: fixed-asset inventory cards, asset registers and primary documents on fixed assets are kept 6 years after the asset is removed from the balance sheet",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 232 și nota lui, citite în anexa indicator_57.doc pe 30.09.2026; intrare nouă propusă de fișa paginii G2",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-state-6-75-ani",
+    "text": "Moldova: salary payment statements are kept 6 years, or 75 years if no analytical account is kept for each employee; dividend payment statements 6 years; analytical accounts of employees 75 years minus the employee's age when the file is closed; the personal income-tax card of an employee 5 years",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-state-6-75-ani (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 230 și 231; Instrucțiunea, pct. 2.11; recitite pe 30.09.2026. Neconfirmată pe G2 până la recitirea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-personal-75-minus-varsta",
+    "text": "Moldova: personal files of workers and of technical or engineering staff are kept 75 years minus the employee's age when the file is closed; some secondary documents 3 years after dismissal, and some pensioners' files have their own terms",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-personal-75-minus-varsta (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 429 lit. d) și nota articolului, citite în anexa indicator_57.doc pe 30.09.2026. Neconfirmată pe G2 până la recitirea dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-contracte-6-ani",
+    "text": "Moldova: contracts and agreements are kept 6 years after they expire or are performed, and 7 years for contracts on foreign-currency transactions",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-contracte-6-ani (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 257 și nota lui (legis.md, doc_id=125078). Neconfirmată pe G2 până la recitirea art. 257 dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-declaratii-6-7-ani",
+    "text": "Moldova: income tax returns of entities (public authorities and institutions excluded) are kept 7 years",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "oglinda intrării termene-md-declaratii-6-7-ani (confirmată pe site-ul RO): Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 262 și nota lui (legis.md, doc_id=125078). Neconfirmată pe G2 până la recitirea art. 262 dinaintea porții B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-doua-coloane",
+    "text": "The Moldovan Indicator has two columns, one for organizations that are sources for the Archive Fund and one for the others; on every row the guide lists, both columns give the same term",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "Instrucțiunea de aplicare a Indicatorului, pct. 2.4 (legis.md, doc_id=125078); termenele art. 224-262 și 428-431 comparate în ambele copii ale anexei, pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-lege-287-art-17",
+    "text": "Moldova, Law 287/2017, article 17: accounting documents may be kept on paper or in electronic form, accessible at any time and protected from unauthorized changes; lost documents are restored within 3 months; on closure they are handed to the state archives; the article does not say whether a scan can replace a paper original",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "Legea nr. 287/2017, art. 17 alin. (2)-(5), versiunea în vigoare (legis.md, doc_id=154725), citită pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-distrugere",
+    "text": "Moldova: records are destroyed only through the procedure of the Instruction (expert commission, selection protocols, approval by the head of the organization for organizations that are not Archive Fund sources, recycling against handover invoices); destroying Archive Fund documents without authorization is penalized under article 329 of the Contravention Code",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "Instrucțiunea de aplicare a Indicatorului, pct. 3.1, 3.3, 3.7^1, 3.8 și 3.9, versiunea curentă (legis.md, doc_id=125078), citită pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-istoric-5-ani",
+    "text": "Before August 5, 2016, Moldovan companies followed an earlier Indicator (December 3, 1997, never published in the Official Gazette) that set 5 years for primary documents, destroyable only after a tax inspection of the period; the 2016 Indicator raised the term to 6 years and dropped the condition",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "sursă secundară: Monitorul Fiscal (FISC.MD), articolul din 19.08.2016, citit pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-zece-ani",
+    "text": "The Moldovan Indicator uses 10 years only for some financial statements (semi-annual statements and liquidation balance sheets of organizations that are not Archive Fund sources); no 10-year term was found for invoices, registers or bank documents in the Indicator or in Law 287/2017",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "constatare negativă, limitată la articolele citite: Indicatorul documentelor-tip (Ordinul nr. 57/2016), art. 224 și 225; Legea nr. 287/2017, art. 17; citite pe 30.09.2026. Nu e o căutare exhaustivă în toate actele moldovenești",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-termene-md-lege-86-2026",
+    "text": "Moldova: Law 86 of May 21, 2026, takes effect on January 1, 2027; on legis.md its amendment markers in Law 287/2017 sit on article 4 (size limits) and on the harmonization clause, not on article 17; the National Archives Agency lists Order 57/2016 among the acts it applies",
+    "unde": "src/content/en/guides-records-retention-moldova.ts",
+    "stare": "neconfirmat",
+    "sursa": "marcajele tipărite pe legis.md, doc_id=154725 (Legea nr. 287/2017), și lista actelor de pe arhiva.gov.md/acte, citite pe 30.09.2026",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-comparatii-publicitate-comparativa",
+    "text": "The comparison page names Google (Gemini Notebook, Gemini in Google Drive) and Box AI, without logos, with an official source and a read date on every vendor cell",
+    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 11 a owner-ului (30.09.2026; planul 3s.md §0.1): 3S numește Google și Box, cu sursă și dată pe fiecare celulă. Oglinda EN a intrării comparatii-publicitate-comparativa (neconfirmată pe site-ul RO, unde privea alte produse). Regimul juridic al publicității comparative în Republica Moldova n-a fost evaluat",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 (decizia 11)",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-comparatii-marcaje-gemini-notebook",
+    "text": "Gemini Notebook (formerly NotebookLM, renamed July 16, 2026): sources of up to 500,000 words or 200 MB, in-line citations, 50 to 600 sources per notebook by tier (subject to change), free standard access with a Google account, data location not stated on its pages; Google's compliance pages list NotebookLM among the Workspace services in scope",
+    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "stare": "neconfirmat",
+    "sursa": "paginile oficiale Google S1, S4-S8, S9, S11 și S12 din tabelul surselor paginii G3, citite pe 30.09.2026. Fiecare celulă se recitește la sursă înainte de poarta B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-comparatii-marcaje-gemini-drive",
+    "text": "Gemini in Google Drive: cited and grounded answers over Drive content, on Workspace Standard, Plus and Enterprise but not Starter, per-user pricing, data regions by the file creator's policy on supported editions, client-side encryption and e-signatures on some plans, a marketplace of apps; Google's compliance pages list Drive and Gemini in Workspace among the services in scope",
+    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "stare": "neconfirmat",
+    "sursa": "paginile oficiale Google S2, S3, S9, S10, S11 și S12 din tabelul surselor paginii G3, citite pe 30.09.2026. Extinde intrarea comparatii-marcaje-google a site-ului RO; fiecare celulă se recitește la sursă înainte de poarta B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-comparatii-marcaje-box-ai",
+    "text": "Box AI: questions on one file from the Business plan and on up to 10 files from Enterprise Plus, hubs of up to 20,000 files, text processed up to 2 MB per file, citations on hover and through the API, per-user pricing with a minimum of 3 users, Box Zones across 10 regions, KeySafe, 1,500+ integrations, e-sign requests, and the standards Box names on its security and pricing pages",
+    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "stare": "neconfirmat",
+    "sursa": "paginile oficiale Box S13-S19 din tabelul surselor paginii G3, citite pe 30.09.2026 (box.com prin browser, fiindcă refuză cererile simple). Fiecare celulă se recitește la sursă înainte de poarta B",
+    "confirmat_de": "",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "en-referinta-comparatii-nespuse-pe-site",
+    "text": "This site states no certification, no volume limit, no own-storage option, no client portal, no integration list, no service levels and no customer references for 3S, and does not say where the AI features process documents; the 3S cells say so and ask the reader to ask us",
+    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 43 a owner-ului (01.10.2026; planul 3s.md §0.1, rândul 43): funcțiile negăsite în codul platformei ies de pe paginile de lansare, iar celulele 3S pentru portal și stocare proprie spun „Not stated on this site. Ask us.”; decizia D5 (fără recenzii și referințe publicate); fișa paginii G3",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-01 (decizia 43)",
+    "data": "2026-10-01"
+  }
+]

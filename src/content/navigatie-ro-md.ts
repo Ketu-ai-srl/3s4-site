@@ -1,8 +1,9 @@
 // Contractul de navigatie al editiei `ro-MD` (romana pentru Republica Moldova, sub `/ro` pe 3s.md).
 //
 // SURSA: planul valului S4-10, §11 pct. 2b (contractul RO-MD nu are fisa proprie; l-a fixat dispecerul).
-//   - Antetul: sigla spre `/ro`, "Contact" (`/ro/contact`), selectorul EN | RO, CTA-ul "Mesaj pe WhatsApp"
-//     (formulare neutra: adresarea o decide textul paginilor RO-MD).
+//   - Antetul: sigla spre `/ro`, "Contact" (`/ro/contact`), selectorul EN | RO, CTA-ul "Scrie-ne pe WhatsApp"
+//     (adresarea "tu" a paginilor RO-MD, decizia 35; eticheta neutra de la fundatie a fost aliniata de felia
+//     paginilor RO-MD de start si de contact).
 //   - Textele precompletate, pe cale: `/ro` (ro-md-acasa), `/ro/contact` (ro-md-contact), `/ro/juridic/...`
 //     (ro-md-juridic). Orice alta pagina foloseste textul paginii de start.
 //   - Subsolul: coloana "Juridic" (documentele familiei `md`, adresele din `config/juridic-rute.json` editia
@@ -22,7 +23,7 @@ import { ANTET, PALETA, SERTAR, type ColoanaSubsol, type ContractNavigatie, type
 import { emailPePagina, propozitieFaraMarcaj, whatsappPePagina, type TextPePagina } from "@/components/canale/pe-pagina";
 
 /** Eticheta butonului de canal in romana. */
-export const ETICHETA_WHATSAPP_RO_MD = "Mesaj pe WhatsApp";
+export const ETICHETA_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
 
 const SALUT = "Bună ziua, 3S. ";
 

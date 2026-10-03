@@ -120,19 +120,34 @@ describe('rutele juridice pe editie', () => {
 })
 
 describe('echivalentele', () => {
-  it('perechile sunt exact documentele B: en si ro-MD cu adresele din configurare', () => {
-    expect(diferente(asteptat('en'), tabelEchivalente(ECHIVALENTE, 'en'))).toEqual([])
-    expect(diferente(asteptat('ro'), tabelEchivalente(ECHIVALENTE, 'ro-MD'))).toEqual([])
+  // Tabelul are si perechile paginilor de prezentare (startul si contactul, felia ro-md-acasa-contact), pe care le
+  // masoara proba lor. Aici se compara numai perechile cu cheie JURIDICA, adica cheile din `config/juridic-rute.json`;
+  // un document al familiei ramas in tabel peste poarta lui ramane prins, fiindca filtrul e pe cheile din
+  // configurare, nu pe poarta (martorul de mai jos).
+  const CHEI_JURIDICE = new Set(Object.keys(CONFIG.documente))
+  const juridice = (e: Readonly<Record<string, CaiPeEditie>>) => Object.fromEntries(Object.entries(e).filter(([c]) => CHEI_JURIDICE.has(c)))
+
+  it('perechile juridice sunt exact documentele B: en si ro-MD cu adresele din configurare', () => {
+    expect(diferente(asteptat('en'), tabelEchivalente(juridice(ECHIVALENTE), 'en'))).toEqual([])
+    expect(diferente(asteptat('ro'), tabelEchivalente(juridice(ECHIVALENTE), 'ro-MD'))).toEqual([])
+  })
+
+  it('martorii filtrului: tabelul real are si chei nejuridice (deci filtrul lucreaza), iar o pereche juridica C adaugata pe o copie e prinsa', () => {
+    expect(Object.keys(ECHIVALENTE).filter((c) => !CHEI_JURIDICE.has(c)).length).toBeGreaterThan(0)
+    const c = CHEI_C[0]
+    const copie = { ...ECHIVALENTE, [c]: { en: CONFIG.documente[c].en, 'ro-MD': CONFIG.documente[c].ro } }
+    expect(diferente(asteptat('en'), tabelEchivalente(juridice(copie), 'en'))).toEqual(['in plus ' + c])
+    expect(diferente(asteptat('ro'), tabelEchivalente(juridice(copie), 'ro-MD'))).toEqual(['in plus ' + c])
   })
 
   it('fara ro-RO in tabel (gazda romaneasca nu serveste azi aceste pagini)', () => {
     expect(Object.values(ECHIVALENTE).filter((c) => c['ro-RO'] !== undefined)).toEqual([])
   })
 
-  it('fiecare pereche are ruta pe ambele editii, cu aceeasi cheie', () => {
+  it('fiecare pereche juridica are ruta pe ambele editii, cu aceeasi cheie', () => {
     const en = tabelRute(ruteJuridiceEn(true, 'md'))
     const ro = tabelRute(ruteJuridiceRoMd(true, 'md'))
-    for (const [cheie, cai] of Object.entries(ECHIVALENTE)) {
+    for (const [cheie, cai] of Object.entries(juridice(ECHIVALENTE))) {
       expect(en[cheie], cheie).toBe(cai.en)
       expect(ro[cheie], cheie).toBe(cai['ro-MD'])
     }
