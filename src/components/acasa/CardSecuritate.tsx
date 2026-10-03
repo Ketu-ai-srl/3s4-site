@@ -2,12 +2,16 @@
 // stanga, legatura-sageata la dreapta. Sub 768 px trece pe coloana, iar legatura se poate rupe.
 
 import { CARD_SECURITATE } from "@/content/acasa";
+import type { Legatura } from "@/content/navigatie";
 import Iconita from "@/components/primitive/Iconita";
 import LegaturaSageata from "@/components/primitive/LegaturaSageata";
 import s from "./acasa.module.css";
 
-export default function CardSecuritate() {
-  const c = CARD_SECURITATE;
+/** Continutul cardului, pe editie; tip structural, constanta RO (`CARD_SECURITATE`) il satisface. */
+export type ContinutCardSecuritate = { titlu: string; text: string; legatura: Legatura };
+
+export default function CardSecuritate({ continut = CARD_SECURITATE }: { continut?: ContinutCardSecuritate }) {
+  const c = continut;
   return (
     <section className={s.securitate} aria-labelledby="securitate-titlu">
       <div className="container-site">

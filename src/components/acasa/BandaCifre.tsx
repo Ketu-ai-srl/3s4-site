@@ -5,12 +5,15 @@ import { Fragment } from "react";
 import { CIFRE } from "@/content/acasa";
 import s from "./acasa.module.css";
 
-export default function BandaCifre() {
+/** O pereche "cifra + eticheta"; tip structural, constanta RO (`CIFRE`) il satisface. */
+export type ContinutCifra = { cifra: string; eticheta: string };
+
+export default function BandaCifre({ continut = CIFRE }: { continut?: ContinutCifra[] }) {
   return (
     <section className={s.cifre}>
       <div className="container-site">
         <p className={s.cifreRand}>
-          {CIFRE.map((c, i) => (
+          {continut.map((c, i) => (
             <Fragment key={c.cifra}>
               {i > 0 ? <span className={s.cifreSeparator} aria-hidden="true" /> : null}
               <span>

@@ -16,6 +16,10 @@
 //
 // La `prefers-reduced-motion: reduce` bucla ramane cea statica (cometa la 30%, fara puncte, fara
 // respiratie); macheta se deschide direct pe prima scena (§1.6.4).
+//
+// FARA LANSARE (`lansare === false`, pe o editie care nu arata macheta): centrul ramane element
+// simplu si dupa montare, deci nu e buton, si macheta nu se descarca deloc (nici in timpul liber,
+// nici la mouse ori focus). Bucla, punctele si pulsurile raman. Pe RO proprietatea lipseste.
 
 import { useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import {
@@ -80,8 +84,11 @@ export type ScenaErouProps = {
   legenda: ReactNode;
   sigla: ReactNode;
   sageata: ReactNode;
-  etichetaCentru: string;
-  pastilaCentru: string;
+  /** Eticheta accesibila si pastila centrului; fara ele, centrul arata numai sigla. */
+  etichetaCentru?: string;
+  pastilaCentru?: string;
+  /** `false`: fara buton in centru si fara macheta. Absenta = comportamentul de pe RO. */
+  lansare?: boolean;
 };
 
 /** Reporneste animatia unui inel: scoate clasa, forteaza calculul stilului, o pune la loc. */
@@ -100,13 +107,17 @@ export default function ScenaErou({
   sageata,
   etichetaCentru,
   pastilaCentru,
+  lansare,
 }: ScenaErouProps) {
+  const cuLansare = lansare !== false;
   const montat = useMontat();
   const redus = useMiscareRedusa();
   const [faza, setFaza] = useState<Faza>("bucla");
   const spatiuRef = useRef<HTMLDivElement>(null);
   const scenaRef = useRef<HTMLDivElement>(null);
   const centruRef = useRef<HTMLButtonElement>(null);
+  /** Centrul ca element simplu, cand nu e buton: tinta pulsurilor fara lansare. */
+  const centruSimpluRef = useRef<HTMLSpanElement>(null);
   const puncteRef = useRef<SVGGElement>(null);
   /** Momentul primului cadru: ciclul continua din el si dupa intoarcerea din macheta. */
   const inceputRef = useRef<number | null>(null);
@@ -130,7 +141,7 @@ export default function ScenaErou({
       "jos-stanga": scena.querySelector('[data-nod="jos-stanga"]'),
       "sus-dreapta": scena.querySelector('[data-nod="sus-dreapta"]'),
       "jos-dreapta": scena.querySelector('[data-nod="jos-dreapta"]'),
-      centru: centruRef.current,
+      centru: centruRef.current ?? centruSimpluRef.current,
     };
 
     let cadru = 0;
@@ -209,7 +220,7 @@ export default function ScenaErou({
   // intre fara asteptare: la referinta codul ei vine odata cu al eroului (fisa, §4), deci cadrul
   // porneste la 341 ms de la clic. Pe drumul primei picturi nu intra nimic din ea.
   useEffect(() => {
-    if (!montat) return;
+    if (!montat || !cuLansare) return;
     const w = window as Window & {
       requestIdleCallback?: (cb: () => void, optiuni?: { timeout: number }) => number;
       cancelIdleCallback?: (id: number) => void;
@@ -231,7 +242,7 @@ export default function ScenaErou({
       anulat = true;
       window.clearTimeout(t);
     };
-  }, [montat]);
+  }, [montat, cuLansare]);
 
   // Dupa intoarcerea din macheta, focusul revine pe centru, de unde a plecat. Pagina se deruleaza
   // pana la el numai cand omul lucreaza de la tastatura; dupa un clic nu sare nimic.
@@ -273,11 +284,13 @@ export default function ScenaErou({
   const continutCentru = (
     <>
       {sigla}
-      <span className={s.centruPastila} data-pastila-centru="">
-        <span>{pastilaCentru}</span>
-        {sageata}
-      </span>
-      <span className="doar-cititor">{etichetaCentru}</span>
+      {pastilaCentru ? (
+        <span className={s.centruPastila} data-pastila-centru="">
+          <span>{pastilaCentru}</span>
+          {sageata}
+        </span>
+      ) : null}
+      {etichetaCentru ? <span className="doar-cititor">{etichetaCentru}</span> : null}
     </>
   );
 
@@ -321,7 +334,7 @@ export default function ScenaErou({
             </svg>
           ) : null}
           {suprapuneri}
-          {montat ? (
+          {montat && cuLansare ? (
             <button
               ref={centruRef}
               type="button"
@@ -334,12 +347,14 @@ export default function ScenaErou({
               {continutCentru}
             </button>
           ) : (
-            <span className={s.centru}>{continutCentru}</span>
+            <span ref={centruSimpluRef} className={s.centru}>
+              {continutCentru}
+            </span>
           )}
         </div>
         {legenda}
       </div>
-      {faza === "macheta" && Macheta ? <Macheta redus={redus} spatiu={spatiuRef} laInapoi={inapoi} /> : null}
+      {cuLansare && faza === "macheta" && Macheta ? <Macheta redus={redus} spatiu={spatiuRef} laInapoi={inapoi} /> : null}
     </div>
   );
 }

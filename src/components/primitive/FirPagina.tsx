@@ -23,6 +23,8 @@ export type FirPaginaProps = {
   /** Ascuns sub 600 px (pagina de inregistrare). */
   ascunsSub600?: boolean;
   className?: string;
+  /** Eticheta accesibila a firului, in limba editiei (implicit cea romaneasca). */
+  eticheta?: string;
 };
 
 function Chevron() {
@@ -53,10 +55,16 @@ export function dateFir(niveluri: NivelFir[], baza: string = adresaSite()) {
   };
 }
 
-export default function FirPagina({ niveluri, aliniere = "stanga", ascunsSub600 = false, className }: FirPaginaProps) {
+export default function FirPagina({
+  niveluri,
+  aliniere = "stanga",
+  ascunsSub600 = false,
+  className,
+  eticheta = "Fir de navigare",
+}: FirPaginaProps) {
   const clase = [s.fir, aliniere === "centru" ? s.firCentru : "", className ?? ""].filter(Boolean).join(" ");
   return (
-    <nav aria-label="Fir de navigare" className={ascunsSub600 ? s.firAscunsMic : undefined}>
+    <nav aria-label={eticheta} className={ascunsSub600 ? s.firAscunsMic : undefined}>
       <ol className={clase}>
         {niveluri.map((n, i) => {
           const ultim = i === niveluri.length - 1;

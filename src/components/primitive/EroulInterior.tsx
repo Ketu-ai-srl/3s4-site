@@ -34,6 +34,8 @@ export type EroulInteriorProps = {
   /** `cu-intoarcere`: elementele randului de incredere, despartite prin puncte. */
   incredere?: string[];
   idTitlu?: string;
+  /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul din `FirPagina`. */
+  etichetaFir?: string;
 };
 
 export default function EroulInterior({
@@ -47,6 +49,7 @@ export default function EroulInterior({
   inapoi,
   incredere,
   idTitlu,
+  etichetaFir,
 }: EroulInteriorProps) {
   const clasaSectiune =
     varianta === "sector" ? s.erouSector : varianta === "cu-intoarcere" ? s.erouFaraJos : s.erou;
@@ -69,7 +72,12 @@ export default function EroulInterior({
     <section className={clasaSectiune}>
       <div className="container-site">
         <div className={centrat ? s.erouCentrat : s.erouBloc}>
-          <FirPagina niveluri={fir} aliniere={centrat ? "centru" : "stanga"} ascunsSub600={centrat} />
+          <FirPagina
+            niveluri={fir}
+            aliniere={centrat ? "centru" : "stanga"}
+            ascunsSub600={centrat}
+            {...(etichetaFir !== undefined ? { eticheta: etichetaFir } : {})}
+          />
           {inapoi ? (
             <Tinta legatura={inapoi} className={s.erouInapoi}>
               <Iconita nume="arrow-left" marime={14} contur={2} />
