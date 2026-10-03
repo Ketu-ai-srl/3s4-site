@@ -18,6 +18,17 @@ CONTROALE, la fiecare rulare (o poarta fara control pozitiv e decorativa):
 Fixturile se asambleaza la rulare, niciodata scrise pe litere in corpul fisierului:
 altfel poarta care scaneaza depozitul se declanseaza pe propria proba.
 
+EXCEPTIA PE PERECHE (fisier, tipar), una singura: pagina de comparatie EN a lui 3s.md
+(`src/content/en/compare-3s-vs-google-and-box.ts`) si tiparul certificarilor. Pe 3s.md owner-ul a
+decis (decizia 11 din 30.09.2026) ca pagina numeste produsele Google si Box, cu sursa si data pe
+fiecare celula; randul "Certifications the vendor names" spune ce certificari declara FURNIZORII,
+cu sursa lor, adica exact forma ATRIBUITA pe care poarta o permite. Implementarea nu stie sa
+recunoasca atribuirea (negarile sunt numai romanesti, iar numele unei pagini-sursa nu e o negare),
+deci se repara poarta, nu textul. Exceptia e ingusta: alt fisier cu acelasi text e prins, iar
+fisierul exceptat ramane sub celelalte cinci tipare. Compensarea sta in proba paginii
+(`tests/en-referinta.test.ts`): celula 3S a randului de certificari nu numeste nicio certificare.
+TIPARE, NEGARI si FEREASTRA nu se schimba odata cu exceptia. Martorii ei sunt in controale().
+
 CE NU VERIFICA (reziduuri)
 Intrebarea pe care o pune de fapt: "se potriveste vreunul dintre cele sase tipare, fara sa
 existe un cuvant de negare in cele 90 de caractere dinaintea potrivirii?" Nu "e afirmatia
@@ -32,11 +43,14 @@ adevarata" si nu "are afirmatia o sursa".
     vizitator e tratat totusi ca site.
   - Legatura dintre o afirmatie de pe pagina si o intrare in registru NU se verifica aici, si
     nici in alta parte: poarta-evidenta.py masoara forma registrului, nu acoperirea lui.
+  - In fisierul din EXCEPTII tiparul certificarilor nu se aplica deloc: o certificare pe care 3S
+    si-ar atribui-o acolo nu e prinsa de poarta, ci numai de proba paginii, care citeste celula 3S.
 
 LA ROSU: CE AI VOIE SA EDITEZI
   DA  textul acuzat, rescris atribuit catre entitatea care ar scoate actul.
       Intrarea din registrul de afirmatii.
-  NU  TIPARE, NEGARI, FEREASTRA, regula care decide este_site, controale().
+  NU  TIPARE, NEGARI, FEREASTRA, regula care decide este_site, controale(), EXCEPTII.
+      O pereche noua in EXCEPTII cere o decizie a owner-ului, citata in antet, si martorii ei.
 
 IESIRE
     0 = nicio afirmatie interzisa, si controalele au trecut
@@ -109,6 +123,14 @@ def fisiere():
 NEGARI = re.compile(r'\b(nu|f[aă]r[aă]|nici|zero)\b', re.I)
 FEREASTRA = 90
 
+# Exceptia pe pereche (cale relativa cu `/`, numele tiparului). Motivul e in antet: decizia 11 pe 3s.md,
+# certificarile FURNIZORILOR, atribuite lor, cu sursa si data. O pereche, nu un fisier si nu un tipar.
+TIPAR_CERTIFICARI = 'certificare pe care nu o detinem'
+FISIER_COMPARATIE = 'src/content/en/compare-3s-vs-google-and-box.ts'
+EXCEPTII = {
+    (FISIER_COMPARATIE, TIPAR_CERTIFICARI),
+}
+
 
 def cauta(text, este_site=True):
     """Intoarce lista de (nume_tipar, numar_rand, fragment).
@@ -138,6 +160,15 @@ def cauta(text, este_site=True):
     return gasiri
 
 
+def gasiri_fisier(rel, text, este_site=True):
+    """`cauta` pe textul unui fisier, fara gasirile perechilor (fisier, tipar) din EXCEPTII.
+
+    `rel` e calea relativa la radacina, cu orice separator; se compara cu `/`.
+    """
+    cale = rel.replace(os.sep, '/').replace('\\', '/')
+    return [g for g in cauta(text, este_site) if (cale, g[0]) not in EXCEPTII]
+
+
 def controale():
     """Doua controale opuse. Intoarce None daca amandoua trec, altfel motivul."""
     # Martorul pozitiv se asambleaza din bucati, ca fisierul asta sa nu fie el insusi o instanta.
@@ -161,6 +192,19 @@ def controale():
              '2026, ca sa le puteti verifica singur la sursa.')
     if any('sigiliu' in n for n, _, _ in cauta(onest)):
         return 'martorul de sigiliu, negativ: forma onesta cu data a fost prinsa - tiparul e prea lat'
+
+    # Martorii exceptiei pe pereche. Fixtura (certificarea atribuita unui furnizor) se asambleaza la
+    # rulare; aceeasi fraza trebuie prinsa intr-un alt fisier si lasata in pace in fisierul exceptat.
+    certificare = ' '.join(['The', 'vendor', 'names', 'SO' + 'C', '2', 'and', 'ISO', '2700' + '1', 'on', 'its', 'pages.'])
+    exceptat = FISIER_COMPARATIE
+    alt_fisier = exceptat.replace('compare-', 'alta-pagina-')
+    if not any(n == TIPAR_CERTIFICARI for n, _, _ in gasiri_fisier(alt_fisier, certificare)):
+        return 'martorul exceptiei, pozitiv: certificarea intr-un alt fisier nu a fost prinsa - exceptia e prea lata'
+    if any(n == TIPAR_CERTIFICARI for n, _, _ in gasiri_fisier(exceptat, certificare)):
+        return 'martorul exceptiei, negativ: fisierul exceptat a fost acuzat pe tiparul certificarilor'
+    # Exceptia nu scoate fisierul de sub celelalte tipare: sigiliul ramane prins si acolo.
+    if not any('sigiliu' in n for n, _, _ in gasiri_fisier(exceptat, sigiliu)):
+        return 'martorul exceptiei, pozitiv: fisierul exceptat a scapat si de celelalte tipare'
     return None
 
 
@@ -185,7 +229,7 @@ def main():
             return 2
         # Fisierele din `src/` ajung la vizitator; `docs/` si `.claude/` nu.
         este_site = os.path.relpath(cale, RADACINA).replace(os.sep, '/').startswith('src/')
-        for nume, numar, fragment in cauta(text, este_site):
+        for nume, numar, fragment in gasiri_fisier(os.path.relpath(cale, RADACINA), text, este_site):
             rel = os.path.relpath(cale, RADACINA)
             print(rel + ':' + str(numar) + '  ' + nume + '  | ' + fragment)
             total += 1

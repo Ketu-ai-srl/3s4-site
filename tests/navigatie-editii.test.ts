@@ -283,11 +283,11 @@ describe('selectorul pe editii (limbiPentruCale)', () => {
 })
 
 describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', () => {
-  it('antetul: sigla spre /ro, Contact, CTA-ul "Mesaj pe WhatsApp" cu textul paginii', () => {
+  it('antetul: sigla spre /ro, Contact, CTA-ul "Scrie-ne pe WhatsApp" cu textul paginii', () => {
     const md = navigatieRoMd(CANALE_3S_MD, null)
     expect(md.antet.sigla.href).toBe('/ro')
     expect(md.antet.legaturi.map((l) => [l.text, l.href])).toEqual([['Contact', '/ro/contact']])
-    expect(md.antet.cta.text).toBe('Mesaj pe WhatsApp')
+    expect(md.antet.cta.text).toBe('Scrie-ne pe WhatsApp')
     const text = (cale: string) => decodeURIComponent(new URL(ctaPeCale(md.antet.cta, cale).href ?? '').searchParams.get('text') ?? '')
     expect(text('/ro')).toBe(TEXTE_WHATSAPP_RO_MD[0].text)
     expect(text('/ro/contact')).toContain('[ref:ro-md-contact]')

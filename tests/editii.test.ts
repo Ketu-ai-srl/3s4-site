@@ -268,7 +268,11 @@ describe('layout-urile radacina si pagina de negasit (proba-sora a celei din tes
     // autor din subsol si textul legaturii in romana spre informatiile legale (legatura e in limba operatorului, pe
     // fiecare pagina EN, si apare cand ruta exista). Orice alt caracter in afara ASCII e text romanesc scapat in
     // piesele EN - de pilda o eticheta de buton ramasa in romana.
-    const PERMISE = ['©', 'Informații legale']
+    // Plus eticheta indexului ro-MD, derivata din manifest (ruta a carei cale e prefixul editiei ro-MD), nu scrisa
+    // pe litere: pagina randeaza legatura spre romana numai cand exista `/ro`, cu hrefLang ro-MD, deci eticheta e in
+    // limba tintei. Se scoate numai sirul exact al etichetei; orice alt cuvant cu diacritice ramane prins.
+    const etichetaRoMd = RUTE_RO_MD.filter((r) => r.cale === EDITII['ro-MD'].prefix).map((r) => r.scurt)
+    const PERMISE = ['©', 'Informații legale', ...etichetaRoMd]
     const ramas = PERMISE.reduce((text, permis) => text.split(permis).join(''), html)
     expect(/[^\x20-\x7e]/.test(ramas)).toBe(false)
     // martor: subsolul chiar e pe pagina (randul drepturilor de autor), deci lista alba are pe ce sa lucreze
@@ -349,13 +353,23 @@ describe('declaratiile G-AI-02 pe mai multe manifeste (tests/browser/ajutor/rasp
     expect(r.abateri).toEqual([])
     expect(r.declaratii.has('/pricing')).toBe(false)
     // Controlul: pe un build cu en, aceeasi declaratie intra (deci absenta de mai sus vine din editie, nu din citire)
+    // Rutele RO-MD scrise literal (grupul acasa si contact), DERIVATE din modul: citirea ca text a manifestelor le
+    // gaseste in rute-ro-md.ts de cand stau acolo, deci controlul trebuie sa ceara aceeasi multime. Fara ele cazul
+    // ar fixa starea de dinainte (RO-MD numai cu grupul juridic) si s-ar inrosi la fiecare ruta RO-MD scrisa corect.
+    const juridiceRoMd = new Set(ruteJuridiceRoMd().map((x) => x.cale))
+    const scriseRoMd = RUTE_RO_MD.map((x) => x.cale).filter((cale) => !juridiceRoMd.has(cale))
     const cuEn = cuCopie(
       { 'src/content/rute-en-proba.ts': manifest, 'config/seo/en-proba.json': JSON.stringify({ raspuns_autonom: { '/pricing': DECL } }) },
       // Rutele EN ale build-ului sunt cele scrise literal in grupuri plus ruta fixturii: cazul cerea numai `/pricing`,
       // adica grupuri EN fara rute scrise, o constatare de stare inrosita corect de felia paginilor EN nucleu. Grupul
-      // juridic nu intra: rutele lui nu sunt scrise literal (segment dinamic), deci textul manifestului nu le are.
+      // juridic nu intra, nici EN, nici RO-MD: rutele lui nu sunt scrise literal (segment dinamic), deci textul
+      // manifestului nu le are.
       (d) =>
-        citesteDeclaratiile(d, [...RUTE_EN_NUCLEU, ...RUTE_EN_PRODUS, ...RUTE_EN_SEGMENTE, ...RUTE_EN_REFERINTA].map((x) => x.cale).concat('/pricing'), ['en', 'ro-MD']),
+        citesteDeclaratiile(
+          d,
+          [...RUTE_EN_NUCLEU, ...RUTE_EN_PRODUS, ...RUTE_EN_SEGMENTE, ...RUTE_EN_REFERINTA].map((x) => x.cale).concat('/pricing', ...scriseRoMd),
+          ['en', 'ro-MD'],
+        ),
     )
     expect(cuEn.abateri).toEqual([])
     expect(cuEn.declaratii.get('/pricing')).toEqual(DECL)
@@ -391,7 +405,9 @@ describe('build-ul 3s.md, servit', () => {
   // de stare, inrosita corect de felia paginilor EN nucleu, care le aduce si scoate segmentul. Ce apara cazul, si
   // ramane: caile romanesti, cele fara pagina si o cale inventata dau 404 in engleza, cu antetul de neindexare.
   // Paginile EN (200, `lang="en"`) le masoara `tests/browser/en-nucleu.spec.ts`, pe copia 3s.md.
-  const CAI = ['/preturi', '/ro', '/ro/juridic', '/juridic', '/blog', '/o-cale-' + 'care-nu-exista']
+  // `/ro` a iesit din lista cand a devenit pagina de start RO-MD (felia ro-md-acasa-contact; 200 cu `lang="ro"`,
+  // masurat de `tests/browser/ro-md-acasa-contact.spec.ts`); `/ro/juridic` ramane: grupul juridic nu are index.
+  const CAI = ['/preturi', '/ro/juridic', '/juridic', '/blog', '/o-cale-' + 'care-nu-exista']
 
   it.runIf(ADRESA !== '')('caile fara pagina EN raspund 404, cu X-Robots-Tag noindex', async () => {
     for (const cale of CAI) {

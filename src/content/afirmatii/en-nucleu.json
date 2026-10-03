@@ -46,12 +46,12 @@
   },
   {
     "id": "en-comparatii-registru-termene",
-    "text": "3S keeps the archive register, with a retention period for each document",
+    "text": "You can set a retention period for each folder, and it applies to the documents in it",
     "unde": "src/content/en/platform.ts",
     "stare": "confirmat",
-    "sursa": "oglinda EN a intrarii comparatii-registru-termene (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: declarația owner-ului, decizia D4b din planul valului S4; aceeași confirmare ca acasa-functii-in-productie, care numește evidența arhivei cu termene de păstrare",
-    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
-    "data": "2026-09-24"
+    "sursa": "decizia 43 a owner-ului (01.10.2026): funcțiile negăsite în codul platformei nu apar pe paginile de lansare, deci registrul arhivei cu termen pe fiecare document iese; fișa P-14 din codul platformei (A-32): singura regulă este regula de eliminare pe dosar, a cărei dată fixează termenul de păstrare pentru documentele din dosar; confirmată de furnizorul platformei la punctul 8 al întrebărilor tehnice (02.10.2026): singura regulă automată este cea de eliminare",
+    "confirmat_de": "owner-ul proiectului 3S și furnizorul platformei, 2026-10-02",
+    "data": "2026-10-02"
   },
   {
     "id": "en-enterprise-functii-in-productie",

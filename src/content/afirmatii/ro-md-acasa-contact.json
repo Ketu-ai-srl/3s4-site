@@ -1,0 +1,128 @@
+[
+  {
+    "id": "ro-md-arhiva-cu-sursa",
+    "text": "3S organizează documentele firmei într-o arhivă digitală și oferă răspunsuri la întrebările despre conținutul lor, indicând documentul-sursă al fiecărui răspuns; întrebările se formulează în română, din browser",
+    "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/contact.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarilor en-juridic-serviciu-web-si-whatsapp si en-comparatii-cautare-cu-sursa (src/content/afirmatii/en-nucleu.json): mostenesc starea si sursa lor (decizia D4b a owner-ului: cautarea cu sursa citata exista azi). Decizia 49 (2026-10-02): asistentul pe WhatsApp a iesit de pe paginile de lansare, deci intrarea acopera numai lucrul din browser.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
+    "id": "ro-md-trei-pasi-scan-store-solve",
+    "text": "Scan / Store / Solve: fișierele electronice existente se încarcă direct în arhiva digitală (pregătirea hârtiei se discută separat); fiecare document încărcat e păstrat în spațiul de lucru al firmei și indexat automat; la o întrebare în română, 3S dă răspunsul cu documentul din care provine",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-acasa-trei-pasi-scan-store-solve (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (vocea marcii aleasa de owner, decizia D15; functiile confirmate prin decizia D4b). Jumatatea despre hartie a pasului Scan ramane deoparte pana se deschide poarta juridica a deciziei 40, ca pe paginile EN.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-26",
+    "data": "2026-09-26"
+  },
+  {
+    "id": "ro-md-termene-si-jurnal",
+    "text": "Pentru fiecare dosar se poate stabili termenul de păstrare, iar deschiderile și descărcările documentelor sunt consemnate în jurnal",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "declaratia owner-ului, decizia D4b (functiile se prezinta ca existente, produsul fiind in productie), restransa la forma din codul platformei de decizia 43 (2026-10-01): termenul de pastrare se pune pe dosar, prin regula de eliminare, iar citirile documentelor sunt jurnalizate; termenul pe dosar confirmat de furnizorul platformei pe 2026-10-02. Textul paginii e cel aprobat de owner (decizia 45).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-01; furnizorul platformei, 2026-10-02",
+    "data": "2026-10-02"
+  },
+  {
+    "id": "ro-md-gazduire-ue-frankfurt",
+    "text": "Găzduirea fișierelor încărcate în 3S: Amazon Web Services, în Uniunea Europeană, cu regiunea principală Frankfurt",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-gazduire-ue-frankfurt (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (decizia 42 a owner-ului, 2026-10-01, „3. ok”). Configurarea de productie o confirma furnizorul platformei.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-01",
+    "data": "2026-10-01"
+  },
+  {
+    "id": "ro-md-amazon-sediu-sua",
+    "text": "Amazon are sediul în Statele Unite, iar legislația americană (CLOUD Act) poate obliga compania să păstreze și să predea datele aflate în posesia sau sub controlul său, indiferent unde se află serverele",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-produs-amazon-sediu-sua (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (18 U.S.C. § 2713, adaugat prin Pub. L. 115-141; fisa Amazon.com, Inc. la SEC EDGAR, CIK 0001018724).",
+    "confirmat_de": "felia produs, din sursele primare citate in intrarea-mama, 2026-09-25",
+    "data": "2026-09-25"
+  },
+  {
+    "id": "ro-md-pilot-asistat",
+    "text": "Colaborarea începe cu o perioadă pilot gratuită de 30 de zile, pe documentele firmei, cu asistența echipei 3S, la nivelul pachetului Starter, cu volumul stabilit în scris, după acceptarea Termenilor și condițiilor și a Acordului de prelucrare a datelor",
+    "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/contact.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-pilot-asistat (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (deciziile 1 si 19 ale owner-ului).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 ~23:55",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-cont-prin-invitatie",
+    "text": "În perioada pilot, conturile se creează numai pe bază de invitație; înregistrarea directă pe site nu este încă disponibilă",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-cont-prin-invitatie (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (textul pilotului, decizia 1; ingustata de decizia 43).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-pret-orientativ-eur",
+    "text": "Patru pachete, cu prețuri lunare în euro pentru întreaga firmă: Starter, Pro și Business au aceleași funcții, 90, 150 și 240 EUR pe lună pentru 5, 10 și 20 de conturi (75, 125 și 200 EUR pe lună la plata anuală, cu două luni gratuite); Enterprise de la 800 EUR pe lună, cu contract anual, peste 20 de conturi; grila are caracter orientativ",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-pret-orientativ-eur (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (deciziile 10, 18 si 19 ale owner-ului); pe 3s.md pretul e in EUR peste tot (decizia 54).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 ~23:55",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-fraza-tva",
+    "text": "Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-tva-exclus (src/content/afirmatii/en-nucleu.json): decizia 24 a owner-ului (2026-10-01, „de acord cu formula de TVA”); fraza romaneasca e cea a deciziei, cuvant cu cuvant. Regimul TVA ramane la contabil, inainte de prima factura.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-01",
+    "data": "2026-10-01"
+  },
+  {
+    "id": "ro-md-engleza-si-pagina-in-testare",
+    "text": "Întrebările în engleză despre documente redactate în română și indicarea paginii exacte din document sunt deocamdată în regim de testare",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-pagina-si-engleza-in-pilot (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-raspunde-o-persoana",
+    "text": "Răspunde o persoană din echipa 3S, în română sau în engleză, fără program și fără termen de răspuns publicat; nu e nevoie de formular sau de cont",
+    "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/contact.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 3 a owner-ului (contactul pe 3s.md e WhatsApp si telefonul, fara formulare; fara program si fara termen de raspuns); oglinda RO-MD a intrarii en-canale-de-contact (src/content/afirmatii/en-nucleu.json).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-canale-de-contact",
+    "text": "WhatsApp și telefon pe +373 68 055 599; adresa de e-mail apare pe pagini numai după ce poate răspunde din domeniu",
+    "unde": "src/content/ro-md/contact.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-canale-de-contact (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (confirmata pentru numar; e-mailul, dupa P-40); decizia 3 a owner-ului.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-ghiduri-cu-surse",
+    "text": "Ghidurile 3S citează surse primare și indică data la care a fost verificată fiecare informație; au caracter informativ și nu înlocuiesc consultanța juridică",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-ghiduri-cu-surse (src/content/afirmatii/en-nucleu.json): politica editoriala a arhitecturii continutului EN. Sectiunea apare pe pagina numai cand cele trei ghiduri sunt publicate.",
+    "confirmat_de": "politica proiectului (arhitectura continutului EN), 2026-09-30",
+    "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-operator-din-moldova",
+    "text": "3S este operat din Republica Moldova.",
+    "unde": "src/content/ro-md/acasa.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-operator-din-moldova (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (decizia D1 si decizia 5 ale owner-ului). Fraza apare pe pagina numai dupa inregistrarea firmei operatoare (OPERATOR_JSON fara model).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-09-30"
+  }
+]

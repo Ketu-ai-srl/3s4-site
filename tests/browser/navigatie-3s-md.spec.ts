@@ -266,7 +266,7 @@ test.describe('martorii, pe serverul real al probelor (build-ul romanesc, contra
 })
 
 test.describe('3s.md: antetul si subsolul RO-MD', () => {
-  test('pagina RO-MD a informatiilor legale: CTA "Mesaj pe WhatsApp" cu textul paginilor juridice, coloanele Juridic si Contact', async () => {
+  test('pagina RO-MD a informatiilor legale: CTA "Scrie-ne pe WhatsApp" cu textul paginilor juridice, coloanele Juridic si Contact', async () => {
     const { status, html } = await servit(CALE_JURIDIC_RO)
     expect(status).toBe(200)
     expect(html).toMatch(/<html[^>]*\blang="ro"/)
@@ -277,7 +277,7 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     const cta = hrefuri(antet).filter((h) => h.startsWith(WA))
     expect(cta).toHaveLength(1)
     expect(cta[0]).toContain(ref('ro-md-juridic'))
-    expect(antet).toContain('Mesaj pe WhatsApp')
+    expect(antet).toContain('Scrie-ne pe WhatsApp')
     expect(subsol).toContain('>Juridic</h2>')
     expect(hrefuri(subsol)).toContain(CALE_JURIDIC_RO)
     expect(hrefuri(subsol)).toContain(TEL)

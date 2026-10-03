@@ -504,3 +504,55 @@ describe('modulele juridice md EN fara asistentul pe WhatsApp (decizia 49)', () 
     expect(gasiri).toEqual([])
   })
 })
+
+describe('modulele EN de marketing fara registrul arhivei (decizia 43, termenul de pastrare pe dosar)', () => {
+  // Codul platformei nu are un registru al arhivei, iar termenul de pastrare se pune pe DOSAR, prin regula de
+  // eliminare, nu pe fiecare document. Fisa P02 a scos ambele formulari, ca fisa /ro. Se citeste SURSA tuturor
+  // modulelor din `src/content/en/` (si ale paginilor adaugate dupa), nu numai cele sase nucleu. Spatiul dintre
+  // cuvinte poate fi o rupere de rand. Formularile se asambleaza la rulare: fisierul nu le poarta pe litere.
+  const DIRECTOR_EN = join(RADACINA, 'src', 'content', 'en')
+  const SPATIU = '\\s+'
+  const TIPAR_REGISTRU = new RegExp(
+    '(' + ['archive', 'register'].join(SPATIU) + '|' + ['retention', 'period', 'for', 'each', 'document'].join(SPATIU) + ')',
+    'i',
+  )
+
+  function gasiriRegistru(sursa: string): string[] {
+    return sursa.split('\n').filter((r, i, rr) => TIPAR_REGISTRU.test(r) || TIPAR_REGISTRU.test(r + '\n' + (rr[i + 1] ?? '')))
+  }
+
+  const moduleEn = (): string[] => readdirSync(DIRECTOR_EN).filter((f) => f.endsWith('.ts')).sort()
+
+  it('controlul: formularile asamblate la rulare sunt prinse (si rupte pe doua randuri), forma noua a fisei nu', () => {
+    const rau1 = '"3S keeps the ' + 'archive ' + 'register."'
+    const rau2 = '"with a retention ' + 'period for each\n    document."'
+    const bun =
+      '"It recognizes each one and logs who opens it. You can set a retention period for each folder, and it applies to the documents in it."'
+    expect(gasiriRegistru(rau1)).toHaveLength(1)
+    expect(gasiriRegistru(rau2)).toHaveLength(1)
+    expect(gasiriRegistru(bun)).toEqual([])
+    expect(gasiriRegistru('"A digital archive with sources; retention rules differ by country."')).toEqual([])
+  })
+
+  it('preconditia: directorul are cel putin modulele celor sase pagini nucleu', () => {
+    expect(moduleEn()).toEqual(expect.arrayContaining(Object.keys(MODULE).map((c) => c + '.ts')))
+  })
+
+  it('zero aparitii ale celor doua formulari in sursa modulelor EN', () => {
+    const gasiri = moduleEn().flatMap((f) => gasiriRegistru(readFileSync(join(DIRECTOR_EN, f), 'utf8')).map((r) => f + ': ' + r.trim()))
+    expect(gasiri).toEqual([])
+  })
+
+  it('/platform poarta forma noua a fisei P02 in descriere, capsula, figura si sectiunea despre pastrare', () => {
+    const p = platform.pagina
+    const frazaDosar = 'You can set a retention period for each folder, and it applies to the documents in it.'
+    expect(p.meta.descriere).toContain('lets you set a retention period per folder')
+    expect(p.capsula).toContain(frazaDosar)
+    const sectiune = p.sectiuni.find((s) => s.cheie === 'retention')
+    expect(sectiune?.titlu).toBe('Can I set how long documents are kept?')
+    expect(sectiune?.blocuri[0].paragrafe[0]).toContain('Yes. ' + frazaDosar)
+    expect(textSectiuni(p.sectiuni)).toContain('set a retention period per folder.')
+    const pagina = p.jsonLd.find((n) => n['@type'] === 'WebPage') as { description?: string } | undefined
+    expect(pagina?.description).toBe(p.meta.descriere)
+  })
+})

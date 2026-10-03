@@ -774,6 +774,44 @@ def cazuri_limba_en():
                  "TIPAR_EXCLAMARE = re.compile(r'(?!x)x')"))
 
 
+def cazuri_reciprocitate():
+    # Arbore 3s.md minim: catalogul real al editiilor (poarta il compara cu lista ei), o pereche en - ro-MD in
+    # echivalente si in HTML-ul construit, profilul in `required-server-files.json`. Adresele se lipesc la rulare.
+    baza = 'https://' + 'exemplu-' + 'reciproc.test'
+    en, ro = baza + '/legal/doc', baza + '/ro/juridic/doc'
+
+    def pagina(adresa, alternate):
+        return ('<html><head><link rel="canonical" href="' + adresa + '"/>'
+                + ''.join('<link rel="alternate" hrefLang="' + h + '" href="' + u + '"/>' for h, u in alternate)
+                + '</head><body><h1>x</h1></body></html>')
+
+    def arbore(fara_inversa=False, cu_build=True):
+        def construieste(d):
+            catalog = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(PORTI))), 'src', 'lib', 'editii.ts')
+            scrie(os.path.join(d, 'src', 'lib', 'editii.ts'), open(catalog, encoding='utf-8').read())
+            scrie(os.path.join(d, 'src', 'content', 'echivalente.ts'),
+                  'export const ECHIVALENTE = {\n  doc: { en: "/legal/doc", "ro-MD": "/ro/juridic/doc" },\n};\n')
+            if cu_build:
+                scrie(os.path.join(d, '.next', 'required-server-files.json'), json.dumps({'config': {'env': {
+                    'NEXT_PUBLIC_FAMILIE_JURIDICA': 'md', 'NEXT_PUBLIC_SITE_EDITII': 'en,ro-MD'}}}))
+                app = os.path.join(d, '.next', 'server', 'app')
+                alt_ro = [('ro-MD', ro)] + ([] if fara_inversa else [('en', en)])
+                scrie(os.path.join(app, 'legal', 'doc.html'), pagina(en, [('en', en), ('ro-MD', ro)]))
+                scrie(os.path.join(app, 'ro', 'juridic', 'doc.html'), pagina(ro, alt_ro))
+            # Sursa cu un minut inaintea build-ului: ordinea scrierii nu garanteaza o data mai noua.
+            for radacina, _, nume in os.walk(os.path.join(d, 'src')):
+                for n in nume:
+                    t = os.path.getmtime(os.path.join(radacina, n)) - 60
+                    os.utime(os.path.join(radacina, n), (t, t))
+        return construieste
+
+    caz('poarta-reciprocitate.py', 'pereche fara inversa: cod 1, mesajul o numeste', arbore(fara_inversa=True),
+        PICAT, 'R-01')
+    caz('poarta-reciprocitate.py', 'pereche reciproca: cod 0', arbore(), CURAT)
+    caz('poarta-reciprocitate.py', 'arbore fara HTML construit: cod 3, nu 0', arbore(cu_build=False), NEMASURAT,
+        'masuratoarea e invalida')
+
+
 CAZURI = {
     'poarta-afirmatii.py': cazuri_afirmatii,
     'poarta-evidenta.py': cazuri_evidenta,
@@ -783,6 +821,7 @@ CAZURI = {
     'poarta-limba-en.py': cazuri_limba_en,
     'poarta-limba.py': cazuri_limba,
     'poarta-navigare.py': cazuri_navigare,
+    'poarta-reciprocitate.py': cazuri_reciprocitate,
     'poarta-regresie.py': cazuri_regresie,
     'poarta-registru-rute.py': cazuri_registru_rute,
     'poarta-rute.py': cazuri_rute,
