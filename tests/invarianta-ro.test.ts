@@ -100,6 +100,34 @@ describe('invarianta build-ului RO fata de baza', () => {
     expect(primaDiferenta(asteptat, atins)).not.toBeNull()
   })
 
+  // Martorii rutelor-martor adaugate pentru congruenta editiilor: o pagina dintr-o pereche (platforma) si una din
+  // afara perechilor (un articol de blog, care primeste firul de navigare prin componentele comune). Fiecare
+  // martor verifica intai ca pagina nemutata e identica cu fixtura, ca rosul sa vina numai din mutatie.
+  it('martor POZITIV pe o ruta-martor noua: un caracter schimbat in /platforma (pe o copie in memorie) face comparatia rosie', () => {
+    const asteptat = readFileSync(join(FIXTURI, 'pagini', 'platforma.html'), 'utf8')
+    const construit = normalizeaza(citesteDinBuild('platforma.html'), idBuild())
+    expect(primaDiferenta(asteptat, construit), 'controlul martorului: pagina nemutata e identica cu fixtura').toBeNull()
+    const i = construit.indexOf('<h1')
+    expect(i, 'pagina-martor are un <h1>').toBeGreaterThan(0)
+    const atins = construit.slice(0, i + 1) + 'H' + construit.slice(i + 2)
+    expect(primaDiferenta(asteptat, atins)).not.toBeNull()
+  })
+
+  it('martor POZITIV in afara perechilor: eticheta accesibila a firului de navigare, schimbata pe o copie a unui articol de blog, face comparatia rosie', () => {
+    const fisier = PAGINI_MARTOR.find((p) => p.cale.startsWith('/blog/') && !p.cale.startsWith('/blog/categorie/') && !p.cale.startsWith('/blog/pagina/'))
+    expect(fisier, 'controlul martorului: lista are un articol de blog').toBeDefined()
+    const asteptat = readFileSync(join(FIXTURI, 'pagini', fisier!.fisier), 'utf8')
+    const construit = normalizeaza(citesteDinBuild(fisier!.fisier), idBuild())
+    expect(primaDiferenta(asteptat, construit), 'controlul martorului: articolul nemutat e identic cu fixtura').toBeNull()
+    // Firul e elementul <nav> urmat direct de lista <ol>; eticheta lui nu se scrie aici, se citeste din pagina.
+    const fir = /<nav aria-label="([^"]+)"[^>]*><ol/.exec(construit)
+    expect(fir, 'controlul martorului: articolul are firul de navigare cu eticheta accesibila').not.toBeNull()
+    const inceput = fir!.index + '<nav aria-label="'.length
+    const atins = construit.slice(0, inceput) + fir![1] + 'x' + construit.slice(inceput + fir![1].length)
+    expect(atins, 'controlul martorului: eticheta chiar s-a schimbat').not.toBe(construit)
+    expect(primaDiferenta(asteptat, atins)).not.toBeNull()
+  })
+
   it('martor NEGATIV al normalizarii, in DOM: id-ul build-ului, numele statice si sirul de foi de stil se inlocuiesc, textul nu', () => {
     const id = 'Ab-c_D'
     const stil = (n: string) => '<link rel="stylesheet" href="/_next/static/css/' + n + '.css" data-precedence="next"/>'

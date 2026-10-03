@@ -1,0 +1,10 @@
+/* Paragrafele de sub butonul de canal ale scheletului de produs EN (microtextul si linia de e-mail), pe fundalul
+   alb al paginii. Aceleasi masuri ca paragraful cutiei CTA inchise (`ctaText` din primitive/bloc.module.css), alta
+   culoare: acolo ardezie-3 sta pe ardezie-9, aici ar sta pe alb (1,48:1, masurat). Textul secundar pe deschis e
+   ardezie-5, ca la scheletul ghidurilor EN: 4,76:1 pe alb (AA). */
+.ctaText {
+  margin-bottom: 24px;
+  color: var(--color-ardezie-5);
+  font-size: 16px;
+  line-height: 25.6px;
+}
