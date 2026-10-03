@@ -1,0 +1,27 @@
+{
+  "_nota": "Lista alba a probei 'zero text RO pe EN' (tests/browser/congruenta.spec.ts): siruri din dictionarul RO care pot aparea legitim pe o pagina EN (nume proprii, identice in ambele limbi), fiecare cu motiv; si elementele scoase din ambele verificari (dictionarul si diacriticele): cele marcate explicit ca romana si legaturile spre editia /ro.",
+  "siruri": [
+    {
+      "sir": "Google Drive",
+      "motiv": "Numele produsului unui tert; acelasi in ambele limbi (ghidul de comparatie EN il numeste)."
+    },
+    {
+      "sir": "Google Workspace",
+      "motiv": "Numele produsului unui tert; acelasi in ambele limbi."
+    },
+    {
+      "sir": "3S Enterprise",
+      "motiv": "Numele planului 3S; acelasi in ambele limbi."
+    }
+  ],
+  "elemente": [
+    {
+      "selector": "[lang=\"ro\"], [lang^=\"ro-\"]",
+      "motiv": "Text marcat explicit ca romana (de pilda legatura din subsol spre informatiile legale in romana, cu hreflang ro-MD): limba e declarata, deci cititorul de ecran o pronunta corect."
+    },
+    {
+      "selector": "a[href=\"/ro\"], a[href^=\"/ro/\"]",
+      "motiv": "Selectorul de limba si legaturile spre editia /ro: numele limbii si al paginii tinta se scriu in romana."
+    }
+  ]
+}

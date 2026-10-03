@@ -1,0 +1,38 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "P08",
+  "ro": "/preturi",
+  "pagini_3s_md": [
+    "/pricing"
+  ],
+  "randuri": [
+    {
+      "tip": "camp",
+      "selector": "[class*=\"pachete_rand__\"]",
+      "ro": 27,
+      "en": 18,
+      "cod": [
+        "d49",
+        "val-ro-i2",
+        "d43"
+      ],
+      "motiv": "Pachete: in fiecare din cele 3 carduri ies 'Raspunsuri si pe WhatsApp', 'Clasare automata in dosare' si 'Portal pentru clienti'."
+    },
+    {
+      "tip": "camp",
+      "selector": "table[class*=\"pliuri_tabel__\"] tbody tr",
+      "ro": 18,
+      "en": 13,
+      "cod": [
+        "d31",
+        "d43",
+        "val-ro-i2"
+      ],
+      "motiv": "TabelPlanuri: ies randurile 'Criptarea fisierelor', 'Acces pe persoana si pe dosar', 'Portal pentru clienti', 'Clasare automata in dosare', 'Reguli automate si notificari'."
+    }
+  ],
+  "_nedeclarate": [
+    "RON -> EUR (d54) si nota 'fara card': schimbari de text.",
+    "Randul 'Unde primesti raspunsuri' ramane, cu valoarea fara WhatsApp (d49): text."
+  ]
+}

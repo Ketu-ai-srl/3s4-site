@@ -1,0 +1,65 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "P11",
+  "ro": "/securitate",
+  "pagini_3s_md": [
+    "/about"
+  ],
+  "randuri": [
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-02"
+      },
+      "cod": "d43",
+      "motiv": "StocareProprie: stocarea proprie nu se gaseste in codul platformei."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-03"
+      },
+      "cod": "d31",
+      "motiv": "Criptare: AES-256 si TLS raman in afara lansarii."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-04"
+      },
+      "cod": [
+        "d43",
+        "d31"
+      ],
+      "motiv": "Acces: accesul pe persoana si dosar."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-07"
+      },
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Originale: originalele pe hartie, predate spre arhivare."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "Seif_seif",
+        "eticheta": "seif-titlu"
+      },
+      "cod": [
+        "poarta-juridica-40-41",
+        "d31"
+      ],
+      "motiv": "Seif: actele sub cheie si legatura spre inregistrare."
+    }
+  ],
+  "_nedeclarate": [
+    "AES/TLS/Jurnal (d31), Germania -> Frankfurt (d42): text.",
+    "Verificare (masoara conexiunea site-ului, nu platforma): de confirmat de owner."
+  ]
+}

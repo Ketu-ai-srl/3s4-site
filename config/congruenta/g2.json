@@ -1,0 +1,73 @@
+{
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "pereche": "G2",
+  "ro": "/instrumente/termene-pastrare",
+  "pagini_3s_md": [
+    "/guides/records-retention-moldova"
+  ],
+  "randuri": [
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_pas__\"]",
+      "ro": 2,
+      "en": 1,
+      "cod": "d49",
+      "motiv": "CtaFinalInchis: pasul 'Poza pe WhatsApp'."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_rezultat__\"]",
+      "ro": 1,
+      "en": 0,
+      "cod": "val-ro-i2",
+      "motiv": "CtaFinalInchis: rezultatul 'Pus in dosarul Transport' (clasarea automata)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_punctVerde",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultat",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatCutie",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatFisier",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatOra",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatStare",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "CtaFinalInchis_rezultatText",
+      "cod": "val-ro-i2",
+      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+    }
+  ],
+  "_nedeclarate": [
+    "Panoul Romania (termenele RO scoase din ghidul EN): fara cod de temei in lista inchisa.",
+    "Corpul de 9 sectiuni EN nu are loc in compunerea RO: de decis de owner.",
+    "CtaFinalInchis: butonul 'Un tur prin aplicatie' (/incepe nu exista pe 3s.md) - fara cod de temei pana la raspunsul owner-ului."
+  ]
+}

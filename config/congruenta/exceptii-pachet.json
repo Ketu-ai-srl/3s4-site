@@ -1,0 +1,14 @@
+{
+  "_nota": "Exceptiile declarate ale verificarii RON pe bucatile JS cerute de paginile 3s.md (tests/browser/congruenta.spec.ts). O aparitie RON intr-o bucata ceruta trece numai daca literalul in care sta vine EXCLUSIV din modulele unei exceptii de aici; orice alta aparitie pica proba.",
+  "exceptii": [
+    {
+      "module": [
+        "src/content/rute.ts",
+        "src/content/blog/registru.ts",
+        "src/content/blog/articole.json"
+      ],
+      "pana_la": "felia 109 (rutele separate pe editie)",
+      "motiv": "Antetul (client, montat si pe layout-ul EN) importa static paleta de cautare, care importa RUTE din src/content/rute.ts si articolele din src/content/blog/registru.ts (cu src/content/blog/articole.json, pe care registrul il importa). RUTE se alege la rulare intre literalele editiilor, deci minificatorul nu poate scoate literalul RO, care contine pretul in RON. Paleta afiseaza pe 3s.md numai rutele editiilor lui; literalul RO ramane in bucata pana cand rutele se separa pe editie."
+    }
+  ]
+}
