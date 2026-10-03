@@ -14,6 +14,10 @@
 // WhatsApp pe domeniu butoanele si legatura de semnalare nu se randeaza, iar linia de e-mail apare numai cand
 // domeniul are adresa. Legatura de semnalare are textul ei precompletat, cu acelasi `ref` (fisa paginii).
 //
+// STILUL PARAGRAFELOR DE SUB BUTON (microtextul, linia de e-mail) vine din `referinta.module.css`, propriu scheletului:
+// clasa cutiei CTA inchise, imprumutata inainte, avea culoarea gandita pentru fundal inchis si dadea 1,48:1 pe alb.
+// Proba: `tests/browser/contrast-microtext-en.spec.ts`.
+//
 // LEGATURA DE SEMNALARE sta dupa ultima sectiune (sursele), inaintea blocului de final: `CorpPagina` randeaza
 // sectiunile dintr-o bucata, iar locul cerut de fisa (dupa jurnalul de modificari, la G1 si G2) ar fi cerut un al
 // doilea randator al corpului. Langa surse, cererea "un rand e depasit" sta langa randurile pe care le numeste.
@@ -30,7 +34,6 @@ import { propozitieFaraMarcaj } from "@/components/canale/pe-pagina";
 import CorpPagina from "@/components/continut/CorpPagina";
 import TextInLinie from "@/components/juridic/TextInLinie";
 import s from "@/components/juridic/juridic.module.css";
-import b from "@/components/primitive/bloc.module.css";
 import f from "@/components/primitive/primitive.module.css";
 import Tinta from "@/components/primitive/Tinta";
 import JsonLd from "@/components/seo/JsonLd";
@@ -40,6 +43,7 @@ import { textSimplu } from "@/content/juridic/tipuri";
 import type { PaginaContinut, SectiuneComuna } from "@/content/model/tipuri";
 import { ETICHETA_WHATSAPP_EN } from "@/content/navigatie-en";
 import { adresaSite, urlAbsolut } from "@/lib/site";
+import r from "./referinta.module.css";
 
 /** Textele din jurul corpului, exportate de modulul paginii langa `pagina`. */
 export type InJurReferinta = {
@@ -138,9 +142,9 @@ function BlocCanale({ pagina, inJur, canale }: { pagina: PaginaContinut; inJur: 
   return (
     <div data-canale-pagina={ref}>
       <ButonWhatsApp legatura={wa === null ? null : { implicit: wa, pagini: [] }} text={ETICHETA_WHATSAPP_EN} />
-      <p className={b.ctaText}>{inJur.microtext}</p>
+      <p className={r.ctaText}>{inJur.microtext}</p>
       {email === null ? null : (
-        <p className={b.ctaText}>
+        <p className={r.ctaText}>
           {inJur.inainteDeEmail}{" "}
           <LegaturaCanal legatura={{ implicit: email, pagini: [] }} canal="email">
             {canale.email}

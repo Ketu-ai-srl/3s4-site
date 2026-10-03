@@ -31,8 +31,9 @@ export function tintaActiva(legatura: Legatura, cai: CaiExistente = CAI_EXISTENT
   return seVede(legatura, cai);
 }
 
+// Fara legaturi de apel (decizia 56): o tinta externa e numai posta sau o adresa web.
 function esteExterna(href: string): boolean {
-  return /^(mailto:|tel:|https?:)/i.test(href);
+  return /^(mailto:|https?:)/i.test(href);
 }
 
 export default function Tinta({ legatura, children, cai = CAI_EXISTENTE, className, ...rest }: TintaProps) {

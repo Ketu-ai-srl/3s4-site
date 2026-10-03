@@ -25,6 +25,13 @@ import { PAGINI_MARTOR, normalizeaza } from './fixturi/invarianta-ro/normalizeaz
  * felia care a facut schimbarea, si diferenta se citeste inainte: proba nu stie sa deosebeasca o schimbare
  * voita de una scapata, de aceea o arata pe amandoua.
  *
+ * DECIZIA 56 (03.10.2026, "fara apeluri pe gsm", peste tot, inclusiv editia ro-RO): legaturile de apel, butonul de
+ * apel al barei de pe mobil, cardul de telefon si `telephone` din JSON-LD au iesit din componentele COMUNE (subsol,
+ * bara, datele structurate, urmarirea clicurilor), deci si de pe build-ul romanesc. Fixturile au fost refacute cu
+ * `genereaza.mjs` pe build-ul RO al feliei care a facut schimbarea si au iesit identice octet cu octet cu cele de
+ * dinainte (39 de pagini-martor, harta si lista HTML neschimbate): build-ul RO al probelor nu are `CANALE_JSON`, deci
+ * nici numar, nici WhatsApp, nici legatura de apel de scos. Garda deciziei pe build-ul RO e `tests/fara-apel-gsm.test.ts`.
+ *
  * Proba citeste build-ul din `.next`: in CI ruleaza dupa `pnpm build` (`pnpm verifica`). Fara build, sau cu un
  * build care nu e cel romanesc, iese rosie cu motivul, nu verde.
  */

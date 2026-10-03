@@ -8,13 +8,14 @@
 //     (ro-md-juridic). Orice alta pagina foloseste textul paginii de start.
 //   - Subsolul: coloana "Juridic" (documentele familiei `md`, adresele din `config/juridic-rute.json` editia
 //     `ro`, etichetele = titlurile documentelor din `src/content/juridic/md`, nu scrise de mana) si coloana
-//     "Contact" (WhatsApp, numarul ca text, e-mailul numai cu `CANALE.email` nevid).
+//     "Contact" (WhatsApp; numarul de WhatsApp ca text, fara legatura de apel, decizia 56; e-mailul numai
+//     cu `CANALE.email` nevid).
 // Totul se ascunde singur pana exista ruta (filtrul pe `RUTE`): paginile RO-MD vin in feliile urmatoare.
 //
 // Se construieste PE SERVER (`navigatieRoMd()`): canalele (`CANALE_JSON`) si operatorul (`OPERATOR_JSON`)
 // nu exista in pachetul de browser.
 
-import { CANALE, legaturaTelefon, numarAfisat, type Canale } from "./canale";
+import { CANALE, randNumarWhatsApp, type Canale } from "./canale";
 import { texteJuridice } from "./juridic";
 import { CHEI_MD, caleMd } from "./juridic/md/registru";
 import { OPERATOR, type Operator } from "@/lib/operator";
@@ -78,8 +79,7 @@ export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null
   const juridic = coloanaJuridic(operator);
   const whatsapp = whatsappPePagina(TEXTE_WHATSAPP_RO_MD, "/ro", canale);
   const email = emailPePagina(TEXTE_WHATSAPP_RO_MD, "/ro", FORMA_EMAIL_RO_MD, canale);
-  const tel = legaturaTelefon(canale);
-  const telefon = tel === null ? null : { text: numarAfisat(canale), href: tel };
+  const numar = randNumarWhatsApp(canale);
 
   return {
     antet: {
@@ -117,7 +117,7 @@ export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null
       contact: {
         titlu: "Contact",
         whatsapp: whatsapp === null ? null : { text: ETICHETA_WHATSAPP_RO_MD, legatura: whatsapp },
-        telefon,
+        numar,
         email: email === null ? null : { text: canale.email, legatura: email },
       },
       insigne: [],
@@ -128,7 +128,6 @@ export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null
     bara: {
       eticheta: "Contact",
       whatsapp: whatsapp === null ? null : { text: "WhatsApp", legatura: whatsapp },
-      telefon: telefon === null ? null : { text: "Sună", href: telefon.href },
     },
   };
 }

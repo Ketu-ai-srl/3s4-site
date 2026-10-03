@@ -7,15 +7,15 @@
 // `en`) si etichetele din §4.2.
 //
 // FARA: formular, cont, descarcare, "0 RON". Singura actiune e canalul: WhatsApp cu textul paginii curente,
-// e-mailul numai cand domeniul are adresa (`CANALE.email` nevid), telefonul ca text (legatura `tel:` numai pe
-// mobil). Informatiile legale in ROMANA, spre `/ro/juridic/informatii-legale`, stau in randul de jos pe
-// fiecare pagina (legea Republicii Moldova le cere in romana).
+// e-mailul numai cand domeniul are adresa (`CANALE.email` nevid), numarul ca numar de WhatsApp, numai text (fara
+// legatura de apel: decizia 56). Informatiile legale in ROMANA, spre `/ro/juridic/informatii-legale`, stau in
+// randul de jos pe fiecare pagina (legea Republicii Moldova le cere in romana).
 //
 // Se construieste PE SERVER (`navigatieEn()`), cu canalele domeniului: `src/content/canale.ts` citeste
 // `CANALE_JSON`, care nu exista in pachetul de browser. Textele sunt ASCII, in engleza americana.
 
 import { CAI_EXISTENTE } from "./cai";
-import { CANALE, legaturaTelefon, numarAfisat, type Canale } from "./canale";
+import { CANALE, randNumarWhatsApp, type Canale } from "./canale";
 import { caleMd, type CheieMd } from "./juridic/md/registru";
 import {
   PALETA,
@@ -149,8 +149,7 @@ export const LIMBI_3S_MD: Limba[] = [
 export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXISTENTE): ContractNavigatie {
   const whatsapp = whatsappPePagina(TEXTE_WHATSAPP_EN, "/", canale);
   const email = emailPePagina(TEXTE_WHATSAPP_EN, "/", FORMA_EMAIL_EN, canale);
-  const tel = legaturaTelefon(canale);
-  const telefon = tel === null ? null : { text: numarAfisat(canale), href: tel };
+  const numar = randNumarWhatsApp(canale);
 
   return {
     antet: {
@@ -230,7 +229,7 @@ export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXI
       contact: {
         titlu: "Contact",
         whatsapp: whatsapp === null ? null : { text: ETICHETA_WHATSAPP_EN, legatura: whatsapp },
-        telefon,
+        numar,
         email: email === null ? null : { text: canale.email, legatura: email },
       },
       insigne: [],
@@ -249,7 +248,6 @@ export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXI
     bara: {
       eticheta: "Contact",
       whatsapp: whatsapp === null ? null : { text: "WhatsApp", legatura: whatsapp },
-      telefon: telefon === null ? null : { text: "Call", href: telefon.href },
     },
   };
 }

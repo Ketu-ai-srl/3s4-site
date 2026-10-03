@@ -47,7 +47,7 @@ export const RUTE_RO_MD: RutaEditie<"ro-MD">[] = [
   {
     cale: "/ro/contact",
     scurt: "Contact",
-    descriere: "WhatsApp și telefon.",
+    descriere: "WhatsApp, mesaje și apeluri.",
     inHarta: true,
     editie: "ro-MD",
     cheie: "contact",

@@ -60,11 +60,6 @@ export function legaturaWhatsApp(ref: string, text: string, canale: Canale = CAN
   return "https://wa.me/" + canale.whatsapp + "?text=" + codifica(text);
 }
 
-/** Legatura `tel:` in forma E.164, sau `null` cand domeniul nu are telefon. */
-export function legaturaTelefon(canale: Canale = CANALE): string | null {
-  return canale.telefon === "" ? null : "tel:" + canale.telefon;
-}
-
 /**
  * Legatura `mailto:` cu subiectul si corpul precompletate, sau `null` cand domeniul nu are adresa.
  * Subiectul trebuie sa contina marcajul `[ref:<ref>]` o singura data; corpul e liber (randurile noi
@@ -85,9 +80,13 @@ const GRUPE_TARA: ReadonlyArray<{ prefix: string; grupe: number[] }> = [
 ];
 
 /**
- * Numarul de telefon asa cum se citeste: prefixul si grupele tarii, despartite prin spatiu
+ * Numarul domeniului asa cum se citeste: prefixul si grupele tarii, despartite prin spatiu
  * (`+373 XX XXX XXX`). Un numar al altei tari, sau cu alta lungime, ramane in forma E.164.
- * Sirul gol cand domeniul nu are telefon.
+ * Sirul gol cand domeniul nu are numar.
+ *
+ * Decizia 56 (03.10.2026): numarul se afiseaza numai ca TEXT, ca numar de WhatsApp. Nicio legatura de apel
+ * obisnuit (GSM) nu se construieste din el, pe nicio editie; apelurile se primesc numai pe WhatsApp, prin
+ * conversatia deschisa de legatura wa.me.
  */
 export function numarAfisat(canale: Canale = CANALE): string {
   const t = canale.telefon;
@@ -108,4 +107,13 @@ export function numarAfisat(canale: Canale = CANALE): string {
     }
   }
   return t;
+}
+
+/**
+ * Randul cu numarul de WhatsApp, ca text (`WhatsApp: +373 68 055 599`), pentru subsol; `null` cand domeniul n-are
+ * WhatsApp sau n-are numar de afisat. Decizia 56: numarul ramane afisat numai ca numar de WhatsApp, fara legatura.
+ */
+export function randNumarWhatsApp(canale: Canale = CANALE): string | null {
+  const numar = numarAfisat(canale);
+  return canale.whatsapp === "" || numar === "" ? null : "WhatsApp: " + numar;
 }

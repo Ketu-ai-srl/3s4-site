@@ -10,8 +10,9 @@ import { RADACINA } from './ajutor/proiect'
 /**
  * Navigatia pe editie pe site-ul 3s.md (felia navigatie-pe-editie): antetul si subsolul EN pe pagina de negasit
  * EN si pe o pagina EN de proba, antetul si subsolul RO-MD pe pagina RO-MD a informatiilor legale, canalele
- * domeniului (WhatsApp cu textul paginii, telefonul ca text si `tel:` numai pe mobil, bara de jos pe mobil) si
- * nimic din site-ul romanesc (niciun formular).
+ * domeniului (WhatsApp cu textul paginii, numarul de WhatsApp ca text, bara de jos pe mobil cu un singur buton) si
+ * nimic din site-ul romanesc (niciun formular). Decizia 56 (03.10.2026, fara apeluri GSM): nicio legatura de apel,
+ * nici in subsol, nici in bara; inainte proba cerea legatura de apel pe mobil, iar cerinta s-a intors odata cu decizia.
  *
  * COPIA. Build-ul real al probelor e cel romanesc, deci layout-urile `(en)` si `(romd)` nu se randeaza acolo.
  * Proba construieste o copie a arborelui cu variabilele aplicatiei 3s.md (`config/profil-3s-md.json`, prin
@@ -174,7 +175,11 @@ function bucata(html: string, deschidere: RegExp, inchidere: string): string {
 }
 
 const WA = 'https://wa.me/' + CANALE.whatsapp + '?text='
-const TEL = 'tel:' + CANALE.telefon
+/** Schema legaturii de apel, asamblata la rulare (proba nu poarta literal ce vaneaza). */
+const SCHEMA_APEL = 'te' + 'l:'
+const fataApel = (hs: string[]) => hs.filter((h) => h.toLowerCase().startsWith(SCHEMA_APEL))
+/** Randul cu numarul de WhatsApp din subsol: prefixul tarii si grupele, cu spatii. */
+const RAND_NUMAR = /^WhatsApp: \+\d{3} \d{2} \d{3} \d{3}$/
 const ref = (cod: string) => '%5Bref%3A' + cod + '%5D'
 
 test.beforeAll(async () => {
@@ -191,7 +196,7 @@ test.describe('3s.md: antetul si subsolul EN', () => {
     ['pagina de negasit EN', '/o-adresa-care-nu-exista', 404],
     ['pagina EN de proba', '/proba-navigatie', 200],
   ] as const) {
-    test(nume + ': antet EN cu CTA WhatsApp, subsol cu wa.me, tel: si informatiile legale in romana, 0 <form', async () => {
+    test(nume + ': antet EN cu CTA WhatsApp, subsol cu wa.me, numarul de WhatsApp ca text, fara apel, informatiile legale in romana, 0 <form', async () => {
       const { status, html } = await servit(cale)
       expect(status).toBe(statusAsteptat)
       expect(html).toMatch(/<html[^>]*\blang="en"/)
@@ -207,7 +212,8 @@ test.describe('3s.md: antetul si subsolul EN', () => {
       expect(ctaAntet[0]).toContain(ref('en-home'))
       const hs = hrefuri(subsol)
       expect(hs.some((h) => h.startsWith(WA))).toBe(true)
-      expect(hs).toContain(TEL)
+      expect(fataApel(hrefuri(html))).toEqual([])
+      expect(subsol).toContain('>WhatsApp: +')
       expect(hs).toContain(CALE_JURIDIC_RO)
       expect(subsol).toMatch(/<a[^>]*lang="ro"[^>]*>Informații legale<\/a>/)
       expect(html).not.toContain('<form')
@@ -215,22 +221,23 @@ test.describe('3s.md: antetul si subsolul EN', () => {
     })
   }
 
-  test('telefonul: legatura tel: vizibila numai pe mobil, numarul ca text pe desktop; bara de jos numai pe mobil', async ({ page }) => {
+  test('numarul de WhatsApp: text vizibil pe desktop si pe mobil, fara legatura de apel; bara de jos numai pe mobil, un singur buton', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto(copie.baza + '/proba-navigatie')
-    const telSubsol = page.locator('footer a[href="' + TEL + '"]')
-    const textSubsol = page.locator('footer [data-subsol-contact] span', { hasText: /^\+\d/ })
-    await expect(telSubsol).toBeHidden()
+    const textSubsol = page.locator('footer [data-subsol-contact] span', { hasText: RAND_NUMAR })
+    // Controlul selectorului: in coloana Contact exista legatura WhatsApp, deci absenta apelului nu vine din alt loc.
+    await expect(page.locator('footer [data-subsol-contact] a[href^="' + WA + '"]')).toHaveCount(1)
     await expect(textSubsol).toBeVisible()
+    await expect(page.locator('a[href^="' + SCHEMA_APEL + '" i]')).toHaveCount(0)
     await expect(page.locator('[data-bara-mobil]')).toBeHidden()
 
     await page.setViewportSize({ width: 390, height: 844 })
-    await expect(telSubsol).toBeVisible()
-    await expect(textSubsol).toBeHidden()
+    await expect(textSubsol).toBeVisible()
+    await expect(page.locator('a[href^="' + SCHEMA_APEL + '" i]')).toHaveCount(0)
     const bara = page.locator('[data-bara-mobil]')
     await expect(bara).toBeVisible()
+    await expect(bara.locator('a')).toHaveCount(1)
     await expect(bara.locator('a[href^="' + WA + '"]')).toHaveCount(1)
-    await expect(bara.locator('a[href="' + TEL + '"]')).toHaveCount(1)
     // Bara nu acopera continutul: distantierul de dinaintea ei are cel putin inaltimea ei.
     const inaltimi = await page.evaluate(() => {
       const b = document.querySelector('[data-bara-mobil]')!.getBoundingClientRect().height
@@ -280,7 +287,8 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     expect(antet).toContain('Scrie-ne pe WhatsApp')
     expect(subsol).toContain('>Juridic</h2>')
     expect(hrefuri(subsol)).toContain(CALE_JURIDIC_RO)
-    expect(hrefuri(subsol)).toContain(TEL)
+    expect(fataApel(hrefuri(html))).toEqual([])
+    expect(subsol).toContain('>WhatsApp: +')
     expect(html).not.toContain('<form')
   })
 })

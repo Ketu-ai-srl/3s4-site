@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { valideazaEvidenta } from '../src/components/consimtamant/evidenta'
 import {
   CAI_CONTACT,
+  CANALE_CONTACT,
   EVENIMENTE,
   EVENIMENTE_UMAMI,
   evenimentDinLegatura,
@@ -456,7 +457,6 @@ describe('evenimentele Umami', () => {
 
   it('canalele de contact, legatura spre contact si schimbarea limbii, cu limba paginii', () => {
     const ev = (href: string, pagina = PAGINA_EN, lang: string | null = null, limbaPagina = 'en') => evenimentDinLegatura({ href, lang }, pagina, limbaPagina)
-    expect(ev('tel:+37368055599')).toEqual(['contact', { canal: 'telefon', lang: 'en' }])
     expect(ev('mailto:contact@exemplu.test')).toEqual(['contact', { canal: 'email', lang: 'en' }])
     expect(ev('https://wa.me/37368055599?text=x')).toEqual(['contact', { canal: 'whatsapp', lang: 'en' }])
     expect(ev('/contact')).toEqual(['cta_contact', { lang: 'en' }])
@@ -470,7 +470,10 @@ describe('evenimentele Umami', () => {
     expect(ev('/pricing')).toBeNull()
     expect(ev('https://altcineva.test/contact')).toBeNull()
     expect(ev('/', 'en')).toBeNull()
-    expect(ev('tel:+37368055599', null, 'fr')).toBeNull()
+    expect(ev('mailto:contact@exemplu.test', null, 'fr')).toBeNull()
+    // Decizia 56: legaturile de apel au iesit, deci nici urmarirea lor; una scapata nu devine eveniment `contact`.
+    expect(ev(['tel', '+37368055599'].join(':'))).toBeNull()
+    expect(CANALE_CONTACT).toEqual(['whatsapp', 'email'])
     expect(limbaDin('ro-MD')).toBe('ro')
     expect(limbaDin('de')).toBeNull()
   })

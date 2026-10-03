@@ -69,7 +69,7 @@ export default function inteligentaArtificialaEn(): DocumentJuridic {
       {
         cheie: "s9", titlu: "9. How to reach a person",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["You can always contact us directly, without going through the assistant: at contact@3s.md or at +373 68 055 599 (calls and WhatsApp). A person replies, in English or Romanian."] },
+          { jurisdictie: null, paragrafe: ["You can always contact us directly, without going through the assistant: at contact@3s.md or on WhatsApp at +373 68 055 599 (messages and calls). A person replies, in English or Romanian."] },
         ],
       },
       {

@@ -14,7 +14,8 @@ import { RADACINA } from './ajutor/proiect'
  * Ce se cere, pe HTML-ul servit (fara JavaScript), pe fiecare pagina: 200, `<html lang="ro">`, `Content-Language` al
  * editiei ro-MD din catalog, un singur H1, noindex pe staging, zero `<form`, zero RON; in `<main>` legaturile WhatsApp
  * poarta `[ref:<ref>]` al paginii (start: eroul si blocul final; contact: cardul), CTA-ul din antet are eticheta
- * deciziei 35 si acelasi ref, iar subsolul are legatura `tel:` si legatura spre informatiile legale RO. Apoi:
+ * deciziei 35 si acelasi ref, iar subsolul are numarul de WhatsApp ca text, fara nicio legatura de apel (decizia 56),
+ * si legatura spre informatiile legale RO. Apoi:
  * hreflang reciproc intre `/` si `/ro` si intre `/contact` si `/ro/contact`; selectorul EN | RO pe toate patru
  * paginile, cu martorul negativ pe o pagina EN fara pereche; zero forme de politete, zero fraze despre asistentul pe
  * WhatsApp si zero functii ale deciziei 43 in textul vazut, cu martori; declaratiile G-AI-02 masurate.
@@ -27,7 +28,6 @@ const PROFIL = mediuProfil3sMd()
 const ORIGINE = PROFIL.SITE_URL.replace(/\/+$/, '')
 const CANALE = JSON.parse(PROFIL.CANALE_JSON) as { whatsapp: string; telefon: string }
 const WA = 'https://wa.me/' + CANALE.whatsapp + '?text='
-const TEL = 'tel:' + CANALE.telefon
 const RON = new RegExp('\\b' + 'R' + 'ON\\b')
 const LIMBA = EDITII['ro-MD'].inLanguage
 
@@ -122,7 +122,10 @@ const POLITETE = new RegExp(
   'giu',
 )
 const NUME_WA = 'Whats' + 'App'
-const ASISTENT_RO = ['întreb\\p{L}*', 'întreab\\p{L}*', 'răspun\\p{L}*', 'asistent\\p{L}*', 'chat\\p{L}*', 'caut\\p{L}*', 'căut\\p{L}*', 'găse\\p{L}*', 'primești', 'trimit\\p{L}*', 'în testare'].join('|')
+// "gasesti numarul/adresa" (omul gaseste datele de contact, decizia 56 pune WhatsApp langa ele) nu e asistentul.
+const ASISTENT_RO = ['întreb\\p{L}*', 'întreab\\p{L}*', 'răspun\\p{L}*', 'asistent\\p{L}*', 'chat\\p{L}*', 'caut\\p{L}*', 'căut\\p{L}*', 'găse\\p{L}*(?!\\p{L})(?! (adresa|numărul)(?!\\p{L}))', 'primești', 'trimit\\p{L}*', 'în testare'].join('|')
+/** Schema legaturii de apel, asamblata la rulare (decizia 56: nicio legatura de apel). */
+const SCHEMA_APEL = 'te' + 'l:'
 const ASISTENT_WA = new RegExp(
   '(?<!\\p{L})(' + ASISTENT_RO + ')(?!\\p{L})[^.?!\\n]{0,50}' + NUME_WA + '|' + NUME_WA + '[^.?!\\n]{0,50}(?<!\\p{L})(' + ASISTENT_RO + ')(?!\\p{L})',
   'giu',
@@ -170,7 +173,7 @@ for (const r of ruteFelie()) {
     expect(RON.test(html)).toBe(false)
   })
 
-  test(r.cale + ': WhatsApp cu ref-ul paginii in <main> si in antet (eticheta deciziei 35), tel: si informatiile legale in subsol', async () => {
+  test(r.cale + ': WhatsApp cu ref-ul paginii in <main> si in antet (eticheta deciziei 35), numarul de WhatsApp si informatiile legale in subsol, fara apel', async () => {
     const { html } = await servit(r.cale)
     const ref = '[ref:' + REF.get(r.cale) + ']'
     const main = bucata(html, /<main\b/, '</main>')
@@ -189,7 +192,8 @@ for (const r of ruteFelie()) {
     expect(cta).toHaveLength(1)
     expect(textWa(cta[0])).toContain(ref)
     expect(antet).toContain('Scrie-ne pe ' + NUME_WA)
-    expect(hrefuri(subsol)).toContain(TEL)
+    expect(subsol).toContain('>WhatsApp: +')
+    expect(hrefuri(html).filter((h) => h.toLowerCase().startsWith(SCHEMA_APEL))).toEqual([])
     expect(hrefuri(subsol)).toContain(CALE_LEGAL_RO)
   })
 
@@ -216,6 +220,8 @@ test('martor POZITIV al tiparelor: fraze fabricate sunt prinse, contactul cu o p
   expect(gasite(ASISTENT_WA, 'Întreabă arhiva direct pe ' + NUME_WA + '.')).toHaveLength(1)
   expect(gasite(DECIZIA_43, 'Port' + 'alul pentru clienți și aplicații ' + 'instalabile.')).toHaveLength(2)
   expect(gasite(ASISTENT_WA, 'Scrie-ne pe ' + NUME_WA + ' și descrie pe scurt arhiva firmei. Îți răspunde o persoană din echipa 3S.')).toEqual([])
+  expect(gasite(ASISTENT_WA, 'Pe ' + NUME_WA + ' găsești documentul cu pagina lui.')).toHaveLength(1)
+  expect(gasite(ASISTENT_WA, 'Dacă preferi o convorbire pe ' + NUME_WA + ', găsești numărul pe pagina de contact.')).toEqual([])
   expect(gasite(POLITETE, 'Poți contacta echipa 3S; situații, informații, aplicații.')).toEqual([])
 })
 

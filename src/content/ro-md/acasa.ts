@@ -338,14 +338,14 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
 /** Legatura secundara a eroului: spre sectiunea "Cum incep sa folosesc 3S?". */
 export const eroSecundar = { text: "Cum începe un pilot", href: "#cum-pornesc" } as const;
 
-/** Blocul de final, cu fraza despre pagina de contact in varianta potrivita. */
+/** Blocul de final, cu fraza despre pagina de contact in varianta potrivita (convorbirea numai pe WhatsApp, decizia 56). */
 export function finalAcasa(o: OptiuniPagina = OPTIUNI_BUILD): FinalPagina {
   return {
     text:
       "Descrie-ne pe scurt arhiva firmei și țara în care se află documentele. " +
       (o.email === ""
-        ? "Dacă preferi o discuție telefonică, găsești numărul pe [pagina de contact](/ro/contact)."
-        : "Dacă preferi e-mailul sau telefonul, găsești adresa și numărul pe [pagina de contact](/ro/contact)."),
+        ? "Dacă preferi o convorbire pe WhatsApp, găsești numărul pe [pagina de contact](/ro/contact)."
+        : "Dacă preferi e-mailul sau o convorbire pe WhatsApp, găsești adresa și numărul pe [pagina de contact](/ro/contact)."),
     dupa: ["Documentele care îți răspund."],
   };
 }

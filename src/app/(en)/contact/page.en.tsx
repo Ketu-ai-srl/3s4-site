@@ -1,18 +1,17 @@
 // Pagina de contact a editiei `en` (P10, `/contact`): textul din `src/content/en/contact.ts`, randat prin
-// `CorpPagina`. Fara formular (decizia 3): cele trei carduri de canal sunt actiunea paginii, imediat sub capsula,
+// `CorpPagina`. Fara formular (decizia 3): cele doua carduri de canal sunt actiunea paginii, imediat sub capsula,
 // in sectiunea "How can I reach 3S?".
 //
 // Cardurile urmeaza canalele domeniului (`CANALE_JSON`): WhatsApp cu textul precompletat al paginii
-// (`[ref:en-contact]`, din modul), e-mailul numai cand domeniul are adresa (P-40), telefonul ca text pe desktop si
-// ca legatura `tel:` pe mobil. Un canal gol nu lasa card.
+// (`[ref:en-contact]`, din modul), cu numarul afisat ca numar de WhatsApp, si e-mailul numai cand domeniul are
+// adresa (P-40). Un canal gol nu lasa card. Cardul de telefon si legatura de apel au iesit (decizia 56: fara apeluri
+// GSM; apelurile se primesc numai pe WhatsApp).
 
 import type { Metadata } from "next";
 import AdresaCopiere from "@/components/canale/AdresaCopiere";
 import ButonWhatsApp from "@/components/canale/ButonWhatsApp";
 import CardCanal from "@/components/canale/CardCanal";
-import c from "@/components/canale/Canale.module.css";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
-import Telefon from "@/components/canale/Telefon";
 import CorpPagina from "@/components/continut/CorpPagina";
 import TextInLinie from "@/components/juridic/TextInLinie";
 import s from "@/components/juridic/juridic.module.css";
@@ -20,7 +19,7 @@ import { claseButon } from "@/components/primitive/Buton";
 import type { NodJsonLd } from "@/components/seo/date-structurate";
 import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
-import { CANALE, legaturaTelefon, legaturaWhatsApp, numarAfisat } from "@/content/canale";
+import { CANALE, legaturaWhatsApp, numarAfisat } from "@/content/canale";
 import { CANALE_PAGINA, DUPA, pagina } from "@/content/en/contact";
 import { MICROTEXT } from "@/content/en/home";
 import { alegePeCale } from "@/content/navigatie";
@@ -40,7 +39,6 @@ export default function PaginaContactEn() {
   const posta = navigatieEn().subsol.contact?.email?.legatura ?? null;
   const hrefEmail = posta === null ? null : alegePeCale(posta, pagina.meta.cale);
   const email = hrefEmail === null ? null : { implicit: hrefEmail, pagini: [] };
-  const tel = legaturaTelefon();
   const numar = numarAfisat();
 
   return (
@@ -55,7 +53,7 @@ export default function PaginaContactEn() {
                 <h2 id="canale-titlu">{CANALE_PAGINA.titlu}</h2>
                 {whatsapp === null ? null : (
                   <CardCanal titlu={CANALE_PAGINA.whatsapp.titlu} descriere={CANALE_PAGINA.whatsapp.text}>
-                    <p>{numar}</p>
+                    <p>{numar + CANALE_PAGINA.whatsapp.dupaNumar}</p>
                     <ButonWhatsApp legatura={whatsapp} text={ETICHETA_WHATSAPP_EN} />
                     <p>{MICROTEXT}</p>
                   </CardCanal>
@@ -66,16 +64,6 @@ export default function PaginaContactEn() {
                     <LegaturaCanal legatura={email} canal="email" className={claseButon("contur")}>
                       {CANALE_PAGINA.email.buton}
                     </LegaturaCanal>
-                  </CardCanal>
-                )}
-                {tel === null ? null : (
-                  <CardCanal titlu={CANALE_PAGINA.telefon.titlu} descriere={CANALE_PAGINA.telefon.text}>
-                    <Telefon text={numar} href={tel} />
-                    <span className={c.doarMobil}>
-                      <a href={tel} className={claseButon("contur")} data-canal="telefon">
-                        {CANALE_PAGINA.telefon.buton}
-                      </a>
-                    </span>
                   </CardCanal>
                 )}
               </section>
