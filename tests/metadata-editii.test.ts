@@ -110,13 +110,14 @@ describe('graful comun pe editie', () => {
     expect(numaraRon(text)).toBe(0)
   })
 
-  it('canalele 3s.md: telephone si contactPoint.telephone din CANALE, fara e-mail (CANALE.email gol), limbile domeniului', () => {
+  it('canalele 3s.md: fara telephone (decizia 56), contactPoint cu url wa.me din CANALE, fara e-mail (CANALE.email gol), limbile domeniului', () => {
     const n = nodOrganizatie(INT, canale.email, { editie: 'en', canale, limbi: limbileDomeniului(['en', 'ro-MD']) })
-    expect(n.telephone).toBe('+37368055599')
+    expect('telephone' in n).toBe(false)
+    expect(JSON.stringify(n)).not.toContain('telephone')
     expect(n.contactPoint).toEqual({
       '@type': 'ContactPoint',
       contactType: 'customer support',
-      telephone: '+37368055599',
+      url: 'https://wa.me/' + canale.whatsapp,
       availableLanguage: ['en', 'ro'],
       areaServed: [
         { '@type': 'Country', name: 'RO' },
@@ -126,8 +127,8 @@ describe('graful comun pe editie', () => {
     expect('email' in n).toBe(false)
   })
 
-  it('martor NEGATIV: fara telefon si fara e-mail, nici telephone, nici contactPoint (build-ul romanesc de azi)', () => {
-    const fara = { ...canale, telefon: '', email: '' }
+  it('martor NEGATIV: fara WhatsApp si fara e-mail, nici telephone, nici contactPoint (build-ul romanesc de azi)', () => {
+    const fara = { ...canale, whatsapp: '', email: '' }
     const n = nodOrganizatie(INT, '', { editie: 'ro-RO', canale: fara, limbi: ['ro'] })
     expect('telephone' in n || 'contactPoint' in n || 'email' in n).toBe(false)
     // Si graful romanesc ramane cel de azi: slogan, descriere romaneasca, WebSite ro-RO

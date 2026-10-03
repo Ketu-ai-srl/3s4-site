@@ -6,10 +6,10 @@ import {
   CANALE,
   codifica,
   legaturaEmail,
-  legaturaTelefon,
   legaturaWhatsApp,
   marcajRef,
   numarAfisat,
+  randNumarWhatsApp,
   type Canale,
 } from '../src/content/canale'
 import { adresaMarcii } from '../src/content/entitate'
@@ -370,14 +370,16 @@ describe('legaturile: codificarea contra formei de referinta', () => {
     expect(legaturaWhatsApp('en-home', bun, md)).not.toBeNull()
   })
 
-  it('canal lipsa -> null, fara legatura; telefonul si numarul afisat', () => {
+  it('canal lipsa -> null, fara legatura; numarul afisat ca numar de WhatsApp, fara legatura de apel (decizia 56)', () => {
     const gol = configurareCanale(undefined, '')
     const text = textWhatsApp('en-home', 'your website', 'x')
     expect(legaturaWhatsApp('en-home', text, gol)).toBeNull()
     expect(legaturaEmail('en-home', subiect('en-home'), 'c', gol)).toBeNull()
-    expect(legaturaTelefon(gol)).toBeNull()
     expect(numarAfisat(gol)).toBe('')
-    expect(legaturaTelefon(md)).toBe('tel:+' + NUMAR)
+    expect(randNumarWhatsApp(gol)).toBeNull()
+    expect(randNumarWhatsApp(md)).toBe('WhatsApp: +' + ['373', '68', '055', '599'].join(' '))
+    // Fara WhatsApp, numarul nu se afiseaza ca numar de WhatsApp (nu exista alt canal pe numar dupa decizia 56).
+    expect(randNumarWhatsApp({ ...md, whatsapp: '' })).toBeNull()
     expect(numarAfisat(md)).toBe('+' + ['373', '68', '055', '599'].join(' '))
     // Alta tara sau alta lungime: forma E.164, neimpartita.
     expect(numarAfisat({ ...md, telefon: '+4912345678901' })).toBe('+4912345678901')

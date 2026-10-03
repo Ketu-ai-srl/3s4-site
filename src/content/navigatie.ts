@@ -706,17 +706,18 @@ const POSTA: Legatura = postaMarcii();
 /** Un canal cu tinta pe pagina (WhatsApp, e-mail): eticheta si legatura rezolvata pe server. */
 export type CanalPeCale = { text: string; legatura: LegaturaPeCale };
 
-/** Telefonul: numarul afisat (text crawlabil) si legatura `tel:` (activa numai pe mobil, prin CSS). */
-export type CanalTelefon = { text: string; href: string };
-
 /**
- * Coloana Contact a subsolului (arhitectura EN §4.2): WhatsApp, numarul ca text, e-mailul numai cand
+ * Coloana Contact a subsolului (arhitectura EN §4.2): WhatsApp, numarul de WhatsApp ca text, e-mailul numai cand
  * domeniul are adresa. Un canal gol al domeniului e `null` si nu se randeaza.
+ *
+ * Decizia 56 (03.10.2026, fara apeluri GSM, peste tot): numarul e numai TEXT ("WhatsApp: +373 ..."), fara legatura
+ * de apel; apelurile se primesc numai pe WhatsApp.
  */
 export type ContactSubsol = {
   titlu: string;
   whatsapp: CanalPeCale | null;
-  telefon: CanalTelefon | null;
+  /** Randul cu numarul de WhatsApp, ca text crawlabil (fara legatura). */
+  numar: string | null;
   email: CanalPeCale | null;
 };
 
@@ -980,13 +981,12 @@ export function toateLegaturileNavigatiei(): Legatura[] {
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Bara fixa de jos pe mobil (arhitectura EN §4.7): WhatsApp si apel. Se randeaza numai cu cel putin
- * un canal nevid; contractul romanesc nu o are.
+ * Bara fixa de jos pe mobil (arhitectura EN §4.7): un singur buton, WhatsApp (butonul de apel a iesit, decizia 56).
+ * Se randeaza numai cu WhatsApp nevid; contractul romanesc nu o are.
  */
 export type ContractBara = {
   eticheta: string;
   whatsapp: CanalPeCale | null;
-  telefon: { text: string; href: string } | null;
 };
 
 export type ContractNavigatie = {

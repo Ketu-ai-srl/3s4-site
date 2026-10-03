@@ -69,7 +69,7 @@ export default function inteligentaArtificialaRo(): DocumentJuridic {
       {
         cheie: "s9", titlu: "9. Cum ajungeți la un om",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Ne puteți contacta oricând direct, fără să treceți prin asistent: la contact@3s.md sau la +373 68 055 599 (apeluri și WhatsApp). Răspunde un om, în română sau în engleză."] },
+          { jurisdictie: null, paragrafe: ["Ne puteți contacta oricând direct, fără să treceți prin asistent: la contact@3s.md sau pe WhatsApp la +373 68 055 599 (mesaje și apeluri). Răspunde un om, în română sau în engleză."] },
         ],
       },
       {

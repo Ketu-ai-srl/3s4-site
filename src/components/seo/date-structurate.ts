@@ -1,9 +1,12 @@
 // Datele structurate (JSON-LD) ale site-ului, planul valului S4, §8.2. DOAR BRANDUL (§7): numele,
 // sigla, adresa site-ului si canalele de contact ale domeniului (`CANALE_JSON`, `src/content/canale.ts`):
-// e-mailul numai din `CANALE.email`, telefonul numai din `CANALE.telefon`. Nicio data de firma - denumire
-// legala, sediu, cod fiscal, registru - fiindca site-ul nu vorbeste in numele unei firme. Poarta de SEO
-// (S-09) refuza aceste campuri in orice nod, iar telefonul il primeste numai pe un build al carui
-// `CANALE_JSON` are telefon (acelasi numar).
+// e-mailul numai din `CANALE.email`, WhatsApp numai din `CANALE.whatsapp`. Nicio data de firma - denumire
+// legala, sediu, cod fiscal, registru - fiindca site-ul nu vorbeste in numele unei firme; poarta de SEO
+// (S-09) refuza aceste campuri in orice nod.
+//
+// FARA `telephone` (decizia 56, 03.10.2026: fara apeluri GSM, peste tot): un numar in datele structurate poate
+// aduce un buton de apel in rezultatele cautarii. Punctul de contact poarta legatura WhatsApp ca `url`
+// (`https://wa.me/<numar>`), deci apelurile si mesajele raman pe WhatsApp.
 //
 // PE EDITIE (felia metadata-hreflang): graful comun e al editiei de la radacina domeniului (`ro-RO` pe
 // build-ul romanesc, `en` pe cel international), cu `inLanguage` din catalogul editiilor. Graful startului
@@ -74,8 +77,9 @@ export type OptiuniOrganizatie = {
 
 /**
  * Organizatia (marca). `emailBrut` e adresa de contact a domeniului (`CANALE.email`, care cade pe
- * `config/brand.json` cand `CANALE_JSON` nu o da); parametru si pentru probe (brand sintetic). Telefonul vine
- * din `CANALE.telefon`. Cu macar un canal apare `contactPoint`, cu canalele date; fara niciunul lipseste,
+ * `config/brand.json` cand `CANALE_JSON` nu o da); parametru si pentru probe (brand sintetic). WhatsApp vine
+ * din `CANALE.whatsapp`, ca `url` al punctului de contact; `telephone` nu se emite (decizia 56). Cu macar un
+ * canal (e-mail sau WhatsApp) apare `contactPoint`, cu canalele date; fara niciunul lipseste,
  * fiindca un punct de contact fara nicio cale de contact n-ar spune nimic adevarat.
  */
 export function nodOrganizatie(
@@ -87,7 +91,7 @@ export function nodOrganizatie(
   const editie = optiuni.editie ?? editiaRadacinii().cod;
   const canale = optiuni.canale ?? CANALE;
   const posta = adresaMarcii(emailBrut);
-  const telefon = canale.telefon === "" ? null : canale.telefon;
+  const whatsapp = canale.whatsapp === "" ? null : "https://wa.me/" + canale.whatsapp;
   const tari = TARI_DESERVITE.map((cod) => ({ "@type": "Country", name: cod }));
   // Textele marcii: in romana din subsol; pe editia `en`, descrierea in engleza si fara slogan (n-are inca forma EN).
   const texte = editie === "en" ? { description: DESCRIERE_EN } : { slogan: SUBSOL.brand.slogan, description: SUBSOL.brand.descriere };
@@ -109,15 +113,14 @@ export function nodOrganizatie(
     ...texte,
     areaServed: tari,
     ...(posta === null ? {} : { email: posta }),
-    ...(telefon === null ? {} : { telephone: telefon }),
-    ...(posta === null && telefon === null
+    ...(posta === null && whatsapp === null
       ? {}
       : {
           contactPoint: {
             "@type": "ContactPoint",
             contactType: "customer support",
             ...(posta === null ? {} : { email: posta }),
-            ...(telefon === null ? {} : { telephone: telefon }),
+            ...(whatsapp === null ? {} : { url: whatsapp }),
             availableLanguage: optiuni.limbi ?? limbileDomeniului(),
             areaServed: tari,
           },

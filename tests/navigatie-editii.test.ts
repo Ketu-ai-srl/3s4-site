@@ -117,9 +117,9 @@ describe('implicitul: contractul romanesc de azi, neschimbat', () => {
   })
 })
 
-describe('filtrul de legaturi externe din subsol invata tel:', () => {
-  it('tel:, mailto: si http(s) sunt externe; caile interne nu', () => {
-    expect(esteExterna('tel:+10000000000')).toBe(true)
+describe('filtrul de legaturi externe din subsol (fara legaturi de apel, decizia 56)', () => {
+  it('mailto: si http(s) sunt externe; caile interne nu; schema de apel nu mai e recunoscuta', () => {
+    expect(esteExterna(['tel', '+10000000000'].join(':'))).toBe(false)
     expect(esteExterna('mailto:' + POSTA_SINTETICA)).toBe(true)
     expect(esteExterna('https://exemplu.test/')).toBe(true)
     expect(esteExterna('/contact')).toBe(false)
@@ -207,14 +207,14 @@ describe('contractul EN (navigatie-en.ts)', () => {
     expect(legal.legaturi.map((l) => l.href)).toEqual(CHEI_MD.map((c) => caleMd(c, 'en')))
   })
 
-  it('subsolul pe 3s.md: wa.me si tel: in coloana Contact, numarul ca text, informatiile legale in romana, 0 <form', () => {
+  it('subsolul pe 3s.md: wa.me in coloana Contact, numarul de WhatsApp ca text, fara legatura de apel, informatiile legale in romana, 0 <form', () => {
     const cai = toateCaile(en)
     const html = renderToStaticMarkup(createElement(Subsol, { navigatie: en, cai }))
     const h = hrefuri(html)
     expect(h.some((x) => x.startsWith('https://wa.me/' + CANALE_3S_MD.whatsapp + '?text='))).toBe(true)
-    expect(h).toContain('tel:' + CANALE_3S_MD.telefon)
-    // Numarul apare si ca text (pe desktop), nu numai in legatura.
-    expect(html).toMatch(/<span[^>]*>\+\d{3} \d{2} \d{3} \d{3}<\/span>/)
+    // Decizia 56: numarul ramane, ca numar de WhatsApp, numai ca text; nicio legatura de apel.
+    expect(html).toMatch(/<span[^>]*>WhatsApp: \+\d{3} \d{2} \d{3} \d{3}<\/span>/)
+    expect(h.filter((x) => /^tel/i.test(x))).toEqual([])
     expect(h).toContain(caleMd('informatii-legale', 'ro'))
     expect(html).toMatch(/<a[^>]*lang="ro"[^>]*>Informații legale<\/a>/)
     expect(html).not.toContain('<form')
@@ -250,15 +250,15 @@ describe('contractul EN (navigatie-en.ts)', () => {
     expect(html).not.toContain(ANTET.descarca.text)
   })
 
-  it('bara de pe mobil: WhatsApp si apelul cu canale; nimic fara canale', () => {
+  it('bara de pe mobil: un singur buton, WhatsApp (fara apel, decizia 56); nimic fara canale', () => {
     const html = renderToStaticMarkup(createElement(BaraMobil, { bara: en.bara }))
-    expect(hrefuri(html)).toContain('tel:' + CANALE_3S_MD.telefon)
+    expect(hrefuri(html)).toHaveLength(1)
     expect(hrefuri(html).some((x) => x.startsWith('https://wa.me/'))).toBe(true)
     expect(html).toContain('data-bara-distantier')
     const gol = navigatieEn(FARA_CANALE, CAI_EXISTENTE)
     expect(renderToStaticMarkup(createElement(BaraMobil, { bara: gol.bara }))).toBe('')
     expect(gol.antet.cta.href).toBeNull()
-    expect(gol.subsol.contact).toEqual({ titlu: 'Contact', whatsapp: null, telefon: null, email: null })
+    expect(gol.subsol.contact).toEqual({ titlu: 'Contact', whatsapp: null, numar: null, email: null })
   })
 })
 
@@ -310,7 +310,8 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     const html = renderToStaticMarkup(createElement(Subsol, { navigatie: md, cai: toateCaile(md) }))
     expect(html).toContain('>Juridic</h2>')
     expect(html).toContain('>Contact</h2>')
-    expect(hrefuri(html)).toContain('tel:' + CANALE_3S_MD.telefon)
+    expect(hrefuri(html).filter((x) => /^tel/i.test(x))).toEqual([])
+    expect(html).toContain('>WhatsApp: +373 ')
     expect(html).not.toContain('<form')
     expect(html).not.toContain(SUBSOL.insigne[0].text)
   })

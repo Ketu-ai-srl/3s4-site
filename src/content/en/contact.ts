@@ -1,6 +1,7 @@
 // Pagina de contact a editiei `en` (P10, `/contact`), transcrisa din fisa ei de continut, pana la sectiunea de
-// resurse nepublicate. Fara formular (decizia 3 si arhitectura EN, sectiunea 4.6): cele trei carduri de canal sunt
-// actiunea paginii, deci pagina nu are bloc de final separat.
+// resurse nepublicate. Fara formular (decizia 3 si arhitectura EN, sectiunea 4.6): cele doua carduri de canal sunt
+// actiunea paginii, deci pagina nu are bloc de final separat. Decizia 56 (03.10.2026): fara apeluri GSM - cardul de
+// telefon a iesit, iar WhatsApp primeste mesaje si apeluri; numarul ramane afisat ca numar de WhatsApp.
 //
 // Titlul, meta-descrierea si capsula sunt variantele "Before P-40" ale fisei: adresa domeniului nu poate
 // raspunde inca, deci e-mailul nu se numeste in text. Cardul de e-mail il randeaza pagina numai cand domeniul
@@ -21,7 +22,9 @@ export const CANALE_PAGINA = {
   titlu: "How can I reach 3S?",
   whatsapp: {
     titlu: "WhatsApp",
-    text: "WhatsApp is our main channel. On this number you talk to people from our team.",
+    /** Dupa numarul afisat pe card: numarul e de WhatsApp (decizia 56). */
+    dupaNumar: " (WhatsApp)",
+    text: "WhatsApp is our main channel, for messages and calls. On this number you talk to people from our team.",
   },
   email: {
     titlu: "E-mail",
@@ -29,11 +32,6 @@ export const CANALE_PAGINA = {
     buton: "E-mail us",
     copiaza: "Copy address",
     copiat: "Address copied",
-  },
-  telefon: {
-    titlu: "Phone",
-    text: "The same number. On a smartphone, tap the number to call.",
-    buton: "Call us",
   },
 } as const;
 
@@ -45,14 +43,14 @@ export const DUPA: readonly string[] = [
 export const pagina: PaginaContinut = {
   cheie: "contact",
   meta: {
-    titlu: "Contact 3S: WhatsApp and Phone",
+    titlu: "Contact 3S: WhatsApp Messages and Calls",
     descriere:
-      "Message 3S on WhatsApp or call +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
+      "Message or call 3S on WhatsApp at +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
     cale: "/contact",
   },
   h1: "Talk to 3S",
   capsula:
-    "You can reach 3S on WhatsApp at +373 68 055 599 or by phone on the same number. Tell us which archive you have (paper, scans or digital files) and in which country. We reply in English or Romanian. There is no form and no account to create.",
+    "You can reach 3S on WhatsApp at +373 68 055 599, for messages and calls. Tell us which archive you have (paper, scans or digital files) and in which country. We reply in English or Romanian. There is no form and no account to create.",
   sectiuni: [
     {
       cheie: "first-message",
@@ -100,9 +98,9 @@ export const pagina: PaginaContinut = {
       "@type": "WebPage",
       "@id": BAZA + "/contact#webpage",
       url: BAZA + "/contact",
-      name: "Contact 3S: WhatsApp and Phone",
+      name: "Contact 3S: WhatsApp Messages and Calls",
       description:
-        "Message 3S on WhatsApp or call +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
+        "Message or call 3S on WhatsApp at +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
       inLanguage: "en",
       isPartOf: { "@id": ID.site },
       mainEntity: { "@id": ID.organizatie },

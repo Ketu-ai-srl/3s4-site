@@ -9,14 +9,13 @@
 //
 // PE EDITIE (felia navigatie-pe-editie): contractul si multimea cailor vin ca proprietati, cu IMPLICITUL de
 // azi (`NAVIGATIE_RO`, `CAI_EXISTENTE`), deci layout-ul romanesc randeaza ca inainte. Contractul unei
-// editii poate aduce coloana de canale (WhatsApp cu textul paginii, numarul ca text si `tel:` numai pe
-// mobil, e-mailul numai cu adresa domeniului), o legatura in limba tarii firmei, in randul de jos si
+// editii poate aduce coloana de canale (WhatsApp cu textul paginii, numarul de WhatsApp numai ca text - fara
+// legatura de apel, decizia 56 -, e-mailul numai cu adresa domeniului), o legatura in limba tarii firmei, in randul de jos si
 // eticheta butonului de setari cookie. Campurile goale (slogan, descriere, insigne) nu lasa elemente goale.
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
-import Telefon from "@/components/canale/Telefon";
 import SetariCookie from "@/components/consimtamant/SetariCookie";
 import { CAI_EXISTENTE } from "@/content/cai";
 import { stareAnalitica } from "@/lib/analitica";
@@ -28,11 +27,11 @@ import SiglaMarca from "./SiglaMarca";
 import s from "./Subsol.module.css";
 
 /**
- * Tinta e in afara routerului site-ului (posta, telefon, alt domeniu)? Atunci legatura e un `<a>` simplu, nu
- * `Link`: routerul ar trata `tel:+...` ca pe o cale interna.
+ * Tinta e in afara routerului site-ului (posta, alt domeniu)? Atunci legatura e un `<a>` simplu, nu `Link`:
+ * routerul ar trata `mailto:...` ca pe o cale interna. Legaturile de apel au iesit odata cu decizia 56.
  */
 export function esteExterna(href: string): boolean {
-  return /^(mailto:|tel:|https?:)/.test(href);
+  return /^(mailto:|https?:)/.test(href);
 }
 
 function Legaturi({ legatura, className }: { legatura: Legatura; className: string }) {
@@ -87,7 +86,7 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
   const posta = seVede(SUBSOL.brand.posta, cai) ? SUBSOL.brand.posta : null;
   const an = new Date().getFullYear();
   const contact = SUBSOL.contact ?? null;
-  const areContact = contact !== null && (contact.whatsapp !== null || contact.telefon !== null || contact.email !== null);
+  const areContact = contact !== null && (contact.whatsapp !== null || contact.numar !== null || contact.email !== null);
   const locala = SUBSOL.legaturaLocala && seVede(SUBSOL.legaturaLocala, cai) ? SUBSOL.legaturaLocala : null;
   // Grila are 5 coloane de legaturi pe contractul romanesc (fara coloana de canale si fara atribut de stil);
   // pe un contract cu canale, numarul de coloane trece prin variabila CSS. Atributul lipseste cu totul pe contractul
@@ -142,9 +141,11 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
                     </LegaturaCanal>
                   </li>
                 ) : null}
-                {contact.telefon !== null ? (
+                {contact.numar !== null ? (
                   <li>
-                    <Telefon text={contact.telefon.text} href={contact.telefon.href} className={s.legatura} />
+                    <span className={s.legatura} data-numar-whatsapp="">
+                      {contact.numar}
+                    </span>
                   </li>
                 ) : null}
                 {contact.email !== null ? (

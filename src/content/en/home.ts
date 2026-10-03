@@ -259,6 +259,6 @@ export const pagina: PaginaContinut = {
 export const eroSecundar = { text: "See how a pilot starts", href: "#how-do-i-start" } as const;
 
 export const final: FinalPagina = {
-  text: "Tell us what your archive looks like and in which country it is. We reply in English or Romanian. Prefer to call? See [Contact](/contact).",
+  text: "Tell us what your archive looks like and in which country it is. We reply in English or Romanian. Prefer a call on WhatsApp? See [Contact](/contact).",
   dupa: ["Documents that answer you."],
 };

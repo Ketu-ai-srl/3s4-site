@@ -139,12 +139,12 @@ describe('variantele se aleg din cod', () => {
     const cu = acasa.paginaAcasa({ ...baza, email: ADRESA_EMAIL })
     expect(textPagina(fara)).not.toContain('sau prin e-mail')
     expect(textPagina(cu)).toContain('Scrie-ne pe WhatsApp sau prin e-mail și descrie pe scurt arhiva firmei.')
-    expect(acasa.finalAcasa(baza).text).toContain('Dacă preferi o discuție telefonică, găsești numărul pe [pagina de contact](/ro/contact).')
+    expect(acasa.finalAcasa(baza).text).toContain('Dacă preferi o convorbire pe WhatsApp, găsești numărul pe [pagina de contact](/ro/contact).')
     expect(acasa.finalAcasa({ ...baza, email: ADRESA_EMAIL }).text).toContain('găsești adresa și numărul pe [pagina de contact](/ro/contact).')
     const c0 = contact.paginaContact(baza)
     const c1 = contact.paginaContact({ ...baza, email: ADRESA_EMAIL })
-    expect(c0.meta.titlu).toBe('Contact 3S: WhatsApp și telefon')
-    expect(c1.meta.titlu).toBe('Contact 3S: WhatsApp, e-mail și telefon')
+    expect(c0.meta.titlu).toBe('Contact 3S: WhatsApp, mesaje și apeluri')
+    expect(c1.meta.titlu).toBe('Contact 3S: WhatsApp și e-mail')
     expect(textPagina(c0)).not.toContain(ADRESA_EMAIL)
     expect(c1.capsula).toContain(', ori prin e-mail, la ' + ADRESA_EMAIL + '.')
     expect(c1.meta.descriere).toContain('ori prin e-mail, la ' + ADRESA_EMAIL + '.')
@@ -335,7 +335,9 @@ const ASISTENT_RO = [
   'caut\\p{L}*',
   'căut\\p{L}*',
   'regăs\\p{L}*',
-  'găse\\p{L}*',
+  // Decizia 56 aduce WhatsApp langa "gasesti numarul/adresa pe pagina de contact" (omul gaseste datele de contact,
+  // nu asistentul un document): forma aceea nu acuza; "gaseste documentul" ramane prinsa (martorii de mai jos).
+  'găse\\p{L}*(?!\\p{L})(?! (adresa|numărul)(?!\\p{L}))',
   'primești',
   'primi[tr]\\p{L}*',
   'trimit\\p{L}*',
@@ -369,6 +371,11 @@ const INTERZISE: { motiv: string; tipar: RegExp }[] = [
   { motiv: 'RON (3s.md: pretul in EUR, decizia 54)', tipar: new RegExp('\\b' + 'R' + 'ON\\b') },
   { motiv: 'Germania ca loc al gazduirii (decizia 42)', tipar: new RegExp('(German' + 'ia|o singură ' + 'regiune)', 'iu') },
   { motiv: 'limba rusa (decizia 8)', tipar: new RegExp('(?<!\\p{L})rus' + '(ă|a|e|ește)(?!\\p{L})', 'iu') },
+  // Decizia 56 (03.10.2026): fara apeluri GSM; "suna-ne" e permis numai urmat de WhatsApp in aceeasi propozitie.
+  {
+    motiv: 'apel GSM (decizia 56)',
+    tipar: new RegExp('(telefonic|(?<!\\p{L})telefon(ul)?(?!\\p{L})|(?<!\\p{L})sun[aă](-ne)?(?!\\p{L})(?![^.;]{0,30}' + WA + ')|(?<!\\p{L})te' + 'l:)', 'iu'),
+  },
 ]
 
 function incalcari(text: string): string[] {
@@ -409,6 +416,7 @@ describe('ce nu ajunge pe paginile RO-MD', () => {
       'de la 0 ' + 'R' + 'ON',
       'Fișierele sunt păstrate în German' + 'ia.',
       'Răspundem și în limba ' + 'rus' + 'ă.',
+      'Sun' + 'ă-ne la +373 68 055 599.',
     ]
     expect(rau).toHaveLength(INTERZISE.length)
     for (const [i, fraza] of rau.entries()) expect(incalcari(fraza), fraza).toContain(INTERZISE[i].motiv)
@@ -419,21 +427,26 @@ describe('ce nu ajunge pe paginile RO-MD', () => {
       'Trimite documentele pe ' + WA + ' și le găsești în arhivă.',
       'Caută un contract pe ' + WA + '.',
       WA + ' îți găsește documentul.',
+      'Pe ' + WA + ' găsești documentul cu pagina lui.',
+      'Pe ' + WA + ' găsești adresele clienților din arhivă.',
     ])
       expect(incalcari(fraza), fraza).toContain('asistentul pe WhatsApp (decizia 49)')
     // Martor POZITIV al deciziei 49: contactul cu o persoana pe WhatsApp, cum il scriu paginile, nu e acuzat.
     for (const fraza of [
       'Scrie-ne pe ' + WA + ' sau prin e-mail și descrie pe scurt arhiva firmei. În primul mesaj nu trimite documente sau date cu caracter personal.',
-      'Poți contacta echipa 3S pe ' + WA + ' sau telefonic, la +373 68 055 599. Descrie-ne pe scurt arhiva firmei.',
-      'Numărul este același ca pe ' + WA + '. De pe telefonul mobil, poți suna direct din pagină.',
-      'Contact 3S: ' + WA + ', e-mail și telefon',
-      'Contactează 3S pe ' + WA + ' sau telefonic, la +373 68 055 599. Îți răspunde un membru al echipei.',
+      'Poți contacta echipa 3S pe ' + WA + ', prin mesaj sau apel, la +373 68 055 599. Descrie-ne pe scurt arhiva firmei.',
+      'Dacă preferi o convorbire, sună-ne pe ' + WA + ', la +373 68 055 599; la acest număr primim apeluri numai prin ' + WA + '.',
+      'Contact 3S: ' + WA + ', mesaje și apeluri',
+      'Contactează 3S pe ' + WA + ' (mesaj sau apel), la +373 68 055 599. Îți răspunde un membru al echipei.',
+      'Dacă preferi o convorbire pe ' + WA + ', găsești numărul pe [pagina de contact](/ro/contact).',
+      'Dacă preferi e-mailul sau o convorbire pe ' + WA + ', găsești adresa și numărul pe [pagina de contact](/ro/contact).',
     ])
       expect(incalcari(fraza), fraza).toEqual([])
-    // Cuvintele-capcana ale textelor reale nu acuza: aplicatiile clientului, telefonul mobil, "pe hartie" ca tip de arhiva.
+    // Cuvintele-capcana ale textelor reale nu acuza: aplicatiile clientului, "pe hartie" ca tip de arhiva. (Fraza despre
+    // apelul de pe telefonul mobil a iesit odata cu cardul de telefon, decizia 56: azi e chiar ce acuza tiparul ei.)
     expect(
       incalcari(
-        'Dacă documentele sunt păstrate în mai multe aplicații, menționează și acest lucru. De pe telefonul mobil, poți suna. Documente pe hârtie, scanări sau fișiere electronice.',
+        'Dacă documentele sunt păstrate în mai multe aplicații, menționează și acest lucru. Documente pe hârtie, scanări sau fișiere electronice.',
       ),
     ).toEqual([])
   })

@@ -1,7 +1,9 @@
 // Pagina de contact a editiei `ro-MD` (`/ro/contact` pe 3s.md), transcrisa din fisa ei de continut aprobata, pana
-// la sectiunea de resurse nepublicate. Fara formular (decizia 3): cele trei carduri de canal sunt actiunea paginii,
+// la sectiunea de resurse nepublicate. Fara formular (decizia 3): cele doua carduri de canal sunt actiunea paginii,
 // imediat sub capsula, in sectiunea "Prin ce canale pot contacta 3S?", deci pagina nu are bloc de final separat.
-// Adresarea e "tu" (decizia 35); paragraful despre asistentul pe WhatsApp a iesit (decizia 49).
+// Adresarea e "tu" (decizia 35); paragraful despre asistentul pe WhatsApp a iesit (decizia 49). Decizia 56
+// (03.10.2026): fara apeluri GSM - cardul "Telefon" a iesit, WhatsApp primeste mesaje si apeluri, iar numarul ramane
+// afisat ca numar de WhatsApp.
 //
 // VARIANTELE CONDITIONATE ale fisei se aleg din cod (aceleasi optiuni ca pagina de start, `./acasa.ts`):
 //   - e-mailul (P-40): titlul, meta-descrierea si capsula numesc adresa, iar cardul de e-mail se randeaza, numai
@@ -36,7 +38,9 @@ export const CANALE_PAGINA = {
   titlu: "Prin ce canale pot contacta 3S?",
   whatsapp: {
     titlu: "WhatsApp",
-    text: "Este canalul principal de contact. Mesajul ajunge direct la o persoană din echipa 3S.",
+    /** Dupa numarul afisat pe card: in romana numarul ramane singur (fisa, decizia 56). */
+    dupaNumar: "",
+    text: "Este canalul principal de contact, pentru mesaje și pentru apeluri. Mesajul sau apelul ajunge direct la o persoană din echipa 3S.",
   },
   email: {
     titlu: "E-mail",
@@ -45,11 +49,6 @@ export const CANALE_PAGINA = {
     copiaza: "Copiază adresa",
     // Starea de dupa copiere nu are text in fisa; e numai confirmarea butonului, randata dupa P-40.
     copiat: "Adresa a fost copiată",
-  },
-  telefon: {
-    titlu: "Telefon",
-    text: "Numărul este același ca pe WhatsApp. De pe telefonul mobil, poți suna direct din pagină.",
-    buton: "Sună-ne",
   },
 } as const;
 
@@ -67,13 +66,13 @@ const NUMAR = "+373 68 055 599";
 const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm citit pagina de contact. Aș dori să întreb despre un pilot.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";
 
 function titlu(o: OptiuniContact): string {
-  return o.email === "" ? "Contact 3S: WhatsApp și telefon" : "Contact 3S: WhatsApp, e-mail și telefon";
+  return o.email === "" ? "Contact 3S: WhatsApp, mesaje și apeluri" : "Contact 3S: WhatsApp și e-mail";
 }
 
 function descriere(o: OptiuniContact): string {
   return o.email === ""
-    ? "Contactează 3S pe WhatsApp sau telefonic, la " + NUMAR + ". Descrie pe scurt arhiva firmei. Îți răspunde un membru al echipei, în română sau în engleză."
-    : "Contactează 3S pe WhatsApp sau telefonic, la " + NUMAR + ", ori prin e-mail, la " + o.email + ". Îți răspunde un membru al echipei, în română sau în engleză.";
+    ? "Contactează 3S pe WhatsApp (mesaj sau apel), la " + NUMAR + ". Descrie pe scurt arhiva firmei. Îți răspunde un membru al echipei, în română sau în engleză."
+    : "Contactează 3S pe WhatsApp (mesaj sau apel), la " + NUMAR + ", ori prin e-mail, la " + o.email + ". Îți răspunde un membru al echipei, în română sau în engleză.";
 }
 
 function sectiuni(o: OptiuniContact): SectiuneComuna[] {
@@ -116,9 +115,9 @@ function sectiuni(o: OptiuniContact): SectiuneComuna[] {
       blocuri: [
         {
           paragrafe: [
-            "Poți scrie în română sau în engleză. Dacă preferi o discuție telefonică, sună la " +
+            "Poți scrie în română sau în engleză. Dacă preferi o convorbire, sună-ne pe WhatsApp, la " +
               NUMAR +
-              ". " +
+              "; la acest număr primim apeluri numai prin WhatsApp. " +
               (o.juridicRo
                 ? "Pe lângă această pagină, în română sunt disponibile pagina de start și paginile juridice; celelalte pagini ale site-ului sunt deocamdată numai în engleză."
                 : "Pe lângă această pagină, în română este disponibilă pagina de start; celelalte pagini ale site-ului sunt deocamdată numai în engleză."),
@@ -147,10 +146,10 @@ export function paginaContact(o: OptiuniContact = OPTIUNI_CONTACT_BUILD): Pagina
     meta: { titlu: t, descriere: d, cale: "/ro/contact" },
     h1: "Contactează echipa 3S",
     capsula:
-      "Poți contacta echipa 3S pe WhatsApp sau telefonic, la " +
+      "Poți contacta echipa 3S pe WhatsApp, prin mesaj sau apel, la " +
       NUMAR +
       (o.email === "" ? "" : ", ori prin e-mail, la " + o.email) +
-      ". Descrie-ne pe scurt arhiva firmei (documente pe hârtie, scanări sau fișiere electronice) și țara în care se află. Îți răspunde o persoană din echipă, în română sau în engleză. Nu este nevoie să completezi un formular sau să îți creezi un cont.",
+      ". Descrie-ne arhiva firmei (documente pe hârtie, scanări sau fișiere electronice) și țara în care se află. Îți răspunde o persoană din echipă, în română sau în engleză. Nu este nevoie să completezi un formular sau să îți creezi un cont.",
     sectiuni: sectiuni(o),
     cta: {
       ref: "ro-md-contact",

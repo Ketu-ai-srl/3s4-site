@@ -57,7 +57,7 @@ export const RUTE_EN_NUCLEU: RutaEditie<"en">[] = [
   {
     cale: "/contact",
     scurt: "Contact",
-    descriere: "WhatsApp and phone.",
+    descriere: "WhatsApp messages and calls.",
     inHarta: true,
     editie: "en",
     cheie: "contact",

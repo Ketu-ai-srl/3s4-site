@@ -100,7 +100,7 @@
   },
   {
     "id": "en-canale-de-contact",
-    "text": "WhatsApp and phone on +373 68 055 599; a person replies, in English or Romanian (no hours, no response time). The e-mail address is not on the pages before P-40",
+    "text": "WhatsApp, for messages and calls, on +373 68 055 599 (no ordinary phone calls, decision 56); a person replies, in English or Romanian (no hours, no response time). The e-mail address is not on the pages before P-40",
     "unde": "src/content/en/contact.ts, src/content/en/pricing.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-canale-de-contact (confirmata pentru numar; e-mailul, neconfirmat pana la P-40); planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, decizia 3",

@@ -108,8 +108,9 @@ export function urmaresteCta(): () => void {
 //
 // Trei actiuni, cum le descrie politica de cookie-uri a lui 3s.md (sectiunea despre masurarea fara cookie:
 // "un clic pe un canal de contact, un clic pe un buton care duce la contact si schimbarea limbii paginii"):
-//   - `contact`, cu `canal` (whatsapp, telefon, email) si `lang` (limba paginii): legaturile `wa.me`, `tel:` si
-//     `mailto:`, oriunde in pagina; un singur eveniment, fiindca un obiectiv Umami urmareste un singur eveniment;
+//   - `contact`, cu `canal` (whatsapp, email) si `lang` (limba paginii): legaturile `wa.me` si `mailto:`, oriunde
+//     in pagina; un singur eveniment, fiindca un obiectiv Umami urmareste un singur eveniment. Urmarirea legaturilor
+//     de apel a iesit odata cu ele (decizia 56: fara apeluri GSM, apelurile se primesc numai pe WhatsApp);
 //   - `cta_contact`, cu `lang`: o legatura interna spre pagina de contact a editiei (`/contact`, `/ro/contact`);
 //   - `lang_switch`, cu `lang` = limba TINTA: o legatura interna care poarta alta limba decat pagina (selectorul
 //     de limba si legatura spre editia locala din subsol au atributul `lang`).
@@ -118,11 +119,11 @@ export function urmaresteCta(): () => void {
 // CUM SE PRIND: un singur ascultator pe document, in faza de captura, pornit numai dupa accept
 // (`Consimtamant.tsx`) si oprit la retragere. NU cheama `preventDefault` si nu pune `data-umami-event` pe
 // legaturi: scriptul instantei ar opri navigarea pe acelea pana raspunde instanta, deci un Umami lent ar
-// intarzia `tel:` si `mailto:`. Trimiterea trece prin `window.umami.track`, adica prin aceeasi functie
+// intarzia `mailto:`. Trimiterea trece prin `window.umami.track`, adica prin aceeasi functie
 // `data-before-send` ca vizitele: dupa o retragere nu pleaca nimic, nici daca ascultatorul ar mai rula.
 
 /** Canalele de contact ale evenimentului `contact`. */
-export const CANALE_CONTACT = ["whatsapp", "telefon", "email"] as const;
+export const CANALE_CONTACT = ["whatsapp", "email"] as const;
 export type CanalContact = (typeof CANALE_CONTACT)[number];
 
 /** Limbile paginilor si ale tintelor. */
@@ -189,7 +190,6 @@ export function evenimentDinLegatura(
   } catch {
     return null;
   }
-  if (adresa.protocol === "tel:") return ["contact", { canal: "telefon", lang }];
   if (adresa.protocol === "mailto:") return ["contact", { canal: "email", lang }];
   if (adresa.protocol === "https:" && (adresa.hostname === "wa.me" || adresa.hostname === "api.whatsapp.com")) {
     return ["contact", { canal: "whatsapp", lang }];

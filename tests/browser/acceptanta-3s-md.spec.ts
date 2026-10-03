@@ -3,7 +3,9 @@ import { join } from 'node:path'
 import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
+import { numarAfisat } from '../../src/content/canale'
 import { ECHIVALENTE } from '../../src/content/echivalente'
+import { configurareCanale } from '../../src/lib/canale-mediu'
 import { EDITII, editiiDinText, type Editie } from '../../src/lib/editii'
 
 /**
@@ -19,9 +21,12 @@ import { EDITII, editiiDinText, type Editie } from '../../src/lib/editii'
  * Pe fiecare cale, pe HTML-ul servit (fara JavaScript) si pe antetele raspunsului:
  *   - 200; `<html lang>` si `Content-Language` ale editiei, dupa prefixul caii, din catalogul EDITII;
  *   - zero `<form`; zero legaturi spre /inregistrare, /descarca, /preturi; zero `RON` (cuvant intreg, cu majuscule);
- *   - in subsol: legatura WhatsApp spre numarul canalului, `tel:` cu telefonul canalului si legatura spre
- *     informatiile legale in romana (adresa din `config/juridic-rute.json`);
- *   - JSON-LD: cel putin un `telephone`, toate egale cu telefonul canalului (`CANALE_JSON` din profil).
+ *   - in subsol: legatura WhatsApp spre numarul canalului, numarul ca TEXT de WhatsApp ("WhatsApp: +373 ...") si
+ *     legatura spre informatiile legale in romana (adresa din `config/juridic-rute.json`);
+ *   - decizia 56 (03.10.2026, fara apeluri GSM, peste tot): zero aparitii ale schemei de apel in tot HTML-ul servit
+ *     (legaturi, text, date), iar JSON-LD fara niciun `telephone` si cu punctul de contact spre WhatsApp (`url` =
+ *     legatura wa.me a canalului). Pe /contact si /ro/contact numarul canalului e vizibil in pagina.
+ *     Inainte de decizie proba cerea invers (telefonul canalului in subsol si in JSON-LD); s-a intors odata cu ea.
  * Pe server: /inregistrare, /descarca, /preturi si POST /api/formular raspund 404.
  * Paginile cu pereche hreflang (alternate spre alta pagina) sunt exact cele din `src/content/echivalente.ts` cu cel
  * putin doua editii ale profilului; reciprocitatea perechilor o masoara `poarta-reciprocitate.py`.
@@ -42,7 +47,15 @@ const INFORMATII_LEGALE_RO = JURIDIC.documente['informatii-legale'].ro
 const INTERZISE = ['/inregistrare', '/descarca', '/pret' + 'uri']
 const RON = new RegExp('\\b' + 'R' + 'ON\\b', 'g')
 const WA = 'https://wa.me/' + CANALE.whatsapp
-const TEL = 'tel:' + CANALE.telefon
+/** Schema legaturii de apel, asamblata la rulare (proba nu poarta literal ce vaneaza). */
+const SCHEMA_APEL = 'te' + 'l:'
+const TIPAR_APEL = new RegExp('(?<![a-z])' + SCHEMA_APEL, 'gi')
+/** Numarul canalului, asa cum il afiseaza site-ul, si randul din subsol. */
+const NUMAR = numarAfisat(configurareCanale(PROFIL.CANALE_JSON))
+const RAND_NUMAR = 'WhatsApp: ' + NUMAR
+const URL_CONTACT_LD = 'https://wa.me/' + CANALE.whatsapp
+/** Paginile de contact ale editiilor, pe care numarul trebuie sa se vada in pagina, nu numai in subsol. */
+const PAGINI_CONTACT = ['/contact', '/ro/contact']
 
 let copie: Copie3sMd
 let cai: string[] = []
@@ -114,28 +127,49 @@ function subsol(html: string): string {
   return /<footer\b[\s\S]*?<\/footer>/.exec(html)?.[0] ?? ''
 }
 
-/** Ce lipseste din subsol: legatura WhatsApp, `tel:`, informatiile legale in romana. */
+/** Ce lipseste din subsol: legatura WhatsApp, numarul ca text de WhatsApp, informatiile legale in romana. */
 function lipsuriSubsol(html: string): string[] {
-  const h = hrefuri(subsol(html))
+  const f = subsol(html)
+  const h = hrefuri(f)
   const lipsa: string[] = []
   if (!h.some((x) => x === WA || x.startsWith(WA + '?'))) lipsa.push('WhatsApp ' + WA)
-  if (!h.includes(TEL)) lipsa.push(TEL)
+  if (!f.includes('>' + RAND_NUMAR + '<')) lipsa.push('numarul ca text "' + RAND_NUMAR + '"')
   if (!h.some((x) => caleDin(x) === INFORMATII_LEGALE_RO)) lipsa.push(INFORMATII_LEGALE_RO)
   return lipsa
+}
+
+/** Aparitiile schemei de apel in HTML-ul servit (legaturi, text, payload), oriunde. */
+function aparitiiApel(html: string): number {
+  return (html.match(TIPAR_APEL) ?? []).length
+}
+
+/** Textul paginii din afara subsolului si a scripturilor (ce citeste omul in corpul paginii). */
+function textVizibil(html: string): string {
+  return html
+    .replace(/<script\b[\s\S]*?<\/script>/g, ' ')
+    .replace(/<footer\b[\s\S]*?<\/footer>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
 }
 
 function langHtml(html: string): string | null {
   return /<html\b[^>]*\blang="([^"]+)"/.exec(html)?.[1] ?? null
 }
 
-/** Toate valorile `telephone` din blocurile JSON-LD; un bloc care nu se parseaza da `null` in lista. */
-function telefoaneLd(html: string): (string | null)[] {
-  const gasite: (string | null)[] = []
+/**
+ * Ce gaseste in blocurile JSON-LD: valorile `telephone` (oriunde), `url`-urile punctelor de contact (`ContactPoint`)
+ * si cate blocuri nu se parseaza.
+ */
+function dateLd(html: string): { telefoane: string[]; urlContact: string[]; rupte: number } {
+  const telefoane: string[] = []
+  const urlContact: string[] = []
+  let rupte = 0
   const strabate = (nod: unknown): void => {
     if (Array.isArray(nod)) nod.forEach(strabate)
     else if (nod && typeof nod === 'object') {
-      for (const [cheie, valoare] of Object.entries(nod)) {
-        if (cheie === 'telephone') gasite.push(typeof valoare === 'string' ? valoare : JSON.stringify(valoare))
+      const o = nod as Record<string, unknown>
+      if (o['@type'] === 'ContactPoint' && typeof o.url === 'string') urlContact.push(o.url)
+      for (const [cheie, valoare] of Object.entries(o)) {
+        if (cheie === 'telephone') telefoane.push(typeof valoare === 'string' ? valoare : JSON.stringify(valoare))
         else strabate(valoare)
       }
     }
@@ -144,10 +178,10 @@ function telefoaneLd(html: string): (string | null)[] {
     try {
       strabate(JSON.parse(m[1]))
     } catch {
-      gasite.push(null)
+      rupte++
     }
   }
-  return gasite
+  return { telefoane, urlContact, rupte }
 }
 
 /** Alternatele hreflang ale paginii spre ALTA adresa decat a ei. */
@@ -177,10 +211,13 @@ function problemeCale(cale: string, r: Raspuns): string[] {
   if (potriviriRon(r.html) > 0) p.push(potriviriRon(r.html) + ' potriviri ' + RON.source)
   const lipsa = lipsuriSubsol(r.html)
   if (lipsa.length > 0) p.push('subsolul nu are: ' + lipsa.join(', '))
-  const telefoane = telefoaneLd(r.html)
-  if (telefoane.length === 0) p.push('JSON-LD fara telephone')
-  const gresite = telefoane.filter((t) => t !== CANALE.telefon)
-  if (gresite.length > 0) p.push('JSON-LD cu telephone diferit de canal: ' + gresite.map(String).join(', '))
+  const apel = aparitiiApel(r.html)
+  if (apel > 0) p.push(apel + ' aparitii ale schemei de apel ' + SCHEMA_APEL)
+  const ld = dateLd(r.html)
+  if (ld.rupte > 0) p.push(ld.rupte + ' blocuri JSON-LD care nu se parseaza')
+  if (ld.telefoane.length > 0) p.push('JSON-LD cu telephone: ' + ld.telefoane.join(', '))
+  if (!ld.urlContact.includes(URL_CONTACT_LD)) p.push('JSON-LD fara punct de contact spre ' + URL_CONTACT_LD)
+  if (PAGINI_CONTACT.includes(cale) && !textVizibil(r.html).includes(NUMAR)) p.push('numarul ' + NUMAR + ' nu e in pagina, in afara subsolului')
   return p
 }
 
@@ -191,18 +228,36 @@ async function servit(cale: string, init: RequestInit = {}): Promise<Raspuns> {
 
 // ------------------------------------------------------------------ fixturi asamblate la rulare
 
-function htmlFabricat(o: { lang?: string; form?: boolean; interzisa?: string; ron?: boolean; subsol?: string[]; telefon?: string | null; ldRupt?: boolean }): string {
+function htmlFabricat(o: {
+  lang?: string
+  form?: boolean
+  interzisa?: string
+  ron?: boolean
+  subsol?: string[]
+  numarSubsol?: boolean
+  numarPagina?: boolean
+  telefonLd?: string
+  faraContactLd?: boolean
+  ldRupt?: boolean
+  apel?: 'legatura' | 'text' | 'ld'
+}): string {
   const bucati = ['<html lang="' + (o.lang ?? 'en') + '"><head>']
-  if (o.telefon !== null) {
-    bucati.push('<script type="application/ld+json">' + JSON.stringify({ '@graph': [{ '@type': 'Organization', telephone: o.telefon ?? CANALE.telefon }] }) + '</script>')
-  }
+  const organizatie: Record<string, unknown> = { '@type': 'Organization' }
+  if (!o.faraContactLd) organizatie.contactPoint = { '@type': 'ContactPoint', url: URL_CONTACT_LD }
+  if (o.telefonLd !== undefined) organizatie.telephone = o.telefonLd
+  if (o.apel === 'ld') organizatie.sameAs = SCHEMA_APEL + CANALE.telefon
+  bucati.push('<script type="application/ld+json">' + JSON.stringify({ '@graph': [organizatie] }) + '</script>')
   if (o.ldRupt) bucati.push('<script type="application/ld+json">{"@graph": [</script>')
   bucati.push('</head><body><main><p>Text</p>')
+  if (o.numarPagina !== false) bucati.push('<p>' + NUMAR + '</p>')
   if (o.form) bucati.push('<' + 'form action="/x"></' + 'form>')
   if (o.interzisa) bucati.push('<a href="' + o.interzisa + '">x</a>')
   if (o.ron) bucati.push('<p>9 ' + 'R' + 'ON</p>')
+  if (o.apel === 'legatura') bucati.push('<a href="' + SCHEMA_APEL + CANALE.telefon + '">x</a>')
+  if (o.apel === 'text') bucati.push('<p>' + SCHEMA_APEL.toUpperCase() + CANALE.telefon + '</p>')
   bucati.push('</main><' + 'footer>')
-  for (const h of o.subsol ?? [WA + '?text=x', TEL, INFORMATII_LEGALE_RO]) bucati.push('<a href="' + h + '">x</a>')
+  for (const h of o.subsol ?? [WA + '?text=x', INFORMATII_LEGALE_RO]) bucati.push('<a href="' + h + '">x</a>')
+  if (o.numarSubsol !== false) bucati.push('<span>' + RAND_NUMAR + '</span>')
   bucati.push('</' + 'footer></body></html>')
   return bucati.join('')
 }
@@ -230,7 +285,7 @@ test('martorul listei: caile din harta de site = controlul calculat din sursa, m
   expect([...cai].sort()).toEqual([...control].sort())
 })
 
-test('fiecare cale din harta de site: lang, Content-Language, fara formulare, fara RON, subsol cu canale, JSON-LD cu telefonul canalului', async () => {
+test('fiecare cale din harta de site: lang, Content-Language, fara formulare, fara RON, subsol cu canale, zero apel GSM, JSON-LD fara telephone', async () => {
   test.setTimeout(180_000)
   expect(cai.length).toBeGreaterThan(10)
   const probleme: string[] = []
@@ -240,8 +295,10 @@ test('fiecare cale din harta de site: lang, Content-Language, fara formulare, fa
     verificate++
     for (const x of p) probleme.push(cale + ': ' + x)
   }
-  console.log('[acceptanta-3s-md] cai verificate: ' + verificate + ' din ' + cai.length)
+  console.log('[acceptanta-3s-md] cai verificate: ' + verificate + ' din ' + cai.length + '; paginile de contact in harta: ' + PAGINI_CONTACT.filter((c) => cai.includes(c)).length)
   expect(verificate).toBe(cai.length)
+  // Controlul pentru cerinta numarului pe paginile de contact: ambele sunt in harta, deci au fost masurate.
+  for (const c of PAGINI_CONTACT) expect(cai, c).toContain(c)
   expect(probleme).toEqual([])
 })
 
@@ -275,12 +332,20 @@ test('martor POZITIV: fiecare detector prinde defectul lui, pe un HTML asamblat 
     expect(caz(htmlFabricat({ interzisa: ORIGINE + i + '/x?a=1' }))).toContain('legaturi interzise')
   }
   expect(caz(htmlFabricat({ ron: true }))).toContain('potriviri')
-  expect(caz(htmlFabricat({ subsol: [TEL, INFORMATII_LEGALE_RO] }))).toContain('WhatsApp')
-  expect(caz(htmlFabricat({ subsol: [WA, INFORMATII_LEGALE_RO] }))).toContain(TEL)
-  expect(caz(htmlFabricat({ subsol: [WA, TEL] }))).toContain(INFORMATII_LEGALE_RO)
-  expect(caz(htmlFabricat({ telefon: null }))).toContain('JSON-LD fara telephone')
-  expect(caz(htmlFabricat({ telefon: CANALE.telefon + '0' }))).toContain('diferit de canal')
-  expect(caz(htmlFabricat({ ldRupt: true }))).toContain('diferit de canal')
+  expect(caz(htmlFabricat({ subsol: [INFORMATII_LEGALE_RO] }))).toContain('WhatsApp ' + WA)
+  expect(caz(htmlFabricat({ numarSubsol: false }))).toContain('numarul ca text')
+  expect(caz(htmlFabricat({ subsol: [WA] }))).toContain(INFORMATII_LEGALE_RO)
+  // Decizia 56: o legatura de apel, schema ei in text (cu majuscule) sau in JSON-LD, si `telephone` in date sunt prinse.
+  expect(caz(htmlFabricat({ apel: 'legatura' }))).toContain('schemei de apel')
+  expect(caz(htmlFabricat({ apel: 'text' }))).toContain('schemei de apel')
+  expect(caz(htmlFabricat({ apel: 'ld' }))).toContain('schemei de apel')
+  expect(caz(htmlFabricat({ telefonLd: CANALE.telefon }))).toContain('JSON-LD cu telephone')
+  expect(caz(htmlFabricat({ faraContactLd: true }))).toContain('fara punct de contact')
+  expect(caz(htmlFabricat({ ldRupt: true }))).toContain('nu se parseaza')
+  // Numarul pe paginile de contact: lipsa lui din corp e prinsa, iar numarul numai din subsol nu ajunge.
+  const contact = (html: string) => problemeCale('/contact', { ...CORECT, html }).join(' | ')
+  expect(contact(htmlFabricat({ numarPagina: false }))).toContain('nu e in pagina')
+  expect(contact(htmlFabricat({}))).not.toContain('nu e in pagina')
   expect(caz(htmlFabricat({ lang: 'ro' }))).toContain('<html lang="ro">')
   expect(caz(htmlFabricat({}), { limbaAntet: null })).toContain('Content-Language')
   expect(caz(htmlFabricat({}), { status: 500 })).toContain('status 500')
@@ -300,6 +365,8 @@ test('martor NEGATIV: un HTML corect nu e acuzat, iar cuvintele care doar contin
     expect(problemeCale(roMd.prefix + '/x', { ...CORECT, html: htmlFabricat({ lang: roMd.lang }), limbaAntet: roMd.inLanguage })).toEqual([])
   }
   expect(potriviriRon('<p>' + 'R' + 'ONDA, ' + 'ac' + 'RON' + 'ym, ' + 'r' + 'on</p>')).toBe(0)
+  // Cuvintele care doar se termina in literele schemei nu sunt apel: "Hotel:", "motel:".
+  expect(aparitiiApel('<p>Ho' + SCHEMA_APEL + ' x, mo' + SCHEMA_APEL + ' y</p>')).toBe(0)
   expect(legaturiInterzise('<a href="/pricing">x</a><a href="/descarcari">y</a>')).toEqual([])
   expect(alternateStraine('<link rel="alternate" hrefLang="en" href="' + ORIGINE + '"/>', '/')).toEqual([])
 })
