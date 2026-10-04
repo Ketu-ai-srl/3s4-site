@@ -416,8 +416,10 @@ describe('build-ul 3s.md, servit', () => {
   // ramane: caile romanesti, cele fara pagina si o cale inventata dau 404 in engleza, cu antetul de neindexare.
   // Paginile EN (200, `lang="en"`) le masoara `tests/browser/en-nucleu.spec.ts`, pe copia 3s.md.
   // `/ro` a iesit din lista cand a devenit pagina de start RO-MD (felia ro-md-acasa-contact; 200 cu `lang="ro"`,
-  // masurat de `tests/browser/ro-md-acasa-contact.spec.ts`); `/ro/juridic` ramane: grupul juridic nu are index.
-  const CAI = ['/preturi', '/ro/juridic', '/juridic', '/blog', '/o-cale-' + 'care-nu-exista']
+  // masurat de `tests/browser/ro-md-acasa-contact.spec.ts`). `/ro/juridic` a iesit cand grupul juridic al lui 3s.md a
+  // primit pagina de index, ca `/juridic` pe site-ul romanesc (decizia 53, felia editie-juridic; 200 masurat de
+  // `tests/browser/juridic-3s-md.spec.ts`). `/juridic` (familia SEE) ramane 404 pe 3s.md.
+  const CAI = ['/preturi', '/juridic', '/blog', '/o-cale-' + 'care-nu-exista']
 
   it.runIf(ADRESA !== '')('caile fara pagina EN raspund 404, cu X-Robots-Tag noindex', async () => {
     for (const cale of CAI) {

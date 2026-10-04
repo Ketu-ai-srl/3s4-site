@@ -102,9 +102,16 @@ function abateri(cutii: Cutie[], tinte: Record<string, number>, toleranta = 0.02
   return rezultat
 }
 
+/**
+ * Eroul la 390: 925,4 e masuratoarea fisei pe bucla dinainte. Scena deciziei 61 (figura din pagina de autentificare a
+ * aplicatiei, 04.10.2026) isi tine sub ea 28 px pentru pastila centrului, coborata sub etichetele nodurilor de jos
+ * (`src/components/erou/Erou.module.css`, scena ingusta), deci tinta e 925,4 + 28. Masurat pe build-ul feliei: 957,9.
+ */
+const EROU_390 = 925.4 + 28
+
 const TINTE: Record<number, { inaltime: number; ciot: Record<string, number> }> = {
   1440: { inaltime: 900, ciot: { erou: 900, constructor: 1008, functionalitati: 2677.6 } },
-  390: { inaltime: 844, ciot: { erou: 925.4, constructor: 928, functionalitati: 2265.6 } },
+  390: { inaltime: 844, ciot: { erou: EROU_390, constructor: 928, functionalitati: 2265.6 } },
 }
 
 for (const latime of [1440, 390]) {

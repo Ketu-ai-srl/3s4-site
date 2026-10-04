@@ -1,6 +1,7 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 
 /**
  * Listele declarate ale probei de congruenta (`config/congruenta/*.json`), validate pe sursa: forma fiecarui rand,
@@ -66,13 +67,65 @@ function refuzuri(rand: unknown, coduri: Set<string>): string[] {
   return motive
 }
 
-/** Fisierul paginii unei cai pe editia ei: `src/app/<cale>/page.tsx` (RO), `page.en.tsx` sub `(en)`, `page.romd.tsx` sub `(romd)`. */
-function paginaExista(cale: string, editie: 'ro' | 'en' | 'romd'): boolean {
+/**
+ * Fisierul paginii unei cai pe editia ei: `src/app/<cale>/page.tsx` (RO), `page.en.tsx` sub `(en)`, `page.romd.tsx`
+ * sub `(romd)`; sau, pentru indexul unui grup cu segment optional (`/juridic`, `/legal`, `/ro/juridic`), fisierul
+ * din `<cale>/[[...x]]/`. RESTRANS: un segment optional conteaza ca index NUMAI daca `generateStaticParams` al
+ * paginii intoarce si slugul gol (`{ x: [] }`); altfel calea fara segment raspunde 404 (`dynamicParams = false`),
+ * oricat de prezent ar fi dosarul. `radacina` e parametru ca martorii sa ruleze pe un arbore fabricat.
+ */
+function paginaExista(cale: string, editie: 'ro' | 'en' | 'romd', radacina: string = RADACINA): boolean {
   const segmente = cale.split('/').filter(Boolean)
-  if (editie === 'ro') return existsSync(join(RADACINA, 'src', 'app', ...segmente, 'page.tsx'))
-  if (editie === 'en') return existsSync(join(RADACINA, 'src', 'app', '(en)', ...segmente, 'page.en.tsx'))
-  return existsSync(join(RADACINA, 'src', 'app', '(romd)', ...segmente, 'page.romd.tsx'))
+  const [grup, fisier] = editie === 'ro' ? [[], 'page.tsx'] : editie === 'en' ? [['(en)'], 'page.en.tsx'] : [['(romd)'], 'page.romd.tsx']
+  const dosar = join(radacina, 'src', 'app', ...grup, ...segmente)
+  if (existsSync(join(dosar, fisier))) return true
+  if (!existsSync(dosar)) return false
+  return readdirSync(dosar).some((d) => {
+    const m = /^\[\[\.\.\.([A-Za-z_]\w*)\]\]$/.exec(d)
+    return m !== null && existsSync(join(dosar, d, fisier)) && slugGolInParametri(readFileSync(join(dosar, d, fisier), 'utf8'), m[1])
+  })
 }
+
+/** Corpul lui `generateStaticParams` din textul paginii intoarce si slugul gol (`{ <parametru>: [] }`). */
+function slugGolInParametri(text: string, parametru: string): boolean {
+  const inceput = /export\s+(?:async\s+)?function\s+generateStaticParams\b/.exec(text)
+  if (inceput === null) return false
+  const rest = text.slice(inceput.index)
+  const sfarsit = rest.search(/\n\}/)
+  const corp = sfarsit < 0 ? rest : rest.slice(0, sfarsit)
+  return new RegExp('\\{\\s*' + parametru + '\\s*:\\s*\\[\\s*\\]\\s*\\}').test(corp)
+}
+
+describe('paginaExista: un segment optional e index numai cu slugul gol in generateStaticParams', () => {
+  // Arborele se fabrica la rulare, in temp: doua grupuri cu segment optional, unul care intoarce slugul gol si unul care nu.
+  const lucru = mkdtempSync(join(tmpdir(), 'congruenta-'))
+  const scrie = (rel: string, text: string) => {
+    mkdirSync(join(lucru, ...rel.split('/').slice(0, -1)), { recursive: true })
+    writeFileSync(join(lucru, ...rel.split('/')), text)
+  }
+  const cu = ['export function generateStaticParams() {', '  return [{ doc: [] }, { doc: ["a"] }];', '}', ''].join('\n')
+  const fara = ['export function generateStaticParams() {', '  return [{ doc: ["a"] }];', '}', '', 'const altceva = { doc: [] };', ''].join('\n')
+  scrie('src/app/(en)/cu/[[...doc]]/page.en.tsx', cu)
+  scrie('src/app/(en)/fara/[[...doc]]/page.en.tsx', fara)
+  scrie('src/app/(en)/simpla/page.en.tsx', 'x')
+  afterAll(() => rmSync(lucru, { recursive: true, force: true }))
+
+  it('martor NEGATIV: segmentul cu slugul gol si pagina simpla exista', () => {
+    expect(paginaExista('/cu', 'en', lucru)).toBe(true)
+    expect(paginaExista('/simpla', 'en', lucru)).toBe(true)
+  })
+
+  it('martor POZITIV: fara slugul gol in generateStaticParams (chiar daca `{ doc: [] }` apare in alta parte a fisierului), nu e index', () => {
+    expect(paginaExista('/fara', 'en', lucru)).toBe(false)
+    expect(paginaExista('/lipsa', 'en', lucru)).toBe(false)
+  })
+
+  it('pe arborele real: indexurile juridice ale celor trei editii sunt pagini', () => {
+    expect(paginaExista('/juridic', 'ro')).toBe(true)
+    expect(paginaExista('/legal', 'en')).toBe(true)
+    expect(paginaExista('/ro/juridic', 'romd')).toBe(true)
+  })
+})
 
 describe('lista inchisa a codurilor de temei', () => {
   it('are deciziile citate si cele trei reguli fara numar; fiecare cod are fel si rezumat', () => {
@@ -88,10 +141,10 @@ describe('lista inchisa a codurilor de temei', () => {
 })
 
 describe('listele perechilor', () => {
-  it('exista cel putin perechile din specificatie (fara juridic), fiecare intr-un singur fisier', () => {
+  it('exista cel putin perechile din specificatie, si perechea juridica, fiecare intr-un singur fisier', () => {
     const nume = PERECHI.map((p) => p.lista.pereche as string)
     expect(new Set(nume).size).toBe(nume.length)
-    for (const p of ['P01', 'P02', 'P03', 'P08', 'P09', 'P10', 'P11', 'G1', 'G2', 'G3']) expect(nume, p).toContain(p)
+    for (const p of ['P01', 'P02', 'P03', 'P08', 'P09', 'P10', 'P11', 'G1', 'G2', 'G3', 'JURIDIC']) expect(nume, p).toContain(p)
   })
 
   for (const { fisier, lista } of PERECHI) {

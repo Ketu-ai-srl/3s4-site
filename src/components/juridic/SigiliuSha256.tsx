@@ -13,14 +13,19 @@ export function amprentaSha256(text: string): string {
   return createHash("sha256").update(text, "utf8").digest("hex");
 }
 
-export default function SigiliuSha256({ amprenta }: { amprenta: string }) {
+/** Textele sigiliului: eticheta vizibila si explicatia din bula nativa. */
+export type TexteSigiliu = { eticheta: string; explicatie: string };
+
+// EDITIILE (congruenta): paginile juridice ale lui 3s.md poarta acelasi sigiliu, cu textele in limba editiei.
+// `texte` e optional, cu implicitul romanesc (`SIGILIU`), deci pagina `/juridic` nu pasaza nimic si randeaza la fel.
+export default function SigiliuSha256({ amprenta, texte = SIGILIU }: { amprenta: string; texte?: TexteSigiliu }) {
   if (!/^[0-9a-f]{64}$/.test(amprenta)) {
     throw new Error("sigiliul primeste o amprenta SHA-256 de 64 de caractere hexazecimale");
   }
   return (
     <div className={s.sigiliu} data-sigiliu="">
-      <span className={s.sigiliuEticheta} title={SIGILIU.explicatie}>
-        {SIGILIU.eticheta}
+      <span className={s.sigiliuEticheta} title={texte.explicatie}>
+        {texte.eticheta}
       </span>
       <code className={s.sigiliuAmprenta} title={amprenta} data-amprenta={amprenta}>
         {amprenta.slice(0, 16) + "…"}

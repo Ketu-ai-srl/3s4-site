@@ -21,9 +21,9 @@ import { adresaSite } from "@/lib/site";
 //
 // Ce monteaza (felia navigatie-pe-editie): fonturile si stilurile globale ale site-ului, antetul, subsolul,
 // sertarul si paleta cu contractul EN (`src/content/navigatie-en.ts`), bara de canale de pe mobil si datele
-// structurate ale site-ului. Canalele (WhatsApp, telefon, e-mail) se rezolva AICI, pe server, din
-// `CANALE_JSON`, si ajung la piesele de browser ca proprietati. Bannerul de consimtamant il monteaza felia
-// masurarii, nu aceasta.
+// structurate ale site-ului. Canalele (WhatsApp si e-mail; numarul apare numai ca numar de WhatsApp, decizia
+// 56) se rezolva AICI, pe server, din `CANALE_JSON`, si ajung la piesele de browser ca proprietati. Bannerul de
+// consimtamant il monteaza felia masurarii, nu aceasta.
 //
 // Ca pe layout-ul RO (decizia 53, aceeasi experienta): culoarea marcii in bara navigatorului (`viewport.themeColor`)
 // si tranzitia de vedere la navigarea client (`TranzitieVedere`, oprita la miscare redusa).

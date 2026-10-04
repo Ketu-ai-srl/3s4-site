@@ -46,7 +46,7 @@ function identificare(operator: Operator): string {
 }
 
 function asistenta(operator: Operator): string {
-  return operator.email + (operator.telefon === "" ? "" : " sau la " + operator.telefon);
+  return operator.email + (operator.telefon === "" ? "" : " ori pe WhatsApp (mesaje și apeluri) la " + operator.telefon);
 }
 
 export function termeni(operator: Operator): DocumentJuridic {

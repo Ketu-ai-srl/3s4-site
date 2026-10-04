@@ -9,6 +9,7 @@
 import Iconita from "@/components/primitive/Iconita";
 import Tinta from "@/components/primitive/Tinta";
 import { DOCUMENTE_JURIDICE, caleDocument } from "@/content/juridic/publicare";
+import type { DocumentBara } from "./ZonaJuridica";
 import s from "./juridic.module.css";
 
 function Sageata() {
@@ -26,14 +27,24 @@ function Sageata() {
   );
 }
 
-export default function CarduriDocumente() {
+// EDITIILE (congruenta): indexul juridic al lui 3s.md (`/legal` si `/ro/juridic`, familia `md`) foloseste aceleasi
+// carduri, cu documentele editiei lui. Proprietatea e optionala, cu implicitul romanesc de azi (cele 7 documente
+// ale familiei SEE, cheia = slugul), deci indexul `/juridic` nu pasaza nimic si randeaza la fel.
+const DOCUMENTE_RO: readonly DocumentBara[] = DOCUMENTE_JURIDICE.map((d) => ({ cheie: d.slug, scurt: d.scurt, cale: caleDocument(d.slug) }));
+
+export default function CarduriDocumente({
+  documente = DOCUMENTE_RO,
+}: {
+  /** Documentele cardurilor, in ordinea barei; implicit cele 7 ale familiei SEE. */
+  documente?: readonly DocumentBara[];
+} = {}) {
   return (
     <ul className={s.carduri}>
-      {DOCUMENTE_JURIDICE.map((d) => {
-        const cale = caleDocument(d.slug);
+      {documente.map((d) => {
+        const cale = d.cale;
         return (
-          <li key={d.slug}>
-            <Tinta legatura={{ text: d.scurt, href: cale, ruta: cale }} className={s.card} data-card-document={d.slug}>
+          <li key={d.cheie}>
+            <Tinta legatura={{ text: d.scurt, href: cale, ruta: cale }} className={s.card} data-card-document={d.cheie}>
               <span className={s.cardIconita}>
                 <Iconita nume="file-text" marime={24} contur={1.5} />
               </span>

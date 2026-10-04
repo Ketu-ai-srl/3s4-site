@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest'
 import { abateriMetadata, alternatePagina, type ContextAlternate } from '../src/components/seo/metadata'
 import { ECHIVALENTE, type CaiPeEditie } from '../src/content/echivalente'
 import { META_DOCUMENTE_MD } from '../src/content/juridic/pagini'
-import { ruteJuridiceEn } from '../src/content/rute-en-juridic'
-import { ruteJuridiceRoMd } from '../src/content/rute-ro-md'
+import { indexJuridicEn, ruteJuridiceEn } from '../src/content/rute-en-juridic'
+import { indexJuridicRoMd, ruteJuridiceRoMd } from '../src/content/rute-ro-md'
 import { alternateSite } from '../src/lib/site'
 
 /**
@@ -18,7 +18,7 @@ import { alternateSite } from '../src/lib/site'
  * cand fisierul s-ar schimba. Comparatia are martori pe copii in memorie (o ruta C adaugata, una B scoasa, o
  * adresa schimbata), ca sa nu poata iesi verde fiindca nu compara nimic.
  *
- * Pagina in sine (200, `lang`, 404 pe `/legal/dpa` si pe `/legal`) o masoara proba de browser pe copia 3s.md,
+ * Pagina in sine (200, `lang`, 404 pe `/legal/dpa`, 200 pe indexul `/legal`) o masoara proba de browser pe copia 3s.md,
  * `tests/browser/juridic-3s-md.spec.ts`.
  */
 
@@ -83,22 +83,30 @@ describe('martorii comparatiei', () => {
 })
 
 describe('rutele juridice pe editie', () => {
+  // Documentele: rutele grupului fara index (indexul are cazul lui, mai jos).
+  const documente = <T extends { cale: string }>(rute: T[]) => rute.filter((r) => r.cale !== '/legal' && r.cale !== '/ro/juridic')
+
   it('cu familia md publicata: EN = documentele B cu adresa EN, editie en, cheia din registru', () => {
-    const rute = ruteJuridiceEn(true, 'md')
+    const rute = documente(ruteJuridiceEn(true, 'md'))
     expect(diferente(asteptat('en'), tabelRute(rute))).toEqual([])
     expect(rute.every((r) => r.editie === 'en' && r.inHarta && r.cale.startsWith('/legal/'))).toBe(true)
   })
 
   it('cu familia md publicata: RO-MD = documentele B cu adresa romaneasca, sub /ro/juridic', () => {
-    const rute = ruteJuridiceRoMd(true, 'md')
+    const rute = documente(ruteJuridiceRoMd(true, 'md'))
     expect(diferente(asteptat('ro'), tabelRute(rute))).toEqual([])
     expect(rute.every((r) => r.editie === 'ro-MD' && r.inHarta && r.cale.startsWith('/ro/juridic/'))).toBe(true)
   })
 
-  it('fara index: nicio ruta pe /legal sau /ro/juridic', () => {
-    const cai = [...ruteJuridiceEn(true, 'md'), ...ruteJuridiceRoMd(true, 'md')].map((r) => r.cale)
-    expect(cai).not.toContain('/legal')
-    expect(cai).not.toContain('/ro/juridic')
+  // Indexul (`/legal`, `/ro/juridic`, felia editie-juridic) exista exact cand familia md e publicata: e ultima ruta a
+  // grupului (ca indexul din `ruteJuridice` pe RO), un singur rand, si nu intra (inca) in harta.
+  it('indexul exista exact cand familia md e publicata: /legal si /ro/juridic, ultimul in grup, nu in harta; altfel nicio ruta', () => {
+    const en = ruteJuridiceEn(true, 'md')
+    const ro = ruteJuridiceRoMd(true, 'md')
+    expect([en[en.length - 1], ro[ro.length - 1]].map((r) => [r.cale, r.editie, r.inHarta])).toEqual([['/legal', 'en', false], ['/ro/juridic', 'ro-MD', false]])
+    expect([en.length, ro.length]).toEqual([CHEI_B.length + 1, CHEI_B.length + 1])
+    expect([...indexJuridicEn(true, 'md'), ...indexJuridicRoMd(true, 'md')].map((r) => r.cale)).toEqual(['/legal', '/ro/juridic'])
+    for (const [publicat, familie] of [[false, 'md'], [true, 'see'], [true, null]] as const) expect([...indexJuridicEn(publicat, familie), ...indexJuridicRoMd(publicat, familie)]).toEqual([])
   })
 
   it('fara operator sau cu familia SEE: nicio ruta (pagina exista exact cand exista ruta)', () => {

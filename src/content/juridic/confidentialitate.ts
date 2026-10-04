@@ -117,7 +117,7 @@ export function politicaConfidentialitate(operator: Operator, { domeniu, analiti
               "Operatorul datelor este " + operator.denumire + ", cu sediul în " + operator.sediu + ", " + operator.tara + ".",
               "Ne puteți scrie la " +
                 contact +
-                (operator.telefon === "" ? "" : " sau ne puteți suna la " + operator.telefon) +
+                (operator.telefon === "" ? "" : " ori ne puteți contacta pe WhatsApp (mesaje și apeluri) la " + operator.telefon) +
                 ". Aceeași adresă primește și cererile privind datele personale.",
               "Operatorul are sediul într-un stat din Spațiul Economic European, deci nu are obligația de a desemna un reprezentant în Republica Moldova (Legea nr. 195/2024, art. 27 alin. (2)).",
             ],

@@ -15,13 +15,18 @@
 // respectiv `/contact`). Titlul scurt e eticheta din meniu, descrierea e randul paginii din harta, cu Contact pe
 // varianta de dinainte de P-40 (fara e-mail), ca la grupul nucleu EN.
 import { caleMd, cheiPublicate } from "./juridic/md/registru";
-import { DESCRIERE_MD, FAMILIE_JURIDICA, OPERATOR_NUMIT, SCURT_MD } from "./juridic/publicare";
+import { CALE_JURIDIC_RO_MD, DESCRIERE_MD, FAMILIE_JURIDICA, INDEX_JURIDIC, OPERATOR_NUMIT, SCURT_MD } from "./juridic/publicare";
 import type { FamilieJuridica } from "./juridic/familie";
 import type { RutaEditie } from "./rute";
 
-/** Rutele juridice RO-MD: documentele `md` publicate la poarta curenta, numai cand familia publicata e `md`. */
+/** Rutele juridice RO-MD: documentele `md` publicate la poarta curenta si, la urma, indexul `/ro/juridic`, numai cu familia `md`. */
 export function ruteJuridiceRoMd(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"ro-MD">[] {
   if (!publicat || familie !== "md") return [];
+  return [...documenteJuridiceRoMd(), ...indexJuridicRoMd(publicat, familie)];
+}
+
+/** Numai documentele `md` publicate la poarta curenta (fara index). */
+function documenteJuridiceRoMd(): RutaEditie<"ro-MD">[] {
   return cheiPublicate().map((cheie) => ({
     cale: caleMd(cheie, "ro"),
     scurt: SCURT_MD[cheie].ro,
@@ -30,6 +35,24 @@ export function ruteJuridiceRoMd(publicat: boolean = OPERATOR_NUMIT, familie: Fa
     editie: "ro-MD",
     cheie,
   }));
+}
+
+/**
+ * INDEXUL `/ro/juridic` (felia editie-juridic): aceeasi regula ca `indexJuridicEn` din `rute-en-juridic.ts` (numai cu
+ * familia `md`, `inHarta: false` din acelasi motiv), cu titlul si descrierea indexului romanesc (`INDEX_JURIDIC`).
+ */
+export function indexJuridicRoMd(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"ro-MD">[] {
+  if (!publicat || familie !== "md") return [];
+  return [
+    {
+      cale: CALE_JURIDIC_RO_MD,
+      scurt: INDEX_JURIDIC.scurt,
+      descriere: INDEX_JURIDIC.descriere,
+      inHarta: false,
+      editie: "ro-MD",
+      cheie: "juridic",
+    },
+  ];
 }
 
 export const RUTE_RO_MD: RutaEditie<"ro-MD">[] = [

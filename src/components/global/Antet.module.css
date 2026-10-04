@@ -42,13 +42,17 @@
   padding-top: 12px;
 }
 
+/* Albul pastilei e la 92%, nu 85%: peste o sectiune inchisa (testimonialul, blocul de final) fundalul compus
+   ajungea la #dbdcdf, iar legaturile (cerneala-2, #666666) aveau 4,18:1. La 92%, chiar peste negru pur, fundalul
+   compus e #ebebeb si legaturile au 4,8:1; peste sectiunile deschise nu se vede nicio diferenta.
+   Proba: tests/browser/antet-contrast.spec.ts. */
 .pastila .container {
   height: 56px;
   max-width: min(1200px, calc(100vw - 48px));
   padding: 0 20px;
   border-color: var(--color-ardezie-2);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: var(--shadow-card);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   backdrop-filter: blur(24px) saturate(180%);

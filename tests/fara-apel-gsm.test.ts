@@ -3,6 +3,10 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { nodOrganizatie } from '@/components/seo/date-structurate'
 import { configurareCanale } from '@/lib/canale-mediu'
+import { familieJuridica } from '@/content/juridic/familie'
+import { documentPentruSlug, texteJuridice } from '@/content/juridic/index'
+import { textBloc } from '@/content/juridic/tipuri'
+import type { Operator } from '@/lib/operator'
 
 /**
  * FARA APELURI GSM, PESTE TOT (decizia 56 a owner-ului, 03.10.2026: "peste tot trebuie sa apara only whatsapp",
@@ -22,14 +26,14 @@ import { configurareCanale } from '@/lib/canale-mediu'
  *      au si telefon si WhatsApp): fara `telephone` oriunde in nod, iar punctul de contact are `url` wa.me. Asta e
  *      singurul efect al deciziei pe ro-RO care depinde de canale, deci se masoara direct, nu prin build.
  *
- * LIMITA DECLARATA (nemasurata aici, ramasa deschisa): textele juridice ale familiei SEE
- * (`src/content/juridic/confidentialitate.ts`, `mentiuni-legale.ts`, `termeni.ts`) invita inca la apel cand operatorul
- * are telefon: dupa e-mail urmeaza numarul operatorului ca al doilea canal, cu verbul "a suna" sau cu "sau la". Azi
- * sunt adormite: `config/operator.json` are operatorul null, iar operatorul domeniului 3s.md e din Republica Moldova,
- * deci publica familia `md` (curatata dupa decizia 56); nicio pagina servita nu randeaza textele SEE. Devin vizibile
- * in ziua in care un site primeste un operator din SEE cu numar de telefon. Textele juridice sunt la revizuire
- * juridica, iar perimetrul acestei schimbari le-a lasat neatinse; reformularea lor ("ori pe WhatsApp (mesaje si
- * apeluri) la" + numar) se face odata cu operatorul SEE, inainte ca acela sa fie pus in configurare.
+ *   4. TEXTELE JURIDICE ale familiei SEE (`src/content/juridic/confidentialitate.ts`, `mentiuni-legale.ts`,
+ *      `termeni.ts`), pe un operator SEE FABRICAT in proba, cu numar de telefon: cele trei randuri care numeau
+ *      numarul ca al doilea canal dupa e-mail il numesc acum numar de WhatsApp ("WhatsApp (mesaje si apeluri) la"),
+ *      fara verbul "a suna" si fara numarul gol dupa "sau la". Azi familia e adormita (`config/operator.json` are
+ *      operatorul null, iar 3s.md publica familia `md`), deci nicio pagina servita nu le randeaza; proba le
+ *      construieste direct, cu martor pe vechea formulare si cu un operator fara telefon.
+ *      LIMITA: randul "Telefonul" din tabelul de identificare al informatiilor legale ramane (date de identificare,
+ *      nu invitatie la apel); proba il numara separat, ca sa nu treaca neobservat.
  *
  * Schema se asambleaza la rulare (proba nu poarta literal ce vaneaza), iar martorii pozitivi o injecteaza intr-o
  * COPIE in memorie a unui fisier real; fisierele de pe disc nu se ating.
@@ -175,5 +179,77 @@ describe('decizia 56: nodul organizatiei pe ro-RO, cu un domeniu care are telefo
     const nod = nodOrganizatie('https://exemplu-3s.test', 'contact@exemplu-3s.test', { editie: 'ro-RO', canale })
     const stricat = { ...nod, telephone: canale.telefon, contactPoint: { ...(nod.contactPoint as object), telephone: canale.telefon } }
     expect(telefoane(stricat)).toEqual([canale.telefon, canale.telefon])
+  })
+})
+
+describe('decizia 56: textele juridice SEE, pe un operator SEE fabricat cu telefon', () => {
+  const WA = 'WhatsApp (mesaje și apeluri) la '
+  /** Verbul "a suna", in orice forma, fara diacritice si fara diferenta de majuscule. */
+  const VERB_APEL = new RegExp('(?<![a-z])' + 'su' + 'n(a|ati|am|i|at)(?![a-z])', 'i')
+  const SLUGURI = ['confidentialitate', 'informatii-legale', 'termeni'] as const
+
+  function operatorSee(telefon: string): Operator {
+    return {
+      denumire: ['Trei S', 'Proba', 'SRL'].join(' '),
+      sediu: 'Strada Exemplului 1, Pitesti',
+      email: ['date', 'operator-3s.test'].join('@'),
+      telefon,
+      numar_orc: 'J03/0/2026',
+      cod_fiscal: 'RO' + '0'.repeat(8),
+      tara: 'România',
+      dpo: '',
+    }
+  }
+  const TELEFON = '+40 7' + '12 345 678'
+
+  /** Unitatile de text (paragrafe, randuri de lista, celule) ale unui document SEE, pe slug. */
+  function unitati(operator: Operator, slug: string): string[] {
+    const t = texteJuridice(operator, { limba: 'ro', baza: 'https://exemplu-3s.test' })
+    if (t === null) throw new Error('textele SEE nu s-au construit pentru operatorul fabricat')
+    return documentPentruSlug(t, slug).sectiuni.flatMap((s) => s.blocuri.flatMap(textBloc))
+  }
+
+  /** Fara semnele diacritice (descompunere NFD, apoi semnele combinante scoase). */
+  const fara = (sir: string) => sir.normalize('NFD').replace(/\p{M}/gu, '')
+
+  /** O fraza care invita la apel: verbul "a suna", sau numarul pus ca al doilea canal fara sa fie numit WhatsApp. */
+  function invitaLaApel(fraza: string, telefon: string): boolean {
+    return VERB_APEL.test(fara(fraza)) || (fraza.includes(telefon) && !fraza.includes(WA + telefon))
+  }
+
+  it('controlul intrarii: operatorul fabricat e din familia SEE si are telefon', () => {
+    expect(familieJuridica(operatorSee(TELEFON))).toBe('see')
+    expect(operatorSee(TELEFON).telefon).not.toBe('')
+  })
+
+  it.each(SLUGURI)('%s: randul de canal numeste numarul de WhatsApp si nu invita la apel', (slug) => {
+    const toate = unitati(operatorSee(TELEFON), slug)
+    // Celulele egale cu numarul sunt date de identificare (randul "Telefonul"), nu fraze; se numara separat.
+    const celule = toate.filter((u) => u.trim() === TELEFON)
+    const fraze = toate.filter((u) => u.includes(TELEFON) && u.trim() !== TELEFON)
+    expect(celule.length).toBe(slug === 'informatii-legale' ? 1 : 0)
+    // Controlul: randul de canal exista si poarta numarul (altfel cazul ar fi vacuu).
+    expect(fraze).toHaveLength(1)
+    expect(fraze[0]).toContain(WA + TELEFON)
+    expect(fraze.filter((f) => invitaLaApel(f, TELEFON))).toEqual([])
+    // Si nicaieri in document verbul "a suna".
+    expect(toate.filter((u) => VERB_APEL.test(fara(u)))).toEqual([])
+  })
+
+  it.each(SLUGURI)('%s, martor NEGATIV: operatorul SEE fara telefon nu primeste nici WhatsApp, nici numar', (slug) => {
+    const toate = unitati(operatorSee(''), slug)
+    expect(toate.length).toBeGreaterThan(5)
+    expect(toate.filter((u) => u.includes(WA))).toEqual([])
+    expect(toate.filter((u) => u.includes(TELEFON))).toEqual([])
+  })
+
+  it('martor POZITIV: vechile formulari, asamblate la rulare pe randul real, sunt prinse', () => {
+    const rand = unitati(operatorSee(TELEFON), 'termeni').find((u) => u.includes(WA + TELEFON))
+    expect(rand).toBeDefined()
+    const r = rand as string
+    expect(invitaLaApel(r, TELEFON)).toBe(false)
+    expect(invitaLaApel(r.replace(WA, 'sau la '), TELEFON)).toBe(true)
+    expect(invitaLaApel(r.replace(WA, 'sau ne puteți ' + 'su' + 'na la '), TELEFON)).toBe(true)
+    expect(invitaLaApel(r.replace(WA, 'sau ne ' + 'su' + 'nați la '), TELEFON)).toBe(true)
   })
 })

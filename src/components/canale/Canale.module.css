@@ -1,23 +1,4 @@
-/* Piesele de canal: telefonul (text pe desktop, legatura pe mobil), adresa cu copiere, cardul de canal.
-   Pragul mobilului e cel al site-ului: 767 px. */
-
-.doarMobil {
-  display: none;
-}
-
-.doarDesktop {
-  display: inline;
-}
-
-@media (max-width: 767px) {
-  .doarMobil {
-    display: inline;
-  }
-
-  .doarDesktop {
-    display: none;
-  }
-}
+/* Piesele de canal: adresa cu copiere si cardul de canal. */
 
 .adresa {
   display: inline-flex;

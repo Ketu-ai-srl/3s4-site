@@ -3,135 +3,92 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import Erou from '../src/components/erou/Erou'
 import {
-  ARC_COMETA,
-  CAP_COMETA_STATIC,
-  FRACTII_NODURI,
-  LUNGIME_BUCLA,
-  PERIOADA_MS,
-  capete,
-  liniutaCometa,
-  lungimeCalculata,
-  pulsuriIntre,
-  punctLaFractie,
-  type TintaPuls,
+  INTARZIERI_CENTRU,
+  ORDINE_NODURI,
+  TUR_S,
+  intarziereNod,
+  intarziereUrma,
+  punctNod,
+  type PozitieNod,
 } from '../src/components/erou/geometrie'
+import { EROU } from '../src/content/acasa'
 import { MACHETA, TUR } from '../src/content/acasa-erou'
 
 /**
- * Probele feliei `erou` (valul S4-2) care nu cer navigator: geometria si ceasul buclei, starea
- * statica randata pe server si continutul machetei.
+ * Probele feliei `erou` care nu cer navigator: geometria si ceasul figurii, starea statica randata pe
+ * server si continutul machetei.
  *
- * ASTEPTARILE VIN DIN AFARA CODULUI: lungimea drumului (1396,34, masurata pe referinta cu
- * `getTotalLength`), pozitiile nodurilor, arcul cometei si ordinea pulsurilor sunt cifrele fisei de
- * masurare (acasa-erou.md §1.4-§1.5), nu ale functiilor de aici. Asa, geometria si asteptarea nu
- * pot drifta impreuna.
+ * FIGURA (decizia 61, 04.10.2026): cea din pagina de autentificare a aplicatiei 3S - doua inele egale,
+ * alaturate, sase noduri (trei pe fiecare inel: sus, la capatul dinspre margine, jos), sigla in centru, o
+ * cometa pe fiecare inel, intr-un tur de 14 s. Figura aplicatiei are 520 x 320 de unitati, inele de raza
+ * 98 la x 158 si 362; scena site-ului are 640 x 420, deci figura intra marita de 121 / 98 (raza 121,
+ * mijloacele la 320 -/+ 126, pe y 210).
+ *
+ * ASTEPTARILE SUNT SCRISE DE MANA, din figura de mai sus, nu cerute functiilor de aici: coordonatele
+ * nodurilor si intarzierile pulsurilor (sosirea capului: pornirea inelului, decalajul capului fata de
+ * urma - 0,07 s in sens invers, 3,01 s in sens normal - si partea de tur pana la nod). Asa, geometria si
+ * asteptarea nu pot drifta impreuna.
  */
 
 const html = renderToStaticMarkup(createElement(Erou))
 
-describe('geometria buclei, contra masuratorii', () => {
-  it('lungimea calculata e cea masurata pe referinta (1396,34 u)', () => {
-    expect(Math.abs(lungimeCalculata() - 1396.34)).toBeLessThan(0.05)
-    expect(LUNGIME_BUCLA).toBe(1396.34)
+/** Nodurile figurii, de mana: [x, y] in unitati de scena si intarzierea pulsului, in secunde. */
+const FIGURA: Record<PozitieNod, { x: number; y: number; puls: number }> = {
+  'sus-stanga': { x: 194, y: 89, puls: 3.43 },
+  'capat-stanga': { x: 73, y: 210, puls: 6.93 },
+  'jos-stanga': { x: 194, y: 331, puls: 10.43 },
+  'sus-dreapta': { x: 446, y: 89, puls: 2.79 },
+  'capat-dreapta': { x: 567, y: 210, puls: -7.71 },
+  'jos-dreapta': { x: 446, y: 331, puls: -4.21 },
+}
+
+describe('geometria figurii, contra figurii aplicatiei', () => {
+  it('sase noduri, in ordinea drumului: trei pe preluare, trei pe arhiva', () => {
+    expect(ORDINE_NODURI).toEqual(['sus-stanga', 'capat-stanga', 'jos-stanga', 'sus-dreapta', 'capat-dreapta', 'jos-dreapta'])
   })
 
-  it('nodurile cad pe drum unde le-a masurat fisa (§1.4.5)', () => {
-    const fisa: Record<string, [number, number]> = {
-      'sus-stanga': [212, 105.2],
-      'jos-stanga': [212, 314.8],
-      'sus-dreapta': [428, 105.2],
-      'jos-dreapta': [428, 314.8],
-    }
-    for (const [pozitie, [x, y]] of Object.entries(fisa)) {
-      const p = punctLaFractie(FRACTII_NODURI[pozitie as keyof typeof FRACTII_NODURI])
-      expect(Math.abs(p.x - x), pozitie + ' x').toBeLessThan(0.3)
-      expect(Math.abs(p.y - y), pozitie + ' y').toBeLessThan(0.3)
-    }
-  })
-
-  it('fractiile 0 si 0,5 sunt centrul, 0,25 si 0,75 capetele lobilor', () => {
-    for (const [f, x, y] of [
-      [0, 320, 210],
-      [0.5, 320, 210],
-      [0.25, 90, 210],
-      [0.75, 550, 210],
-    ]) {
-      const p = punctLaFractie(f)
-      expect(Math.abs(p.x - x), 'x la ' + f).toBeLessThan(0.05)
-      expect(Math.abs(p.y - y), 'y la ' + f).toBeLessThan(0.05)
+  it('nodurile stau pe inele unde le pune figura', () => {
+    for (const [pozitie, f] of Object.entries(FIGURA)) {
+      const p = punctNod(pozitie as PozitieNod)
+      expect(Math.abs(p.x - f.x), pozitie + ' x').toBeLessThan(0.01)
+      expect(Math.abs(p.y - f.y), pozitie + ' y').toBeLessThan(0.01)
     }
   })
 
-  it('cometa de miscare redusa: arc de 10% (139,63 u), capul la 30% din drum', () => {
-    const l = liniutaCometa(CAP_COMETA_STATIC)
-    expect(l.dasharray).toBe('139.63 1256.71')
-    expect(l.dashoffset).toBeCloseTo(-(0.3 - ARC_COMETA) * 1396.34, 2)
+  it('pulsul fiecarui nod porneste cand ajunge capul cometei (+/-0,01 s)', () => {
+    for (const [pozitie, f] of Object.entries(FIGURA)) {
+      expect(Math.abs(intarziereNod(pozitie as PozitieNod) - f.puls), pozitie).toBeLessThan(0.01)
+    }
   })
 
-  it('cele trei capete sunt defazate cu o treime si fac un tur in 12 000 ms, liniar', () => {
-    expect(PERIOADA_MS).toBe(12000)
-    const c = capete(3000)
-    expect(c[0]).toBeCloseTo(0.25, 9)
-    expect(c[1]).toBeCloseTo(0.25 + 1 / 3, 9)
-    expect(c[2]).toBeCloseTo(0.25 + 2 / 3, 9)
-    expect(capete(12000)[0]).toBeCloseTo(0, 9)
+  it('pe fiecare inel capul trece pe la noduri in ordinea drumului, la cate un sfert de tur (3,5 s)', () => {
+    const peTur = (s: number) => ((s % TUR_S) + TUR_S) % TUR_S
+    for (const inel of [ORDINE_NODURI.slice(0, 3), ORDINE_NODURI.slice(3)]) {
+      const t = inel.map((n) => peTur(intarziereNod(n)))
+      expect(peTur(t[1] - t[0]), inel.join('>')).toBeCloseTo(3.5, 6)
+      expect(peTur(t[2] - t[1]), inel.join('>')).toBeCloseTo(3.5, 6)
+    }
+  })
+
+  it('centrul pulseaza o data pentru fiecare cap: la estul inelului stang si la vestul celui drept', () => {
+    expect(INTARZIERI_CENTRU.map((x) => Number(x.toFixed(2)))).toEqual([13.93, -0.71])
+  })
+
+  it('urmele: preluarea porneste la 0, arhiva la -4,7 s; capul are decalajul sensului sau', () => {
+    expect(intarziereUrma('preluare', false)).toBe(0)
+    expect(intarziereUrma('arhiva', false)).toBe(-4.7)
+    expect(intarziereUrma('preluare', true)).toBeCloseTo(-0.07, 6)
+    expect(intarziereUrma('arhiva', true)).toBeCloseTo(-4.7 - 3.01, 6)
+  })
+
+  it('martor POZITIV: un nod mutat pe alt unghi e prins de tabelul de mana', () => {
+    const gresit = { x: 194 + 121, y: 210 }
+    const f = FIGURA['capat-stanga']
+    expect(Math.abs(gresit.x - f.x)).toBeGreaterThan(1)
   })
 })
 
-describe('ceasul pulsurilor, contra jurnalului din fisa (§1.5)', () => {
-  /** Pulsurile vazute cadru cu cadru (16 ms, ca la 60 de cadre pe secunda), cu momentul lor. */
-  function jurnal(pana: number): { t: number; tinta: TintaPuls }[] {
-    const rezultat: { t: number; tinta: TintaPuls }[] = []
-    let anterior = 0
-    for (let t = 16; t <= pana; t += 16) {
-      for (const tinta of pulsuriIntre(anterior, t)) rezultat.push({ t, tinta })
-      anterior = t
-    }
-    return rezultat
-  }
-
-  it('ordinea si distantele intr-o fereastra de 4000 ms: 0 / 560 / 1120 / 2000 / 2560 / 3120', () => {
-    const j = jurnal(24000)
-    const start = j.findIndex((e) => e.tinta === 'sus-stanga')
-    const fereastra = j.slice(start, start + 7)
-    expect(fereastra.map((e) => e.tinta)).toEqual([
-      'sus-stanga',
-      'centru',
-      'jos-dreapta',
-      'sus-dreapta',
-      'centru',
-      'jos-stanga',
-      'sus-stanga',
-    ])
-    const fisa = [0, 560, 1120, 2000, 2560, 3120, 4000]
-    fereastra.forEach((e, i) => {
-      // Fisa: confirmat pe jurnal cu abateri sub 60 ms; aici pasul de cadru e 16 ms.
-      expect(Math.abs(e.t - fereastra[0].t - fisa[i]), e.tinta + ' la ' + fisa[i]).toBeLessThan(20)
-    })
-  })
-
-  it('fiecare nod pulseaza o data la 4000 ms, centrul o data la 2000 ms', () => {
-    const j = jurnal(12000 * 2)
-    const numar = (tinta: TintaPuls) => j.filter((e) => e.tinta === tinta).length
-    for (const nod of ['sus-stanga', 'jos-stanga', 'sus-dreapta', 'jos-dreapta'] as const) {
-      expect(numar(nod), nod).toBe(6)
-    }
-    expect(numar('centru')).toBe(12)
-  })
-
-  it('martor POZITIV: o pauza lunga (fila ascunsa) nu porneste pulsuri de recuperare', () => {
-    // Control: aceeasi fereastra, parcursa cadru cu cadru, are pulsuri; sarita dintr-odata, niciunul.
-    expect(jurnal(5000).length).toBeGreaterThan(0)
-    expect(pulsuriIntre(0, 5000)).toEqual([])
-  })
-
-  it('martor NEGATIV: timpul care nu avanseaza nu produce pulsuri', () => {
-    expect(pulsuriIntre(1488, 1488)).toEqual([])
-    expect(pulsuriIntre(2000, 1000)).toEqual([])
-  })
-})
-
-describe('eroul randat pe server: starea statica a ciotului', () => {
+describe('eroul randat pe server: starea statica', () => {
   const erou = html
 
   it('ramane la calea ciotului, cu un singur h1', () => {
@@ -147,18 +104,37 @@ describe('eroul randat pe server: starea statica a ciotului', () => {
     expect(erou).not.toContain('aria-expanded')
   })
 
-  it('cometa sta cu capul la 30% din drum, iar punctele nu exista fara JavaScript', () => {
-    expect(erou).toContain('stroke-dashoffset="' + (-(0.3 - 0.1) * 1396.34).toFixed(2) + '"')
-    expect(erou).toContain('stroke-dasharray="139.63 1256.71"')
-    // Punctele poarta clasele `punct-cap`, `punct-mijloc`, `punct-coada`. Un simplu `<circle` nu e
-    // semnul lor: iconita "play" a butonului secundar are si ea un cerc.
-    expect(erou).not.toContain('punct-')
+  it('doua inele cu cate o urma si un cap, cu sensul si intarzierea fiecaruia in HTML', () => {
+    expect(erou.match(/data-inel-figura="/g)).toHaveLength(2)
+    expect(erou.match(/data-urma=""/g)).toHaveLength(2)
+    expect(erou.match(/data-cometa=""/g)).toHaveLength(2)
+    expect(erou).toContain('animation-delay:0s;animation-direction:reverse')
+    expect(erou).toContain('animation-delay:-4.7s;animation-direction:normal')
+    expect(erou).toContain('animation-delay:-0.07s;animation-direction:reverse')
+    expect(erou).toContain('animation-delay:-7.71s;animation-direction:normal')
   })
 
-  it('nodurile stau la procentele din fisa (33,12 / 25,04 ... 66,88 / 74,96)', () => {
-    for (const stil of ['left:33.12%;top:25.04%', 'left:33.12%;top:74.96%', 'left:66.88%;top:25.04%', 'left:66.88%;top:74.96%']) {
+  it('nodurile stau la procentele figurii, fiecare cu inelul lui de puls', () => {
+    for (const stil of [
+      'left:30.31%;top:21.19%',
+      'left:11.41%;top:50.00%',
+      'left:30.31%;top:78.81%',
+      'left:69.69%;top:21.19%',
+      'left:88.59%;top:50.00%',
+      'left:69.69%;top:78.81%',
+    ]) {
       expect(erou).toContain(stil)
     }
+    expect(erou.match(/data-nod="/g)).toHaveLength(6)
+    // 6 noduri + 2 inele ale centrului.
+    expect(erou.match(/data-inel-puls=""/g)).toHaveLength(8)
+  })
+
+  it('etichetele: lobii si nodurile platformei, iar figura poarta eticheta ei accesibila', () => {
+    for (const t of [EROU.bucla.lobStanga, EROU.bucla.lobDreapta, ...EROU.bucla.noduri.map((n) => n.eticheta)]) {
+      expect(erou).toContain('>' + t + '<')
+    }
+    expect(erou).toContain('role="img" aria-label="' + EROU.bucla.etichetaFigura + '"')
   })
 
   it('macheta nu e in HTML-ul servit: se incarca lenes, la clic', () => {

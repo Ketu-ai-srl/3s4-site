@@ -1,0 +1,27 @@
+{
+  "_nota": "Lista declarata a perechii juridice: indexul /juridic al site-ului RO si indexurile /legal (EN) si /ro/juridic (RO-MD) ale lui 3s.md, cu aceleasi piese (ZonaJuridica, FirPagina, CarduriDocumente). Pe build-ul RO al probelor operatorul e null, deci /juridic raspunde 404: perechea RO se masoara pe copia cu operator SEE sintetic (tests/browser/ajutor/copie-operator.ts). Documentele (/juridic/<slug> fata de /legal/<slug>) nu intra aici: corpul lor e textul juridic, diferit prin constructie; scheletul lor il compara tests/editie-juridic.test.ts. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts.",
+  "pereche": "JURIDIC",
+  "ro": "/juridic",
+  "pagini_3s_md": [
+    "/legal",
+    "/ro/juridic"
+  ],
+  "randuri": [
+    {
+      "tip": "camp",
+      "selector": "[data-card-document]",
+      "ro": 7,
+      "en": 6,
+      "cod": "juridic-md",
+      "motiv": "Cardurile indexului: documentele publicate la poarta curenta ale setului md (6), nu cele 7 ale familiei SEE."
+    },
+    {
+      "tip": "camp",
+      "selector": "ul[class*=\"baraLista\"] > li",
+      "ro": 7,
+      "en": 6,
+      "cod": "juridic-md",
+      "motiv": "Bara documentelor: aceleasi 6 documente md, in ordinea registrului, fata de cele 7 SEE."
+    }
+  ]
+}

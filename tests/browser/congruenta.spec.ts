@@ -4,6 +4,7 @@ import type { Browser, Page } from '@playwright/test'
 import ts from 'typescript'
 import { expect, test } from './ajutor/baza'
 import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
+import { pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
 import { masoaraRaspunsul, type DeclaratieRaspuns } from './ajutor/geo'
 import { RADACINA } from './ajutor/proiect'
 
@@ -47,6 +48,12 @@ import { RADACINA } from './ajutor/proiect'
  * DOMENIUL verificarilor de text: paginile EN ale perechilor; al verificarii RON: toate paginile din harta site-ului
  * copiei. Bucatile JS cerute se culeg din jurnalul de retea, cu miscare permisa, cu derulare pana jos si cu paleta
  * deschisa (Ctrl K); ce se incarca abia dupa alt clic nu e cules.
+ *
+ * PERECHEA JURIDICA (`config/congruenta/juridic.json`): indexul `/juridic` exista numai cu operator de date, iar
+ * build-ul RO al probelor are operatorul `null` (raspunde 404). Partea RO a perechii vine din copia cu operator SEE
+ * sintetic (`ajutor/copie-operator.ts`), pornita numai cand o lista are pagina RO sub `/juridic`; celelalte perechi
+ * raman pe build-ul probelor. Controlul: 404 pe build-ul probelor si 200 pe copie, plus un martor pozitiv pe indexul
+ * EN real (cardurile scoase inrosesc perechea).
  *
  * Ce NU masoara: textul tradus in semnatura de forma (controlul (d)) si continutul care apare abia dupa clic.
  * Capturile alaturate (privite de un om) nu sunt aici.
@@ -304,7 +311,20 @@ function compara(p: Pereche, ro: Semnatura, en: Semnatura, scoase: number[]): st
 // ---------------------------------------------------------------------------------------------------------------------
 
 let copie: Copie3sMd
+let copieRo: CopieOperator | null = null
 const CACHE = new Map<string, string>()
+
+/** Perechile a caror pagina RO exista numai cu operator de date: grupul `/juridic` (404 pe build-ul probelor). */
+function cuOperator(p: Pereche): boolean {
+  return p.ro === '/juridic' || p.ro.startsWith('/juridic/')
+}
+
+/** Adresa paginii RO a perechii: copia cu operator pentru grupul juridic, altfel build-ul probelor. */
+function adresaRo(p: Pereche, baseURL: string | undefined): string {
+  if (!cuOperator(p)) return String(baseURL) + p.ro
+  if (copieRo === null) throw new Error(p.pereche + ': copia cu operator nu e pornita')
+  return copieRo.baza + p.ro
+}
 
 async function html(adresa: string): Promise<string> {
   const din = CACHE.get(adresa)
@@ -329,13 +349,16 @@ function raport(linie: string): void {
 const UMAMI_FICTIV = { UMAMI_URL: 'http://127.0.0.1:' + 9, UMAMI_WEBSITE_ID: ['0c0a1b2c', '3d4e', '4f5a', '8b6c', '7d8e9f0a1b2c'].join('-') }
 
 test.beforeAll(async () => {
-  test.setTimeout(600_000)
+  // Doua build-uri, unul dupa altul (nu in paralel: memoria statiei si a masinii CI).
+  test.setTimeout(1_200_000)
   copie = await pornesteCopia3sMd(UMAMI_FICTIV)
+  if (PERECHI.some(cuOperator)) copieRo = await pornesteCopiaOperator()
 })
 
 test.afterAll(async () => {
   await paginaGoala?.context().close()
   await copie?.opreste()
+  await copieRo?.opreste()
 })
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -400,7 +423,7 @@ test('semnatura de forma pe fiecare pereche: partea RO a listei se aplica; perec
   let migrate = 0
   let nemigrate = 0
   for (const p of PERECHI) {
-    const ro = await semnatura(browser, await html(baseURL + p.ro), selectoriLista(p))
+    const ro = await semnatura(browser, await html(adresaRo(p, baseURL)), selectoriLista(p))
     const { abateri: peRo, scoase } = verificaPeRo(p, ro)
     abateri.push(...peRo)
     for (const cale of p.pagini_3s_md) {
@@ -432,7 +455,7 @@ async function simulata(
   p: Pereche,
   extra: { extraScoase?: number[]; pastrate?: number[]; text?: boolean; clasaStraina?: string; campuri?: { selector: string; en: number }[] } = {},
 ): Promise<{ ro: Semnatura; en: Semnatura; scoase: number[] }> {
-  const htmlRo = await html(baseURL + p.ro)
+  const htmlRo = await html(adresaRo(p, baseURL))
   const ro = await semnatura(browser, htmlRo, selectoriLista(p))
   const { scoase } = verificaPeRo(p, ro)
   const htmlEn = await (await analizor(browser)).evaluate(migrareInPagina, {
@@ -594,6 +617,39 @@ test('martor POZITIV (e2): o migrare simulata rosie ramane rosie cu un article[d
   }
 })
 
+test('perechea juridica: /juridic raspunde 404 pe build-ul probelor si 200 pe copia cu operator; pe 3s.md, /legal si /ro/juridic raspund 200', async ({ baseURL }) => {
+  const p = pereche('JURIDIC')
+  expect(cuOperator(p)).toBe(true)
+  // Martorul: build-ul probelor nu are pagina (operator null), deci copia chiar e necesara.
+  expect((await fetch(baseURL + p.ro, { redirect: 'manual' })).status).toBe(404)
+  expect((await fetch(adresaRo(p, baseURL), { redirect: 'manual' })).status).toBe(200)
+  for (const cale of p.pagini_3s_md) expect((await fetch(copie.baza + cale, { redirect: 'manual' })).status, cale).toBe(200)
+  // Martorul negativ al selectiei: o pereche din afara grupului ramane pe build-ul probelor.
+  expect(adresaRo(pereche('P01'), baseURL).startsWith(String(baseURL))).toBe(true)
+})
+
+/** Ruleaza in browser. Scoate din `<main>` lista cu clasa de modul data (fara hash). */
+function scoateListaInPagina(arg: { html: string; clasa: string }): string {
+  const d = new DOMParser().parseFromString(arg.html, 'text/html')
+  const lista = [...(d.querySelector('main')?.querySelectorAll('ul') ?? [])].find((u) => [...u.classList].some((c) => c.startsWith(arg.clasa + '__')))
+  lista?.remove()
+  return '<!DOCTYPE html>' + d.documentElement.outerHTML
+}
+
+test('martor POZITIV (juridic): indexul /legal real e congruent cu /juridic, iar fara carduri inroseste perechea', async ({ browser, baseURL }) => {
+  const p = pereche('JURIDIC')
+  const ro = await semnatura(browser, await html(adresaRo(p, baseURL)), selectoriLista(p))
+  const { scoase } = verificaPeRo(p, ro)
+  const original = await html(copie.baza + p.pagini_3s_md[0])
+  const real = await semnatura(browser, original, selectoriLista(p))
+  expect(real.corp).toBeNull()
+  expect(compara(p, ro, real, scoase)).toEqual([])
+  const fara = await (await analizor(browser)).evaluate(scoateListaInPagina, { html: original, clasa: 'juridic' + '_carduri' })
+  expect(fara, 'mutatia a aterizat').not.toBe(original)
+  const d = compara(p, ro, await semnatura(browser, fara, selectoriLista(p)), scoase).join(' | ')
+  expect(d).toContain('campul [data-card-document]')
+})
+
 test('martor NEGATIV (e3): pagina juridica reala a copiei e recunoscuta CorpDocument, pagina P02 reala CorpPagina', async ({ browser }) => {
   const legala = (await pagini3sMd()).find((c) => c.startsWith('/legal/'))
   expect(legala, 'o pagina juridica in harta copiei').toBeDefined()
@@ -691,13 +747,13 @@ test('stilurile calculate ale radacinilor, la 1440 si la 390, pe perechile migra
     let comparate = 0
     const abateri: string[] = []
     for (const p of PERECHI) {
-      const ro = await semnatura(browser, await html(baseURL + p.ro), selectoriLista(p))
+      const ro = await semnatura(browser, await html(adresaRo(p, baseURL)), selectoriLista(p))
       const { scoase } = verificaPeRo(p, ro)
       for (const cale of p.pagini_3s_md) {
         const en = await semnatura(browser, await html(copie.baza + cale), selectoriLista(p))
         if (en.corp !== null) continue
         for (const latime of [1440, 390]) {
-          const sr = await stiluri(page, latime, baseURL + p.ro, scoase)
+          const sr = await stiluri(page, latime, adresaRo(p, baseURL), scoase)
           const se = await stiluri(page, latime, copie.baza + cale, [])
           expect(se.innerWidth).toBe(latime)
           abateri.push(...comparaStiluri(sr.radacini, se.radacini).map((x) => p.pereche + ' ' + cale + ' @' + latime + ': ' + x))

@@ -12,23 +12,41 @@
 import type { ReactNode } from "react";
 import Tinta from "@/components/primitive/Tinta";
 import { BARA_JURIDICA } from "@/content/juridic/pagini";
-import { DOCUMENTE_JURIDICE, caleDocument, type SlugJuridic } from "@/content/juridic/publicare";
+import { DOCUMENTE_JURIDICE, caleDocument } from "@/content/juridic/publicare";
 import s from "./juridic.module.css";
 
-export function BaraJuridica({ activ }: { activ: SlugJuridic | null }) {
+/** Un document din bara: cheia (comparata cu `activ`), numele scurt si adresa. */
+export type DocumentBara = { cheie: string; scurt: string; cale: string };
+
+/** Textele barei: titlul vizibil al grupului si eticheta accesibila a navigatiei. */
+export type TexteBara = { titlu: string; eticheta: string };
+
+// EDITIILE (congruenta): paginile juridice ale lui 3s.md (familia `md`, `/legal/*` si `/ro/juridic/*`) folosesc
+// aceeasi zona, cu documentele si textele editiei lor. Proprietatile sunt optionale, cu implicitul romanesc de
+// azi (documentele familiei SEE si `BARA_JURIDICA`), deci pagina `/juridic` nu pasaza nimic si randeaza la fel.
+const DOCUMENTE_RO: readonly DocumentBara[] = DOCUMENTE_JURIDICE.map((d) => ({ cheie: d.slug, scurt: d.scurt, cale: caleDocument(d.slug) }));
+
+export function BaraJuridica({
+  activ,
+  documente = DOCUMENTE_RO,
+  texte = BARA_JURIDICA,
+}: {
+  activ: string | null;
+  documente?: readonly DocumentBara[];
+  texte?: TexteBara;
+}) {
   return (
-    <nav className={s.bara} aria-label={BARA_JURIDICA.eticheta}>
+    <nav className={s.bara} aria-label={texte.eticheta}>
       <div className={s.baraTitlu}>
-        {BARA_JURIDICA.titlu}
+        {texte.titlu}
       </div>
       <ul className={s.baraLista}>
-        {DOCUMENTE_JURIDICE.map((d) => {
-          const cale = caleDocument(d.slug);
-          const esteActiv = d.slug === activ;
+        {documente.map((d) => {
+          const esteActiv = d.cheie === activ;
           return (
-            <li key={d.slug}>
+            <li key={d.cheie}>
               <Tinta
-                legatura={{ text: d.scurt, href: cale, ruta: cale }}
+                legatura={{ text: d.scurt, href: d.cale, ruta: d.cale }}
                 className={s.baraLegatura}
                 aria-current={esteActiv ? "page" : undefined}
               >
@@ -42,12 +60,24 @@ export function BaraJuridica({ activ }: { activ: SlugJuridic | null }) {
   );
 }
 
-export default function ZonaJuridica({ activ, children }: { activ: SlugJuridic | null; children: ReactNode }) {
+export default function ZonaJuridica({
+  activ,
+  children,
+  documente,
+  texte,
+}: {
+  activ: string | null;
+  children: ReactNode;
+  /** Documentele barei, in ordinea lor; implicit cele 7 ale familiei SEE. */
+  documente?: readonly DocumentBara[];
+  /** Titlul si eticheta barei, in limba editiei; implicit cele romanesti. */
+  texte?: TexteBara;
+}) {
   return (
     <main className={s.zona}>
       <div className="container-site">
         <div className={s.grila}>
-          <BaraJuridica activ={activ} />
+          <BaraJuridica activ={activ} {...(documente === undefined ? {} : { documente })} {...(texte === undefined ? {} : { texte })} />
           <div className={s.coloana}>{children}</div>
         </div>
       </div>

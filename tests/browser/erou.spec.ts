@@ -4,20 +4,22 @@ import { expect, test } from './ajutor/baza'
 import { EROU } from '../../src/content/acasa'
 import { MACHETA, TUR } from '../../src/content/acasa-erou'
 import { masoaraAccesibilitatea } from './ajutor/detectori'
+import { INTARZIERI_CENTRU, ORDINE_NODURI, TUR_S, intarziereNod } from '../../src/components/erou/geometrie'
 
 /**
  * Eroul paginii de start in navigator (felia `erou`, valul S4-2; fisa acasa-erou.md).
  *
  * CE MASOARA, pe fiecare latime cu `innerWidth` CITIT din pagina:
- *   - bucla: viteza cometei (un tur in 12 000 ms, deci 116,4 u/s), punctele, pulsurile nodurilor si
- *     ale centrului; la miscare redusa, starea statica (cometa la 30%, fara puncte);
+ *   - figura (decizia 61, dupa figura din pagina de autentificare a aplicatiei): cometele celor doua
+ *     inele, un tur in 14 s, in sensuri opuse; inelele de puls ale celor 6 noduri si ale centrului, cu
+ *     intarzierea sosirii capului; oprirea in afara ferestrei; la miscare redusa, nicio animatie;
  *   - intrarea coloanei: titlul, elementul LCP, nu porneste de la opacitate 0;
  *   - popover-ul primei pastile: hover, tastatura, Escape (abatere: la referinta Escape nu inchide),
  *     la 390 pe ecran tactil ramanerea in fereastra (la referinta ieseau 33,9 px) si, fara
  *     JavaScript, textul lui in HTML-ul servit;
- *   - pe 15 latimi, 320-1440: nicio eticheta (de nod sau de lob) sub centru, sub pastila lui sau
- *     sub un disc, niciun disc sub pastila, nimic in afara ferestrei (defecte ale referintei la
- *     latimi mici, corectate). Centrul si pastila se masoara la scala maxima a respiratiei;
+ *   - pe 15 latimi, 320-1440: nicio eticheta (de nod sau de lob) sub centru, sub pastila lui, sub un
+ *     disc sau peste alta eticheta, niciun disc sub pastila, pastila deasupra legendei, nimic in afara
+ *     ferestrei. Centrul si pastila se masoara la scala maxima a respiratiei;
  *   - macheta: lansarea, turul, aplicatia cu 4 ecrane, rama de telefon, intoarcerea la bucla,
  *     cadrul 3D PE PIXELI contra masuratorii (si dupa pornirea plutirii), paralaxa, foile
  *     zburatoare, accesibilitatea fiecarui ecran (axe nu o vede altfel: in repaus macheta nu
@@ -61,9 +63,9 @@ async function panaLaAplicatie(page: Page): Promise<void> {
 const RESPIRATIE = 1.045
 
 /**
- * Suprapunerile din bucla, ca lista de propozitii (goala = curat). Centrul e un cerc, discurile
+ * Suprapunerile din figura, ca lista de propozitii (goala = curat). Centrul e un cerc, discurile
  * sunt cercuri de 46 px; centrul si pastila se iau la scala maxima a respiratiei, in jurul
- * mijlocului centrului. Se cer si numerele: 4 etichete de nod si 2 de lob, altfel o lista goala ar
+ * mijlocului centrului. Se cer si numerele: 6 etichete de nod si 2 de lob, altfel o lista goala ar
  * putea veni dintr-un selector care nu mai gaseste nimic.
  */
 async function suprapuneriBucla(page: Page): Promise<string[]> {
@@ -83,6 +85,7 @@ async function suprapuneriBucla(page: Page): Promise<string[]> {
         ...[...s.querySelectorAll('[data-eticheta-lob]')].map((e) => ({ fel: 'lob', text: e.textContent ?? '', cutie: cutie(e) })),
       ],
       discuri: [...s.querySelectorAll('[data-nod]')].map((e) => ({ nume: e.getAttribute('data-nod') ?? '', cutie: cutie(e) })),
+      legenda: s.querySelector('p[class*="legenda"]') ? cutie(s.querySelector('p[class*="legenda"]') as Element) : null,
     }
   })
   type Cutie = { x: number; y: number; w: number; h: number }
@@ -90,7 +93,7 @@ async function suprapuneriBucla(page: Page): Promise<string[]> {
   if (!g.centru || !g.pastila) return ['centrul sau pastila lui lipsesc']
   const noduri = g.etichete.filter((e) => e.fel === 'eticheta').length
   const lobi = g.etichete.filter((e) => e.fel === 'lob').length
-  if (noduri !== 4 || lobi !== 2 || g.discuri.length !== 4) return ['numaratoare gresita: ' + noduri + ' etichete de nod, ' + lobi + ' de lob, ' + g.discuri.length + ' discuri']
+  if (noduri !== 6 || lobi !== 2 || g.discuri.length !== 6) return ['numaratoare gresita: ' + noduri + ' etichete de nod, ' + lobi + ' de lob, ' + g.discuri.length + ' discuri']
 
   const cx = g.centru.x + g.centru.w / 2
   const cy = g.centru.y + g.centru.h / 2
@@ -113,6 +116,13 @@ async function suprapuneriBucla(page: Page): Promise<string[]> {
     }
     if (e.cutie.x < 0 || e.cutie.x + e.cutie.w > g.latime) probleme.push(nume + ' iese din fereastra')
   }
+  // Etichetele intre ele (nod cu nod, nod cu lob): fiecare pereche o data.
+  g.etichete.forEach((a, i) => {
+    for (const b of g.etichete.slice(i + 1)) {
+      if (arie(a.cutie, b.cutie) > 1) probleme.push(a.fel + ' ' + a.text + ' peste ' + b.fel + ' ' + b.text)
+    }
+  })
+  if (g.legenda && pastilaMax.y + pastilaMax.h > g.legenda.y) probleme.push('pastila centrului peste legenda (' + (pastilaMax.y + pastilaMax.h - g.legenda.y).toFixed(1) + ' px)')
   for (const d of g.discuri) {
     const c = disc(d.cutie)
     const sub = inCerc(pastilaMax, c.x, c.y, c.r)
@@ -190,54 +200,72 @@ async function cadruPictat(page: Page): Promise<CadruPictat> {
   }, png)
 }
 
-test.describe('bucla, fara miscare redusa, la 1440', () => {
+test.describe('figura, fara miscare redusa, la 1440', () => {
   test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' })
 
-  test('cometa face un tur in 12 000 ms (116,4 u/s), cu 9 puncte pe drum', async ({ page }) => {
+  test('cometele: pe fiecare inel o urma si un cap, un tur in 14 s, in sensuri opuse, si chiar avanseaza', async ({ page }) => {
     await deschide(page, 1440)
     const citeste = () =>
-      page.evaluate(() => {
-        const p = document.querySelector('[data-ciot="erou"] [data-cometa]')
-        return { t: performance.now(), o: Number(p?.getAttribute('stroke-dashoffset')) }
-      })
+      erou(page).evaluate((s) => ({
+        acum: performance.now(),
+        urme: [...s.querySelectorAll('[data-urma], [data-cometa]')].map((el) => {
+          const a = el.getAnimations()[0]
+          const t = a?.effect?.getComputedTiming()
+          return {
+            fel: el.hasAttribute('data-cometa') ? 'cap' : 'urma',
+            durata: t?.duration,
+            directie: t?.direction,
+            stare: a?.playState,
+            timp: Number(a?.currentTime ?? NaN),
+          }
+        }),
+      }))
     const a = await citeste()
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(1400)
     const b = await citeste()
-    const lungime = 1396.34
-    const parcurs = (((a.o - b.o) % lungime) + lungime) % lungime
-    const viteza = parcurs / (b.t - a.t)
-    console.log('[bucla] dashoffset ' + a.o + ' -> ' + b.o + ' in ' + Math.round(b.t - a.t) + ' ms; viteza ' + (viteza * 1000).toFixed(1) + ' u/s')
-    expect(Math.abs(viteza * 1000 - lungime / 12) / (lungime / 12)).toBeLessThan(0.04)
-    // Numai cercurile punctelor: iconitele din erou (butonul "play", globul) au si ele cercuri.
-    const puncte = await erou(page).locator('[data-puncte] circle').evaluateAll((c) => c.filter((x) => Number(x.getAttribute('cx')) > 0).length)
-    expect(puncte).toBe(9)
+    const trecut = b.acum - a.acum
+    console.log('[comete] in ' + Math.round(trecut) + ' ms: ' + JSON.stringify(a.urme.map((x, i) => [x.fel, x.directie, Math.round(b.urme[i].timp - x.timp)])))
+    expect(a.urme.map((x) => x.fel)).toEqual(['urma', 'cap', 'urma', 'cap'])
+    expect(a.urme.map((x) => x.directie)).toEqual(['reverse', 'reverse', 'normal', 'normal'])
+    for (const [i, x] of a.urme.entries()) {
+      expect(x.durata, 'durata ' + i).toBe(TUR_S * 1000)
+      expect(x.stare, 'stare ' + i).toBe('running')
+      // Ceasul animatiei merge cu ceasul paginii (+/-100 ms intre doua citiri).
+      expect(Math.abs(b.urme[i].timp - x.timp - trecut), 'timp ' + i).toBeLessThan(100)
+    }
   })
 
-  test('pulsurile: fiecare nod o data la 4 s, centrul o data la 2 s (inele vazute pe pseudo-elemente)', async ({ page }) => {
+  test('inelele de puls: unul pe fiecare nod si doua pe centru, cu intarzierea sosirii capului', async ({ page }) => {
     await deschide(page, 1440)
-    // Fiecare puls porneste o animatie NOUA pe pseudo-elementul inelului; se numara obiectele
-    // distincte de animatie, nu starea clasei (clasa ramane pusa intre doua pulsuri).
-    const vazute = await erou(page).evaluate(async (s) => {
-      const tinte = [
-        ...[...s.querySelectorAll('[data-nod]')].map((el) => ({ nume: el.getAttribute('data-nod') ?? '', el, pseudo: '::after' })),
-        { nume: 'centru', el: s.querySelector('[data-pastila-centru]')?.parentElement as Element, pseudo: '::before' },
-      ]
-      const vazute: Record<string, Set<Animation>> = {}
-      for (const t of tinte) vazute[t.nume] = new Set()
-      const final = performance.now() + 4600
-      while (performance.now() < final) {
-        for (const t of tinte) {
-          for (const a of t.el.getAnimations({ subtree: true })) {
-            if ((a.effect as KeyframeEffect | null)?.pseudoElement === t.pseudo) vazute[t.nume].add(a)
-          }
-        }
-        await new Promise((r) => setTimeout(r, 30))
-      }
-      return Object.fromEntries(Object.entries(vazute).map(([k, v]) => [k, v.size]))
-    })
-    console.log('[pulsuri in 4,6 s] ' + JSON.stringify(vazute))
-    for (const nod of ['sus-stanga', 'jos-stanga', 'sus-dreapta', 'jos-dreapta']) expect(vazute[nod] ?? 0, nod).toBeGreaterThanOrEqual(1)
-    expect(vazute.centru ?? 0).toBeGreaterThanOrEqual(2)
+    const inele = await erou(page).evaluate((s) =>
+      [...s.querySelectorAll('[data-inel-puls]')].map((el) => {
+        const nod = el.closest('[data-nod]')
+        const a = el.getAnimations()[0]
+        const t = a?.effect?.getTiming()
+        return { nod: nod?.getAttribute('data-nod') ?? 'centru', durata: t?.duration, intarziere: t?.delay, stare: a?.playState }
+      }),
+    )
+    console.log('[inele] ' + JSON.stringify(inele))
+    const asteptat = [...ORDINE_NODURI.map((n) => ({ nod: n as string, s: intarziereNod(n) })), ...INTARZIERI_CENTRU.map((x) => ({ nod: 'centru', s: x }))]
+    expect(inele.map((i) => i.nod).sort()).toEqual(asteptat.map((x) => x.nod).sort())
+    for (const x of asteptat) {
+      const gasit = inele.filter((i) => i.nod === x.nod).some((i) => Math.abs(Number(i.intarziere) - x.s * 1000) < 10)
+      expect(gasit, x.nod + ' la ' + x.s.toFixed(2) + ' s').toBe(true)
+    }
+    for (const i of inele) {
+      expect(i.durata).toBe(TUR_S * 1000)
+      expect(i.stare).toBe('running')
+    }
+  })
+
+  test('in afara ferestrei miscarea sta pe loc, iar la intoarcere continua', async ({ page }) => {
+    await deschide(page, 1440)
+    const stare = () => erou(page).locator('[data-cometa]').first().evaluate((el) => el.getAnimations()[0]?.playState)
+    expect(await stare()).toBe('running')
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await expect.poll(stare).toBe('paused')
+    await page.evaluate(() => window.scrollTo(0, 0))
+    await expect.poll(stare).toBe('running')
   })
 
   // Pe drumul primei picturi: la 390 cu procesorul incetinit x4 si 4G, titlul tinut la opacitate 0
@@ -274,17 +302,24 @@ test.describe('bucla, fara miscare redusa, la 1440', () => {
   })
 })
 
-test.describe('bucla cu miscare redusa, la 1440', () => {
+test.describe('figura cu miscare redusa, la 1440', () => {
   test.use({ viewport: { width: 1440, height: 900 } })
 
-  test('martor NEGATIV: cometa sta la 30% si nu exista puncte; centrul nu respira', async ({ page }) => {
+  test('martor NEGATIV: nicio animatie in figura (comete, inele de puls), centrul nu respira', async ({ page }) => {
     await deschide(page, 1440)
-    const offset = () => erou(page).locator('[data-cometa]').getAttribute('stroke-dashoffset')
-    const inainte = await offset()
-    await page.waitForTimeout(800)
-    expect(await offset()).toBe(inainte)
-    expect(inainte).toBe((-(0.3 - 0.1) * 1396.34).toFixed(2))
-    expect(await erou(page).locator('[data-puncte] circle').count()).toBe(0)
+    const animatii = await erou(page).evaluate((s) => {
+      const figura = s.querySelector('[data-faza]') as Element
+      return {
+        figura: figura.getAnimations({ subtree: true }).length,
+        comete: s.querySelectorAll('[data-cometa]').length,
+        inele: s.querySelectorAll('[data-inel-puls]').length,
+      }
+    })
+    console.log('[miscare redusa] ' + JSON.stringify(animatii))
+    // Controlul: elementele animate exista (2 capete, 8 inele), doar ca stau.
+    expect(animatii.comete).toBe(2)
+    expect(animatii.inele).toBe(8)
+    expect(animatii.figura).toBe(0)
     expect(await centru(page).evaluate((b) => getComputedStyle(b).animationName)).toBe('none')
   })
 })
@@ -374,9 +409,9 @@ test.describe('la 390, ecran tactil', () => {
 test.describe('etichetele, discurile si pastila centrului, pe latimi', () => {
   test.use({ viewport: { width: 1440, height: 900 } })
 
-  // Latimile de telefon cele mai dese, capetele benzii in care pastila coboara sub discuri (scena
-  // pana la 700 px: 732 inauntru, 736 in afara), tableta si desktopul.
-  const LATIMI = [320, 360, 375, 390, 414, 480, 540, 600, 700, 732, 736, 768, 1024, 1180, 1440]
+  // Latimile de telefon cele mai dese, pragurile scenei (340, 400 si 550 px de scena), tableta si
+  // desktopul.
+  const LATIMI = [320, 360, 375, 390, 414, 432, 480, 540, 582, 600, 700, 768, 1024, 1180, 1440]
 
   test('nicio eticheta sub centru, sub pastila sau sub un disc; niciun disc sub pastila', async ({ page }) => {
     const gasite: string[] = []
@@ -390,56 +425,55 @@ test.describe('etichetele, discurile si pastila centrului, pe latimi', () => {
     expect(gasite).toEqual([])
   })
 
-  test('martor POZITIV: la 390, asezarea referintei (eticheta sub disc, pastila la 12 px) e prinsa', async ({ page }) => {
+  test('martor POZITIV: la 390, centrul la marimea de pe desktop (80 px) acopera etichetele lobilor', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await deschide(page, 390)
-    await erou(page).evaluate((s) => {
-      for (const e of s.querySelectorAll('[data-eticheta-nod]')) {
-        const el = e as HTMLElement
-        el.style.position = 'static'
-        el.style.transform = 'none'
-        const nod = el.parentElement as HTMLElement
-        nod.style.display = 'flex'
-        nod.style.flexDirection = 'column'
-        nod.style.alignItems = 'center'
-        nod.style.width = 'auto'
-        nod.style.height = 'auto'
-        nod.style.gap = '6px'
-      }
-      const p = s.querySelector('[data-pastila-centru]') as HTMLElement
-      p.style.top = 'calc(100% + 12px)'
+    await erou(page).locator('[data-pastila-centru]').evaluate((p) => {
+      const c = p.parentElement as HTMLElement
+      c.style.width = '80px'
+      c.style.height = '80px'
     })
     const gasite = await suprapuneriBucla(page)
-    console.log('[390, asezarea referintei] ' + gasite.join(' / '))
-    expect(gasite.filter((g) => g.startsWith('eticheta ') && g.includes('sub centru')).length).toBeGreaterThan(0)
+    console.log('[390, centrul de 80] ' + gasite.join(' / '))
+    expect(gasite.filter((g) => g.startsWith('lob ') && g.includes('sub centru')).length).toBeGreaterThan(0)
   })
 
-  test('martor POZITIV: la 320, lobii asezati ca la referinta (26% / 74%) sunt prinsi sub centru', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 900 })
+  test('martor POZITIV: la 320, etichetele de sus lasate sub disc, ca pe desktop, sunt prinse', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
     await deschide(page, 320)
     await erou(page).evaluate((s) => {
-      s.querySelectorAll('[data-eticheta-lob]').forEach((e, i) => {
-        const lob = e.parentElement as HTMLElement
-        lob.style.display = 'block'
-        lob.style.left = i === 0 ? '26%' : '74%'
-        lob.style.right = 'auto'
-        lob.style.transform = 'translate(-50%, -50%)'
-      })
+      for (const e of s.querySelectorAll('[data-pozitie^="sus"] [data-eticheta-nod]')) {
+        const el = e as HTMLElement
+        el.style.position = 'static'
+        ;(el.parentElement as HTMLElement).style.height = 'auto'
+      }
     })
     const gasite = await suprapuneriBucla(page)
-    console.log('[320, lobii referintei] ' + gasite.join(' / '))
-    expect(gasite.filter((g) => g.startsWith('lob ') && g.includes('sub centru')).length).toBe(2)
+    console.log('[320, etichetele de sus sub disc] ' + gasite.join(' / '))
+    expect(gasite.filter((g) => g.startsWith('eticheta Clasificare 3S')).length).toBeGreaterThan(0)
   })
 
-  test('martor POZITIV: la 480, pastila la distanta fixa de sub centru e prinsa peste discurile de jos', async ({ page }) => {
+  test('martor POZITIV: la 480, pastila la 12 px sub centru e prinsa peste discurile de jos', async ({ page }) => {
     await page.setViewportSize({ width: 480, height: 900 })
     await deschide(page, 480)
     await erou(page).locator('[data-pastila-centru]').evaluate((p) => {
-      ;(p as HTMLElement).style.top = 'calc(100% + 16px)'
+      ;(p as HTMLElement).style.top = 'calc(100% + 12px)'
     })
     const gasite = await suprapuneriBucla(page)
-    console.log('[480, pastila la 16 px] ' + gasite.join(' / '))
+    console.log('[480, pastila la 12 px] ' + gasite.join(' / '))
     expect(gasite.filter((g) => g.startsWith('discul ') && g.includes('sub pastila')).length).toBe(2)
+  })
+
+  test('martor POZITIV: la 390, fara locul tinut sub scena, pastila coborata intra in legenda', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await deschide(page, 390)
+    await erou(page).locator('[data-pastila-centru]').evaluate((p) => {
+      const scena = p.parentElement?.parentElement as HTMLElement
+      scena.style.marginBottom = '0px'
+    })
+    const gasite = await suprapuneriBucla(page)
+    console.log('[390, fara loc sub scena] ' + gasite.join(' / '))
+    expect(gasite.filter((g) => g.startsWith('pastila centrului peste legenda')).length).toBe(1)
   })
 })
 
@@ -453,7 +487,7 @@ test.describe('macheta, cu miscare redusa, la 1440', () => {
     await expect(macheta(page).getByRole('heading', { name: TUR.scene[0].titlu })).toBeVisible()
     await expect(macheta(page).getByText(TUR.bunVenit)).toHaveCount(0)
     // Bucla ramane in pagina cat se vede macheta, doar ascunsa (ScenaErou.tsx).
-    await expect(erou(page).locator('[data-cometa]')).toBeHidden()
+    await expect(erou(page).locator('[data-cometa]').first()).toBeHidden()
 
     // Geometria plana a cadrului (fisa: 861,7 x 420 in tur, 477,7 in aplicatie). Cutia proiectata
     // se masoara pe pixeli, in proba de mai jos.
@@ -486,8 +520,8 @@ test.describe('macheta, cu miscare redusa, la 1440', () => {
     await macheta(page).getByRole('button', { name: MACHETA.inapoi }).click()
     await expect(macheta(page)).toHaveCount(0)
     await expect(centru(page)).toBeFocused()
-    await expect(erou(page).locator('[data-cometa]')).toHaveCount(1)
-    await expect(erou(page).locator('[data-cometa]')).toBeVisible()
+    await expect(erou(page).locator('[data-cometa]')).toHaveCount(2)
+    await expect(erou(page).locator('[data-cometa]').first()).toBeVisible()
   })
 
   // Cutia masurata pe referinta: 639,6 / 320,3, 776,5 x 412,6. Toleranta de 3-4 px: marginile
@@ -549,7 +583,7 @@ test.describe('macheta, cu miscare redusa, la 1440', () => {
     await page.waitForTimeout(600)
     await expect(spatiu).toHaveAttribute('data-faza', 'bucla')
     await expect(centru(page)).toBeEnabled()
-    await expect(erou(page).locator('[data-cometa]')).toHaveCount(1)
+    await expect(erou(page).locator('[data-cometa]')).toHaveCount(2)
     await expect(macheta(page)).toHaveCount(0)
     const faze = await page.evaluate(() => (window as Window & { __faze?: string[] }).__faze ?? [])
     console.log('[bucata oprita] cereri oprite: ' + oprite + '; faze: ' + faze.join(' > ') + '; erori: ' + (erori.join(' | ') || 'niciuna'))
@@ -659,8 +693,11 @@ test.describe('macheta la 390, cu miscare redusa', () => {
     const scena = (await spatiu.boundingBox())?.height ?? 0
     await panaLaAplicatie(page)
     const telefon = (await spatiu.boundingBox())?.height ?? 0
-    console.log('[390] zona ' + repaus + ' -> scena ' + scena + ' -> telefon ' + telefon + ' (fisa: 346,1 / 521 / 532)')
-    expect(Math.abs(repaus - 346.1)).toBeLessThan(2)
+    console.log('[390] zona ' + repaus + ' -> scena ' + scena + ' -> telefon ' + telefon + ' (fisa: 346,1 + 28 / 521 / 532)')
+    // In repaus zona e figura. Fisa a masurat 346,1 pe bucla dinainte; figura deciziei 61 isi tine, la 390, 28 px sub
+    // scena pentru pastila coborata sub etichetele de jos (Erou.module.css, scena ingusta), deci 346,1 + 28 = 374,1.
+    // Scena si telefonul raman ale fisei.
+    expect(Math.abs(repaus - (346.1 + 28))).toBeLessThan(2)
     expect(Math.abs(scena - 521) / 521).toBeLessThan(0.03)
     expect(Math.abs(telefon - 532) / 532).toBeLessThan(0.02)
 

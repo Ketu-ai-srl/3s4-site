@@ -68,8 +68,11 @@ export type RandPopover = {
 };
 
 export type NodBucla = {
-  /** Pozitia pe bucla, ca pe referinta (fractiile 0,12 / 0,38 / 0,62 / 0,88 din drum). */
-  pozitie: "sus-stanga" | "jos-stanga" | "sus-dreapta" | "jos-dreapta";
+  /**
+   * Pozitia pe figura (decizia 61): pe inelul stang sus, la capatul dinspre margine si jos; la fel pe cel
+   * drept. Unghiurile, in `src/components/erou/geometrie.ts`.
+   */
+  pozitie: "sus-stanga" | "capat-stanga" | "jos-stanga" | "sus-dreapta" | "capat-dreapta" | "jos-dreapta";
   eticheta: string;
   iconita: NumeIconita;
 };
@@ -92,6 +95,8 @@ export type Erou = {
     lobStanga: string;
     lobDreapta: string;
     noduri: NodBucla[];
+    /** Eticheta accesibila a figurii (decizia 61: cea a platformei). */
+    etichetaFigura: string;
     centru: { eticheta: string; pastila: string };
     legenda: string;
   };
@@ -150,19 +155,23 @@ export const EROU: Erou = {
   // Rol: fara card si fara obligatie (sub butoane, 14/400). Lungime: 26 [fisa].
   nota: "0 RON astăzi, fără card",
   bucla: {
-    // Rol: lobul stang, intrarea (11,52/600, majuscule prin CSS, decorativ). Lungime: 7 [numarat].
+    // Decizia 61 (04.10.2026): figura e cea din pagina de autentificare a aplicatiei 3S, cu textele ei
+    // romanesti. Rol: inelul stang, preluarea (11,5/500, majuscule prin CSS, decorativ).
     lobStanga: "Preluare",
-    // Rol: lobul drept, ordinea. Lungime: 6 [numarat].
+    // Rol: inelul drept, arhiva.
     lobDreapta: "Arhivă",
-    // Nodurile 3S, pe drumul buclei: originalele intra (hartie), se digitizeaza, stau in arhiva
-    // protejata si ies ca dialog (intrebare si raspuns). Lungimi la referinta: 8 / 9 / 4 / 6, un
-    // cuvant fiecare [fisa]. Iconitele raman cele din contract.
+    // Nodurile, in ordinea drumului: trei pe preluare, trei pe arhiva (textele aplicatiei).
     noduri: [
-      { pozitie: "sus-stanga", eticheta: "originale", iconita: "file-text" },
-      { pozitie: "jos-stanga", eticheta: "digitizare", iconita: "scan-line" },
-      { pozitie: "sus-dreapta", eticheta: "seif", iconita: "archive" },
-      { pozitie: "jos-dreapta", eticheta: "dialog", iconita: "message-square-text" },
+      { pozitie: "sus-stanga", eticheta: "Scanare", iconita: "scan-line" },
+      { pozitie: "capat-stanga", eticheta: "Text OCR", iconita: "file-text" },
+      { pozitie: "jos-stanga", eticheta: "Încărcare", iconita: "cloud-upload" },
+      { pozitie: "sus-dreapta", eticheta: "Clasificare 3S", iconita: "sparkles" },
+      { pozitie: "capat-dreapta", eticheta: "Căutare", iconita: "search" },
+      { pozitie: "jos-dreapta", eticheta: "Chat 3S", iconita: "message-square-text" },
     ],
+    // Rol: eticheta accesibila a figurii; cuvintele din ea nu se citesc separat.
+    etichetaFigura:
+      "Drumul unui document: scanat, citit prin OCR, încărcat, clasificat, căutabil după sens și disponibil în conversație.",
     centru: {
       // Rol: eticheta accesibila a butonului central (lanseaza macheta, felia `erou`).
       eticheta: "Pornește demonstrația 3S",

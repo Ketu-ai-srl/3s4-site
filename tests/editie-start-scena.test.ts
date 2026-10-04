@@ -39,18 +39,20 @@ function scena(extra: Record<string, unknown>): string {
 }
 
 const butoane = (html: string) => (html.match(/<button[\s>]/g) ?? []).length
+/** Inelele de puls ale centrului: cate unul pentru fiecare cometa a figurii (decizia 61). */
+const inelePuls = (html: string) => (html.match(/data-inel-puls=""/g) ?? []).length
 
 describe('ScenaErou: lansarea machetei pe editie', () => {
   it('control: montata, fara `lansare` (RO), centrul e singurul buton', () => {
     const html = scena({})
     expect(butoane(html)).toBe(1)
-    expect(html).toContain('data-puncte')
+    expect(inelePuls(html)).toBe(2)
   })
 
-  it('cu `lansare={false}`: zero <button> in scena, bucla si punctele raman', () => {
+  it('cu `lansare={false}`: zero <button> in scena; inelele de puls ale centrului (decizia 61) raman', () => {
     const html = scena({ lansare: false })
     expect(butoane(html)).toBe(0)
-    expect(html).toContain('data-puncte')
+    expect(inelePuls(html)).toBe(2)
   })
 
   it('cu `lansare={true}` explicit: ca pe RO, un buton', () => {

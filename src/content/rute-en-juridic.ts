@@ -14,13 +14,21 @@
 // `generateStaticParams` pe aceleasi chei; un segment dinamic nu are cale fixa, deci caile nu se scriu literal
 // aici (poarta de rute le-ar cere o pagina statica).
 import { caleMd, cheiPublicate } from "./juridic/md/registru";
-import { DESCRIERE_MD, FAMILIE_JURIDICA, OPERATOR_NUMIT, SCURT_MD } from "./juridic/publicare";
+import { CALE_JURIDIC_EN, DESCRIERE_MD, FAMILIE_JURIDICA, OPERATOR_NUMIT, SCURT_MD } from "./juridic/publicare";
 import type { FamilieJuridica } from "./juridic/familie";
 import type { RutaEditie } from "./rute";
 
-/** Rutele juridice EN: documentele `md` publicate la poarta curenta, numai cand familia publicata e `md`. */
+/**
+ * Rutele juridice EN: documentele `md` publicate la poarta curenta si, la urma, indexul `/legal` (`indexJuridicEn`),
+ * numai cand familia publicata e `md`. Ca `ruteJuridice` din `./juridic/publicare.ts` (indexul plus documentele).
+ */
 export function ruteJuridiceEn(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"en">[] {
   if (!publicat || familie !== "md") return [];
+  return [...documenteJuridiceEn(), ...indexJuridicEn(publicat, familie)];
+}
+
+/** Numai documentele `md` publicate la poarta curenta (fara index). */
+function documenteJuridiceEn(): RutaEditie<"en">[] {
   return cheiPublicate().map((cheie) => ({
     cale: caleMd(cheie, "en"),
     scurt: SCURT_MD[cheie].en,
@@ -29,6 +37,28 @@ export function ruteJuridiceEn(publicat: boolean = OPERATOR_NUMIT, familie: Fami
     editie: "en",
     cheie,
   }));
+}
+
+/**
+ * INDEXUL `/legal` (felia editie-juridic, decizia 53: ca `/juridic` pe site-ul romanesc): numai cand familia
+ * publicata e `md`, adica exact cand pagina lui exista (`generateStaticParams` da si slugul gol). Ruta face legatura
+ * din fir (nivelul intermediar) si din paleta sa fie vie: fara ea, `Tinta` randeaza nivelul ca text inert.
+ * `inHarta: false` deocamdata: proba de acceptanta a lui 3s.md compara harta de site cu caile LITERALE din manifeste,
+ * iar poarta de rute cere o pagina statica pentru o cale literala; intrarea in harta (si perechea hreflang cu
+ * `/ro/juridic`) cere si proba aceea.
+ */
+export function indexJuridicEn(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"en">[] {
+  if (!publicat || familie !== "md") return [];
+  return [
+    {
+      cale: CALE_JURIDIC_EN,
+      scurt: "Legal documents",
+      descriere: "All legal documents of the 3S platform, in one place.",
+      inHarta: false,
+      editie: "en",
+      cheie: "juridic",
+    },
+  ];
 }
 
 export const RUTE_EN_JURIDIC: RutaEditie<"en">[] = [

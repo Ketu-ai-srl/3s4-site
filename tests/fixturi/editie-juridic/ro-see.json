@@ -1,0 +1,13 @@
+{
+  "_nota": "SHA-256 al HTML-ului randat pe server pe BAZA, operator SEE sintetic din tests/editie-juridic.test.ts. Se rescrie numai cu SCRIE_FIXTURA=1.",
+  "amprente": {
+    "/juridic": "3566d57b52535112ef92a9503f607a14ec0b64fdd27a9ebb5bb086dcd6959a52",
+    "/juridic/informatii-legale": "6017c27bad333289a7f1b4b9de1bffd7495f4f3a96c2336337bb467b60c3fbfd",
+    "/juridic/confidentialitate": "60995970d81f2f397747605da3251ae3f246174806d82610e0bed47c1bc0d355",
+    "/juridic/termeni": "7fb400e1811407ce2225b46d618da20d9b5a05dac35d7677cc39c07ce9c21021",
+    "/juridic/cookies": "b8275bf4f62e1e4e5872f596402b61d0b3aa40eb6cbd61cdc80226a8121a7e1d",
+    "/juridic/politici-publice": "df79f69aa8269fd5704bbcde85a8566f91b2e79405f7d0e732656af917e57433",
+    "/juridic/licenta-software": "a425c9632723eab593f6acdb15b992fbdc8ce3a8a46239cfe7ca59fd4881cde2",
+    "/juridic/subimputerniciti": "aa42682844d18a62abeca8a7c5e1d15e254d45d7b87235b0c274b218439d5ac7"
+  }
+}

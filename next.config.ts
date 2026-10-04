@@ -5,6 +5,7 @@ import { alegeOperator, operatorComplet } from './src/lib/operator'
 import { VARIABILA_OPERATOR_NUMIT, operatorNumitInMediu } from './src/lib/operator-mediu'
 import { VARIABILA_FAMILIE_JURIDICA, familieJuridica } from './src/content/juridic/familie'
 import { EDITII, VARIABILA_EDITII_PUBLICA, cuNegasitGlobal, editiiDinText, extensiiPagini, origineSite, perechiAlternate, problemeCoerenta, type CodEditie } from './src/lib/editii'
+import { VARIABILA_ASEZARE_PUBLICA, asezareDinText, problemeAsezare, redirectariAsezare } from './src/lib/asezare'
 
 // De ce e `output` conditionat: pe Windows fara drept de legaturi simbolice,
 // `standalone` cade cu EPERM la copierea fisierelor urmarite (masurat 2026-09-05,
@@ -93,6 +94,24 @@ if (EDITII_PUSE_DIN_AFARA !== '' && EDITII_PUSE_DIN_AFARA !== EDITII_PUBLICE) {
   )
 }
 
+// ASEZAREA (`src/lib/asezare.ts`): unde se servesc editiile internationale. Implicitul `md` e asezarea de azi si nu
+// adauga nimic in obiectul de configurare: pe 3s.md si pe site-ul romanesc obiectul ramane cheie cu cheie cel de
+// dinainte (proba `tests/multi-domeniu-operator.test.ts` cere exact cheile `env`). Numai pe `ro` (romana la
+// radacina, engleza sub `/en`) apar cheia `NEXT_PUBLIC_SITE_ASEZARE` in `env`, ca browserul sa traduca la fel ca
+// serverul, si redirectarile permanente ale vechilor adrese `/ro`. O valoare necunoscuta, o asezare `ro` pe alt profil
+// decat `en,ro-MD`, sau o valoare publica pusa din afara si diferita de cea calculata opresc construirea aici.
+const ASEZARE_BUILD = asezareDinText(process.env.SITE_ASEZARE)
+const problemeAsezareBuild = problemeAsezare(ASEZARE_BUILD, EDITII_BUILD)
+if (problemeAsezareBuild.length > 0) throw new Error(problemeAsezareBuild.join(' | '))
+const ASEZARE_PUSA_DIN_AFARA = (process.env[VARIABILA_ASEZARE_PUBLICA] ?? '').trim()
+if (ASEZARE_PUSA_DIN_AFARA !== '' && ASEZARE_PUSA_DIN_AFARA !== ASEZARE_BUILD) {
+  throw new Error(
+    VARIABILA_ASEZARE_PUBLICA + '="' + ASEZARE_PUSA_DIN_AFARA + '" e pusa in mediu, dar asezarea calculata din SITE_ASEZARE e "' + ASEZARE_BUILD +
+      '". Variabila nu se seteaza de mana: o calculeaza next.config.ts. Se sterge din mediu.',
+  )
+}
+const REDIRECTARI_ASEZARE = redirectariAsezare(ASEZARE_BUILD)
+
 const nextConfig: NextConfig = {
   output: standalone ? 'standalone' : undefined,
   pageExtensions: extensiiPagini(EDITII_BUILD),
@@ -122,7 +141,10 @@ const nextConfig: NextConfig = {
     [VARIABILA_OPERATOR_NUMIT]: String(operatorNumitInMediu()),
     [VARIABILA_FAMILIE_JURIDICA]: familieCalculata(),
     ...(EDITII_PUBLICE === 'ro-RO' ? {} : { [VARIABILA_EDITII_PUBLICA]: EDITII_PUBLICE }),
+    ...(ASEZARE_BUILD === 'md' ? {} : { [VARIABILA_ASEZARE_PUBLICA]: ASEZARE_BUILD }),
   },
+  // Redirectarile asezarii (numai pe `ro`; pe `md` cheia nu exista deloc).
+  ...(REDIRECTARI_ASEZARE.length === 0 ? {} : { redirects: async () => REDIRECTARI_ASEZARE }),
   // ANALITICA PROPRIE PE CALE PROPRIE (felia multi-domeniu): cu `UMAMI_URL` si `UMAMI_WEBSITE_ID` in
   // mediu SI cu un operator numit si complet (planul §9: analitica prelucreaza date personale, deci cere
   // operator, ca GA4), `/a/script.js` si `/a/api/send` sunt transmise de serverul site-ului spre instanta de

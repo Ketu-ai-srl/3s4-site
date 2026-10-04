@@ -60,16 +60,20 @@ export const EROU_EN: ContinutErou = {
   // acasa.ts:151.
   nota: "No form, no account.",
   bucla: {
-    // acasa.ts:154, :156.
-    lobStanga: "Upload",
-    lobDreapta: "Store",
-    // acasa.ts:161-164: aceeasi geometrie, etichete neutre din faptele confirmate (intrebarea 6).
+    // Decizia 61 (inlocuieste raspunsul la intrebarea 6): figura din pagina de autentificare a aplicatiei
+    // 3S, cu textele ei in engleza. Aceleasi pozitii si iconite ca pe RO (acasa.ts, blocul buclei).
+    lobStanga: "Intake",
+    lobDreapta: "Archive",
     noduri: [
-      { pozitie: "sus-stanga", eticheta: "files", iconita: "file-text" },
-      { pozitie: "jos-stanga", eticheta: "OCR", iconita: "scan-line" },
-      { pozitie: "sus-dreapta", eticheta: "tag", iconita: "tag" },
-      { pozitie: "jos-dreapta", eticheta: "answer", iconita: "message-square-text" },
+      { pozitie: "sus-stanga", eticheta: "Scan", iconita: "scan-line" },
+      { pozitie: "capat-stanga", eticheta: "OCR text", iconita: "file-text" },
+      { pozitie: "jos-stanga", eticheta: "Upload", iconita: "cloud-upload" },
+      { pozitie: "sus-dreapta", eticheta: "3S classification", iconita: "sparkles" },
+      { pozitie: "capat-dreapta", eticheta: "Search", iconita: "search" },
+      { pozitie: "jos-dreapta", eticheta: "3S chat", iconita: "message-square-text" },
     ],
+    etichetaFigura:
+      "The path a document takes: scanned, read by OCR, uploaded, classified, searchable by meaning, and answerable in chat.",
   },
 };
 

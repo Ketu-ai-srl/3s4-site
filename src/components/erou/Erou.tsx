@@ -3,11 +3,11 @@
 //
 // DOUA STRATURI, deliberat:
 //   - partea de SERVER (fisierul de fata) randeaza tot ce se vede fara JavaScript: coloana de
-//     text, butoanele, bucla desenata cu cometa oprita la 30% din drum, nodurile, centrul,
-//     podeaua, umbra si legenda. Este starea statica a ciotului, cu aceleasi dimensiuni, si e si
-//     starea de miscare redusa (§1.5);
-//   - partea de CLIENT (`ScenaErou`, `PastilaPopover`) o insufleteste dupa montare: punctele si
-//     cometa pe drum, pulsurile, respiratia centrului, popover-ul primei pastile, lansarea machetei
+//     text, butoanele, figura (cele doua inele cu cometele lor, decizia 61), nodurile, centrul,
+//     podeaua, umbra si legenda. Cometele si inelele de puls alearga din CSS, deci si fara
+//     JavaScript; la miscare redusa raman desenate pe loc;
+//   - partea de CLIENT (`ScenaErou`, `PastilaPopover`) o insufleteste dupa montare: oprirea
+//     miscarii cand figura iese din fereastra, respiratia centrului, popover-ul primei pastile, lansarea machetei
 //     (descarcata separat, dupa prima pictura) si foile zburatoare. Iconitele si sigla se randeaza
 //     AICI si ajung la client ca elemente gata facute, ca pachetul paginii sa nu duca harta de
 //     iconite.
@@ -21,9 +21,9 @@
 //     HTML oricum, ascuns, ca afirmatiile lui sa se citeasca si fara JavaScript;
 //   - pastilele au minimum 11 px sub 768 (la referinta 9,6), etichetele lobilor sunt `gri-meta`
 //     (4,83:1), nu #b6bdc9 (1,89:1), fiindca sunt text;
-//   - pe scena ingusta nimic nu mai e acoperit de centru, de pastila lui sau de discuri (defect al
-//     referintei la 390, §1.7): etichetele nodurilor trec langa disc, pastila coboara sub discurile
-//     de jos, etichetele lobilor se muta in partea libera a lobului; forma buclei ramane aceeasi;
+//   - pe scena ingusta nimic nu e acoperit de centru, de pastila lui sau de discuri: centrul se
+//     micsoreaza, iar pastila coboara sub etichetele nodurilor de jos (Erou.module.css); forma
+//     figurii ramane aceeasi;
 //   - popover-ul se inchide si cu Escape si nu iese din fereastra la 390 (§1.6.2, §1.7).
 
 import { Fragment, type ReactNode } from "react";
@@ -33,19 +33,27 @@ import Buton from "@/components/primitive/Buton";
 import Iconita from "@/components/primitive/Iconita";
 import Sigla from "@/components/primitive/Sigla";
 import Tinta from "@/components/primitive/Tinta";
-import { CAP_COMETA_STATIC, DRUM_BUCLA, FRACTII_NODURI, INALTIME_SCENA, LATIME_SCENA, liniutaCometa, punctLaFractie } from "./geometrie";
+import {
+  INALTIME_SCENA,
+  INELE,
+  INEL_INTERIOR,
+  LATIME_SCENA,
+  ORDINE_INELE,
+  PARTE_CAP,
+  PARTE_URMA,
+  RAZA_INEL,
+  Y_INELE,
+  intarziereNod,
+  intarziereUrma,
+  procente,
+  punctNod,
+  secunde,
+  type PozitieNod,
+} from "./geometrie";
 import PastilaPopover from "./PastilaPopover";
 import ScenaErou from "./ScenaErou";
 import s from "./Erou.module.css";
 
-/** Pozitia unui nod pe scena, in procente, din fractia lui pe drum (§1.4.5). */
-function pozitieNod(fractie: number): { left: string; top: string } {
-  const p = punctLaFractie(fractie);
-  return {
-    left: ((p.x / LATIME_SCENA) * 100).toFixed(2) + "%",
-    top: ((p.y / INALTIME_SCENA) * 100).toFixed(2) + "%",
-  };
-}
 
 /** Coloana din legenda: desen propriu (capitel, fus cu trei caneluri, baza in doua trepte). */
 function Coloana({ className }: { className: string }) {
@@ -89,7 +97,9 @@ export type ContinutErou = {
   bucla: {
     lobStanga: string;
     lobDreapta: string;
-    noduri: { pozitie: keyof typeof FRACTII_NODURI; eticheta: string; iconita: NumeIconita }[];
+    noduri: { pozitie: PozitieNod; eticheta: string; iconita: NumeIconita }[];
+    /** Eticheta accesibila a figurii (decizia 61: cea a platformei, pe limba editiei). */
+    etichetaFigura?: string;
     /** Eticheta si pastila centrului; fara ele, centrul arata numai sigla. */
     centru?: { eticheta: string; pastila: string };
     legenda?: string;
@@ -106,20 +116,47 @@ export type ErouProps = {
 
 export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
   const e = continut;
-  const cometa = liniutaCometa(CAP_COMETA_STATIC);
-
+  // Figura (decizia 61): doua inele, fiecare cu inelul interior al pistei, urma lunga si capul. Urmele
+  // alearga din CSS, cu intarzierea fiecareia scrisa aici; fara animatie (miscare redusa) raman
+  // desenate la pornirea turului. Pentru cititoarele de ecran figura e o singura imagine, cu eticheta
+  // editiei; lobii si nodurile sunt ascunse lor (aria-hidden), ca sa nu fie citite cuvant cu cuvant.
   const desen = (
-    <svg key="desen" className={s.desen} viewBox={"0 0 " + LATIME_SCENA + " " + INALTIME_SCENA} focusable="false" aria-hidden="true">
-      <path d={DRUM_BUCLA} className={s.fantoma} transform="translate(320 226) scale(0.99) translate(-320 -210)" />
-      <path d={DRUM_BUCLA} className={s.halou} />
-      <path d={DRUM_BUCLA} className={s.baza} />
-      <path
-        d={DRUM_BUCLA}
-        className={s.cometa}
-        data-cometa=""
-        strokeDasharray={cometa.dasharray}
-        strokeDashoffset={cometa.dashoffset.toFixed(2)}
-      />
+    <svg
+      key="desen"
+      className={s.desen}
+      viewBox={"0 0 " + LATIME_SCENA + " " + INALTIME_SCENA}
+      focusable="false"
+      {...(e.bucla.etichetaFigura ? { role: "img", "aria-label": e.bucla.etichetaFigura } : { "aria-hidden": true })}
+    >
+      {ORDINE_INELE.map((nume) => {
+        const inel = INELE[nume];
+        return (
+          <g key={nume} data-inel-figura={nume}>
+            <circle cx={inel.cx} cy={Y_INELE} r={RAZA_INEL} className={s.pista} />
+            <circle cx={inel.cx + INEL_INTERIOR.dx} cy={Y_INELE + INEL_INTERIOR.dy} r={INEL_INTERIOR.raza} className={s.pistaInterioara} />
+            <circle
+              cx={inel.cx}
+              cy={Y_INELE}
+              r={RAZA_INEL}
+              pathLength={1}
+              strokeDasharray={PARTE_URMA + " " + (1 - PARTE_URMA)}
+              className={s.urma}
+              data-urma=""
+              style={{ animationDelay: secunde(intarziereUrma(nume, false)), animationDirection: inel.sens }}
+            />
+            <circle
+              cx={inel.cx}
+              cy={Y_INELE}
+              r={RAZA_INEL}
+              pathLength={1}
+              strokeDasharray={PARTE_CAP + " " + (1 - PARTE_CAP)}
+              className={s.capUrma}
+              data-cometa=""
+              style={{ animationDelay: secunde(intarziereUrma(nume, true)), animationDirection: inel.sens }}
+            />
+          </g>
+        );
+      })}
     </svg>
   );
 
@@ -128,13 +165,13 @@ export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
   // (fara ele: avertismentul "Each child in a list should have a unique key", masurat).
   const suprapuneri = (
     <Fragment key="suprapuneri">
-      <span key="lob-stanga" className={s.lob + " " + s.lobStanga} aria-hidden="true">
-        <span className={s.lobText} data-eticheta-lob="">
+      <span key="lob-stanga" className={s.lob} style={procente({ x: INELE.preluare.cx, y: Y_INELE })} aria-hidden="true">
+        <span data-eticheta-lob="">
           {e.bucla.lobStanga}
         </span>
       </span>
-      <span key="lob-dreapta" className={s.lob + " " + s.lobDreapta} aria-hidden="true">
-        <span className={s.lobText} data-eticheta-lob="">
+      <span key="lob-dreapta" className={s.lob} style={procente({ x: INELE.arhiva.cx, y: Y_INELE })} aria-hidden="true">
+        <span data-eticheta-lob="">
           {e.bucla.lobDreapta}
         </span>
       </span>
@@ -143,11 +180,12 @@ export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
           key={n.pozitie}
           className={s.nod}
           data-pozitie={n.pozitie}
-          style={pozitieNod(FRACTII_NODURI[n.pozitie])}
+          style={procente(punctNod(n.pozitie))}
           aria-hidden="true"
         >
           <span className={s.disc} data-nod={n.pozitie}>
-            <Iconita nume={n.iconita} marime={16} contur={1.8} />
+            <Iconita nume={n.iconita} marime={20} contur={1.5} />
+            <span className={s.inelNod} data-inel-puls="" style={{ animationDelay: secunde(intarziereNod(n.pozitie)) }} />
           </span>
           <span className={s.eticheta} data-eticheta-nod="">
             {n.eticheta}
@@ -234,7 +272,7 @@ export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
               desen={desen}
               suprapuneri={suprapuneri}
               legenda={legenda}
-              sigla={<Sigla key="sigla" forma="marca" inaltime={40} alt="" />}
+              sigla={<Sigla key="sigla" forma="marca" inaltime={44} alt="" />}
               sageata={<Iconita key="sageata" nume="arrow-right" marime={12} contur={2.4} />}
               {...(e.bucla.centru ? { etichetaCentru: e.bucla.centru.eticheta, pastilaCentru: e.bucla.centru.pastila } : {})}
               {...(lansare === false ? { lansare } : {})}

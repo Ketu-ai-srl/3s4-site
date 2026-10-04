@@ -1,211 +1,132 @@
-// Geometria si ceasul buclei din erou (acasa-erou.md §1.4.3-§1.5), ca functii pure: se probeaza
-// fara navigator (`tests/erou.test.ts`) si le foloseste aceeasi bucla de animatie din pagina, deci
-// proba si pagina nu pot drifta una fata de alta.
+// Toate cifrele figurii din erou stau aici, in functii fara efecte: `tests/erou.test.ts` le verifica
+// direct, iar `Erou.tsx` (desenul randat pe server) si `ScenaErou.tsx` (pulsurile centrului) le
+// importa. O schimbare de geometrie se face deci intr-un singur loc.
 //
-// Unitatile sunt ale scenei (viewBox 640 x 420). Timpul e in milisecunde de la primul cadru.
+// Ce arata figura (decizia 61): un document intra pe inelul din stanga, "preluarea" (scanare, text
+// OCR, incarcare), trece prin sigla din mijloc si iese pe inelul din dreapta, "arhiva" (clasificare
+// AI, cautare, chat AI). Pe fiecare inel se roteste o cometa, cu perioada de 14 s; cand cometa ajunge
+// la un nod, nodul pulseaza, iar sigla pulseaza o data pentru fiecare cometa.
+//
+// Rotirea o face CSS-ul (`Erou.module.css`), pe `stroke-dashoffset`; cercurile au `pathLength="1"`,
+// asa ca lungimile de mai jos sunt fractiuni de tur, oricare ar fi raza. Codul de aici calculeaza
+// numai momentele de pornire ale pulsurilor.
+//
+// Conventii: unitatile sunt cele ale viewBox-ului (640 x 420); unghiul 0 e la dreapta centrului si
+// creste spre jos (orar), la fel ca punctul de start al unui <circle>. Asa, unghiul / 360 da direct
+// fractiunea de tur parcursa de la start.
 
 export type Punct = { x: number; y: number };
-type Bezier = readonly [Punct, Punct, Punct, Punct];
 
-/** Scena SVG, in unitati (acasa-erou.md §1.4.1). */
+/** Scena SVG, in unitati. */
 export const LATIME_SCENA = 640;
 export const INALTIME_SCENA = 420;
 
+/** Raza celor doua inele si linia mijloacelor lor. */
+export const RAZA_INEL = 121;
+export const Y_INELE = 210;
+
+/** Al doilea cerc, mai mic si mutat cu cativa pasi: impreuna cu primul da pistei grosime de banda. */
+export const INEL_INTERIOR = { dx: 4, dy: -5, raza: RAZA_INEL - 10 } as const;
+
+/** Durata unui tur, in secunde; aceeasi valoare (14s) e scrisa in Erou.module.css la `tur-figura` si `puls-inel`. */
+export const TUR_S = 14;
+
+/** Urma: 22% din tur. Capul: o liniuta de 1%, care o conduce cu 0,5% din tur. */
+export const PARTE_URMA = 0.22;
+export const PARTE_CAP = 0.01;
+export const AVANS_CAP = 0.005;
+
+export type NumeInel = "preluare" | "arhiva";
+export type SensInel = "normal" | "reverse";
+
 /**
- * Drumul: un "8" culcat din 4 curbe Bezier cubice, parcurs centru -> sus-stanga -> capatul stang ->
- * jos-stanga -> centru -> sus-dreapta -> capatul drept -> jos-dreapta -> centru (§1.4.3).
+ * Pentru fiecare inel: abscisa centrului, sensul rotirii si decalajul de start (secunde). Sensurile sunt
+ * alese dupa ordinea din `ORDINE_NODURI` (tests/erou.test.ts o verifica); decalajul arhivei impiedica
+ * cele doua comete sa se miste simetric.
  */
-const SEGMENTE: readonly Bezier[] = [
-  [
-    { x: 320, y: 210 },
-    { x: 320, y: 70 },
-    { x: 90, y: 70 },
-    { x: 90, y: 210 },
-  ],
-  [
-    { x: 90, y: 210 },
-    { x: 90, y: 350 },
-    { x: 320, y: 350 },
-    { x: 320, y: 210 },
-  ],
-  [
-    { x: 320, y: 210 },
-    { x: 320, y: 70 },
-    { x: 550, y: 70 },
-    { x: 550, y: 210 },
-  ],
-  [
-    { x: 550, y: 210 },
-    { x: 550, y: 350 },
-    { x: 320, y: 350 },
-    { x: 320, y: 210 },
-  ],
-];
-
-/** Acelasi drum, ca atribut `d`. */
-export const DRUM_BUCLA =
-  "M320 210C320 70 90 70 90 210C90 350 320 350 320 210C320 70 550 70 550 210C550 350 320 350 320 210";
-
-/** Lungimea masurata pe referinta cu `getTotalLength` (§1.4.3). Proba o compara cu cea calculata. */
-export const LUNGIME_BUCLA = 1396.34;
-
-/** Perioada ciclului, liniara (§1.5: 12 000 ms, regresie pe 757 de esantioane). */
-export const PERIOADA_MS = 12000;
-
-/** Arcul cometei: 10% din lungime (§1.4.4). */
-export const ARC_COMETA = 0.1;
-
-/** La miscare redusa cometa sta cu capul la 30% din drum (§1.5). */
-export const CAP_COMETA_STATIC = 0.3;
-
-/** Cele trei cercuri ale unui grup: raza (unitati) si decalajul fata de cap, in fractii (§1.4.4). */
-export const CERCURI_GRUP = [
-  { raza: 4.2, decalaj: 0, clasa: "cap" },
-  { raza: 3.2, decalaj: -0.014, clasa: "mijloc" },
-  { raza: 2.4, decalaj: -0.028, clasa: "coada" },
-] as const;
-
-/** Trei grupuri, defazate cu o treime din ciclu; cometa e legata de grupul 0. */
-export const GRUPURI = 3;
-
-export type PozitieNod = "sus-stanga" | "jos-stanga" | "sus-dreapta" | "jos-dreapta";
-
-/** Nodurile stau pe drum la aceste fractii din lungime (§1.4.5). */
-export const FRACTII_NODURI: Record<PozitieNod, number> = {
-  "sus-stanga": 0.12,
-  "jos-stanga": 0.38,
-  "sus-dreapta": 0.62,
-  "jos-dreapta": 0.88,
+export const INELE: Record<NumeInel, { cx: number; sens: SensInel; pornire: number }> = {
+  preluare: { cx: 194, sens: "reverse", pornire: 0 },
+  arhiva: { cx: 446, sens: "normal", pornire: -4.7 },
 };
 
-/** Centrul e atins de doua ori pe tur: la 0 si la 0,5. */
-export const FRACTII_CENTRU = [0, 0.5] as const;
+export const ORDINE_INELE: readonly NumeInel[] = ["preluare", "arhiva"];
 
-/**
- * Fereastra pulsului: +-0,004 din ciclu (+-48 ms). Referinta reaplica clasa la fiecare cadru din
- * fereastra, deci inelul porneste efectiv la IESIREA din ea; aici porneste direct acolo.
- */
-export const FEREASTRA_PULS = 0.004;
+export type PozitieNod = "sus-stanga" | "capat-stanga" | "jos-stanga" | "sus-dreapta" | "capat-dreapta" | "jos-dreapta";
 
-export type TintaPuls = PozitieNod | "centru";
+/** Cele sase noduri: inelul si unghiul fiecaruia. */
+export const NODURI: Record<PozitieNod, { inel: NumeInel; unghi: number }> = {
+  "sus-stanga": { inel: "preluare", unghi: 270 },
+  "capat-stanga": { inel: "preluare", unghi: 180 },
+  "jos-stanga": { inel: "preluare", unghi: 90 },
+  "sus-dreapta": { inel: "arhiva", unghi: 270 },
+  "capat-dreapta": { inel: "arhiva", unghi: 0 },
+  "jos-dreapta": { inel: "arhiva", unghi: 90 },
+};
 
-function punctBezier(b: Bezier, t: number): Punct {
-  const u = 1 - t;
-  const a = u * u * u;
-  const c = 3 * u * u * t;
-  const d = 3 * u * t * t;
-  const e = t * t * t;
+/** Ordinea drumului, de la intrare la raspuns. */
+export const ORDINE_NODURI: readonly PozitieNod[] = ["sus-stanga", "capat-stanga", "jos-stanga", "sus-dreapta", "capat-dreapta", "jos-dreapta"];
+
+const radiani = (grade: number) => (grade * Math.PI) / 180;
+
+/** Punctul de pe inel aflat la unghiul dat. */
+export function punctPeInel(inel: NumeInel, unghi: number): Punct {
   return {
-    x: a * b[0].x + c * b[1].x + d * b[2].x + e * b[3].x,
-    y: a * b[0].y + c * b[1].y + d * b[2].y + e * b[3].y,
+    x: INELE[inel].cx + RAZA_INEL * Math.cos(radiani(unghi)),
+    y: Y_INELE + RAZA_INEL * Math.sin(radiani(unghi)),
   };
 }
 
-/** Pasi de esantionare pe segment; eroarea de lungime scade sub 0,01 u (proba o masoara). */
-const PASI_SEGMENT = 512;
-
-type Tabel = { puncte: Punct[]; cumulat: number[]; lungime: number };
-
-function construiesteTabel(): Tabel {
-  const puncte: Punct[] = [SEGMENTE[0][0]];
-  const cumulat: number[] = [0];
-  let total = 0;
-  for (const segment of SEGMENTE) {
-    let anterior = segment[0];
-    for (let i = 1; i <= PASI_SEGMENT; i++) {
-      const p = punctBezier(segment, i / PASI_SEGMENT);
-      total += Math.hypot(p.x - anterior.x, p.y - anterior.y);
-      puncte.push(p);
-      cumulat.push(total);
-      anterior = p;
-    }
-  }
-  return { puncte, cumulat, lungime: total };
+/** Punctul nodului, pe inelul lui. */
+export function punctNod(pozitie: PozitieNod): Punct {
+  const n = NODURI[pozitie];
+  return punctPeInel(n.inel, n.unghi);
 }
 
-let tabel: Tabel | null = null;
-
-function tabelul(): Tabel {
-  if (tabel === null) tabel = construiesteTabel();
-  return tabel;
-}
-
-/** Lungimea drumului, calculata prin integrare numerica (se compara cu `LUNGIME_BUCLA`). */
-export function lungimeCalculata(): number {
-  return tabelul().lungime;
-}
-
-/** Fractia adusa in [0, 1). */
-export function normalizeaza(f: number): number {
-  const r = f % 1;
-  return r < 0 ? r + 1 : r;
-}
-
-/** Punctul de pe drum aflat la fractia `f` din lungime (parametrizare dupa lungimea arcului). */
-export function punctLaFractie(f: number): Punct {
-  const { puncte, cumulat, lungime } = tabelul();
-  const tinta = normalizeaza(f) * lungime;
-  let jos = 0;
-  let sus = cumulat.length - 1;
-  while (sus - jos > 1) {
-    const mijloc = (jos + sus) >> 1;
-    if (cumulat[mijloc] <= tinta) jos = mijloc;
-    else sus = mijloc;
-  }
-  const bucata = cumulat[sus] - cumulat[jos];
-  const k = bucata > 0 ? (tinta - cumulat[jos]) / bucata : 0;
+/** Pozitia unui punct al scenei, in procente din latimea si inaltimea ei (suprapunerile HTML). */
+export function procente(p: Punct): { left: string; top: string } {
   return {
-    x: puncte[jos].x + (puncte[sus].x - puncte[jos].x) * k,
-    y: puncte[jos].y + (puncte[sus].y - puncte[jos].y) * k,
+    left: ((p.x / LATIME_SCENA) * 100).toFixed(2) + "%",
+    top: ((p.y / INALTIME_SCENA) * 100).toFixed(2) + "%",
   };
 }
 
-/** Capetele celor trei grupuri la momentul `t` (ms de la primul cadru), in fractii. */
-export function capete(t: number): number[] {
-  const baza = t / PERIOADA_MS;
-  return Array.from({ length: GRUPURI }, (_, g) => normalizeaza(baza + g / GRUPURI));
+/**
+ * Cu cate secunde e decalata animatia capului fata de cea a urmei. Liniuta urmei incepe la offset 0 si
+ * se intinde PARTE_URMA din tur; capul trebuie sa stea la marginea ei din fata, iar marginea din fata
+ * e la offset 0 cand rotirea e inversa si la PARTE_URMA cand e normala. Proba din tests/erou.test.ts
+ * fixeaza ambele ramuri.
+ */
+export function fazaCap(sens: SensInel): number {
+  return sens === "reverse" ? -AVANS_CAP * TUR_S : -(PARTE_URMA - AVANS_CAP) * TUR_S;
 }
 
-/** Liniuta cometei cu capul la fractia `cap`: arcul de 10% din spatele capului. */
-export function liniutaCometa(cap: number, lungime = LUNGIME_BUCLA): { dasharray: string; dashoffset: number } {
-  const arc = ARC_COMETA * lungime;
-  return {
-    dasharray: arc.toFixed(2) + " " + (lungime - arc).toFixed(2),
-    dashoffset: -(normalizeaza(cap) - ARC_COMETA) * lungime,
-  };
+/** Intarzierea animatiei unei urme (`cap`: liniuta scurta; altfel urma lunga). */
+export function intarziereUrma(inel: NumeInel, cap: boolean): number {
+  const i = INELE[inel];
+  return cap ? i.pornire + fazaCap(i.sens) : i.pornire;
 }
 
-type Programare = { tinta: TintaPuls; perioada: number; faza: number };
+/** Secunda (fata de start) la care capul cometei de pe inel trece prin unghiul dat. */
+export function sosireCap(inel: NumeInel, unghi: number): number {
+  const i = INELE[inel];
+  const parte = unghi / 360;
+  const parcurs = i.sens === "reverse" ? 1 - parte : parte;
+  return i.pornire + fazaCap(i.sens) + TUR_S * parcurs;
+}
+
+/** Pornirea pulsului unui nod = secunda la care cometa inelului lui ajunge in dreptul nodului. */
+export function intarziereNod(pozitie: PozitieNod): number {
+  const n = NODURI[pozitie];
+  return sosireCap(n.inel, n.unghi);
+}
 
 /**
- * Programul pulsurilor: fiecare nod pulseaza o data la 4000 ms (trei capete, defazate cu 4000),
- * centrul o data la 2000 (atins de doua ori pe tur). `faza` = momentul iesirii din fereastra.
+ * Pulsurile siglei: sigla sta intre inele, deci o cometa ii trece prin dreptul cand e in punctul cel
+ * mai apropiat de mijlocul scenei (unghiul 0 pe preluare, 180 pe arhiva). Doua comete, doua pulsuri.
  */
-export const PROGRAM_PULSURI: readonly Programare[] = [
-  ...(Object.keys(FRACTII_NODURI) as PozitieNod[]).map((tinta) => ({
-    tinta,
-    perioada: PERIOADA_MS / GRUPURI,
-    faza: ((FRACTII_NODURI[tinta] + FEREASTRA_PULS) * PERIOADA_MS) % (PERIOADA_MS / GRUPURI),
-  })),
-  {
-    tinta: "centru",
-    perioada: PERIOADA_MS / GRUPURI / 2,
-    faza: (FEREASTRA_PULS * PERIOADA_MS) % (PERIOADA_MS / GRUPURI / 2),
-  },
-];
+export const INTARZIERI_CENTRU: readonly number[] = [sosireCap("preluare", 0), sosireCap("arhiva", 180)];
 
-/**
- * Pulsurile de pornit intre doua cadre (`anterior` exclus, `acum` inclus). Dupa o pauza lunga
- * (fila ascunsa, bucla in afara ferestrei) nu se pornesc pulsuri de recuperare: punctele sar la
- * pozitia la care ar fi ajuns, iar inelele raman doar pentru trecerile vazute.
- */
-export function pulsuriIntre(anterior: number, acum: number, pauzaMaxima = 250): TintaPuls[] {
-  if (!(acum > anterior) || acum - anterior > pauzaMaxima) return [];
-  const rezultat: TintaPuls[] = [];
-  for (const p of PROGRAM_PULSURI) {
-    const inainte = Math.floor((anterior - p.faza) / p.perioada);
-    const dupa = Math.floor((acum - p.faza) / p.perioada);
-    if (dupa > inainte) rezultat.push(p.tinta);
-  }
-  return rezultat;
+/** Secundele, scrise cum le cere `animation-delay` (doua zecimale, fara zerouri de prisos). */
+export function secunde(s: number): string {
+  return Number(s.toFixed(2)) + "s";
 }

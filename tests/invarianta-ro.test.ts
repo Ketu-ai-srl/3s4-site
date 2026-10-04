@@ -32,6 +32,14 @@ import { PAGINI_MARTOR, normalizeaza } from './fixturi/invarianta-ro/normalizeaz
  * dinainte (39 de pagini-martor, harta si lista HTML neschimbate): build-ul RO al probelor nu are `CANALE_JSON`, deci
  * nici numar, nici WhatsApp, nici legatura de apel de scos. Garda deciziei pe build-ul RO e `tests/fara-apel-gsm.test.ts`.
  *
+ * DECIZIA 61 (04.10.2026, scena eroului dupa figura din pagina de autentificare a aplicatiei 3S, pe toate editiile,
+ * inclusiv ro-RO): figura startului are acum doua inele, sase noduri cu textele aplicatiei (Scanare, Text OCR,
+ * Încărcare; Clasificare 3S, Căutare, Chat 3S (decizia 63)), lobii Preluare / Arhivă si eticheta accesibila a figurii. Fixturile au
+ * fost refacute cu `genereaza.mjs` pe build-ul RO al feliei care a facut schimbarea; inainte de refacere proba a picat
+ * numai pe pagina-martor `/` (54 din 55 de cazuri verzi), iar dupa refacere s-a schimbat un singur fisier,
+ * `pagini/index.html` (harta, lista HTML si celelalte 38 de pagini-martor neschimbate). Garda figurii pe fiecare editie
+ * e `tests/scena-platforma.test.ts`.
+ *
  * Proba citeste build-ul din `.next`: in CI ruleaza dupa `pnpm build` (`pnpm verifica`). Fara build, sau cu un
  * build care nu e cel romanesc, iese rosie cu motivul, nu verde.
  */

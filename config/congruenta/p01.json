@@ -51,14 +51,6 @@
     },
     {
       "tip": "camp",
-      "selector": "[data-eticheta-nod]",
-      "ro": 4,
-      "en": 4,
-      "cod": "poarta-juridica-40-41",
-      "motiv": "Erou: nodurile 'originale' si 'digitizare' isi schimba eticheta, nu numarul (geometria buclei are 4 pozitii)."
-    },
-    {
-      "tip": "camp",
       "selector": "p[class*=\"Erou_legenda__\"]",
       "ro": 1,
       "en": 0,

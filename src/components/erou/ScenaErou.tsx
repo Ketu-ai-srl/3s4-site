@@ -1,40 +1,31 @@
 "use client";
 
-// Scena din dreapta eroului (acasa-erou.md §1.4-§1.6.3): bucla insufletita si lansarea machetei.
+// Scena din dreapta eroului (acasa-erou.md §1.6; figura dupa decizia 61): figura drumului unui
+// document si lansarea machetei.
 //
-// Ce vine de la server, gata randat (`Erou.tsx`): desenul SVG al drumului (cometa in starea ei
-// statica), etichetele lobilor, nodurile cu iconitele lor, legenda si sigla. Aici se adauga numai
-// ce cere JavaScript:
-//   - punctele (3 grupuri a cate 3 cercuri) si cometa care alearga pe drum, cu perioada de
-//     12 000 ms, liniar; pozitia se calculeaza din timpul scurs de la primul cadru, deci dupa o
-//     pauza (fila ascunsa, bucla in afara ferestrei) punctele sar unde ar fi ajuns (§1.5);
-//   - pulsurile nodurilor (700 ms) si ale centrului (800 ms), la iesirea capetelor din fereastra
-//     de +-0,004 din ciclu;
+// Ce vine de la server, gata randat (`Erou.tsx`): desenul SVG al celor doua inele, cu cometele lor,
+// etichetele lobilor, nodurile cu iconitele si inelele lor de puls, legenda si sigla. Cometele si
+// inelele de puls alearga din CSS, intr-un tur de 14 s, cu intarzierile calculate in `geometrie.ts`,
+// deci figura se misca si fara JavaScript. Aici se adauga numai ce cere JavaScript:
+//   - miscarea se opreste cat figura e in afara ferestrei (prag 0,15) sau fila e ascunsa
+//     (`data-oprit`), ca desenul sa nu se repicteze degeaba; la intoarcere continua de unde a ramas;
+//   - centrul are cate un inel de puls pentru fiecare cometa care trece pe langa el;
 //   - centrul devine buton: respira (3000 ms) si lanseaza macheta la clic (§1.6.3);
 //   - macheta se incarca lenes, in timpul liber al navigatorului de dupa prima pictura (sau mai
 //     devreme, la mouse ori focus pe centru), ca pe drumul primei picturi sa nu intre nimic din ea.
 //
-// La `prefers-reduced-motion: reduce` bucla ramane cea statica (cometa la 30%, fara puncte, fara
-// respiratie); macheta se deschide direct pe prima scena (§1.6.4).
+// La `prefers-reduced-motion: reduce` figura ramane desenata, fara miscare si fara pulsuri, iar
+// centrul nu respira; macheta se deschide direct pe prima scena (§1.6.4).
 //
 // FARA LANSARE (`lansare === false`, pe o editie care nu arata macheta): centrul ramane element
-// simplu si dupa montare, deci nu e buton, si macheta nu se descarca deloc (nici in timpul liber,
-// nici la mouse ori focus). Bucla, punctele si pulsurile raman. Pe RO proprietatea lipseste.
+// simplu si dupa montare, deci nu e buton, nu respira, si macheta nu se descarca deloc (nici in
+// timpul liber, nici la mouse ori focus). Figura si pulsurile raman. Pe RO proprietatea lipseste.
+// Starea se scrie si pe server, ca `data-fara-lansare` pe spatiu: butonul centrului apare abia dupa
+// montare, deci HTML-ul de pe server nu-l are pe nicio editie, iar atributul e martorul care se vede
+// fara navigator. Absenta butonului dupa hidratare o pazeste proba de browser a startului EN.
 
 import { useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
-import {
-  CAP_COMETA_STATIC,
-  CERCURI_GRUP,
-  GRUPURI,
-  INALTIME_SCENA,
-  LATIME_SCENA,
-  PERIOADA_MS,
-  capete,
-  liniutaCometa,
-  punctLaFractie,
-  pulsuriIntre,
-  type TintaPuls,
-} from "./geometrie";
+import { INTARZIERI_CENTRU, secunde } from "./geometrie";
 import { useMiscareRedusa, useMontat } from "./hooks";
 import type { MachetaProps } from "./Macheta";
 import s from "./Erou.module.css";
@@ -91,14 +82,6 @@ export type ScenaErouProps = {
   lansare?: boolean;
 };
 
-/** Reporneste animatia unui inel: scoate clasa, forteaza calculul stilului, o pune la loc. */
-function reportestePuls(el: Element | null, clasa: string) {
-  if (!el) return;
-  el.classList.remove(clasa);
-  void (el as HTMLElement).offsetWidth;
-  el.classList.add(clasa);
-}
-
 export default function ScenaErou({
   desen,
   suprapuneri,
@@ -116,11 +99,8 @@ export default function ScenaErou({
   const spatiuRef = useRef<HTMLDivElement>(null);
   const scenaRef = useRef<HTMLDivElement>(null);
   const centruRef = useRef<HTMLButtonElement>(null);
-  /** Centrul ca element simplu, cand nu e buton: tinta pulsurilor fara lansare. */
-  const centruSimpluRef = useRef<HTMLSpanElement>(null);
-  const puncteRef = useRef<SVGGElement>(null);
-  /** Momentul primului cadru: ciclul continua din el si dupa intoarcerea din macheta. */
-  const inceputRef = useRef<number | null>(null);
+  /** `true` cat figura e in afara ferestrei sau fila e ascunsa: miscarea CSS sta pe loc. */
+  const [oprit, setOprit] = useState(false);
   /** Dupa intoarcerea din macheta focusul revine pe centru; `null` = nu e nimic de intors. */
   const revinePeCentru = useRef<{ tastatura: boolean } | null>(null);
   /** Componenta machetei, cand modulul ei e deja in memorie. */
@@ -128,91 +108,29 @@ export default function ScenaErou({
 
   const animat = montat && !redus && faza !== "macheta";
 
-  // Bucla de animatie: ruleaza numai cat scena e in fereastra (prag 0,15) si fila e vizibila.
+  // Miscarea figurii e CSS si porneste singura; aici numai se opreste cat figura nu se vede (in afara
+  // ferestrei, prag 0,15, sau fila ascunsa) si cat se vede macheta, ca desenul sa nu se repicteze
+  // degeaba. Animatiile oprite isi pastreaza pozitia: la intoarcere continua de unde au ramas.
   useEffect(() => {
     if (!animat) return;
     const scena = scenaRef.current;
-    const grupuri = puncteRef.current;
-    if (!scena || !grupuri) return;
-    const cometa = scena.querySelector<SVGPathElement>("[data-cometa]");
-    const cercuri = Array.from(grupuri.querySelectorAll<SVGCircleElement>("circle"));
-    const tinte: Record<TintaPuls, Element | null> = {
-      "sus-stanga": scena.querySelector('[data-nod="sus-stanga"]'),
-      "jos-stanga": scena.querySelector('[data-nod="jos-stanga"]'),
-      "sus-dreapta": scena.querySelector('[data-nod="sus-dreapta"]'),
-      "jos-dreapta": scena.querySelector('[data-nod="jos-dreapta"]'),
-      centru: centruRef.current ?? centruSimpluRef.current,
-    };
-
-    let cadru = 0;
+    if (!scena) return;
     let vizibil = true;
-    let anterior = -1;
-
-    const deseneaza = (acum: number) => {
-      // Primul cadru porneste cu capul cometei exact unde il lasa starea statica (30% din drum),
-      // ca hidratarea sa nu faca cometa sa sara. Ordinea pulsurilor din ciclu ramane aceeasi.
-      if (inceputRef.current === null) inceputRef.current = acum - CAP_COMETA_STATIC * PERIOADA_MS;
-      const t = acum - inceputRef.current;
-      const cap = capete(t);
-      if (cometa) {
-        const l = liniutaCometa(cap[0]);
-        cometa.setAttribute("stroke-dasharray", l.dasharray);
-        cometa.setAttribute("stroke-dashoffset", l.dashoffset.toFixed(2));
-      }
-      for (let g = 0; g < GRUPURI; g++) {
-        CERCURI_GRUP.forEach((c, i) => {
-          const p = punctLaFractie(cap[g] + c.decalaj);
-          const cerc = cercuri[g * CERCURI_GRUP.length + i];
-          if (cerc) {
-            cerc.setAttribute("cx", p.x.toFixed(2));
-            cerc.setAttribute("cy", p.y.toFixed(2));
-          }
-        });
-      }
-      if (anterior >= 0) {
-        for (const tinta of pulsuriIntre(anterior, t)) {
-          reportestePuls(tinte[tinta], tinta === "centru" ? s.centruPuls : s.discPuls);
-        }
-      }
-      anterior = t;
-      cadru = requestAnimationFrame(deseneaza);
-    };
-
-    const porneste = () => {
-      if (cadru === 0 && vizibil && document.visibilityState === "visible") {
-        anterior = -1;
-        cadru = requestAnimationFrame(deseneaza);
-      }
-    };
-    const opreste = () => {
-      if (cadru !== 0) cancelAnimationFrame(cadru);
-      cadru = 0;
-    };
-
+    const actualizeaza = () => setOprit(!(vizibil && document.visibilityState === "visible"));
     const observator = new IntersectionObserver(
       (intrari) => {
         vizibil = intrari[intrari.length - 1].isIntersecting;
-        if (vizibil) porneste();
-        else opreste();
+        actualizeaza();
       },
       { threshold: 0.15 },
     );
     observator.observe(scena);
-    const laSchimbareFila = () => (document.visibilityState === "visible" ? porneste() : opreste());
-    document.addEventListener("visibilitychange", laSchimbareFila);
-    porneste();
-
+    document.addEventListener("visibilitychange", actualizeaza);
+    actualizeaza();
     return () => {
-      opreste();
       observator.disconnect();
-      document.removeEventListener("visibilitychange", laSchimbareFila);
-      // Daca animatia se opreste cu bucla inca in pagina (omul a cerut miscare redusa din sistem),
-      // cometa revine in starea statica, nu ramane unde a prins-o oprirea.
-      if (cometa) {
-        const l = liniutaCometa(CAP_COMETA_STATIC);
-        cometa.setAttribute("stroke-dasharray", l.dasharray);
-        cometa.setAttribute("stroke-dashoffset", l.dashoffset.toFixed(2));
-      }
+      document.removeEventListener("visibilitychange", actualizeaza);
+      setOprit(false);
     };
   }, [animat]);
 
@@ -281,9 +199,14 @@ export default function ScenaErou({
     void incarcaMacheta().then((c) => setMacheta(() => c), faraEroare);
   }, []);
 
+  // Pulsurile siglei, cate unul per cometa, pornite la secundele din INTARZIERI_CENTRU (geometrie.ts).
+  // Sunt decor, ascunse cititoarelor de ecran; la miscare redusa CSS-ul le opreste, deci nu se vad.
   const continutCentru = (
     <>
-      {sigla}
+      <span className={s.centruSigla}>{sigla}</span>
+      {INTARZIERI_CENTRU.map((intarziere, i) => (
+        <span key={i} className={s.inelCentru} data-inel-puls="" aria-hidden="true" style={{ animationDelay: secunde(intarziere) }} />
+      ))}
       {pastilaCentru ? (
         <span className={s.centruPastila} data-pastila-centru="">
           <span>{pastilaCentru}</span>
@@ -299,7 +222,9 @@ export default function ScenaErou({
       ref={spatiuRef}
       className={s.spatiu}
       data-faza={faza}
+      data-fara-lansare={cuLansare ? undefined : ""}
       data-viu={animat ? "" : undefined}
+      data-oprit={(animat && oprit) || faza === "macheta" ? "" : undefined}
     >
       <div className={s.podea} aria-hidden="true" />
       <div className={s.umbra} aria-hidden="true" />
@@ -317,22 +242,6 @@ export default function ScenaErou({
       >
         <div ref={scenaRef} className={s.scena}>
           {desen}
-          {animat ? (
-            <svg
-              className={s.desen}
-              viewBox={"0 0 " + LATIME_SCENA + " " + INALTIME_SCENA}
-              aria-hidden="true"
-              focusable="false"
-            >
-              <g ref={puncteRef} data-puncte="">
-                {Array.from({ length: GRUPURI }, (_, g) =>
-                  CERCURI_GRUP.map((c) => (
-                    <circle key={g + c.clasa} r={c.raza} cx={-20} cy={-20} className={s["punct-" + c.clasa]} />
-                  )),
-                )}
-              </g>
-            </svg>
-          ) : null}
           {suprapuneri}
           {montat && cuLansare ? (
             <button
@@ -347,7 +256,7 @@ export default function ScenaErou({
               {continutCentru}
             </button>
           ) : (
-            <span ref={centruSimpluRef} className={s.centru}>
+            <span className={s.centru}>
               {continutCentru}
             </span>
           )}

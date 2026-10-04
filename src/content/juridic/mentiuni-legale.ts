@@ -45,7 +45,7 @@ export function mentiuniLegale(operator: Operator): DocumentJuridic {
   const contact =
     "Pentru orice întrebare despre serviciu ne scrieți la " +
     operator.email +
-    (operator.telefon === "" ? "" : " sau ne sunați la " + operator.telefon) +
+    (operator.telefon === "" ? "" : " ori ne contactați pe WhatsApp (mesaje și apeluri) la " + operator.telefon) +
     ". Formularul și celelalte căi de contact sunt pe [pagina de contact](/contact).";
   const autoritateSediu = inRomania(operator.tara)
     ? "Autoritatea de supraveghere a protecției datelor pentru sediul furnizorului este " +

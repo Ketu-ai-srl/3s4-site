@@ -323,67 +323,62 @@ a.popoverLegatura:hover {
   overflow: visible;
 }
 
-.desen path {
+/* Figura (decizia 61): doua inele cu pista lor (inelul exterior si unul interior, decalat), urma lunga
+   si capul cometei. Grosimile sunt in unitatile scenei (640 de latime), deci cresc si scad cu ea. */
+.desen circle {
   fill: none;
 }
 
-.fantoma {
-  stroke: var(--color-drum-fantoma);
-  stroke-width: 5;
-}
-
-.halou {
-  stroke: rgba(37, 99, 235, 0.07);
-  stroke-linecap: round;
-  stroke-width: 13;
-}
-
-.baza {
+.pista {
   stroke: var(--color-drum-baza);
+  stroke-width: 1.8;
+}
+
+.pistaInterioara {
+  opacity: 0.6;
+  stroke: var(--color-drum-baza);
+  stroke-width: 1.2;
+}
+
+/* Rotirea cometei. Cercurile au lungimea declarata 1 (`pathLength`), deci un decalaj de -1 inseamna
+   o rotatie completa, la orice raza. Startul e decalajul natural al liniei (0), de aceea cadrul de
+   inceput lipseste. Sensul si secunda de start le scrie Erou.tsx pe fiecare cerc. */
+@keyframes tur-figura {
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+.urma,
+.capUrma {
+  stroke-linecap: round;
+  animation: tur-figura 14s linear infinite;
+}
+
+.urma {
+  stroke: rgba(37, 99, 235, 0.35);
   stroke-width: 2.5;
 }
 
-.cometa {
-  opacity: 0.85;
+.capUrma {
   stroke: var(--color-albastru);
-  stroke-linecap: round;
-  stroke-width: 3;
-}
-
-/* Punctele: cap, mijloc si coada ale fiecarui grup (§1.4.4). Exista numai cu JavaScript. */
-.punct-cap {
-  fill: var(--color-albastru);
-}
-
-.punct-mijloc {
-  fill: rgba(37, 99, 235, 0.4);
-}
-
-.punct-coada {
-  fill: rgba(37, 99, 235, 0.18);
+  stroke-width: 6;
 }
 
 .lob {
   position: absolute;
-  top: 47%;
   color: var(--color-gri-meta);
-  font-size: 11.52px;
-  font-weight: 600;
+  font-size: 11.5px;
+  font-weight: 500;
   line-height: 18.4px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
   transform: translate(-50%, -50%);
 }
 
-.lobStanga {
-  left: 26%;
-}
-
-.lobDreapta {
-  left: 74%;
-}
-
+/* Nodul: discul, cu eticheta dedesubt. Cutia intreaga se centreaza pe punctul inelului, deci discul
+   sta putin deasupra lui, ca in figura platformei. */
 .nod {
   position: absolute;
   display: flex;
@@ -403,30 +398,52 @@ a.popoverLegatura:hover {
   border: 1px solid var(--color-linie-erou);
   border-radius: 50%;
   background: var(--color-alb);
-  box-shadow: var(--shadow-ridicata);
-  color: var(--color-albastru);
+  color: var(--color-gri-meta);
 }
 
-/* Pulsul nodului (§1.4.5): un inel de 2 px care creste la 1,5 si se stinge, 700 ms. */
-@keyframes inel {
+/* Inelul care se umfla si se stinge cand capul cometei trece pe langa un nod sau pe langa centru.
+   Un singur desen pentru ambele: cat creste il spune --scara-puls, pus pe fiecare fel de inel. Tura
+   tine 14 s, iar inelul traieste numai in prima noua parte a ei (de la 0 la 11%); dupa aceea ramane
+   stins pana la urmatoarea trecere, cu pornirea data de intarzierea scrisa in HTML. Stins e si in
+   repaus, deci fara animatie nu ramane nimic pe ecran. */
+@keyframes puls-inel {
   from {
-    opacity: 1;
-    transform: scale(1);
+    opacity: 0.85;
+    transform: none;
   }
+  11%,
   to {
     opacity: 0;
-    transform: scale(1.5);
+    transform: scale(var(--scara-puls));
   }
 }
 
-.discPuls::after {
+.inelNod,
+.inelCentru {
   position: absolute;
   inset: -1px;
-  border: 2px solid rgba(37, 99, 235, 0.45);
+  border: 1px solid var(--color-albastru);
   border-radius: 50%;
-  content: "";
-  animation: inel 0.7s ease-out forwards;
+  background: rgba(37, 99, 235, 0.1);
+  opacity: 0;
   pointer-events: none;
+  animation: puls-inel 14s linear infinite;
+}
+
+.inelNod {
+  --scara-puls: 2.4;
+}
+
+.inelCentru {
+  --scara-puls: 1.6;
+}
+
+/* Cat figura nu se vede (in afara ferestrei, fila ascunsa, macheta deschisa), miscarea sta pe loc. */
+.spatiu[data-oprit] .urma,
+.spatiu[data-oprit] .capUrma,
+.spatiu[data-oprit] .inelNod,
+.spatiu[data-oprit] .inelCentru {
+  animation-play-state: paused;
 }
 
 .eticheta {
@@ -435,9 +452,8 @@ a.popoverLegatura:hover {
   background: rgba(250, 251, 252, 0.85);
   color: var(--color-gri-eticheta);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 20.8px;
-  letter-spacing: -0.13px;
   white-space: nowrap;
 }
 
@@ -449,14 +465,14 @@ a.popoverLegatura:hover {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 108px;
-  height: 108px;
+  width: 80px;
+  height: 80px;
   margin: 0;
   padding: 0;
   border: 1px solid var(--color-linie-erou);
   border-radius: 50%;
   background: var(--color-alb);
-  box-shadow: var(--shadow-macheta-erou);
+  box-shadow: 0 10px 28px -14px rgba(15, 23, 42, 0.28);
   color: inherit;
   font: inherit;
   transform: translate(-50%, -50%);
@@ -468,45 +484,37 @@ button.centru {
   cursor: pointer;
 }
 
+/* Sigla din centru (44 px); pe scena ingusta centrul scade, iar sigla odata cu el. */
+.centruSigla {
+  display: flex;
+  scale: var(--scala-sigla, 1);
+}
+
 button.centru:focus-visible {
   outline: 3px solid var(--color-albastru);
   outline-offset: 4px;
 }
 
 /* Respiratia (§1.4.7): pe proprietatea `scale`, 3000 ms, infinita; la hover se opreste pe loc si
-   butonul creste la 1,04 peste valoarea inghetata. Numai cu JavaScript si fara miscare redusa. */
+   butonul creste la 1,04 peste valoarea inghetata. Numai pe butonul care lanseaza macheta, cu
+   JavaScript si fara miscare redusa; centrul simplu (fara lansare) sta pe loc, ca in figura platformei. */
 @keyframes respiratie {
   0%,
   100% {
     scale: 1;
-    box-shadow: var(--shadow-macheta-erou);
   }
   50% {
     scale: 1.045;
-    box-shadow:
-      0 14px 30px -8px rgba(15, 23, 42, 0.2),
-      0 40px 80px -28px rgba(15, 23, 42, 0.32);
   }
 }
 
-.spatiu[data-viu] .centru {
+.spatiu[data-viu] button.centru {
   animation: respiratie 3s ease-in-out infinite;
 }
 
 .spatiu[data-viu] button.centru:hover {
   animation-play-state: paused;
   transform: translate(-50%, -50%) scale(1.04);
-}
-
-/* Pulsul centrului: inel de 2 px la -2 px, 800 ms, la fiecare trecere prin 0 si 0,5. */
-.centruPuls::before {
-  position: absolute;
-  inset: -2px;
-  border: 2px solid rgba(37, 99, 235, 0.4);
-  border-radius: 50%;
-  content: "";
-  animation: inel 0.8s ease-out forwards;
-  pointer-events: none;
 }
 
 .centruPastila {
@@ -710,82 +718,95 @@ button.centru:focus-visible {
 
 /* --- scena ingusta ---------------------------------------------------------------------------- */
 
-/* Discurile (46), centrul (108), pastila lui si etichetele NU scaleaza odata cu drumul (fisa §1.7),
-   deci pe o scena ingusta se ating: la referinta, la 390, centrul acopera etichetele nodurilor, iar
-   pastila CTA pe cele de jos. Masurat cu pastila la locul referintei si centrul la scala maxima a
-   respiratiei: pastila intra in discurile de jos cand scena are sub ~671 px (0,6 px la 668, adica
-   700 de fereastra; 10,7 px la 608), fiindca discurile se apropie de mijloc odata cu drumul, iar
-   pastila ramane de 172,9 px. Cat scena are cel mult 700 px:
-   - eticheta nodului trece langa disc, spre exteriorul buclei; discul ramane unde il pune referinta
-     (13,4 px deasupra drumului: cutia nodului isi pastreaza inaltimea);
-   - pastila centrului coboara sub discurile de jos, la o distanta derivata din latimea scenei.
-   Peste 700 px pastila incape intre discuri, ca la referinta (5,7 px liberi la 704, la respiratia
-   maxima). Forma buclei, marimea discurilor si a centrului raman. */
-@container (max-width: 700px) {
-  .nod {
-    display: block;
-    width: 46px;
-    height: 72.8px;
-  }
-
-  .nod .eticheta {
-    position: absolute;
-    top: 23px;
-    padding: 0 3px;
-    transform: translateY(-50%);
-  }
-
-  .nod[data-pozitie$="stanga"] .eticheta {
-    right: calc(100% + 4px);
-  }
-
-  .nod[data-pozitie$="dreapta"] .eticheta {
-    left: calc(100% + 4px);
-  }
-
-  /* `top` se masoara de la marginea de sus a cutiei de umplere a centrului, 53 px deasupra
-     mijlocului lui (108 / 2, minus chenarul). Discul de jos se termina la 74,96% din inaltimea
-     scenei + 9,6 px (nodul, plus 23 - 13,4), inaltimea e 65,625% din latime (L), iar pastila creste
-     cu respiratia (1,045, in jurul mijlocului). Deci top >= 53 + (0,7496 - 0,5) x 0,65625 x L /
-     1,045 + (9,6 + g) / 1,045; cu 67 px + 15,675% din L raman g = 5 px liberi (masurat: 5,0 px
-     de la 328 la 508 px de scena; mai sus distanta creste, discurile ies de sub colturile
-     pastilei). Sub ~340 px de scena ramane distanta referintei (12 px sub centru). */
+/* Discurile (46), etichetele si centrul NU scaleaza odata cu inelele, deci pe o scena ingusta se
+   apropie. Cifrele, in unitati de scena L (latimea ei): inaltimea e 0,65625 L, raza inelului
+   0,189 L, mijloacele inelelor la 0,303 L si 0,697 L, nodul de jos la 0,328 L + 0,189 L de sus;
+   cutia unui nod (disc 46 + 6 + eticheta 20,8 = 72,8) se centreaza pe punctul inelului.
+   - Pastila centrului: sub centru (12 px) nu atinge discurile de jos cat 52 + 29 < 0,189 L - 23
+     (L > 550). Sub atat coboara sub etichetele nodurilor de jos, la 6 px: varful ei, masurat de la
+     marginea de sus a cutiei de umplere a centrului (c = latura lui), e 0,189 L + B / 2 + 6 + c / 2 - 1,
+     cu B cutia nodului (72,8; 71,2 cu eticheta de 12 px).
+   - Centrul: eticheta lobului (cel mai lung, ~62 px la 11,5 px) se termina la 0,303 L + 31, iar
+     centrul incepe la 0,5 L - 1,045 c / 2 (la respiratia maxima). Cu 80 px se ating sub ~376 px de
+     scena, deci sub 400 centrul are 64 px; sub 340, 48 px, cu eticheta lobului la 10,5 px.
+   - Sub 340: eticheta nodului de la capatul stang ("Text OCR") atinge discul de jos, deci etichetele
+     scad la 12 px; iar sub disc (in inel) eticheta din dreapta-sus ("Clasificare AI", "AI
+     classification") intra in discul de la capatul inelului si sub centru (masurat la 320 de fereastra;
+     la 375-432 nu se ating). Acolo etichetele de sus trec deasupra discului; discul ramane pe loc (cutia
+     nodului isi pastreaza inaltimea), iar scena isi tine loc deasupra (cel mult 24 px, la 320). */
+@container (max-width: 550px) {
   .centruPastila {
-    top: max(calc(100% + 12px), calc(67px + 15.675cqw));
+    top: calc(18.906cqw + 81.4px);
   }
 }
 
-/* Eticheta lobului stang (65,7 px, 11,52 px cu spatiere 0,08 em) nu mai incape la 26% cand scena
-   scade sub ~372 px (din geometrie: 0,26 L + 32,9 > 0,5 L - 56,4): intra sub centru, masurat
-   3,3 px la 390 de fereastra si 20,1 la 320; cea dreapta, mai scurta, de la 360. Sub 400 px de
-   scena eticheta se centreaza in partea libera a lobului, intre drum si centrul care respira
-   (59,5 px de la mijloc = 56,4 la 1,045 plus 3 px); unde nici acolo nu incape, se lipeste de
-   centru si iese spre capatul buclei, pe o placuta ca a etichetelor de nod (text peste linie, nu
-   linie peste text). Marginea automata face centrarea: cu spatiu negativ devine 0, iar articolul
-   sta la inceputul axei - la dreapta pentru lobul stang (`row-reverse`), la stanga pentru cel
-   drept. */
 @container (max-width: 400px) {
+  .centru {
+    --scala-sigla: 0.75;
+
+    width: 64px;
+    height: 64px;
+  }
+
+  .centruPastila {
+    top: calc(18.906cqw + 73.4px);
+  }
+}
+
+@container (max-width: 340px) {
+  .centru {
+    --scala-sigla: 0.6;
+
+    width: 48px;
+    height: 48px;
+  }
+
+  .centruPastila {
+    top: calc(18.906cqw + 64.6px);
+  }
+
+  .nod[data-pozitie^="sus"] {
+    justify-content: flex-start;
+    height: 71.2px;
+  }
+
+  .nod[data-pozitie^="sus"] .eticheta {
+    position: absolute;
+    bottom: calc(100% + 6px);
+  }
+
   .lob {
-    display: flex;
-    transform: translateY(-50%);
+    font-size: 10.5px;
   }
 
-  .lobStanga {
-    right: calc(50% + 59.5px);
-    left: calc(14.0625% + 2px);
-    flex-direction: row-reverse;
+  .eticheta {
+    padding: 0 2px;
+    font-size: 12px;
+    line-height: 19.2px;
   }
+}
 
-  .lobDreapta {
-    right: calc(14.0625% + 2px);
-    left: calc(50% + 59.5px);
+/* Locul de deasupra scenei, pentru etichetele nodurilor de sus mutate peste disc (scena sub 340 px,
+   adica fereastra sub 372 px, cu marginile de 16 px). */
+@media (max-width: 372px) {
+  .scena {
+    margin-top: 24px;
   }
+}
 
-  .lobText {
-    margin-inline: auto;
-    padding: 0 3px;
-    border-radius: 4px;
-    background: rgba(250, 251, 252, 0.85);
+/* Pastila coborata iese sub scena, deci scena care o poarta isi tine loc dedesubt, ca pastila sa nu
+   intre in legenda (dupa scena vine golul de 6,4 px al buclei). Iesirea, cu pastila la respiratia
+   maxima: 66 + 6 - 0,139 L + ~6 px, adica ~28 px la 358 de scena (390 de fereastra), ~30 la 343
+   (375; masurat: cu 24 px pastila atingea legenda) si ~37 la 288 (320). Scena are sub 550 px numai sub 600 px de fereastra. */
+@media (max-width: 600px) {
+  .scena:has([data-pastila-centru]) {
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 372px) {
+  .scena:has([data-pastila-centru]) {
+    margin-bottom: 32px;
   }
 }
 
@@ -798,7 +819,11 @@ button.centru:focus-visible {
   .actiuni,
   .podea,
   .umbra,
-  .spatiu[data-viu] .centru {
+  .spatiu[data-viu] .centru,
+  .urma,
+  .capUrma,
+  .inelNod,
+  .inelCentru {
     animation: none;
   }
 

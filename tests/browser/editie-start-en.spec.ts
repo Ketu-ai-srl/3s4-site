@@ -15,8 +15,9 @@ import * as en from "../../src/content/en/acasa-componente";
  * de gata al feliei:
  *  1. HTML-ul servit: un singur H1, zero `<form`, zero RON; legatura WhatsApp cu `[ref:en-home]` o data in erou si o
  *     data in blocul de final; butonul secundar al eroului duce la blocul de final, iar ancora exista;
- *  2. scena eroului, dupa hidratare, cu si fara miscare redusa: zero `<button>`, 4 noduri cu etichetele modulului,
- *     fara pastila centrului; un clic pe centru nu deschide macheta (decizia 43 si 49 pe 3s.md);
+ *  2. scena eroului, dupa hidratare, cu si fara miscare redusa: zero `<button>`, 6 noduri cu etichetele modulului (decizia 61),
+ *     fara pastila centrului; un clic pe centru nu deschide macheta (decizia 43 si 49 pe 3s.md); la 320, 360, 390 si
+ *     1440, nicio eticheta a figurii (textele EN sunt mai lungi decat cele RO) peste alta, peste un disc sau sub centru;
  *  3. FAQPage din JSON-LD = intrebarile si raspunsurile vizibile ale acordeonului, in ordine;
  *  4. `textContent`-ul lui `<main>` contine fiecare sir al modulului care se randeaza (numarat, raportat);
  *  5. fara defilare orizontala la 1440 si 390, iar la 390 ultimul rand al subsolului ramane deasupra barei fixe;
@@ -45,8 +46,11 @@ const WA = "https://wa.me/" + CANALE.whatsapp + "?text=";
 const RON = new RegExp("\\b" + "R" + "ON\\b");
 const REF = "[ref:en-home]";
 
-/** Cheile care nu poarta text vizibil (iconite, coduri, pozitii, tinte). */
-const FARA_TEXT = new Set(["iconita", "cod", "pozitie", "href", "ruta"]);
+/**
+ * Cheile care nu poarta text vizibil (iconite, coduri, pozitii, tinte). `etichetaFigura` e eticheta accesibila a
+ * figurii din erou (decizia 61): sta in `aria-label`, nu in textul paginii; o masoara `tests/scena-platforma.test.ts`.
+ */
+const FARA_TEXT = new Set(["iconita", "cod", "pozitie", "href", "ruta", "etichetaFigura"]);
 
 function frunze(valoare: unknown, acc: string[] = []): string[] {
   if (typeof valoare === "string") {
@@ -165,7 +169,7 @@ for (const miscare of ["reduce", "no-preference"] as const) {
   test(
     "scena eroului dupa hidratare (miscare " +
       miscare +
-      "): zero <button>, 4 noduri cu etichetele modulului, fara centru de lansare",
+      "): zero <button>, 6 noduri cu etichetele modulului, fara centru de lansare",
     async ({ page }) => {
       await page.emulateMedia({ reducedMotion: miscare });
       await page.goto(copie.baza + "/");
@@ -195,6 +199,46 @@ for (const miscare of ["reduce", "no-preference"] as const) {
       ).toBe(0);
     },
   );
+}
+
+for (const latime of [320, 360, 390, 1440] as const) {
+  test("figura eroului la " + latime + ": nicio eticheta peste alta, peste un disc sau sub centru", async ({ page }) => {
+    await page.setViewportSize({ width: latime, height: 900 });
+    await page.goto(copie.baza + "/");
+    const g = await page.locator('[class*="Erou_scenaGazda__"]').evaluate((s) => {
+      const cutie = (e: Element) => {
+        const r = e.getBoundingClientRect();
+        return { x: r.x, y: r.y, w: r.width, h: r.height };
+      };
+      return {
+        latime: window.innerWidth,
+        centru: cutie(s.querySelector('[class*="Erou_centru__"]') as Element),
+        etichete: [...s.querySelectorAll("[data-eticheta-nod], [data-eticheta-lob]")].map((e) => ({ text: e.textContent ?? "", cutie: cutie(e) })),
+        discuri: [...s.querySelectorAll("[data-nod]")].map((e) => ({ nume: e.getAttribute("data-nod") ?? "", cutie: cutie(e) })),
+      };
+    });
+    type Cutie = { x: number; y: number; w: number; h: number };
+    const arie = (a: Cutie, b: Cutie) =>
+      Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+    const inCerc = (b: Cutie, c: Cutie) => {
+      const x = c.x + c.w / 2;
+      const y = c.y + c.h / 2;
+      return c.w / 2 - Math.hypot(Math.max(b.x, Math.min(x, b.x + b.w)) - x, Math.max(b.y, Math.min(y, b.y + b.h)) - y);
+    };
+    const probleme: string[] = [];
+    g.etichete.forEach((e, i) => {
+      if (inCerc(e.cutie, g.centru) > 0.5) probleme.push(e.text + " sub centru");
+      for (const d of g.discuri) if (inCerc(e.cutie, d.cutie) > 0.5) probleme.push(e.text + " sub discul " + d.nume);
+      for (const f of g.etichete.slice(i + 1)) if (arie(e.cutie, f.cutie) > 1) probleme.push(e.text + " peste " + f.text);
+      if (e.cutie.x < 0 || e.cutie.x + e.cutie.w > g.latime) probleme.push(e.text + " iese din fereastra");
+    });
+    console.log("[figura EN " + latime + "] " + (probleme.join(" | ") || "curat"));
+    expect(g.latime).toBe(latime);
+    // Controlul: 6 noduri si 2 lobi, altfel o lista goala ar putea veni dintr-un selector care nu mai gaseste nimic.
+    expect(g.etichete.length).toBe(8);
+    expect(g.discuri.length).toBe(6);
+    expect(probleme).toEqual([]);
+  });
 }
 
 test("FAQPage din JSON-LD = intrebarile si raspunsurile vizibile, in ordine", async ({
