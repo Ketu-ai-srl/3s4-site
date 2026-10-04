@@ -53,6 +53,16 @@ vi.mock('next/font/google', () => {
   return { Plus_Jakarta_Sans: font, JetBrains_Mono: font, Marck_Script: font }
 })
 
+/**
+ * ROUTERUL. Din felia 99, layout-ul EN monteaza `TranzitieVedere` (ca layout-ul RO), care cere routerul aplicatiei
+ * (`useRouter`); in randarea statica a probei routerul nu e montat si `useRouter` arunca. Proba il inlocuieste cu un
+ * router inert; restul modulului (`usePathname` etc.) ramane cel real. Tranzitia insasi nu e masurata aici.
+ */
+vi.mock('next/navigation', async (original) => ({
+  ...(await original<typeof import('next/navigation')>()),
+  useRouter: () => ({ push: () => undefined, replace: () => undefined, prefetch: () => undefined, back: () => undefined, forward: () => undefined, refresh: () => undefined }),
+}))
+
 const RADACINA = join(__dirname, '..')
 const PROFIL = JSON.parse(readFileSync(join(RADACINA, 'config', 'profil-3s-md.json'), 'utf8')) as Record<string, unknown>
 const textProfil = (cheie: string): string => {

@@ -3,6 +3,7 @@
   "raspuns_autonom": {
     "/": {
       "intrebare": "What is 3S Scan Store Solve?",
+      "fara_regula_paragrafului": "Startul EN are forma eroului RO (decizia 53): sub titlu sta un subtitlu scurt (17 cuvinte), nu un paragraf de raspuns de 30-80, ca pe startul RO (config/seo/fundatie.json). Raspunsul startului e titlul impreuna cu subtitlul; entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",
       "entitati": [
         "3S Scan Store Solve",
         "digital archive",

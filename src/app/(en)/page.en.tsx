@@ -1,22 +1,55 @@
-// Pagina de start a editiei `en` (P01, `/`): textul din `src/content/en/home.ts`, randat prin `CorpPagina`.
+// Pagina de start a editiei `en` (P01, `/`): aceleasi componente si aceeasi compunere ca pagina de start RO
+// (`src/app/page.tsx`, decizia 53), cu textul in engleza din `src/content/en/acasa-componente.ts`.
 //
-// Canalele: butonul WhatsApp poarta textul precompletat al paginii (`[ref:en-home]`, din modul), legatura de
-// e-mail apare numai cand domeniul are adresa (`CANALE.email`, P-40), iar microtextul e cel al deciziei 3. Fara
-// formular. Organizatia si site-ul in JSON-LD le pune layout-ul; pagina adauga nodurile ei.
+// Ordinea RO, cu ce lipseste si de ce (lista declarata a perechii: `config/congruenta/p01.json`):
+//   Erou, [BandaIntegrari: iese, decizia 43], [Constructor: forma lui pe editie e felia proprie, dupa aceasta],
+//   FunctionalitatiAcasa, BandaCifre, GrilaIndustrii, Testimonial, CardSecuritate, CardEnterprise, BandaPret,
+//   FaqAcasa, CtaFinalInchis.
+//
+// Canalele: butoanele eroului si ale finalului duc la WhatsApp, cu textul precompletat al paginii (`[ref:en-home]`,
+// din `home.ts`); fara formular (decizia 3). Scena eroului fara lansarea machetei (`lansare={false}`). Metadata,
+// nodul WebPage si registrul de afirmatii vin din `home.ts`; nodul FAQPage se construieste aici, din intrebarile
+// VIZIBILE ale paginii, ca sa le oglindeasca exact. Organizatia si site-ul le pune layout-ul.
 
 import type { Metadata } from "next";
-import ButonWhatsApp from "@/components/canale/ButonWhatsApp";
+import BandaCifre from "@/components/acasa/BandaCifre";
+import BandaPret from "@/components/acasa/BandaPret";
+import CardEnterprise from "@/components/acasa/CardEnterprise";
+import CardSecuritate from "@/components/acasa/CardSecuritate";
+import FaqAcasa from "@/components/acasa/FaqAcasa";
+import GrilaIndustrii from "@/components/acasa/GrilaIndustrii";
+import Testimonial from "@/components/acasa/Testimonial";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
-import CorpPagina from "@/components/continut/CorpPagina";
-import TextInLinie from "@/components/juridic/TextInLinie";
-import s from "@/components/juridic/juridic.module.css";
+import Erou from "@/components/erou/Erou";
+import FunctionalitatiAcasa from "@/components/functionalitati-acasa/FunctionalitatiAcasa";
+import PasiFunctionalitatiEn from "@/components/functionalitati-acasa/PasiFunctionalitatiEn";
+import Buton, { claseButon, type VariantaButon } from "@/components/primitive/Buton";
+import s from "@/components/primitive/Buton.module.css";
+import CtaFinalInchis from "@/components/primitive/CtaFinalInchis";
+import Iconita from "@/components/primitive/Iconita";
+import SiglaTert from "@/components/primitive/SiglaTert";
 import type { NodJsonLd } from "@/components/seo/date-structurate";
 import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
-import { CANALE, legaturaWhatsApp } from "@/content/canale";
-import { INAINTE_DE_EMAIL, MICROTEXT, eroSecundar, final, pagina } from "@/content/en/home";
-import { alegePeCale, type LegaturaPeCale } from "@/content/navigatie";
-import { ETICHETA_WHATSAPP_EN, navigatieEn } from "@/content/navigatie-en";
+import { legaturaWhatsApp } from "@/content/canale";
+import {
+  ANCORA_FINAL,
+  BANDA_PRET_EN,
+  CARD_ENTERPRISE_EN,
+  CARD_SECURITATE_EN,
+  CIFRE_EN,
+  CTA_FINAL_EN,
+  EROU_EN,
+  EROU_SECUNDAR,
+  ETICHETA_BUTON_CANAL,
+  FUNCTIONALITATI_EN,
+  INDUSTRII_EN,
+  INTREBARI_EN,
+  TESTIMONIAL_EN,
+} from "@/content/en/acasa-componente";
+import { pagina } from "@/content/en/home";
+import type { LegaturaPeCale } from "@/content/navigatie";
+import { adresaSite } from "@/lib/site";
 
 export const metadata: Metadata = metadataPagina({
   titlu: pagina.meta.titlu,
@@ -26,64 +59,84 @@ export const metadata: Metadata = metadataPagina({
   cheie: pagina.cheie,
 });
 
-function Canal({ whatsapp, email }: { whatsapp: LegaturaPeCale | null; email: LegaturaPeCale | null }) {
+/**
+ * Butonul de canal WhatsApp cu forma butonului plin al eroului (sau a butonului alb din final): sigla canalului
+ * inainte, textul, sageata dupa, cu clasele butonului site-ului. Fara WhatsApp pe domeniu nu se randeaza nimic.
+ */
+function ButonCanal({
+  legatura,
+  varianta,
+  stralucire,
+}: {
+  legatura: LegaturaPeCale | null;
+  varianta: VariantaButon;
+  stralucire: boolean;
+}) {
+  if (legatura === null) {
+    return null;
+  }
   return (
-    <div data-canal-pagina="">
-      <p>
-        <ButonWhatsApp legatura={whatsapp} text={ETICHETA_WHATSAPP_EN} />
-      </p>
-      <p>{MICROTEXT}</p>
-      {email === null ? null : (
-        <p>
-          {INAINTE_DE_EMAIL}
-          <LegaturaCanal legatura={email} canal="email">
-            {CANALE.email}
-          </LegaturaCanal>
-        </p>
-      )}
-    </div>
+    <LegaturaCanal legatura={legatura} canal="whatsapp" className={claseButon(varianta, "mare", false, stralucire)}>
+      <SiglaTert cheie="whatsapp" marime={18} className={s.iconita} />
+      <span>{ETICHETA_BUTON_CANAL}</span>
+      <Iconita nume="arrow-right" marime={18} contur={1.5} className={s.sageata} />
+    </LegaturaCanal>
   );
+}
+
+/** Nodul FAQPage: intrebarile si raspunsurile vizibile ale sectiunii de intrebari, exact. */
+function nodFaq(): NodJsonLd {
+  const baza = adresaSite();
+  return {
+    "@type": "FAQPage",
+    "@id": baza + "/#faq",
+    inLanguage: "en",
+    mainEntity: INTREBARI_EN.intrebari.map((i) => ({
+      "@type": "Question",
+      name: i.intrebare,
+      acceptedAnswer: { "@type": "Answer", text: i.raspuns },
+    })),
+  } as NodJsonLd;
 }
 
 export default function PaginaStartEn() {
   const href = legaturaWhatsApp(pagina.cta.ref, pagina.cta.textWhatsapp);
-  const whatsapp = href === null ? null : { implicit: href, pagini: [] };
-  const posta = navigatieEn().subsol.contact?.email?.legatura ?? null;
-  const hrefEmail = posta === null ? null : alegePeCale(posta, pagina.meta.cale);
-  const email = hrefEmail === null ? null : { implicit: hrefEmail, pagini: [] };
+  const whatsapp: LegaturaPeCale | null = href === null ? null : { implicit: href, pagini: [] };
+  const noduri = [...(pagina.jsonLd as NodJsonLd[]).filter((n) => n["@type"] !== "FAQPage"), nodFaq()];
 
   return (
-    <main className={s.zonaIngusta}>
-      <JsonLd date={{ "@context": "https://schema.org", "@graph": pagina.jsonLd as NodJsonLd[] }} />
-      <div className="container-site">
-        <div className={s.bloc}>
-          <CorpPagina
-            pagina={pagina}
-            dupaCapsula={
-              <>
-                <Canal whatsapp={whatsapp} email={email} />
-                <p>
-                  <a href={eroSecundar.href}>{eroSecundar.text}</a>
-                </p>
-              </>
-            }
-            final={
-              <section aria-labelledby="cta-final-titlu" data-cta-final="">
-                <h2 id="cta-final-titlu">{pagina.cta.titluBloc}</h2>
-                <p>
-                  <TextInLinie text={final.text} />
-                </p>
-                <Canal whatsapp={whatsapp} email={email} />
-                {final.dupa.map((rand) => (
-                  <p key={rand}>
-                    <TextInLinie text={rand} />
-                  </p>
-                ))}
-              </section>
-            }
-          />
-        </div>
-      </div>
+    <main>
+      <JsonLd date={{ "@context": "https://schema.org", "@graph": noduri }} />
+      <Erou
+        continut={EROU_EN}
+        lansare={false}
+        butoane={
+          <>
+            <ButonCanal legatura={whatsapp} varianta="plin" stralucire />
+            <Buton
+              varianta="contur"
+              marime="mare"
+              iconitaInainte="circle-play"
+              legatura={{ text: EROU_SECUNDAR.text, href: EROU_SECUNDAR.href, ruta: null }}
+            >
+              {EROU_SECUNDAR.text}
+            </Buton>
+          </>
+        }
+      />
+      <FunctionalitatiAcasa continut={FUNCTIONALITATI_EN} pasi={<PasiFunctionalitatiEn />} />
+      <BandaCifre continut={CIFRE_EN} />
+      <GrilaIndustrii continut={INDUSTRII_EN} />
+      <Testimonial continut={TESTIMONIAL_EN} />
+      <CardSecuritate continut={CARD_SECURITATE_EN} />
+      <CardEnterprise continut={CARD_ENTERPRISE_EN} />
+      <BandaPret continut={BANDA_PRET_EN} />
+      <FaqAcasa continut={INTREBARI_EN} />
+      <CtaFinalInchis
+        id={ANCORA_FINAL}
+        continut={CTA_FINAL_EN}
+        butoane={<ButonCanal legatura={whatsapp} varianta="alb-pe-inchis" stralucire={false} />}
+      />
     </main>
   );
 }

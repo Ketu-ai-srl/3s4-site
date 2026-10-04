@@ -152,3 +152,79 @@ jobs:
       - name: Jurnalul serverului 3s.md
         if: always()
         run: cat "$RUNNER_TEMP/server-3s-md.log" || true
+
+  # INVARIANTA RELATIVA: o felie care declara ca NU schimba un site construit din acest cod (site-ul RO sau 3s.md)
+  # il construieste de doua ori, pe baza ei si pe ea, colecteaza tot ce serveste `next start` (toate rutele
+  # prerandate, plus robots, harta, llms, manifest, security.txt si o cale inexistenta) si cere ZERO diferente dupa
+  # normalizarea identificatorilor de build (`compara-build.py --regula invarianta`). Acopera toate rutele, nu
+  # paginile-martor din `tests/invarianta-ro.test.ts`.
+  #
+  # CAND RULEAZA: numai pe instantaneele feliilor care declara invarianta (lista de mai jos) si la pornire manuala.
+  # Pe celelalte ramuri jobul e sarit, fiindca o felie care schimba legitim HTML-ul ar iesi rosie aici prin
+  # constructie. Felia care adauga jobul e in lista: pe ea baza si felia au acelasi `src/`, deci zero diferente e
+  # controlul uneltei pe doua build-uri reale.
+  #
+  # BAZA = parintele instantaneului (`main` in momentul impingerii). Comparatia e deci fata de `main`, nu fata de
+  # baza de lucru a feliei: daca felia a pornit de pe un lot inca neimbinat, diferentele lotului apar aici si NU sunt
+  # ale feliei. Unealta, proba si normalizatorul se iau din FELIE si se copiaza inainte de a scoate baza, ca ambele
+  # colectii sa treaca prin aceeasi normalizare; ambele build-uri se fac in acelasi director (caile din build nu
+  # difera). Durata: masurata la primul verdict, scrisa aici dupa aceea.
+  invarianta-relativa:
+    name: Invarianta relativa (${{ matrix.profil }})
+    if: github.event_name == 'workflow_dispatch' || contains(fromJSON('["refs/heads/ci/felie-114","refs/heads/ci/felie-115","refs/heads/ci/felie-116","refs/heads/ci/felie-117","refs/heads/ci/felie-118","refs/heads/ci/felie-119","refs/heads/ci/felie-120","refs/heads/ci/felie-121"]'), github.ref)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        profil: [ro-RO, 3s.md]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@7088e561eb65bb68695d245aa206f005ef30921d # v4.1.0
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: |
+          echo "TEMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - name: Baza, felia si unealta
+        run: |
+          FELIE="$(git rev-parse HEAD)"
+          BAZA="$(git merge-base HEAD origin/main)"
+          if [ "$BAZA" = "$FELIE" ]; then BAZA="$(git rev-parse HEAD^1)"; fi
+          echo "FELIE=$FELIE" >> "$GITHUB_ENV"
+          echo "BAZA=$BAZA" >> "$GITHUB_ENV"
+          echo "felia $FELIE, baza $BAZA"
+          U="$RUNNER_TEMP/unealta"
+          mkdir -p "$U"
+          cp .claude/scripts/porti/colecteaza-build.mjs .claude/scripts/porti/compara-build.py tests/fixturi/invarianta-ro/normalizeaza.ts "$U/"
+      # Proba uneltei pe colectii fabricate, inainte de a avea incredere intr-un zero pe build-uri reale.
+      - run: python .claude/scripts/porti/probe/proba-compara-build.py
+      - name: Variabilele aplicatiei 3s.md
+        if: matrix.profil == '3s.md'
+        run: |
+          node -e "const p=require('./config/profil-3s-md.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
+      - name: Baza - build si colectie
+        run: |
+          git checkout -q --detach "$BAZA"
+          pnpm install --frozen-lockfile
+          pnpm build
+          node "$RUNNER_TEMP/unealta/colecteaza-build.mjs" --iesire "$RUNNER_TEMP/colectie-baza" --port 4760
+      - name: Felia - build si colectie
+        run: |
+          git checkout -q --detach "$FELIE"
+          pnpm install --frozen-lockfile
+          pnpm build
+          node "$RUNNER_TEMP/unealta/colecteaza-build.mjs" --iesire "$RUNNER_TEMP/colectie-felie" --port 4760
+      - name: Comparatia baza contra felie (zero diferente)
+        run: |
+          python "$RUNNER_TEMP/unealta/compara-build.py" --regula invarianta --normalizator "$RUNNER_TEMP/unealta/normalizeaza.ts" \
+            "$RUNNER_TEMP/colectie-baza" "$RUNNER_TEMP/colectie-felie"

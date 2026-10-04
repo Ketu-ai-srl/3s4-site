@@ -10,13 +10,27 @@
 // Reperul si eticheta sunt HTML asezat peste imagine, in procente din cadru, ca eticheta sa ramana
 // la 11 px si lizibila la orice latime; la referinta textul din SVG ajungea la ~4 px la 390.
 // Imaginea e decor (text alternativ gol, `role="presentation"`); ce arata harta spune legenda.
+//
+// PE EDITIE: textele si pozitia reperului vin prin `continut`, cu implicitul RO
+// (`BLOC_INFRASTRUCTURA.harta`); tipul e structural, declarat aici.
 
 import Image from "next/image";
 import { BLOC_INFRASTRUCTURA } from "@/content/produs/securitate";
 import s from "./securitate.module.css";
 
-export default function HartaEuropa() {
-  const h = BLOC_INFRASTRUCTURA.harta;
+export type ContinutHartaEuropa = {
+  /** Textul pentru cititoarele de ecran: ce arata harta. */
+  descriere: string;
+  /** Eticheta de langa reper. */
+  eticheta: string;
+  /** Pozitia reperului, in procente din cadru. */
+  reper: { x: number; y: number };
+  legenda: string;
+  nota: string;
+};
+
+export default function HartaEuropa({ continut = BLOC_INFRASTRUCTURA.harta }: { continut?: ContinutHartaEuropa }) {
+  const h = continut;
   const pozitie = { left: h.reper.x + "%", top: h.reper.y + "%" };
   return (
     <figure className={s.harta + " " + s.card + " " + s.hartaCadru}>

@@ -17,6 +17,19 @@
       "motiv": "BandaIntegrari: integrarile nu se gasesc in codul platformei."
     },
     {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "Constructor_sectiune",
+        "eticheta": "constructor-titlu"
+      },
+      "cod": [
+        "d3",
+        "d43",
+        "d54"
+      ],
+      "motiv": "Constructor: forma RO trimite spre formularul de inregistrare (d3), poarta benzile si integrarile (d43) si sume in RON (d54). Forma lui pe editie (WhatsApp, fara integrari, EUR; decizia 59) e felia 122, dupa felia 99."
+    },
+    {
       "tip": "camp",
       "selector": "[class*=\"Erou_pastile__\"] > [class*=\"Erou_pastila__\"]",
       "ro": 1,
@@ -75,30 +88,6 @@
       "en": 2,
       "cod": "d31",
       "motiv": "BandaCifre: cifra AES-256."
-    },
-    {
-      "tip": "camp",
-      "selector": "#intrebari [class*=\"Acordeon_startElement__\"]",
-      "ro": 4,
-      "en": 3,
-      "cod": "poarta-juridica-40-41",
-      "motiv": "FaqAcasa: intrebarea despre hartie."
-    },
-    {
-      "tip": "camp",
-      "selector": "[class*=\"CtaFinalInchis_pas__\"]",
-      "ro": 2,
-      "en": 1,
-      "cod": "d49",
-      "motiv": "CtaFinalInchis: pasul 'Poza pe WhatsApp'."
-    },
-    {
-      "tip": "camp",
-      "selector": "[class*=\"CtaFinalInchis_rezultat__\"]",
-      "ro": 1,
-      "en": 0,
-      "cod": "val-ro-i2",
-      "motiv": "CtaFinalInchis: rezultatul 'Pus in dosarul Transport' (clasarea automata)."
     },
     {
       "tip": "clasa",
@@ -233,52 +222,43 @@
       "motiv": "Clasa machetei portalului clientilor, scoasa odata cu ea."
     },
     {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_punctVerde",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_butoane__\"] > *",
+      "ro": 2,
+      "en": 1,
+      "cod": [
+        "d3",
+        "d43"
+      ],
+      "motiv": "CtaFinalInchis: al doilea buton ('Un tur prin aplicatie') duce la /incepe, demonstratia ale carei iesiri sunt contul gratuit (formularul de inregistrare, d3) si descarcarea aplicatiilor (d43); pagina nu exista pe 3s.md. Ramane butonul WhatsApp."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultat",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "Erou_centruPastila",
+      "cod": [
+        "d43",
+        "d49"
+      ],
+      "motiv": "Pastila din centrul buclei ('Vezi demonstratia') lanseaza macheta aplicatiei; pe 3s.md centrul arata numai sigla, fara lansare (lansare={false})."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatCutie",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "acasa_industrieChevron",
+      "cod": "d38",
+      "motiv": "GrilaIndustrii: chevronul cardurilor; pe 3s.md cardurile de situatii nu duc spre pagini de segment, deci nu au chevron (decizia 59 pastreaza grila, d38 scoate legaturile)."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatFisier",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatOra",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatStare",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatText",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "Buton_conturPeInchis",
+      "cod": [
+        "d3",
+        "d43"
+      ],
+      "motiv": "Clasa butonului 'Un tur prin aplicatie' din blocul de final, scos odata cu el; nu mai apare in alt loc al paginii."
     }
   ],
   "_nedeclarate": [
-    "CtaFinalInchis: butonul 'Un tur prin aplicatie' (/incepe nu exista pe 3s.md) - fara cod de temei pana la raspunsul owner-ului.",
-    "Erou: lansarea machetei (d43, d49) - se incarca dupa clic, nu e in HTML-ul servit; se masoara in felia startului.",
-    "Constructor, GrilaIndustrii, CardEnterprise - de decis de owner; nu se declara pana la decizie.",
-    "Testimonial: textul se schimba (d43, d49), forma ramane - nu e un rand de forma."
+    "Erou: lansarea machetei (d43, d49) - nu e in HTML-ul servit; o masoara tests/browser/editie-start-en.spec.ts (zero <button> in scena dupa hidratare).",
+    "Testimonial, GrilaIndustrii, CardEnterprise, FaqAcasa: textul se schimba (d43, d49, d38, decizia 59), forma ramane - nu sunt randuri de forma."
   ]
 }

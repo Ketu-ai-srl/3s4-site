@@ -179,9 +179,12 @@ test('martorii deciziei 49 pe HTML asamblat la rulare: asistentul e prins, conta
   expect(textVazut(bun)).toContain(NUME_WA)
 })
 
-test('ancorele de pe pagini exista in HTML-ul servit: /#how-do-i-start, /about#security, /about#limits, /pricing#pilot', async () => {
+// Felia 99: pagina de start compune componentele startului RO (decizia 53), iar sectiunea "How do I start?" a formei
+// vechi nu mai are loc pe pagina (ramane in fisa); butonul secundar al eroului duce la blocul de final, a carui ancora e
+// cea de pe RO (`contact`). Proba se muta pe ancora noua; celelalte trei raman.
+test('ancorele de pe pagini exista in HTML-ul servit: /#contact, /about#security, /about#limits, /pricing#pilot', async () => {
   const asteptate: [string, string][] = [
-    ['/', 'how-do-i-start'],
+    ['/', 'contact'],
     ['/about', 'security'],
     ['/about', 'limits'],
     ['/pricing', 'pilot'],

@@ -14,11 +14,19 @@
 // Blocurile de cod sunt EXEMPLE ILUSTRATIVE pe gazda rezervata `api.3s.example` (RFC 2606), cu date
 // fictive, si o spun in legenda lor; fiecare bloc primeste focus, ca sa se poata derula din
 // tastatura cand codul e mai lat decat ecranul.
+//
+// PE EDITIE: continutul vine pe sectiuni prin `continut`, cu implicitul RO (constantele din
+// `src/content/produs/platforma.ts`, nemodificate: tipurile de aici sunt structurale si le accepta).
+// `sectiuni` alege ce sectiuni se randeaza, in ordinea fixa a componentei (implicit: toate). Legaturile
+// pe care alta editie nu le are sunt optionale in tip si se randeaza conditionat; pe RO exista mereu,
+// deci ramura da acelasi DOM. `butoane` inlocuieste butoanele eroului cand editia are alt canal, iar
+// cele doua etichete scrise pana acum direct in componenta au implicitul RO.
 
+import type { ReactNode } from "react";
 import { Check } from "lucide-react";
 import Acordeon from "@/components/primitive/Acordeon";
 import Buton from "@/components/primitive/Buton";
-import FirPagina from "@/components/primitive/FirPagina";
+import FirPagina, { type NivelFir } from "@/components/primitive/FirPagina";
 import LegaturaInText from "@/components/primitive/LegaturaInText";
 import Pastila from "@/components/primitive/Pastila";
 import {
@@ -32,16 +40,125 @@ import {
   EROU_PLATFORMA,
   FIR_PLATFORMA,
   INTREBARI_PLATFORMA,
+  MACHETA_STRAT,
   MODEL_PLATFORMA,
   PILONI_PLATFORMA,
   PROBLEMA_PLATFORMA,
   SUVERANITATE_PLATFORMA,
 } from "@/content/produs/platforma";
+import type { Legatura } from "@/content/navigatie";
+import type { IconitaProdus as NumeIconita } from "@/content/produs/iconite";
+import type { BlocIntrebari } from "@/content/produs/intrebari";
 import { CapCentrat, CapNumeratPlatforma } from "./Capete";
 import IconitaProdus from "./IconitaProdus";
-import MachetaStrat from "./MachetaStrat";
+import MachetaStrat, { type ContinutMachetaStrat } from "./MachetaStrat";
 import { nerupt } from "./nerupt";
 import s from "./platforma.module.css";
+
+type TitluText = { titlu: string; text: string };
+type BlocNumerotat = { numar: string; titlu: string; subtitlu: string };
+
+/** Continutul paginii, pe sectiuni; constantele RO il satisfac fara editare. */
+export type ContinutPaginaPlatforma = {
+  fir: NivelFir[];
+  erou: { titlu: string; subtitlu: string; butonPrincipal?: Legatura; butonSecundar?: Legatura };
+  macheta: ContinutMachetaStrat;
+  piloni?: { fraza: string; piloni: { numar: string; iconita: NumeIconita; titlu: string; text: string }[] };
+  problema?: { titlu: string; cheie: string; batai: string[] };
+  model?: {
+    titlu: string;
+    metafora: string;
+    subtitlu: string;
+    noduri: { eticheta: string; descriere: string }[];
+    conectori: string[];
+  };
+  blocDate?: BlocNumerotat & { pasi: TitluText[] };
+  blocArhiva?: BlocNumerotat & { randuri: { eticheta: string; valoare: string }[]; legatura?: Legatura };
+  blocIntrebari?: BlocNumerotat & { carduri: (TitluText & { iconita: NumeIconita })[] };
+  comparatie?: {
+    titlu: string;
+    subtitlu: string;
+    coloane: string[];
+    randuri: { dimensiune: string; alternativa: string; noi: string }[];
+    nota: string;
+    legatura?: Legatura;
+    /** Capul ascuns al primei coloane, pentru cititoarele de ecran; implicit RO. */
+    etichetaCriteriu?: string;
+  };
+  suveranitate?: {
+    eticheta: string;
+    titlu: string;
+    subtitlu: string;
+    proza: string[];
+    evidentiat: string;
+    legatura?: Legatura;
+    carduri: TitluText[];
+  };
+  apeluri?: {
+    titlu: string;
+    subtitlu: string;
+    pasi: TitluText[];
+    blocuri: { eticheta: string; cod: string }[];
+    legenda: string;
+    etichetaExemplu: string;
+    nota: string;
+    legatura?: Legatura;
+  };
+  cazuri?: { titlu: string; subtitlu: string; cazuri: TitluText[]; legatura?: Legatura };
+  conformitate?: {
+    titlu: string;
+    text: string;
+    insigne: string[];
+    /** Numele accesibil al listei de insigne; implicit RO. */
+    etichetaInsigne?: string;
+  };
+  intrebari?: BlocIntrebari;
+};
+
+/** Sectiunile paginii, in ordinea fixa de randare. */
+export const SECTIUNI_PLATFORMA = [
+  "erou",
+  "piloni",
+  "problema",
+  "model",
+  "blocDate",
+  "blocArhiva",
+  "blocIntrebari",
+  "comparatie",
+  "suveranitate",
+  "apeluri",
+  "cazuri",
+  "conformitate",
+  "intrebari",
+] as const;
+export type SectiunePlatforma = (typeof SECTIUNI_PLATFORMA)[number];
+
+/** Implicitul RO: constantele din `src/content/produs/platforma.ts`, neschimbate. */
+const CONTINUT_RO: ContinutPaginaPlatforma = {
+  fir: FIR_PLATFORMA,
+  erou: EROU_PLATFORMA,
+  macheta: MACHETA_STRAT,
+  piloni: PILONI_PLATFORMA,
+  problema: PROBLEMA_PLATFORMA,
+  model: MODEL_PLATFORMA,
+  blocDate: BLOC_DATE,
+  blocArhiva: BLOC_ARHIVA,
+  blocIntrebari: BLOC_INTREBARI,
+  comparatie: COMPARATIE_PLATFORMA,
+  suveranitate: SUVERANITATE_PLATFORMA,
+  apeluri: APELURI_PLATFORMA,
+  cazuri: CAZURI_PLATFORMA,
+  conformitate: CONFORMITATE_PLATFORMA,
+  intrebari: INTREBARI_PLATFORMA,
+};
+
+/** Sectiunea ceruta in `sectiuni`, fara continut: eroare la construire, nu o sectiune scoasa tacut. */
+function ceruta<T>(valoare: T | undefined, sectiune: SectiunePlatforma): T {
+  if (valoare === undefined) {
+    throw new Error("PaginaPlatforma: sectiunea `" + sectiune + "` e ceruta, dar continutul ei lipseste");
+  }
+  return valoare;
+}
 
 /** Sageata lunga a conectorilor: 40 x 16, contur 1,5. */
 function SageataConector({ inversa = false }: { inversa?: boolean }) {
@@ -64,13 +181,24 @@ function SageataConector({ inversa = false }: { inversa?: boolean }) {
   );
 }
 
-function Erou() {
-  const e = EROU_PLATFORMA;
+function Erou({
+  e,
+  fir,
+  macheta,
+  butoane,
+  etichetaFir,
+}: {
+  e: ContinutPaginaPlatforma["erou"];
+  fir: NivelFir[];
+  macheta: ContinutMachetaStrat;
+  butoane?: ReactNode;
+  etichetaFir?: string;
+}) {
   return (
     <section className={s.erou} aria-labelledby="platforma-titlu">
       <div className="container-site">
         <div className={s.erouFir}>
-          <FirPagina niveluri={FIR_PLATFORMA} />
+          <FirPagina niveluri={fir} {...(etichetaFir !== undefined ? { eticheta: etichetaFir } : {})} />
         </div>
         <div className={s.erouGrila}>
           <div className={s.erouText}>
@@ -79,16 +207,24 @@ function Erou() {
             </h1>
             <p className={"t-subtitlu-interior " + s.erouSubtitlu}>{e.subtitlu}</p>
             <div className={s.erouActiuni}>
-              <Buton varianta="plin" marime="plat" sageata legatura={e.butonPrincipal} className={s.erouButon}>
-                {e.butonPrincipal.text}
-              </Buton>
-              <Buton varianta="fantoma" marime="plat" legatura={e.butonSecundar} className={s.erouButon}>
-                {e.butonSecundar.text}
-              </Buton>
+              {butoane ?? (
+                <>
+                  {e.butonPrincipal ? (
+                    <Buton varianta="plin" marime="plat" sageata legatura={e.butonPrincipal} className={s.erouButon}>
+                      {e.butonPrincipal.text}
+                    </Buton>
+                  ) : null}
+                  {e.butonSecundar ? (
+                    <Buton varianta="fantoma" marime="plat" legatura={e.butonSecundar} className={s.erouButon}>
+                      {e.butonSecundar.text}
+                    </Buton>
+                  ) : null}
+                </>
+              )}
             </div>
           </div>
           <div className={s.erouVizual}>
-            <MachetaStrat />
+            <MachetaStrat continut={macheta} />
           </div>
         </div>
       </div>
@@ -96,8 +232,7 @@ function Erou() {
   );
 }
 
-function Piloni() {
-  const p = PILONI_PLATFORMA;
+function Piloni({ p }: { p: NonNullable<ContinutPaginaPlatforma["piloni"]> }) {
   return (
     <section className={s.piloni} aria-labelledby="platforma-piloni">
       <div className="container-site">
@@ -121,8 +256,7 @@ function Piloni() {
   );
 }
 
-function Problema() {
-  const p = PROBLEMA_PLATFORMA;
+function Problema({ p }: { p: NonNullable<ContinutPaginaPlatforma["problema"]> }) {
   const ultima = p.batai.length - 1;
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-problema">
@@ -148,8 +282,7 @@ function Problema() {
   );
 }
 
-function Model() {
-  const m = MODEL_PLATFORMA;
+function Model({ m }: { m: NonNullable<ContinutPaginaPlatforma["model"]> }) {
   const [oameni, miez, acte] = m.noduri;
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-model">
@@ -182,8 +315,7 @@ function Model() {
   );
 }
 
-function BlocDate() {
-  const b = BLOC_DATE;
+function BlocDate({ b }: { b: NonNullable<ContinutPaginaPlatforma["blocDate"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-bloc-01">
       <div className="container-site">
@@ -204,8 +336,7 @@ function BlocDate() {
   );
 }
 
-function BlocArhiva() {
-  const b = BLOC_ARHIVA;
+function BlocArhiva({ b }: { b: NonNullable<ContinutPaginaPlatforma["blocArhiva"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-bloc-02">
       <div className="container-site">
@@ -218,16 +349,17 @@ function BlocArhiva() {
             </div>
           ))}
         </dl>
-        <p className={s.legaturaSubTabel}>
-          <LegaturaInText legatura={b.legatura} />
-        </p>
+        {b.legatura ? (
+          <p className={s.legaturaSubTabel}>
+            <LegaturaInText legatura={b.legatura} />
+          </p>
+        ) : null}
       </div>
     </section>
   );
 }
 
-function BlocIntrebari() {
-  const b = BLOC_INTREBARI;
+function BlocIntrebari({ b }: { b: NonNullable<ContinutPaginaPlatforma["blocIntrebari"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-bloc-03">
       <div className="container-site">
@@ -248,8 +380,7 @@ function BlocIntrebari() {
   );
 }
 
-function Comparatie() {
-  const c = COMPARATIE_PLATFORMA;
+function Comparatie({ c }: { c: NonNullable<ContinutPaginaPlatforma["comparatie"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-comparatie">
       <div className="container-site">
@@ -257,7 +388,7 @@ function Comparatie() {
         <div role="table" aria-labelledby="platforma-comparatie" className={s.card + " " + s.comparatie}>
           <div role="row" className={s.comparatieRand + " " + s.comparatieCap}>
             <span role="columnheader">
-              <span className="doar-cititor">Criteriu</span>
+              <span className="doar-cititor">{c.etichetaCriteriu ?? "Criteriu"}</span>
             </span>
             <span role="columnheader">{c.coloane[0]}</span>
             <span role="columnheader" className={s.comparatieCapNoi}>
@@ -282,16 +413,16 @@ function Comparatie() {
           ))}
         </div>
         <p className={s.notaComparatie}>
-          {nerupt(c.nota)}{" "}
-          <LegaturaInText legatura={c.legatura} marime={16.8} className={s.legaturaInNota} />
+          {nerupt(c.nota)}
+          {c.legatura ? " " : null}
+          {c.legatura ? <LegaturaInText legatura={c.legatura} marime={16.8} className={s.legaturaInNota} /> : null}
         </p>
       </div>
     </section>
   );
 }
 
-function Suveranitate() {
-  const v = SUVERANITATE_PLATFORMA;
+function Suveranitate({ v }: { v: NonNullable<ContinutPaginaPlatforma["suveranitate"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-suveranitate">
       <div className="container-site">
@@ -304,9 +435,11 @@ function Suveranitate() {
               </p>
             ))}
             <p className={s.evidentiat}>{nerupt(v.evidentiat)}</p>
-            <p>
-              <LegaturaInText legatura={v.legatura} className={s.legaturaProza} />
-            </p>
+            {v.legatura ? (
+              <p>
+                <LegaturaInText legatura={v.legatura} className={s.legaturaProza} />
+              </p>
+            ) : null}
           </div>
           <ul className={s.suveranitateCarduri}>
             {v.carduri.map((c) => (
@@ -322,8 +455,7 @@ function Suveranitate() {
   );
 }
 
-function Apeluri() {
-  const a = APELURI_PLATFORMA;
+function Apeluri({ a }: { a: NonNullable<ContinutPaginaPlatforma["apeluri"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-apeluri">
       <div className="container-site">
@@ -357,16 +489,16 @@ function Apeluri() {
           </figure>
         </div>
         <p className={s.notaApeluri}>
-          {a.nota}{" "}
-          <LegaturaInText legatura={a.legatura} className={s.legaturaInNota} />
+          {a.nota}
+          {a.legatura ? " " : null}
+          {a.legatura ? <LegaturaInText legatura={a.legatura} className={s.legaturaInNota} /> : null}
         </p>
       </div>
     </section>
   );
 }
 
-function Cazuri() {
-  const c = CAZURI_PLATFORMA;
+function Cazuri({ c }: { c: NonNullable<ContinutPaginaPlatforma["cazuri"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-cazuri">
       <div className="container-site">
@@ -379,16 +511,17 @@ function Cazuri() {
             </li>
           ))}
         </ul>
-        <p className={s.legaturaCentrata}>
-          <LegaturaInText legatura={c.legatura} />
-        </p>
+        {c.legatura ? (
+          <p className={s.legaturaCentrata}>
+            <LegaturaInText legatura={c.legatura} />
+          </p>
+        ) : null}
       </div>
     </section>
   );
 }
 
-function Conformitate() {
-  const c = CONFORMITATE_PLATFORMA;
+function Conformitate({ c }: { c: NonNullable<ContinutPaginaPlatforma["conformitate"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-conformitate">
       <div className="container-site">
@@ -399,7 +532,7 @@ function Conformitate() {
             </h2>
             <p className={s.conformitateText}>{nerupt(c.text)}</p>
           </div>
-          <ul className={s.insigne} aria-label="Ce poate arăta 3S">
+          <ul className={s.insigne} aria-label={c.etichetaInsigne ?? "Ce poate arăta 3S"}>
             {c.insigne.map((x) => (
               <li key={x}>
                 <Pastila varianta="insigna">{x}</Pastila>
@@ -412,8 +545,7 @@ function Conformitate() {
   );
 }
 
-function Intrebari() {
-  const q = INTREBARI_PLATFORMA;
+function Intrebari({ q }: { q: NonNullable<ContinutPaginaPlatforma["intrebari"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="platforma-intrebari">
       <div className="container-site">
@@ -424,22 +556,34 @@ function Intrebari() {
   );
 }
 
-export default function PaginaPlatforma() {
+export type PaginaPlatformaProps = {
+  continut?: ContinutPaginaPlatforma;
+  /** Sectiunile de randat; ordinea ramane cea a componentei. Lipsa = toate. */
+  sectiuni?: readonly SectiunePlatforma[];
+  /** Butoanele eroului, cand editia are alt canal decat cele doua legaturi din continut. */
+  butoane?: ReactNode;
+  /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul RO. */
+  etichetaFir?: string;
+};
+
+export default function PaginaPlatforma({ continut = CONTINUT_RO, sectiuni, butoane, etichetaFir }: PaginaPlatformaProps) {
+  const c = continut;
+  const are = (k: SectiunePlatforma) => sectiuni === undefined || sectiuni.includes(k);
   return (
     <>
-      <Erou />
-      <Piloni />
-      <Problema />
-      <Model />
-      <BlocDate />
-      <BlocArhiva />
-      <BlocIntrebari />
-      <Comparatie />
-      <Suveranitate />
-      <Apeluri />
-      <Cazuri />
-      <Conformitate />
-      <Intrebari />
+      {are("erou") ? <Erou e={c.erou} fir={c.fir} macheta={c.macheta} butoane={butoane} etichetaFir={etichetaFir} /> : null}
+      {are("piloni") ? <Piloni p={ceruta(c.piloni, "piloni")} /> : null}
+      {are("problema") ? <Problema p={ceruta(c.problema, "problema")} /> : null}
+      {are("model") ? <Model m={ceruta(c.model, "model")} /> : null}
+      {are("blocDate") ? <BlocDate b={ceruta(c.blocDate, "blocDate")} /> : null}
+      {are("blocArhiva") ? <BlocArhiva b={ceruta(c.blocArhiva, "blocArhiva")} /> : null}
+      {are("blocIntrebari") ? <BlocIntrebari b={ceruta(c.blocIntrebari, "blocIntrebari")} /> : null}
+      {are("comparatie") ? <Comparatie c={ceruta(c.comparatie, "comparatie")} /> : null}
+      {are("suveranitate") ? <Suveranitate v={ceruta(c.suveranitate, "suveranitate")} /> : null}
+      {are("apeluri") ? <Apeluri a={ceruta(c.apeluri, "apeluri")} /> : null}
+      {are("cazuri") ? <Cazuri c={ceruta(c.cazuri, "cazuri")} /> : null}
+      {are("conformitate") ? <Conformitate c={ceruta(c.conformitate, "conformitate")} /> : null}
+      {are("intrebari") ? <Intrebari q={ceruta(c.intrebari, "intrebari")} /> : null}
     </>
   );
 }

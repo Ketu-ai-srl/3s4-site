@@ -2,12 +2,31 @@
 // pachetului recomandat cu antet si bife albastre. Tabelul are minim 560 px, deci pe ecran ingust se
 // deruleaza in panoul lui, nu pagina; panoul primeste focus si nume, ca derularea sa mearga si din
 // tastatura. Componenta de server: tabelul e static si ajunge intreg in HTML-ul servit.
+//
+// PE EDITIE: textele tabelului si planurile vin prin proprietati, cu implicitul RO; pagina RO nu pasa
+// nimic. Valorile celulelor (moneda, locul fisierelor) sunt continut, deci tot ale editiei.
 
 import Iconita from "@/components/primitive/Iconita";
-import { COMPARATIE, PLANURI, type CelulaTabel, type Plan } from "@/content/preturi";
+import { COMPARATIE, PLANURI, type CategorieTabel, type CelulaTabel, type Plan } from "@/content/preturi";
 import s from "./pliuri.module.css";
 
-function Celula({ celula, plan }: { celula: CelulaTabel; plan: Plan }) {
+/** Continutul tabelului, pe editie; tip structural, constanta RO (`COMPARATIE`) il satisface. */
+export type ContinutTabelPlanuri = {
+  /** Antetul primei coloane. */
+  functie: string;
+  /** Textul ascuns al bifei, pentru cititorul de ecran. */
+  inclus: string;
+  /** Numele accesibil al panoului derulabil. */
+  derulare: string;
+  categorii: CategorieTabel[];
+};
+
+export type TabelPlanuriProps = {
+  continut?: ContinutTabelPlanuri;
+  planuri?: readonly Plan[];
+};
+
+function Celula({ celula, plan, inclus }: { celula: CelulaTabel; plan: Plan; inclus: string }) {
   if (celula.fel === "valoare") {
     return (
       <td className={s.celulaValoare}>
@@ -19,21 +38,21 @@ function Celula({ celula, plan }: { celula: CelulaTabel; plan: Plan }) {
     <td className={s.celulaValoare}>
       <span className={s.marcaj + (plan.recomandat ? " " + s.marcajAccent : "")}>
         <Iconita nume="check" marime={16} contur={2} />
-        <span className="doar-cititor">{COMPARATIE.inclus}</span>
+        <span className="doar-cititor">{inclus}</span>
       </span>
     </td>
   );
 }
 
-export default function TabelPlanuri() {
+export default function TabelPlanuri({ continut = COMPARATIE, planuri = PLANURI }: TabelPlanuriProps) {
   return (
     <div className={s.panouTabel}>
-      <div className={s.derulare} role="region" aria-label={COMPARATIE.derulare} tabIndex={0}>
+      <div className={s.derulare} role="region" aria-label={continut.derulare} tabIndex={0}>
         <table className={s.tabel}>
           <thead>
             <tr>
-              <th scope="col">{COMPARATIE.functie}</th>
-              {PLANURI.map((p) => (
+              <th scope="col">{continut.functie}</th>
+              {planuri.map((p) => (
                 <th
                   key={p.cheie}
                   scope="col"
@@ -45,9 +64,9 @@ export default function TabelPlanuri() {
             </tr>
           </thead>
           <tbody>
-            {COMPARATIE.categorii.flatMap((c) => [
+            {continut.categorii.flatMap((c) => [
               <tr key={c.titlu} className={s.randCategorie}>
-                <th colSpan={PLANURI.length + 1} scope="colgroup">
+                <th colSpan={planuri.length + 1} scope="colgroup">
                   {c.titlu}
                 </th>
               </tr>,
@@ -56,8 +75,8 @@ export default function TabelPlanuri() {
                   <th scope="row" className={s.celulaFunctie}>
                     {r.functie}
                   </th>
-                  {PLANURI.map((p) => (
-                    <Celula key={p.cheie} celula={r.celule[p.cheie]} plan={p} />
+                  {planuri.map((p) => (
+                    <Celula key={p.cheie} celula={r.celule[p.cheie]} plan={p} inclus={continut.inclus} />
                   ))}
                 </tr>
               )),

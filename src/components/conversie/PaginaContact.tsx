@@ -12,9 +12,14 @@
 //     canalele si starea lor, citita din comutatorul operatorului si din adresa marcii;
 //   - cardurile de jos nu numesc o firma (decizia owner-ului din 24.09, doar brandul): arata marca si
 //     platforma, cu faptele din registrul de afirmatii.
+//
+// PE EDITIE: textele vin prin `continut`, cu implicitul RO (`CONTACT`, nemodificat: tipul de aici e
+// structural si il accepta). Alta editie isi da randurile panoului de canale (`randuri`), butonul casetei
+// (`butonCaseta`, cand canalul ei nu e formularul) si caile firului; nota casetei si nota panoului sunt
+// optionale in tip si se randeaza conditionat (pe RO exista mereu, deci ramura da acelasi DOM).
 
 import { CalendarClock, Clock, Building2, Compass, Layers, Plug, ShieldCheck, Wallet } from "lucide-react";
-import type { ComponentType } from "react";
+import type { ComponentType, ReactNode } from "react";
 import Buton from "@/components/primitive/Buton";
 import CapBloc from "@/components/primitive/CapBloc";
 import EroulInterior from "@/components/primitive/EroulInterior";
@@ -36,6 +41,21 @@ const ICONITE: Record<CardSubiect["iconita"], ComponentType<{ size?: number; str
 };
 
 export type RandPanou = { nume: string; legatura: Legatura | null; text?: string; stare: string };
+
+/** Continutul paginii, pe editie; constanta RO (`CONTACT`) il satisface fara editare. */
+export type ContinutPaginaContact = {
+  /** Textele firului; caile au implicitul RO (`/` si `/contact`). */
+  fir: { acasa: string; pagina: string; caleAcasa?: string; calePagina?: string };
+  erou: { titlu: string; subtitlu: string };
+  caseta: { titlu: string; text: string; butonFormular: string; nota?: string };
+  subiecte: { titlu: string; text: string; carduri: readonly CardSubiect[] };
+  canale: { titlu: string; text: string; notaEticheta?: string; notaInchis?: string; notaDeschis?: string };
+  marca: {
+    titlu: string;
+    text: string;
+    carduri: readonly { titlu: string; rol: string; fapte: readonly { eticheta: string; valoare: string; mono: boolean }[] }[];
+  };
+};
 
 /** Randurile panoului de canale, dupa starea formularului si adresa marcii. Functie pura, pentru probe. */
 export function randuriCanale(stare: StareFormular, adresa: string | null): RandPanou[] {
@@ -60,30 +80,44 @@ export function randuriCanale(stare: StareFormular, adresa: string | null): Rand
 }
 
 /** Tinta butonului din caseta: adresa marcii, cand e confirmata; altfel formularul de pe pagina. */
-export function tintaCaseta(adresa: string | null): Legatura {
+export function tintaCaseta(adresa: string | null, butonFormular: string = CONTACT.caseta.butonFormular): Legatura {
   return adresa
     ? { text: adresa, href: "mailto:" + adresa, ruta: null }
-    : { text: CONTACT.caseta.butonFormular, href: "#" + ANCORA_FORMULAR_CONTACT, ruta: CALE_CONTACT };
+    : { text: butonFormular, href: "#" + ANCORA_FORMULAR_CONTACT, ruta: CALE_CONTACT };
 }
+
+export type PaginaContactProps = {
+  stare?: StareFormular;
+  adresa?: string | null;
+  continut?: ContinutPaginaContact;
+  /** Randurile panoului de canale, pe editie; lipsa = randurile RO (`randuriCanale`). */
+  randuri?: RandPanou[];
+  /** Butonul casetei, cand canalul editiei nu e formularul; lipsa = tinta din `tintaCaseta`. */
+  butonCaseta?: ReactNode;
+  /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul RO. */
+  etichetaFir?: string;
+};
 
 export default function PaginaContact({
   stare = stareFormular(),
   adresa = adresaMarcii(),
-}: {
-  stare?: StareFormular;
-  adresa?: string | null;
-}) {
-  const c = CONTACT;
-  const tinta = tintaCaseta(adresa);
+  continut = CONTACT,
+  randuri,
+  butonCaseta,
+  etichetaFir,
+}: PaginaContactProps) {
+  const c = continut;
+  const tinta = tintaCaseta(adresa, c.caseta.butonFormular);
   return (
     <>
       <EroulInterior
         fir={[
-          { text: c.fir.acasa, cale: "/" },
-          { text: c.fir.pagina, cale: CALE_CONTACT },
+          { text: c.fir.acasa, cale: c.fir.caleAcasa ?? "/" },
+          { text: c.fir.pagina, cale: c.fir.calePagina ?? CALE_CONTACT },
         ]}
         titlu={c.erou.titlu}
         subtitlu={c.erou.subtitlu}
+        {...(etichetaFir !== undefined ? { etichetaFir } : {})}
       />
 
       <section className={s.sectiuneCaseta} aria-labelledby="contact-caseta">
@@ -95,10 +129,12 @@ export default function PaginaContact({
               </h2>
               <p className={s.casetaText}>{c.caseta.text}</p>
               <div className={s.casetaRand}>
-                <Buton varianta="plin" marime="plat" legatura={tinta}>
-                  {tinta.text}
-                </Buton>
-                <p className={s.casetaNota}>{c.caseta.nota}</p>
+                {butonCaseta ?? (
+                  <Buton varianta="plin" marime="plat" legatura={tinta}>
+                    {tinta.text}
+                  </Buton>
+                )}
+                {c.caseta.nota !== undefined ? <p className={s.casetaNota}>{c.caseta.nota}</p> : null}
               </div>
             </div>
           </div>
@@ -133,7 +169,7 @@ export default function PaginaContact({
           <div className={s.bloc}>
             <CapBloc id="contact-canale" titlu={c.canale.titlu} text={c.canale.text} marimeText={16} margineJos={0} />
             <ul className={s.panou} role="list">
-              {randuriCanale(stare, adresa).map((r) => (
+              {(randuri ?? randuriCanale(stare, adresa)).map((r) => (
                 <li key={r.nume} className={s.rand}>
                   <span className={s.randStanga}>
                     <span className={s.randNume}>{r.nume}</span>
@@ -152,9 +188,11 @@ export default function PaginaContact({
                 </li>
               ))}
             </ul>
-            <p className={s.notaPanou}>
-              <strong>{c.canale.notaEticheta}</strong> {stare.activ ? c.canale.notaDeschis : c.canale.notaInchis}
-            </p>
+            {c.canale.notaEticheta !== undefined ? (
+              <p className={s.notaPanou}>
+                <strong>{c.canale.notaEticheta}</strong> {stare.activ ? c.canale.notaDeschis : c.canale.notaInchis}
+              </p>
+            ) : null}
           </div>
         </div>
       </section>

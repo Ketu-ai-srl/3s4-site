@@ -68,11 +68,12 @@ export function calculeaza(
 /**
  * Banii, cu punct la mii ("3.850", "156.200"), ca la referinta. Scris de mana, nu prin `Intl`:
  * serverul si navigatorul pot avea date locale diferite, iar o cifra care difera intre HTML-ul
- * servit si randarea din browser strica hidratarea.
+ * servit si randarea din browser strica hidratarea. Separatorul e un parametru al editiei, cu
+ * implicitul romanesc (punctul).
  */
-export function formatBani(n: number): string {
+export function formatBani(n: number, separatorMii: string = "."): string {
   const semn = n < 0 ? "-" : "";
-  return semn + String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return semn + String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, separatorMii);
 }
 
 /** Orele, fara separator de mii ("1155 h" la referinta). */
@@ -80,11 +81,28 @@ export function formatOre(n: number): string {
   return String(Math.round(n));
 }
 
-/** O zecimala cu virgula ("1,6"); un numar intreg ramane fara zecimala ("0"). */
-export function formatZecimal(n: number): string {
+/**
+ * O zecimala cu virgula ("1,6"); un numar intreg ramane fara zecimala ("0"). Semnul zecimal e un
+ * parametru al editiei, cu implicitul romanesc (virgula).
+ */
+export function formatZecimal(n: number, semnZecimal: string = ","): string {
   const r = Math.round(n * 10) / 10;
-  return Number.isInteger(r) ? String(r) : r.toFixed(1).replace(".", ",");
+  return Number.isInteger(r) ? String(r) : r.toFixed(1).replace(".", semnZecimal);
 }
+
+/** Formatul cifrelor din calculator, pe editie. */
+export type FormatCifre = {
+  bani: (n: number) => string;
+  ore: (n: number) => string;
+  zecimal: (n: number) => string;
+};
+
+/** Formatul romanesc: punct la mii, virgula zecimala, orele fara separator. */
+export const FORMAT_ROMANESC: FormatCifre = {
+  bani: (n) => formatBani(n),
+  ore: formatOre,
+  zecimal: (n) => formatZecimal(n),
+};
 
 /** Valorile pe care le poate lua un cursor. */
 export function valoriCursor(c: Cursor): number[] {

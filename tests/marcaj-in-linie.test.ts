@@ -89,6 +89,31 @@ function fisiereTs(dosar: string): string[] {
     .sort()
 }
 
+/**
+ * Modulele de continut ale COMPONENTELOR unei editii (decizia 53: pagina compune componentele RO cu textul editiei),
+ * numite `<pagina>-componente.ts`: nu exporta o `pagina` randata prin CorpPagina, ci date pentru componente. Felia
+ * 99 le-a adus; controlul "fiecare fisier a dat o pagina" le numara separat, iar sirurile lor trec prin acelasi
+ * detector de reziduuri, ca nimic sa nu iasa din proba.
+ */
+const MODUL_COMPONENTE = /-componente\.ts$/
+
+/** Toate sirurile dintr-o valoare (frunzele de tip sir, recursiv). */
+function siruri(valoare: unknown, acc: string[] = []): string[] {
+  if (typeof valoare === 'string') acc.push(valoare)
+  else if (Array.isArray(valoare)) for (const v of valoare) siruri(v, acc)
+  else if (valoare && typeof valoare === 'object') for (const v of Object.values(valoare)) siruri(v, acc)
+  return acc
+}
+
+async function componenteDin(dosar: string): Promise<{ fisier: string; texte: string[]; arePagina: boolean }[]> {
+  const iesire: { fisier: string; texte: string[]; arePagina: boolean }[] = []
+  for (const fisier of fisiereTs(dosar).filter((f) => MODUL_COMPONENTE.test(f))) {
+    const modul = (await import(pathToFileURL(fisier).href)) as Record<string, unknown>
+    iesire.push({ fisier: relative(RADACINA, fisier), texte: siruri(Object.values(modul)), arePagina: 'pagina' in modul })
+  }
+  return iesire
+}
+
 async function paginiDin(dosar: string): Promise<{ fisier: string; pagina: PaginaContinut }[]> {
   const iesire: { fisier: string; pagina: PaginaContinut }[] = []
   for (const fisier of fisiereTs(dosar)) {
@@ -253,16 +278,25 @@ describe('proba 1: zero reziduuri de marcaj in textul randat', () => {
     const roMd = await paginiDin(DOSAR_RO_MD)
     const md = documenteMd()
     const see = documenteSee()
-    // Controlul contra modulelor ratate: fiecare fisier de pe disc a dat o pagina randata.
-    expect(en.length).toBe(fisiereTs(DOSAR_EN).length)
+    // Controlul contra modulelor ratate: fiecare fisier de pe disc a dat o pagina randata, in afara modulelor de
+    // continut al componentelor (felia 99), care nu au pagina si se verifica mai jos, pe sirurile lor.
+    const compEn = await componenteDin(DOSAR_EN)
+    const compRoMd = await componenteDin(DOSAR_RO_MD)
+    expect(compEn.map((c) => c.fisier.split(/[\\/]/).pop())).toContain('acasa-componente.ts')
+    for (const c of [...compEn, ...compRoMd]) {
+      expect(c.arePagina, c.fisier).toBe(false)
+      expect(c.texte.length, c.fisier).toBeGreaterThan(20)
+    }
+    expect(en.length).toBe(fisiereTs(DOSAR_EN).length - compEn.length)
     expect(en.length).toBeGreaterThanOrEqual(7)
-    expect(roMd.length).toBe(fisiereTs(DOSAR_RO_MD).length)
+    expect(roMd.length).toBe(fisiereTs(DOSAR_RO_MD).length - compRoMd.length)
     const moduleMd = readdirSync(DOSAR_MD).filter((f) => /\.(ro|en)\.ts$/.test(f))
     expect(new Set(md.map((x) => x.nume.split(' ')[0])).size).toBe(moduleMd.length)
     expect(see.length).toBeGreaterThan(0)
 
     const gasite: string[] = []
     for (const { fisier, pagina } of [...en, ...roMd]) for (const r of reziduuri(textDin(randeazaPagina(pagina)))) gasite.push(fisier + ': ' + r)
+    for (const { fisier, texte } of [...compEn, ...compRoMd]) for (const t of texte) for (const r of reziduuri(t)) gasite.push(fisier + ': ' + r)
     for (const { nume, d } of [...md, ...see]) for (const r of reziduuri(textDin(randeazaDocument(d)))) gasite.push(nume + ': ' + r)
     expect(gasite).toEqual([])
     console.log(

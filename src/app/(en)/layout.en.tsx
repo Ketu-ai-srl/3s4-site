@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
 import BaraMobil from "@/components/canale/BaraMobil";
 import PunctConsimtamant from "@/components/consimtamant/PunctConsimtamant";
 import Antet from "@/components/global/Antet";
+import { CULOARE_MARCA } from "@/components/global/culoare-marca";
 import Subsol from "@/components/global/Subsol";
+import TranzitieVedere from "@/components/global/TranzitieVedere";
 import DateStructurateSite from "@/components/seo/DateStructurateSite";
 import { BRAND } from "@/content/entitate";
 import { navigatieEn } from "@/content/navigatie-en";
@@ -22,6 +24,9 @@ import { adresaSite } from "@/lib/site";
 // structurate ale site-ului. Canalele (WhatsApp, telefon, e-mail) se rezolva AICI, pe server, din
 // `CANALE_JSON`, si ajung la piesele de browser ca proprietati. Bannerul de consimtamant il monteaza felia
 // masurarii, nu aceasta.
+//
+// Ca pe layout-ul RO (decizia 53, aceeasi experienta): culoarea marcii in bara navigatorului (`viewport.themeColor`)
+// si tranzitia de vedere la navigarea client (`TranzitieVedere`, oprita la miscare redusa).
 
 const EDITIE = EDITII.en;
 
@@ -39,6 +44,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: CULOARE_MARCA,
+};
+
 export default function RadacinaEn({ children }: Readonly<{ children: ReactNode }>) {
   const navigatie = navigatieEn();
   return (
@@ -52,6 +61,7 @@ export default function RadacinaEn({ children }: Readonly<{ children: ReactNode 
           {children}
         </div>
         <Subsol navigatie={navigatie} />
+        <TranzitieVedere />
         <PunctConsimtamant limba="en" />
         <BaraMobil bara={navigatie.bara} />
         <DateStructurateSite />

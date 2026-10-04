@@ -1,20 +1,14 @@
 "use client";
 
-// "Inapoi la variante" (preturi.md §5): buton-text 14/500 `ardezie-5`, sageata spre stanga, hover
-// `ardezie-9`. E o legatura spre poarta, ca sa mearga si fara JavaScript; cu JavaScript, poarta
-// revine pe loc, fara animatie, iar adresa ramane cum era (ca la referinta).
+// "Inapoi la variante", INVELITOAREA RO: aceeasi cale si acelasi export ca inainte. Intra in pagina prin
+// `LiniaDeBaza` (componenta de server), nu prin pagina, deci alta editie isi pune butonul in slotul
+// `inapoi` al liniei de baza. Aspectul si comportamentul sunt in `ButonInapoiVedere`.
 
-import Iconita from "@/components/primitive/Iconita";
 import { ANCORE_PRETURI, LINIA_DE_BAZA } from "@/content/preturi";
-import { useInapoi } from "./LumeaPreturi";
-import s from "./lume.module.css";
+import ButonInapoiVedere, { type ContinutButonInapoi } from "./ButonInapoiVedere";
+
+const CONTINUT: ContinutButonInapoi = { text: LINIA_DE_BAZA.inapoi, ancoraPoarta: ANCORE_PRETURI.poarta };
 
 export default function ButonInapoi() {
-  const inapoi = useInapoi();
-  return (
-    <a href={"#" + ANCORE_PRETURI.poarta} className={s.inapoi} onClick={inapoi}>
-      <Iconita nume="arrow-left" marime={14} contur={2} />
-      <span>{LINIA_DE_BAZA.inapoi}</span>
-    </a>
-  );
+  return <ButonInapoiVedere continut={CONTINUT} />;
 }

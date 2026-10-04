@@ -8,6 +8,9 @@
 // o eticheta mica in coltul panoului spune acelasi lucru (abatere declarata de la forma masurata:
 // la referinta panoul nu are eticheta, dar acolo datele nu sunt fictive).
 // La miscare redusa bucla se opreste, jetoanele raman pe loc, opace.
+//
+// PE EDITIE: textele vin prin `continut`, cu implicitul RO (`MACHETA_STRAT`); tipul e structural,
+// declarat aici. Intarzierile raman ale formei (4 fisiere, 3 campuri).
 
 import { Layers } from "lucide-react";
 import { MACHETA_STRAT } from "@/content/produs/platforma";
@@ -16,8 +19,18 @@ import s from "./MachetaStrat.module.css";
 const INTARZIERI_FISIERE = ["0s", "0.9s", "1.8s", "2.7s"];
 const INTARZIERI_CAMPURI = ["0.4s", "1.3s", "2.2s"];
 
-export default function MachetaStrat() {
-  const m = MACHETA_STRAT;
+export type ContinutMachetaStrat = {
+  /** Declaratia datelor fictive, pentru cititoarele de ecran (plan D9). */
+  declaratie: string;
+  eticheta: string;
+  fisiere: string[];
+  miez: string;
+  campuri: string[];
+  insigne: string[];
+};
+
+export default function MachetaStrat({ continut = MACHETA_STRAT }: { continut?: ContinutMachetaStrat }) {
+  const m = continut;
   return (
     <figure className={s.macheta}>
       <figcaption className="doar-cititor">{m.declaratie}</figcaption>

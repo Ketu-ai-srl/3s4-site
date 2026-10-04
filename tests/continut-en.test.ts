@@ -136,9 +136,19 @@ describe('modelul paginilor de continut', () => {
     expect(numarCuvinte('   ')).toBe(0)
   })
 
+  // Felia 99 (decizia 53): modulele `<pagina>-componente.ts` poarta continutul COMPONENTELOR startului (pagina compune
+  // componentele RO cu textul editiei), nu o pagina pe modelul CorpPagina; se numara separat si n-au voie sa exporte
+  // `pagina`, ca un modul de pagina sa nu se poata ascunde sub numele lor.
   it('fiecare modul din src/content/en exporta `pagina` valida, cu cheia egala cu numele fisierului', async () => {
-    const moduleEn = fisiereDin(DOSAR_EN).filter((f) => f.endsWith('.ts') && !relative(DOSAR_EN, f).includes(sep))
+    const toate = fisiereDin(DOSAR_EN).filter((f) => f.endsWith('.ts') && !relative(DOSAR_EN, f).includes(sep))
+    const componente = toate.filter((f) => f.endsWith('-componente.ts'))
+    const moduleEn = toate.filter((f) => !componente.includes(f))
+    expect(componente.map((f) => relative(DOSAR_EN, f))).toContain('acasa-componente.ts')
     const probleme: string[] = []
+    for (const f of componente) {
+      const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { pagina?: unknown }
+      if (m.pagina !== undefined) probleme.push(relative(DOSAR_EN, f) + ': modul de componente care exporta `pagina`')
+    }
     for (const f of moduleEn) {
       const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { pagina?: PaginaContinut }
       const cheie = relative(DOSAR_EN, f).replace(/\.ts$/, '')

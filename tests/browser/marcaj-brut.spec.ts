@@ -9,7 +9,9 @@ import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
  *   2. continutul fiecarui `script[type="application/ld+json"]`: FAQPage se construieste din acelasi marcaj prin
  *      `textSimplu`, iar un reziduu acolo il citesc motoarele si asistentii AI fara sa se vada pe pagina;
  *   3. atributul `content` al lui `meta[name=description]` si al fiecarui `meta[property^="og:"]`.
- * Plus pagina de start: "Search with sources" e legatura spre `/features/search`, in `strong`, in `<main>`.
+ * Cazul paginii de start ("Search with sources" ca legatura in `strong`) a iesit la felia 99: pagina compune acum
+ * componentele startului RO (decizia 53), iar sectiunea "What can I do with 3S?" nu mai are loc pe ea (ramane in fisa).
+ * Randarea legaturii din accent pe modulul `home.ts` o dovedeste in continuare `tests/marcaj-in-linie.test.ts`.
  *
  * CONTROALELE, asamblate la RULARE (marcajul vanat se lipeste din bucati, ca fisierul sa nu-l poarte literal):
  * detectorul iese rosu pe o COPIE a HTML-ului paginii de start cu un reziduu fabricat NUMAI in JSON-LD, apoi numai in
@@ -119,16 +121,6 @@ test('fiecare cale din sitemap: zero reziduuri pe corp, JSON-LD si meta (numarul
   expect(gasite).toEqual([])
   expect(verificate).toBe(cai.length)
   expect(blocuriJsonLd).toBeGreaterThan(0)
-})
-
-test('pagina de start: "Search with sources" e legatura spre /features/search, in strong, in <main>', async ({ page }) => {
-  await page.goto(copie.baza + '/')
-  const legaturi = page.locator('main strong > a[href="/features/search"]', { hasText: 'Search with sources' })
-  await expect(legaturi).toHaveCount(1)
-  // Textul accentului e cel din modul, fara marcaj: legatura plus punctul.
-  const accent = page.locator('main strong').filter({ has: page.locator('a[href="/features/search"]') })
-  await expect(accent).toHaveCount(1)
-  await expect(accent).toHaveText('Search with sources.')
 })
 
 test('martor NEGATIV: copia neatinsa a HTML-ului startului, incarcata ca atare, iese curata pe toate suprafetele', async ({ page }) => {

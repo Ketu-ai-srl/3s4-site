@@ -14,11 +14,20 @@
 //   - matricea: "nu" e o liniuta desenata, cu textul "Nu" pentru cititoarele de ecran; invelisul
 //     derulant primeste focus si nume;
 //   - intrebarile frecvente: capul ramane centrat si la 390.
+//
+// PE EDITIE: continutul vine pe sectiuni prin `continut`, cu implicitul RO (constantele din
+// `src/content/produs/securitate.ts`, nemodificate: tipurile de aici sunt structurale si le accepta).
+// `sectiuni` alege ce sectiuni se randeaza, in ordinea fixa a componentei (implicit: toate). Slotul
+// `verificare` primeste insula verificarii din browser a editiei (implicit `<VerificareBrowser />`,
+// invelitoarea RO); butonul stocarii proprii e optional in tip. Eticheta accesibila a sectiunii de
+// verificare si cea a firului au implicitul RO.
 
+import type { ReactNode } from "react";
 import { Check, Link as IconitaLegatura, Lock } from "lucide-react";
 import Acordeon from "@/components/primitive/Acordeon";
 import Buton from "@/components/primitive/Buton";
 import EroulInterior from "@/components/primitive/EroulInterior";
+import type { NivelFir } from "@/components/primitive/FirPagina";
 import {
   BLOC_ACCES,
   BLOC_CICLU,
@@ -35,29 +44,114 @@ import {
   TITLU_PILONI_SECURITATE,
   type DreptMatrice,
 } from "@/content/produs/securitate";
+import type { Legatura } from "@/content/navigatie";
+import type { IconitaProdus as NumeIconita } from "@/content/produs/iconite";
+import type { BlocIntrebari } from "@/content/produs/intrebari";
 import { CapNumeratSecuritate } from "./Capete";
-import HartaEuropa from "./HartaEuropa";
+import HartaEuropa, { type ContinutHartaEuropa } from "./HartaEuropa";
 import IconitaProdus from "./IconitaProdus";
 import Seif from "./Seif";
 import VerificareBrowser from "./VerificareBrowser";
 import { nerupt } from "./nerupt";
 import s from "./securitate.module.css";
 
-function Piloni() {
+type TitluText = { titlu: string; text: string };
+type BlocNumerotat = { numar: string; titlu: string; subtitlu: string };
+
+/** Continutul paginii, pe sectiuni; constantele RO il satisfac fara editare. */
+export type ContinutPaginaSecuritate = {
+  fir: NivelFir[];
+  erou: { titlu: string; subtitlu: string };
+  piloni?: { titlu: string; elemente: (TitluText & { iconita: NumeIconita })[] };
+  infrastructura?: BlocNumerotat & {
+    harta: ContinutHartaEuropa;
+    specificatii: { termen: string; valoare: string; mono: string | null }[];
+  };
+  stocareProprie?: BlocNumerotat & {
+    noduri: { firma: { eticheta: string; sub: string }; legatura: string; aplicatie: { eticheta: string; sub: string } };
+    beneficii: TitluText[];
+    buton?: Legatura;
+    nota: string;
+  };
+  criptare?: BlocNumerotat & {
+    flux: { noduri: { iconita: NumeIconita; eticheta: string; sub: string | null }[]; legaturi: string[] };
+    carduri: (TitluText & { eticheta: string })[];
+  };
+  acces?: BlocNumerotat & {
+    matrice: {
+      titlu: string;
+      capRol: string;
+      drepturi: string[];
+      roluri: { nume: string; descriere: string; valori: DreptMatrice[] }[];
+      texte: Record<DreptMatrice, string>;
+      nota: string;
+    };
+    controale: TitluText[];
+  };
+  ciclu?: BlocNumerotat & { pasi: (TitluText & { numar: string; iconita: NumeIconita })[] };
+  reglementare?: BlocNumerotat & { insigne: { marca: string; nume: string; nota: string }[]; carduri: TitluText[] };
+  originale?: BlocNumerotat & { controale: TitluText[] };
+  raportare?: { titlu: string; text: string; lista: string[]; buton: Legatura; nota: string };
+  intrebari?: BlocIntrebari & { numar: string };
+};
+
+/** Sectiunile paginii, in ordinea fixa de randare. `verificare` si `seif` nu au continut aici. */
+export const SECTIUNI_SECURITATE = [
+  "erou",
+  "piloni",
+  "infrastructura",
+  "verificare",
+  "stocareProprie",
+  "criptare",
+  "acces",
+  "ciclu",
+  "reglementare",
+  "originale",
+  "raportare",
+  "intrebari",
+  "seif",
+] as const;
+export type SectiuneSecuritate = (typeof SECTIUNI_SECURITATE)[number];
+
+/** Implicitul RO: constantele din `src/content/produs/securitate.ts`, neschimbate. */
+const CONTINUT_RO: ContinutPaginaSecuritate = {
+  fir: FIR_SECURITATE,
+  erou: EROU_SECURITATE,
+  piloni: { titlu: TITLU_PILONI_SECURITATE, elemente: PILONI_SECURITATE },
+  infrastructura: BLOC_INFRASTRUCTURA,
+  stocareProprie: BLOC_STOCARE_PROPRIE,
+  criptare: BLOC_CRIPTARE,
+  acces: BLOC_ACCES,
+  ciclu: BLOC_CICLU,
+  reglementare: BLOC_REGLEMENTARE,
+  originale: BLOC_ORIGINALE,
+  raportare: BLOC_RAPORTARE,
+  intrebari: INTREBARI_SECURITATE,
+};
+
+/** Sectiunea ceruta in `sectiuni`, fara continut: eroare la construire, nu o sectiune scoasa tacut. */
+function ceruta<T>(valoare: T | undefined, sectiune: SectiuneSecuritate): T {
+  if (valoare === undefined) {
+    throw new Error("PaginaSecuritate: sectiunea `" + sectiune + "` e ceruta, dar continutul ei lipseste");
+  }
+  return valoare;
+}
+
+function Piloni({ p }: { p: NonNullable<ContinutPaginaSecuritate["piloni"]> }) {
   return (
     <section className={s.piloni} aria-labelledby="securitate-piloni">
       <div className="container-site">
         <h2 id="securitate-piloni" className="doar-cititor">
-          {TITLU_PILONI_SECURITATE}
+          {p.titlu}
         </h2>
         <ul className={s.lista + " " + s.piloniGrila}>
-          {PILONI_SECURITATE.map((p) => (
-            <li key={p.titlu} className={s.card + " " + s.pilon}>
+          {p.elemente.map((x) => (
+            <li key={x.titlu} className={s.card + " " + s.pilon}>
               <span className={s.pilonIconita}>
-                <IconitaProdus nume={p.iconita} marime={22} />
+                <IconitaProdus nume={x.iconita} marime={22} />
               </span>
-              <h3 className={s.cardTitlu + " " + s.pilonTitlu}>{nerupt(p.titlu)}</h3>
-              <p className={s.cardText}>{nerupt(p.text)}</p>
+              <h3 className={s.cardTitlu + " " + s.pilonTitlu}>{nerupt(x.titlu)}</h3>
+              <p className={s.cardText}>{nerupt(x.text)}</p>
             </li>
           ))}
         </ul>
@@ -66,13 +160,12 @@ function Piloni() {
   );
 }
 
-function Infrastructura() {
-  const b = BLOC_INFRASTRUCTURA;
+function Infrastructura({ b }: { b: NonNullable<ContinutPaginaSecuritate["infrastructura"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-01">
       <div className="container-site">
         <CapNumeratSecuritate id="securitate-bloc-01" numar={b.numar} titlu={b.titlu} subtitlu={b.subtitlu} />
-        <HartaEuropa />
+        <HartaEuropa continut={b.harta} />
         <dl className={s.card + " " + s.specificatii}>
           {b.specificatii.map((r) => (
             <div key={r.termen} className={s.specRand}>
@@ -89,12 +182,10 @@ function Infrastructura() {
   );
 }
 
-function Verificare() {
+function Verificare({ eticheta, insula }: { eticheta: string; insula: ReactNode }) {
   return (
-    <section className={s.verificare} aria-label="Verificarea conexiunii din browser">
-      <div className="container-site">
-        <VerificareBrowser />
-      </div>
+    <section className={s.verificare} aria-label={eticheta}>
+      <div className="container-site">{insula}</div>
     </section>
   );
 }
@@ -112,8 +203,7 @@ function Legatura({ text, iconita, clasa }: { text: string; iconita: "lant" | "l
   );
 }
 
-function StocareProprie() {
-  const b = BLOC_STOCARE_PROPRIE;
+function StocareProprie({ b }: { b: NonNullable<ContinutPaginaSecuritate["stocareProprie"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-02">
       <div className="container-site">
@@ -150,9 +240,11 @@ function StocareProprie() {
             ))}
           </ul>
           <div className={s.stocareCta}>
-            <Buton varianta="plin" legatura={b.buton}>
-              {b.buton.text}
-            </Buton>
+            {b.buton ? (
+              <Buton varianta="plin" legatura={b.buton}>
+                {b.buton.text}
+              </Buton>
+            ) : null}
             <p className={s.notaMica}>{nerupt(b.nota)}</p>
           </div>
         </div>
@@ -161,8 +253,7 @@ function StocareProprie() {
   );
 }
 
-function Criptare() {
-  const b = BLOC_CRIPTARE;
+function Criptare({ b }: { b: NonNullable<ContinutPaginaSecuritate["criptare"]> }) {
   const [dispozitiv, servere, stocare] = b.flux.noduri;
   const nod = (n: typeof dispozitiv) => (
     <div className={s.fluxNod}>
@@ -229,8 +320,7 @@ function ListaControale({ elemente }: { elemente: { titlu: string; text: string 
   );
 }
 
-function Acces() {
-  const b = BLOC_ACCES;
+function Acces({ b }: { b: NonNullable<ContinutPaginaSecuritate["acces"]> }) {
   const m = b.matrice;
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-04">
@@ -275,8 +365,7 @@ function Acces() {
   );
 }
 
-function Ciclu() {
-  const b = BLOC_CICLU;
+function Ciclu({ b }: { b: NonNullable<ContinutPaginaSecuritate["ciclu"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-05">
       <div className="container-site">
@@ -300,8 +389,7 @@ function Ciclu() {
   );
 }
 
-function Reglementare() {
-  const b = BLOC_REGLEMENTARE;
+function Reglementare({ b }: { b: NonNullable<ContinutPaginaSecuritate["reglementare"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-06">
       <div className="container-site">
@@ -328,8 +416,7 @@ function Reglementare() {
   );
 }
 
-function Originale() {
-  const b = BLOC_ORIGINALE;
+function Originale({ b }: { b: NonNullable<ContinutPaginaSecuritate["originale"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-07">
       <div className="container-site">
@@ -340,8 +427,7 @@ function Originale() {
   );
 }
 
-function Raportare() {
-  const b = BLOC_RAPORTARE;
+function Raportare({ b }: { b: NonNullable<ContinutPaginaSecuritate["raportare"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-bloc-08">
       <div className="container-site">
@@ -370,8 +456,7 @@ function Raportare() {
   );
 }
 
-function Intrebari() {
-  const q = INTREBARI_SECURITATE;
+function Intrebari({ q }: { q: NonNullable<ContinutPaginaSecuritate["intrebari"]> }) {
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-intrebari">
       <div className="container-site">
@@ -382,22 +467,49 @@ function Intrebari() {
   );
 }
 
-export default function PaginaSecuritate() {
+export type PaginaSecuritateProps = {
+  continut?: ContinutPaginaSecuritate;
+  /** Sectiunile de randat; ordinea ramane cea a componentei. Lipsa = toate. */
+  sectiuni?: readonly SectiuneSecuritate[];
+  /** Insula verificarii din browser, pe editie; lipsa = invelitoarea RO. */
+  verificare?: ReactNode;
+  /** Numele accesibil al sectiunii de verificare; lipsa = implicitul RO. */
+  etichetaVerificare?: string;
+  /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul RO. */
+  etichetaFir?: string;
+};
+
+export default function PaginaSecuritate({
+  continut = CONTINUT_RO,
+  sectiuni,
+  verificare,
+  etichetaVerificare = "Verificarea conexiunii din browser",
+  etichetaFir,
+}: PaginaSecuritateProps) {
+  const c = continut;
+  const are = (k: SectiuneSecuritate) => sectiuni === undefined || sectiuni.includes(k);
   return (
     <>
-      <EroulInterior fir={FIR_SECURITATE} titlu={EROU_SECURITATE.titlu} subtitlu={EROU_SECURITATE.subtitlu} />
-      <Piloni />
-      <Infrastructura />
-      <Verificare />
-      <StocareProprie />
-      <Criptare />
-      <Acces />
-      <Ciclu />
-      <Reglementare />
-      <Originale />
-      <Raportare />
-      <Intrebari />
-      <Seif />
+      {are("erou") ? (
+        <EroulInterior
+          fir={c.fir}
+          titlu={c.erou.titlu}
+          subtitlu={c.erou.subtitlu}
+          {...(etichetaFir !== undefined ? { etichetaFir } : {})}
+        />
+      ) : null}
+      {are("piloni") ? <Piloni p={ceruta(c.piloni, "piloni")} /> : null}
+      {are("infrastructura") ? <Infrastructura b={ceruta(c.infrastructura, "infrastructura")} /> : null}
+      {are("verificare") ? <Verificare eticheta={etichetaVerificare} insula={verificare ?? <VerificareBrowser />} /> : null}
+      {are("stocareProprie") ? <StocareProprie b={ceruta(c.stocareProprie, "stocareProprie")} /> : null}
+      {are("criptare") ? <Criptare b={ceruta(c.criptare, "criptare")} /> : null}
+      {are("acces") ? <Acces b={ceruta(c.acces, "acces")} /> : null}
+      {are("ciclu") ? <Ciclu b={ceruta(c.ciclu, "ciclu")} /> : null}
+      {are("reglementare") ? <Reglementare b={ceruta(c.reglementare, "reglementare")} /> : null}
+      {are("originale") ? <Originale b={ceruta(c.originale, "originale")} /> : null}
+      {are("raportare") ? <Raportare b={ceruta(c.raportare, "raportare")} /> : null}
+      {are("intrebari") ? <Intrebari q={ceruta(c.intrebari, "intrebari")} /> : null}
+      {are("seif") ? <Seif /> : null}
     </>
   );
 }
