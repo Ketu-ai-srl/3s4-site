@@ -237,13 +237,13 @@ describe('martorii tiparelor de continut', () => {
   it('martor POZITIV: contactul cu un om pe WhatsApp trece (frazele paginilor EN si variante)', () => {
     for (const fraza of [
       'Message us on ' + WA + ' and tell us about your archive. Please do not send documents or personal data in this first message.',
-      'Message 3S on ' + WA + ' or call +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian.',
-      'You can reach 3S on ' + WA + ' at +373 68 055 599 or by phone on the same number.',
+      'Message 3S on ' + WA + ' or call +373 60 055 599. Tell us which archive you have and where. We reply in English or Romanian.',
+      'You can reach 3S on ' + WA + ' at +373 60 055 599 or by phone on the same number.',
       WA + ' is our main channel. On this number you talk to people from our team.',
       'Message us on ' + WA + '. A few lines are enough. Tell us:',
       'Send us a message on ' + WA + '; a person replies, in English or Romanian.',
       'Contact 3S: ' + WA + ' and Phone',
-      'You can find us on ' + WA + ' at +373 68 055 599.',
+      'You can find us on ' + WA + ' at +373 60 055 599.',
     ])
       expect(asistent.test(fraza), fraza).toBe(false)
   })

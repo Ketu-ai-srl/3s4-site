@@ -109,7 +109,7 @@
   },
   {
     "id": "ro-md-canale-de-contact",
-    "text": "WhatsApp, mesaje și apeluri, pe +373 68 055 599 (fără apeluri GSM, decizia 56); adresa de e-mail apare pe pagini numai după ce poate răspunde din domeniu",
+    "text": "WhatsApp, mesaje și apeluri, pe +373 60 055 599 (fără apeluri GSM, decizia 56); adresa de e-mail apare pe pagini numai după ce poate răspunde din domeniu",
     "unde": "src/content/ro-md/contact.ts",
     "stare": "confirmat",
     "sursa": "oglinda RO-MD a intrarii en-canale-de-contact (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (confirmata pentru numar; e-mailul, dupa P-40); decizia 3 a owner-ului.",

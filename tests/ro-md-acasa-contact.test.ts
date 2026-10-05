@@ -273,10 +273,10 @@ describe('legaturile paginilor cu restul site-ului', () => {
   it('legaturile wa.me si mailto sunt identice, caracter cu caracter, cu forma de referinta a fisei', () => {
     const wa = (pg: PaginaContinut) => legaturaWhatsApp(pg.cta.ref, pg.cta.textWhatsapp, CANALE_3S_MD)
     expect(wa(acasa.paginaAcasa())).toBe(
-      'https://wa.me/37368055599?text=Bun%C4%83%20ziua%2C%203S.%20Am%20citit%20site-ul%203S%20%5Bref%3Aro-md-acasa%5D.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.',
+      'https://wa.me/37360055599?text=Bun%C4%83%20ziua%2C%203S.%20Am%20citit%20site-ul%203S%20%5Bref%3Aro-md-acasa%5D.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.',
     )
     expect(wa(contact.paginaContact())).toBe(
-      'https://wa.me/37368055599?text=Bun%C4%83%20ziua%2C%203S.%20Am%20citit%20pagina%20de%20contact%20%5Bref%3Aro-md-contact%5D.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.',
+      'https://wa.me/37360055599?text=Bun%C4%83%20ziua%2C%203S.%20Am%20citit%20pagina%20de%20contact%20%5Bref%3Aro-md-contact%5D.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.',
     )
     expect(acasa.emailAcasa(ADRESA_EMAIL)).toBe(
       'mailto:' +
@@ -292,7 +292,7 @@ describe('legaturile paginilor cu restul site-ului', () => {
 
   it('numarul scris in text e numarul domeniului, afisat ca in subsol', async () => {
     const { numarAfisat } = await import('../src/content/canale')
-    expect(numarAfisat(CANALE_3S_MD)).toBe('+373 68 055 599')
+    expect(numarAfisat(CANALE_3S_MD)).toBe('+373 60 055 599')
     expect(contact.paginaContact().capsula).toContain(numarAfisat(CANALE_3S_MD))
   })
 
@@ -425,7 +425,7 @@ describe('ce nu ajunge pe paginile RO-MD', () => {
       'de la 0 ' + 'R' + 'ON',
       'Fișierele sunt păstrate în German' + 'ia.',
       'Răspundem și în limba ' + 'rus' + 'ă.',
-      'Sun' + 'ă-ne la +373 68 055 599.',
+      'Sun' + 'ă-ne la +373 60 055 599.',
     ]
     expect(rau).toHaveLength(INTERZISE.length)
     for (const [i, fraza] of rau.entries()) expect(incalcari(fraza), fraza).toContain(INTERZISE[i].motiv)
@@ -443,10 +443,10 @@ describe('ce nu ajunge pe paginile RO-MD', () => {
     // Martor POZITIV al deciziei 49: contactul cu o persoana pe WhatsApp, cum il scriu paginile, nu e acuzat.
     for (const fraza of [
       'Scrie-ne pe ' + WA + ' sau prin e-mail și descrie pe scurt arhiva firmei. În primul mesaj nu trimite documente sau date cu caracter personal.',
-      'Poți contacta echipa 3S pe ' + WA + ', prin mesaj sau apel, la +373 68 055 599. Descrie-ne pe scurt arhiva firmei.',
-      'Dacă preferi o convorbire, sună-ne pe ' + WA + ', la +373 68 055 599; la acest număr primim apeluri numai prin ' + WA + '.',
+      'Poți contacta echipa 3S pe ' + WA + ', prin mesaj sau apel, la +373 60 055 599. Descrie-ne pe scurt arhiva firmei.',
+      'Dacă preferi o convorbire, sună-ne pe ' + WA + ', la +373 60 055 599; la acest număr primim apeluri numai prin ' + WA + '.',
       'Contact 3S: ' + WA + ', mesaje și apeluri',
-      'Contactează 3S pe ' + WA + ' (mesaj sau apel), la +373 68 055 599. Îți răspunde un membru al echipei.',
+      'Contactează 3S pe ' + WA + ' (mesaj sau apel), la +373 60 055 599. Îți răspunde un membru al echipei.',
       'Dacă preferi o convorbire pe ' + WA + ', găsești numărul pe [pagina de contact](/ro/contact).',
       'Dacă preferi e-mailul sau o convorbire pe ' + WA + ', găsești adresa și numărul pe [pagina de contact](/ro/contact).',
     ])

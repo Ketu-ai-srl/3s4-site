@@ -184,7 +184,7 @@ test('martorii deciziei 49 pe HTML asamblat la rulare: asistentul e prins, conta
   expect(frazeAsistent(rau)).toHaveLength(4)
   expect(hrefuri(rau).filter((h) => h.endsWith(CALE_P04))).toHaveLength(1)
   const bun =
-    '<main><a href="' + WA + 'x">Message us on ' + NUME_WA + '</a><p>Message 3S on ' + NUME_WA + ' or call +373 68 055 599. ' +
+    '<main><a href="' + WA + 'x">Message us on ' + NUME_WA + '</a><p>Message 3S on ' + NUME_WA + ' or call +373 60 055 599. ' +
     'Tell us which archive you have and where. We reply in English or Romanian.</p>' +
     '<p>' + NUME_WA + ' is our main channel. On this number you talk to people from our team.</p></main>'
   expect(frazeAsistent(bun)).toEqual([])

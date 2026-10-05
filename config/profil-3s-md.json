@@ -10,7 +10,7 @@
       "denumire": "3S Demerzel SRL",
       "sediu": "[în curs de înregistrare]",
       "email": "contact@3s.md",
-      "telefon": "+373 68 055 599",
+      "telefon": "+373 60 055 599",
       "numar_orc": "[în curs de înregistrare]",
       "cod_fiscal": "[în curs de înregistrare]",
       "tara": "Republica Moldova",
@@ -19,8 +19,8 @@
   },
   "CANALE_JSON": {
     "formulare": false,
-    "whatsapp": "37368055599",
-    "telefon": "+37368055599",
+    "whatsapp": "37360055599",
+    "telefon": "+37360055599",
     "email": "",
     "emailSecuritate": "security@3s.com.ro"
   }

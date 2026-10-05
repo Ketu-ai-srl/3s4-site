@@ -338,7 +338,7 @@ describe('ce nu ajunge pe paginile EN de referinta', () => {
 
   it('martorii asistentului: fraza asamblata la rulare e prinsa, contactul cu un om nu', () => {
     expect(TIPAR_ASISTENT_WA.test('Ask your archive on ' + WA + '. Available in pilot.')).toBe(true)
-    expect(TIPAR_ASISTENT_WA.test('You can reach 3S on ' + WA + ' at +373 68 055 599.')).toBe(false)
+    expect(TIPAR_ASISTENT_WA.test('You can reach 3S on ' + WA + ' at +373 60 055 599.')).toBe(false)
     expect(TIPAR_ASISTENT_WA.test('Upload your invoices on ' + WA + '.')).toBe(true)
     expect(TIPAR_ASISTENT_WA.test('Message us on ' + WA + '. A person replies, in English or Romanian.')).toBe(false)
   })

@@ -94,7 +94,7 @@ export default function notificareSiActiuneRo(): DocumentJuridic {
       {
         cheie: "s13", titlu: "13. Contact",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Notificările și cererile de reexaminare se trimit prin e-mail la contact@3s.md și sunt gratuite. Le primim prin e-mail, ca să putem confirma primirea și păstra dovada; singura excepție e notificarea formală în original, pe care o putem primi și prin poștă (secțiunea 2). Dacă ne scrieți sau ne sunați pe WhatsApp la +373 68 055 599, vă rugăm să repetați notificarea prin e-mail; asta nu ne oprește să acționăm imediat când aflăm de o informație ilicită."] },
+          { jurisdictie: null, paragrafe: ["Notificările și cererile de reexaminare se trimit prin e-mail la contact@3s.md și sunt gratuite. Le primim prin e-mail, ca să putem confirma primirea și păstra dovada; singura excepție e notificarea formală în original, pe care o putem primi și prin poștă (secțiunea 2). Dacă ne scrieți sau ne sunați pe WhatsApp la +373 60 055 599, vă rugăm să repetați notificarea prin e-mail; asta nu ne oprește să acționăm imediat când aflăm de o informație ilicită."] },
         ],
       },
       {

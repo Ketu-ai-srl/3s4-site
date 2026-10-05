@@ -375,7 +375,7 @@ UMAMI_URL=https://statistica.exemplu.test
 UMAMI_WEBSITE_ID=00000000-0000-4000-8000-000000000000
 INDEXNOW_KEY=cheie-de-exemplu-indexnow-1234
 # CANALE_JSON are valori reale: numarul e cel publicat pe site; adresa ramane goala pana e confirmata
-CANALE_JSON={"formulare":false,"whatsapp":"37368055599","telefon":"+37368055599","email":"","emailSecuritate":"security@3s.com.ro"}
+CANALE_JSON={"formulare":false,"whatsapp":"37360055599","telefon":"+37360055599","email":"","emailSecuritate":"security@3s.com.ro"}
 ```
 
 In Coolify valoarea lui `OPERATOR_JSON` se lipeste ca text, fara ghilimele in plus; intr-un fisier

@@ -50,8 +50,8 @@ function textModul(m: Record<string, unknown>): string {
     for (const p of pretEn.PLANURI_EN) extra.push(...siruri(pretEn.randuriPlanEn(p)))
     extra.push(pretEn.CALCULATOR_EN.teaser.presupuneri('4 people', '25 minutes'), pretEn.CALCULATOR_EN.pesteConturi.inainte(25))
   }
-  if (m === contactEn) extra.push(contactEn.subtitluContactEn('+373 68 055 599', ''))
-  if (m === contactRoMd) extra.push(contactRoMd.subtitluContactRoMd('+373 68 055 599', ''))
+  if (m === contactEn) extra.push(contactEn.subtitluContactEn('+373 60 055 599', ''))
+  if (m === contactRoMd) extra.push(contactRoMd.subtitluContactRoMd('+373 60 055 599', ''))
   return [...siruri(Object.values(m)), ...extra].join('\n')
 }
 
@@ -161,7 +161,7 @@ describe('preturile EN (deciziile 18, 24, 54, 59)', () => {
   })
 
   it('randarea statica a pachetelor EN: sumele anuale in EUR, butoanele planurilor spre WhatsApp, zero RON; fara WhatsApp, butonul e inert', () => {
-    const wa = 'https://wa.me/37368055599?text=x'
+    const wa = 'https://wa.me/37360055599?text=x'
     const html = renderToStaticMarkup(createElement(PacheteEn, { gazda: '3s.md', analitica: false, whatsapp: wa }))
     for (const suma of ['75', '125', '200']) expect(html).toContain('>' + suma + '<')
     expect(html.split('href="' + wa + '"').length - 1).toBe(3)
@@ -210,7 +210,7 @@ describe('enterprise si contact pe editie', () => {
   })
 
   it('subtitlul de contact: numarul si adresa vin din canale; fara adresa (inainte de P-40) nu numeste e-mailul', () => {
-    const numar = '+373 68 055 599'
+    const numar = '+373 60 055 599'
     const adresa = 'contact' + '@3s.md'
     expect(contactEn.subtitluContactEn(numar, '')).toBe('You can reach 3S on WhatsApp at ' + numar + ', for messages and calls. We reply in English or Romanian.')
     expect(contactEn.subtitluContactEn(numar, adresa)).toContain(', or by e-mail at ' + adresa + '.')

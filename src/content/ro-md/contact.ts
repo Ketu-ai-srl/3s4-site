@@ -60,7 +60,7 @@ export const DUPA: readonly string[] = [
 const BAZA = adresaSite();
 const ID = iduri(BAZA);
 const LEGAL = caleMd("informatii-legale", "ro");
-const NUMAR = "+373 68 055 599";
+const NUMAR = "+373 60 055 599";
 
 /** Corpul e-mailului precompletat, ca in fisa (randurile noi se scriu `\r\n`). */
 const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm citit pagina de contact. Aș dori să întreb despre un pilot.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";

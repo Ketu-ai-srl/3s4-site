@@ -110,7 +110,7 @@ export function numarAfisat(canale: Canale = CANALE): string {
 }
 
 /**
- * Randul cu numarul de WhatsApp, ca text (`WhatsApp: +373 68 055 599`), pentru subsol; `null` cand domeniul n-are
+ * Randul cu numarul de WhatsApp, ca text (`WhatsApp: +373 60 055 599`), pentru subsol; `null` cand domeniul n-are
  * WhatsApp sau n-are numar de afisat. Decizia 56: numarul ramane afisat numai ca numar de WhatsApp, fara legatura.
  */
 export function randNumarWhatsApp(canale: Canale = CANALE): string | null {

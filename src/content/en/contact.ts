@@ -45,12 +45,12 @@ export const pagina: PaginaContinut = {
   meta: {
     titlu: "Contact 3S: WhatsApp Messages and Calls",
     descriere:
-      "Message or call 3S on WhatsApp at +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
+      "Message or call 3S on WhatsApp at +373 60 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
     cale: "/contact",
   },
   h1: "Talk to 3S",
   capsula:
-    "You can reach 3S on WhatsApp at +373 68 055 599, for messages and calls. Tell us which archive you have (paper, scans or digital files) and in which country. We reply in English or Romanian. There is no form and no account to create.",
+    "You can reach 3S on WhatsApp at +373 60 055 599, for messages and calls. Tell us which archive you have (paper, scans or digital files) and in which country. We reply in English or Romanian. There is no form and no account to create.",
   sectiuni: [
     {
       cheie: "first-message",
@@ -100,7 +100,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/contact",
       name: "Contact 3S: WhatsApp Messages and Calls",
       description:
-        "Message or call 3S on WhatsApp at +373 68 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
+        "Message or call 3S on WhatsApp at +373 60 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
       inLanguage: "en",
       isPartOf: { "@id": ID.site },
       mainEntity: { "@id": ID.organizatie },

@@ -94,7 +94,7 @@ export default function notificareSiActiuneEn(): DocumentJuridic {
       {
         cheie: "s13", titlu: "13. Contact",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Notices and requests for review are sent by e-mail to contact@3s.md and are free of charge. We receive them by e-mail, so that we can confirm receipt and keep the evidence; the only exception is the formal notice in the original, which we may also receive by post (section 2). If you write to us or call us on WhatsApp at +373 68 055 599, please repeat the notice by e-mail; that does not stop us from acting immediately when we learn of unlawful information."] },
+          { jurisdictie: null, paragrafe: ["Notices and requests for review are sent by e-mail to contact@3s.md and are free of charge. We receive them by e-mail, so that we can confirm receipt and keep the evidence; the only exception is the formal notice in the original, which we may also receive by post (section 2). If you write to us or call us on WhatsApp at +373 60 055 599, please repeat the notice by e-mail; that does not stop us from acting immediately when we learn of unlawful information."] },
         ],
       },
       {

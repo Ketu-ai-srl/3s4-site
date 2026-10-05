@@ -458,7 +458,7 @@ describe('evenimentele Umami', () => {
   it('canalele de contact, legatura spre contact si schimbarea limbii, cu limba paginii', () => {
     const ev = (href: string, pagina = PAGINA_EN, lang: string | null = null, limbaPagina = 'en') => evenimentDinLegatura({ href, lang }, pagina, limbaPagina)
     expect(ev('mailto:contact@exemplu.test')).toEqual(['contact', { canal: 'email', lang: 'en' }])
-    expect(ev('https://wa.me/37368055599?text=x')).toEqual(['contact', { canal: 'whatsapp', lang: 'en' }])
+    expect(ev('https://wa.me/37360055599?text=x')).toEqual(['contact', { canal: 'whatsapp', lang: 'en' }])
     expect(ev('/contact')).toEqual(['cta_contact', { lang: 'en' }])
     expect(ev('/ro/contact', PAGINA_RO, null, 'ro')).toEqual(['cta_contact', { lang: 'ro' }])
     expect(ev('/ro', PAGINA_EN, 'ro')).toEqual(['lang_switch', { lang: 'ro' }])
@@ -472,7 +472,7 @@ describe('evenimentele Umami', () => {
     expect(ev('/', 'en')).toBeNull()
     expect(ev('mailto:contact@exemplu.test', null, 'fr')).toBeNull()
     // Decizia 56: legaturile de apel au iesit, deci nici urmarirea lor; una scapata nu devine eveniment `contact`.
-    expect(ev(['tel', '+37368055599'].join(':'))).toBeNull()
+    expect(ev(['tel', '+37360055599'].join(':'))).toBeNull()
     expect(CANALE_CONTACT).toEqual(['whatsapp', 'email'])
     expect(limbaDin('ro-MD')).toBe('ro')
     expect(limbaDin('de')).toBeNull()
@@ -526,7 +526,7 @@ describe('evenimentele Umami', () => {
     expect(captura).toBe(true)
     const preventDefault = vi.fn()
     const apasa = (a: AncoraFalsa) => (ascultator as unknown as (e: unknown) => void)({ target: a, preventDefault })
-    apasa(new AncoraFalsa('https://wa.me/37368055599', null))
+    apasa(new AncoraFalsa('https://wa.me/37360055599', null))
     apasa(new AncoraFalsa('https://3s.md/pricing', null))
     expect(trimise).toEqual([['contact', { canal: 'whatsapp', lang: 'en' }]])
     expect(preventDefault).not.toHaveBeenCalled()
