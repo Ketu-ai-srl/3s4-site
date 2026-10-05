@@ -23,6 +23,10 @@ import { adresaSite, urlAbsolut } from "@/lib/site";
 // numai cand editia `ro-RO` e in build - sunt pagini romanesti, deci pe build-ul international ar fi fost
 // adrese care raspund 404.
 //
+// ASEZAREA (`src/lib/asezare.ts`): adresa din harta e cea SERVITA a rutei (`ruta.servita`), iar `lastmod` se cauta
+// dupa calea SURSA (`ruta.cale`), fiindca sursele paginii stau in arbore dupa ea: cu adresa servita, istoria git n-ar
+// gasi fisierul si campul ar disparea tacut. Pe asezarea `md` cele doua coincid.
+//
 // `changeFrequency` si `priority` lipsesc deliberat: Google le ignora, iar ca declaratii despre
 // viitor nu le putem sustine.
 
@@ -36,7 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     intrari.push(lastModified === null ? { url } : { url, lastModified });
   };
   for (const ruta of rutePentruHarta()) {
-    adauga(urlAbsolut(ruta.cale, baza), dataUltimuluiCommit(surseleRutei(ruta.cale, undefined, editiaRutei(ruta))));
+    adauga(urlAbsolut(ruta.servita, baza), dataUltimuluiCommit(surseleRutei(ruta.cale, undefined, editiaRutei(ruta))));
   }
   for (const articol of editiaInBuild("ro-RO") ? ARTICOLE : []) {
     adauga(urlAbsolut(caleArticol(articol), baza), articol.data);

@@ -6,10 +6,15 @@
 //
 // `data-canal` numeste canalul pentru ascultatorul delegat al masurarii (feliile urmatoare); legatura nu
 // are `target`, `preventDefault` sau parametri de urmarire.
+//
+// Intrarile tintelor sunt pe cai SURSA, deci pagina curenta se citeste ca sursa (`useCaleSursa`,
+// `src/lib/asezare.ts`); pe asezarea `md` e exact `usePathname()`.
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { alegePeCale, type LegaturaPeCale } from "@/content/navigatie";
+import { RUTE } from "@/content/rute";
+import { useCaleSursa } from "@/lib/asezare";
 
 export type LegaturaCanalProps = {
   legatura: LegaturaPeCale;
@@ -19,7 +24,7 @@ export type LegaturaCanalProps = {
 };
 
 export default function LegaturaCanal({ legatura, canal, className, children }: LegaturaCanalProps) {
-  const href = alegePeCale(legatura, usePathname() ?? "/");
+  const href = alegePeCale(legatura, useCaleSursa(RUTE, usePathname) ?? "/");
   if (href === null) {
     return null;
   }

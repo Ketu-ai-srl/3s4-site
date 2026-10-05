@@ -1,10 +1,14 @@
 // Panoul meniului mare: foile Functionalitati si Solutii intr-un singur card. Primeste foile deja
 // filtrate pe caile existente (Antet.tsx); o foaie fara niciun element vizibil nu ajunge aici.
 // Un element fara descriere (meniurile editiei `en` au numai etichete) nu lasa un rand gol sub titlu.
+//
+// ASEZAREA (`src/lib/asezare.ts`): elementele poarta cai SURSA, iar `cale` (pagina curenta, de la antet) e tot sursa,
+// deci elementul curent se alege pe sursa; adresa scrisa in `href` e SERVITA (`hrefTinta`).
 
 import Link from "next/link";
 import type { ElementMeniu, FoaieMeniu } from "@/content/navigatie";
 import Iconita from "@/components/primitive/Iconita";
+import { hrefTinta } from "@/components/primitive/Tinta";
 import s from "./MeniuMare.module.css";
 
 export type FoaieVizibila = {
@@ -24,7 +28,7 @@ function Element({ element, lider, curent }: { element: ElementMeniu; lider: boo
   const clase = [s.element, lider ? s.elementLider : "", curent ? s.elementCurent : ""].filter(Boolean).join(" ");
   return (
     <Link
-      href={element.href ?? "/"}
+      href={hrefTinta(element.href ?? "/")}
       className={clase}
       aria-current={curent ? "page" : undefined}
       data-element-meniu=""
@@ -73,7 +77,7 @@ export default function MeniuMare({ id, foi, activa, cale, onMouseEnter }: Meniu
               ) : null}
               {foaie.subsol.href ? (
                 <div className={s.subsol}>
-                  <Link href={foaie.subsol.href} className={s.subsolLegatura}>
+                  <Link href={hrefTinta(foaie.subsol.href)} className={s.subsolLegatura}>
                     <span>{foaie.subsol.text}</span>
                     <Iconita nume="arrow-right" marime={14} contur={2} />
                   </Link>

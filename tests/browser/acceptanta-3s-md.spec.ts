@@ -15,7 +15,8 @@ import { EDITII, editiiDinText, type Editie } from '../../src/lib/editii'
  * Caile NU se scriu aici: se iau din `/sitemap.xml` al copiei, deci o pagina noua intra singura in proba. Martorul
  * listei: multimea din harta de site trebuie sa fie egala cu un CONTROL calculat din sursa (documentele cu poarta B
  * din `config/juridic-rute.json`, in ambele limbi, plus caile scrise in manifestele de rute ale editiilor
- * `src/content/rute-en-*.ts` si `rute-ro-md.ts`, cu `inHarta: true`) si sa aiba mai mult de 10 cai. O harta de
+ * `src/content/rute-en-*.ts` si `rute-ro-md.ts`, cu `inHarta: true`; o cale scrisa ca CONSTANTA, ca indexurile juridice,
+ * se rezolva din `src/content/juridic/publicare.ts`, iar una nerezolvata opreste proba) si sa aiba mai mult de 10 cai. O harta de
  * site goala sau taiata pica aici, nu trece tacut prin "zero defecte".
  *
  * Pe fiecare cale, pe HTML-ul servit (fara JavaScript) si pe antetele raspunsului:
@@ -73,8 +74,15 @@ function caleDin(url: string): string {
   return cale === '' ? '/' : cale.length > 1 ? cale.replace(/\/+$/, '') : cale
 }
 
-/** Controlul listei de cai, din sursa: documentele B (ambele limbi) si caile literale din manifestele editiilor. */
+/** Constantele de cale din modulul de publicare juridica (`CALE_JURIDIC_EN = "/legal"`), citite ca text. */
+function constanteCale(): Map<string, string> {
+  const text = readFileSync(join(RADACINA, 'src', 'content', 'juridic', 'publicare.ts'), 'utf8')
+  return new Map([...text.matchAll(/export const (CALE_[A-Z_]+) = "([^"]+)";/g)].map((m) => [m[1], m[2]]))
+}
+
+/** Controlul listei de cai, din sursa: documentele B (ambele limbi) si caile din manifestele editiilor (literale sau constante). */
 function caiControl(): Set<string> {
+  const constante = constanteCale()
   const control = new Set<string>()
   for (const d of Object.values(JURIDIC.documente)) {
     if (d.poarta === 'B') {
@@ -85,8 +93,11 @@ function caiControl(): Set<string> {
   const dosar = join(RADACINA, 'src', 'content')
   for (const fisier of readdirSync(dosar).filter((f) => /^rute-(en|ro-md)(-[\w-]+)?\.ts$/.test(f))) {
     const text = readFileSync(join(dosar, fisier), 'utf8')
-    for (const m of text.matchAll(/\{[^{}]*?\bcale:\s*"([^"]+)"[^{}]*?\binHarta:\s*(true|false)[^{}]*\}/g)) {
-      if (m[2] === 'true') control.add(m[1])
+    for (const m of text.matchAll(/\{[^{}]*?\bcale:\s*(?:"([^"]+)"|([A-Z][A-Z0-9_]*)\s*,)[^{}]*?\binHarta:\s*(true|false)[^{}]*\}/g)) {
+      if (m[3] !== 'true') continue
+      const cale = m[1] ?? constante.get(m[2])
+      if (cale === undefined) throw new Error('caiControl: constanta de cale ' + m[2] + ' din ' + fisier + ' nu e in juridic/publicare.ts')
+      control.add(cale)
     }
   }
   return control

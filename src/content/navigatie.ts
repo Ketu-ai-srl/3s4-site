@@ -34,6 +34,7 @@
 // contractul pe server (`navigatie-en.ts`, `navigatie-ro-md.ts`), cu canalele domeniului deja rezolvate:
 // legaturile de canal poarta codul `ref` al paginii, deci depind de calea curenta (`LegaturaPeCale`).
 
+import { caSursa, caleServita, hrefLangServit, type CodAsezare, type RutaAsezabila } from "../lib/asezare";
 import type { CodEditie } from "../lib/editii";
 import type { CaiPeEditie } from "./echivalente";
 import { postaMarcii } from "./entitate";
@@ -735,10 +736,30 @@ export type ContractSubsol = {
    * O legatura in alta limba decat a paginii, in randul de jos (pe 3s.md: informatiile legale in romana,
    * cerute in romana de legea Republicii Moldova). `lang` e limba textului, `hrefLang` a paginii tinta.
    */
-  legaturaLocala?: (Legatura & { lang: string; hrefLang: string }) | null;
+  legaturaLocala?: LegaturaLocala | null;
   /** Eticheta butonului de setari cookie; lipsa = textul de azi al butonului (romana). */
   setariCookie?: string;
 };
+
+/** Legatura locala a subsolului (`ContractSubsol.legaturaLocala`): calea si limba tintei, in forma datelor. */
+export type LegaturaLocala = Legatura & { lang: string; hrefLang: string };
+
+/**
+ * Legatura locala asa cum se EMITE pe asezare (`src/lib/asezare.ts`): `href` servit si `hrefLang` = limba servita a
+ * paginii tinta (pe `ro`, `ro-MD` -> `ro-RO`). Datele raman sursa (`ruta` si existenta se verifica pe ele); `lang` e
+ * limba TEXTULUI legaturii, deci nu se schimba. Pe asezarea `md` intoarce aceleasi valori. `rute` = manifestul `RUTE`.
+ */
+export function legaturaLocalaServita(
+  legatura: LegaturaLocala,
+  rute: readonly RutaAsezabila[],
+  asezare?: CodAsezare,
+): LegaturaLocala {
+  return {
+    ...legatura,
+    href: legatura.href === null ? null : (caleServita(caSursa(legatura.href), rute, asezare) as string),
+    hrefLang: hrefLangServit(legatura.hrefLang, asezare),
+  };
+}
 
 export const SUBSOL: ContractSubsol = {
   brand: {

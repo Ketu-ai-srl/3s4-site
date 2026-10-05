@@ -43,9 +43,9 @@ function documenteJuridiceEn(): RutaEditie<"en">[] {
  * INDEXUL `/legal` (felia editie-juridic, decizia 53: ca `/juridic` pe site-ul romanesc): numai cand familia
  * publicata e `md`, adica exact cand pagina lui exista (`generateStaticParams` da si slugul gol). Ruta face legatura
  * din fir (nivelul intermediar) si din paleta sa fie vie: fara ea, `Tinta` randeaza nivelul ca text inert.
- * `inHarta: false` deocamdata: proba de acceptanta a lui 3s.md compara harta de site cu caile LITERALE din manifeste,
- * iar poarta de rute cere o pagina statica pentru o cale literala; intrarea in harta (si perechea hreflang cu
- * `/ro/juridic`) cere si proba aceea.
+ * In harta de site, cu perechea hreflang `/ro/juridic` (cheia `juridic` din `echivalente.ts`). Calea ramane constanta
+ * `CALE_JURIDIC_EN`, nu literala: poarta de rute cere o pagina statica pentru o cale literala, iar pagina indexului e
+ * segmentul optional `[[...document]]`; proba de acceptanta a lui 3s.md rezolva constanta din `juridic/publicare.ts`.
  */
 export function indexJuridicEn(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"en">[] {
   if (!publicat || familie !== "md") return [];
@@ -54,7 +54,7 @@ export function indexJuridicEn(publicat: boolean = OPERATOR_NUMIT, familie: Fami
       cale: CALE_JURIDIC_EN,
       scurt: "Legal documents",
       descriere: "All legal documents of the 3S platform, in one place.",
-      inHarta: false,
+      inHarta: true,
       editie: "en",
       cheie: "juridic",
     },

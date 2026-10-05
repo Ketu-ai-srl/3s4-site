@@ -99,11 +99,11 @@ describe('rutele juridice pe editie', () => {
   })
 
   // Indexul (`/legal`, `/ro/juridic`, felia editie-juridic) exista exact cand familia md e publicata: e ultima ruta a
-  // grupului (ca indexul din `ruteJuridice` pe RO), un singur rand, si nu intra (inca) in harta.
-  it('indexul exista exact cand familia md e publicata: /legal si /ro/juridic, ultimul in grup, nu in harta; altfel nicio ruta', () => {
+  // grupului (ca indexul din `ruteJuridice` pe RO), un singur rand, si intra in harta (cu perechea hreflang `juridic`).
+  it('indexul exista exact cand familia md e publicata: /legal si /ro/juridic, ultimul in grup, in harta; altfel nicio ruta', () => {
     const en = ruteJuridiceEn(true, 'md')
     const ro = ruteJuridiceRoMd(true, 'md')
-    expect([en[en.length - 1], ro[ro.length - 1]].map((r) => [r.cale, r.editie, r.inHarta])).toEqual([['/legal', 'en', false], ['/ro/juridic', 'ro-MD', false]])
+    expect([en[en.length - 1], ro[ro.length - 1]].map((r) => [r.cale, r.editie, r.inHarta])).toEqual([['/legal', 'en', true], ['/ro/juridic', 'ro-MD', true]])
     expect([en.length, ro.length]).toEqual([CHEI_B.length + 1, CHEI_B.length + 1])
     expect([...indexJuridicEn(true, 'md'), ...indexJuridicRoMd(true, 'md')].map((r) => r.cale)).toEqual(['/legal', '/ro/juridic'])
     for (const [publicat, familie] of [[false, 'md'], [true, 'see'], [true, null]] as const) expect([...indexJuridicEn(publicat, familie), ...indexJuridicRoMd(publicat, familie)]).toEqual([])

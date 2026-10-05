@@ -1,9 +1,12 @@
 // Panoul Descarca din antet: 5 grupuri (Windows, macOS, Linux, Mobil, Web), elemente cu cutie de
 // iconita, marcajul "(*)" pe platforma detectata si nota din subsolul panoului.
+//
+// ASEZAREA (`src/lib/asezare.ts`): `href` e scris SERVIT (`hrefTinta`); adresele externe raman neschimbate.
 
 import Link from "next/link";
 import { PANOU_DESCARCA, type GrupDescarca, type PlatformaDescarca } from "@/content/navigatie";
 import Iconita from "@/components/primitive/Iconita";
+import { hrefTinta } from "@/components/primitive/Tinta";
 import { ICONITA_PLATFORMA } from "./descarcare";
 import s from "./PanouDescarca.module.css";
 
@@ -23,7 +26,7 @@ export default function PanouDescarca({ id, grupuri, detectata }: PanouDescarcaP
             <ul className={s.lista}>
               {g.elemente.map((e) => (
                 <li key={e.text}>
-                  <Link href={e.href ?? "/"} className={s.element} data-element-meniu="">
+                  <Link href={hrefTinta(e.href ?? "/")} className={s.element} data-element-meniu="">
                     <span className={s.cutie} aria-hidden="true">
                       <Iconita nume={ICONITA_PLATFORMA[e.platforma]} marime={20} contur={1.6} />
                     </span>

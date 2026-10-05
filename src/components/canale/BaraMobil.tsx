@@ -6,14 +6,17 @@
 // `padding-bottom` egal cu inaltimea barei (aceeasi variabila CSS), deci ultima bucata a paginii ramane deasupra
 // barei. Pe desktop nici bara, nici distantierul nu ocupa loc (CSS).
 //
-// Tinta WhatsApp e a paginii curente (codul `ref`), aleasa dupa cale.
+// Tinta WhatsApp e a paginii curente (codul `ref`), aleasa dupa calea SURSA a paginii (`useCaleSursa`,
+// `src/lib/asezare.ts`; pe asezarea `md` e exact `usePathname()`).
 
 import { usePathname } from "next/navigation";
 import { alegePeCale, type ContractBara } from "@/content/navigatie";
+import { RUTE } from "@/content/rute";
+import { useCaleSursa } from "@/lib/asezare";
 import s from "./BaraMobil.module.css";
 
 export default function BaraMobil({ bara }: { bara: ContractBara | null }) {
-  const cale = usePathname() ?? "/";
+  const cale = useCaleSursa(RUTE, usePathname) ?? "/";
   if (bara === null || bara.whatsapp === null) {
     return null;
   }

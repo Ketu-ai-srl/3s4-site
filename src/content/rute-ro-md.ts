@@ -45,7 +45,8 @@ function documenteJuridiceRoMd(): RutaEditie<"ro-MD">[] {
 
 /**
  * INDEXUL `/ro/juridic` (felia editie-juridic): aceeasi regula ca `indexJuridicEn` din `rute-en-juridic.ts` (numai cu
- * familia `md`, `inHarta: false` din acelasi motiv), cu titlul si descrierea indexului romanesc (`INDEX_JURIDIC`).
+ * familia `md`, in harta, cu perechea `/legal` si calea ca CONSTANTA din acelasi motiv), cu titlul si descrierea
+ * indexului romanesc (`INDEX_JURIDIC`).
  */
 export function indexJuridicRoMd(publicat: boolean = OPERATOR_NUMIT, familie: FamilieJuridica | null = FAMILIE_JURIDICA): RutaEditie<"ro-MD">[] {
   if (!publicat || familie !== "md") return [];
@@ -54,7 +55,7 @@ export function indexJuridicRoMd(publicat: boolean = OPERATOR_NUMIT, familie: Fa
       cale: CALE_JURIDIC_RO_MD,
       scurt: INDEX_JURIDIC.scurt,
       descriere: INDEX_JURIDIC.descriere,
-      inHarta: false,
+      inHarta: true,
       editie: "ro-MD",
       cheie: "juridic",
     },

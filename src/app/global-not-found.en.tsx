@@ -6,6 +6,7 @@ import Subsol from "@/components/global/Subsol";
 import { BRAND } from "@/content/entitate";
 import { navigatieEn } from "@/content/navigatie-en";
 import { RUTE, editiaRutei } from "@/content/rute";
+import { atributeLimba } from "@/lib/asezare";
 import { EDITII } from "@/lib/editii";
 import { CLASE_FONTURI } from "@/lib/fonturi";
 
@@ -20,6 +21,9 @@ import { CLASE_FONTURI } from "@/lib/fonturi";
 // Antetul si subsolul EN (felia navigatie-pe-editie) se monteaza aici, nu prin layout-ul `(en)`: pagina are
 // propriul `<html>`. Tot de aceea isi importa singura stilurile globale si fonturile. CTA-ul antetului foloseste
 // textul paginii de start (`en-home`): o adresa necunoscuta nu are intrare in tabelul de canale.
+//
+// ASEZAREA (`src/lib/asezare.ts`): rutele se aleg dupa calea SURSA, iar legaturile duc la adresa SERVITA a fiecareia
+// (`servita`), cu codul de limba al romanei pe asezarea build-ului. Pe asezarea `md` totul e ca inainte.
 
 export const metadata: Metadata = {
   title: "Page not found | " + BRAND.nume,
@@ -41,14 +45,14 @@ export default function NegasitGlobalEn() {
             <ul>
               {drumuri.map((r) => (
                 <li key={r.cale}>
-                  <Link href={r.cale}>{r.scurt}</Link>
+                  <Link href={r.servita}>{r.scurt}</Link>
                 </li>
               ))}
             </ul>
           ) : null}
           {indexRoMd !== undefined ? (
             <p>
-              <Link href={indexRoMd.cale} hrefLang="ro-MD">
+              <Link href={indexRoMd.servita} hrefLang={atributeLimba("ro-MD").inLanguage}>
                 {indexRoMd.scurt}
               </Link>
             </p>

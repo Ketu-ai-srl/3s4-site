@@ -14,12 +14,15 @@
 // arhitectura site-ului EN: titlul, rezumatul si numai paginile care exista (`RUTE`, acelasi filtru ca harta
 // si navigatia). Pana la primele pagini EN fisierul are numai titlul si rezumatul, fara nicio legatura spre
 // o pagina inexistenta. Blogul e romanesc, deci nu intra acolo.
+//
+// ADRESELE sunt cele SERVITE (`ruta.servita`, asezarea din `src/lib/asezare.ts`), deci pe un domeniu cu alta
+// asezare legaturile duc la paginile lui; pe asezarea `md` sunt chiar caile din manifest.
 
 import { META_ACASA } from "@/content/acasa";
 import { ARTICOLE, caleArticol } from "@/content/blog/registru";
 import { BRAND } from "@/content/entitate";
 import { SUBSOL } from "@/content/navigatie";
-import { rutePentruHarta, type Ruta } from "@/content/rute";
+import { rutePentruHarta, type RutaAsezata } from "@/content/rute";
 import { DESCRIERE_EN } from "@/components/seo/date-structurate";
 import type { CodEditie } from "./editii";
 import { editiaRadacinii, urlAbsolut } from "./site";
@@ -42,12 +45,12 @@ function eticheta(text: string): string {
 }
 
 /** Textul EN: titlul, rezumatul si, cand exista, paginile din harta. */
-function textEn(baza: string, rute: readonly Ruta[]): string {
+function textEn(baza: string, rute: readonly RutaAsezata[]): string {
   const linii = ["# " + BRAND.nume, "", "> " + REZUMAT_EN];
   if (rute.length > 0) {
     linii.push("", "## Pages", "");
     for (const ruta of rute) {
-      linii.push("- [" + eticheta(ruta.scurt) + "](" + urlAbsolut(ruta.cale, baza) + "): " + ruta.descriere);
+      linii.push("- [" + eticheta(ruta.scurt) + "](" + urlAbsolut(ruta.servita, baza) + "): " + ruta.descriere);
     }
   }
   return linii.join("\n") + "\n";
@@ -62,7 +65,7 @@ export function textLlms(baza: string, editie: CodEditie = editiaRadacinii().cod
   }
   const linii = ["# " + BRAND.nume, "", "> " + SUBSOL.brand.descriere, "", META_ACASA.descriere, "", "## Pagini", ""];
   for (const ruta of rutePentruHarta()) {
-    linii.push("- [" + eticheta(ruta.scurt) + "](" + urlAbsolut(ruta.cale, baza) + "): " + ruta.descriere);
+    linii.push("- [" + eticheta(ruta.scurt) + "](" + urlAbsolut(ruta.servita, baza) + "): " + ruta.descriere);
   }
   if (ARTICOLE.length > 0) {
     linii.push("", "## Articole", "");

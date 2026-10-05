@@ -34,6 +34,7 @@ import { ruteJuridice } from "./juridic/publicare";
 // care il scrie, ca feliile paralele sa nu scrie in acelasi fisier si ca engleza sa nu stea in lista romaneasca.
 // Pe profilul implicit (`ro-RO`) `RUTE` e lista romaneasca de dinainte de editii, element cu element (proba
 // `tests/invarianta-ro.test.ts`). Portile de rute citesc TOATE fisierele `rute*.ts`, pe editie.
+import { asezareBuild, caSursa, caleServita, type CaleServita, type CodAsezare } from "../lib/asezare";
 import { editiiBuild, type CodEditie } from "../lib/editii";
 import { RUTE_EN } from "./rute-en";
 import { RUTE_RO_MD } from "./rute-ro-md";
@@ -377,11 +378,32 @@ export function ruteleEditiilor(editii: readonly CodEditie[]): Ruta[] {
   ];
 }
 
+/**
+ * O ruta a manifestului, cu adresa ei SERVITA pe asezarea build-ului (`src/lib/asezare.ts`). `cale` ramane calea
+ * SURSA (datele, comparatiile); `servita` e adresa la care raspunde pagina pe domeniu, folosita numai unde se
+ * scrie o adresa (harta, `llms.txt`, pagina de negasit).
+ */
+export type RutaAsezata = Ruta & { readonly servita: CaleServita };
+
+/**
+ * Rutele date, fiecare cu `servita` pe asezarea data (implicit cea a build-ului; pe `md` identitatea). Campul e
+ * DERIVAT, nu date: se pune neenumerabil, deci orice serializare a manifestului (fixtura invariantei romanesti,
+ * comparatiile cu `toEqual`) vede exact campurile de dinainte. Elementele sunt copii: listele editiilor raman
+ * neatinse.
+ */
+export function asezaRutele(rute: readonly Ruta[], asezare: CodAsezare = asezareBuild()): RutaAsezata[] {
+  return rute.map((ruta) => {
+    const copie = { ...ruta };
+    Object.defineProperty(copie, "servita", { value: caleServita(caSursa(ruta.cale), rute, asezare), enumerable: false });
+    return copie as RutaAsezata;
+  });
+}
+
 /** Rutele editiilor acestui build (`SITE_EDITII`, la construire). Pe `ro-RO`, lista romaneasca. */
-export const RUTE: Ruta[] = ruteleEditiilor(editiiBuild());
+export const RUTE: RutaAsezata[] = asezaRutele(ruteleEditiilor(editiiBuild()));
 
 /** Rutele care intra in `sitemap.xml`. */
-export function rutePentruHarta(): Ruta[] {
+export function rutePentruHarta(): RutaAsezata[] {
   return RUTE.filter((r) => r.inHarta);
 }
 

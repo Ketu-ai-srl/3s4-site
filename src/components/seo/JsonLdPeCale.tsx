@@ -9,10 +9,15 @@
 // pe build-ul din 24.09: blocul startului are 2.772 de octeti; ca sir evadat in datele paginii 404
 // ajunge la ~3 KB necomprimat (estimat din lungimea sirului, nu cantarit separat). Cand fundatia
 // pune `<JsonLd date={grafAcasa()} />` direct in pagina de start, puntea asta se sterge.
+//
+// `cale` e o cale SURSA; pagina curenta se citeste tot ca sursa (`useCaleSursa`, `src/lib/asezare.ts`), deci
+// comparatia ramane corecta pe orice asezare. Pe asezarea `md` e exact `usePathname()`.
 
 import { usePathname } from "next/navigation";
+import { RUTE } from "@/content/rute";
+import { useCaleSursa } from "@/lib/asezare";
 
 export default function JsonLdPeCale({ cale, json }: { cale: string; json: string }) {
-  if (usePathname() !== cale) return null;
+  if (useCaleSursa(RUTE, usePathname) !== cale) return null;
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }

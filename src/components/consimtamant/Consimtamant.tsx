@@ -35,8 +35,12 @@
 // 1,10:1 fata de bannerul alb, cand acceptul are 5,17:1: ierarhia primar/secundar ar trece inaintea
 // cerintei ca refuzul sa fie la fel de vizibil (masurat de critic pe copia cu operator, 25.09.2026).
 // Proba: tests/browser/comutator.spec.ts, simetria, cu martori pentru fundal si pentru margine.
+//
+// ASEZAREA (`src/lib/asezare.ts`): adresele politicilor vin de pe server ca cai SURSA (`legaturiPolitici` le alege pe
+// multimea cailor existente, tot sursa) si se scriu in `href` SERVITE (`hrefTinta`). Pe asezarea `md` identitatea.
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { hrefTinta } from "@/components/primitive/Tinta";
 import type { RandPanou } from "@/content/juridic/furnizori";
 import type { UmamiActiv } from "@/lib/analitica";
 import { urmaresteCta, urmaresteUmami } from "./evenimente";
@@ -104,7 +108,7 @@ function Politica({ href, text, className }: { href: string | null; text: string
     return <span className={className}>{text}</span>;
   }
   return (
-    <a href={href} className={className}>
+    <a href={hrefTinta(href)} className={className}>
       {text}
     </a>
   );

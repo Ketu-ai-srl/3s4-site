@@ -35,10 +35,16 @@
 // ALTERNATELE HREFLANG se scriu AICI, in `alternates.languages`, deci Next le pune in `<head>`-ul servit, pe
 // server. Inainte le punea o piesa de browser din layout, spre ACEEASI cale pe fiecare varianta; regula aceea
 // s-a retras odata cu editiile (`/preturi` si `/pricing` sunt aceeasi pagina). Regulile, in `alternatePagina`.
+//
+// ASEZAREA (`src/lib/asezare.ts`): `cale` e calea SURSA a paginii (cea din `RUTE` si din tabelul de echivalente) si
+// se compara asa; canonical-ul, `og:url` si adresa paginii insesi in lista hreflang se scriu cu calea SERVITA.
+// Celelalte variante din lista hreflang raman pe regula de azi. Pe asezarea `md` calea servita e chiar calea.
 
 import type { Metadata } from "next";
 import { ECHIVALENTE, type CaiPeEditie } from "@/content/echivalente";
 import { BRAND } from "@/content/entitate";
+import { RUTE } from "@/content/rute";
+import { asezareBuild, caSursa, caleServita, type CodAsezare, type RutaAsezabila } from "@/lib/asezare";
 import { EDITII, editiiBuild, type CodEditie } from "@/lib/editii";
 import { X_DEFAULT, adresaSite, alternateSite, type Alternata } from "@/lib/site";
 
@@ -93,7 +99,15 @@ export type ContextAlternate = {
   editii: readonly CodEditie[];
   /** Tabelul de echivalente. */
   echivalente: Readonly<Record<string, CaiPeEditie>>;
+  /** Asezarea si manifestul rutelor, pentru calea servita; lipsa = cele ale build-ului. */
+  asezare?: CodAsezare;
+  rute?: readonly RutaAsezabila[];
 };
+
+/** Calea servita a paginii, pe asezarea si rutele din context (implicit cele ale build-ului). */
+export function caleServitaPagina(cale: string, context: Pick<ContextAlternate, "asezare" | "rute"> = {}): string {
+  return caleServita(caSursa(cale), context.rute ?? RUTE, context.asezare ?? asezareBuild());
+}
 
 function contextBuild(): ContextAlternate {
   return { alternate: alternateSite(), baza: adresaSite(), editii: editiiBuild(), echivalente: ECHIVALENTE };
@@ -139,10 +153,11 @@ export function alternatePagina(
       "metadataPagina(" + date.cale + "): tabelul de echivalente da pentru cheia " + date.cheie + " si editia " + editie + " calea " + proprie,
     );
   }
-  const canonical = { canonical: date.cale };
+  const servita = caleServitaPagina(date.cale, context);
+  const canonical = { canonical: servita };
   if (context.alternate.length === 0) return canonical;
 
-  const limbi: [string, string][] = [[EDITII[editie].inLanguage, adresaPagina(context.baza, date.cale)]];
+  const limbi: [string, string][] = [[EDITII[editie].inLanguage, adresaPagina(context.baza, servita)]];
   for (const alta of Object.keys(EDITII) as CodEditie[]) {
     const cale = rand?.[alta];
     if (alta === editie || cale === undefined) continue;
@@ -179,7 +194,7 @@ export function abateriMetadata({ titlu, descriere, cale }: DatePagina): string[
   return abateri;
 }
 
-export function metadataPagina(date: DatePagina): Metadata {
+export function metadataPagina(date: DatePagina, asezare: Pick<ContextAlternate, "asezare" | "rute"> = {}): Metadata {
   const abateri = abateriMetadata(date);
   if (abateri.length > 0) {
     throw new Error("metadataPagina(" + date.cale + "): " + abateri.join("; "));
@@ -191,14 +206,14 @@ export function metadataPagina(date: DatePagina): Metadata {
   return {
     title: { absolute: titlu },
     description: descriere,
-    alternates: alternatePagina(date),
+    alternates: alternatePagina(date, { ...contextBuild(), ...asezare }),
     openGraph: {
       type: "website",
       locale: EDITII[editie].ogLocale,
       siteName: BRAND.nume,
       title: titlu,
       description: descriere,
-      url: date.cale,
+      url: caleServitaPagina(date.cale, asezare),
       images: [{ url: CALE_IMAGINE_OG, ...imagine }],
     },
     twitter: {

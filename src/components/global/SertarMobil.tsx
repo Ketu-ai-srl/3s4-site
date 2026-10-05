@@ -15,6 +15,9 @@
 //
 // PE EDITIE: contractul (`navigatie`, cu CTA-ul deja ales pentru pagina) si limbile paginii (`limbi`) vin de
 // la antet; implicitele sunt cele romanesti de azi.
+//
+// ASEZAREA (`src/lib/asezare.ts`): contractul, limbile paginii si `cale` (de la antet) poarta cai SURSA, deci starea
+// curenta se alege pe sursa; fiecare adresa scrisa in `href` e SERVITA (`hrefTinta`). Pe asezarea `md` identitatea.
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -31,6 +34,7 @@ import {
 } from "@/content/navigatie";
 import Buton from "@/components/primitive/Buton";
 import Iconita from "@/components/primitive/Iconita";
+import { hrefTinta } from "@/components/primitive/Tinta";
 import { ICONITA_PLATFORMA } from "./descarcare";
 import type { FoaieVizibila } from "./MeniuMare";
 import SiglaMarca from "./SiglaMarca";
@@ -136,7 +140,7 @@ export default function SertarMobil({
       <div className={s.fundal} onClick={onInchide} aria-hidden="true" data-sertar-fundal="" />
       <div ref={sertar} className={s.sertar} role="dialog" aria-modal="true" aria-label={SERTAR.eticheta} data-sertar="">
         <div className={s.cap}>
-          <Link href={ANTET.sigla.href ?? "/"} aria-label={ANTET.sigla.text} onClick={onInchide}>
+          <Link href={hrefTinta(ANTET.sigla.href ?? "/")} aria-label={ANTET.sigla.text} onClick={onInchide}>
             {/* Iconita marcii, ca in antet (DIRECTIA.md, "Sigla"). */}
             <SiglaMarca inaltime={40} />
           </Link>
@@ -156,7 +160,7 @@ export default function SertarMobil({
                 <div key={g.titlu} className={s.grupDescarca}>
                   <p className={s.grupDescarcaTitlu}>{g.titlu}</p>
                   {g.elemente.map((e) => (
-                    <Link key={e.text} href={e.href ?? "/"} className={s.randDescarca} onClick={onInchide}>
+                    <Link key={e.text} href={hrefTinta(e.href ?? "/")} className={s.randDescarca} onClick={onInchide}>
                       <span className={s.randCutie} aria-hidden="true">
                         <Iconita nume={ICONITA_PLATFORMA[e.platforma]} marime={20} contur={1.6} />
                       </span>
@@ -177,7 +181,7 @@ export default function SertarMobil({
                   return (
                     <Link
                       key={l.text}
-                      href={l.href ?? "/"}
+                      href={hrefTinta(l.href ?? "/")}
                       className={s.legatura}
                       aria-current={l.href === cale ? "page" : undefined}
                       onClick={onInchide}
@@ -204,21 +208,21 @@ export default function SertarMobil({
                       <ul id={idGrup} className={s.subLista}>
                         {foaie.foaie.lider ? (
                           <li>
-                            <Link href={foaie.foaie.lider.href ?? "/"} className={s.subLegatura + " " + s.subLider} onClick={onInchide}>
+                            <Link href={hrefTinta(foaie.foaie.lider.href ?? "/")} className={s.subLegatura + " " + s.subLider} onClick={onInchide}>
                               {foaie.foaie.lider.text}
                             </Link>
                           </li>
                         ) : null}
                         {foaie.foaie.elemente.map((e) => (
                           <li key={e.text}>
-                            <Link href={e.href ?? "/"} className={s.subLegatura} onClick={onInchide}>
+                            <Link href={hrefTinta(e.href ?? "/")} className={s.subLegatura} onClick={onInchide}>
                               {e.text}
                             </Link>
                           </li>
                         ))}
                         {foaie.foaie.subsol.href ? (
                           <li>
-                            <Link href={foaie.foaie.subsol.href} className={s.subLegatura + " " + s.subTot} onClick={onInchide}>
+                            <Link href={hrefTinta(foaie.foaie.subsol.href)} className={s.subLegatura + " " + s.subTot} onClick={onInchide}>
                               {foaie.foaie.subsol.text}
                             </Link>
                           </li>
@@ -245,7 +249,7 @@ export default function SertarMobil({
                       {limbi.map((l) => (
                         <li key={l.cod}>
                           <Link
-                            href={l.href ?? "/"}
+                            href={hrefTinta(l.href ?? "/")}
                             className={[s.limbaOptiune, l.activa ? s.limbaActiva : ""].filter(Boolean).join(" ")}
                             lang={l.cod.toLowerCase()}
                             onClick={onInchide}
@@ -266,7 +270,7 @@ export default function SertarMobil({
         {!vedereDescarca && (autentificare || areDescarca || cta) ? (
           <div className={s.picior}>
             {autentificare ? (
-              <Link href={autentificare.href ?? "/"} className={s.autentificare} onClick={onInchide}>
+              <Link href={hrefTinta(autentificare.href ?? "/")} className={s.autentificare} onClick={onInchide}>
                 {autentificare.text}
               </Link>
             ) : null}

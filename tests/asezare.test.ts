@@ -81,6 +81,8 @@ const ASTEPTAT_RO: Readonly<Record<string, string>> = {
   '/ro/juridic/notificare-si-actiune': '/juridic/notificare-si-actiune',
   '/legal/ai-notice': '/en/legal/ai-notice',
   '/ro/juridic/inteligenta-artificiala': '/juridic/inteligenta-artificiala',
+  '/legal': '/en/legal',
+  '/ro/juridic': '/juridic',
 }
 
 describe('catalogul asezarii', () => {
@@ -141,7 +143,14 @@ describe('catalogul asezarii', () => {
 describe('caleServita si caleSursa pe rutele 3s.md', () => {
   it('martor: rutele 3s.md sunt incarcate, cu paginile juridice (fiecare cale din echivalente e ruta)', () => {
     const cai = new Set(RUTE_3S_MD.map((r) => r.cale))
-    expect(RUTE_3S_MD.length).toBeGreaterThan(Object.keys(ASTEPTAT_RO).length)
+    // Martorul incarcarii: fiecare ruta 3s.md are pereche in echivalente (decizia 59 + indexul juridic), deci
+    // rutele fara pereche sunt ZERO, iar tabelul are exact cate o intrare pe ruta. Inainte controlul cerea mai
+    // multe rute decat intrari in tabel (exista rute fara pereche); cu perechea /legal - /ro/juridic diferenta a
+    // ajuns la zero, iar `>=` ar fi slabit proba. Numararea de mai jos prinde si o ruta noua fara pereche, si o
+    // lista de rute neincarcata (goala, deci fara egalitate de lungime).
+    const cuPereche = new Set(Object.values(ECHIVALENTE).flatMap((p) => Object.values(p)))
+    expect(RUTE_3S_MD.filter((r) => !cuPereche.has(r.cale)).map((r) => r.cale)).toEqual([])
+    expect(RUTE_3S_MD.length).toBe(Object.keys(ASTEPTAT_RO).length)
     for (const pereche of Object.values(ECHIVALENTE)) {
       for (const cale of Object.values(pereche)) expect(cai.has(cale), cale).toBe(true)
     }

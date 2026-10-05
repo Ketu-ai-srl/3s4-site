@@ -13,8 +13,12 @@ Ce masoara, cu martor pe fiecare clasa:
   (4) aceeasi pereche, cu o legatura `/contact` lasata netradusa pe o pagina `/en/...` a lui B: ROSU pe
       `identitate`, numita pe acea pagina; plus martorii fiecarei reguli din lista inchisa (hreflang tradus,
       `@id` cu calea tradusa, numar netradus, harta cu intrari `/en`, pagina fara pereche, cheie necunoscuta);
-  (5) patru MUTANTI pe o COPIE a uneltei (traducerea cailor oprita, comparatia corpului oprita, antetele
-      ignorate, statusul ignorat): proba trebuie sa-i prinda pe toti, si se verifica intai ca mutatia a aterizat.
+  (5) cinci MUTANTI pe o COPIE a uneltei (traducerea cailor oprita, comparatia corpului oprita, antetele
+      ignorate, statusul ignorat, martorii normalizarilor neapelati): proba trebuie sa-i prinda pe toti, si se
+      verifica intai ca mutatia a aterizat;
+  (6) normalizarile `LASTMOD` si `STATIC_CU_GRUP`, pe proces: doua colectii care difera numai prin <lastmod> si prin
+      amprenta unei bucati de sub un grup de rute ies egale, un cuvant schimbat langa bucata ramane diferenta; o
+      copie a uneltei cu una din normalizari stricata iese NEMASURAT (3), cu martorul ei numit.
 
 Fixturile se asambleaza la RULARE, din bucati: numerele, domeniile si adresele nu stau scrise intregi aici.
 `--compara <cale>` ruleaza proba pe alta copie a uneltei (de pilda un mutant scris de mana).
@@ -283,6 +287,53 @@ def cazuri(unealta, d):
     identitate_rosie('perechi cu o cheie necunoscuta', B, None, perechi(os.path.join(d, 'perechi-rea.json'), moneda='EUR'), 3)
     cod, out = ruleaza(unealta, '--regula', 'invarianta', '--perechi', pp, ca, ca)
     (ok if cod == 2 else nu)('(4) --perechi la invarianta: cod %s, asteptat 2' % cod)
+
+    # (6) Normalizarile adaugate pentru invarianta pe 3s.md (`LASTMOD`, `STATIC_CU_GRUP`), masurate pe PROCES: doua
+    # colectii care difera numai prin <lastmod> si prin amprenta unei bucati de sub un grup de rute ies egale; un
+    # cuvant schimbat langa bucata ramane o diferenta. Fiecare colectie are id-ul ei de build, ca doar normalizarea
+    # sa le poata egala.
+    grup = '(' + 'romd)'
+
+    def cu_normalizari(idb, data, amprenta, cuvant):
+        p = colectie_domeniu(DA, idb)
+        h = p['/sitemap.xml']
+        p['/sitemap.xml'] = (200, h[1], h[2].replace('</loc></url>', '</loc><lastmod>' + data + '</lastmod></url>'))
+        pr = p['/pricing']
+        bucata = '<script src="/_next/static/chunks/app/' + grup + '/layout.romd-' + amprenta + '.js"></script>'
+        p['/pricing'] = (200, pr[1], pr[2].replace('</main>', '</main>' + bucata + '<p>' + cuvant + '</p>'))
+        return p
+
+    zi1, zi2 = '2026-01-0' + '1T00:00:00Z', '2026-02-0' + '2T10:00:00Z'
+    n1 = scrie_colectie(os.path.join(d, 'n1'), id_a, cu_normalizari(id_a, zi1, 'a1b2c3', 'unu'))
+    n2 = scrie_colectie(os.path.join(d, 'n2'), id_a2, cu_normalizari(id_a2, zi2, 'd4e5f6', 'unu'))
+    n3 = scrie_colectie(os.path.join(d, 'n3'), id_a2, cu_normalizari(id_a2, zi2, 'd4e5f6', 'doi'))
+    tn = ''.join(open(os.path.join(n2, 'corp', f), encoding='utf-8').read() for f in os.listdir(os.path.join(n2, 'corp')) if f.endswith('.txt'))
+    bun = zi2 in tn and '/' + grup + '/layout.romd-d4e5f6.js' in tn
+    (ok if bun else nu)('(6) controlul fixturii: colectia poarta <lastmod> si bucata de sub grupul de rute')
+    cod, out = ruleaza(unealta, '--regula', 'invarianta', n1, n2)
+    (ok if cod == 0 and comparate(out) == (n, 0) else nu)(
+        '(6) numai <lastmod> si amprenta de sub grup difera: cod %s, %s, asteptat 0 si (%d, 0); %r' % (cod, comparate(out), n, difuri(out)[:3]))
+    cod, out = ruleaza(unealta, '--regula', 'invarianta', n1, n3)
+    ds = difuri(out)
+    (ok if cod == 1 and ds == ['DIF /pricing: corpul HTML difera dupa normalizare'] else nu)(
+        '(6) un cuvant schimbat langa bucata: cod %s, diferente %r' % (cod, ds))
+
+    # Martorii normalizarilor se apeleaza la FIECARE rulare: o copie a uneltei cu o normalizare stricata trebuie sa
+    # iasa NEMASURAT (3), nu verde, chiar pe o colectie comparata cu ea insasi. Copia se face din unealta SUB PROBA,
+    # deci un mutant care nu mai apeleaza martorii o produce si pe ea fara apel, si cazul pica.
+    sursa = open(unealta, encoding='utf-8').read()
+    for eticheta, ancora, inlocuitor in (
+        ('LASTMOD', "return LASTMOD.sub(r'" + BS + "1DATA-COMMIT" + BS + "2', text)", 'return text'),
+        ('STATIC_CU_GRUP', "return STATIC_CU_GRUP.sub(r'static/" + BS + "1/X', html)", 'return html'),
+    ):
+        if sursa.count(ancora) != 1:
+            nu('(6) normalizarea %s stricata: ancora lipsa sau dubla in unealta, cazul nu masoara nimic' % eticheta)
+            continue
+        stricata = os.path.join(d, 'stricata-' + eticheta.lower() + '.py')
+        open(stricata, 'w', encoding='utf-8', newline='\n').write(sursa.replace(ancora, inlocuitor))
+        cod, out = ruleaza(stricata, '--regula', 'invarianta', ca, ca)
+        bun = cod == 3 and 'martorul normalizarii ' + eticheta in out
+        (ok if bun else nu)('(6) normalizarea %s stricata pe o copie: cod %s, asteptat 3 cu martorul ei numit' % (eticheta, cod))
     return P - inainte
 
 
@@ -317,6 +368,7 @@ def main():
              "if False:\n                motive = motive + ['corpul HTML difera dupa normalizare']"),
             ('antete ignorate', 'if ha.get(h) != hb.get(h):', 'if False:'),
             ('status ignorat', "if pa['status'] != pb['status']:", 'if False:'),
+            ('martorii normalizarilor neapelati', 'picat = control_normalizari()', 'picat = None'),
         ):
             copie = mutant(d, ancora, inlocuitor)
             if copie is None:

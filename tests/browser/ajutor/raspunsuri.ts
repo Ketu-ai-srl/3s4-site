@@ -1,5 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { numarAfisat } from '../../../src/content/canale'
+import { configurareCanale } from '../../../src/lib/canale-mediu'
 import { editiiBuild, type CodEditie } from '../../../src/lib/editii'
 import type { DeclaratieRaspuns } from './geo'
 
@@ -38,6 +40,27 @@ import type { DeclaratieRaspuns } from './geo'
 
 /** Dosarul declaratiilor, relativ la radacina. */
 export const DOSAR_DECLARATII = 'config/seo'
+
+/**
+ * Entitatea care tine locul numarului de telefon intr-o declaratie: numarul nu se scrie in fisier, fiindca e o
+ * data a domeniului (`CANALE_JSON`), nu a codului. Cititorul o inlocuieste cu numarul afisat al canalului
+ * (`numarAfisat` din `src/content/canale.ts`, aceeasi forma pe care o randeaza pagina).
+ */
+export const LOC_NUMAR = '{numarAfisat}'
+
+/**
+ * Entitatile unei declaratii cu locul numarului inlocuit din `canaleJson` (continutul lui `CANALE_JSON`). Fara
+ * loc, lista ramane cum e. Cu loc si fara numar de telefon in canale (profilul domeniului lipseste din mediu)
+ * arunca, cu un mesaj care spune ce lipseste: o entitate ramasa `{numarAfisat}` n-ar aparea niciodata in pagina.
+ */
+export function entitatiCuNumarul(entitati: readonly string[], canaleJson: string | undefined): string[] {
+  if (!entitati.includes(LOC_NUMAR)) return [...entitati]
+  const numar = numarAfisat(configurareCanale(canaleJson))
+  if (numar === '') {
+    throw new Error('entitatea ' + LOC_NUMAR + ' cere numarul de telefon din CANALE_JSON, iar mediul nu-l da (profilul domeniului lipseste)')
+  }
+  return entitati.map((e) => (e === LOC_NUMAR ? numar : e))
+}
 
 const MARCAJ = /\/\/\s*<<felie:([a-z0-9-]+)>>/
 const CALE = /\bcale:\s*"([^"]*)"/
@@ -132,8 +155,15 @@ export type Declaratii = {
 /**
  * Aduna declaratiile din `config/seo/*.json`. `caiRute` sunt caile din modulul `RUTE`: controlul
  * citirii textuale a manifestului. `editii` sunt editiile build-ului (implicit cele din mediu, ca `RUTE`).
+ * `canaleJson` e profilul canalelor (implicit `CANALE_JSON` din mediu): din el vine numarul pus in locul lui
+ * `LOC_NUMAR`, numai pe declaratiile editiilor din build; lipsa lui acolo e o abatere cu numele rutei.
  */
-export function citesteDeclaratiile(radacina: string, caiRute: readonly string[], editii: readonly CodEditie[] = editiiBuild()): Declaratii {
+export function citesteDeclaratiile(
+  radacina: string,
+  caiRute: readonly string[],
+  editii: readonly CodEditie[] = editiiBuild(),
+  canaleJson: string | undefined = process.env.CANALE_JSON,
+): Declaratii {
   const manifeste = manifestele(radacina)
   const abateri = manifeste.flatMap((m) => m.abateri)
   const felii = [...new Set(manifeste.flatMap((m) => m.felii))]
@@ -184,7 +214,11 @@ export function citesteDeclaratiile(radacina: string, caiRute: readonly string[]
       } else if (!formaDeclaratiei(declaratie)) {
         abateri.push(rel + ': declaratia rutei ' + cale + ' nu are forma { intrebare, entitati, fara_regula_paragrafului? }')
       } else if (editii.includes(aFeliei.editie)) {
-        declaratii.set(cale, declaratie)
+        try {
+          declaratii.set(cale, { ...declaratie, entitati: entitatiCuNumarul(declaratie.entitati, canaleJson) })
+        } catch (e) {
+          abateri.push(rel + ': ruta ' + cale + ': ' + (e as Error).message)
+        }
       }
     }
   }

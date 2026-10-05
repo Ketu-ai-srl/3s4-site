@@ -24,6 +24,11 @@
 // Editiile `en` si `ro-MD` dau contractul lor, construit pe server cu canalele domeniului: CTA-ul e
 // WhatsApp cu textul paginii curente (`ctaPeCale`), iar fara panoul de descarcare (`descarca: null`)
 // butonul Descarca lipseste. Selectorul de limba arata echivalentul paginii curente (`limbiPentruCale`).
+//
+// ASEZAREA (`src/lib/asezare.ts`): contractul poarta cai SURSA, deci pagina curenta se citeste ca sursa
+// (`useCaleSursa`) si toate comparatiile (start, legatura activa, CTA-ul paginii, limbile) raman pe sursa; adresele
+// scrise de antet in `href` (sigla, legaturile, Autentificare) sunt SERVITE (`hrefAntet`). Pe asezarea `md` ambele
+// sunt identitatea.
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -50,6 +55,8 @@ import {
   type LegaturaAntet,
   type PlatformaDescarca,
 } from "@/content/navigatie";
+import { RUTE } from "@/content/rute";
+import { caSursa, caleServita, useCaleSursa } from "@/lib/asezare";
 import { editiiBuild } from "@/lib/editii";
 import Buton from "@/components/primitive/Buton";
 import Iconita from "@/components/primitive/Iconita";
@@ -90,6 +97,11 @@ export function foaieFiltrata(foaie: FoaieMeniu, cai: ReadonlySet<string>): Foai
   return { ...foaie, lider, elemente, subsol };
 }
 
+/** Adresa scrisa in `href` de antet: calea servita a caii sursa din contract ("/" cand lipseste, ca inainte). */
+function hrefAntet(href: string | null): string {
+  return caleServita(caSursa(href ?? "/"), RUTE);
+}
+
 function faraPlecare() {
   return false;
 }
@@ -118,7 +130,7 @@ export type AntetProps = {
 
 export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }: AntetProps) {
   const ANTET = navigatie.antet;
-  const cale = usePathname() ?? "/";
+  const cale = useCaleSursa(RUTE, usePathname) ?? "/";
   const esteStart = cale === ANTET.sigla.href;
 
   const [derulat, setDerulat] = useState(false);
@@ -313,7 +325,7 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
     <>
       <header className={clase} data-antet={plecat ? "plecat" : pastila ? "pastila" : "plat"} inert={plecat ? true : undefined}>
         <div className={s.container}>
-          <Link href={ANTET.sigla.href ?? "/"} className={s.sigla} aria-label={ANTET.sigla.text}>
+          <Link href={hrefAntet(ANTET.sigla.href)} className={s.sigla} aria-label={ANTET.sigla.text}>
             <SiglaMarca inaltime={40} prioritar />
           </Link>
 
@@ -332,7 +344,7 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
                   return (
                     <li key={l.text}>
                       <Link
-                        href={l.href ?? "/"}
+                        href={hrefAntet(l.href)}
                         className={[s.legatura, deschisa ? s.legaturaDeschisa : ""].filter(Boolean).join(" ")}
                         aria-current={esteActiva(l) ? "page" : undefined}
                         aria-expanded={areFoaie ? deschisa : undefined}
@@ -387,7 +399,7 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
             {autentificare ? (
               <>
                 <span className={s.separator} aria-hidden="true" />
-                <Link href={autentificare.href ?? "/"} className={s.legatura}>
+                <Link href={hrefAntet(autentificare.href)} className={s.legatura}>
                   {autentificare.text}
                 </Link>
               </>

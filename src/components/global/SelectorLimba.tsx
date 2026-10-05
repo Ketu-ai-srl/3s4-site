@@ -8,12 +8,18 @@
 // pe editii, optiunile sunt echivalentele paginii curente (`limbiPentruCale`, tabelul din
 // `src/content/echivalente.ts`); pe o pagina fara echivalent selectorul nu se randeaza deloc. Pe build-ul
 // cu o singura editie lista e fixa, deci selectorul arata ca azi.
+//
+// ASEZAREA (`src/lib/asezare.ts`): echivalentele si contractul poarta cai SURSA, deci pagina curenta se citeste ca
+// sursa (`useCaleSursa`), iar adresa fiecarei optiuni se scrie SERVITA (`optiuniSelector`). Pe asezarea `md`
+// ambele sunt identitatea.
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { ECHIVALENTE } from "@/content/echivalente";
 import { LIMBI, SELECTOR_LIMBA, limbiPentruCale, vizibile, type CaiExistente, type Limba } from "@/content/navigatie";
+import { RUTE } from "@/content/rute";
+import { asezareBuild, caSursa, caleServita, useCaleSursa, type CodAsezare, type RutaAsezabila } from "@/lib/asezare";
 import { editiiBuild } from "@/lib/editii";
 import Iconita from "@/components/primitive/Iconita";
 import s from "./SelectorLimba.module.css";
@@ -29,6 +35,22 @@ export type SelectorLimbaProps = {
   eticheta?: string;
 };
 
+/**
+ * Optiunile selectorului pe pagina cu calea SURSA `cale`: cele vizibile, cu adresa SERVITA in `href` (`ruta` ramane
+ * sursa), si optiunea activa (prima, cand niciuna nu e bifata). `activa` e `undefined` cand selectorul nu se arata.
+ */
+export function optiuniSelector(
+  limbiContract: readonly Limba[],
+  cale: string,
+  cai: CaiExistente,
+  rute: readonly RutaAsezabila[] = RUTE,
+  asezare: CodAsezare = asezareBuild(),
+): { limbi: Limba[]; activa: Limba | undefined } {
+  const limbiPagina = limbiPentruCale(limbiContract, cale, ECHIVALENTE, editiiBuild());
+  const limbi = vizibile(limbiPagina, cai).map((l) => (l.href === null ? l : { ...l, href: caleServita(caSursa(l.href), rute, asezare) as string }));
+  return { limbi, activa: limbiPagina.find((l) => l.activa) ?? limbiPagina[0] };
+}
+
 export default function SelectorLimba({
   cai,
   directie = "jos",
@@ -40,10 +62,8 @@ export default function SelectorLimba({
   const zona = useRef<HTMLDivElement>(null);
   const buton = useRef<HTMLButtonElement>(null);
   const idPanou = useId();
-  const cale = usePathname() ?? "/";
-  const limbiPagina = limbiPentruCale(limbiContract, cale, ECHIVALENTE, editiiBuild());
-  const limbi = vizibile(limbiPagina, cai);
-  const activa = limbiPagina.find((l) => l.activa) ?? limbiPagina[0];
+  const cale = useCaleSursa(RUTE, usePathname) ?? "/";
+  const { limbi, activa } = optiuniSelector(limbiContract, cale, cai);
 
   useEffect(() => {
     if (!deschis) return;

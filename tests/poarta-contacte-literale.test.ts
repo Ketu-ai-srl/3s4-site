@@ -20,8 +20,9 @@ import { configurareCanale } from '@/lib/canale-mediu'
  * (`.ts`, `.tsx`, `.js`, `.mjs`): un comentariu nu ajunge pe pagina. Probele (`tests/`) si documentatia nu sunt
  * sursa site-ului, deci nu se citesc.
  *
- * EXCEPTARILE sunt pe CALE EXACTA, fiecare cu motivul ei (lista `EXCEPTARI`); cele temporare spun ce fisier din
- * afara feliei cere mutarea. Tabelele de destinatari din textele juridice sunt exceptate numai in TABELUL care
+ * EXCEPTARILE sunt pe CALE EXACTA, fiecare cu motivul ei (lista `EXCEPTARI`). Declaratiile G-AI-02 ale paginilor
+ * de contact (`config/seo/en-nucleu.json`, `config/seo/ro-md-acasa-contact.json`) nu mai sunt exceptate: numarul
+ * lor e un loc (`{numarAfisat}`) pe care probele de browser il umplu din profil. Tabelele de destinatari din textele juridice sunt exceptate numai in TABELUL care
  * numeste furnizorul DNS (ancora): obiectul `tabel: { ... }` de pe randul ancorei, cu acoladele echilibrate. Un
  * rand de sursa poate tine toata sectiunea (paragraful de dinainte si tabelul), deci exceptarea pe tot randul ar fi
  * acoperit si proza; restul randului si restul documentului raman masurate (martorul pe modulul real, mai jos).
@@ -208,11 +209,6 @@ export const EXCEPTARI: readonly Exceptare[] = [
     ancora: ANCORA_DNS,
     motiv: 'tabelul B al furnizorilor: aceiasi destinatari legati de domeniu ca in politica de confidentialitate, asteapta juristul',
   })),
-  ...['config/seo/en-nucleu.json', 'config/seo/ro-md-acasa-contact.json'].map((cale) => ({
-    cale,
-    motiv:
-      'TEMPORAR: declaratiile G-AI-02 ale paginilor de contact; le citesc ca JSON brut, pe langa tests/browser/ajutor/raspunsuri.ts, si tests/browser/congruenta.spec.ts (declaratiiEn) si tests/browser/ro-md-acasa-contact.spec.ts (DECLARATII), deci un numar luat din profil cere si acele doua fisiere, in afara feliei',
-  })),
 ]
 
 function fisiereUrmarite(): Fisier[] {
@@ -246,6 +242,17 @@ describe('poarta contactelor literale', () => {
   it('arborele curat: zero contacte literale in sursa site-ului, in afara exceptarilor', () => {
     const exceptari = [...EXCEPTARI, ...profiluri().map((cale) => ({ cale, motiv: 'sursa valorilor' }))]
     expect(cautaContacte(fisiere, valori, exceptari)).toEqual([])
+  })
+
+  it('declaratiile G-AI-02 ale paginilor de contact sunt masurate: numarul plantat in locul din fisier e prins', () => {
+    for (const cale of ['config/seo/en-nucleu.json', 'config/seo/ro-md-acasa-contact.json']) {
+      expect(EXCEPTARI.some((e) => e.cale === cale), cale).toBe(false)
+      const f = fisiere.find((x) => x.cale === cale) as Fisier
+      expect(f.text.split('{numarAfisat}').length - 1, cale + ': locul numarului, o singura data').toBe(1)
+      expect(cautaContacte([f], valori, EXCEPTARI), cale).toEqual([])
+      const plantat = f.text.replace('{numarAfisat}', NUMAR_OPERATOR)
+      expect(cautaContacte([{ cale, text: plantat }], valori, EXCEPTARI).map((g) => g.valoare), cale).toEqual([NUMAR_OPERATOR])
+    }
   })
 
   it('exceptarile sunt pe cai care exista, fiecare cu motiv; registrele raman nerandate; ancora are inca ce acoperi', () => {

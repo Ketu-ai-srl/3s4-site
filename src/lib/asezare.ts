@@ -23,9 +23,10 @@
 // pastrate. Caile care nu sunt rute (imaginile, `/a/...`, `/_next/...`, fisierele domeniului, o ancora singura) raman
 // neschimbate: pe ele nu le alege asezarea.
 //
-// Modulul nu importa decat catalogul editiilor (care nu importa nimic): il citesc `next.config.ts` si pachetul de
-// browser. Lista rutelor se da ca argument, ca modulul sa nu traga manifestul de rute dupa el (manifestul il va
-// putea importa, fara ciclu).
+// Modulul nu importa decat catalogul editiilor (care nu importa nimic): il citesc `next.config.ts`, pachetul de
+// browser si Node direct (`perechi-asezare.mjs`, unde `next/navigation` nici nu se rezolva). Lista rutelor se da ca
+// argument, ca modulul sa nu traga manifestul de rute dupa el (manifestul il importa, fara ciclu: `RUTE[i].servita`);
+// tot ca argument primeste carligul de citire si cititorul caii din bara de adrese (`useCaleSursa`).
 import { EDITII, type CodEditie } from "./editii";
 
 /** Codul unei asezari: `md` (engleza la radacina, romana sub `/ro`) sau `ro` (romana la radacina, engleza sub `/en`). */
@@ -120,6 +121,16 @@ export function prefixServit(editie: EditieAsezata, asezare: CodAsezare = asezar
 export function atributeLimba(editie: EditieAsezata, asezare: CodAsezare = asezareBuild()): Omit<Asezare, "prefix"> {
   const { lang, ogLocale, inLanguage } = ASEZARI[asezare][editie];
   return { lang, ogLocale, inLanguage };
+}
+
+/**
+ * Codul `hrefLang` scris pe o legatura spre o pagina a editiei `cod`: datele poarta codul editiei de CONTINUT (ca si
+ * calea sursa), iar la emitere se scrie limba servita pe asezare (pe `ro`, `ro-MD` -> `ro-RO`). Pe `md` identitatea;
+ * un cod care nu e al unei editii asezate (`ro-RO`, orice alt cod de limba) ramane neschimbat.
+ */
+export function hrefLangServit(cod: string, asezare: CodAsezare = asezareBuild()): string {
+  const editie = EDITII_ASEZATE.find((e) => e === cod);
+  return editie === undefined ? cod : ASEZARI[asezare][editie].inLanguage;
 }
 
 /**
@@ -240,6 +251,24 @@ export function caleSursa(cale: CaleServita, rute: readonly RutaAsezabila[], ase
   const [baza, rest] = desparte(cale);
   const s = harta(rute, asezare).sursa.get(baza);
   return (s === undefined ? cale : s + rest) as CaleSursa;
+}
+
+// ------------------------------------------------------------------ citirea din browser
+
+/**
+ * Calea SURSA a paginii curente, pentru componentele de browser care aleg dupa pagina (selectorul de limba, antetul,
+ * canalul pe pagina, bara mobila, blocul JSON-LD pe cale). Cititorul caii (`usePathname` din `next/navigation`, dat
+ * de componenta) intoarce calea SERVITA, iar datele cu care se compara sunt SURSA; acesta e singurul loc in care cele
+ * doua se intalnesc. Pe asezarea `md` intoarce exact ce da cititorul (si `null` cand el da `null`, ca fiecare
+ * componenta sa-si pastreze implicitul de azi), deci randarea nu se schimba. `rute` = manifestul `RUTE`. Ambele vin ca argument: modulul nu importa nici manifestul, nici Next.
+ */
+export function useCaleSursa(
+  rute: readonly RutaAsezabila[],
+  useCaleServita: () => string | null,
+  asezare: CodAsezare = asezareBuild(),
+): CaleSursa | null {
+  const servita = useCaleServita();
+  return servita === null ? null : caleSursa(caServita(servita), rute, asezare);
 }
 
 // ------------------------------------------------------------------ perechile pentru proba de identitate

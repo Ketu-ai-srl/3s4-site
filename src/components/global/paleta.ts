@@ -4,11 +4,16 @@
 // caile existente. Cu interogare: se cauta in TOATE rutele existente (`RUTE`: titlul scurt,
 // descrierea si calea), in actiuni si in articolele blogului; grupul de articole apare doar atunci.
 // Potrivirea e subsir, fara majuscule si FARA diacritice ("cautare" gaseste "Căutare").
+//
+// ASEZAREA (`src/lib/asezare.ts`): rezultatele poarta calea SURSA (`cale`), pe care se fac comparatiile cu rutele si
+// cu caile existente; adresa la care duce un rezultat e cea SERVITA, adaugata la sfarsit de `cuCaiServite` (campul
+// `servita`). Pe asezarea `md` cele doua coincid.
 
 import type { ArticolBlog } from "@/content/blog/registru";
 import { caleArticol } from "@/content/blog/registru";
 import { PALETA, vizibile, type CaiExistente } from "@/content/navigatie";
 import type { Ruta } from "@/content/rute";
+import { asezareBuild, caSursa, caleServita, type CaleServita, type CodAsezare, type RutaAsezabila } from "@/lib/asezare";
 
 export type ElementPaleta = {
   titlu: string;
@@ -19,6 +24,26 @@ export type GrupPaletaRezultat = {
   titlu: string;
   elemente: ElementPaleta[];
 };
+
+/** Un rezultat cu adresa la care duce: `cale` ramane sursa, `servita` e adresa de pe domeniu. */
+export type ElementPaletaServit = ElementPaleta & { servita: CaleServita };
+
+export type GrupPaletaServit = {
+  titlu: string;
+  elemente: ElementPaletaServit[];
+};
+
+/** Rezultatele cu adresa servita a fiecaruia (navigarea si calea afisata o folosesc pe ea). */
+export function cuCaiServite(
+  grupuri: readonly GrupPaletaRezultat[],
+  rute: readonly RutaAsezabila[],
+  asezare: CodAsezare = asezareBuild(),
+): GrupPaletaServit[] {
+  return grupuri.map((g) => ({
+    titlu: g.titlu,
+    elemente: g.elemente.map((e) => ({ ...e, servita: caleServita(caSursa(e.cale), rute, asezare) })),
+  }));
+}
 
 /** Litere mici, fara semne diacritice, spatii comprimate. */
 export function normalizeaza(text: string): string {

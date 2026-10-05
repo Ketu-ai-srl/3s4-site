@@ -1,5 +1,5 @@
 {
-  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor EN din grupul nucleu (src/content/rute-en-nucleu.ts), din arhitectura continutului EN, Anexa B. Pe /contact lipseste adresa de e-mail din Anexa B: pana la P-40 pagina nu o numeste (varianta fisei de dinainte de P-40). Rutele sunt ale editiei en, deci pe build-ul romanesc declaratiile se verifica numai ca forma (tests/browser/ajutor/raspunsuri.ts).",
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor EN din grupul nucleu (src/content/rute-en-nucleu.ts), din arhitectura continutului EN, Anexa B. Pe /contact lipseste adresa de e-mail din Anexa B: pana la P-40 pagina nu o numeste (varianta fisei de dinainte de P-40). Rutele sunt ale editiei en, deci pe build-ul romanesc declaratiile se verifica numai ca forma (tests/browser/ajutor/raspunsuri.ts). Numarul de WhatsApp nu se scrie aici: entitatea care ii tine locul (numele numarAfisat intre acolade) e numarul afisat al canalului din profilul domeniului (CANALE_JSON, prin numarAfisat din src/content/canale.ts), pus in locul ei de proba care masoara pagina pe copie; e aceeasi sursa din care poarta SEO citeste telefonul permis (campul telefon din CANALE_JSON).",
   "raspuns_autonom": {
     "/": {
       "intrebare": "What is 3S Scan Store Solve?",
@@ -48,7 +48,7 @@
       "entitati": [
         "3S",
         "WhatsApp",
-        "+373 60 055 599",
+        "{numarAfisat}",
         "English",
         "Romanian"
       ]

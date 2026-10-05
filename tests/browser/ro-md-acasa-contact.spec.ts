@@ -1,10 +1,14 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { numarAfisat } from '../../src/content/canale'
+import { configurareCanale } from '../../src/lib/canale-mediu'
 import { EDITII } from '../../src/lib/editii'
 import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { masoaraRaspunsul, type DeclaratieRaspuns } from './ajutor/geo'
+import { asteaptaHidratarea } from './ajutor/hidratare'
 import { RADACINA } from './ajutor/proiect'
+import { entitatiCuNumarul, LOC_NUMAR } from './ajutor/raspunsuri'
 
 /**
  * Paginile RO-MD de prezentare (felia ro-md-acasa-contact), `/ro` si `/ro/contact`, pe COPIA 3s.md
@@ -67,7 +71,12 @@ const EN = caiEn()
 const PERECHI = RUTE.map((r) => ({ cheie: r.cheie, en: EN.get(r.cheie) ?? '(fara pagina EN)', ro: r.cale }))
 const JURIDIC = JSON.parse(citeste('config', 'juridic-rute.json')) as { documente: Record<string, { ro: string }> }
 const CALE_LEGAL_RO = JURIDIC.documente['informatii-legale'].ro
-const DECLARATII = (JSON.parse(citeste('config', 'seo', 'ro-md-acasa-contact.json')) as { raspuns_autonom: Record<string, DeclaratieRaspuns> }).raspuns_autonom
+/** Numarul afisat al canalului din profil: valoarea pusa de cititor (`entitatiCuNumarul`) in locul lui `LOC_NUMAR`. */
+const NUMAR_PROFIL = numarAfisat(configurareCanale(PROFIL.CANALE_JSON))
+const BRUTE = (JSON.parse(citeste('config', 'seo', 'ro-md-acasa-contact.json')) as { raspuns_autonom: Record<string, DeclaratieRaspuns> }).raspuns_autonom
+const DECLARATII: Record<string, DeclaratieRaspuns> = Object.fromEntries(
+  Object.entries(BRUTE).map(([cale, d]) => [cale, { ...d, entitati: entitatiCuNumarul(d.entitati, PROFIL.CANALE_JSON) }]),
+)
 
 let copie: Copie3sMd
 
@@ -155,6 +164,13 @@ test('preconditia: 2 rute sub marcajul feliei, fiecare cu ref, pereche EN si dec
     ['contact', '/contact', '/ro/contact'],
     ['home', '/', '/ro'],
   ])
+  // Numarul din declaratia /ro/contact vine din profil: locul lui e in fisier, valoarea nu, iar dupa inlocuire
+  // entitatea e numarul afisat al canalului (controlul ca inlocuirea a rulat, nu ca a trecut pe langa).
+  expect(BRUTE['/ro/contact'].entitati).toContain(LOC_NUMAR)
+  expect(BRUTE['/ro/contact'].entitati).not.toContain(NUMAR_PROFIL)
+  expect(NUMAR_PROFIL).toMatch(/^\+\d+( \d+)+$/)
+  expect(DECLARATII['/ro/contact'].entitati).toContain(NUMAR_PROFIL)
+  expect(Object.values(DECLARATII).flatMap((d) => d.entitati).filter((e) => e.includes('{'))).toEqual([])
   // Tabelul de echivalente are exact perechile manifestelor.
   for (const p of PERECHI) expect(pereche(p.cheie), p.cheie).toEqual({ en: p.en, ro: p.ro })
   expect(CANALE.whatsapp).toMatch(/^\d{8,15}$/)
@@ -245,8 +261,15 @@ for (const p of PERECHI) {
     test(p.cheie + ', pagina ' + editie + ': selectorul EN | RO e in antet si duce la pagina pereche', async ({ page }) => {
       expect((await servit(cale)).html).toContain('data-selector-limba')
       await page.goto(copie.baza + cale)
+      // Panoul se randeaza abia dupa ce React aplica clicul; pe pagina rece, cu hidratarea inca in curs, asta se poate
+      // intampla DUPA ce clicul s-a intors, iar citirea imediata gasea o lista goala (CI: 1 din 2 rulari, primul caz al
+      // fisierului; local: 1 din 130, prima pagina dupa construire). Deci se asteapta hidratarea butonului inainte de
+      // clic si panoul deschis (prima optiune vizibila) inainte de citire; asertia ramane aceeasi.
+      await asteaptaHidratarea(page, ['header [data-selector-limba] button'])
       const selector = page.locator('header [data-selector-limba]').first()
       await selector.locator('button').click()
+      await expect(selector.locator('button')).toHaveAttribute('aria-expanded', 'true')
+      await expect(selector.locator('a').first()).toBeVisible()
       const legaturi = await selector.locator('a').evaluateAll((el) => el.map((a) => a.getAttribute('href')))
       expect(legaturi).toContain(alta)
     })

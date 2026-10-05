@@ -12,16 +12,31 @@
 // editii poate aduce coloana de canale (WhatsApp cu textul paginii, numarul de WhatsApp numai ca text - fara
 // legatura de apel, decizia 56 -, e-mailul numai cu adresa domeniului), o legatura in limba tarii firmei, in randul de jos si
 // eticheta butonului de setari cookie. Campurile goale (slogan, descriere, insigne) nu lasa elemente goale.
+//
+// ASEZAREA (`src/lib/asezare.ts`): contractul poarta cai SURSA; existenta se verifica pe ele (`vizibile`, `seVede`),
+// iar fiecare adresa interna scrisa in `href` (sigla, coloanele, legatura locala) e SERVITA (`hrefTinta`,
+// `legaturaLocalaServita`, care scrie si `hrefLang` pe limba servita). Posta si retelele sunt adrese externe, pe care
+// asezarea nu le alege. Pe asezarea `md` toate sunt identitatea.
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
 import SetariCookie from "@/components/consimtamant/SetariCookie";
 import { CAI_EXISTENTE } from "@/content/cai";
+import { RUTE } from "@/content/rute";
 import { stareAnalitica } from "@/lib/analitica";
-import { NAVIGATIE_RO, seVede, vizibile, type CaiExistente, type ContractNavigatie, type Legatura } from "@/content/navigatie";
+import {
+  NAVIGATIE_RO,
+  legaturaLocalaServita,
+  seVede,
+  vizibile,
+  type CaiExistente,
+  type ContractNavigatie,
+  type Legatura,
+} from "@/content/navigatie";
 import Iconita from "@/components/primitive/Iconita";
 import SiglaTert from "@/components/primitive/SiglaTert";
+import { hrefTinta } from "@/components/primitive/Tinta";
 import SelectorLimba from "./SelectorLimba";
 import SiglaMarca from "./SiglaMarca";
 import s from "./Subsol.module.css";
@@ -44,7 +59,7 @@ function Legaturi({ legatura, className }: { legatura: Legatura; className: stri
     );
   }
   return (
-    <Link href={href} className={className}>
+    <Link href={hrefTinta(href)} className={className}>
       {legatura.text}
     </Link>
   );
@@ -87,7 +102,7 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
   const an = new Date().getFullYear();
   const contact = SUBSOL.contact ?? null;
   const areContact = contact !== null && (contact.whatsapp !== null || contact.numar !== null || contact.email !== null);
-  const locala = SUBSOL.legaturaLocala && seVede(SUBSOL.legaturaLocala, cai) ? SUBSOL.legaturaLocala : null;
+  const locala = SUBSOL.legaturaLocala && seVede(SUBSOL.legaturaLocala, cai) ? legaturaLocalaServita(SUBSOL.legaturaLocala, RUTE) : null;
   // Grila are 5 coloane de legaturi pe contractul romanesc (fara coloana de canale si fara atribut de stil);
   // pe un contract cu canale, numarul de coloane trece prin variabila CSS. Atributul lipseste cu totul pe contractul
   // romanesc: un `style` nedefinit ar intra totusi in datele paginii (masurat pe proba de invarianta RO).
@@ -104,7 +119,7 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
       <div className="container-site">
         <div className={s.grila} {...(stilGrila === undefined ? {} : { style: stilGrila })}>
           <div className={s.brand}>
-            <Link href={ANTET.sigla.href ?? "/"} className={s.brandSigla} aria-label={ANTET.sigla.text}>
+            <Link href={hrefTinta(ANTET.sigla.href ?? "/")} className={s.brandSigla} aria-label={ANTET.sigla.text}>
               <SiglaMarca inaltime={INALTIME_SIGLA_SUBSOL} />
             </Link>
             {SUBSOL.brand.slogan === "" ? null : <p className={s.slogan}>{SUBSOL.brand.slogan}</p>}

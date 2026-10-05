@@ -17,7 +17,9 @@ export type CaiPeEditie = {
 // Perechile juridice (felia juridic-pagini-3s-md): documentele familiei `md` publicate la poarta B, pe cheia din
 // registru, cu adresele din `config/juridic-rute.json`. Scrise literal (modulul nu importa nimic); proba
 // `tests/juridic-3s-md.test.ts` cere ca ele sa fie exact documentele cu poarta B din fisierul acela, cu
-// adresele lui. DPA-ul si subimputernicitii (poarta C) nu au pagina, deci nici pereche.
+// adresele lui. DPA-ul si subimputernicitii (poarta C) nu au pagina, deci nici pereche. Indexul juridic (`/legal` -
+// `/ro/juridic`, cheia `juridic`) nu e document din configurare: exista exact cand familia `md` e publicata, ca
+// paginile lui.
 //
 // Perechile paginilor de prezentare (felia ro-md-acasa-contact): pagina de start si pagina de contact, singurele
 // pagini RO-MD de continut la lansare (decizia 29). Din ele vin hreflang-ul reciproc `/` - `/ro` si `/contact` -
@@ -42,4 +44,5 @@ export const ECHIVALENTE: Readonly<Record<string, CaiPeEditie>> = {
   termeni: { en: "/legal/terms", "ro-MD": "/ro/juridic/termeni" },
   "notificare-si-actiune": { en: "/legal/notice-and-action", "ro-MD": "/ro/juridic/notificare-si-actiune" },
   "inteligenta-artificiala": { en: "/legal/ai-notice", "ro-MD": "/ro/juridic/inteligenta-artificiala" },
+  juridic: { en: "/legal", "ro-MD": "/ro/juridic" },
 };

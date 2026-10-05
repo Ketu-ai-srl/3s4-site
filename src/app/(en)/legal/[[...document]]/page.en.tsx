@@ -88,7 +88,7 @@ function paginaCeruta(document: string[] | undefined): CheieMd | null | undefine
 export async function generateMetadata({ params }: Parametri): Promise<Metadata> {
   const cheie = paginaCeruta((await params).document);
   if (cheie === undefined) notFound();
-  if (cheie === null) return metadataPagina({ ...META_INDEX_EN, cale: CALE_JURIDIC_EN, editie: "en" });
+  if (cheie === null) return metadataPagina({ ...META_INDEX_EN, cale: CALE_JURIDIC_EN, editie: "en", cheie: "juridic" });
   return metadataPagina({ ...META_DOCUMENTE_MD[cheie][LIMBA], cale: caleMd(cheie, LIMBA), editie: "en", cheie });
 }
 

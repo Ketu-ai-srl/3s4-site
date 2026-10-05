@@ -8,6 +8,9 @@
 // PE EDITIE: textele si grupurile vin din contractul editiei (`paleta`, implicit `PALETA`). Pe contractul
 // romanesc continutul e exact cel din `paleta.ts`; pe altul, `continutPaletaContract` aplica aceleasi
 // reguli peste grupurile contractului (`paleta.ts` citeste numai contractul romanesc).
+//
+// ASEZAREA (`src/lib/asezare.ts`): continutul se calculeaza pe cai SURSA; navigarea (`router.push`) si calea
+// afisata langa fiecare rezultat folosesc adresa SERVITA (`cuCaiServite`). Pe asezarea `md` coincid.
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
@@ -15,7 +18,7 @@ import { ARTICOLE, caleArticol, type ArticolBlog } from "@/content/blog/registru
 import { PALETA, vizibile, type CaiExistente, type ContractPaleta } from "@/content/navigatie";
 import { RUTE, type Ruta } from "@/content/rute";
 import Iconita from "@/components/primitive/Iconita";
-import { continutPaleta, normalizeaza, type GrupPaletaRezultat } from "./paleta";
+import { continutPaleta, cuCaiServite, normalizeaza, type GrupPaletaRezultat } from "./paleta";
 import s from "./PaletaCautare.module.css";
 
 /**
@@ -81,7 +84,7 @@ export default function PaletaCautare({ cai, paleta = PALETA, onInchide }: Palet
   const baza = useId();
   const idLista = baza + "-lista";
 
-  const grupuri = useMemo(() => continutPaletaContract(paleta, interogare, cai, RUTE, ARTICOLE), [paleta, interogare, cai]);
+  const grupuri = useMemo(() => cuCaiServite(continutPaletaContract(paleta, interogare, cai, RUTE, ARTICOLE), RUTE), [paleta, interogare, cai]);
   const plate = useMemo(() => grupuri.flatMap((g) => g.elemente), [grupuri]);
   const indiceSelectat = plate.length === 0 ? -1 : Math.min(selectat, plate.length - 1);
 
@@ -109,7 +112,7 @@ export default function PaletaCautare({ cai, paleta = PALETA, onInchide }: Palet
     } else if (e.key === "Enter") {
       e.preventDefault();
       const ales = plate[indiceSelectat];
-      if (ales) deschide(ales.cale);
+      if (ales) deschide(ales.servita);
     } else if (e.key === "Escape") {
       e.preventDefault();
       onInchide();
@@ -179,10 +182,10 @@ export default function PaletaCautare({ cai, paleta = PALETA, onInchide }: Palet
                         aria-selected={esteSelectat}
                         className={[s.element, esteSelectat ? s.elementSelectat : ""].filter(Boolean).join(" ")}
                         onMouseMove={() => setSelectat(i)}
-                        onClick={() => deschide(el.cale)}
+                        onClick={() => deschide(el.servita)}
                       >
                         <span className={s.elementTitlu}>{el.titlu}</span>
-                        <span className={s.elementCale}>{el.cale}</span>
+                        <span className={s.elementCale}>{el.servita}</span>
                       </li>
                     );
                   })}

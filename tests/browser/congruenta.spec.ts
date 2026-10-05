@@ -3,10 +3,13 @@ import { join, relative, sep } from 'node:path'
 import type { Browser, Page } from '@playwright/test'
 import ts from 'typescript'
 import { expect, test } from './ajutor/baza'
-import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
+import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { pornesteCopiaOperator, type CopieOperator } from './ajutor/copie-operator'
 import { masoaraRaspunsul, type DeclaratieRaspuns } from './ajutor/geo'
 import { RADACINA } from './ajutor/proiect'
+import { citesteDeclaratiile, entitatiCuNumarul, LOC_NUMAR } from './ajutor/raspunsuri'
+import { numarAfisat } from '../../src/content/canale'
+import { configurareCanale } from '../../src/lib/canale-mediu'
 
 /**
  * Congruenta paginilor 3s.md cu perechile lor de pe site-ul RO (decizia 53: aceleasi componente si aceeasi compunere,
@@ -1261,15 +1264,55 @@ test('martor POZITIV: o bucata ceruta cu "0 RON" injectat e prinsa; martor NEGAT
 // G-AI-02 pe rutele EN de marketing ale copiei
 // ---------------------------------------------------------------------------------------------------------------------
 
-function declaratiiEn(): { cale: string; fisier: string; declaratie: DeclaratieRaspuns }[] {
+/** Profilul canalelor al copiei si numarul lui afisat: valoarea pusa de cititor in locul lui `LOC_NUMAR`. */
+const CANALE_PROFIL = mediuProfil3sMd().CANALE_JSON
+const NUMAR_PROFIL = numarAfisat(configurareCanale(CANALE_PROFIL))
+
+/** Declaratiile EN cum stau in fisiere (`bruta`) si cu numarul din profil pus in locul lui (`declaratie`). */
+function declaratiiEn(): { cale: string; fisier: string; bruta: DeclaratieRaspuns; declaratie: DeclaratieRaspuns }[] {
   const dir = join(RADACINA, 'config', 'seo')
   return readdirSync(dir)
     .filter((f) => /^en-.*\.json$/.test(f))
     .flatMap((f) => {
       const j = JSON.parse(readFileSync(join(dir, f), 'utf8')) as { raspuns_autonom?: Record<string, DeclaratieRaspuns> }
-      return Object.entries(j.raspuns_autonom ?? {}).map(([cale, declaratie]) => ({ cale, fisier: f, declaratie }))
+      return Object.entries(j.raspuns_autonom ?? {}).map(([cale, bruta]) => ({
+        cale,
+        fisier: f,
+        bruta,
+        declaratie: { ...bruta, entitati: entitatiCuNumarul(bruta.entitati, CANALE_PROFIL) },
+      }))
     })
 }
+
+test('declaratiile EN: numarul de pe /contact vine din profil, nu e scris in fisier', () => {
+  const contact = declaratiiEn().find((d) => d.cale === '/contact')
+  expect(contact, 'declaratia /contact').toBeDefined()
+  expect(contact!.bruta.entitati).toContain(LOC_NUMAR)
+  expect(contact!.bruta.entitati).not.toContain(NUMAR_PROFIL)
+  expect(NUMAR_PROFIL).toMatch(/^\+\d+( \d+)+$/)
+  // Controlul inlocuirii: dupa ea entitatea e numarul afisat, si nicio entitate nu mai poarta un loc neinlocuit.
+  expect(contact!.declaratie.entitati).toContain(NUMAR_PROFIL)
+  expect(declaratiiEn().flatMap((d) => d.declaratie.entitati).filter((e) => e.includes('{'))).toEqual([])
+})
+
+// Cititorul comun (`citesteDeclaratiile`, cel din geo.spec.ts) pune numarul in locul lui pe editiile build-ului:
+// cu profilul 3s.md, /contact si /ro/contact poarta numarul afisat; fara profil (CANALE_JSON gol), fiecare ruta cu
+// locul iese abatere care spune ce lipseste, in loc sa ajunga in proba cu o entitate pe care pagina n-o poate avea.
+test('martor: cititorul declaratiilor pune numarul din profil; fara profil, abatere clara pe fiecare ruta cu locul', () => {
+  expect(entitatiCuNumarul(['3S', LOC_NUMAR], CANALE_PROFIL)).toEqual(['3S', NUMAR_PROFIL])
+  expect(entitatiCuNumarul(['3S'], '')).toEqual(['3S'])
+  expect(() => entitatiCuNumarul(['3S', LOC_NUMAR], '')).toThrow(/CANALE_JSON/)
+  const cuProfil = citesteDeclaratiile(RADACINA, [], ['en', 'ro-MD'], CANALE_PROFIL)
+  expect(cuProfil.declaratii.get('/contact')?.entitati).toContain(NUMAR_PROFIL)
+  expect(cuProfil.declaratii.get('/ro/contact')?.entitati).toContain(NUMAR_PROFIL)
+  expect([...cuProfil.declaratii.values()].flatMap((d) => d.entitati).filter((e) => e.includes('{'))).toEqual([])
+  expect(cuProfil.abateri.filter((a) => a.includes(LOC_NUMAR))).toEqual([])
+  const faraProfil = citesteDeclaratiile(RADACINA, [], ['en', 'ro-MD'], '')
+  const lipsa = faraProfil.abateri.filter((a) => a.includes(LOC_NUMAR))
+  expect(lipsa.map((a) => a.split(': ')[1]).sort()).toEqual(['ruta /contact', 'ruta /ro/contact'])
+  expect(lipsa.every((a) => a.includes('CANALE_JSON'))).toBe(true)
+  expect(faraProfil.declaratii.has('/contact')).toBe(false)
+})
 
 test('G-AI-02 pe rutele EN de marketing ale copiei 3s.md: entitatile declarate si titlul in primele 400 de cuvinte, primul paragraf autonom', async ({ browser }) => {
   test.setTimeout(180_000)
