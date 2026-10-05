@@ -14,7 +14,7 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
     limba: "en",
     titlu: "Cookie policy",
     versiune: "2026-10-01",
-    introducere: "Here you can find out what information the website 3s.md stores or reads in your browser (cookies and local storage), how we measure visits, who receives the data and how you can change your mind. The operator's details are in the [Legal notice](cale:informatii-legale), and how we process personal data, with your full rights, in the [Privacy policy](cale:confidentialitate).",
+    introducere: "Here you can find out what information the website " + c.domeniu + " stores or reads in your browser (cookies and local storage), how we measure visits, who receives the data and how you can change your mind. The operator's details are in the [Legal notice](cale:informatii-legale), and how we process personal data, with your full rights, in the [Privacy policy](cale:confidentialitate).",
     sectiuni: [
       {
         cheie: "t1", titlu: "In short",
@@ -55,7 +55,7 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s3", titlu: "3. Your rights",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["You can ask at any time for access to your data or for its erasure, and you can object to the processing; the full list of rights and how to exercise them are in the [Privacy policy](cale:confidentialitate), section 8. We receive requests at contact@3s.md."] },
+          { jurisdictie: null, paragrafe: ["You can ask at any time for access to your data or for its erasure, and you can object to the processing; the full list of rights and how to exercise them are in the [Privacy policy](cale:confidentialitate), section 8. We receive requests at " + c.contact.email + "."] },
         ],
       },
       {
@@ -67,7 +67,7 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s5", titlu: "5. Contact point",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["For any question about cookies, write to contact@3s.md, the address of the operator 3S Demerzel SRL."] },
+          { jurisdictie: null, paragrafe: ["For any question about cookies, write to " + c.contact.email + ", the address of the operator 3S Demerzel SRL."] },
         ],
       },
       {

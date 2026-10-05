@@ -48,7 +48,7 @@ export const ANTET_PRETURI_EN: { fir: NivelFir[]; titlu: string; subtitlu: strin
   ],
   titlu: "3S pricing: four plans, in euros",
   subtitlu:
-    "3S has four plans, priced per company in euros, excluding VAT: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month, for 5, 10 and 20 user accounts; Enterprise from EUR 800 a month. Every start is a free 30-day pilot.",
+    "3S has four plans, priced per company in euros, excluding VAT: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month, for 5, 10 and 20 user accounts; Enterprise from EUR 800 a month. Every start is a free 14-day pilot.",
 };
 
 /** `preturi.ts:48-49`: numele accesibile ale poartei si ale pliurilor. */
@@ -220,7 +220,7 @@ export const LISTA_PDF_EN: ContinutListaPdf = {
     marca: "3S Scan Store Solve",
     titlu: "3S prices",
     coloane: { plan: "Plan", lunar: "Monthly, EUR", anual: "Annual, per month, EUR" },
-    note: ["Indicative prices, excluding VAT.", "Every start is a free 30-day pilot.", "Prices as shown on the website on the date above."],
+    note: ["Indicative prices, excluding VAT.", "Every start is a free 14-day pilot.", "Prices as shown on the website on the date above."],
     adresa: "Pricing page: ",
   },
 };
@@ -267,7 +267,7 @@ export const TABEL_EN: ContinutTabelPlanuri = {
       randuri: [
         { functie: "Share by expiring link", celule: toate(DA) },
         { functie: "User accounts", celule: { starter: valoare("5"), pro: valoare("10"), business: valoare("20") } },
-        { functie: "Free 30-day pilot", celule: toate(DA) },
+        { functie: "Free 14-day pilot", celule: toate(DA) },
         { functie: "Per-user fee", celule: toate(valoare("None")) },
         { functie: "Zip export", celule: toate(DA) },
       ],
@@ -318,11 +318,11 @@ export const INTREBARI_EN: ContinutFaqPreturi = {
     {
       intrebare: "What is an assisted pilot?",
       raspuns:
-        "A free 30-day pilot on your own documents, with 5 user accounts, as on Starter. We agree on the volume in writing, and it starts once you accept our Terms and the DPA. You choose the questions; we check the answers and sources with you.",
+        "A free 14-day pilot on your own documents, with 5 user accounts, as on Starter. We agree on the volume in writing, and it starts once you accept our Terms and the DPA. You choose the questions; we check the answers and sources with you.",
     },
     {
       intrebare: "Can I try 3S before deciding?",
-      raspuns: "Yes. The assisted pilot is free for 30 days, on your own documents. Message us to agree on the documents and the questions.",
+      raspuns: "Yes. The assisted pilot is free for 14 days, on your own documents. Message us to agree on the documents and the questions.",
     },
     {
       intrebare: "How do I get a quote?",

@@ -253,10 +253,19 @@ for (const p of PERECHI) {
   }
 }
 
-test('martor NEGATIV al selectorului: o pagina EN fara pereche (/pricing) nu il are', async () => {
-  const { status, html } = await servit('/pricing')
-  expect(status).toBe(200)
-  expect(bucata(html, /<header\b/, '</header>')).not.toContain('data-selector-limba')
+test('martor NEGATIV al selectorului: o pagina fara pereche (adresa fabricata, cu antetul EN) nu il are', async () => {
+  // Dupa decizia 59 fiecare pagina EN are pereche /ro, deci pagina fara pereche se fabrica la rulare: o adresa fara
+  // ruta, pe care copia o serveste cu pagina de negasit EN, cu acelasi antet. Controalele: antetul e acolo (absenta
+  // nu vine dintr-un antet lipsa), adresa nu e in echivalente, iar pe /pricing, care are pereche, selectorul apare.
+  const cale = '/fara-pereche-' + Date.now().toString(36)
+  expect(pereche('pricing')).not.toBeNull()
+  expect(citeste('src', 'content', 'echivalente.ts')).not.toContain('"' + cale + '"')
+  const fara = await servit(cale)
+  expect(fara.status).toBe(404)
+  const antet = bucata(fara.html, /<header\b/, '</header>')
+  expect(antet).toContain('href="/"')
+  expect(antet).not.toContain('data-selector-limba')
+  expect(bucata((await servit('/pricing')).html, /<header\b/, '</header>')).toContain('data-selector-limba')
 })
 
 test('harta de site are cele doua pagini RO-MD, pe domeniul profilului', async () => {

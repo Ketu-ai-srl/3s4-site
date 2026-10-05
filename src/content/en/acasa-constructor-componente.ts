@@ -57,7 +57,7 @@ export const COMUN_EN: ComunConstructor = {
   reluare: "Rebuild the archive",
   final: {
     titlu: "Want to see this on your documents?",
-    subRand: "Free 30-day pilot, assisted.",
+    subRand: "Free 14-day pilot, assisted.",
     buton: "Message us"
   },
   anuntGata: "The example archive for \"{industrie}\" is ready."

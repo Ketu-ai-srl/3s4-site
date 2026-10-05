@@ -37,7 +37,13 @@ CE NU MASOARA (rest declarat, nu scapare):
     legatura) e tradusa si ea de regula 2, deci apare ca diferenta daca B o pastreaza sursa. Daca o felie produce
     asa ceva, regula se ingusteaza pe context, in felia care o foloseste, cu martor;
   - antetele masurate sunt numai cele scrise de colector (`Content-Type`, `Content-Language`, `X-Robots-Tag`,
-    `Location`).
+    `Location`);
+  - amprenta din numele fisierelor statice (`static/css/...`, `static/chunks/...`), inclusiv sub un grup de rute
+    (`app/(romd)/...`): vezi `fara_amprente`;
+  - valoarea `<lastmod>` din harta (data ultimului commit pe sursa paginii, deci se muta la orice commit, si fara
+    nicio schimbare servita): ramane comparata numai prezenta elementului, vezi `LASTMOD`.
+  Ambele normalizari de mai sus au martori la FIECARE rulare (`control_normalizari`): o pereche care trebuie sa
+  iasa egala si una care trebuie sa ramana diferita; un martor picat da NEMASURAT (3).
 
 Folosire:
   python compara-build.py --regula invarianta <colectie-A> <colectie-B>
@@ -140,9 +146,62 @@ def normalizeaza_lot(elemente, normalizator):
 EXPIRES = re.compile(r'^(Expires: )\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$', re.M)
 
 
+# `<lastmod>` din harta vine din istoricul git al sursei paginii (data ultimului commit pe modulul ei), deci se muta la
+# ORICE commit pe acel modul, si cand pagina servita ramane octet cu octet aceeasi: in CI instantaneul feliei e un singur
+# commit nou, deci fiecare modul atins de felie ii da paginii data instantaneului. Iese numai valoarea; elementul si
+# restul intrarii (`<loc>`, alternatele) raman comparate.
+LASTMOD = re.compile(r'(<lastmod>)[^<]*(</lastmod>)')
+
+
 def fara_id(text, idb):
-    """Textul unei rute care nu e HTML (harta, llms, manifest, security.txt): id-ul build-ului si data din `Expires`."""
-    return EXPIRES.sub(r'\1DATA-BUILD', text.replace(idb, 'ID-BUILD').replace(idb.replace('-', '_'), 'ID-BUILD'))
+    """Textul unei rute care nu e HTML (harta, llms, manifest, security.txt): id-ul build-ului, data din `Expires` si
+    valoarea `<lastmod>`."""
+    text = EXPIRES.sub(r'\1DATA-BUILD', text.replace(idb, 'ID-BUILD').replace(idb.replace('-', '_'), 'ID-BUILD'))
+    return LASTMOD.sub(r'\1DATA-COMMIT\2', text)
+
+
+# AMPRENTELE DE SUB UN GRUP DE RUTE. Normalizatorul inlocuieste numele statice cu amprenta pana la primul `)`, deci
+# bucata unei rute dintr-un grup (`static/chunks/app/(romd)/layout.romd-<amprenta>.js`) iesea
+# `static/chunks/X)/layout.romd-<amprenta>.js`, cu amprenta inca in text. Masurat in CI pe 3s.md (felia 116, rularea
+# 37269755837): 28 de pagini diferite numai prin aceste nume, intre doua build-uri. Aici calea intreaga, cu segmentele
+# `(grup)` echilibrate, devine `static/<tip>/X` INAINTE de normalizator; o paranteza neinchisa, o ghilimea, un spatiu
+# sau o bara inversa opresc potrivirea, ca acolo. Pe numele fara grup rezultatul e acelasi ca al normalizatorului.
+STATIC_CU_GRUP = re.compile(r'static/(css|chunks)/(?:[^"\'\s\\()]|\([^"\'\s\\()/]*\))+')
+
+
+def fara_amprente(html):
+    return STATIC_CU_GRUP.sub(r'static/\1/X', html)
+
+
+def control_normalizari():
+    """Martorii celor doua normalizari de mai sus, pe texte asamblate la rulare, la FIECARE rulare.
+
+    Fiecare normalizare scoate o diferenta, deci o normalizare stricata (sau scoasa) nu inroseste nimic: comparatia
+    iese doar mai stricta, iar o normalizare prea larga ar inghiti diferente reale. De aceea fiecare are o pereche
+    care TREBUIE sa devina egala si una care TREBUIE sa ramana diferita. Intoarce motivul primului martor picat, sau
+    None. Un martor picat face verdictul NEMASURAT (3), nu verde.
+    """
+    # Doua intrari, ca o potrivire prea larga (de la primul `<lastmod>` la ultimul) sa inghita `<loc>` dintre ele.
+    def harta(loc, data):
+        intrare = '<url><loc>%s</loc><lastmod>%s</lastmod></url>'
+        return intrare % ('https://x.test/a', data) + intrare % (loc, data)
+    idb = 'id' + '-proba'
+    a = harta('https://x.test/b', '2026-01-0' + '1T00:00:00Z')
+    if fara_id(a, idb) != fara_id(harta('https://x.test/b', '2026-02-0' + '2T10:00:00Z'), idb):
+        return 'LASTMOD: doua harti care difera numai prin <lastmod> au iesit diferite'
+    if fara_id(a, idb) == fara_id(harta('https://x.test/c', '2026-01-0' + '1T00:00:00Z'), idb):
+        return 'LASTMOD: doua harti cu <loc> diferit au iesit egale'
+    if '<lastmod>' not in fara_id(a, idb):
+        return 'LASTMOD: elementul <lastmod> a disparut, trebuia sa ramana comparata prezenta lui'
+
+    def bucata(amprenta, cuvant):
+        return '<script src="/_next/static/chunks/app/(' + 'romd)/layout.romd-' + amprenta + '.js"></script><p>' + cuvant + '</p>'
+    b = bucata('a1b2c3', 'unu')
+    if fara_amprente(b) != fara_amprente(bucata('d4e5f6', 'unu')):
+        return 'STATIC_CU_GRUP: doua bucati sub un grup de rute care difera numai prin amprenta au iesit diferite'
+    if fara_amprente(b) == fara_amprente(bucata('d4e5f6', 'doi')):
+        return 'STATIC_CU_GRUP: un cuvant schimbat langa bucata a fost inghitit de normalizare'
+    return None
 
 
 # ------------------------------------------------------------------ regula `identitate`
@@ -284,7 +343,7 @@ def compara(A, B, perechi_cai, regula, valori, tabel, normalizator, arata):
             if cb.endswith('sitemap.xml'):
                 ta = harta_fara_en(ta, vb)
         if e_html(pa) and e_html(pb):
-            de_normalizat.append((len(comparatii) - 1, eticheta, motive, ta, tb))
+            de_normalizat.append((len(comparatii) - 1, eticheta, motive, fara_amprente(ta), fara_amprente(tb)))
             continue
         na, nb = fara_id(ta, A['id']), fara_id(tb, B['id'])
         if na != nb:
@@ -328,6 +387,10 @@ def main():
     if (args.regula == 'identitate') != bool(args.perechi):
         print('EROARE: --perechi se da numai si obligatoriu la regula identitate')
         return GRESIT
+    picat = control_normalizari()
+    if picat is not None:
+        print('NEMASURAT: martorul normalizarii ' + picat)
+        return NEMASURAT
     try:
         A, B = incarca(args.colectie_a), incarca(args.colectie_b)
         valori, tabel = None, None

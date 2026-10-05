@@ -64,10 +64,10 @@
   },
   {
     "id": "en-produs-pilot-asistat",
-    "text": "3S starts with a free 30-day assisted pilot on the customer's own documents; the answers and their sources are checked together, then 3S quotes for the full archive",
+    "text": "3S starts with a free 14-day assisted pilot on the customer's own documents; the answers and their sources are checked together, then 3S quotes for the full archive",
     "unde": "src/content/en/features-search.ts",
     "stare": "confirmat",
-    "sursa": "propunerea en-pilot-asistat din arhitectura conținutului EN, Anexa A: decizia 1 a owner-ului din 30.09.2026 (textul pilotului, pe documente reale) și decizia din 30.09.2026 ~23:55 (gratuit, 30 de zile); pilotul pornește după acceptarea Termenilor și a DPA-ului",
+    "sursa": "propunerea en-pilot-asistat din arhitectura conținutului EN, Anexa A: decizia 1 a owner-ului din 30.09.2026 (textul pilotului, pe documente reale) și decizia din 30.09.2026 ~23:55 (gratuit), cu durata din decizia 65 din 05.10.2026 (14 zile); pilotul pornește după acceptarea Termenilor și a DPA-ului",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
     "data": "2026-09-30"
   },

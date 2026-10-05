@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { abateriMetadata, alternatePagina, type ContextAlternate } from '../src/components/seo/metadata'
-import { legaturaWhatsApp } from '../src/content/canale'
+import { legaturaWhatsApp, numarAfisat } from '../src/content/canale'
 import { ECHIVALENTE } from '../src/content/echivalente'
 import { numarCuvinte, type BlocComun, type PaginaContinut } from '../src/content/model/tipuri'
 import { ETICHETA_WHATSAPP_RO_MD, TEXTE_WHATSAPP_RO_MD } from '../src/content/navigatie-ro-md'
@@ -35,6 +35,8 @@ const PROFIL = JSON.parse(readFileSync(join(RADACINA, 'config', 'profil-3s-md.js
 }
 const CANALE_3S_MD = configurareCanale(JSON.stringify(PROFIL.CANALE_JSON), '')
 const ADRESA_EMAIL = 'contact' + '@3s.md'
+/** Numarul domeniului 3s.md, din profil, in forma afisata: variantele paginii de contact il primesc ca optiune. */
+const NUMAR_3S_MD = numarAfisat(CANALE_3S_MD)
 
 type Intrare = { id: string; text: string; unde: string; stare: string }
 const REGISTRU = JSON.parse(readFileSync(join(RADACINA, 'src', 'content', 'afirmatii', 'ro-md-acasa-contact.json'), 'utf8')) as Intrare[]
@@ -42,7 +44,7 @@ const REGISTRU = JSON.parse(readFileSync(join(RADACINA, 'src', 'content', 'afirm
 /** Toate combinatiile de variante ale celor doua pagini. */
 const VARIANTE: contact.OptiuniContact[] = ['', ADRESA_EMAIL].flatMap((email) =>
   [false, true].flatMap((ghiduri) =>
-    [false, true].flatMap((operator) => [false, true].map((juridicRo) => ({ email, ghiduri, operator, juridicRo }))),
+    [false, true].flatMap((operator) => [false, true].map((juridicRo) => ({ email, ghiduri, operator, juridicRo, numar: NUMAR_3S_MD }))),
   ),
 )
 
@@ -141,7 +143,7 @@ describe('forma celor doua pagini, in toate variantele', () => {
 // ---------------------------------------------------------------------------------------------
 
 describe('variantele se aleg din cod', () => {
-  const baza = { email: '', ghiduri: false, operator: false, juridicRo: false }
+  const baza = { email: '', ghiduri: false, operator: false, juridicRo: false, numar: NUMAR_3S_MD }
 
   it('e-mailul (P-40): fara adresa nicio forma cu e-mail; cu adresa, pasul 1, fraza de final si contactul o numesc', () => {
     const fara = acasa.paginaAcasa(baza)
@@ -192,11 +194,15 @@ describe('variantele se aleg din cod', () => {
     expect(acasa.operatorInregistrat('')).toBe(false)
   })
 
-  it('paginile juridice RO: fraza despre limbi le numeste numai cand rutele lor exista', () => {
+  it('fraza despre limbi: toate paginile au pereche /ro (felia 108), deci nicio pagina nu mai e declarata numai in engleza', () => {
     const limba = (juridicRo: boolean) =>
       contact.paginaContact({ ...baza, juridicRo }).sectiuni.find((s) => s.cheie === 'limba')!.blocuri[0].paragrafe[0]
-    expect(limba(true)).toContain('în română sunt disponibile pagina de start și paginile juridice;')
-    expect(limba(false)).toContain('în română este disponibilă pagina de start;')
+    for (const j of [true, false]) {
+      expect(limba(j)).toContain('Toate paginile site-ului sunt disponibile și în română.')
+      expect(limba(j)).not.toContain('numai în engleză')
+    }
+    // Martor: fraza de dinainte de 108 ar fi picat pe a doua asertie.
+    expect('celelalte pagini ale site-ului sunt deocamdată numai în engleză.').toContain('numai în engleză')
   })
 })
 
@@ -290,10 +296,60 @@ describe('legaturile paginilor cu restul site-ului', () => {
     )
   })
 
-  it('numarul scris in text e numarul domeniului, afisat ca in subsol', async () => {
-    const { numarAfisat } = await import('../src/content/canale')
-    expect(numarAfisat(CANALE_3S_MD)).toBe('+373 60 055 599')
-    expect(contact.paginaContact().capsula).toContain(numarAfisat(CANALE_3S_MD))
+  // Numarul paginii vine din canalele BUILD-ULUI (`CANALE_JSON`), nu dintr-un literal: modulul se incarca din nou cu
+  // canalele 3s.md, apoi cu un numar romanesc (martorul celuilalt domeniu), si fiecare build scrie numai numarul lui.
+  it('numarul scris in text e numarul domeniului, din CANALE_JSON, afisat ca in subsol; alt domeniu, alt numar', async () => {
+    expect(NUMAR_3S_MD).toBe('+373 60 055 599')
+    const cuCanale = async (canale: unknown) => {
+      vi.stubEnv('CANALE_JSON', JSON.stringify(canale))
+      vi.resetModules()
+      try {
+        const m = (await import('../src/content/ro-md/contact')) as typeof contact
+        const p = m.paginaContact()
+        return { numar: m.OPTIUNI_CONTACT_BUILD.numar, text: [p.meta.descriere, p.capsula, JSON.stringify(p.jsonLd), ...p.sectiuni.map((x) => JSON.stringify(x))].join(' | ') }
+      } finally {
+        vi.unstubAllEnvs()
+        vi.resetModules()
+      }
+    }
+    const md = await cuCanale(PROFIL.CANALE_JSON)
+    expect(md.numar).toBe(NUMAR_3S_MD)
+    // Descrierea, capsula, nodul WebPage si sectiunea despre limba: patru locuri.
+    expect(md.text.split(NUMAR_3S_MD).length - 1).toBe(4)
+    const ro = ['+40', '743', '130', '567'].join(' ')
+    const alt = await cuCanale({ ...(PROFIL.CANALE_JSON as Record<string, unknown>), whatsapp: ro.replace(/\D/g, ''), telefon: ro.replace(/ /g, '') })
+    expect(alt.numar).toBe(ro)
+    expect(alt.text.split(ro).length - 1).toBe(4)
+    expect(alt.text).not.toContain(NUMAR_3S_MD)
+  })
+
+  // Un domeniu cu editiile en/ro-MD fara numar in CANALE_JSON nu construieste paginile de contact: ar fi plecat cu
+  // "... on WhatsApp at ." si "... prin mesaj sau apel, la .". Martorii: acelasi mediu CU numar trece, iar un build
+  // fara aceste editii (ro-RO, unde modulele nu sunt pagini) nu e oprit.
+  it('fara telefon in CANALE_JSON, pe un build cu editiile en si ro-MD, modulele de contact opresc constructia, cu motivul', async () => {
+    const incarca = async (editii: string, canale: Record<string, unknown>) => {
+      vi.stubEnv('NEXT_PUBLIC_SITE_EDITII', '')
+      vi.stubEnv('SITE_EDITII', editii)
+      vi.stubEnv('SITE_URL', PROFIL.SITE_URL)
+      vi.stubEnv('CANALE_JSON', JSON.stringify(canale))
+      try {
+        const rezultate: string[] = []
+        for (const incarcare of [() => import('../src/content/en/contact'), () => import('../src/content/ro-md/contact')]) {
+          vi.resetModules()
+          rezultate.push(await incarcare().then(() => 'incarcat', (e: Error) => e.message))
+        }
+        return rezultate
+      } finally {
+        vi.unstubAllEnvs()
+        vi.resetModules()
+      }
+    }
+    const faraTelefon = { ...(PROFIL.CANALE_JSON as Record<string, unknown>), telefon: '' }
+    const oprit = await incarca('en,ro-MD', faraTelefon)
+    expect(oprit[0]).toMatch(/^CANALE_JSON: domeniul cu editia en cere numarul de WhatsApp/)
+    expect(oprit[1]).toMatch(/^CANALE_JSON: domeniul cu editia ro-MD cere numarul de WhatsApp/)
+    expect(await incarca('en,ro-MD', PROFIL.CANALE_JSON as Record<string, unknown>)).toEqual(['incarcat', 'incarcat'])
+    expect(await incarca('ro-RO', faraTelefon)).toEqual(['incarcat', 'incarcat'])
   })
 
   it('registrul: id-uri proprii ro-md-*, fara "germania"; fiecare afirmatie a fiecarei variante e in registru, cu `unde` = modulul ei; nicio intrare orfana', () => {
@@ -444,7 +500,7 @@ describe('ce nu ajunge pe paginile RO-MD', () => {
     for (const fraza of [
       'Scrie-ne pe ' + WA + ' sau prin e-mail și descrie pe scurt arhiva firmei. În primul mesaj nu trimite documente sau date cu caracter personal.',
       'Poți contacta echipa 3S pe ' + WA + ', prin mesaj sau apel, la +373 60 055 599. Descrie-ne pe scurt arhiva firmei.',
-      'Dacă preferi o convorbire, sună-ne pe ' + WA + ', la +373 60 055 599; la acest număr primim apeluri numai prin ' + WA + '.',
+      'Dacă preferi o convorbire, sună-ne pe ' + WA + ', la +373 60 055 599; apelurile le primim numai prin ' + WA + '. Toate paginile site-ului sunt disponibile și în română.',
       'Contact 3S: ' + WA + ', mesaje și apeluri',
       'Contactează 3S pe ' + WA + ' (mesaj sau apel), la +373 60 055 599. Îți răspunde un membru al echipei.',
       'Dacă preferi o convorbire pe ' + WA + ', găsești numărul pe [pagina de contact](/ro/contact).',

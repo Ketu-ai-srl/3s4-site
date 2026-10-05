@@ -34,8 +34,8 @@ export const MICROTEXT = "Îți răspunde o persoană din echipa 3S, în român�
 /** Inceputul liniei de e-mail; adresa vine din canalele domeniului, numai cand exista (P-40). */
 export const INAINTE_DE_EMAIL = "Ne poți scrie și la ";
 
-/** Caile celor trei pagini de referinta (G1-G3) spre care trimite pagina. */
-export const CAI_GHIDURI = ["/guides/records-retention-moldova", "/guides/e-invoice-archiving-eu", "/compare/3s-vs-google-and-box"] as const;
+/** Caile celor trei pagini de referinta (G1-G3) spre care trimite pagina: perechile lor /ro (decizia 59). */
+export const CAI_GHIDURI = ["/ro/ghiduri/termene-pastrare-moldova", "/ro/ghiduri/arhivare-e-facturi-ue", "/ro/comparatie-drive"] as const;
 
 /** Ghidurile sunt publicate: toate trei rutele exista in manifestul acestui build. */
 export function ghiduriPublicate(rute: readonly { cale: string }[] = RUTE): boolean {
@@ -135,7 +135,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
           paragrafe: [
             "Nu publicăm numele clienților, rezultate cifrate sau recenzii. Poți evalua 3S, în schimb, pe baza " +
               (o.ghiduri ? "ghidurilor cu surse și a " : "") +
-              "unui pilot pe documentele firmei; limitele serviciului sunt descrise pe [pagina despre 3S](/about#limits) (în engleză).",
+              "unui pilot pe documentele firmei; limitele serviciului sunt descrise pe [pagina despre 3S](/ro/securitate#limits).",
           ],
         },
       ],
@@ -222,7 +222,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
       blocuri: [
         {
           paragrafe: [
-            "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services (AWS). Amazon are sediul în Statele Unite, iar legislația americană (CLOUD Act) poate obliga compania să păstreze și să predea datele aflate în posesia sau sub controlul său, indiferent unde se află serverele. Detaliile sunt prezentate pe [pagina despre 3S și securitate](/about#security) (în engleză).",
+            "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services (AWS). Amazon are sediul în Statele Unite, iar legislația americană (CLOUD Act) poate obliga compania să păstreze și să predea datele aflate în posesia sau sub controlul său, indiferent unde se află serverele. Detaliile sunt prezentate pe [pagina despre 3S și securitate](/ro/securitate#security).",
           ],
         },
       ],
@@ -240,7 +240,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
               (o.email === "" ? "Scrie-ne pe WhatsApp" : "Scrie-ne pe WhatsApp sau prin e-mail") +
                 " și descrie pe scurt arhiva firmei. În primul mesaj nu trimite documente sau date cu caracter personal.",
               "Stabilim în scris documentele incluse în pilot, volumul acestora și întrebările pe care dorești să le testezi.",
-              "Pilotul este gratuit, durează 30 de zile, include funcțiile pachetului Starter și începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor.",
+              "Pilotul este gratuit, durează 14 zile, include funcțiile pachetului Starter și începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor.",
               "La final analizăm împreună răspunsurile și sursele, iar tu decizi dacă continui cu unul dintre pachete.",
             ],
           },
@@ -254,7 +254,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
       blocuri: [
         {
           paragrafe: [
-            "3S are patru pachete, cu prețuri lunare în euro calculate pentru întreaga firmă. Starter, Pro și Business au aceleași funcții; pachetele se deosebesc numai prin numărul de conturi: 90, 150 și 240 EUR pe lună, pentru 5, 10 și, respectiv, 20 de conturi. Peste 20 de conturi se aplică pachetul Enterprise, de la 800 EUR pe lună, cu contract anual. La plata anuală beneficiezi de două luni gratuite, adică 75, 125 și, respectiv, 200 EUR pe lună. Grila are caracter orientativ. Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură. [Vezi pachetele](/pricing) (în engleză).",
+            "3S are patru pachete, cu prețuri lunare în euro calculate pentru întreaga firmă. Starter, Pro și Business au aceleași funcții; pachetele se deosebesc numai prin numărul de conturi: 90, 150 și 240 EUR pe lună, pentru 5, 10 și, respectiv, 20 de conturi. Peste 20 de conturi se aplică pachetul Enterprise, de la 800 EUR pe lună, cu contract anual. La plata anuală beneficiezi de două luni gratuite, adică 75, 125 și, respectiv, 200 EUR pe lună. Grila are caracter orientativ. Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură. [Vezi pachetele](/ro/preturi).",
           ],
         },
       ],
@@ -271,9 +271,9 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
                 ],
                 lista: {
                   elemente: [
-                    "[Termenele de păstrare a actelor în Moldova](" + CAI_GHIDURI[0] + ") (în engleză)",
-                    "[Arhivarea facturilor electronice în UE](" + CAI_GHIDURI[1] + ") (în engleză)",
-                    "[3S comparat cu Google și Box AI](" + CAI_GHIDURI[2] + ") (în engleză)",
+                    "[Termenele de păstrare a actelor în Moldova](" + CAI_GHIDURI[0] + ")",
+                    "[Arhivarea facturilor electronice în UE](" + CAI_GHIDURI[1] + ")",
+                    "[3S comparat cu Google și Box AI](" + CAI_GHIDURI[2] + ")",
                   ],
                 },
               },
@@ -320,6 +320,9 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
     afirmatii: [
       "ro-md-arhiva-cu-sursa",
       "ro-md-trei-pasi-scan-store-solve",
+      // Oglinda OCR (felia ro-md-oglinda): pasul Scan al startului spune ca 3S citeste textul prin OCR, ca pe EN
+      // (`en-produs-functii-in-productie` in `en/home.ts`).
+      "ro-md-functii-in-productie",
       "ro-md-termene-si-jurnal",
       "ro-md-gazduire-ue-frankfurt",
       "ro-md-amazon-sediu-sua",

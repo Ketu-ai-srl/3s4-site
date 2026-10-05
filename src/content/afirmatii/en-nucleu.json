@@ -109,10 +109,10 @@
   },
   {
     "id": "en-pret-orientativ-eur",
-    "text": "3S has four plans, priced per company in euros, excluding VAT, with the same features: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month (EUR 75, 125 and 200 a month billed annually; 900, 1,500 and 2,400 a year), for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month on an annual contract, for more than 20 accounts. Paying annually gives two months free. The prices are indicative; every start is a free 30-day assisted pilot.",
+    "text": "3S has four plans, priced per company in euros, excluding VAT, with the same features: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month (EUR 75, 125 and 200 a month billed annually; 900, 1,500 and 2,400 a year), for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month on an annual contract, for more than 20 accounts. Paying annually gives two months free. The prices are indicative; every start is a free 14-day assisted pilot.",
     "unde": "src/content/en/home.ts, src/content/en/pricing.ts, src/content/en/enterprise.ts",
     "stare": "confirmat",
-    "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pret-orientativ-eur; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, deciziile 10, 18 si 19 (documentul docs/audit/pret-eur-3s-md-2026-09-30.md, blocul DECIS)",
+    "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pret-orientativ-eur; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, deciziile 10, 18 si 19 (documentul docs/audit/pret-eur-3s-md-2026-09-30.md, blocul DECIS); durata pilotului de 14 zile din decizia 65 (2026-10-05)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 ~23:55",
     "data": "2026-09-30"
   },
@@ -163,10 +163,10 @@
   },
   {
     "id": "en-pilot-asistat",
-    "text": "3S starts with a free 30-day assisted pilot on the customer's own documents, with 5 user accounts and the volume agreed in writing, after the Terms and the data processing agreement are accepted, then confirms the plan and the price in a written offer.",
+    "text": "3S starts with a free 14-day assisted pilot on the customer's own documents, with 5 user accounts and the volume agreed in writing, after the Terms and the data processing agreement are accepted, then confirms the plan and the price in a written offer.",
     "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/pricing.ts, src/content/en/contact.ts",
     "stare": "confirmat",
-    "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pilot-asistat; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, deciziile 1 si 19",
+    "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pilot-asistat; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, deciziile 1 si 19; durata de 14 zile din decizia 65 (2026-10-05)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 ~23:55",
     "data": "2026-09-30"
   },

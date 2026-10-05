@@ -313,6 +313,28 @@ test('paginile cu pereche hreflang = echivalentele cu doua editii ale profilului
   expect(cuPereche.sort()).toEqual([...asteptate].sort())
 })
 
+// Felia ro-md-oglinda (decizia 59): fiecare pagina EN are acum oglinda ei /ro. Cifrele de mai jos se numara din
+// sursa la rulare (echivalente si manifestul RO-MD), nu se scriu de mana; proba cere ca cele opt oglinzi sa fie in
+// harta si sa aiba pereche, si ca nicio cale EN a hartii sa nu ramana fara pereche.
+test('oglinzile /ro: cele opt pagini ale feliei sunt in harta, cu pereche; nicio pagina EN fara pereche', async () => {
+  const text = readFileSync(join(RADACINA, 'src', 'content', 'rute-ro-md.ts'), 'utf8')
+  const start = text.indexOf('<<felie:ro-md-oglinda>>')
+  const urmator = start < 0 ? -1 : text.indexOf('<<felie:', start + 1)
+  const oglinzi = start < 0 ? [] : [...text.slice(start, urmator < 0 ? text.indexOf('\n];', start) : urmator).matchAll(/cale:\s*"([^"]+)"/g)].map((m) => m[1])
+  expect(oglinzi).toHaveLength(8)
+  const asteptate = paginiCuPerecheAsteptate()
+  for (const o of oglinzi) {
+    expect(cai, o).toContain(o)
+    expect(asteptate.has(o), o).toBe(true)
+  }
+  const enFaraPereche = cai.filter((c) => c !== '/ro' && !c.startsWith('/ro/') && !asteptate.has(c))
+  const roInHarta = cai.filter((c) => c === '/ro' || c.startsWith('/ro/'))
+  console.log('[acceptanta-3s-md] cai in harta: ' + cai.length + ' (EN ' + (cai.length - roInHarta.length) + ', /ro ' + roInHarta.length + '); pagini cu pereche asteptate: ' + asteptate.size + '; EN fara pereche: ' + enFaraPereche.length)
+  // Controlul: harta are pagini EN, deci lista goala de mai jos e o masura, nu o cautare in gol.
+  expect(cai.length - roInHarta.length).toBeGreaterThan(5)
+  expect(enFaraPereche).toEqual([])
+})
+
 for (const cale of INTERZISE) {
   test(cale + ': 404 pe 3s.md', async () => {
     expect((await servit(cale)).status).toBe(404)

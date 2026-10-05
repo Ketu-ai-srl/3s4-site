@@ -9,6 +9,12 @@
 // Modulele convertite cer campurile prin `campFirma(c, camp)`, nu direct din context: poarta juridica
 // (L-10) cauta un numar urmat de cuvantul care numeste firma la mai putin de 120 de caractere, iar
 // identificatorii de camp ai registrului de stat ar fi declansat-o pe cod, fara nimic vizibil pe pagina.
+//
+// CONTACTUL SI DOMENIUL (felia contacte-din-canale): modulele nu mai scriu literal adresa de e-mail, telefonul si
+// numele domeniului; le iau din `c.contact` si `c.domeniu`, construite de `../index.ts` din campurile firmei si
+// din `SITE_URL`.
+// Raman literale numerele autoritatilor si tabelele de destinatari (furnizorii DNS si ai postei unui domeniu
+// anume), care asteapta juristul.
 
 import modelD2 from "../../../../config/model-d2.json";
 import type { CampOperator, Operator } from "@/lib/operator";
@@ -21,6 +27,18 @@ export type ContextMd = {
   masurare: Masurare;
   /** Cheile de conditie active (din `masurare`, plus `linkedin` cand exista pagina). */
   active: ReadonlySet<ConditieMasurare>;
+  /**
+   * Contactul operatorului, asa cum il arata textele: adresa de e-mail si telefonul, din `OPERATOR_JSON`
+   * (campurile `email` si `telefon`, neschimbate). Pe 3s.md sunt exact valorile scrise inainte literal in
+   * module, deci textul randat ramane acelasi; pe alt domeniu vin din operatorul lui.
+   */
+  contact: { email: string; telefon: string };
+  /**
+   * Numele domeniului pe care e publicat site-ul, ca in "site-ul <domeniu>": gazda din `SITE_URL`
+   * (adresa data constructorului, altfel `adresaSite()`). Destinatarii legati de un domeniu anume
+   * (serviciul DNS, posta) NU se scriu prin el: sunt o diferenta de fond, nu de adresa.
+   */
+  domeniu: string;
 };
 
 /** Elementul, daca conditia e activa; altfel `null` (il scoate `alese`). */

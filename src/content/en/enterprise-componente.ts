@@ -76,7 +76,7 @@ export const LIVRABILE_EN: ContinutListaLivrabile = {
     { titlu: "Accounts and contract", text: "More than 20 user accounts, on an annual contract, from EUR 800 a month, excluding VAT." },
     {
       titlu: "A pilot on your own documents",
-      text: "Every start is a free 30-day assisted pilot on your own documents. A written offer then confirms the plan and the price.",
+      text: "Every start is a free 14-day assisted pilot on your own documents. A written offer then confirms the plan and the price.",
     },
     {
       titlu: "Data location",

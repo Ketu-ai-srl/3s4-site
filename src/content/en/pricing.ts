@@ -36,12 +36,12 @@ export const pagina: PaginaContinut = {
   meta: {
     titlu: "3S Pricing: Starter, Pro, Business and Enterprise Plans",
     descriere:
-      "3S pricing per company, in euros, excluding VAT: Starter EUR 90, Pro EUR 150, Business EUR 240 a month; Enterprise from EUR 800. Free 30-day pilot.",
+      "3S pricing per company, in euros, excluding VAT: Starter EUR 90, Pro EUR 150, Business EUR 240 a month; Enterprise from EUR 800. Free 14-day pilot.",
     cale: "/pricing",
   },
   h1: "3S pricing: four plans, in euros",
   capsula:
-    "3S has four plans, priced per company in euros, excluding VAT: Starter at EUR 90, Pro at EUR 150 and Business at EUR 240 a month, for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month. The prices are indicative. Every start is a free 30-day assisted pilot on your own documents.",
+    "3S has four plans, priced per company in euros, excluding VAT: Starter at EUR 90, Pro at EUR 150 and Business at EUR 240 a month, for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month. The prices are indicative. Every start is a free 14-day assisted pilot on your own documents.",
   sectiuni: [
     {
       cheie: "plans",
@@ -111,7 +111,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "An assisted pilot runs 3S for 30 days, free of charge, on your own documents, with 5 user accounts, as on Starter. We agree on the volume of documents in writing before it starts, and it starts after you accept our Terms and the data processing agreement. You choose the questions you want answered. We run them and check the answers, and the sources behind them, together with you. Your account is opened by invitation. When the pilot is done, we send you a written offer.",
+            "An assisted pilot runs 3S for 14 days, free of charge, on your own documents, with 5 user accounts, as on Starter. We agree on the volume of documents in writing before it starts, and it starts after you accept our Terms and the data processing agreement. You choose the questions you want answered. We run them and check the answers, and the sources behind them, together with you. Your account is opened by invitation. When the pilot is done, we send you a written offer.",
           ],
         },
       ],
@@ -122,7 +122,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Yes. The assisted pilot is free for 30 days, on your own documents. Message us to agree on the documents and the questions.",
+            "Yes. The assisted pilot is free for 14 days, on your own documents. Message us to agree on the documents and the questions.",
           ],
         },
       ],
@@ -162,7 +162,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/pricing",
       name: "3S Pricing: Starter, Pro, Business and Enterprise Plans",
       description:
-        "3S pricing per company, in euros, excluding VAT: Starter EUR 90, Pro EUR 150, Business EUR 240 a month; Enterprise from EUR 800. Free 30-day pilot.",
+        "3S pricing per company, in euros, excluding VAT: Starter EUR 90, Pro EUR 150, Business EUR 240 a month; Enterprise from EUR 800. Free 14-day pilot.",
       inLanguage: "en",
       isPartOf: { "@id": ID.site },
       about: { "@id": ID.organizatie },

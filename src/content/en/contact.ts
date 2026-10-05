@@ -6,13 +6,28 @@
 // Titlul, meta-descrierea si capsula sunt variantele "Before P-40" ale fisei: adresa domeniului nu poate
 // raspunde inca, deci e-mailul nu se numeste in text. Cardul de e-mail il randeaza pagina numai cand domeniul
 // are adresa (`CANALE.email`), cu textele de mai jos.
+//
+// Numarul din descrierea meta, capsula si JSON-LD vine din canalele domeniului (`numarAfisat()`), ca pe card.
 
 import { iduri } from "@/components/seo/date-structurate";
+import { numarAfisat } from "@/content/canale";
 import type { PaginaContinut } from "@/content/model/tipuri";
+import { editiaInBuild } from "@/lib/editii";
 import { adresaSite } from "@/lib/site";
 
 const BAZA = adresaSite();
 const ID = iduri(BAZA);
+/**
+ * Numarul de WhatsApp al domeniului, din `CANALE_JSON` (`telefon`), in forma afisata; nu se scrie literal aici. Pe un
+ * build cu editia `en` numarul e obligatoriu: fara el descrierea si capsula ar spune "on WhatsApp at ." si pagina
+ * ar pleca cu o fraza goala, fara niciun semnal. Constructia se opreste, cu motivul.
+ */
+const NUMAR = numarAfisat();
+if (NUMAR === "" && editiaInBuild("en")) {
+  throw new Error(
+    "CANALE_JSON: domeniul cu editia en cere numarul de WhatsApp (campul telefon); fara el, pagina /contact ar scrie o fraza goala in descriere si in capsula",
+  );
+}
 
 /**
  * Sectiunea cardurilor de canal ("How can I reach 3S?"): titlul si textul fiecarui card. Randul de dupa carduri a
@@ -45,12 +60,12 @@ export const pagina: PaginaContinut = {
   meta: {
     titlu: "Contact 3S: WhatsApp Messages and Calls",
     descriere:
-      "Message or call 3S on WhatsApp at +373 60 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
+      "Message or call 3S on WhatsApp at " + NUMAR + ". Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
     cale: "/contact",
   },
   h1: "Talk to 3S",
   capsula:
-    "You can reach 3S on WhatsApp at +373 60 055 599, for messages and calls. Tell us which archive you have (paper, scans or digital files) and in which country. We reply in English or Romanian. There is no form and no account to create.",
+    "You can reach 3S on WhatsApp at " + NUMAR + ", for messages and calls. Tell us which archive you have (paper, scans or digital files) and in which country. We reply in English or Romanian. There is no form and no account to create.",
   sectiuni: [
     {
       cheie: "first-message",
@@ -100,7 +115,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/contact",
       name: "Contact 3S: WhatsApp Messages and Calls",
       description:
-        "Message or call 3S on WhatsApp at +373 60 055 599. Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
+        "Message or call 3S on WhatsApp at " + NUMAR + ". Tell us which archive you have and where. We reply in English or Romanian. No form, no account.",
       inLanguage: "en",
       isPartOf: { "@id": ID.site },
       mainEntity: { "@id": ID.organizatie },

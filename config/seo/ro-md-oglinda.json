@@ -1,0 +1,39 @@
+{
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor RO-MD din grupul oglinzii (src/content/rute-ro-md.ts, felia ro-md-oglinda): perechile /ro ale paginilor EN P02, P03, P08, P09, P11, G1, G2 si G3 de pe 3s.md. Primul paragraf din <main> e subtitlul eroului perechii RO (decizia 53), ca pe EN (config/seo/en-nucleu.json, en-produs.json, en-referinta.json); scutirile sunt aceleasi ca pe perechile EN. Entitatile sunt cuvinte intregi din primele 400 de cuvinte ale paginii romanesti. Rutele sunt ale editiei ro-MD, deci pe build-ul romanesc declaratiile se verifica numai ca forma (tests/browser/ajutor/raspunsuri.ts); pe copia 3s.md le masoara tests/browser/ro-md-oglinda.spec.ts.",
+  "raspuns_autonom": {
+    "/ro/platforma": {
+      "intrebare": "Cum funcționează platforma 3S?",
+      "entitati": ["3S", "documente", "păstrare", "sursa"]
+    },
+    "/ro/functionalitati/cautare-ai": {
+      "intrebare": "Cum răspunde 3S la întrebările despre documentele firmei?",
+      "fara_regula_paragrafului": "Eroul are forma masurata a sablonului cinema, ca perechea RO /functionalitati/cautare-ai si pagina EN /features/search (config/seo/en-produs.json): dupa eticheta-titlu vine intrebarea scrisa in terminal, apoi doua randuri scurte; primul <p> din <main> are sub 30 de cuvinte prin constructie. Raspunsul paginii e titlul impreuna cu povestea de sub erou (extragerea cu sursa citata si blocul de final).",
+      "entitati": ["3S", "Căutare AI", "sursa citată"]
+    },
+    "/ro/preturi": {
+      "intrebare": "Cât costă 3S?",
+      "entitati": ["3S", "Starter", "Pro", "Business", "Enterprise", "euro", "pilot"]
+    },
+    "/ro/enterprise": {
+      "intrebare": "Ce oferă 3S organizațiilor cu arhive mari?",
+      "entitati": ["3S Enterprise", "conturi", "sursa", "Frankfurt"]
+    },
+    "/ro/securitate": {
+      "intrebare": "Ce este 3S și unde sunt păstrate documentele firmei?",
+      "entitati": ["3S Scan Store Solve", "Frankfurt", "Amazon Web Services", "CLOUD Act"]
+    },
+    "/ro/ghiduri/arhivare-e-facturi-ue": {
+      "intrebare": "Cât timp se păstrează e-facturile în UE?",
+      "entitati": ["arhivarea", "e-facturilor", "Germania", "Franța", "Polonia", "Belgia", "România"]
+    },
+    "/ro/ghiduri/termene-pastrare-moldova": {
+      "intrebare": "Cât timp se păstrează actele firmei în Moldova?",
+      "entitati": ["Moldova", "facturile", "6 ani", "287/2017", "57/2016"]
+    },
+    "/ro/comparatie-drive": {
+      "intrebare": "Aleg 3S sau Google Drive cu Gemini?",
+      "fara_regula_paragrafului": "G3 are forma eroului perechii RO /comparatie-drive (decizia 53), ca pagina EN (config/seo/en-referinta.json): sub titlu sta un subtitlu scurt (27 de cuvinte), nu un paragraf de raspuns de 30-80. Raspunsul paginii e titlul impreuna cu subtitlul si cu cardul divizat de dedesubt; entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",
+      "entitati": ["3S", "Google Drive", "Gemini"]
+    }
+  }
+}

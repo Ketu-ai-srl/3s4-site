@@ -5,12 +5,16 @@
 //     (adresarea "tu" a paginilor RO-MD, decizia 35; eticheta neutra de la fundatie a fost aliniata de felia
 //     paginilor RO-MD de start si de contact).
 //   - Textele precompletate, pe cale: `/ro` (ro-md-acasa), `/ro/contact` (ro-md-contact), `/ro/juridic/...`
-//     (ro-md-juridic). Orice alta pagina foloseste textul paginii de start.
+//     (ro-md-juridic) si paginile oglinzii (felia ro-md-oglinda), fiecare cu `ref`-ul si textul fisei ei. Orice alta
+//     pagina foloseste textul paginii de start.
 //   - Subsolul: coloana "Juridic" (documentele familiei `md`, adresele din `config/juridic-rute.json` editia
 //     `ro`, etichetele = titlurile documentelor din `src/content/juridic/md`, nu scrise de mana) si coloana
 //     "Contact" (WhatsApp; numarul de WhatsApp ca text, fara legatura de apel, decizia 56; e-mailul numai
 //     cu `CANALE.email` nevid).
-// Totul se ascunde singur pana exista ruta (filtrul pe `RUTE`): paginile RO-MD vin in feliile urmatoare.
+//   - Oglinda (felia ro-md-oglinda): paleta numeste paginile /ro ca pe EN, iar subsolul primeste coloanele EN
+//     (Produs, Ghiduri, Companie) cu perechile /ro. Antetul ramane contractul de mai sus (sigla, Contact, selectorul,
+//     CTA-ul): meniul lui e fixat de planul valului si de proba navigatiei, nu de aceasta felie.
+// Totul se ascunde singur pana exista ruta (filtrul pe `RUTE`).
 //
 // Se construieste PE SERVER (`navigatieRoMd()`): canalele (`CANALE_JSON`) si operatorul (`OPERATOR_JSON`)
 // nu exista in pachetul de browser.
@@ -27,6 +31,9 @@ import { emailPePagina, propozitieFaraMarcaj, whatsappPePagina, type TextPePagin
 export const ETICHETA_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
 
 const SALUT = "Bună ziua, 3S. ";
+
+/** Codul `ref` al paginii de cautare, ca in modulul ei; codurile nu stau in proza (poarta de limba citeste proza). */
+const REF_CAUTARE = "ro-md-cautare-ai";
 
 /** Textele precompletate ale paginilor RO-MD (planul valului §11 pct. 2b). */
 export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
@@ -45,6 +52,80 @@ export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
     prefix: true,
     ref: "ro-md-juridic",
     text: "Bună ziua, 3S. Am citit informațiile legale [ref:ro-md-juridic]. Am o întrebare.",
+  },
+  // <<felie:ro-md-oglinda>>: textele din front matter-ul fiselor ro-md, cuvant cu cuvant.
+  {
+    cale: "/ro/platforma",
+    ref: "ro-md-platforma",
+    text: "Bună ziua, 3S. Am citit pagina despre platforma 3S [ref:ro-md-platforma]. Aș dori să aflu cum ar funcționa pe documentele firmei noastre.",
+  },
+  {
+    cale: "/ro/functionalitati/cautare-ai",
+    ref: REF_CAUTARE,
+    text: "Bună ziua, 3S. Am citit pagina despre căutarea cu sursa citată [ref:" + REF_CAUTARE + "]. Aș dori să văd cum funcționează pe documentele firmei.",
+  },
+  {
+    cale: "/ro/preturi",
+    ref: "ro-md-preturi",
+    text: "Bună ziua, 3S. Am citit pagina de prețuri [ref:ro-md-preturi]. Aș dori o ofertă.",
+  },
+  {
+    cale: "/ro/enterprise",
+    ref: "ro-md-enterprise",
+    text: "Bună ziua, 3S. Am citit pagina despre 3S Enterprise [ref:ro-md-enterprise]. Aș dori să discutăm cerințele organizației noastre.",
+  },
+  {
+    cale: "/ro/securitate",
+    ref: "ro-md-securitate",
+    text: "Bună ziua, 3S. Am citit pagina Despre 3S [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
+  },
+  {
+    cale: "/ro/ghiduri/arhivare-e-facturi-ue",
+    ref: "ro-md-einv",
+    text: "Bună ziua, 3S. Am citit ghidul despre arhivarea e-facturilor [ref:ro-md-einv]. Aș dori să întreb despre un pilot.",
+  },
+  {
+    cale: "/ro/ghiduri/termene-pastrare-moldova",
+    ref: "ro-md-termene-moldova",
+    text: "Bună ziua, 3S. Am citit ghidul despre termenele de păstrare în Moldova [ref:ro-md-termene-moldova]. Aș dori să întreb despre un pilot.",
+  },
+  {
+    cale: "/ro/comparatie-drive",
+    ref: "ro-md-comparatie",
+    text: "Bună ziua, 3S. Am citit comparația dintre 3S și Google Drive [ref:ro-md-comparatie]. Aș dori să aflu dacă 3S se potrivește firmei noastre.",
+  },
+];
+
+function legatura(text: string, href: string, ruta: string = href.split("#")[0]): Legatura {
+  return { text, href, ruta };
+}
+
+/** Coloanele de subsol ale oglinzii, aceleasi ca pe EN (`navigatie-en.ts`), cu perechile /ro. */
+const COLOANE_OGLINDA: ColoanaSubsol[] = [
+  {
+    titlu: "Produs",
+    legaturi: [
+      legatura("Platforma", "/ro/platforma"),
+      legatura("Căutare cu sursa citată", "/ro/functionalitati/cautare-ai"),
+      legatura("Enterprise", "/ro/enterprise"),
+    ],
+  },
+  {
+    titlu: "Ghiduri",
+    legaturi: [
+      legatura("Arhivarea e-facturilor în UE", "/ro/ghiduri/arhivare-e-facturi-ue"),
+      legatura("Termene de păstrare în Moldova", "/ro/ghiduri/termene-pastrare-moldova"),
+      legatura("3S și Google Drive", "/ro/comparatie-drive"),
+    ],
+  },
+  {
+    titlu: "Companie",
+    legaturi: [
+      legatura("Despre 3S și securitate", "/ro/securitate"),
+      legatura("Securitatea și locul datelor", "/ro/securitate#security"),
+      legatura("Prețuri", "/ro/preturi"),
+      legatura("Contact", "/ro/contact"),
+    ],
   },
 ];
 
@@ -103,8 +184,12 @@ export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null
         {
           titlu: "Pagini",
           elemente: [
-            { text: "Acasă", href: "/ro", ruta: "/ro" },
-            { text: "Contact", href: "/ro/contact", ruta: "/ro/contact" },
+            legatura("Acasă", "/ro"),
+            legatura("Platforma", "/ro/platforma"),
+            legatura("Prețuri", "/ro/preturi"),
+            legatura("Enterprise", "/ro/enterprise"),
+            legatura("Despre 3S și securitate", "/ro/securitate"),
+            legatura("Contact", "/ro/contact"),
           ],
         },
         { titlu: "Acțiuni", elemente: [] },
@@ -113,7 +198,7 @@ export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null
     sertar: SERTAR,
     subsol: {
       brand: { slogan: "", descriere: "", posta: { text: "", href: null, ruta: null } },
-      coloane: juridic === null ? [] : [juridic],
+      coloane: juridic === null ? COLOANE_OGLINDA : [...COLOANE_OGLINDA, juridic],
       contact: {
         titlu: "Contact",
         whatsapp: whatsapp === null ? null : { text: ETICHETA_WHATSAPP_RO_MD, legatura: whatsapp },

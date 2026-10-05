@@ -41,7 +41,7 @@ export const RUTE_EN_NUCLEU: RutaEditie<"en">[] = [
     cale: "/pricing",
     scurt: "Pricing",
     descriere:
-      "Four plans per company, in euros, excluding VAT, from EUR 90 a month (Starter) to Enterprise from EUR 800 a month; every start is a free 30-day assisted pilot.",
+      "Four plans per company, in euros, excluding VAT, from EUR 90 a month (Starter) to Enterprise from EUR 800 a month; every start is a free 14-day assisted pilot.",
     inHarta: true,
     editie: "en",
     cheie: "pricing",

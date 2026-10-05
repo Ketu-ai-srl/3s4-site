@@ -6,8 +6,8 @@
 // SURSA TEXTULUI, pe camp: fisa de continut a paginii, sectiunea "Textele componentelor (decizia 53)" si randurile
 // deciziei 59 (GrilaIndustrii, CardEnterprise), cu cheia campului RO (de pilda `acasa.ts:138`) in comentariu.
 // Campurile fara rand in fisa iau textul aprobat al paginii (`ro-md/acasa.ts`) sau, unde nici acela nu exista, o
-// eticheta de legatura scrisa dupa forma legaturilor aprobate spre paginile in engleza ("(în engleză)"); sunt numite
-// in comentariu. Textul e PROPUS, pana la aprobarea owner-ului pe capturi (poarta 2).
+// eticheta de legatura scrisa dupa forma legaturilor aprobate; sunt numite in comentariu. Legaturile duc la perechile
+// /ro ale paginilor (decizia 59), fara marcajul "in engleza". Textul e PROPUS, pana la aprobarea owner-ului pe capturi (poarta 2).
 //
 // CE NU INTRA, cu decizia: pastila-legatura a eroului si randurile 1 si 3 ale popover-ului (d31, d43, d49); centrul
 // buclei si legenda (lansarea machetei, d43 si d49; hartia, poarta juridica a deciziilor 40-41); insigna "scanat"
@@ -51,8 +51,8 @@ export const EROU_RO_MD: Omit<ContinutErou, "bucla"> = {
   popover: {
     // acasa.ts:119; numai randul gazduirii ramane (d42).
     randuri: [{ iconita: "globe", text: "În UE, cu regiunea principală la Frankfurt." }],
-    // Fara rand in fisa (acasa.ts:123): tinta aprobata a paginii pentru gazduire, cu forma legaturilor spre EN.
-    legatura: { text: "Pagina despre 3S (în engleză)", href: "/about#security", ruta: "/about" },
+    // Fara rand in fisa (acasa.ts:123): tinta aprobata a paginii pentru gazduire, pe perechea /ro a paginii despre 3S.
+    legatura: { text: "Pagina despre 3S", href: "/ro/securitate#security", ruta: "/ro/securitate" },
   },
   // H1 aprobat, impartit ca pe RO: prima propozitie (A), apoi a doua cu accentul (acasa.ts:132, :134).
   titlu: {
@@ -73,9 +73,9 @@ export const FUNCTIONALITATI_RO_MD: ContinutFunctionalitatiAcasa = {
   titlu: "Arhiva firmei, organizată și pregătită pentru întrebările tale.",
   subtitlu: "3S Scan Store Solve: în trei pași ajungi de la fișierele încărcate la răspunsul cu documentul-sursă.",
   final: {
-    // acasa.ts:479, :481; tinta e ghidul G3 (comparatia cu Google si Box AI).
+    // acasa.ts:479, :481; tinta e ghidul G3 (comparatia cu Google si Box AI), pe perechea lui /ro.
     fraza: "Lucrezi deja cu Google Drive sau cu Box?",
-    buton: { text: "Vezi comparația cu 3S", href: "/compare/3s-vs-google-and-box", ruta: "/compare/3s-vs-google-and-box" },
+    buton: { text: "Vezi comparația cu 3S", href: "/ro/comparatie-drive", ruta: "/ro/comparatie-drive" },
   },
 };
 
@@ -189,7 +189,7 @@ export const PUNCTE_PISTA_RO_MD = {
  * la fisa, numita in raportul feliei, de decis la poarta 2.
  */
 export const CIFRE_RO_MD: ContinutCifra[] = [
-  { cifra: "30 de zile", eticheta: "de pilot gratuit" },
+  { cifra: "14 zile", eticheta: "de pilot gratuit" },
   { cifra: "Frankfurt", eticheta: "regiunea principală, în UE" },
 ];
 
@@ -257,25 +257,25 @@ export const TESTIMONIAL_RO_MD_FARA_GHIDURI: ContinutTestimonial = testimonial(
 export const CARD_SECURITATE_RO_MD: ContinutCardSecuritate = {
   titlu: "Unde sunt găzduite fișierele firmei?",
   text: "Găzduirea este pe AWS, în Uniunea Europeană, cu regiunea principală la Frankfurt.",
-  // Fara rand in fisa (acasa.ts:655): tinta aprobata a paginii pentru gazduire, cu forma legaturilor spre EN.
-  legatura: { text: "Detalii despre găzduire (în engleză)", href: "/about#security", ruta: "/about" },
+  // Fara rand in fisa (acasa.ts:655): tinta aprobata a paginii pentru gazduire, pe perechea /ro a paginii despre 3S.
+  legatura: { text: "Detalii despre găzduire", href: "/ro/securitate#security", ruta: "/ro/securitate" },
 };
 
-/** acasa.ts:663-671 (decizia 59): pachetul Enterprise, spre pagina EN pana la /ro/enterprise. */
+/** acasa.ts:663-671 (decizia 59): pachetul Enterprise, spre /ro/enterprise. */
 export const CARD_ENTERPRISE_RO_MD: ContinutCardEnterprise = {
   titlu: "Peste 20 de conturi?",
   pastila: "Enterprise",
   descriere:
     "Enterprise este pachetul pentru firmele cu peste 20 de conturi, cu contract anual. 3S recunoaște textul documentelor scanate, identifică tipul documentului și indică sursa fiecărui răspuns.",
-  tinta: { text: "Detalii despre Enterprise (în engleză)", href: "/enterprise", ruta: "/enterprise" },
+  tinta: { text: "Detalii despre Enterprise", href: "/ro/enterprise", ruta: "/ro/enterprise" },
 };
 
 /** acasa.ts:689-693. */
 export const BANDA_PRET_RO_MD: ContinutBandaPret = {
   titlu: "Cât costă 3S?",
   fraza: "3S are patru pachete, de la 75 EUR pe lună la plata anuală, pentru întreaga firmă, fără TVA.",
-  // Fara rand in fisa (acasa.ts:693): eticheta aprobata a paginii ("Vezi pachetele", "(în engleză)").
-  legatura: { text: "Vezi pachetele (în engleză)", href: "/pricing", ruta: "/pricing" },
+  // Fara rand in fisa (acasa.ts:693): eticheta aprobata a paginii ("Vezi pachetele"), spre /ro/preturi.
+  legatura: { text: "Vezi pachetele", href: "/ro/preturi", ruta: "/ro/preturi" },
 };
 
 /** Fraza de sub intrebari inainte de P-40 (acasa.ts:767): fara adresa, numai WhatsApp. */
@@ -309,7 +309,7 @@ export const INTREBARI_RO_MD: ContinutFaqAcasa = {
     {
       intrebare: "Cum încep să folosesc 3S?",
       raspuns:
-        "Ne scrii pe WhatsApp și descrii pe scurt arhiva firmei. Stabilim apoi în scris documentele și întrebările de testat. Pilotul gratuit de 30 de zile începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor, iar la final decizi dacă alegi un pachet.",
+        "Ne scrii pe WhatsApp și descrii pe scurt arhiva firmei. Stabilim apoi în scris documentele și întrebările de testat. Pilotul gratuit de 14 zile începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor, iar la final decizi dacă alegi un pachet.",
     },
   ],
   // Forma de dinainte de P-40; dupa P-40 pagina pune `SUBSOL_FAQ_CU_EMAIL` si adresa.

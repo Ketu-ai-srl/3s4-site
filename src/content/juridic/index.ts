@@ -20,6 +20,7 @@ import { politicaCookie } from "./cookie-uri";
 import { familieJuridica } from "./familie";
 import { licentaAplicatiei } from "./licenta";
 import { conditiiActive, intrariMasurare, masurareDin, type Masurare } from "./masurare";
+import type { ContextMd } from "./md/context";
 import { DOCUMENTE_MD } from "./md/documente";
 import { POARTA_CURENTA, cheiPublicate, cheiePentruSlug, tintaLegatura, type CheieMd, type PoartaPublicare } from "./md/registru";
 import { mentiuniLegale } from "./mentiuni-legale";
@@ -35,7 +36,7 @@ export type TexteJuridice = Map<string, DocumentJuridic>;
 export type OptiuniTexte = {
   /** Limba documentelor: `ro` (implicit) sau `en` (numai familia `md`). */
   limba?: LimbaJuridica;
-  /** Adresa site-ului (implicit `adresaSite()`); din ea, domeniul din politica SEE. */
+  /** Adresa site-ului (implicit `adresaSite()`); din ea, domeniul din politica SEE si `domeniu` din contextul `md`. */
   baza?: string;
   /** Familia `md`: poarta de publicare (implicit cea curenta, din registru). */
   poarta?: PoartaPublicare;
@@ -146,10 +147,25 @@ export function compune(d: DocumentJuridic, active: ReadonlySet<ConditieMasurare
   };
 }
 
+/**
+ * Contextul unui document `md`: operatorul, limba, masurarea si conditiile active, plus contactul operatorului
+ * (`email`, `telefon` din `OPERATOR_JSON`) si domeniul (gazda adresei `baza`, adica a lui `SITE_URL`).
+ */
+export function contextMd(operator: Operator, limba: LimbaJuridica, masurare: Masurare, active: ReadonlySet<ConditieMasurare>, baza: string): ContextMd {
+  return { operator, limba, masurare, active, contact: { email: operator.email, telefon: operator.telefon }, domeniu: new URL(baza).host };
+}
+
 /** Documentul `md` cerut, compus (conditii aplicate), cu legaturile NErezolvate. Pentru probe. */
-export function documentMdBrut(cheie: CheieMd, operator: Operator, limba: LimbaJuridica, masurare: Masurare, linkedin = false): DocumentJuridic {
+export function documentMdBrut(
+  cheie: CheieMd,
+  operator: Operator,
+  limba: LimbaJuridica,
+  masurare: Masurare,
+  linkedin = false,
+  baza: string = adresaSite(),
+): DocumentJuridic {
   const active = conditiiActive(masurare, linkedin);
-  return compune(DOCUMENTE_MD[cheie][limba]({ operator, limba, masurare, active }), active, (s) => s);
+  return compune(DOCUMENTE_MD[cheie][limba](contextMd(operator, limba, masurare, active, baza)), active, (s) => s);
 }
 
 function texteMd(operator: Operator, limba: LimbaJuridica, o: OptiuniTexte): TexteJuridice {
@@ -157,9 +173,8 @@ function texteMd(operator: Operator, limba: LimbaJuridica, o: OptiuniTexte): Tex
   const poarta = o.poarta ?? POARTA_CURENTA;
   const active = conditiiActive(masurare, o.linkedin ?? false);
   const r = (s: string) => rezolvaLegaturi(s, limba, poarta);
-  return new Map(
-    cheiPublicate(poarta).map((cheie) => [cheie, compune(DOCUMENTE_MD[cheie][limba]({ operator, limba, masurare, active }), active, r)]),
-  );
+  const c = contextMd(operator, limba, masurare, active, o.baza ?? adresaSite());
+  return new Map(cheiPublicate(poarta).map((cheie) => [cheie, compune(DOCUMENTE_MD[cheie][limba](c), active, r)]));
 }
 
 // ---------------------------------------------------------------------------------------------

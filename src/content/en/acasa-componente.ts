@@ -195,7 +195,7 @@ export const PUNCTE_PISTA_EN = {
 
 /** Banda de cifre (acasa.ts:502, :508); perechea AES-256 iese (d31). */
 export const CIFRE_EN: ContinutCifra[] = [
-  { cifra: "EUR 0", eticheta: "for the 30-day pilot" },
+  { cifra: "EUR 0", eticheta: "for the 14-day pilot" },
   { cifra: "Frankfurt", eticheta: "as the primary EU region" },
 ];
 
@@ -266,7 +266,7 @@ export const CARD_ENTERPRISE_EN: ContinutCardEnterprise = {
 /** acasa.ts:689-693. */
 export const BANDA_PRET_EN: ContinutBandaPret = {
   titlu: "3S pricing, up front",
-  fraza: "Indicative prices from EUR 90 a month, excluding VAT. You begin with a free 30-day pilot.",
+  fraza: "Indicative prices from EUR 90 a month, excluding VAT. You begin with a free 14-day pilot.",
   legatura: { text: "See the plans", href: "/pricing", ruta: "/pricing" },
 };
 

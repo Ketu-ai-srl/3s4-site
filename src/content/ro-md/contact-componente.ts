@@ -10,8 +10,8 @@
 // startului /ro (`acasa-componente.ts`).
 //
 // CE NU INTRA, cu decizia: cardurile spre integrari (d43) si spre paginile de segment (d38); randurile formularului si
-// al contului (d3) si al demonstratiei (`/incepe` nu exista pe 3s.md); criptarea (d31). Paginile spre care trimit
-// cardurile sunt deocamdata in engleza, si textul o spune. Numarul si adresa vin din canalele aplicatiei.
+// al contului (d3) si al demonstratiei (`/incepe` nu exista pe 3s.md); criptarea (d31). Cardurile trimit la perechile
+// /ro ale paginilor (decizia 59). Numarul si adresa vin din canalele aplicatiei.
 
 import type { ContinutPaginaContact } from "@/components/conversie/PaginaContact";
 import type { CardSubiect } from "@/content/conversie";
@@ -21,37 +21,37 @@ export const BUTON_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
 
 const cale = (c: string) => ({ text: c, href: c, ruta: c });
 
-/** Cinci carduri din sapte, in ordinea RO; fiecare duce la pagina EN pereche (singura publicata azi pe 3s.md). */
+/** Cinci carduri din sapte, in ordinea RO; fiecare duce la perechea /ro a paginii (decizia 59). */
 const CARDURI_RO_MD: CardSubiect[] = [
   {
     iconita: "building-2",
     titlu: "Arhive mari și echipe numeroase",
     descriere: "Pachetul Enterprise: peste 20 de conturi, cu contract anual.",
-    legatura: cale("/enterprise"),
+    legatura: cale("/ro/enterprise"),
   },
   {
     iconita: "wallet",
     titlu: "Pachete și prețuri",
     descriere: "Ce include fiecare pachet și cât costă, în euro, fără TVA.",
-    legatura: cale("/pricing"),
+    legatura: cale("/ro/preturi"),
   },
   {
     iconita: "shield-check",
     titlu: "Operator și găzduire",
     descriere: "Cine operează 3S și unde sunt stocate fișierele: în UE, cu regiunea principală Frankfurt.",
-    legatura: cale("/about"),
+    legatura: cale("/ro/securitate"),
   },
   {
     iconita: "layers",
     titlu: "Cum funcționează platforma",
     descriere: "De la fișierul încărcat la răspunsul care indică documentul din care provine.",
-    legatura: cale("/platform"),
+    legatura: cale("/ro/platforma"),
   },
   {
     iconita: "calendar-clock",
     titlu: "Termene de păstrare a actelor",
     descriere: "Facturi, state de salarii și contracte: cât timp le păstrează firmele din Republica Moldova.",
-    legatura: cale("/guides/records-retention-moldova"),
+    legatura: cale("/ro/ghiduri/termene-pastrare-moldova"),
   },
 ];
 
@@ -87,7 +87,7 @@ export const CONTACT_RO_MD: ContinutPaginaContact = {
   },
   subiecte: {
     titlu: "Răspunsuri disponibile deja pe site",
-    text: "Unele întrebări au deja un răspuns publicat. Fiecare card deschide pagina dedicată subiectului, deocamdată în engleză.",
+    text: "Unele întrebări au deja un răspuns publicat. Fiecare card deschide pagina dedicată subiectului.",
     carduri: CARDURI_RO_MD,
   },
   canale: {

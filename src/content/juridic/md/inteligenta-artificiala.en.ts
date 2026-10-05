@@ -5,8 +5,9 @@
 // Conditiile (`conditie`, `daca`) si legaturile interne (`cale:<cheie>`) le rezolva `../index.ts`.
 
 import type { DocumentJuridic } from "../tipuri";
+import type { ContextMd } from "./context";
 
-export default function inteligentaArtificialaEn(): DocumentJuridic {
+export default function inteligentaArtificialaEn(c: ContextMd): DocumentJuridic {
   return {
     cheie: "inteligenta-artificiala",
     limba: "en",
@@ -15,7 +16,7 @@ export default function inteligentaArtificialaEn(): DocumentJuridic {
     introducere: "",
     preambul: [
       { jurisdictie: null, paragrafe: ["3S Demerzel SRL is in the process of registration. Until it is registered we issue no offers, enter into no contracts and open no accounts, so the assistant described on this page is not yet offered to clients. This page shows how it will work."] },
-      { jurisdictie: null, paragrafe: ["The 3S services, provided by 3S Demerzel SRL of the Republic of Moldova (its details are in the [Legal notice](cale:informatii-legale)), use an artificial intelligence (AI) assistant that answers questions about the Client's documents. This page says what the assistant does, what its limits are and what happens to the documents. It supplements the notice in the chat without replacing it: the assistant tells you that it is an AI system from the start of every conversation (section 2). The notice in the chat and this page take account of the transparency requirements of Article 50 of Regulation (EU) 2024/1689 (the Artificial Intelligence Act), to the extent that they apply. \"Client\" and \"User\" have the meaning given in the [Terms and conditions](cale:termeni).", "**In brief** (a summary with no contractual value; the text below governs)"], lista: { elemente: ["The assistant is an AI system, not a person. It tells you so from the start of every conversation.", "Answers are generated automatically and may be incomplete or wrong. Check the cited document before relying on them.", "Indicating the exact page of the source is in pilot and may be missing or wrong.", "Your documents are processed only to provide the service, under the data processing agreement (DPA).", "You can always speak to a person: contact@3s.md or +373 60 055 599."] } },
+      { jurisdictie: null, paragrafe: ["The 3S services, provided by 3S Demerzel SRL of the Republic of Moldova (its details are in the [Legal notice](cale:informatii-legale)), use an artificial intelligence (AI) assistant that answers questions about the Client's documents. This page says what the assistant does, what its limits are and what happens to the documents. It supplements the notice in the chat without replacing it: the assistant tells you that it is an AI system from the start of every conversation (section 2). The notice in the chat and this page take account of the transparency requirements of Article 50 of Regulation (EU) 2024/1689 (the Artificial Intelligence Act), to the extent that they apply. \"Client\" and \"User\" have the meaning given in the [Terms and conditions](cale:termeni).", "**In brief** (a summary with no contractual value; the text below governs)"], lista: { elemente: ["The assistant is an AI system, not a person. It tells you so from the start of every conversation.", "Answers are generated automatically and may be incomplete or wrong. Check the cited document before relying on them.", "Indicating the exact page of the source is in pilot and may be missing or wrong.", "Your documents are processed only to provide the service, under the data processing agreement (DPA).", "You can always speak to a person: " + c.contact.email + " or " + c.contact.telefon + "."] } },
     ],
     sectiuni: [
       {
@@ -69,13 +70,13 @@ export default function inteligentaArtificialaEn(): DocumentJuridic {
       {
         cheie: "s9", titlu: "9. How to reach a person",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["You can always contact us directly, without going through the assistant: at contact@3s.md or on WhatsApp at +373 60 055 599 (messages and calls). A person replies, in English or Romanian."] },
+          { jurisdictie: null, paragrafe: ["You can always contact us directly, without going through the assistant: at " + c.contact.email + " or on WhatsApp at " + c.contact.telefon + " (messages and calls). A person replies, in English or Romanian."] },
         ],
       },
       {
         cheie: "s10", titlu: "10. How to report a problem",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["If the assistant gave an answer that is wrong, misleading or inappropriate, write to contact@3s.md, with the question, the answer and the date and time of the conversation; we will look into it. If you think an answer contains unlawful information, use the procedure on the page [Notice and action](cale:notificare-si-actiune)."] },
+          { jurisdictie: null, paragrafe: ["If the assistant gave an answer that is wrong, misleading or inappropriate, write to " + c.contact.email + ", with the question, the answer and the date and time of the conversation; we will look into it. If you think an answer contains unlawful information, use the procedure on the page [Notice and action](cale:notificare-si-actiune)."] },
         ],
       },
       {

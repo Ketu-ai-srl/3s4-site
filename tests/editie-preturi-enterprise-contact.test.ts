@@ -7,6 +7,7 @@ import { FORMAT_ROMANESC } from '../src/components/preturi/calcul'
 import BirouInteractiv from '../src/components/preturi/BirouInteractiv'
 import { FORMAT_EN, PacheteEn, PliuriEn, textTeaserEn } from '../src/components/preturi/PreturiEn'
 import TabelPlanuri from '../src/components/preturi/TabelPlanuri'
+import { ECHIVALENTE } from '../src/content/echivalente'
 import * as contactEn from '../src/content/en/contact-componente'
 import * as enterpriseEn from '../src/content/en/enterprise-componente'
 import * as pricing from '../src/content/en/pricing'
@@ -206,7 +207,10 @@ describe('enterprise si contact pe editie', () => {
   it('contact: cinci carduri, fiecare spre perechea ei de pe 3s.md (P09, P08, P11, P02, G2), pe ambele editii', () => {
     const cai = ['/enterprise', '/pricing', '/about', '/platform', '/guides/records-retention-moldova']
     expect(contactEn.CONTACT_EN.subiecte.carduri.map((c) => c.legatura.href)).toEqual(cai)
-    expect(contactRoMd.CONTACT_RO_MD.subiecte.carduri.map((c) => c.legatura.href)).toEqual(cai)
+    // Pe /ro/contact acelasi card duce la perechea /ro a paginii EN (decizia 59), citita din tabelul echivalentelor.
+    const peRo = cai.map((c) => Object.values(ECHIVALENTE).find((e) => e.en === c)?.['ro-MD'])
+    expect(peRo).toEqual(['/ro/enterprise', '/ro/preturi', '/ro/securitate', '/ro/platforma', '/ro/ghiduri/termene-pastrare-moldova'])
+    expect(contactRoMd.CONTACT_RO_MD.subiecte.carduri.map((c) => c.legatura.href)).toEqual(peRo)
   })
 
   it('subtitlul de contact: numarul si adresa vin din canale; fara adresa (inainte de P-40) nu numeste e-mailul', () => {

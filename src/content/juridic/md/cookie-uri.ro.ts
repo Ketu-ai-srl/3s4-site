@@ -14,7 +14,7 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
     limba: "ro",
     titlu: "Politica de cookie-uri",
     versiune: "2026-10-01",
-    introducere: "Aici aflați ce informații stochează sau citește site-ul 3s.md în browserul dumneavoastră (cookie-uri și stocare locală), cum măsurăm vizitele, cine primește datele și cum vă puteți răzgândi. Datele operatorului sunt în [Informații legale](cale:informatii-legale), iar modul în care prelucrăm datele personale, cu drepturile dumneavoastră complete, în [Politica de confidențialitate](cale:confidentialitate).",
+    introducere: "Aici aflați ce informații stochează sau citește site-ul " + c.domeniu + " în browserul dumneavoastră (cookie-uri și stocare locală), cum măsurăm vizitele, cine primește datele și cum vă puteți răzgândi. Datele operatorului sunt în [Informații legale](cale:informatii-legale), iar modul în care prelucrăm datele personale, cu drepturile dumneavoastră complete, în [Politica de confidențialitate](cale:confidentialitate).",
     sectiuni: [
       {
         cheie: "t1", titlu: "Pe scurt",
@@ -55,7 +55,7 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s3", titlu: "3. Drepturile dumneavoastră",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Puteți cere oricând accesul la date sau ștergerea lor și vă puteți opune prelucrării; lista completă a drepturilor și modul de exercitare sunt în [Politica de confidențialitate](cale:confidentialitate), secțiunea 8. Cererile le primim la contact@3s.md."] },
+          { jurisdictie: null, paragrafe: ["Puteți cere oricând accesul la date sau ștergerea lor și vă puteți opune prelucrării; lista completă a drepturilor și modul de exercitare sunt în [Politica de confidențialitate](cale:confidentialitate), secțiunea 8. Cererile le primim la " + c.contact.email + "."] },
         ],
       },
       {
@@ -67,7 +67,7 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s5", titlu: "5. Punctul de contact",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Pentru orice întrebare despre cookie-uri scrieți la contact@3s.md, adresa operatorului 3S Demerzel SRL."] },
+          { jurisdictie: null, paragrafe: ["Pentru orice întrebare despre cookie-uri scrieți la " + c.contact.email + ", adresa operatorului 3S Demerzel SRL."] },
         ],
       },
       {

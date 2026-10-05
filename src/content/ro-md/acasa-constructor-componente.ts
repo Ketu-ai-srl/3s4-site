@@ -59,7 +59,7 @@ export const COMUN_RO_MD: ComunConstructor = {
   reluare: "Reconstruiește arhiva",
   final: {
     titlu: "Vrei să vezi asta pe documentele tale?",
-    subRand: "Pilot gratuit de 30 de zile, asistat.",
+    subRand: "Pilot gratuit de 14 zile, asistat.",
     buton: "Scrie-ne pe WhatsApp"
   },
   anuntGata: "Arhiva de exemplu pentru domeniul „{industrie}” e gata."
