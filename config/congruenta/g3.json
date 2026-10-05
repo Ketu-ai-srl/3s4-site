@@ -2,9 +2,7 @@
   "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
   "pereche": "G3",
   "ro": "/comparatie-drive",
-  "pagini_3s_md": [
-    "/compare/3s-vs-google-and-box"
-  ],
+  "pagini_3s_md": ["/compare/3s-vs-google-and-box"],
   "randuri": [
     {
       "tip": "componenta",
@@ -21,30 +19,22 @@
         "clasa": "sectiune-bloc",
         "eticheta": "drum-titlu"
       },
-      "cod": [
-        "poarta-juridica-40-41",
-        "d31",
-        "d43"
-      ],
+      "cod": ["poarta-juridica-40-41", "d31", "d43"],
       "motiv": "SinaPasi: drumul actului pe hartie."
     },
     {
       "tip": "camp",
       "selector": "table[class*=\"comparatii_tabel__\"] tbody tr",
       "ro": 13,
-      "en": 4,
-      "cod": [
-        "d43",
-        "d31",
-        "d49",
-        "val-ro-1.1",
-        "val-ro-i2"
-      ],
-      "motiv": "TabelMarcaje: ies 9 randuri (functiile scoase, AES, WhatsApp, campurile extrase, clasarea automata)."
+      "en": 2,
+      "cod": ["d43", "d31", "d49", "val-ro-1.1", "val-ro-i2"],
+      "motiv": "TabelMarcaje: raman cautarea cu sursa citata si jurnalul deschiderilor. Ies 10 randuri pe codurile date (functiile scoase, AES si accesul pe persoana, asistentul WhatsApp, registrul si avertizarea la termene, clasarea automata); al 11-lea, textul din scanari, e TINUT de fisa paginii ('Do not say (this page)'), pana decide dispecerul sau owner-ul."
     }
   ],
   "_nedeclarate": [
-    "Legenda 'Da / Partial / Nu', etichetele surselor, data citirii si sufixul pentru ferestre noi raman, in limba editiei: text.",
-    "Tabelul RO compara un tert, G3 compara trei instrumente: conflict de forma, de decis de owner."
+    "Randul 'text din scanari' al tabelului: tinut de fisa (interdictia paginii), fara cod in lista inchisa; intra in numararea 13/2 de mai sus, cu motivul scris.",
+    "Legenda 'Da / Partial / Nu', eticheta ei, sufixul pentru ferestre noi, etichetele si adresele surselor (hl=en), data citirii: text, in limba editiei.",
+    "Grupul de surse al cardului divizat (decizia 11): un rand in plus in caseta pliata a surselor, aceleasi clase; nu e rand de forma.",
+    "Prefixul 'Tabel: ' din numele accesibil al stratului cu derulare (TabelMarcaje.tsx) ramane romanesc pe 3s.md: nu e intre proprietatile autorizate feliei; de autorizat separat."
   ]
 }

@@ -3,10 +3,10 @@ import { join } from 'node:path'
 import { expect, test } from './ajutor/baza'
 import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
-import { inJur as inJurComparatie, pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-and-box'
-import { inJur as inJurEfacturi, pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
-import { inJur as inJurMoldova, pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
-import type { PaginaContinut } from '../../src/content/model/tipuri'
+import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-and-box'
+import { pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
+import { pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
+import type { PaginaReferinta } from '../../src/content/en/referinta-comun'
 
 /**
  * Paginile EN de referinta ale lui 3s.md (felia en-referinta: G1 `/guides/e-invoice-archiving-eu`, G2
@@ -17,8 +17,9 @@ import type { PaginaContinut } from '../../src/content/model/tipuri'
  * Ce se cere, pe fiecare pagina:
  *   - pe HTML-ul SERVIT (fara JavaScript): 200, `<html lang="en">`, un singur H1, egal cu cel din modul, noindex pe
  *     staging, zero `<form`, zero `RON` ca cuvant;
- *   - legaturile WhatsApp din `<main>` duc la `wa.me` si poarta `[ref:<ref>]` al paginii: CTA-ul din erou si cel din
- *     final cu textul paginii, legatura "Tell us if ... is out of date" cu textul ei (decodate si comparate cu modulul);
+ *   - legaturile WhatsApp din `<main>` duc la `wa.me` si poarta `[ref:<ref>]` al paginii, cu textul ei (decodate si
+ *     comparate cu modulul), in locurile butoanelor perechii RO (felia editie-referinta, decizia 53): pe G1 eroul si
+ *     blocul de final, pe G2 blocul de final, pe G3 cutia de final;
  *   - pe DOM-ul din browser: entitatile declaratiei G-AI-02 (`config/seo/en-referinta.json`) si H1-ul in primele 400
  *     de cuvinte din `<main>`.
  * Pe tot site-ul EN: harta de site are 10 pagini EN de marketing (in afara celor juridice si a editiei `/ro`), cu cele
@@ -27,8 +28,13 @@ import type { PaginaContinut } from '../../src/content/model/tipuri'
  *
  * CONTROALE. Expresiile care numara `<form`, `RON`, legaturile WhatsApp si legaturile inerte se probeaza intai pe un
  * HTML asamblat la rulare (un martor pozitiv si unul negativ); pe paginile reale, extragerea trebuie sa gaseasca cel
- * putin un H1, trei legaturi WhatsApp si cel putin o legatura reala spre ghiduri, ca un zero sa nu vina dintr-o
- * citire goala.
+ * putin un H1, numarul de legaturi WhatsApp al paginii si cel putin o legatura reala spre ghiduri, ca un zero sa nu
+ * vina dintr-o citire goala.
+ *
+ * AUTORIZAREA RESCRIERII (felia editie-referinta, specificatia de congruenta 5.0): cazul legaturilor WhatsApp cerea
+ * forma veche a scheletului de referinta (erou, legatura de semnalare, final); pe forma congruenta legatura de
+ * semnalare nu are loc in compunerea RO, iar butoanele stau unde le are perechea RO. Faptul aparat ramane acelasi:
+ * fiecare legatura WhatsApp din <main> poarta textul si `ref`-ul paginii.
  */
 
 type Declaratie = { intrebare: string; entitati: string[] }
@@ -38,10 +44,11 @@ const DECLARATII = (
   }
 ).raspuns_autonom
 
-const PAGINI: { pagina: PaginaContinut; semnalare: string }[] = [
-  { pagina: efacturi, semnalare: inJurEfacturi.semnalare.textWhatsapp },
-  { pagina: moldova, semnalare: inJurMoldova.semnalare.textWhatsapp },
-  { pagina: comparatie, semnalare: inJurComparatie.semnalare.textWhatsapp },
+/** Paginile si numarul legaturilor WhatsApp din <main> (locurile butoanelor perechii RO). */
+const PAGINI: { pagina: PaginaReferinta; legaturiWa: number }[] = [
+  { pagina: efacturi, legaturiWa: 2 },
+  { pagina: moldova, legaturiWa: 1 },
+  { pagina: comparatie, legaturiWa: 1 },
 ]
 const CAI = PAGINI.map((p) => p.pagina.meta.cale)
 
@@ -128,7 +135,7 @@ test('preconditia: trei pagini in grup, cu declaratiile lor G-AI-02', () => {
   expect(Object.keys(DECLARATII).sort()).toEqual([...CAI].sort())
 })
 
-for (const { pagina: p, semnalare } of PAGINI) {
+for (const { pagina: p, legaturiWa } of PAGINI) {
   test(p.meta.cale + ': 200, <html lang="en">, un H1, noindex, zero formulare, zero moneda romaneasca', async () => {
     const { status, html, robots } = await servit(p.meta.cale)
     expect(status).toBe(200)
@@ -140,11 +147,11 @@ for (const { pagina: p, semnalare } of PAGINI) {
     expect(MONEDA.test(html)).toBe(false)
   })
 
-  test(p.meta.cale + ': legaturile WhatsApp din <main> poarta [ref:' + p.cta.ref + '] (erou, semnalare, final)', async () => {
+  test(p.meta.cale + ': legaturile WhatsApp din <main> poarta [ref:' + p.cta.ref + '] si textul paginii (' + legaturiWa + ')', async () => {
     const { html } = await servit(p.meta.cale)
     const corp = html.slice(html.indexOf('<main'), html.indexOf('</main>'))
     const texte = hrefuriWhatsApp(corp).map(textDinWa)
-    expect(texte).toEqual([p.cta.textWhatsapp, semnalare, p.cta.textWhatsapp])
+    expect(texte).toEqual(Array(legaturiWa).fill(p.cta.textWhatsapp))
     for (const t of texte) expect(t).toContain('[ref:' + p.cta.ref + ']')
   })
 

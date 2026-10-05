@@ -1,5 +1,5 @@
 {
-  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici. Felia 105 a migrat pagina pe forma decisa la intrebarea 5 (varianta a): aceeasi poveste cinema, cu textul in engleza.",
   "pereche": "P03",
   "ro": "/functionalitati/cautare-ai",
   "pagini_3s_md": [
@@ -16,7 +16,7 @@
     }
   ],
   "_nedeclarate": [
-    "Butonul CtaCinema spre /inregistrare devine butonul WhatsApp (acelasi loc, alt canal): nu schimba forma.",
-    "Forma paginii e de decis de owner (povestea sau sectiunile-intrebare EN)."
+    "Butonul CtaCinema spre /inregistrare devine legatura WhatsApp cu ref-ul paginii (acelasi loc, aceeasi clasa de buton, alt canal, decizia 3): nu schimba forma.",
+    "Scena (intrebarea din terminal si din bara, pasajul citat, textele desenului 'Acum') e in romana pe 3s.md, sub lang=\"ro\", cu etichetele accesibile in engleza (fisa paginii, nota 2): schimba textul, nu forma."
   ]
 }

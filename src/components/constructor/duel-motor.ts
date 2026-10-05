@@ -12,19 +12,17 @@
 //   620   intra sortat in dreapta: dosarul lui +1, timp economisit + k
 // Termenele ratate cad la documentele `indiciTermeneRatate`, iar toastul la `indiciToast` (1,7 s
 // vizibil). Finalul vine la n x pas + 700 ms.
+//
+// CONTINUTUL (datele duelului pe industrie, randul scris de mana de la final, calculul si functiile de
+// text) vine ca ultim argument, `c`, de la vederea lumii: modulul nu importa nimic din `src/content/`.
+// Pe RO e `CONTINUT_LUME_RO` (`Lume.tsx`). Un duel fara `toast` (editiile 3s.md: anuntul automat al
+// unei persoane nu e o functie gasita in codul platformei, decizia 43) nu are evenimentele toastului.
 
 import type { CodCanal, CodCine, CodIndustrie, CodVolum } from "@/content/acasa";
-import {
-  DUEL,
-  PARAMETRI_DUEL,
-  SCENARII,
-  completeaza,
-  formatTimp,
-  indiciTermeneRatate,
-  indiciToast,
-  minutePeDocument,
-  numeFisier,
-} from "@/content/acasa-constructor";
+import type { ContinutLume } from "./LumeVedere";
+
+/** Ce citeste motorul din continutul editiei. */
+export type ContinutMotor = Pick<ContinutLume, "scenarii" | "duel" | "text" | "calcul">;
 
 /** Cat sta toastul pe ecran (masurat: 1,7 s). */
 export const DURATA_TOAST = 1700;
@@ -84,12 +82,12 @@ export type StareDuel = {
   final: boolean;
 };
 
-export function construiesteSimularea(p: ParametriSimulare): Simulare {
-  const { documente, pas } = PARAMETRI_DUEL[p.volum];
+export function construiesteSimularea(p: ParametriSimulare, c: ContinutMotor): Simulare {
+  const { documente, pas } = c.calcul.parametriDuel[p.volum];
   const f = pas / 700;
   const evenimente: Eveniment[] = [];
-  const termene = indiciTermeneRatate(p.volum);
-  const toasturi = indiciToast(p.volum);
+  const termene = c.calcul.indiciTermeneRatate(p.volum);
+  const toasturi = c.scenarii[p.industrie].duel.toast === undefined ? [] : c.calcul.indiciToast(p.volum);
   for (let i = 0; i < documente; i++) {
     const b = i * pas;
     evenimente.push({ t: b, fel: "soseste", doc: i });
@@ -110,7 +108,7 @@ export function construiesteSimularea(p: ParametriSimulare): Simulare {
   evenimente.push({ t: sfarsit, fel: "final" });
   // Sortare stabila dupa timp: la acelasi moment, ordinea de construire ramane.
   const ordonate = evenimente.map((e, i) => ({ e, i })).sort((a, b) => a.e.t - b.e.t || a.i - b.i).map((x) => x.e);
-  return { evenimente: ordonate, sfarsit, documente, pas, minute: minutePeDocument(p.canale.length) };
+  return { evenimente: ordonate, sfarsit, documente, pas, minute: c.calcul.minutePeDocument(p.canale.length) };
 }
 
 /** Cate evenimente au avut loc pana la `t` inclusiv. */
@@ -126,9 +124,9 @@ function canalDoc(canale: readonly CodCanal[], doc: number): CodCanal {
 }
 
 /** Starea dupa primele `n` evenimente. */
-export function stareDupa(sim: Simulare, p: ParametriSimulare, n: number): StareDuel {
-  const duel = SCENARII[p.industrie].duel;
-  const numeDoc = (doc: number) => numeFisier(duel.fisiere[doc % 5], Math.floor(doc / 5));
+export function stareDupa(sim: Simulare, p: ParametriSimulare, n: number, c: ContinutMotor): StareDuel {
+  const duel = c.scenarii[p.industrie].duel;
+  const numeDoc = (doc: number) => c.calcul.numeFisier(duel.fisiere[doc % 5], Math.floor(doc / 5));
   const s: StareDuel = {
     culoarStanga: null,
     culoarDreapta: null,
@@ -195,7 +193,7 @@ export function stareDupa(sim: Simulare, p: ParametriSimulare, n: number): Stare
         break;
       }
       case "toast":
-        s.toast = { text: duel.toast, cheie: e.doc + 1 };
+        if (duel.toast !== undefined) s.toast = { text: duel.toast, cheie: e.doc + 1 };
         break;
       case "toastGata":
         if (s.toast && s.toast.cheie === e.doc + 1) s.toast = null;
@@ -205,7 +203,10 @@ export function stareDupa(sim: Simulare, p: ParametriSimulare, n: number): Stare
         s.culoarStanga = null;
         s.culoarDreapta = null;
         s.toast = null;
-        s.stres = { text: completeaza(DUEL.cine[p.cine], { timp: formatTimp(s.timpPierdut) }), cheie: 999 };
+        s.stres = {
+          text: c.text.completeaza(c.duel.cine[p.cine], { timp: c.text.formatTimp(s.timpPierdut) }),
+          cheie: 999,
+        };
         break;
     }
   }
@@ -213,7 +214,7 @@ export function stareDupa(sim: Simulare, p: ParametriSimulare, n: number): Stare
 }
 
 /** Starea finala, fara simulare (miscarea redusa si proba). */
-export function stareFinala(p: ParametriSimulare): StareDuel {
-  const sim = construiesteSimularea(p);
-  return stareDupa(sim, p, sim.evenimente.length);
+export function stareFinala(p: ParametriSimulare, c: ContinutMotor): StareDuel {
+  const sim = construiesteSimularea(p, c);
+  return stareDupa(sim, p, sim.evenimente.length, c);
 }

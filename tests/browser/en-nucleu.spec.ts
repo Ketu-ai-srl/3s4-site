@@ -16,7 +16,10 @@ import { RADACINA } from './ajutor/proiect'
  *
  * Asteptarile (caile, codurile `ref`, numarul) se citesc la RULARE din manifest, din tabelul navigatiei si din profil.
  * Controlul extragerii: pe fiecare pagina, `<main>` are exact o legatura WhatsApp cu ref-ul paginii in blocul de sus
- * si una in blocul de final (pagina de contact: una, in cardul WhatsApp).
+ * si una in blocul de final; /pricing si /contact compun perechile RO (decizia 53) si au trei: pe /pricing butoanele
+ * celor trei planuri, pe /contact butonul casetei, randul canalului si butonul final. Exceptia /about: ca pereche a
+ * paginii RO /securitate (decizia 53) nu are bloc de final, deci `<main>` are zero, iar legatura cu ref-ul paginii e in
+ * antet.
  */
 
 const PROFIL = mediuProfil3sMd()
@@ -126,8 +129,19 @@ for (const r of ruteNucleu()) {
     expect(html.match(/<h1\b/g) ?? []).toHaveLength(1)
     const main = bucata(html, /<main\b/, '</main>')
     expect(main).not.toBe('')
-    const wa = hrefuri(main).filter((h) => h.startsWith(WA))
-    expect(wa.length, 'legaturi WhatsApp in <main>').toBe(r.cale === '/contact' ? 1 : 2)
+    const antet = bucata(html, /<header\b/, '</header>')
+    const subsol = bucata(html, /<footer\b/, '</footer>')
+    // /about compune aceleasi componente ca pagina RO /securitate (decizia 53), care nu are bloc de final: acolo
+    // seiful ii tine locul, iar seiful nu se monteaza pe 3s.md. Congruenta castiga, deci <main> nu are legatura
+    // WhatsApp, iar canalul paginii, cu ref-ul ei, e in ANTET (butonul de apel al antetului).
+    const faraFinal = r.cale === '/about'
+    const wa = hrefuri(faraFinal ? antet : main).filter((h) => h.startsWith(WA))
+    // /pricing si /contact compun componentele perechilor RO (decizia 53) si au cate legaturile au acolo: pe /pricing
+    // butoanele celor trei planuri din grila, pe /contact butonul casetei, randul canalului si butonul final.
+    // Fiecare poarta ref-ul paginii (verificat mai jos).
+    const asteptat = faraFinal ? 1 : r.cale === '/pricing' || r.cale === '/contact' ? 3 : 2
+    expect(wa.length, faraFinal ? 'legaturi WhatsApp in antet' : 'legaturi WhatsApp in <main>').toBe(asteptat)
+    if (faraFinal) expect(hrefuri(main).filter((h) => h.startsWith(WA)), 'legaturi WhatsApp in <main>').toEqual([])
     for (const h of wa) {
       expect(textWa(h)).toContain('[ref:' + REF.get(r.cale) + ']')
       expect(textWa(h).split('[ref:').length - 1).toBe(1)
@@ -135,8 +149,6 @@ for (const r of ruteNucleu()) {
     expect(html).not.toContain('<form')
     expect(RON.test(html)).toBe(false)
     // Antetul si subsolul: fara grupul de segmente si fara functiile scoase; controlul: antetul are meniul principal.
-    const antet = bucata(html, /<header\b/, '</header>')
-    const subsol = bucata(html, /<footer\b/, '</footer>')
     expect(antet).toContain('aria-label="Main menu"')
     expect(subsol).not.toBe('')
     for (const bloc of [antet, subsol]) {

@@ -178,7 +178,7 @@ export function paginaContact(o: OptiuniContact = OPTIUNI_CONTACT_BUILD): Pagina
         ],
       },
     ],
-    afirmatii: ["ro-md-canale-de-contact", "ro-md-raspunde-o-persoana", "ro-md-arhiva-cu-sursa", "ro-md-pilot-asistat"],
+    afirmatii: ["ro-md-canale-de-contact", "ro-md-raspunde-o-persoana", "ro-md-arhiva-cu-sursa", "ro-md-pilot-asistat", "ro-md-functii-in-productie"],
   };
 }
 

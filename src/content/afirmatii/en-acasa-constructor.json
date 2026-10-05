@@ -1,0 +1,20 @@
+[
+  {
+    "id": "en-constructor-estimare-exemplu",
+    "text": "The constructor's estimate (the monthly hours spent handling documents by hand and the time 3S saves on the simulated day) is an example calculation from a fixed formula, not a measurement",
+    "unde": "src/content/en/acasa-constructor-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: oglinda EN a intrarii constructor-estimare-exemplu (src/content/afirmatii/acasa-constructor.json), cu aceeasi formula (functiile din src/content/acasa-constructor.ts) si aceeasi stare; pe pagina e declarata ca exemplu de calcul (ESTIMARE.formula: example calculation), iar ipotezele ei (4-5 minute pe document, raportul de 1 la 11 cu 3S) nu au o masuratoare a noastra",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "en-constructor-scene-functii",
+    "text": "In the constructor's nine example scenes, 3S does only what the platform does in production: upload from the browser, text recognition and the document type tag, search and AI answers with the source cited (marked \"AI answer, check source\"), folders the firm creates and the retention date set on the folder; no rules, notices to people, alerts, automatic filing or deadline counting",
+    "unde": "src/content/en/acasa-constructor-componente.ts, src/content/en/acasa-constructor-cap-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat pe capturi (textul scenelor e propus, decizia 59, forma a): functiile se sprijina pe intrarile confirmate en-flux-functii-in-productie, en-enterprise-functii-in-productie, en-comparatii-cautare-cu-sursa, en-produs-functii-in-productie si en-comparatii-registru-termene (src/content/afirmatii/en-nucleu.json); ce lipseste fata de scenele RO (benzile, toast-urile, pista termenului din scena Avocatura, lista de reguli si randul de integrari) iese prin decizia 43",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

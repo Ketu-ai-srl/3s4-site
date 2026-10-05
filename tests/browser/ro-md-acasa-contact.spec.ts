@@ -13,8 +13,8 @@ import { RADACINA } from './ajutor/proiect'
  *
  * Ce se cere, pe HTML-ul servit (fara JavaScript), pe fiecare pagina: 200, `<html lang="ro">`, `Content-Language` al
  * editiei ro-MD din catalog, un singur H1, noindex pe staging, zero `<form`, zero RON; in `<main>` legaturile WhatsApp
- * poarta `[ref:<ref>]` al paginii (start: eroul si blocul final; contact: cardul), CTA-ul din antet are eticheta
- * deciziei 35 si acelasi ref, iar subsolul are numarul de WhatsApp ca text, fara nicio legatura de apel (decizia 56),
+ * poarta `[ref:<ref>]` al paginii (start: eroul si blocul final; contact: caseta, randul canalului si blocul final),
+ * CTA-ul din antet are eticheta deciziei 35 si acelasi ref, iar subsolul are numarul de WhatsApp ca text, fara nicio legatura de apel (decizia 56),
  * si legatura spre informatiile legale RO. Apoi:
  * hreflang reciproc intre `/` si `/ro` si intre `/contact` si `/ro/contact`; selectorul EN | RO pe toate patru
  * paginile, cu martorul negativ pe o pagina EN fara pereche; zero forme de politete, zero fraze despre asistentul pe
@@ -183,7 +183,12 @@ for (const r of ruteFelie()) {
     expect(antet).not.toBe('')
     expect(subsol).not.toBe('')
     const wa = hrefuri(main).filter((h) => h.startsWith(WA))
-    expect(wa.length, 'legaturi WhatsApp in <main>').toBe(r.cale === '/ro/contact' ? 1 : 2)
+    // AUTORIZARE (felia 104, regula comuna a specificatiei de congruenta: probele care fixeaza forma veche se rescriu in
+    // felia paginii): /ro/contact randa modulul prin CorpPagina, cu o singura legatura WhatsApp, in cardul canalului.
+    // Pagina compune acum componentele paginii de contact RO (decizia 53), cu WhatsApp in cele trei locuri ale
+    // canalului de acolo: butonul casetei, randul din panoul de canale (numarul) si butonul blocului de final. Faptul
+    // pazit (fiecare legatura poarta ref-ul paginii, o singura data) ramane mai jos, neschimbat.
+    expect(wa.length, 'legaturi WhatsApp in <main>').toBe(r.cale === '/ro/contact' ? 3 : 2)
     for (const h of wa) {
       expect(textWa(h)).toContain(ref)
       expect(textWa(h).split('[ref:').length - 1).toBe(1)

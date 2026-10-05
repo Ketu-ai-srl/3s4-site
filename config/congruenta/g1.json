@@ -2,83 +2,65 @@
   "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
   "pereche": "G1",
   "ro": "/e-facturare",
-  "pagini_3s_md": [
-    "/guides/e-invoice-archiving-eu"
-  ],
+  "pagini_3s_md": ["/guides/e-invoice-archiving-eu"],
   "randuri": [
     {
       "tip": "camp",
       "selector": "[class*=\"efacturare_drumCanal__\"]",
       "ro": 5,
       "en": 1,
-      "cod": [
-        "d43",
-        "d49"
-      ],
+      "cod": ["d43", "d49"],
       "motiv": "Macheta drumului facturii: ies canalele Peppol, Storecove, e-mail si WhatsApp; ramane incarcarea."
     },
     {
       "tip": "camp",
-      "selector": "[class*=\"CtaFinalInchis_pas__\"]",
-      "ro": 2,
-      "en": 1,
-      "cod": "d49",
-      "motiv": "CtaFinalInchis: pasul 'Poza pe WhatsApp'."
+      "selector": "[class*=\"efacturare_insigna__\"]",
+      "ro": 8,
+      "en": 7,
+      "cod": "d43",
+      "motiv": "Standardele: insigna Peppol (integrare cu nume, negasita in codul platformei; Peppol e o retea, nu un format)."
     },
     {
       "tip": "camp",
-      "selector": "[class*=\"CtaFinalInchis_rezultat__\"]",
-      "ro": 1,
-      "en": 0,
-      "cod": "val-ro-i2",
-      "motiv": "CtaFinalInchis: rezultatul 'Pus in dosarul Transport' (clasarea automata)."
+      "selector": "[class*=\"CtaFinalInchis_butoane__\"] > *",
+      "ro": 2,
+      "en": 1,
+      "cod": ["d3", "d43"],
+      "motiv": "CtaFinalInchis: al doilea buton ('Un tur prin aplicatie') duce la /incepe, demonstratia ale carei iesiri sunt contul gratuit (formularul de inregistrare, d3) si descarcarea aplicatiilor (d43); pagina nu exista pe 3s.md. Ramane butonul WhatsApp (acelasi rand ca pe pagina de start)."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_punctVerde",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "Buton_conturPeInchis",
+      "cod": ["d3", "d43"],
+      "motiv": "Clasa butonului 'Un tur prin aplicatie' din blocul de final, scos odata cu el; nu mai apare in alt loc al paginii."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultat",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "efacturare_calendar",
+      "cod": "ro-doar",
+      "motiv": "Caseta calendarului .ics din tabelul pietelor: fisierul are cele 12 termene lunare romanesti D406, iar ruta lui exista numai pe site-ul RO (specificatia de congruenta, 3, G1)."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatCutie",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "efacturare_calendarTitlu",
+      "cod": "ro-doar",
+      "motiv": "Titlul casetei calendarului .ics D406, scos odata cu ea; nu mai apare in alt loc al paginii."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatFisier",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "efacturare_calendarText",
+      "cod": "ro-doar",
+      "motiv": "Textul casetei calendarului .ics D406, scos odata cu ea; nu mai apare in alt loc al paginii."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatOra",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatStare",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatText",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "efacturare_calendarButon",
+      "cod": "ro-doar",
+      "motiv": "Butonul de descarcare al calendarului .ics D406 (ruta numai pe RO), scos odata cu caseta."
     }
   ],
   "_nedeclarate": [
-    "Calendarul .ics D406 (romanesc, ruta exista numai pe RO): fara cod de temei pana la raspunsul owner-ului.",
-    "AES (d31), pasii 2-3 din 'Ce face 3S' (d43): text.",
-    "CtaFinalInchis: butonul 'Un tur prin aplicatie' (/incepe nu exista pe 3s.md) - fara cod de temei pana la raspunsul owner-ului."
+    "Randul Romaniei din tabel: sursele de langa format scad de la 3 la 1 (ramane ghidul ANAF). Nu primeste codul ro-doar: piesele nu exista numai pe RO prin natura lor. Temeiul real: materialul ANAF despre termenul de transmitere iese fiindca termenul nu e confirmat in registrul de afirmatii EN (clasa (a) a intrebarii 12 a specificatiei, codul val-ro-1.1); ghidul D406 iese odata cu fraza despre SAF-T, scoasa de fisa paginii (sectiunea 5), pentru care lista inchisa nu are cod. Numararea legaturilor din celula surselor randului [id=\"romania\"] (3 pe RO, 1 pe 3s.md, numarate pe HTML-ul randat) se declara cand exista codul celei de-a doua surse.",
+    "AES (d31), pasii 2-3 din 'Ce face 3S' (d43), registrul si regulile automate: text, nu forma."
   ]
 }

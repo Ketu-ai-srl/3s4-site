@@ -12,6 +12,10 @@
 //
 // La 390 (sub 640) eticheta benzii trece IN FLUX sub pista, deci nu se mai suprapune peste anii
 // ramasi - defectul masurat la referinta (COMPONENTE §5, punctul 12) nu se mosteneste.
+//
+// PE EDITIE: textul pentru cititorul de ecran (scala anilor) vine prin `descriere`, scris de server in
+// limba editiei; lipsa = propozitia romaneasca de azi. Proprietatea se trimite numai prin raspandire
+// conditionata (pagina RO n-o paseaza deloc), ca fluxul RSC al paginii RO sa ramana acelasi.
 
 import { useEffect, useRef } from "react";
 import s from "./efacturare.module.css";
@@ -23,12 +27,14 @@ export type Rigla11AniProps = {
   anStart: number;
   aniScala: number;
   aniPastrare: number;
+  /** Textul pentru cititorul de ecran, in limba editiei; lipsa = textul romanesc. */
+  descriere?: string;
 };
 
 /** Pragul de declansare: marginea de sus a riglei urca la 85% din fereastra. */
 const PRAG = 0.85;
 
-export default function Rigla11Ani({ fisier, eticheta, banda, anStart, aniScala, aniPastrare }: Rigla11AniProps) {
+export default function Rigla11Ani({ fisier, eticheta, banda, anStart, aniScala, aniPastrare, descriere }: Rigla11AniProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -90,7 +96,8 @@ export default function Rigla11Ani({ fisier, eticheta, banda, anStart, aniScala,
         {banda}
       </p>
       <p className="doar-cititor">
-        {"Scala anilor: de la " + anStart + " la " + (anStart + aniScala) + "; păstrarea din exemplu ține până în " + (anStart + aniPastrare) + "."}
+        {descriere ??
+          "Scala anilor: de la " + anStart + " la " + (anStart + aniScala) + "; păstrarea din exemplu ține până în " + (anStart + aniPastrare) + "."}
       </p>
     </div>
   );

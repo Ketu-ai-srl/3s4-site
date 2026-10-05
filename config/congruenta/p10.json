@@ -29,66 +29,62 @@
     },
     {
       "tip": "camp",
-      "selector": "[class*=\"CtaFinalInchis_pas__\"]",
-      "ro": 2,
+      "selector": "[aria-labelledby=\"contact-canale\"] [class*=\"contact_rand__\"]",
+      "ro": 4,
       "en": 1,
-      "cod": "d49",
-      "motiv": "CtaFinalInchis: pasul 'Poza pe WhatsApp'."
+      "cod": [
+        "d3",
+        "d43"
+      ],
+      "motiv": "Panoul de canale: ies randurile formularului si al contului (d3) si al demonstratiei (/incepe, ale carei iesiri sunt contul si descarcarea aplicatiilor; d3, d43, ca butonul din blocul de final al startului); randul formularului e inlocuit de randul WhatsApp. Randul de e-mail lipseste pana la P-40 (CANALE_JSON fara adresa, decizia 30, fara cod in lista inchisa; apare singur cand domeniul are adresa)."
     },
     {
       "tip": "camp",
-      "selector": "[class*=\"CtaFinalInchis_rezultat__\"]",
-      "ro": 1,
-      "en": 0,
-      "cod": "val-ro-i2",
-      "motiv": "CtaFinalInchis: rezultatul 'Pus in dosarul Transport' (clasarea automata)."
+      "selector": "[class*=\"contact_fapt__\"]",
+      "ro": 6,
+      "en": 4,
+      "cod": "d31",
+      "motiv": "Cardul platformei: ies 'Criptare la stocare' (AES-256) si 'Criptare in tranzit' (TLS 1.2+)."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_punctVerde",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "contact_faptMono",
+      "cod": "d31",
+      "motiv": "Clasa valorilor AES-256 si TLS 1.2+ din cardul platformei, scoase odata cu ele."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultat",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "contact_randText",
+      "cod": [
+        "d3",
+        "d43"
+      ],
+      "motiv": "Clasa textului 'inca nepublicata' din randul de e-mail fara adresa; pe 3s.md randul de e-mail lipseste pana la P-40 (decizia 30, fara cod in lista inchisa), vezi randul panoului de canale."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"CtaFinalInchis_butoane__\"] > *",
+      "ro": 2,
+      "en": 1,
+      "cod": [
+        "d3",
+        "d43"
+      ],
+      "motiv": "CtaFinalInchis: al doilea buton ('Un tur prin aplicatie') duce la /incepe, demonstratia ale carei iesiri sunt contul gratuit (formularul de inregistrare, d3) si descarcarea aplicatiilor (d43); pagina nu exista pe 3s.md. Ramane butonul WhatsApp."
     },
     {
       "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatCutie",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatFisier",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatOra",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatStare",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
-    },
-    {
-      "tip": "clasa",
-      "clasa": "CtaFinalInchis_rezultatText",
-      "cod": "val-ro-i2",
-      "motiv": "Clasa rezultatului 'Pus in dosarul Transport' din blocul de final, scoasa odata cu el."
+      "clasa": "Buton_conturPeInchis",
+      "cod": [
+        "d3",
+        "d43"
+      ],
+      "motiv": "Clasa celui de-al doilea buton din blocul de final ('Un tur prin aplicatie'), scos odata cu el."
     }
   ],
   "_nedeclarate": [
-    "Blocul canalelor: ies randurile formular (d3) si cont (d3), iar demonstratia (/incepe) nu are cod; intra randurile WhatsApp si Telefon cu text aprobat. Numaratoarea se declara cand se stie soarta demonstratiei.",
-    "AES/TLS (d31): text.",
-    "CtaFinalInchis: butonul 'Un tur prin aplicatie' (/incepe nu exista pe 3s.md) - fara cod de temei pana la raspunsul owner-ului."
+    "Blocul de final pastreaza vizualul: pasii 'Poza pe WhatsApp' (d49) si 'Recunoscut ca aviz', si rezultatul 'Pus in dosarul Transport' (val-ro-i2) sunt inlocuiti cu fapte confirmate (incarcarea din browser, eticheta de tip, documentul indexat pentru cautare), ca pe start: text.",
+    "Caseta si panoul: butonul si randul WhatsApp in locul formularului (d3); numarul afisat ca numar de WhatsApp, fara legatura de apel (d56): text si tinta.",
+    "AES/TLS (d31), Germania (d42): text."
   ]
 }

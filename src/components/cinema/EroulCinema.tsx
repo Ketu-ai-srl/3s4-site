@@ -128,11 +128,16 @@ export type TerminalErouProps = {
   marime?: "normala" | "mare";
   /** Numele din bara ferestrei (mono 11,52). La 3S: marca, scrisa ca text. */
   marca?: string;
+  /**
+   * Limba intrebarii, cand difera de a paginii (pe 3s.md intrebarea e in romana): `lang` pe corpul terminalului, ca
+   * cititorul de ecran s-o pronunte corect. Absenta (RO): fara atribut.
+   */
+  limba?: string;
   className?: string;
 };
 
 /** Terminalul cu intrebarea scrisa (fisa §4.1): card `ardezie-9`, bara de 35 px, lupa, text scris. */
-export function TerminalErou({ text, pas, latime = 600, marime = "normala", marca = "3S", className }: TerminalErouProps) {
+export function TerminalErou({ text, pas, latime = 600, marime = "normala", marca = "3S", limba, className }: TerminalErouProps) {
   const { laScris } = useContext(ContextErou);
   const scriere = useScriere(text, { pas, laFinal: laScris });
   return (
@@ -144,7 +149,7 @@ export function TerminalErou({ text, pas, latime = 600, marime = "normala", marc
         <span className={s.punct} aria-hidden="true" />
         <span className={s.marca}>{marca}</span>
       </div>
-      <div className={s.corpTerminal}>
+      <div className={s.corpTerminal} lang={limba}>
         <TextScris
           text={text}
           stare={scriere.stare}

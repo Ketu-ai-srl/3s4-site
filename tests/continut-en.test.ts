@@ -139,15 +139,37 @@ describe('modelul paginilor de continut', () => {
   // Felia 99 (decizia 53): modulele `<pagina>-componente.ts` poarta continutul COMPONENTELOR startului (pagina compune
   // componentele RO cu textul editiei), nu o pagina pe modelul CorpPagina; se numara separat si n-au voie sa exporte
   // `pagina`, ca un modul de pagina sa nu se poata ascunde sub numele lor.
+  // Felia 106 (decizia 53): paginile de referinta G1-G3 compun componentele perechilor RO, deci modulele lor poarta
+  // contractele componentelor, iar `pagina` lor are numai metadata, CTA-ul, datele structurate si registrul (fara
+  // `sectiuni`: nu se randeaza prin CorpPagina); `referinta-comun.ts` tine piesele lor comune si nu exporta `pagina`.
+  // Se numara separat, pe nume, ca un modul de pagina CorpPagina sa nu se poata ascunde sub forma lor.
+  const MODULE_REFERINTA = ['compare-3s-vs-google-and-box.ts', 'guides-e-invoice-archiving-eu.ts', 'guides-records-retention-moldova.ts']
+  const COMUN_REFERINTA = 'referinta-comun.ts'
+
   it('fiecare modul din src/content/en exporta `pagina` valida, cu cheia egala cu numele fisierului', async () => {
     const toate = fisiereDin(DOSAR_EN).filter((f) => f.endsWith('.ts') && !relative(DOSAR_EN, f).includes(sep))
     const componente = toate.filter((f) => f.endsWith('-componente.ts'))
-    const moduleEn = toate.filter((f) => !componente.includes(f))
+    const referinta = toate.filter((f) => [...MODULE_REFERINTA, COMUN_REFERINTA].includes(relative(DOSAR_EN, f)))
+    const moduleEn = toate.filter((f) => !componente.includes(f) && !referinta.includes(f))
     expect(componente.map((f) => relative(DOSAR_EN, f))).toContain('acasa-componente.ts')
+    expect(componente.map((f) => relative(DOSAR_EN, f))).toContain('platforma-componente.ts')
+    expect(referinta.map((f) => relative(DOSAR_EN, f)).sort()).toEqual([...MODULE_REFERINTA, COMUN_REFERINTA].sort())
     const probleme: string[] = []
     for (const f of componente) {
       const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { pagina?: unknown }
       if (m.pagina !== undefined) probleme.push(relative(DOSAR_EN, f) + ': modul de componente care exporta `pagina`')
+    }
+    for (const f of referinta) {
+      const nume = relative(DOSAR_EN, f)
+      const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { pagina?: { cheie?: string; meta?: { cale?: string }; sectiuni?: unknown } }
+      if (nume === COMUN_REFERINTA) {
+        if (m.pagina !== undefined) probleme.push(nume + ': modulul comun exporta `pagina`')
+      } else if (m.pagina === undefined) probleme.push(nume + ': nu exporta `pagina`')
+      else {
+        if (m.pagina.cheie !== nume.replace(/\.ts$/, '')) probleme.push(nume + ': cheia paginii nu e numele fisierului')
+        if (m.pagina.sectiuni !== undefined) probleme.push(nume + ': `pagina` are `sectiuni` (forma CorpPagina) pe o pagina congruenta')
+        if (typeof m.pagina.meta?.cale !== 'string') probleme.push(nume + ': `pagina` fara cale')
+      }
     }
     for (const f of moduleEn) {
       const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { pagina?: PaginaContinut }

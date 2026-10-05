@@ -1,27 +1,30 @@
-// Pagina de contact a editiei `ro-MD` (`/ro/contact` pe 3s.md): textul din `src/content/ro-md/contact.ts`, randat
-// prin `CorpPagina`, ca pagina de contact EN (`src/app/(en)/contact/page.en.tsx`). Fara formular (decizia 3): cele
-// doua carduri de canal sunt actiunea paginii, imediat sub capsula, in sectiunea "Prin ce canale pot contacta 3S?".
+// Pagina de contact a editiei `ro-MD` (`/ro/contact` pe 3s.md): aceleasi componente si aceeasi compunere ca pagina de
+// contact RO (`src/app/contact/page.tsx`, decizia 53), cu textul editiei din `src/content/ro-md/contact-componente.ts`;
+// blocul de final are textul startului /ro. Aceeasi pagina, in engleza, e `src/app/(en)/contact/page.en.tsx`.
 //
-// Cardurile urmeaza canalele domeniului (`CANALE_JSON`): WhatsApp cu textul precompletat al paginii
-// (`[ref:ro-md-contact]`, din modul), cu numarul afisat ca numar de WhatsApp, si e-mailul numai cand domeniul are
-// adresa (P-40). Un canal gol nu lasa card. Microtextul sta sub carduri, ca in fisa. Cardul de telefon si legatura
-// de apel au iesit (decizia 56: fara apeluri GSM; apelurile se primesc numai pe WhatsApp).
+// Ordinea RO: PaginaContact (erou, caseta, subiecte, canale, marca), SectiuneFormular, CtaFinalInchis. Formularul nu
+// exista pe 3s.md (decizia 3). Diferentele de forma sunt in lista declarata a perechii (`config/congruenta/p10.json`).
+//
+// Canalele urmeaza canalele domeniului (`CANALE_JSON`): WhatsApp cu textul precompletat al paginii
+// (`[ref:ro-md-contact]`, din `contact.ts`), numarul afisat ca numar de WhatsApp (fara legatura de apel, decizia 56),
+// e-mailul numai cand domeniul are adresa (P-40). Metadata, nodul WebPage si registrul de afirmatii vin din
+// `contact.ts`; firul (`BreadcrumbList`) il emite eroul, o singura data.
 
 import type { Metadata } from "next";
-import AdresaCopiere from "@/components/canale/AdresaCopiere";
-import ButonWhatsApp from "@/components/canale/ButonWhatsApp";
-import CardCanal from "@/components/canale/CardCanal";
-import CorpPagina from "@/components/continut/CorpPagina";
-import TextInLinie from "@/components/juridic/TextInLinie";
-import s from "@/components/juridic/juridic.module.css";
-import { claseButon } from "@/components/primitive/Buton";
+import LegaturaCanal from "@/components/canale/LegaturaCanal";
+import PaginaContact, { type RandPanou } from "@/components/conversie/PaginaContact";
+import { claseButon, type MarimeButon, type VariantaButon } from "@/components/primitive/Buton";
+import bs from "@/components/primitive/Buton.module.css";
+import CtaFinalInchis from "@/components/primitive/CtaFinalInchis";
+import Iconita from "@/components/primitive/Iconita";
 import type { NodJsonLd } from "@/components/seo/date-structurate";
 import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
 import { CANALE, legaturaWhatsApp, numarAfisat } from "@/content/canale";
-import { ETICHETA_WHATSAPP_RO_MD } from "@/content/navigatie-ro-md";
-import { MICROTEXT } from "@/content/ro-md/acasa";
-import { CANALE_PAGINA, DUPA, emailContact, pagina } from "@/content/ro-md/contact";
+import type { LegaturaPeCale } from "@/content/navigatie";
+import { CTA_FINAL_RO_MD } from "@/content/ro-md/acasa-componente";
+import { emailContact, pagina } from "@/content/ro-md/contact";
+import { BUTON_WHATSAPP_RO_MD, CANALE_RO_MD, CONTACT_RO_MD, subtitluContactRoMd } from "@/content/ro-md/contact-componente";
 
 export const metadata: Metadata = metadataPagina({
   titlu: pagina.meta.titlu,
@@ -31,47 +34,54 @@ export const metadata: Metadata = metadataPagina({
   cheie: pagina.cheie,
 });
 
+/** Nodurile paginii: cele din modul, fara firul (il emite eroul) si fara trimiterea la el. */
+function noduri(): NodJsonLd[] {
+  return (pagina.jsonLd as NodJsonLd[])
+    .filter((n) => n["@type"] !== "BreadcrumbList")
+    .map((n) => Object.fromEntries(Object.entries(n).filter(([k]) => k !== "breadcrumb")) as NodJsonLd);
+}
+
+/** Butonul de canal WhatsApp, cu clasele butonului site-ului si sageata; fara WhatsApp pe domeniu, nimic. */
+function ButonCanal({
+  legatura,
+  varianta,
+  marime,
+  sageata,
+}: {
+  legatura: LegaturaPeCale | null;
+  varianta: VariantaButon;
+  marime: MarimeButon;
+  sageata: boolean;
+}) {
+  if (legatura === null) return null;
+  return (
+    <LegaturaCanal legatura={legatura} canal="whatsapp" className={claseButon(varianta, marime)}>
+      <span>{BUTON_WHATSAPP_RO_MD}</span>
+      {sageata ? <Iconita nume="arrow-right" marime={18} contur={1.5} className={bs.sageata} /> : null}
+    </LegaturaCanal>
+  );
+}
+
 export default function PaginaContactRoMd() {
   const href = legaturaWhatsApp(pagina.cta.ref, pagina.cta.textWhatsapp);
-  const whatsapp = href === null ? null : { implicit: href, pagini: [] };
-  const email = emailContact();
+  const whatsapp: LegaturaPeCale | null = href === null ? null : { implicit: href, pagini: [] };
   const numar = numarAfisat();
+  const mailto = emailContact();
+  const randuri: RandPanou[] = [
+    ...(href === null ? [] : [{ nume: CANALE_RO_MD.whatsapp, legatura: { text: numar, href, ruta: null }, stare: CANALE_RO_MD.deschis }]),
+    ...(mailto === null ? [] : [{ nume: CANALE_RO_MD.email, legatura: { text: CANALE.email, href: mailto, ruta: null }, stare: CANALE_RO_MD.deschis }]),
+  ];
+  const continut = { ...CONTACT_RO_MD, erou: { ...CONTACT_RO_MD.erou, subtitlu: subtitluContactRoMd(numar, mailto === null ? "" : CANALE.email) } };
 
   return (
-    <main className={s.zonaIngusta}>
-      <JsonLd date={{ "@context": "https://schema.org", "@graph": pagina.jsonLd as NodJsonLd[] }} />
-      <div className="container-site">
-        <div className={s.bloc}>
-          <CorpPagina
-            pagina={pagina}
-            dupaCapsula={
-              <section aria-labelledby="canale-titlu" data-canale-contact="">
-                <h2 id="canale-titlu">{CANALE_PAGINA.titlu}</h2>
-                {whatsapp === null ? null : (
-                  <CardCanal titlu={CANALE_PAGINA.whatsapp.titlu} descriere={CANALE_PAGINA.whatsapp.text}>
-                    <p>{numar + CANALE_PAGINA.whatsapp.dupaNumar}</p>
-                    <ButonWhatsApp legatura={whatsapp} text={ETICHETA_WHATSAPP_RO_MD} />
-                  </CardCanal>
-                )}
-                {email === null ? null : (
-                  <CardCanal titlu={CANALE_PAGINA.email.titlu} descriere={CANALE_PAGINA.email.text}>
-                    <AdresaCopiere adresa={CANALE.email} copiaza={CANALE_PAGINA.email.copiaza} copiat={CANALE_PAGINA.email.copiat} />
-                    <a href={email} className={claseButon("contur")} data-canal="email">
-                      {CANALE_PAGINA.email.buton}
-                    </a>
-                  </CardCanal>
-                )}
-                <p>{MICROTEXT}</p>
-              </section>
-            }
-            final={DUPA.map((rand) => (
-              <p key={rand}>
-                <TextInLinie text={rand} />
-              </p>
-            ))}
-          />
-        </div>
-      </div>
+    <main>
+      <JsonLd date={{ "@context": "https://schema.org", "@graph": noduri() }} />
+      <PaginaContact
+        continut={continut}
+        randuri={randuri}
+        butonCaseta={<ButonCanal legatura={whatsapp} varianta="plin" marime="plat" sageata={false} />}
+      />
+      <CtaFinalInchis continut={CTA_FINAL_RO_MD} butoane={<ButonCanal legatura={whatsapp} varianta="alb-pe-inchis" marime="mare" sageata />} />
     </main>
   );
 }

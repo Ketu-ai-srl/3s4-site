@@ -17,6 +17,7 @@ import * as contact from '../src/content/en/contact'
 import * as enterprise from '../src/content/en/enterprise'
 import * as home from '../src/content/en/home'
 import * as platform from '../src/content/en/platform'
+import { PLATFORMA_EN } from '../src/content/en/platforma-componente'
 import * as pricing from '../src/content/en/pricing'
 
 /**
@@ -385,14 +386,22 @@ describe('JSON-LD-ul paginilor si poarta de SEO', () => {
 
 describe('registrul de afirmatii en-nucleu', () => {
   const dupaId = new Map(REGISTRU.map((i) => [i.id, i]))
+  // `unde` numeste modulul al carui text il randeaza pagina. /platform si /about compun componentele paginilor RO
+  // (decizia 53) din `platforma-componente.ts` si `despre-componente.ts`; `platform.ts` si `about.ts` le dau numai
+  // metadata, nodul WebPage si lista de afirmatii citate (`pagina.afirmatii`), care nu se randeaza.
+  const MODUL_TEXT: Record<string, string> = { platform: 'platforma-componente', about: 'despre-componente' }
+  const CHEIE_PAGINA = new Map(Object.entries(MODUL_TEXT).map(([cheie, modul]) => [modul, cheie]))
 
-  it('fiecare afirmatie citata de o pagina exista in registru, iar `unde` numeste modulul paginii', () => {
+  it('fiecare afirmatie citata de o pagina exista in registru, iar `unde` numeste modulul care ii poarta textul', () => {
     let verificate = 0
     for (const { cheie, pagina } of PAGINI) {
       for (const id of pagina.afirmatii) {
         const intrare = dupaId.get(id)
         expect(intrare, cheie + ': ' + id).toBeDefined()
-        expect(intrare!.unde.split(',').map((x) => x.trim()), cheie + ': ' + id).toContain('src/content/en/' + cheie + '.ts')
+        const unde = intrare!.unde.split(',').map((x) => x.trim())
+        expect(unde, cheie + ': ' + id).toContain('src/content/en/' + (MODUL_TEXT[cheie] ?? cheie) + '.ts')
+        // Modulul de metadata al unei pagini compuse nu poarta text randat, deci nu e un `unde`.
+        if (cheie in MODUL_TEXT) expect(unde, cheie + ': ' + id).not.toContain('src/content/en/' + cheie + '.ts')
         verificate += 1
       }
     }
@@ -404,7 +413,8 @@ describe('registrul de afirmatii en-nucleu', () => {
       const fisiere = intrare.unde.split(',').map((x) => x.trim())
       for (const f of fisiere) expect(existsSync(join(RADACINA, f)), intrare.id + ': ' + f).toBe(true)
       for (const f of fisiere) {
-        const cheie = f.replace('src/content/en/', '').replace('.ts', '')
+        const modul = f.replace('src/content/en/', '').replace('.ts', '')
+        const cheie = CHEIE_PAGINA.get(modul) ?? modul
         expect(MODULE[cheie]?.pagina.afirmatii ?? [], intrare.id + ' in ' + f).toContain(intrare.id)
       }
     }
@@ -543,15 +553,20 @@ describe('modulele EN de marketing fara registrul arhivei (decizia 43, termenul 
     expect(gasiri).toEqual([])
   })
 
-  it('/platform poarta forma noua a fisei P02 in descriere, capsula, figura si sectiunea despre pastrare', () => {
+  // AUTORIZARE (felia 103, regula comuna a specificatiei de congruenta: probele EN care fixeaza forma veche se rescriu
+  // in felia paginii): cazul citea `platform.pagina.capsula` si `.sectiuni`, pe care `/platform` nu le mai randeaza
+  // (pagina compune `PaginaPlatforma` din `PLATFORMA_EN`; din `platform.ts` ia numai metadata si nodul WebPage). Pe
+  // text mort cazul ramanea verde la orice regresie a frazei servite. Acum citeste campurile servite: subtitlul
+  // eroului si intrebarea despre pastrare. `capsula` si `sectiuni` raman in `platform.ts` fiindca tipul comun
+  // `PaginaContinut` le cere si probele de forma ale modulelor EN le masoara; nu se randeaza nicaieri. La fel in
+  // `about.ts` pentru `/about`, care compune `PaginaSecuritate` din `despre-componente.ts`.
+  it('/platform poarta forma noua a fisei P02 in descriere, in eroul servit si in intrebarea servita despre pastrare', () => {
     const p = platform.pagina
     const frazaDosar = 'You can set a retention period for each folder, and it applies to the documents in it.'
     expect(p.meta.descriere).toContain('lets you set a retention period per folder')
-    expect(p.capsula).toContain(frazaDosar)
-    const sectiune = p.sectiuni.find((s) => s.cheie === 'retention')
-    expect(sectiune?.titlu).toBe('Can I set how long documents are kept?')
-    expect(sectiune?.blocuri[0].paragrafe[0]).toContain('Yes. ' + frazaDosar)
-    expect(textSectiuni(p.sectiuni)).toContain('set a retention period per folder.')
+    expect(PLATFORMA_EN.erou.subtitlu).toContain(frazaDosar)
+    const intrebare = (PLATFORMA_EN.intrebari?.intrebari ?? []).find((q) => q.intrebare === 'Can I set how long documents are kept?')
+    expect(intrebare?.raspuns.startsWith('Yes. ' + frazaDosar)).toBe(true)
     const pagina = p.jsonLd.find((n) => n['@type'] === 'WebPage') as { description?: string } | undefined
     expect(pagina?.description).toBe(p.meta.descriere)
   })

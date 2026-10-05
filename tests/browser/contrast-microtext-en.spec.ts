@@ -1,9 +1,9 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from './ajutor/baza'
 import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
-import { inJur as inJurComparatie, pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-and-box'
-import { inJur as inJurEfacturi, pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
-import { inJur as inJurMoldova, pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
+import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-and-box'
+import { pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
+import { pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
 import { inJur as inJurCautare, pagina as cautare } from '../../src/content/en/features-search'
 import { MICROTEXT as MICROTEXT_EN } from '../../src/content/en/home'
 import { MICROTEXT as MICROTEXT_RO_MD } from '../../src/content/ro-md/acasa'
@@ -16,6 +16,11 @@ import { MICROTEXT as MICROTEXT_RO_MD } from '../../src/content/ro-md/acasa'
  * DE CE. Ambele schelete imprumutau clasa paragrafului din cutia CTA inchisa (`ctaText`, culoarea ardezie-3, gandita
  * pentru fundalul ardezie-9), dar o asezau pe fundalul alb al paginii: pe G1 la 390 textul era aproape invizibil, iar
  * pe P03 masurarea dadea acelasi 1,48:1.
+ *
+ * P03 A IESIT DIN PROBA (felia 105, decizia 53, intrebarea 5 varianta a): `/features/search` nu mai foloseste scheletul
+ * `PaginaProdus`, ci povestea cinema a perechii RO; microtextul a devenit nota de sub butonul CTA, pe fundal inchis,
+ * iar contrastul ei se masoara, cu martorii ei, in `tests/browser/en-produs.spec.ts`. Scheletul ramane in depozit,
+ * nefolosit de nicio pagina, deci nu mai are ce masura aici.
  *
  * CE SE MASOARA. Raportul de contrast WCAG 2.x intre culoarea calculata a textului si fundalul EFECTIV: se urca din
  * element spre radacina, se compun straturile de fundal semitransparente pana la primul opac (implicit alb, panza),
@@ -30,8 +35,10 @@ import { MICROTEXT as MICROTEXT_RO_MD } from '../../src/content/ro-md/acasa'
  * pe copia servita, microtextului i se injecteaza la rulare o culoare citita din tokenii paginii, nu scrisa aici.
  * POZITIV: culoarea slaba (`--color-ardezie-3`) coboara masurarea sub prag; fara asta, un prag "trecut" ar putea
  * veni dintr-o masurare care nu vede culoarea. NEGATIV: culoarea titlurilor (`--color-ardezie-9`) ramane peste prag,
- * deci proba nu acuza orice text. (3) Extragerea gaseste exact doua microtexte pe
- * fiecare pagina (eroul si blocul de final), cu textul modulului, ca un "trece" sa nu vina dintr-o lista goala.
+ * deci proba nu acuza orice text. (3) Extragerea gasea exact doua microtexte pe
+ * fiecare pagina (eroul si blocul de final), cu textul modulului, ca un "trece" sa nu vina dintr-o lista goala. In lotul
+ * s4-12d (105 + 106) nicio pagina nu mai are scheletul: (2) si (3) ruleaza pe un schelet sintetic injectat in pagina
+ * reala (vezi lista PAGINI).
  *
  * INVENTARUL. Celelalte pagini ale copiei care au microtextul (EN si /ro) se masoara si se ataseaza raportului, fara
  * prag: ele nu folosesc cele doua schelete, iar proba de fata nu le judeca.
@@ -40,11 +47,21 @@ import { MICROTEXT as MICROTEXT_RO_MD } from '../../src/content/ro-md/acasa'
 const PRAG = 4.5
 const LATIMI = [390, 1440] as const
 
-const PAGINI = [
-  { cale: efacturi.meta.cale, microtext: inJurEfacturi.microtext },
-  { cale: moldova.meta.cale, microtext: inJurMoldova.microtext },
-  { cale: comparatie.meta.cale, microtext: inJurComparatie.microtext },
+// G1, G2 si G3 au iesit din lista odata cu scheletul lor (felia 106, decizia 53): ghidurile compun acum componentele
+// perechilor RO, iar microtextul de sub butonul de canal sta in blocul de final inchis, pe fundalul lui, ca pe paginile
+// RO. P03 a iesit si el (felia 105, antetul). In lot, NICIO pagina servita nu mai poarta vreunul din cele doua
+// schelete: `PaginaReferinta` e sters (106), `PaginaProdus` ramane in depozit fara nicio pagina (105).
+//
+// Asteptarea, adusa la starea combinata: pe fiecare din cele patru pagini care purtau scheletul, ZERO paragrafe sub
+// `[data-canale-pagina]` (o pagina care l-ar readuce, cu paragraful pe fundal alb, se inroseste aici, nu trece
+// nemasurata). Lista nu ramane goala; martorii se muta pe P03 (prima pagina a listei), pe un schelet SINTETIC
+// injectat la rulare cu forma celui real (`div[data-canale-pagina] > p` cu microtextul modulului, pe fundalul
+// paginii): acelasi selector si aceeasi masurare, deci un zero de mai sus nu poate veni dintr-un selector orb.
+const PAGINI: { cale: string; microtext: string | null }[] = [
   { cale: cautare.meta.cale, microtext: inJurCautare.microtext },
+  { cale: efacturi.meta.cale, microtext: null },
+  { cale: moldova.meta.cale, microtext: null },
+  { cale: comparatie.meta.cale, microtext: null },
 ]
 
 const INVENTAR = ['/', '/about', '/contact', '/enterprise', '/platform', '/pricing', '/ro', '/ro/contact']
@@ -147,32 +164,56 @@ for (const latime of LATIMI) {
       test(p.cale + ': microtextul de sub buton are contrast >= ' + PRAG + ':1 pe fundalul efectiv', async ({ page }) => {
         await page.goto(copie.baza + p.cale)
         const toate = await masoara(page, SELECTOR_MICROTEXT, null)
-        const micro = toate.filter((m) => m.text === p.microtext)
         test.info().annotations.push({ type: 'contrast ' + latime, description: p.cale + ' ' + JSON.stringify(toate) })
         console.log('[contrast ' + latime + '] ' + p.cale + ' ' + JSON.stringify(toate.map((m) => [m.raport, m.culoare, m.fundal, m.eroare])))
-        // Controlul 3: eroul si blocul de final, cu textul modulului.
-        expect(micro).toHaveLength(2)
+        // Starea combinata (antetul listei PAGINI): pagina nu mai poarta scheletul, deci zero paragrafe sub selector;
+        // daca il readuce, fiecare paragraf trebuie sa treaca pragul.
+        expect(toate, 'paragrafe sub [data-canale-pagina]').toHaveLength(0)
         for (const m of toate) {
           expect(m.eroare, m.text).toBeNull()
           expect(m.raport, m.text + ' ' + m.culoare + ' pe ' + m.fundal).toBeGreaterThanOrEqual(PRAG)
         }
+        // Controlul 3, adus la starea combinata: pe ACEEASI pagina, scheletul sintetic e gasit de acelasi selector,
+        // deci zero-ul de mai sus nu vine dintr-o extragere oarba.
+        await injecteazaSchelet(page, 'Microtext sintetic de control')
+        expect((await masoara(page, SELECTOR_MICROTEXT, null)).map((m) => m.text)).toEqual(['Microtext sintetic de control'])
       })
     }
 
-    /** Injecteaza pe microtext culoarea unui token citit din pagina si intoarce masurarile celor doua microtexte. */
+    /**
+     * Pune in pagina un schelet SINTETIC cu forma celui real (`div[data-canale-pagina] > p`), ca prim copil al lui
+     * `<body>`, adica pe fundalul paginii, unde scheletul real isi aseza paragraful.
+     */
+    async function injecteazaSchelet(page: Page, text: string): Promise<void> {
+      await page.evaluate((t) => {
+        const div = document.createElement('div')
+        div.setAttribute('data-canale-pagina', 'martor')
+        const p = document.createElement('p')
+        p.textContent = t
+        div.appendChild(p)
+        document.body.prepend(div)
+      }, text)
+    }
+
+    /** Injecteaza pe microtextul scheletului sintetic culoarea unui token citit din pagina si intoarce masurarea lui. */
     async function cuCuloarea(page: Page, p: (typeof PAGINI)[number], token: string): Promise<Masurare[]> {
       await page.goto(copie.baza + p.cale)
+      const microtext = p.microtext
+      if (microtext === null) throw new Error('martorii cer o pagina cu microtextul modulului: ' + p.cale)
+      expect(await masoara(page, SELECTOR_MICROTEXT, null), 'pagina reala nu mai are scheletul').toHaveLength(0)
+      await injecteazaSchelet(page, microtext)
       const culoare = await page.evaluate((t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim(), token)
       expect(culoare, token).not.toBe('')
       await page.addStyleTag({ content: SELECTOR_MICROTEXT + '{color:' + culoare + ' !important}' })
-      const micro = (await masoara(page, SELECTOR_MICROTEXT, null)).filter((m) => m.text === p.microtext)
-      expect(micro).toHaveLength(2)
+      const micro = (await masoara(page, SELECTOR_MICROTEXT, null)).filter((m) => m.text === microtext)
+      expect(micro).toHaveLength(1)
       for (const m of micro) expect(m.eroare).toBeNull()
       return micro
     }
 
-    // Martorii, pe cate o pagina din fiecare schelet: un ghid (PaginaReferinta) si P03 (PaginaProdus).
-    for (const p of [PAGINI[0], PAGINI[3]]) {
+    // Martorii, pe P03 (PAGINI[0]), cu scheletul sintetic: nicio pagina servita nu mai are scheletul real (antetul
+    // listei PAGINI).
+    for (const p of [PAGINI[0]]) {
       test('martor POZITIV la ' + latime + ' pe ' + p.cale + ': culoarea slaba a sistemului injectata pe microtext coboara masurarea sub prag', async ({ page }) => {
         for (const m of await cuCuloarea(page, p, '--color-ardezie-3')) expect(m.raport).toBeLessThan(PRAG)
       })

@@ -6,7 +6,7 @@
 Lista de mai jos e ce trebuie sa bifeze cineva care stie afacerea, inainte de publicare.
 Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 
-**De confirmat: 0 din 14**
+**De confirmat: 0 din 15**
 
 Nimic de confirmat: fiecare afirmatie are sursa.
 

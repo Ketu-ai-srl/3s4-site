@@ -541,9 +541,53 @@ test('martor NEGATIV (d): un text schimbat pe copie lasa proba verde', async ({ 
   expect(compara(p, ro, en, scoase)).toEqual([])
 })
 
-test('martor POZITIV (e): o copie a paginii 3s.md cu alta radacina decat CorpPagina e tratata ca migrata si pica', async ({ browser }) => {
+/**
+ * O pereche a carei prima pagina 3s.md e INCA pe `CorpPagina`, aleasa la rulare. Controalele (e) si (e3) lucrau pe
+ * P02, iar felia 103 (decizia 53) a migrat `/platform`: perechea fixa ar fi facut controlul sa masoare o pagina care
+ * nu mai are forma ceruta de el.
+ *
+ * In lotul s4-12d (103 + 105 + 106 peste 100, 104, 122) nicio pereche nu mai are pagina 3s.md pe CorpPagina (rularea
+ * CI 37237917611 a dat exact eroarea de mai jos pe (e) si (e3)). Controalele nu se sar: fara pereche nemigrata, se
+ * muta pe forma CorpPagina SINTETICA a primei pagini 3s.md a lui P02, asamblata la rulare din pagina reala
+ * (`inCorpPaginaInPagina`), iar raportul spune care din doua a rulat. Masuratoarea `semnatura` e aceeasi.
+ */
+async function perecheCorpPagina(browser: Browser): Promise<{ p: Pereche; html: string; sintetica: boolean }> {
+  for (const p of PERECHI) {
+    const h = await html(copie.baza + p.pagini_3s_md[0])
+    if ((await semnatura(browser, h, [])).corp === 'CorpPagina') return { p, html: h, sintetica: false }
+  }
   const p = pereche('P02')
-  const original = await html(copie.baza + p.pagini_3s_md[0])
+  const reala = await html(copie.baza + p.pagini_3s_md[0])
+  const h = await (await analizor(browser)).evaluate(inCorpPaginaInPagina, { html: reala })
+  expect(h, 'forma sintetica a aterizat').not.toBe(reala)
+  return { p, html: h, sintetica: true }
+}
+
+/**
+ * Ruleaza in browser. Forma CorpPagina a unei compuneri migrate: radacinile din `<main>`, fara clase, mutate intr-un
+ * `article[data-pagina]` (sectiunile proprii ale lui CorpPagina n-au clase si stau toate in articol).
+ */
+function inCorpPaginaInPagina(arg: { html: string }): string {
+  const d = new DOMParser().parseFromString(arg.html, 'text/html')
+  const main = d.querySelector('main')
+  if (main === null) return arg.html
+  const radacini = [...main.querySelectorAll('section')].filter((s) => {
+    const sus = s.parentElement?.closest('section') ?? null
+    return sus === null || !main.contains(sus)
+  })
+  const a = d.createElement('article')
+  a.setAttribute('data-pagina', 'martor')
+  for (const r of radacini) {
+    r.removeAttribute('class')
+    a.append(r)
+  }
+  main.append(a)
+  return '<!DOCTYPE html>' + d.documentElement.outerHTML
+}
+
+test('martor POZITIV (e): o copie a paginii 3s.md cu alta radacina decat CorpPagina e tratata ca migrata si pica', async ({ browser }) => {
+  const { p, html: original, sintetica } = await perecheCorpPagina(browser)
+  raport('controlul (e) pe ' + p.pereche + ' ' + p.pagini_3s_md[0] + (sintetica ? ' (forma CorpPagina sintetica)' : ''))
   const reala = await semnatura(browser, original, selectoriLista(p))
   expect(reala.corp).toBe('CorpPagina')
   const alta = original.split('data-pagina=').join('data-alta-radacina=')
@@ -650,11 +694,17 @@ test('martor POZITIV (juridic): indexul /legal real e congruent cu /juridic, iar
   expect(d).toContain('campul [data-card-document]')
 })
 
-test('martor NEGATIV (e3): pagina juridica reala a copiei e recunoscuta CorpDocument, pagina P02 reala CorpPagina', async ({ browser }) => {
+test('martor NEGATIV (e3): pagina juridica reala a copiei e recunoscuta CorpDocument, o pagina nemigrata (reala sau, fara ea, forma sintetica) CorpPagina', async ({ browser }) => {
   const legala = (await pagini3sMd()).find((c) => c.startsWith('/legal/'))
   expect(legala, 'o pagina juridica in harta copiei').toBeDefined()
   expect((await semnatura(browser, await html(copie.baza + legala), [])).corp).toBe('CorpDocument')
-  expect((await semnatura(browser, await html(copie.baza + pereche('P02').pagini_3s_md[0]), [])).corp).toBe('CorpPagina')
+  // Pana la felia 103 controlul era P02; perechea se alege acum la rulare (`perecheCorpPagina`), cu forma sintetica
+  // cand nu mai exista nicio pagina nemigrata (lotul s4-12d).
+  const { p, html: h, sintetica } = await perecheCorpPagina(browser)
+  raport('controlul (e3) pe ' + p.pereche + ' ' + p.pagini_3s_md[0] + (sintetica ? ' (forma CorpPagina sintetica)' : ''))
+  expect((await semnatura(browser, h, [])).corp).toBe('CorpPagina')
+  // Si pagina reala din care s-a asamblat forma sintetica nu e CorpPagina: altfel controlul n-ar deosebi nimic.
+  if (sintetica) expect((await semnatura(browser, await html(copie.baza + p.pagini_3s_md[0]), [])).corp).toBeNull()
 })
 
 // ---------------------------------------------------------------------------------------------------------------------

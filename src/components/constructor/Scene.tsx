@@ -7,26 +7,34 @@
 // cadru inaltimea finala. Ce la referinta se "estompeaza" prin opacitate (verigile inactive,
 // randurile de registru nepotrivite, revizia retrasa) trece la 3S pe culoarea `--sc-faint`, fara
 // opacitate pe text: altfel textul coboara sub 4,5:1 (COMPONENTE.md §5.1).
+//
+// Obiectele vin in `scenarii`, de la vederea lumii (`LumeVedere.tsx`): modulul nu importa nimic din
+// `src/content/`; sabloanele (`{n}`, `{total}`, `{act}`) le completeaza functia editiei (`completeaza`),
+// primita tot de acolo. Pe editiile 3s.md scena Avocatura nu are pista termenului (zilele si data
+// limita): un termen procedural calculat de 3S nu are temei (decizia 43), iar nota de sub ea spune ca
+// termenul il socoteste avocatul. Fara cele patru campuri, pista si numaratoarea
+// nu se randeaza; pe RO exista, deci DOM-ul e cel de dinainte.
 
 import type { CodIndustrie } from "@/content/acasa";
-import {
-  SCENARII,
-  completeaza,
-  type ObiectAsigurari,
-  type ObiectAvocatura,
-  type ObiectConstructii,
-  type ObiectConsultanta,
-  type ObiectContabilitate,
-  type ObiectImobiliare,
-  type ObiectIt,
-  type ObiectLogistica,
-  type ObiectNotariat,
-  type StareActImobil,
+import type {
+  ObiectAsigurari,
+  ObiectConstructii,
+  ObiectConsultanta,
+  ObiectContabilitate,
+  ObiectImobiliare,
+  ObiectIt,
+  ObiectLogistica,
+  ObiectNotariat,
+  StareActImobil,
 } from "@/content/acasa-constructor";
+import type { ObiectAvocaturaEditie, ScenariiEditie } from "./LumeVedere";
 import type { NumePas } from "./program";
 import s from "./Scene.module.css";
 
 type Ajuns = (p: NumePas) => boolean;
+
+/** Completarea sabloanelor, a editiei (pe RO, cea din `src/content/acasa-constructor.ts`). */
+type Completeaza = (sablon: string, valori: Record<string, string | number>) => string;
 
 function cls(...clase: (string | false | null | undefined)[]): string {
   return clase.filter(Boolean).join(" ");
@@ -38,7 +46,7 @@ function Pastila({ text, vizibila, className }: { text: string; vizibila: boolea
 
 // --- 7.1 Constructii -------------------------------------------------------------------------
 
-function Constructii({ o, a }: { o: ObiectConstructii; a: Ajuns }) {
+function Constructii({ o, a, completeaza }: { o: ObiectConstructii; a: Ajuns; completeaza: Completeaza }) {
   const retrasa = a("T2");
   const aprinse = a("T3") ? o.bara.total : a("X5") ? o.bara.total - 1 : a("X4") ? o.bara.total - 2 : 0;
   return (
@@ -198,8 +206,13 @@ function It({ o, a }: { o: ObiectIt; a: Ajuns }) {
 
 // --- 7.5 Avocatura ---------------------------------------------------------------------------
 
-function Avocatura({ o, a }: { o: ObiectAvocatura; a: Ajuns }) {
+function Avocatura({ o, a }: { o: ObiectAvocaturaEditie; a: Ajuns }) {
   const corectat = a("T4");
+  const cuTermen =
+    o.zileInitial !== undefined &&
+    o.zileCorect !== undefined &&
+    o.dataInitiala !== undefined &&
+    o.dataCorecta !== undefined;
   return (
     <>
       <div className={cls(s.obiect, s.cauza, a("X2") && s.in)}>
@@ -207,14 +220,18 @@ function Avocatura({ o, a }: { o: ObiectAvocatura; a: Ajuns }) {
           <span className={cls(s.mono, s.idCauza)}>{o.dosar}</span>
           <span className={cls(s.stampila, corectat && s.in)}>{o.stampila}</span>
         </div>
-        <div className={cls(s.pistaTermen, corectat && s.plina)} aria-hidden="true">
-          <span className={s.umplereTermen} />
-          <span className={s.zid} />
-        </div>
+        {cuTermen ? (
+          <div className={cls(s.pistaTermen, corectat && s.plina)} aria-hidden="true">
+            <span className={s.umplereTermen} />
+            <span className={s.zid} />
+          </div>
+        ) : null}
         <div className={s.numaratoare}>
-          <span className={cls(s.zile, corectat && s.corect)}>{corectat ? o.zileCorect : o.zileInitial}</span>
+          {cuTermen ? (
+            <span className={cls(s.zile, corectat && s.corect)}>{corectat ? o.zileCorect : o.zileInitial}</span>
+          ) : null}
           <span className={s.dreaptaNumaratoare}>
-            <span className={s.dataLimita}>{corectat ? o.dataCorecta : o.dataInitiala}</span>
+            {cuTermen ? <span className={s.dataLimita}>{corectat ? o.dataCorecta : o.dataInitiala}</span> : null}
             <span className={cls(s.notaLimita, corectat && s.in)}>{o.nota}</span>
           </span>
         </div>
@@ -231,7 +248,7 @@ function Avocatura({ o, a }: { o: ObiectAvocatura; a: Ajuns }) {
 
 // --- 7.6 Imobiliare --------------------------------------------------------------------------
 
-function Imobiliare({ o, a }: { o: ObiectImobiliare; a: Ajuns }) {
+function Imobiliare({ o, a, completeaza }: { o: ObiectImobiliare; a: Ajuns; completeaza: Completeaza }) {
   const stare = (i: number): StareActImobil => {
     const initiala = o.acte[i].stare;
     if (initiala === "complet") return "complet";
@@ -399,26 +416,36 @@ function Consultanta({ o, a }: { o: ObiectConsultanta; a: Ajuns }) {
   );
 }
 
-/** Scena industriei, cu obiectul ei din continut. */
-export function ScenaIndustriei({ industrie, a }: { industrie: CodIndustrie; a: Ajuns }) {
+/** Scena industriei, cu obiectul ei din continutul editiei. */
+export function ScenaIndustriei({
+  industrie,
+  a,
+  scenarii,
+  completeaza,
+}: {
+  industrie: CodIndustrie;
+  a: Ajuns;
+  scenarii: ScenariiEditie;
+  completeaza: Completeaza;
+}) {
   switch (industrie) {
     case "constructii":
-      return <Constructii o={SCENARII.constructii.obiect} a={a} />;
+      return <Constructii o={scenarii.constructii.obiect} a={a} completeaza={completeaza} />;
     case "contabilitate":
-      return <Contabilitate o={SCENARII.contabilitate.obiect} a={a} />;
+      return <Contabilitate o={scenarii.contabilitate.obiect} a={a} />;
     case "logistica":
-      return <Logistica o={SCENARII.logistica.obiect} a={a} />;
+      return <Logistica o={scenarii.logistica.obiect} a={a} />;
     case "it":
-      return <It o={SCENARII.it.obiect} a={a} />;
+      return <It o={scenarii.it.obiect} a={a} />;
     case "avocatura":
-      return <Avocatura o={SCENARII.avocatura.obiect} a={a} />;
+      return <Avocatura o={scenarii.avocatura.obiect} a={a} />;
     case "imobiliare":
-      return <Imobiliare o={SCENARII.imobiliare.obiect} a={a} />;
+      return <Imobiliare o={scenarii.imobiliare.obiect} a={a} completeaza={completeaza} />;
     case "asigurari":
-      return <Asigurari o={SCENARII.asigurari.obiect} a={a} />;
+      return <Asigurari o={scenarii.asigurari.obiect} a={a} />;
     case "notariat":
-      return <Notariat o={SCENARII.notariat.obiect} a={a} />;
+      return <Notariat o={scenarii.notariat.obiect} a={a} />;
     case "consultanta":
-      return <Consultanta o={SCENARII.consultanta.obiect} a={a} />;
+      return <Consultanta o={scenarii.consultanta.obiect} a={a} />;
   }
 }

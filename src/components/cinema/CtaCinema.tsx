@@ -9,7 +9,12 @@
 //   - titlul e `h2`, cu forma vizuala a titlului mare (`t-h1-cinema`): la referinta e al doilea `h1` al
 //     paginii (pe cautare-ai, singurul); la 3S pagina are un singur `h1`, cel din erou;
 //   - paragraful are alb .5 (5,30:1), nota fina tot .5; la referinta .45 si .2 (1,71:1).
+//
+// LOCUL BUTONULUI PE EDITIE (`butoane`): o editie cu alt canal decat contul (3s.md: WhatsApp, decizia 3) da o functie
+// care primeste clasa butonului si intoarce legatura ei, cu aceeasi clasa, deci acelasi aspect. Fara proprietate (RO),
+// butonul e cel de dinainte, spre `/inregistrare`. Componenta e de server, deci functia nu trece nicio granita client.
 
+import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import Tinta from "@/components/primitive/Tinta";
 import { CALE_INREGISTRARE } from "@/content/navigatie";
@@ -32,6 +37,8 @@ export type CtaCinemaProps = {
    * tot blocul de 680 (cautare-ai).
    */
   latimeParagraf?: number | null;
+  /** Locul butonului, cand editia are alt canal: primeste clasa butonului si intoarce elementul. */
+  butoane?: (clasaButon: string) => ReactNode;
   className?: string;
 };
 
@@ -43,6 +50,7 @@ export default function CtaCinema({
   spatiereTitlu = "normala",
   titluMobil = "normal",
   latimeParagraf = 580,
+  butoane,
   className,
 }: CtaCinemaProps) {
   const claseTitlu = [
@@ -59,10 +67,14 @@ export default function CtaCinema({
       <p className={s.paragraf} style={{ maxWidth: latimeParagraf ?? "none" }}>
         {paragraf}
       </p>
-      <Tinta legatura={{ text: buton, href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE }} className={s.buton}>
-        <span>{buton}</span>
-        <ArrowRight width={18} height={18} strokeWidth={2} aria-hidden="true" focusable="false" />
-      </Tinta>
+      {butoane ? (
+        butoane(s.buton)
+      ) : (
+        <Tinta legatura={{ text: buton, href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE }} className={s.buton}>
+          <span>{buton}</span>
+          <ArrowRight width={18} height={18} strokeWidth={2} aria-hidden="true" focusable="false" />
+        </Tinta>
+      )}
       <small className={s.nota}>{nota}</small>
     </SectiuneScena>
   );

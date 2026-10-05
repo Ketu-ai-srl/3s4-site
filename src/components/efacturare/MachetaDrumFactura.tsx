@@ -1,6 +1,9 @@
 // Macheta "drumul facturii" din eroul /e-facturare (e-facturare.md §1): factura, cele 5 canale
 // cu pulsul in val (3 s, decalaj 0,6 s), nodul arhivei, 3 insigne. Componenta de server: pulsul e
 // numai CSS si se opreste la miscare redusa. Date fictive, declarate ca exemplu (plan D9).
+//
+// PE EDITIE: textele vin prin `continut`, cu implicitul romanesc (eroul RO nu paseaza nimic). Lista
+// canalelor si a insignelor poate fi mai scurta pe o editie (canalele scoase de decizii).
 
 import { Archive } from "lucide-react";
 import { MACHETA_DRUM } from "@/content/efacturare/pagina";
@@ -14,13 +17,27 @@ function Sageata() {
   );
 }
 
-export default function MachetaDrumFactura() {
-  const m = MACHETA_DRUM;
+export type ContinutMachetaDrum = {
+  declaratie: string;
+  /** Eticheta vizibila de exemplu din coltul machetei. */
+  eticheta: string;
+  factura: string;
+  etichete: string[];
+  canale: string[];
+  arhiva: string;
+  ani: string;
+  insigne: string[];
+};
+
+const IMPLICIT: ContinutMachetaDrum = { ...MACHETA_DRUM, eticheta: "Exemplu" };
+
+export default function MachetaDrumFactura({ continut = IMPLICIT }: { continut?: ContinutMachetaDrum }) {
+  const m = continut;
   return (
     <figure className={s.drum}>
       <figcaption className="doar-cititor">{m.declaratie}</figcaption>
       <div className={s.drumCard} aria-hidden="true">
-        <span className={s.eticheteExemplu}>Exemplu</span>
+        <span className={s.eticheteExemplu}>{m.eticheta}</span>
         <div className={s.drumFactura}>
           <span className={s.drumNumar}>{m.factura}</span>
           <span className={s.drumBara} />

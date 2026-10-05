@@ -3,6 +3,7 @@
   "raspuns_autonom": {
     "/ro": {
       "intrebare": "Ce este 3S Scan Store Solve?",
+      "fara_regula_paragrafului": "Startul /ro are forma eroului RO (decizia 53), ca startul EN (config/seo/en-nucleu.json) si startul RO (config/seo/fundatie.json): sub titlu sta un subtitlu scurt (13 cuvinte), nu un paragraf de raspuns de 30-80. Raspunsul startului e titlul impreuna cu subtitlul; entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",
       "entitati": [
         "3S Scan Store Solve",
         "arhivă digitală",
@@ -12,6 +13,7 @@
     },
     "/ro/contact": {
       "intrebare": "Cum contactez echipa 3S?",
+      "fara_regula_paragrafului": "Pagina /ro/contact are forma paginii de contact RO (decizia 53), ca pagina de contact EN (config/seo/en-nucleu.json) si cea RO (config/seo/conversie.json): eroul interior pe 880 are un subtitlu de doua randuri la 1440 (26 de cuvinte), nu un paragraf de raspuns de 30-80. Raspunsul (WhatsApp, numarul, limbile) e in subtitlu, in caseta si in panoul de canale, in fereastra de 400 de cuvinte.",
       "entitati": [
         "3S",
         "WhatsApp",

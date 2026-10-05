@@ -1,15 +1,22 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { createElement } from 'react'
+import { createElement, type ComponentType } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import PaginaReferinta, { grafReferinta, intrebariVizibile, raspunsVizibil, type InJurReferinta } from '../src/app/(en)/guides/_referinta/PaginaReferinta'
+import ButonCanal from '../src/app/(en)/guides/_referinta/ButonCanal'
+import { grafReferinta } from '../src/app/(en)/guides/_referinta/date-structurate'
+import PaginaG3 from '../src/app/(en)/compare/3s-vs-google-and-box/page.en'
+import PaginaG1 from '../src/app/(en)/guides/e-invoice-archiving-eu/page.en'
+import PaginaG2 from '../src/app/(en)/guides/records-retention-moldova/page.en'
+import { EFACTURARE_RO, grafIntrebari, type ContinutEfacturare } from '../src/components/efacturare/SectiuniEfacturare'
 import Antet from '../src/components/global/Antet'
 import Subsol from '../src/components/global/Subsol'
+import { abateriMetadata } from '../src/components/seo/metadata'
 import { caleMd, CHEI_MD } from '../src/content/juridic/md/registru'
-import { numarCuvinte, problemePagina, type BlocComun, type PaginaContinut, type SectiuneComuna } from '../src/content/model/tipuri'
+import { numarCuvinte } from '../src/content/model/tipuri'
 import { multimeaCailor } from '../src/content/navigatie'
 import { TEXTE_WHATSAPP_EN, navigatieEn } from '../src/content/navigatie-en'
+import type { PaginaReferinta } from '../src/content/en/referinta-comun'
 import { RUTE_EN_NUCLEU } from '../src/content/rute-en-nucleu'
 import { RUTE_EN_PRODUS } from '../src/content/rute-en-produs'
 import { RUTE_EN_REFERINTA } from '../src/content/rute-en-referinta'
@@ -19,14 +26,26 @@ import * as efacturi from '../src/content/en/guides-e-invoice-archiving-eu'
 import * as moldova from '../src/content/en/guides-records-retention-moldova'
 
 /**
- * Paginile EN de referinta (felia en-referinta): G1 `/guides/e-invoice-archiving-eu`, G2
- * `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-and-box`. Proba masoara ce se poate masura pe sursa:
- * forma modulelor si legatura lor cu manifestul de rute, cu tabelul textelor WhatsApp al navigatiei si cu registrul de
- * afirmatii; ce nu are voie sa ajunga pe aceste pagini (asistentul pe WhatsApp, decizia 49, pe TOT textul; clasele
- * deciziei 43 pe afirmatiile 3S; RON; registrul arhivei; resturile fiselor); celula 3S din randul de certificari al
- * comparatiei, compensarea exceptiei din poarta de afirmatii; pagina randata si datele ei structurate. Paginile servite
- * (200, `lang="en"`, H1, zero `<form`, harta de site, llms.txt, grupul Guides) le masoara
- * `tests/browser/en-referinta.spec.ts`, pe copia 3s.md.
+ * Paginile EN de referinta dupa felia editie-referinta (decizia 53): G1 `/guides/e-invoice-archiving-eu`, G2
+ * `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-and-box` compun componentele perechilor RO
+ * (`/e-facturare`, `/instrumente/termene-pastrare`, `/comparatie-drive`), cu textul din modulele EN. Proba masoara pe
+ * sursa si pe paginile randate pe server: forma modulelor si legatura lor cu manifestul de rute, cu tabelul textelor
+ * WhatsApp al navigatiei si cu registrul de afirmatii; ce nu are voie sa ajunga pe aceste pagini (asistentul pe
+ * WhatsApp, decizia 49, pe tot textul; clasele deciziei 43 si certificarile pe afirmatiile 3S; RON; resturile
+ * fiselor); raspunsul paginii (G-AI-02) in primele 400 de cuvinte; datele structurate.
+ *
+ * AUTORIZAREA RESCRIERII (specificatia de congruenta, 5.0): proba feliei en-referinta fixa forma veche (scheletul
+ * `PaginaReferinta` peste `CorpPagina`: capsula, sectiunile-intrebare, legatura de semnalare, randul de verificare,
+ * tabelele comparatiei cu trei instrumente). Forma aceea a iesit odata cu decizia 53, deci cazurile ei s-au rescris pe
+ * forma noua. Cazurile despre FAPTE au ramas: zero `<form`, zero RON, textul WhatsApp cu `ref`, decizia 49 pe tot
+ * textul, decizia 43 si certificarile pe afirmatiile 3S, registrul, navigatia. Neschimbate, cu acelasi corp: resturile
+ * fisei si moneda, paritatea si martorii asistentului, cazurile registrului (inclusiv prefixul, unicitatea fata de
+ * celelalte registre si `confirmat_de`, plus martorul id-ului absent), navigatia. Rescrise pe forma noua, cu ACELEASI
+ * tipare (`DECIZIA_43`, `CERTIFICARI`) dar cu alti martori de extragere, fiindca extragerea citea campurile formei
+ * vechi (`sectiuni`, `capsula`, randul de certificari al tabelului): decizia 43 si certificarile. Randul de certificari
+ * nu mai exista pe G3; certificarile Google stau in sursele cardului, cu cazul lor.
+ * Paginile servite (200, `lang="en"`, noindex, harta de site, llms.txt, grupul Guides) le masoara
+ * `tests/browser/en-referinta.spec.ts`, pe copia 3s.md; forma fata de perechea RO, `tests/browser/congruenta.spec.ts`.
  *
  * Fixturile cazurilor pozitive se asambleaza la rulare, din bucati.
  */
@@ -50,13 +69,12 @@ const TIPAR_ASISTENT_WA = new RegExp(
   'i',
 )
 
-type Modul = { pagina: PaginaContinut; inJur: InJurReferinta }
-const MODULE: Record<string, Modul> = {
+type Modul = { pagina: PaginaReferinta }
+const MODULE: Record<string, Modul & Record<string, unknown>> = {
   'guides-e-invoice-archiving-eu': efacturi,
   'guides-records-retention-moldova': moldova,
   'compare-3s-vs-google-and-box': comparatie,
 }
-const PAGINI = Object.entries(MODULE).map(([cheie, m]) => ({ cheie, pagina: m.pagina, inJur: m.inJur }))
 
 const RADACINA = join(__dirname, '..')
 const PROFIL = JSON.parse(readFileSync(join(RADACINA, 'config', 'profil-3s-md.json'), 'utf8')) as { CANALE_JSON: unknown }
@@ -70,58 +88,71 @@ for (const f of readdirSync(DOSAR_REGISTRU).filter((x) => x.endsWith('.json'))) 
   for (const i of JSON.parse(readFileSync(join(DOSAR_REGISTRU, f), 'utf8')) as Intrare[]) TOATE_INTRARILE.set(i.id, i)
 }
 
-/** Tot textul unui bloc, cu marcaj cu tot (legaturile raman vizibile ca adrese). */
-function textBloc(b: BlocComun): string[] {
-  const celule = (b.tabel?.randuri ?? []).flat().map((c) => (typeof c === 'string' ? c : c.text + ' ' + c.detaliu))
-  return [b.eticheta ?? '', ...b.paragrafe, ...(b.lista?.elemente ?? []), ...(b.tabel?.antet ?? []), ...celule, ...(b.dupa ?? [])]
+/** Paginile, cu componenta lor, titlul eroului si primul paragraf din <main> (subtitlul eroului). */
+const PAGINI: { cheie: string; pagina: PaginaReferinta; Componenta: ComponentType; titluErou: string; primulParagraf: string }[] = [
+  { cheie: 'guides-e-invoice-archiving-eu', pagina: efacturi.pagina, Componenta: PaginaG1, titluErou: efacturi.EFACTURARE_EN.erou.titlu, primulParagraf: efacturi.EFACTURARE_EN.erou.subtitlu },
+  { cheie: 'guides-records-retention-moldova', pagina: moldova.pagina, Componenta: PaginaG2, titluErou: moldova.EROU_EN.titlu, primulParagraf: moldova.EROU_EN.subtitlu },
+  { cheie: 'compare-3s-vs-google-and-box', pagina: comparatie.pagina, Componenta: PaginaG3, titluErou: comparatie.EROU_EN.titlu, primulParagraf: comparatie.EROU_EN.subtitlu },
+]
+
+const randeaza = (C: ComponentType): string => renderToStaticMarkup(createElement(C))
+
+/** Textul din <main> al unui HTML randat: fara script si style, cu entitatile de baza decodate, spatii normalizate. */
+function textMain(html: string): string {
+  const main = html.slice(html.indexOf('<main'), html.lastIndexOf('</main>'))
+  return main
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style[\s\S]*?<\/style>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&#x27;|&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
-function textSectiune(s: SectiuneComuna): string {
-  return [s.titlu, ...s.blocuri.flatMap(textBloc)].join('\n')
-}
-
-function sectiune(p: PaginaContinut, cheie: string): SectiuneComuna {
-  const s = p.sectiuni.find((x) => x.cheie === cheie)
-  if (s === undefined) throw new Error(p.cheie + ': lipseste sectiunea ' + cheie)
-  return s
-}
-
-/** Celula 3S (coloana a doua) a fiecarui rand din tabelele de comparatie ale lui G3 (antetul are "3S" pe pozitia 1). */
-function celule3S(p: PaginaContinut): string[] {
-  const iesire: string[] = []
-  for (const s of p.sectiuni) {
-    for (const b of s.blocuri) {
-      if (b.tabel?.antet?.[1] !== '3S') continue
-      for (const rand of b.tabel.randuri) iesire.push(String(rand[1]))
-    }
-  }
-  return iesire
-}
-
-/** Randul tabelului "Which tool fits which archive?" a carui coloana "Try first" e 3S. */
-function randul3SDinSituatii(p: PaginaContinut): string[] {
-  const t = sectiune(p, 'which-tool').blocuri[0].tabel!
-  return t.randuri.filter((r) => r[1] === '3S').map((r) => r.map(String).join(' '))
-}
-
-/** Propozitiile unui text care vorbesc despre 3S (numele marcii sau "we"/"us"): afirmatiile 3S dintr-o capsula. */
+/** Propozitiile unui text care vorbesc despre 3S (numele marcii sau "we"/"us"/"you can"). */
 function propozitii3S(text: string): string[] {
-  return text.split(/(?<=[.?!])\s+/).filter((p) => /\b(3S|we|us)\b/.test(p))
+  return text.split(/(?<=[.?!])\s+/).filter((p) => /\b(3S|we|us|you can)\b/.test(p))
 }
 
 /**
- * Afirmatiile 3S ale unei pagini (§12 pct. 17 a5 din planul valului): capsula (numai propozitiile despre 3S), sectiunile
- * "How can 3S help?" si "When does 3S fit?", coloana 3S a comparatiei si randul 3S din tabelul situatiilor. Celulele
- * furnizorilor si sectiunile despre lege nu intra: acolo "Google Drive" e numele produsului comparat.
+ * Afirmatiile 3S ale fiecarei pagini, pe contractele componentelor: campurile care descriu ce face 3S (intregi) si
+ * propozitiile despre 3S din restul textului vizibil. Celulele si notele despre Google, tabelul pietelor si jurnalul
+ * nu intra: acolo numele produselor si ale retelelor sunt ale tertilor si ale legii.
  */
-function afirmatii3S(p: PaginaContinut): string[] {
-  const iesire = [...propozitii3S(p.capsula)]
-  for (const cheie of ['how-3s-helps', 'when-fits']) {
-    const s = p.sectiuni.find((x) => x.cheie === cheie)
-    if (s) iesire.push(textSectiune(s))
+function afirmatii3S(cheie: string): string[] {
+  if (cheie === 'guides-e-invoice-archiving-eu') {
+    const c: ContinutEfacturare = efacturi.EFACTURARE_EN
+    return [
+      ...propozitii3S(c.erou.subtitlu),
+      ...c.macheta.canale,
+      ...c.macheta.insigne,
+      ...propozitii3S(c.fraza),
+      c.mandate.batai[1],
+      c.emiterea.rezolvare,
+      c.emiterea.legatura.text,
+      c.rigla.nota,
+      c.casa.titlu,
+      c.casa.text,
+      ...c.casa.pasi.flatMap((p) => [p.titlu, p.text]),
+      c.standarde.titlu,
+      c.standarde.text,
+      ...c.intrebari.intrebari.flatMap((q) => propozitii3S(q.raspuns)),
+      ...propozitii3S(efacturi.CTA_FINAL_EN.subtitlu),
+    ]
   }
-  if (p.cheie === 'compare-3s-vs-google-and-box') iesire.push(...celule3S(p), ...randul3SDinSituatii(p))
-  return iesire
+  if (cheie === 'guides-records-retention-moldova') {
+    return [...propozitii3S(moldova.EROU_EN.subtitlu), ...moldova.IESIRI_EN.map((i) => i.text), ...propozitii3S(moldova.PANOU_EN.nota)]
+  }
+  return [
+    ...propozitii3S(comparatie.EROU_EN.subtitlu),
+    ...comparatie.DIVIZAT_EN.dreapta.elemente,
+    comparatie.DIVIZAT_EN.dreapta.titlu,
+    ...comparatie.TABEL_EN.randuri.map((r) => r.functie),
+    comparatie.CUTIE_CTA_EN.titlu,
+    comparatie.CUTIE_CTA_EN.text,
+  ]
 }
 
 /** Clasele deciziei 43 (aceleasi tipare ca in `tests/en-nucleu.test.ts`), asamblate din bucati. */
@@ -162,29 +193,26 @@ const CERTIFICARI = new RegExp(
   'i',
 )
 
-describe('modulele paginilor EN de referinta', () => {
+describe('modulele si paginile EN de referinta', () => {
   it('preconditia: trei module, cu cheile manifestului, in ordinea lui', () => {
     expect(Object.keys(MODULE)).toEqual(RUTE_EN_REFERINTA.map((r) => r.cheie))
+    expect(PAGINI.map((p) => p.cheie)).toEqual(RUTE_EN_REFERINTA.map((r) => r.cheie))
     expect(RUTE_EN_REFERINTA.map((r) => r.cale)).toEqual(['/guides/e-invoice-archiving-eu', '/guides/records-retention-moldova', '/compare/3s-vs-google-and-box'])
   })
 
-  for (const { cheie, pagina } of PAGINI) {
-    it(cheie + ': forma modelului (lungimi, un H1, CTA cu ref, JSON-LD cu @type), fara probleme', () => {
-      expect(problemePagina(pagina, cheie)).toEqual([])
-    })
-  }
-
-  it('manifestul: editia en, in harta, cheia = cheia modulului, calea = calea modulului', () => {
+  it('manifestul: editia en, in harta, cheia = cheia modulului, calea = calea modulului; metadata in pragurile portii de SEO', () => {
     for (const r of RUTE_EN_REFERINTA) {
       const m = MODULE[r.cheie]
       expect(m, r.cale).toBeDefined()
       expect(r.editie).toBe('en')
       expect(r.inHarta).toBe(true)
       expect(m.pagina.meta.cale).toBe(r.cale)
+      expect(m.pagina.cheie).toBe(r.cheie)
+      expect(abateriMetadata(m.pagina.meta), r.cale).toEqual([])
     }
   })
 
-  it('fiecare pagina are fisierul ei sub (en) si importa DIRECT modulul ei (conditia portii de registru)', () => {
+  it('fiecare pagina are fisierul ei sub (en) si importa DIRECT modulul ei (conditia portii de registru); fara formular', () => {
     for (const r of RUTE_EN_REFERINTA) {
       const fisier = join(RADACINA, 'src', 'app', '(en)', ...r.cale.slice(1).split('/'), 'page.en.tsx')
       expect(existsSync(fisier), fisier).toBe(true)
@@ -193,40 +221,81 @@ describe('modulele paginilor EN de referinta', () => {
     }
   })
 
-  it('textul WhatsApp si ref-ul fiecarei pagini sunt cele din tabelul navigatiei; legatura de semnalare poarta acelasi ref', () => {
-    for (const { pagina, inJur } of PAGINI) {
+  it('textul WhatsApp si ref-ul fiecarei pagini sunt cele din tabelul navigatiei', () => {
+    for (const { pagina } of PAGINI) {
       const intrare = TEXTE_WHATSAPP_EN.find((t) => t.cale === pagina.meta.cale)
       expect(intrare, pagina.meta.cale).toBeDefined()
       expect(pagina.cta.textWhatsapp).toBe(intrare!.text)
       expect(pagina.cta.ref).toBe(intrare!.ref)
-      expect(inJur.semnalare.textWhatsapp.split('[ref:' + pagina.cta.ref + ']')).toHaveLength(2)
+      expect(pagina.cta.textWhatsapp.split('[ref:' + pagina.cta.ref + ']')).toHaveLength(2)
     }
   })
 
-  it('capsulele numara cuvintele fisei (59, 59, 50) si sunt primul paragraf al declaratiei G-AI-02', () => {
-    expect(PAGINI.map((p) => numarCuvinte(p.pagina.capsula))).toEqual([59, 59, 50])
+  it('H1-ul paginii e titlul eroului; primul paragraf are numarul de cuvinte masurat pe fisa (59, 52, 28)', () => {
+    for (const p of PAGINI) expect(p.pagina.h1, p.cheie).toBe(p.titluErou)
+    expect(PAGINI.map((p) => numarCuvinte(p.primulParagraf))).toEqual([59, 52, 28])
+  })
+})
+
+describe('paginile randate pe server', () => {
+  for (const p of PAGINI) {
+    it(p.cheie + ': un H1, egal cu cel din modul; primul <p> din <main> e subtitlul eroului; zero formulare, zero mailto, zero RON', () => {
+      const html = randeaza(p.Componenta)
+      const h1 = [...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/g)].map((m) => m[1])
+      expect(h1).toEqual([p.pagina.h1])
+      const main = html.slice(html.indexOf('<main'))
+      const primul = /<p\b[^>]*>([\s\S]*?)<\/p>/.exec(main)?.[1] ?? ''
+      expect(primul.replace(/&#x27;/g, "'")).toBe(p.primulParagraf)
+      expect(html).not.toMatch(new RegExp('<' + 'form\\b'))
+      expect(html).not.toContain('mailto:')
+      expect(html).not.toMatch(new RegExp('\\b' + 'R' + 'ON\\b'))
+    })
+  }
+
+  it('G-AI-02 pe pagina randata: H1-ul si entitatile declarate in config/seo/en-referinta.json stau in primele 400 de cuvinte din <main>', () => {
     const decl = JSON.parse(readFileSync(join(RADACINA, 'config', 'seo', 'en-referinta.json'), 'utf8')) as {
       raspuns_autonom: Record<string, { intrebare: string; entitati: string[] }>
     }
     expect(Object.keys(decl.raspuns_autonom)).toEqual(RUTE_EN_REFERINTA.map((r) => r.cale))
-    for (const { pagina } of PAGINI) {
-      const d = decl.raspuns_autonom[pagina.meta.cale]
-      // Entitatile stau in capsula sau in H1 sau in randul de verificare: toate in primele 400 de cuvinte.
-      const inceput = [pagina.h1, pagina.capsula, MODULE[pagina.cheie].inJur.verificare].join(' ').toLowerCase()
-      expect(d.entitati.filter((e) => !inceput.includes(e.toLowerCase())), pagina.meta.cale).toEqual([])
+    const lipsa: string[] = []
+    for (const p of PAGINI) {
+      const fereastra = textMain(randeaza(p.Componenta)).split(' ').slice(0, 400).join(' ')
+      // Controlul extragerii: H1-ul e in fereastra (textul s-a citit).
+      expect(fereastra, p.cheie).toContain(p.pagina.h1)
+      for (const e of decl.raspuns_autonom[p.pagina.meta.cale].entitati) {
+        if (!fereastra.toLowerCase().includes(e.toLowerCase())) lipsa.push(p.pagina.meta.cale + ': ' + e)
+      }
     }
+    expect(lipsa).toEqual([])
+  })
+
+  it('butonul de canal: cu WhatsApp pe domeniu duce la wa.me cu textul paginii si clasele butonului; fara WhatsApp nu se randeaza', () => {
+    const cu: Canale = { formulare: false, whatsapp: '37300000001', telefon: '', email: '', emailSecuritate: 'security@example.test' }
+    const html = renderToStaticMarkup(
+      createElement(ButonCanal, { cta: efacturi.pagina.cta, text: 'Message us', varianta: 'plin', marime: 'plat', sageata: true, canale: cu }),
+    )
+    const href = /href="([^"]+)"/.exec(html)?.[1] ?? ''
+    expect(href.startsWith('https://wa.me/37300000001?text=')).toBe(true)
+    expect(new URL(href.split('&amp;').join('&')).searchParams.get('text')).toBe(efacturi.pagina.cta.textWhatsapp)
+    expect(html).toContain('data-canal="whatsapp"')
+    // Aceleasi clase ca butonul RO inlocuit (plin, plat, cu sageata); vitest numeste clasele de modul `_nume_hash`.
+    expect(html).toMatch(/<a [^>]*class="_buton_\w+ _plin_\w+ _plat_\w+"/)
+    expect(html).toMatch(/class="lucide lucide-arrow-right _sageata_\w+"/)
+    const fara = renderToStaticMarkup(
+      createElement(ButonCanal, { cta: efacturi.pagina.cta, text: 'Message us', varianta: 'plin', marime: 'plat', sageata: true, canale: { ...cu, whatsapp: '' } }),
+    )
+    expect(fara).toBe('')
+    // Pe canalele profilului 3s.md butonul duce la numarul din profil.
+    expect(CANALE_3S_MD.whatsapp).not.toBe('')
+    const md = renderToStaticMarkup(
+      createElement(ButonCanal, { cta: moldova.pagina.cta, text: 'Message us', varianta: 'alb-pe-inchis', marime: 'mare', sageata: true, canale: CANALE_3S_MD }),
+    )
+    expect(md).toContain('https://wa.me/' + CANALE_3S_MD.whatsapp + '?text=')
   })
 })
 
 describe('ce nu ajunge pe paginile EN de referinta', () => {
-  const RESTURI_FISA = [
-    'Notes ' + '(not published)',
-    'END OF ' + 'PAGE COPY',
-    'JSON-LD ' + '(proposed)',
-    'Page ' + 'assets',
-    'archive ' + 'register',
-    'retention period for ' + 'each document',
-  ]
+  const RESTURI_FISA = ['Notes ' + '(not published)', 'END OF ' + 'PAGE COPY', 'JSON-LD ' + '(proposed)', 'Page ' + 'assets', 'archive ' + 'register', 'retention period for ' + 'each document']
   const MONEDA = new RegExp('\\b' + 'R' + 'ON\\b')
   const textModul = (m: object) => JSON.stringify(m)
 
@@ -237,7 +306,7 @@ describe('ce nu ajunge pe paginile EN de referinta', () => {
     expect(MONEDA.test('From EUR 90, ENVIRONMENT, PRONTO')).toBe(false)
   })
 
-  for (const { cheie } of PAGINI) {
+  for (const cheie of Object.keys(MODULE)) {
     it(cheie + ': zero resturi ale fisei, zero RON, zero registrul arhivei (modulul si fisierul paginii)', () => {
       const sursa = readFileSync(join(RADACINA, 'src', 'content', 'en', cheie + '.ts'), 'utf8')
       const r = RUTE_EN_REFERINTA.find((x) => x.cheie === cheie)!
@@ -274,13 +343,13 @@ describe('ce nu ajunge pe paginile EN de referinta', () => {
     expect(TIPAR_ASISTENT_WA.test('Message us on ' + WA + '. A person replies, in English or Romanian.')).toBe(false)
   })
 
-  for (const { cheie } of PAGINI) {
+  for (const cheie of Object.keys(MODULE)) {
     it(cheie + ': zero fraze despre asistentul pe WhatsApp in tot ce exporta modulul (decizia 49)', () => {
       expect(textModul(MODULE[cheie]).match(TIPAR_ASISTENT_WA)).toBeNull()
     })
   }
 
-  it('martorii deciziei 43: fiecare clasa prinde o fraza 3S fabricata, iar celula Google cu "Google Drive" trece (nu e afirmatie 3S)', () => {
+  it('martorii deciziei 43: fiecare clasa prinde o fraza 3S fabricata; un camp 3S fabricat cu o functie scoasa e prins de extragere', () => {
     const rau = [
       '/features/' + 'client-portal',
       '/platform#' + 'portal',
@@ -294,102 +363,37 @@ describe('ce nu ajunge pe paginile EN de referinta', () => {
     ]
     expect(rau).toHaveLength(DECIZIA_43.length)
     for (const [i, fraza] of rau.entries()) expect(incalcari43(fraza), fraza).toContain(DECIZIA_43[i].motiv)
-    // Martor POZITIV pe extragere: o celula 3S fabricata cu o functie scoasa ajunge in afirmatiile 3S si e prinsa.
-    const p = comparatie.pagina
-    const mutant: PaginaContinut = {
-      ...p,
-      sectiuni: p.sectiuni.map((s) =>
-        s.cheie !== 'where-cost'
-          ? s
-          : {
-              ...s,
-              blocuri: s.blocuri.map((b) => ({
-                ...b,
-                tabel: b.tabel && { ...b.tabel, randuri: b.tabel.randuri.map((r, i) => (i === 1 ? [r[0], 'Bring your ' + 'own bucket.', ...r.slice(2)] : r)) },
-              })),
-            },
-      ),
-    }
-    expect(afirmatii3S(mutant).flatMap(incalcari43)).toContain('stocarea proprie')
-    // Martor NEGATIV: celulele Google si capsula G3 numesc "Google Drive", dar nu sunt afirmatii 3S.
-    const google = sectiune(p, 'where-cost').blocuri[0].tabel!.randuri.map((r) => String(r[2])).join(' ')
-    expect(incalcari43(google)).toContain('integrarile cu nume')
-    expect(afirmatii3S(p).join(' ')).not.toContain(google.slice(0, 40))
+    // Martor POZITIV pe extragere: o propozitie 3S cu o functie scoasa, intr-un text, ajunge in afirmatii si e prinsa.
+    expect(propozitii3S('Belgium uses a network. 3S receives your invoices over ' + 'Peppol.').flatMap(incalcari43)).toContain('functiile scoase')
+    // Martor NEGATIV: Peppol ca retea a Belgiei (mandatele, tabelul) nu e afirmatie 3S, deci nu e citit.
+    expect(efacturi.EFACTURARE_EN.mandate.batai[0]).toContain('Peppol')
+    expect(afirmatii3S('guides-e-invoice-archiving-eu').join(' ')).not.toContain(efacturi.EFACTURARE_EN.mandate.batai[0].slice(0, 40))
   })
 
-  for (const { cheie, pagina } of PAGINI) {
-    it(cheie + ': zero clase ale deciziei 43 in afirmatiile 3S', () => {
-      const texte = afirmatii3S(pagina)
-      // Controlul extragerii: fiecare pagina are afirmatii 3S citite (capsula G3, sectiunea "How can 3S help?" la G1 si G2).
+  for (const cheie of Object.keys(MODULE)) {
+    it(cheie + ': zero clase ale deciziei 43 si zero certificari in afirmatiile 3S', () => {
+      const texte = afirmatii3S(cheie)
+      // Controlul extragerii: fiecare pagina are afirmatii 3S citite.
       expect(texte.length).toBeGreaterThan(0)
       expect(texte.flatMap(incalcari43)).toEqual([])
-    })
-  }
-
-  it('controlul extragerii G3: 8 celule 3S in cele trei tabele, randul 3S al situatiilor si doua propozitii 3S in capsula', () => {
-    expect(celule3S(comparatie.pagina)).toHaveLength(8)
-    expect(randul3SDinSituatii(comparatie.pagina)).toHaveLength(1)
-    expect(propozitii3S(comparatie.pagina.capsula)).toEqual(['Choose 3S for an assisted pilot on your own documents.', 'Ask us where we stand first.'])
-  })
-})
-
-describe('randul de certificari al comparatiei (compensarea exceptiei din poarta de afirmatii)', () => {
-  const randCertificari = () => {
-    const t = sectiune(comparatie.pagina, 'where-cost').blocuri[0].tabel!
-    const r = t.randuri.find((x) => x[0] === 'Certifications the vendor names')
-    if (r === undefined) throw new Error('lipseste randul de certificari')
-    return { antet: t.antet!, rand: r.map(String) }
-  }
-
-  it('controlul: randul exista, coloana a doua e 3S, iar celulele furnizorilor numesc certificari (tiparul citeste)', () => {
-    const { antet, rand } = randCertificari()
-    expect(antet[1]).toBe('3S')
-    expect(rand.slice(2).filter((c) => CERTIFICARI.test(c))).toHaveLength(2)
-  })
-
-  it('martor POZITIV: o celula 3S fabricata care numeste o certificare e prinsa', () => {
-    expect(CERTIFICARI.test('3S holds ' + 'SO' + 'C 2 Type II.')).toBe(true)
-    expect(CERTIFICARI.test('3S is ' + 'IS' + 'O/IEC 27001 certified.')).toBe(true)
-  })
-
-  it('celula 3S din randul de certificari nu numeste nicio certificare', () => {
-    const { rand } = randCertificari()
-    expect(rand[1]).not.toMatch(CERTIFICARI)
-    expect(rand[1]).toBe('None stated on this site. Tell us what your auditor or bank requires, and we will say plainly whether we meet it.')
-  })
-  // Exceptia din poarta scoate TOT fisierul comparatiei de sub tiparul certificarilor, nu doar randul de mai sus. Deci
-  // compensarea citeste toate afirmatiile 3S ale paginii (capsula, "How can 3S help?", "When does 3S fit?", coloana 3S,
-  // randul 3S al situatiilor), cu acelasi extractor ca decizia 43, plus "When should you not choose 3S?", unde pagina
-  // vorbeste despre certificarile lui 3S. Aplicata si pe G1 si G2, unde nu costa nimic.
-  const afirmatiiCertificari = (p: PaginaContinut): string[] => {
-    const nu = p.sectiuni.find((x) => x.cheie === 'when-not')
-    return [...afirmatii3S(p), ...(nu ? [textSectiune(nu)] : [])]
-  }
-  const cuFraza = (p: PaginaContinut, cheie: string, fraza: string): PaginaContinut => ({
-    ...p,
-    sectiuni: p.sectiuni.map((s) => (s.cheie !== cheie ? s : { ...s, blocuri: s.blocuri.map((b, i) => (i === 0 ? { ...b, paragrafe: [...b.paragrafe, fraza] } : b)) })),
-  })
-
-  for (const { cheie, pagina } of PAGINI) {
-    it(cheie + ': nicio certificare numita in afirmatiile 3S ale paginii', () => {
-      const texte = afirmatiiCertificari(pagina)
-      expect(texte.length).toBeGreaterThan(0)
       expect(texte.filter((t) => CERTIFICARI.test(t))).toEqual([])
     })
   }
 
-  it('martor POZITIV: o fraza 3S fabricata in "When does 3S fit?" sau in "When should you not choose 3S?" care numeste o certificare e prinsa; paragraful despre certificarile cerute trece', () => {
-    const p = comparatie.pagina
-    // Controlul: paragraful "You need named certifications today" e chiar in textul citit si nu numeste nicio certificare.
-    const certificariCerute = sectiune(p, 'when-not').blocuri.flatMap(textBloc).filter((t) => t.includes('named certifications today'))
-    expect(certificariCerute).toHaveLength(1)
-    expect(afirmatiiCertificari(p).join(' ')).toContain(certificariCerute[0])
-    expect(afirmatiiCertificari(p).filter((t) => CERTIFICARI.test(t))).toEqual([])
-    const fraza = '3S is ' + 'SO' + 'C 2 Type II and ' + 'IS' + 'O 27001 certified.'
-    for (const cheie of ['when-fits', 'when-not']) {
-      sectiune(p, cheie)
-      expect(afirmatiiCertificari(cuFraza(p, cheie, fraza)).filter((t) => CERTIFICARI.test(t)), cheie).toHaveLength(1)
-    }
+  it('certificarile de pe G3 sunt numai ale lui Google, in grupul de surse al cardului (exceptia portii de afirmatii); martorul tiparului', () => {
+    // Controlul: tiparul citeste certificarile numite in etichetele surselor Google (doua).
+    const etichete = comparatie.SURSE_CARD_EN.flatMap((g) => g.surse.map((s) => s.eticheta))
+    expect(etichete.filter((e) => CERTIFICARI.test(e))).toHaveLength(2)
+    expect(etichete.filter((e) => CERTIFICARI.test(e)).every((e) => e.includes('Google Cloud'))).toBe(true)
+    // Martor POZITIV: o afirmatie 3S fabricata care numeste o certificare e prinsa.
+    expect(CERTIFICARI.test('3S is ' + 'SO' + 'C 2 Type II and ' + 'IS' + 'O 27001 certified.')).toBe(true)
+    // Cardul: partea stanga numeste nevoia de certificari, fara sa numeasca vreuna.
+    expect(comparatie.DIVIZAT_EN.stanga.elemente.filter((e) => CERTIFICARI.test(e))).toEqual([])
+  })
+
+  it('gazduirea 3S e formula deciziei 42, cuvant cu cuvant, pe G1; macheta numeste Frankfurt', () => {
+    expect(efacturi.EFACTURARE_EN.emiterea.rezolvare).toContain('Files are stored in the EU, with Frankfurt as the primary region.')
+    expect(efacturi.EFACTURARE_EN.macheta.insigne).toContain('Frankfurt')
   })
 })
 
@@ -436,9 +440,14 @@ describe('registrul de afirmatii en-referinta', () => {
     }
   })
 
+  it('celulele 3S ale comparatiei trimit la intrari existente in registru', () => {
+    for (const r of comparatie.TABEL_EN.randuri) expect(TOATE_INTRARILE.has(r.noi.afirmatie), r.functie).toBe(true)
+    // Martor POZITIV: un id absent e prins de aceeasi verificare.
+    expect(TOATE_INTRARILE.has('en-referinta-' + 'nu-exista')).toBe(false)
+  })
+
   it('faptele de lege si ale furnizorilor raman neconfirmate pana la reverificarea dinaintea portii B', () => {
     const deVerificat = REGISTRU.filter((i) => /^en-referinta-(termene-|efacturare-arhivare-|comparatii-marcaje-)/.test(i.id))
-    // Controlul selectiei: 7 retineri de e-facturi si termene RO, 14 termene si reguli MD, 3 furnizori.
     expect(deVerificat.length).toBeGreaterThanOrEqual(20)
     expect(deVerificat.filter((i) => i.stare !== 'neconfirmat').map((i) => i.id)).toEqual([])
   })
@@ -448,72 +457,32 @@ describe('registrul de afirmatii en-referinta', () => {
   })
 })
 
-describe('pagina randata si datele ei structurate', () => {
-  const CANALE_PROBA: Canale = {
-    formulare: false,
-    whatsapp: '37300000001',
-    telefon: '',
-    email: '',
-    emailSecuritate: 'security@example.test',
-  }
-
-  const randeaza = (m: Modul, canale: Canale) => renderToStaticMarkup(createElement(PaginaReferinta, { pagina: m.pagina, inJur: m.inJur, canale }))
-
-  it('un H1, CTA-ul WhatsApp in erou si in final, legatura de semnalare, toate cu ref-ul paginii; fara formular si fara e-mail fara adresa', () => {
-    for (const m of Object.values(MODULE)) {
-      const html = randeaza(m, CANALE_PROBA)
-      expect(html.match(/<h1[ >]/g)).toHaveLength(1)
-      const wa = [...html.matchAll(/href="(https:\/\/wa\.me\/[^"]*)"/g)].map((x) => new URL(x[1].split('&amp;').join('&')).searchParams.get('text'))
-      expect(wa).toEqual([m.pagina.cta.textWhatsapp, m.inJur.semnalare.textWhatsapp, m.pagina.cta.textWhatsapp])
-      expect(html).not.toMatch(new RegExp('<' + 'form\\b'))
-      expect(html).not.toContain('mailto:')
-      expect(html).toContain('data-verificare')
-    }
-  })
-
-  it('martorul canalelor: cu adresa pe domeniu apare linia de e-mail; fara WhatsApp, niciun buton si nicio legatura de semnalare', () => {
-    const cu = randeaza(efacturi, { ...CANALE_PROBA, email: 'contact@example.test' })
-    expect(cu).toContain('mailto:contact@example.test?subject=' + encodeURIComponent('3S inquiry [ref:en-einv]'))
-    const fara = randeaza(efacturi, { ...CANALE_PROBA, whatsapp: '' })
-    expect(fara).not.toContain('wa.me')
-    expect(fara).not.toContain('data-semnalare')
-  })
-
-  it('pe canalele profilului 3s.md, butoanele duc la numarul din profil', () => {
-    expect(CANALE_3S_MD.whatsapp).not.toBe('')
-    const html = randeaza(moldova, CANALE_3S_MD)
-    expect(html).toContain('https://wa.me/' + CANALE_3S_MD.whatsapp + '?text=')
-  })
-
-  it('FAQPage oglindeste intrebarile vizibile H2; Article poarta titlul, descrierea, datele si citarile din tabelul surselor', () => {
-    const asteptate: Record<string, number> = {
-      'guides-e-invoice-archiving-eu': 10,
-      'guides-records-retention-moldova': 10,
-      'compare-3s-vs-google-and-box': 7,
-    }
-    for (const { cheie, pagina, inJur } of PAGINI) {
-      const graf = grafReferinta(pagina, inJur, 'https://exemplu.test')
-      expect(graf['@graph'].map((n) => n['@type'])).toEqual(['Article', 'WebPage', 'BreadcrumbList', 'FAQPage'])
-      const faq = graf['@graph'][3] as unknown as { mainEntity: { name: string; acceptedAnswer: { text: string } }[] }
-      const intrebari = intrebariVizibile(pagina)
-      expect(faq.mainEntity.map((q) => q.name)).toEqual(intrebari.map((s) => s.titlu))
-      expect(faq.mainEntity.map((q) => q.acceptedAnswer.text)).toEqual(intrebari.map(raspunsVizibil))
-      expect(faq.mainEntity, cheie).toHaveLength(asteptate[cheie])
-      const articol = graf['@graph'][0] as Record<string, unknown>
+describe('datele structurate', () => {
+  it('Article si WebPage pe fiecare pagina, legate prin @id, cu autorul organizatiei; Article poarta H1-ul, descrierea si datele', () => {
+    for (const { cheie, pagina } of PAGINI) {
+      const graf = grafReferinta(pagina, 'https://exemplu.test')
+      expect(graf['@graph'].map((n) => n['@type']), cheie).toEqual(['Article', 'WebPage'])
+      const [articol, webPage] = graf['@graph'] as Record<string, unknown>[]
       expect(articol.headline).toBe(pagina.h1)
       expect(articol.description).toBe(pagina.meta.descriere)
       expect([articol.datePublished, articol.dateModified]).toEqual(['2026-09-30', '2026-09-30'])
       expect(articol.author).toEqual({ '@id': 'https://exemplu.test/#organizatie' })
-      // Fiecare legatura externa din tabelul surselor e citata in Article.
-      const surse = textSectiune(sectiune(pagina, 'sources'))
-      const legaturi = [...surse.matchAll(/\]\((https:[^)\s]+)\)/g)].map((m) => m[1])
-      expect(legaturi.length).toBeGreaterThan(5)
-      const citari = (articol.citation as string[]).join('\n')
-      expect(legaturi.filter((l) => !citari.includes(l))).toEqual([])
-      const json = JSON.stringify(graf)
-      expect(json).not.toContain('**')
-      expect(json).not.toContain('](')
+      expect(articol.mainEntityOfPage).toEqual({ '@id': webPage['@id'] })
+      expect((articol.citation as string[]).length, cheie).toBeGreaterThan(2)
     }
+  })
+
+  it('FAQPage pe G1 oglindeste exact intrebarile vizibile (aceleasi ca in acordeon), in engleza, pe calea paginii; G2 si G3 n-au intrebari', () => {
+    const graf = grafIntrebari(efacturi.EFACTURARE_EN, 'https://exemplu.test')
+    const faq = graf['@graph'][0]
+    expect(faq.inLanguage).toBe('en')
+    expect(faq['@id']).toBe('https://exemplu.test/guides/e-invoice-archiving-eu#intrebari')
+    expect(faq.mainEntity.map((q) => q.name)).toEqual(efacturi.EFACTURARE_EN.intrebari.intrebari.map((q) => q.intrebare))
+    const html = randeaza(PaginaG1)
+    for (const q of efacturi.EFACTURARE_EN.intrebari.intrebari) expect(html.replace(/&#x27;/g, "'"), q.intrebare).toContain(q.intrebare)
+    for (const C of [PaginaG2, PaginaG3]) expect(randeaza(C)).not.toContain('FAQPage')
+    // Martorul implicitului: pe RO, aceeasi functie da intrebarile romanesti pe /e-facturare.
+    expect(grafIntrebari(EFACTURARE_RO, 'https://exemplu.test')['@graph'][0]['@id']).toBe('https://exemplu.test/e-facturare#intrebari')
   })
 
   it('JSON-LD numai cu tipurile din vocabularul portii de SEO, fara campuri de firma (controlul: vocabularul se citeste)', () => {
@@ -529,20 +498,13 @@ describe('pagina randata si datele ei structurate', () => {
     expect(TIPURI.has('CreativeWork')).toBe(false)
     const noduri = (o: unknown): Record<string, unknown>[] =>
       Array.isArray(o) ? o.flatMap(noduri) : o !== null && typeof o === 'object' ? [o as Record<string, unknown>, ...Object.values(o).flatMap(noduri)] : []
-    for (const { cheie, pagina, inJur } of PAGINI) {
-      const toate = noduri(grafReferinta(pagina, inJur, 'https://exemplu.test'))
+    for (const { cheie, pagina } of PAGINI) {
+      const toate = [...noduri(grafReferinta(pagina, 'https://exemplu.test')), ...(cheie === 'guides-e-invoice-archiving-eu' ? noduri(grafIntrebari(efacturi.EFACTURARE_EN, 'https://exemplu.test')) : [])]
       const tipuri = toate.map((n) => n['@type']).filter((t): t is string => typeof t === 'string')
       expect(tipuri.filter((t) => !TIPURI.has(t)), cheie).toEqual([])
       expect(tipuri.filter((t) => ['Organization', 'WebSite', 'SoftwareApplication'].includes(t)), cheie).toEqual([])
       expect(toate.flatMap((n) => Object.keys(n)).filter((k) => FIRMA.has(k)), cheie).toEqual([])
     }
-  })
-
-  it('gazduirea 3S e formula deciziei 42, cuvant cu cuvant, pe G1 si in celula 3S a comparatiei', () => {
-    expect(textSectiune(sectiune(efacturi.pagina, 'how-3s-helps'))).toContain('Files are stored in the EU, with Frankfurt as the primary region.')
-    expect(celule3S(comparatie.pagina)).toContain(
-      'In the EU, with Frankfurt as the primary region. See the [About page](/about#security). Where the AI features process documents is not stated on this site: ask us.',
-    )
   })
 })
 

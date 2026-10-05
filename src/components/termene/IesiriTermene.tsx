@@ -2,16 +2,18 @@
 // cu imprimanta, celelalte cu sageata. Trec prin `Tinta`: o tinta care nu exista inca ramane
 // inerta, cu acelasi aspect. La 390 cad una sub alta prin rupere naturala (gap 28): prima incape
 // si tine iconita dupa text, a doua si a treia se rup pe 2 randuri, cu iconita la marginea dreapta.
+//
+// PE EDITIE: lista vine prin `iesiri`, cu implicitul romanesc.
 
 import { ArrowRight, Printer } from "lucide-react";
 import Tinta from "@/components/primitive/Tinta";
-import { IESIRI_TERMENE } from "@/content/termene/date";
+import { IESIRI_TERMENE, type IesireTermene } from "@/content/termene/date";
 import s from "./termene.module.css";
 
-export default function IesiriTermene() {
+export default function IesiriTermene({ iesiri = IESIRI_TERMENE }: { iesiri?: IesireTermene[] }) {
   return (
     <ul className={s.iesiri}>
-      {IESIRI_TERMENE.map((i) => (
+      {iesiri.map((i) => (
         <li key={i.text}>
           <Tinta legatura={i} className={s.iesire}>
             <span>{i.text}</span>

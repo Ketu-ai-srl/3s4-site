@@ -9,6 +9,15 @@
     "data": "2026-09-24"
   },
   {
+    "id": "ro-md-functii-in-productie",
+    "text": "3S citește textul documentelor scanate (OCR), detectează tipul documentului, caută cu sursa citată și livrează documentele prin export",
+    "unde": "src/content/ro-md/contact.ts, src/content/ro-md/contact-componente.ts, src/content/ro-md/acasa-componente.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda RO-MD a intrarii en-enterprise-functii-in-productie (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (declaratia owner-ului, decizia D4b: functiile se prezinta ca existente, produsul fiind in productie). Regulile, portalul, API-ul si campurile citite din act nu intra (decizia 43). Pe /ro: OCR-ul si eticheta de tip din pasii startului si din blocul de final.",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
+    "data": "2026-09-24"
+  },
+  {
     "id": "ro-md-trei-pasi-scan-store-solve",
     "text": "Scan / Store / Solve: fișierele electronice existente se încarcă direct în arhiva digitală (pregătirea hârtiei se discută separat); fiecare document încărcat e păstrat în spațiul de lucru al firmei și indexat automat; la o întrebare în română, 3S dă răspunsul cu documentul din care provine",
     "unde": "src/content/ro-md/acasa.ts",

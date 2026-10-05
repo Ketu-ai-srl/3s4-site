@@ -3,9 +3,12 @@
 // Chestionarul de sub panou (acasa-constructor.md §10, §12): expandorul, cele 3 intrebari cu
 // dezvaluirea lor pe rand, confirmarea, simularea zilei (Duel) si estimarea cu CTA-ul final.
 //
-// Parametrii spre `/inregistrare` se compun NUMAI prin contractul din `src/content/acasa.ts`
-// (`adresaInregistrare`); aici nu se scrie niciun nume de parametru. Cat timp ruta nu exista in
-// `RUTE`, `Tinta` randeaza butonul inert, cu adresa asteptata in `data-tinta-lipsa`.
+// Tinta CTA-ului final vine din continutul editiei (`continut.tinte.estimare`, cu raspunsurile): pe RO,
+// adresa `/inregistrare` compusa NUMAI prin contractul din `src/content/acasa.ts` (`adresaInregistrare`,
+// in `Lume.tsx`); pe editiile 3s.md, legatura WhatsApp a paginii (decizia 3: fara cont, fara formular).
+// Aici nu se scrie niciun nume de parametru. Cat timp ruta nu exista in `RUTE`, `Tinta` randeaza
+// butonul inert, cu adresa asteptata in `data-tinta-lipsa`. Modulul nu importa nimic din `src/content/`:
+// textele, calculul si functiile de text vin in `continut`, de la vederea lumii (`LumeVedere.tsx`).
 //
 // Accesibilitatea (§15, plus abaterile din COMPONENTE.md §5.6): jetoanele au `aria-pressed`,
 // segmentul si randurile sunt `radiogroup` cu `radio` si se muta cu sagetile (focus itinerant),
@@ -17,25 +20,11 @@
 // cadru (INP, plan §8.4).
 
 import { useDeferredValue, useEffect, useId, useState, type KeyboardEvent, type ReactNode } from "react";
-import {
-  adresaInregistrare,
-  type CodCanal,
-  type CodCine,
-  type CodIndustrie,
-  type CodVolum,
-} from "@/content/acasa";
-import {
-  CHESTIONAR,
-  ESTIMARE,
-  ZILE_LUCRATOARE,
-  completeaza,
-  estimare,
-  formatMinute,
-} from "@/content/acasa-constructor";
-import { CALE_INREGISTRARE } from "@/content/navigatie";
+import type { CodCanal, CodCine, CodIndustrie, CodVolum } from "@/content/acasa";
 import Tinta from "@/components/primitive/Tinta";
 import Duel from "./Duel";
 import { IcBifa, IcChevronJos, IcSageata, IconitaCanal } from "./Iconite";
+import { atributeCanal, type ContinutLume } from "./LumeVedere";
 import { confirma, schimba, toateRaspunsurile, type Raspunsuri } from "./stare";
 import s from "./Chestionar.module.css";
 
@@ -43,6 +32,7 @@ type Props = {
   industrie: CodIndustrie;
   raspunsuri: Raspunsuri;
   setRaspunsuri: (f: (r: Raspunsuri) => Raspunsuri) => void;
+  continut: ContinutLume;
 };
 
 function cls(...clase: (string | false | null | undefined)[]): string {
@@ -92,14 +82,18 @@ function Estimare({
   volum,
   cine,
   deschis,
+  continut,
 }: {
   industrie: CodIndustrie;
   canale: CodCanal[];
   volum: CodVolum;
   cine: CodCine;
   deschis: boolean;
+  continut: ContinutLume;
 }) {
-  const e = estimare(canale.length, volum);
+  const ESTIMARE = continut.estimare;
+  const { completeaza, formatMinute } = continut.text;
+  const e = continut.calcul.estimare(canale.length, volum);
   // Barele cresc din stanga la fiecare deschidere a expandorului: pornesc de la 0, apoi tinta.
   const [pornit, setPornit] = useState(false);
   useEffect(() => {
@@ -110,7 +104,7 @@ function Estimare({
     const r = requestAnimationFrame(() => setPornit(true));
     return () => cancelAnimationFrame(r);
   }, [deschis]);
-  const href = adresaInregistrare({ ind: industrie, src: canale, vol: volum, who: cine });
+  const tinta = continut.tinte.estimare({ ind: industrie, src: canale, vol: volum, who: cine });
   return (
     <>
       <div className={s.estimare} data-estimare={e.manual}>
@@ -118,7 +112,11 @@ function Estimare({
           <p className={s.etichetaEstimare}>{ESTIMARE.eticheta}</p>
           <p className={cls(s.cifraEstimare, "cifre")}>{completeaza(ESTIMARE.cifra, { ore: e.manual })}</p>
           <p className={s.formula}>
-            {completeaza(ESTIMARE.formula, { docs: e.documente, k: formatMinute(e.minute), zile: ZILE_LUCRATOARE })}
+            {completeaza(ESTIMARE.formula, {
+              docs: e.documente,
+              k: formatMinute(e.minute),
+              zile: continut.calcul.zileLucratoare,
+            })}
           </p>
         </div>
         <div className={s.dreaptaEstimare}>
@@ -147,7 +145,7 @@ function Estimare({
         </div>
       </div>
       <div className={s.ctaFinal} data-cta-constructor="">
-        <Tinta legatura={{ text: ESTIMARE.buton, href, ruta: CALE_INREGISTRARE }} className={s.butonFinal}>
+        <Tinta legatura={tinta.legatura} className={s.butonFinal} {...atributeCanal(tinta)}>
           <span>{ESTIMARE.buton}</span>
           <IcSageata marime={18} contur={2} />
         </Tinta>
@@ -157,13 +155,13 @@ function Estimare({
   );
 }
 
-export default function Chestionar({ industrie, raspunsuri: r, setRaspunsuri }: Props) {
+export default function Chestionar({ industrie, raspunsuri: r, setRaspunsuri, continut }: Props) {
   const idCorp = useId() + "-corp";
   const idCanale = useId() + "-canale";
   const idVolum = useId() + "-volum";
   const idCine = useId() + "-cine";
   const toate = toateRaspunsurile(r);
-  const q = CHESTIONAR;
+  const q = continut.chestionar;
   // Pasii se pun in pagina abia la prima deschidere: inchis, corpul are inaltime 0 si e `inert`,
   // deci nu se vede nimic din ei, dar i-ar aseza la fiecare alegere de industrie, in acelasi cadru
   // cu lumea. Odata montati raman, ca inchiderea sa aiba ce sa stranga.
@@ -322,13 +320,21 @@ export default function Chestionar({ industrie, raspunsuri: r, setRaspunsuri }: 
                     cine={r.cine}
                     cheie={r.rulare}
                     laTerminare={() => setRaspunsuri((x) => (x.estimareDezvaluita ? x : { ...x, estimareDezvaluita: true }))}
+                    continut={continut}
                   />
                 ) : null}
               </Pas>
 
               <Pas vizibil={r.confirmat && r.estimareDezvaluita}>
                 {r.confirmat && r.estimareDezvaluita && r.volum && r.cine ? (
-                  <Estimare industrie={industrie} canale={r.canale} volum={r.volum} cine={r.cine} deschis={r.deschis} />
+                  <Estimare
+                    industrie={industrie}
+                    canale={r.canale}
+                    volum={r.volum}
+                    cine={r.cine}
+                    deschis={r.deschis}
+                    continut={continut}
+                  />
                 ) : null}
               </Pas>
             </>

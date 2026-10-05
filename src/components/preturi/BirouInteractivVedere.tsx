@@ -11,6 +11,11 @@
 // PE EDITIE: textele (cu numeralele lor, compuse de editie) si planurile vin de la invelitoarea
 // editiei (`BirouInteractiv.tsx` pe RO); vederea nu importa niciun continut. Pachetul aratat la
 // pornire e primul din lista.
+//
+// FARA DISPOZITIVE (`faraDispozitive`, implicit absent = forma RO): pentru o editie fara faptul confirmat ca
+// dispozitivele nu se numara. Ies numai piesele lui: contorul (cu nota de langa el), butonul "+1" si numele
+// accesibil al scenei; scena ramane, decorativa (fara nume, deci ascunsa cititorului de ecran) si oprita la
+// numarul de pornire, iar banda de conturi ramane intreaga. Pe forma RO nimic nu se schimba.
 
 import { Suspense, lazy, useId, useState } from "react";
 import type { CheiePlan, Plan } from "@/content/preturi";
@@ -36,17 +41,22 @@ export type ContinutBirou = {
   scena: (dispozitive: number, mese: number) => string;
 };
 
+/** Continutul biroului fara demonstratia dispozitivelor: numai pornirea scenei si banda de conturi. */
+export type ContinutBirouConturi = Pick<ContinutBirou, "initial" | "conturi" | "locuri">;
+
 export type BirouInteractivVedereProps = {
   activ: boolean;
-  continut: ContinutBirou;
   planuri: readonly Plan[];
-};
+} & ({ continut: ContinutBirou; faraDispozitive?: false } | { continut: ContinutBirouConturi; faraDispozitive: true });
 
-export default function BirouInteractivVedere({ activ, continut, planuri }: BirouInteractivVedereProps) {
+export default function BirouInteractivVedere(props: BirouInteractivVedereProps) {
+  const { activ, continut, planuri } = props;
+  /** Textele demonstratiei; `null` = editia fara dispozitive. */
+  const demo = props.faraDispozitive ? null : props.continut;
   const idEticheta = useId();
   const [dispozitive, setDispozitive] = useState(continut.initial);
   const [plan, setPlan] = useState<CheiePlan>(planuri[0].cheie);
-  const plin = dispozitive >= continut.maxim;
+  const plin = demo === null || dispozitive >= demo.maxim;
   const conturi = planuri.find((p) => p.cheie === plan)?.conturi ?? planuri[0].conturi;
 
   return (
@@ -54,27 +64,31 @@ export default function BirouInteractivVedere({ activ, continut, planuri }: Biro
       <div className={s.scena}>
         {activ ? (
           <Suspense fallback={null}>
-            <Birou3D dispozitive={dispozitive} eticheta={continut.scena(dispozitive, numarMese(dispozitive))} />
+            <Birou3D dispozitive={dispozitive} eticheta={demo === null ? "" : demo.scena(dispozitive, numarMese(dispozitive))} />
           </Suspense>
         ) : null}
-        <p className={s.contor}>
-          <span className={s.contorEticheta}>{continut.contor}</span>
-          <span className={s.contorValoare} aria-live="polite" data-contor-dispozitive="">
-            {dispozitive}
-          </span>
-          <span className={s.contorNota}>{continut.nelimitat}</span>
-        </p>
-        <button
-          type="button"
-          className={s.adauga}
-          aria-disabled={plin ? "true" : undefined}
-          onClick={() => {
-            if (!plin) setDispozitive((d) => Math.min(continut.maxim, d + 1));
-          }}
-        >
-          {continut.adauga}
-          <IconitaPret nume="plus" marime={14} contur={2} />
-        </button>
+        {demo === null ? null : (
+          <>
+            <p className={s.contor}>
+              <span className={s.contorEticheta}>{demo.contor}</span>
+              <span className={s.contorValoare} aria-live="polite" data-contor-dispozitive="">
+                {dispozitive}
+              </span>
+              <span className={s.contorNota}>{demo.nelimitat}</span>
+            </p>
+            <button
+              type="button"
+              className={s.adauga}
+              aria-disabled={plin ? "true" : undefined}
+              onClick={() => {
+                if (!plin) setDispozitive((d) => Math.min(demo.maxim, d + 1));
+              }}
+            >
+              {demo.adauga}
+              <IconitaPret nume="plus" marime={14} contur={2} />
+            </button>
+          </>
+        )}
       </div>
       <div className={s.conturi}>
         <div className={s.capConturi}>

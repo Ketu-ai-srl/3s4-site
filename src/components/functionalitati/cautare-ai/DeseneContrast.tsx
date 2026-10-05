@@ -6,6 +6,11 @@
 //            trei semne de intrebare.
 //   Acum     bara de cautare cu o intrebare scurta si cursorul care clipeste, cardul raspunsului cu
 //            partea cautata in `albastru-clar` si cipul sursei, cu punct verde.
+//
+// CONTINUTUL pe editie (`continut`), cu implicitul RO: pagina RO nu paseaza nimic, deci randeaza ce randa. Pe 3s.md
+// textele din desenul "Acum" sunt in romana (singura limba confirmata pentru intrebari), iar eticheta accesibila a
+// desenului e in engleza; `limba` pune `lang` pe fiecare `<text>`, numai prin raspandire conditionata (desenul trece
+// ca `vizual` prin `SectiuneScena`, client, deci props-urile lui intra in fluxul RSC).
 
 import { CONTRAST_CAUTARE } from "@/content/functionalitati/cautare-ai";
 import s from "./cautare.module.css";
@@ -29,9 +34,23 @@ const RANDURI: readonly (readonly [number, number])[] = [
   [64, 38],
 ];
 
-export function DesenInainte() {
+/** Textul desenului "Inainte": numai eticheta accesibila. Constanta RO (`CONTRAST_CAUTARE.inainte`) il satisface. */
+export type ContinutDesenInainte = { declaratie: string };
+
+/** Textele desenului "Acum", pe editie; constanta RO (`CONTRAST_CAUTARE.acum`) il satisface. */
+export type ContinutDesenAcum = {
+  /** Eticheta accesibila a desenului (`aria-label`); textele din desen nu se citesc separat. */
+  declaratie: string;
+  intrebareScurta: string;
+  raspunsInceput: string;
+  raspunsAccent: string;
+  raspunsNota: string;
+  sursa: string;
+};
+
+export function DesenInainte({ continut = CONTRAST_CAUTARE.inainte }: { continut?: ContinutDesenInainte }) {
   return (
-    <svg viewBox="0 0 280 200" width="392" height="298" role="img" aria-label={CONTRAST_CAUTARE.inainte.declaratie} preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 280 200" width="392" height="298" role="img" aria-label={continut.declaratie} preserveAspectRatio="xMidYMid meet">
       {DOCUMENTE.map((d) => (
         <g key={d.x + "-" + d.y} transform={"translate(" + d.x + " " + d.y + ") rotate(" + d.unghi + " 39 50)"}>
           <rect width="78" height="100" rx="3" fill="#0f172a" stroke={"rgba(255,255,255," + d.contur + ")"} strokeWidth="0.7" />
@@ -65,30 +84,31 @@ export function DesenInainte() {
   );
 }
 
-export function DesenAcum() {
-  const a = CONTRAST_CAUTARE.acum;
+export function DesenAcum({ continut = CONTRAST_CAUTARE.acum, limba }: { continut?: ContinutDesenAcum; limba?: string }) {
+  const a = continut;
+  const l = limba === undefined ? {} : { lang: limba };
   return (
     <svg viewBox="0 0 280 200" width="392" height="280" role="img" aria-label={a.declaratie} preserveAspectRatio="xMidYMid meet">
       <rect x="14" y="20" width="252" height="30" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" strokeWidth="0.7" />
       <circle cx="30" cy="33" r="3.5" fill="none" stroke="#2563eb" strokeWidth="1.2" />
       <path d="M32.6 35.6 L35.3 38.3" stroke="#2563eb" strokeWidth="1.2" strokeLinecap="round" />
-      <text x="40" y="38" fontSize="9" fill="#e6ecf5">
+      <text x="40" y="38" fontSize="9" fill="#e6ecf5" {...l}>
         {a.intrebareScurta}
       </text>
       <rect className={s.cursorDesen} x="251" y="28" width="1" height="14" fill="#2563eb" />
       <rect x="14" y="70" width="252" height="100" rx="8" fill="#0f172a" stroke="rgba(37,99,235,0.4)" strokeWidth="1" />
-      <text x="26" y="96" fontSize="9" fill="#e6ecf5">
+      <text x="26" y="96" fontSize="9" fill="#e6ecf5" {...l}>
         {a.raspunsInceput}
         <tspan fontWeight="600" fill="#60a5fa">
           {a.raspunsAccent}
         </tspan>
       </text>
-      <text x="26" y="114" fontSize="9" fill="rgba(255,255,255,0.5)">
+      <text x="26" y="114" fontSize="9" fill="rgba(255,255,255,0.5)" {...l}>
         {a.raspunsNota}
       </text>
       <rect x="26" y="138" width="200" height="16" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" strokeWidth="0.6" />
       <circle cx="36" cy="146" r="2.5" fill="#4ade80" />
-      <text className="t-mono" x="46" y="149" fontSize="7" fill="rgba(255,255,255,0.55)">
+      <text className="t-mono" x="46" y="149" fontSize="7" fill="rgba(255,255,255,0.55)" {...l}>
         {a.sursa}
       </text>
     </svg>

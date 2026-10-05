@@ -44,6 +44,7 @@
     },
     "/contact": {
       "intrebare": "How do I contact 3S?",
+      "fara_regula_paragrafului": "Pagina de contact EN are forma paginii de contact RO (decizia 53), ca aceea (config/seo/conversie.json): eroul interior pe 880 are un subtitlu de doua randuri la 1440 (21 de cuvinte), nu un paragraf de raspuns de 30-80. Raspunsul (WhatsApp, numarul, limbile) e in subtitlu, in caseta si in panoul de canale, in fereastra de 400 de cuvinte.",
       "entitati": [
         "3S",
         "WhatsApp",

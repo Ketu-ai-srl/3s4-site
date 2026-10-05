@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ro-md-constructor-estimare-exemplu",
+    "text": "Estimarea din constructor (orele pe lună duse cu actele lucrate de mână și timpul redat de 3S în ziua simulată) e un exemplu de calcul după o formulă fixă, nu o măsurătoare",
+    "unde": "src/content/ro-md/acasa-constructor-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat: oglinda RO-MD a intrarii constructor-estimare-exemplu (src/content/afirmatii/acasa-constructor.json), cu aceeasi formula (functiile din src/content/acasa-constructor.ts) si aceeasi stare; pe pagina e declarata ca exemplu de calcul, iar ipotezele ei (4-5 minute pe document, raportul de 1 la 11 cu 3S) nu au o masuratoare a noastra",
+    "confirmat_de": "",
+    "data": ""
+  },
+  {
+    "id": "ro-md-constructor-scene-functii",
+    "text": "În cele nouă scene de exemplu ale constructorului, 3S face numai ce face platforma în producție: încărcarea din browser, recunoașterea textului și eticheta de tip a documentului, căutarea și răspunsul AI cu sursa indicată (marcat „răspuns AI, vezi sursa”), dosarele create de firmă și termenul de păstrare pus pe dosar; fără reguli, anunțuri către persoane, alerte, clasare automată sau calculul termenelor",
+    "unde": "src/content/ro-md/acasa-constructor-componente.ts, src/content/ro-md/acasa-constructor-cap-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "de confirmat pe capturi (textul scenelor e propus, decizia 59, forma a): functiile se sprijina pe intrarile confirmate ro-md-arhiva-cu-sursa, ro-md-trei-pasi-scan-store-solve si ro-md-termene-si-jurnal (src/content/afirmatii/ro-md-acasa-contact.json) si, pentru recunoasterea textului si eticheta de tip, pe en-enterprise-functii-in-productie (src/content/afirmatii/en-nucleu.json); ce lipseste fata de scenele RO iese prin decizia 43",
+    "confirmat_de": "",
+    "data": ""
+  }
+]

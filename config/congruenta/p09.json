@@ -7,40 +7,99 @@
   ],
   "randuri": [
     {
-      "tip": "componenta",
-      "radacina": {
-        "clasa": "Formular_sectiune",
-        "eticheta": "contact-form-titlu"
-      },
-      "cod": "d3",
-      "motiv": "SectiuneFormular: fara formulare pe 3s.md."
-    },
-    {
-      "tip": "camp",
-      "selector": "[class*=\"enterprise_livrabil__\"]",
-      "ro": 6,
-      "en": 3,
-      "cod": [
-        "d49",
-        "poarta-juridica-40-41"
-      ],
-      "motiv": "ListaLivrabile: ies 'Arhiva intrebata din WhatsApp', 'Cutiile din depozit, in aceeasi cautare' si 'Originalele, in arhiva fizica 3S'."
-    },
-    {
       "tip": "camp",
       "selector": "[class*=\"enterprise_element__\"]",
       "ro": 15,
-      "en": 9,
+      "en": 7,
       "cod": [
         "poarta-juridica-40-41",
         "d43",
-        "d49"
+        "d49",
+        "val-ro-1.1",
+        "val-ro-i2"
       ],
-      "motiv": "BandaDrumDocument: ies 'Hartie scanata de 3S', 'Gmail si Outlook', 'WhatsApp', 'Microsoft 365 si Google Workspace', 'Reguli automate' si 'Raspuns pe WhatsApp'."
+      "motiv": "BandaDrumDocument: ies 'Gmail si Outlook', 'WhatsApp', 'Microsoft 365 si Google Workspace' (intrare; d43, d49), 'Campuri citite din act' (val-ro-1.1), 'Reguli automate' (d43), 'Portalul clientilor', 'Programul de contabilitate' (d43) si 'Dosarul din arhiva' (val-ro-i2); 'Hartie scanata de 3S' (poarta-juridica-40-41) e inlocuit cu un fapt confirmat."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"enterprise_pastila__\"]",
+      "ro": 3,
+      "en": 2,
+      "cod": "d31",
+      "motiv": "BandaDrumDocument: pastila 'AES-256' din stratul de pastrare."
+    },
+    {
+      "tip": "camp",
+      "selector": "[class*=\"enterprise_fapt__\"]",
+      "ro": 5,
+      "en": 4,
+      "cod": "val-ro-1.1",
+      "motiv": "BandaDrumDocument: faptul 'Semnat' al documentului-exemplu (niciun fapt confirmat nu citeste starea semnaturii)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_bifa",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_camp",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_eticheta",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_formular",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_grup",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_grupLat",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_inactiv",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_politica",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_rand",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "Formular_zona",
+      "cod": "d3",
+      "motiv": "SectiuneFormular: fara formulare pe 3s.md; in aceeasi sectiune (aceeasi ancora, acelasi invelis si acelasi cap) sta blocul de canal WhatsApp, deci lipsesc numai clasele campurilor formularului."
     }
   ],
   "_nedeclarate": [
-    "In locul SectiuneFormular, blocul de canal WhatsApp: o radacina noua pe 3s.md; proba de azi nu are tip de rand pentru inlocuire, se adauga in felia paginii.",
-    "AES (d31) si 'o regiune UE' (d42): text."
+    "In locul formularului, blocul de canal WhatsApp, in sectiunea formularului (Formular_sectiune, ancora contact-form): radacina ramane, se schimba continutul cardului (butonul WhatsApp si microtextul in locul campurilor).",
+    "ListaLivrabile pastreaza 6 elemente: cele scoase (WhatsApp, cutiile din depozit, originalele, plus termenele pe tipuri si colegul alocat) sunt inlocuite cu blocul aprobat pentru IT si achizitii (specificatia, §3).",
+    "Randul de incredere din erou pastreaza 4 elemente: AES/TLS (d31) si WhatsApp (d49) sunt inlocuite cu fapte confirmate; 'Germania' si 'o regiune UE' devin Frankfurt (d42): text."
   ]
 }

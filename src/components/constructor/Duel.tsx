@@ -8,12 +8,15 @@
 // fereastra -> se opreste; revine -> reincepe de la 0, daca nu se terminase. "Reluati simularea"
 // reincepe oricand. La miscare redusa se arata direct starea finala, fara simulare (§15).
 // Toate datele sunt fictive (plan D9); arena le declara in eticheta ei accesibila.
+//
+// Textele si datele vin in `continut`, de la vederea lumii (`LumeVedere.tsx`); modulul nu importa nimic
+// din `src/content/`. Toast-ul (anuntul automat din dreapta) apare numai daca duelul industriei il are.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CodCanal, CodCine, CodIndustrie, CodVolum } from "@/content/acasa";
-import { DUEL, NUME_CANAL, SCENARII, completeaza, formatTimp, listaCanale } from "@/content/acasa-constructor";
 import { construiesteSimularea, evenimentePana, stareDupa, type DocCuloar } from "./duel-motor";
 import { IcBifaCerc, IcDosar, IcFisier, IconitaCanal } from "./Iconite";
+import type { ContinutLume, NumeCanalConstructor } from "./LumeVedere";
 import s from "./Chestionar.module.css";
 
 type Props = {
@@ -25,6 +28,7 @@ type Props = {
   cheie: number;
   /** Chemata la finalul fiecarei simulari; prima o data dezvaluie estimarea. */
   laTerminare: () => void;
+  continut: ContinutLume;
 };
 
 /** Fractia vizibila si inaltimea minima de la care porneste ceasul (§11.2). */
@@ -39,7 +43,7 @@ function miscareRedusa(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function Jeton({ doc }: { doc: DocCuloar }) {
+function Jeton({ doc, numeCanal }: { doc: DocCuloar; numeCanal: NumeCanalConstructor }) {
   return (
     <>
       <span key={"j" + doc.cheie} className={s.jetonDoc}>
@@ -48,7 +52,7 @@ function Jeton({ doc }: { doc: DocCuloar }) {
       </span>
       <span key={"i" + doc.cheie} className={s.insigna}>
         <IconitaCanal canal={doc.canal} marime={10} contur={1.8} />
-        <span>{NUME_CANAL[doc.canal].insigna}</span>
+        <span>{numeCanal[doc.canal].insigna}</span>
       </span>
     </>
   );
@@ -76,9 +80,11 @@ function Dafin({ oglindit }: { oglindit?: boolean }) {
   );
 }
 
-export default function Duel({ industrie, canale, volum, cine, cheie, laTerminare }: Props) {
+export default function Duel({ industrie, canale, volum, cine, cheie, laTerminare, continut }: Props) {
+  const c = continut;
+  const DUEL = c.duel;
   const parametri = useMemo(() => ({ industrie, canale, volum, cine }), [industrie, canale, volum, cine]);
-  const sim = useMemo(() => construiesteSimularea(parametri), [parametri]);
+  const sim = useMemo(() => construiesteSimularea(parametri, c), [parametri, c]);
   const [aplicate, setAplicate] = useState(0);
   const [reluari, setReluari] = useState(0);
   const arena = useRef<HTMLDivElement>(null);
@@ -152,13 +158,13 @@ export default function Duel({ industrie, canale, volum, cine, cheie, laTerminar
     };
   }, [cheieSim, sim]);
 
-  const st = useMemo(() => stareDupa(sim, parametri, aplicate), [sim, parametri, aplicate]);
-  const duel = SCENARII[industrie].duel;
-  const timp = formatTimp(st.timpPierdut);
-  const timpBun = formatTimp(st.timpEconomisit);
-  const fraza = completeaza(DUEL.final[cine], {
+  const st = useMemo(() => stareDupa(sim, parametri, aplicate, c), [sim, parametri, aplicate, c]);
+  const duel = c.scenarii[industrie].duel;
+  const timp = c.text.formatTimp(st.timpPierdut);
+  const timpBun = c.text.formatTimp(st.timpEconomisit);
+  const fraza = c.text.completeaza(DUEL.final[cine], {
     volum: DUEL.volumInCuvinte[volum],
-    canale: listaCanale(canale, "fraza"),
+    canale: c.text.listaCanale(canale, "fraza"),
     timp: timpBun,
   });
 
@@ -186,7 +192,7 @@ export default function Duel({ industrie, canale, volum, cine, cheie, laTerminar
               </span>
             </span>
           </div>
-          <div className={s.culoar}>{st.culoarStanga ? <Jeton doc={st.culoarStanga} /> : null}</div>
+          <div className={s.culoar}>{st.culoarStanga ? <Jeton doc={st.culoarStanga} numeCanal={c.numeCanal} /> : null}</div>
           <p key={"s" + (st.stres?.cheie ?? 0)} className={cls(s.stres, st.stres && s.in)}>
             {st.stres?.text ?? ""}
           </p>
@@ -243,7 +249,7 @@ export default function Duel({ industrie, canale, volum, cine, cheie, laTerminar
           <div className={s.culoar}>
             {st.culoarDreapta ? (
               <>
-                <Jeton doc={st.culoarDreapta} />
+                <Jeton doc={st.culoarDreapta} numeCanal={c.numeCanal} />
                 {st.culoarDreapta.ai ? (
                   <span key={"a" + st.culoarDreapta.cheie} className={s.jetonAi}>
                     {DUEL.ai}

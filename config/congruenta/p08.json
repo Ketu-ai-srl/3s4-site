@@ -7,32 +7,38 @@
   ],
   "randuri": [
     {
-      "tip": "camp",
-      "selector": "[class*=\"pachete_rand__\"]",
-      "ro": 27,
-      "en": 18,
-      "cod": [
-        "d49",
-        "val-ro-i2",
-        "d43"
-      ],
-      "motiv": "Pachete: in fiecare din cele 3 carduri ies 'Raspunsuri si pe WhatsApp', 'Clasare automata in dosare' si 'Portal pentru clienti'."
+      "tip": "clasa",
+      "clasa": "pliuri_adauga",
+      "cod": "val-ro-1.1",
+      "motiv": "BirouInteractiv (primul pliu) se monteaza pe 3s.md fara demonstratia dispozitivelor: ies contorul (eticheta, valoarea, nota fara plafon) si butonul de adaugare, iar scena ramane fara nume accesibil; faptul ca dispozitivele nu se numara nu e confirmat (preturi-dispozitive-nelimitate, neconfirmat). Scena, banda de conturi, titlul si paragraful pliului raman, pe faptul confirmat (conturile pe plan)."
     },
     {
-      "tip": "camp",
-      "selector": "table[class*=\"pliuri_tabel__\"] tbody tr",
-      "ro": 18,
-      "en": 13,
-      "cod": [
-        "d31",
-        "d43",
-        "val-ro-i2"
-      ],
-      "motiv": "TabelPlanuri: ies randurile 'Criptarea fisierelor', 'Acces pe persoana si pe dosar', 'Portal pentru clienti', 'Clasare automata in dosare', 'Reguli automate si notificari'."
+      "tip": "clasa",
+      "clasa": "pliuri_contor",
+      "cod": "val-ro-1.1",
+      "motiv": "BirouInteractiv (primul pliu) se monteaza pe 3s.md fara demonstratia dispozitivelor: ies contorul (eticheta, valoarea, nota fara plafon) si butonul de adaugare, iar scena ramane fara nume accesibil; faptul ca dispozitivele nu se numara nu e confirmat (preturi-dispozitive-nelimitate, neconfirmat). Scena, banda de conturi, titlul si paragraful pliului raman, pe faptul confirmat (conturile pe plan)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "pliuri_contorEticheta",
+      "cod": "val-ro-1.1",
+      "motiv": "BirouInteractiv (primul pliu) se monteaza pe 3s.md fara demonstratia dispozitivelor: ies contorul (eticheta, valoarea, nota fara plafon) si butonul de adaugare, iar scena ramane fara nume accesibil; faptul ca dispozitivele nu se numara nu e confirmat (preturi-dispozitive-nelimitate, neconfirmat). Scena, banda de conturi, titlul si paragraful pliului raman, pe faptul confirmat (conturile pe plan)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "pliuri_contorNota",
+      "cod": "val-ro-1.1",
+      "motiv": "BirouInteractiv (primul pliu) se monteaza pe 3s.md fara demonstratia dispozitivelor: ies contorul (eticheta, valoarea, nota fara plafon) si butonul de adaugare, iar scena ramane fara nume accesibil; faptul ca dispozitivele nu se numara nu e confirmat (preturi-dispozitive-nelimitate, neconfirmat). Scena, banda de conturi, titlul si paragraful pliului raman, pe faptul confirmat (conturile pe plan)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "pliuri_contorValoare",
+      "cod": "val-ro-1.1",
+      "motiv": "BirouInteractiv (primul pliu) se monteaza pe 3s.md fara demonstratia dispozitivelor: ies contorul (eticheta, valoarea, nota fara plafon) si butonul de adaugare, iar scena ramane fara nume accesibil; faptul ca dispozitivele nu se numara nu e confirmat (preturi-dispozitive-nelimitate, neconfirmat). Scena, banda de conturi, titlul si paragraful pliului raman, pe faptul confirmat (conturile pe plan)."
     }
   ],
   "_nedeclarate": [
-    "RON -> EUR (d54) si nota 'fara card': schimbari de text.",
-    "Randul 'Unde primesti raspunsuri' ramane, cu valoarea fara WhatsApp (d49): text."
+    "RON -> EUR (d54), nota 'fara card', randurile WhatsApp (d49), portal si aplicatii (d43), AES si accesul pe persoana (d31), clasarea automata (val-ro-i2): schimbari de TEXT; in locul fiecarui rand scos sta un fapt confirmat, deci listele (9 randuri pe plan, 14 randuri in tabel) pastreaza numaratoarea RO.",
+    "Blocul de intrebari poarta ancora 'pilot' in locul lui 'intrebari-preturi' (comparatia G3 trimite la /pricing#pilot); tuplul radacinii ramane acelasi, fiindca sectiunea e legata prin aria-labelledby."
   ]
 }

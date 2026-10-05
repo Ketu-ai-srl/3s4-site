@@ -2,7 +2,7 @@
   {
     "id": "en-juridic-serviciu-web-si-whatsapp",
     "text": "3S keeps a company's documents in a digital archive and answers questions about them, showing the document each answer comes from; it works in the browser",
-    "unde": "src/content/en/home.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii juridic-serviciu-web-si-whatsapp (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: aceeași confirmare ca acasa-functii-in-productie și acasa-integrari-si-whatsapp: deciziile D4b și D4c din planul valului S4 (căutarea cu sursa citată există azi; pe WhatsApp răspunde la întrebări). Decizia 49 (owner-ul, 2026-10-02, „nu avem acum whatsapp”; planul 3s.md, §0.1, rândul 49): asistentul pe WhatsApp a ieșit de pe paginile de lansare; pe paginile EN intrarea acoperă numai jumătatea despre browser.",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -11,7 +11,7 @@
   {
     "id": "en-comparatii-cautare-cu-sursa",
     "text": "3S searches the content of documents with AI and cites the source of each answer, so you can check it",
-    "unde": "src/content/en/home.ts, src/content/en/enterprise.ts, src/content/en/contact.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/enterprise.ts, src/content/en/contact.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii comparatii-cautare-cu-sursa (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind deja în producție); aceeași confirmare ca acasa-functii-in-productie, care numește căutarea cu sursa citată",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -20,7 +20,7 @@
   {
     "id": "en-acasa-trei-pasi-scan-store-solve",
     "text": "Scan / Store / Solve: files already scanned go straight into the platform; each uploaded document sits in the organization's own space and is prepared automatically for search; to a question in Romanian, 3S answers with the information and the document it comes from (the paper half of the Scan step stays out until the legal texts are rewritten)",
-    "unde": "src/content/en/home.ts, src/content/en/platform.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii acasa-trei-pasi-scan-store-solve (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: vocea mărcii aleasă de owner (decizia D15 e din planul valului S4, 26.09), din textul de prezentare al partenerului de afaceri; funcțiile descrise sunt deja confirmate ca existente prin decizia D4b (produsul e în producție)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-26",
@@ -29,7 +29,7 @@
   {
     "id": "en-produs-functii-in-productie",
     "text": "Answers come from the content of the documents and carry a cited source; 3S searches the content of documents with AI (only these functions of the entry are used on the EN pages, decision 43)",
-    "unde": "src/content/en/home.ts, src/content/en/platform.ts",
+    "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii produs-functii-in-productie (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind deja în producție)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -38,7 +38,7 @@
   {
     "id": "en-flux-functii-in-productie",
     "text": "3S takes in documents by upload from the browser, recognizes each one and logs who opens it (the e-mail intake, the rules and the routing of the entry are not used on the EN pages, decision 43)",
-    "unde": "src/content/en/platform.ts",
+    "unde": "src/content/en/platforma-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii flux-functii-in-productie (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: declarația owner-ului, decizia D4b din planul valului S4: funcționalitățile referinței vizuale se prezintă ca existente, produsul fiind deja în producție",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -47,7 +47,7 @@
   {
     "id": "en-comparatii-registru-termene",
     "text": "You can set a retention period for each folder, and it applies to the documents in it",
-    "unde": "src/content/en/platform.ts",
+    "unde": "src/content/en/platforma-componente.ts",
     "stare": "confirmat",
     "sursa": "decizia 43 a owner-ului (01.10.2026): funcțiile negăsite în codul platformei nu apar pe paginile de lansare, deci registrul arhivei cu termen pe fiecare document iese; fișa P-14 din codul platformei (A-32): singura regulă este regula de eliminare pe dosar, a cărei dată fixează termenul de păstrare pentru documentele din dosar; confirmată de furnizorul platformei la punctul 8 al întrebărilor tehnice (02.10.2026): singura regulă automată este cea de eliminare",
     "confirmat_de": "owner-ul proiectului 3S și furnizorul platformei, 2026-10-02",
@@ -56,7 +56,7 @@
   {
     "id": "en-enterprise-functii-in-productie",
     "text": "3S recognizes the text of scanned documents, detects the document type, searches with the source cited and delivers documents by export (rules, client portal, API and reading fields are not used on the EN pages, decision 43)",
-    "unde": "src/content/en/platform.ts, src/content/en/enterprise.ts",
+    "unde": "src/content/en/platforma-componente.ts, src/content/en/enterprise.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii enterprise-functii-in-productie (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: declarația owner-ului, decizia D4b din planul valului S4 (funcționalitățile se prezintă ca existente, produsul fiind în producție) și D1b (aceeași listă de funcționalități ca referința vizuală)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -65,7 +65,7 @@
   {
     "id": "en-produs-amazon-sediu-sua",
     "text": "Amazon is a US company, headquartered in the United States; US law (the CLOUD Act) can require a US provider to preserve and disclose data in its care, wherever its servers are",
-    "unde": "src/content/en/about.ts, src/content/en/platform.ts, src/content/en/enterprise.ts",
+    "unde": "src/content/en/despre-componente.ts, src/content/en/platforma-componente.ts, src/content/en/enterprise.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii produs-amazon-sediu-sua (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: surse primare, deschise pe 2026-09-25. Legea: 18 U.S.C. § 2713, adăugat prin Pub. L. 115-141 (CLOUD Act), în textul oficial al Codului SUA (https://www.govinfo.gov/content/pkg/USCODE-2023-title18/html/USCODE-2023-title18-partI-chap121-sec2713.htm; aceeași formă la https://www.law.cornell.edu/uscode/text/18/2713): furnizorul de servicii de comunicații electronice sau de calcul la distanță păstrează și predă datele pe care le are în posesie, custodie sau control „regardless of whether such communication, record, or other information is located within or outside of the United States”. Sediul: fișa Amazon.com, Inc. la SEC EDGAR (https://data.sec.gov/submissions/CIK0001018724.json), adresa de afaceri 410 Terry Avenue North, Seattle, WA, societate înregistrată în Delaware. Ambele surse redeschise de felia produs pe 2026-09-25, la runda de finalizare, cu același text",
     "confirmat_de": "felia produs, din sursele primare citate în câmpul sursa, 2026-09-25",
@@ -74,7 +74,7 @@
   {
     "id": "en-juridic-gazduire-amazon-germania",
     "text": "The 3S platform, with its accounts, uploaded files and digital archive, runs on Amazon Web Services (the region wording is en-gazduire-ue-frankfurt, decision 42)",
-    "unde": "src/content/en/about.ts",
+    "unde": "src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii juridic-gazduire-amazon-germania (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: aceeași confirmare ca acasa-gazduire-amazon-germania: decizia D4c din planul valului S4 (găzduire Amazon, Germania, o singură regiune); textul vine din src/content/juridic/furnizori.ts",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -83,7 +83,7 @@
   {
     "id": "en-cinema2-semnatura-in-curs",
     "text": "Qualified electronic signature is not available through 3S today; integration with accredited providers is in progress",
-    "unde": "src/content/en/about.ts",
+    "unde": "src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda EN a intrarii cinema2-semnatura-in-curs (arhitectura continutului EN, Anexa A: intrarile-oglinda mostenesc starea si sursa). Sursa ei: decizia D4c din planul valului S4: semnătura calificată e „în proces cu toate”, deci nu e disponibilă azi; formularea impusă este „integrare în curs cu furnizorii acreditați”",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24",
@@ -92,7 +92,7 @@
   {
     "id": "en-operator-din-moldova",
     "text": "3S is operated from Moldova.",
-    "unde": "src/content/en/home.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-operator-din-moldova (brief 30.09; plan §0, D1); planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, decizia 5. Formularea e adevarata odata cu firma operatoare (inregistrare dupa 10.10.2026)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
@@ -137,7 +137,7 @@
   {
     "id": "en-pagina-si-engleza-in-pilot",
     "text": "English questions over Romanian documents, and citation down to the page, are in pilot; questions in Romanian are supported.",
-    "unde": "src/content/en/home.ts, src/content/en/platform.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pagina-si-engleza-in-pilot (brief 30.09; P-13)",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
@@ -155,7 +155,7 @@
   {
     "id": "en-ghiduri-cu-surse",
     "text": "Guides cite primary sources with links and the date each row was checked; they are not legal advice.",
-    "unde": "src/content/en/home.ts, src/content/en/platform.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-ghiduri-cu-surse (politica editoriala a arhitecturii continutului EN)",
     "confirmat_de": "politica proiectului (arhitectura continutului EN), 2026-09-30",
@@ -164,7 +164,7 @@
   {
     "id": "en-pilot-asistat",
     "text": "3S starts with a free 30-day assisted pilot on the customer's own documents, with 5 user accounts and the volume agreed in writing, after the Terms and the data processing agreement are accepted, then confirms the plan and the price in a written offer.",
-    "unde": "src/content/en/home.ts, src/content/en/platform.ts, src/content/en/pricing.ts, src/content/en/contact.ts",
+    "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/pricing.ts, src/content/en/contact.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pilot-asistat; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, deciziile 1 si 19",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 ~23:55",
@@ -173,7 +173,7 @@
   {
     "id": "en-gazduire-ue-frankfurt",
     "text": "Files uploaded to 3S are stored in the EU, with Frankfurt as the primary region, on Amazon Web Services.",
-    "unde": "src/content/en/home.ts, src/content/en/platform.ts, src/content/en/enterprise.ts, src/content/en/about.ts",
+    "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/enterprise.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-gazduire-ue-frankfurt; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, decizia 42 (01.10 ~12:00, „3. ok”). Configurarea de productie o confirma dezvoltatorul platformei",
     "confirmat_de": "owner-ul proiectului 3S, 2026-10-01",

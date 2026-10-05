@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import Constructor from '../src/components/constructor/Constructor'
 import Chestionar from '../src/components/constructor/Chestionar'
 import { construiesteSimularea, stareDupa, stareFinala } from '../src/components/constructor/duel-motor'
+import { CONTINUT_LUME_RO as RO } from '../src/components/constructor/Lume'
 import {
   PORNIRE_DUPA_ALEGERE,
   apropieProgres,
@@ -257,23 +258,23 @@ describe('simularea zilei', () => {
   const peste50 = { industrie: 'constructii' as const, canale: ['email', 'mesaj', 'hartie'] as CodCanal[], volum: 'v99' as const, cine: 'nimeni' as const }
 
   it('peste 50 si 3 canale: 26 vs 0, 2 h 10 min, 3 termene, dosarele 6/5/5/5/5 (masurat pe referinta)', () => {
-    const s = stareFinala(peste50)
+    const s = stareFinala(peste50, RO)
     expect(s.final).toBe(true)
     expect(s.nesortate).toBe(26)
     expect(formatTimp(s.timpPierdut)).toBe('2 h 10 min')
     expect(formatTimp(s.timpEconomisit)).toBe('2 h 10 min')
     expect(s.termene).toBe(3)
     expect(s.dosareDreapta).toEqual([6, 5, 5, 5, 5])
-    expect(construiesteSimularea(peste50).sfarsit).toBe(11880)
+    expect(construiesteSimularea(peste50, RO).sfarsit).toBe(11880)
   })
 
   it('volumul da numarul de documente, pasul si finalul: 8 / 1150 / 9,9 s si 16 / 680 / 11,58 s', () => {
-    const p10 = construiesteSimularea({ ...peste50, volum: 'v10', canale: ['email'] })
-    const p50 = construiesteSimularea({ ...peste50, volum: 'v50' })
+    const p10 = construiesteSimularea({ ...peste50, volum: 'v10', canale: ['email'] }, RO)
+    const p50 = construiesteSimularea({ ...peste50, volum: 'v50' }, RO)
     expect([p10.documente, p10.pas, p10.sfarsit]).toEqual([8, 1150, 9900])
     expect([p50.documente, p50.pas, p50.sfarsit]).toEqual([16, 680, 11580])
     // Masurat la Avocatura (10-50, 3 canale): 16 vs 0, 1 h 20 min, 2 termene.
-    const av = stareFinala({ industrie: 'avocatura', canale: ['email', 'mesaj', 'hartie'], volum: 'v50', cine: 'eu' })
+    const av = stareFinala({ industrie: 'avocatura', canale: ['email', 'mesaj', 'hartie'], volum: 'v50', cine: 'eu' }, RO)
     expect([av.nesortate, formatTimp(av.timpPierdut), av.termene]).toEqual([16, '1 h 20 min', 2])
   })
 
@@ -285,20 +286,20 @@ describe('simularea zilei', () => {
   })
 
   it('numele fisierelor cresc la fiecare trecere si gramada tine cel mult 8 randuri', () => {
-    const sim = construiesteSimularea(peste50)
+    const sim = construiesteSimularea(peste50, RO)
     let maxim = 0
     for (let n = 0; n <= sim.evenimente.length; n++) {
-      const s = stareDupa(sim, peste50, n)
+      const s = stareDupa(sim, peste50, n, RO)
       maxim = Math.max(maxim, s.gramadaStanga.length, s.gramadaDreapta.length)
     }
     expect(maxim).toBe(8)
     const f = SCENARII.constructii.duel.fisiere[0]
     expect(numeFisier(f, 0)).not.toBe(numeFisier(f, 5))
-    expect(stareFinala(peste50).gramadaDreapta[0].nume).toBe(numeFisier(f, 5))
+    expect(stareFinala(peste50, RO).gramadaDreapta[0].nume).toBe(numeFisier(f, 5))
   })
 
   it('finalul pune fraza despre "cine", cu timpul zilei', () => {
-    expect(stareFinala({ ...peste50, cine: 'coleg' }).stres?.text).toContain('2 h 10 min')
+    expect(stareFinala({ ...peste50, cine: 'coleg' }, RO).stres?.text).toContain('2 h 10 min')
   })
 
   it('formatul timpului: sub o ora in minute, apoi ore si minute', () => {
@@ -479,7 +480,7 @@ describe('CTA-ul final trimite raspunsurile prin contractul din acasa.ts', () =>
     rulare: 1,
   }
   const html = renderToStaticMarkup(
-    createElement(Chestionar, { industrie: 'notariat', raspunsuri, setRaspunsuri: () => {} }),
+    createElement(Chestionar, { industrie: 'notariat', raspunsuri, setRaspunsuri: () => {}, continut: RO }),
   )
   const asteptat = adresaInregistrare({ ind: 'notariat', src: ['hartie', 'email'], vol: 'v50', who: 'coleg' })
 

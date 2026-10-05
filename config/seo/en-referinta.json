@@ -1,5 +1,5 @@
 {
-  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei en-referinta: paginile EN G1, G2 si G3, din Anexa B a arhitecturii continutului EN. Primul paragraf al fiecarei pagini e capsula (59, 59 si 50 de cuvinte).",
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei en-referinta: paginile EN G1, G2 si G3, din Anexa B a arhitecturii continutului EN. Dupa decizia 53 primul paragraf din <main> e subtitlul eroului perechii RO: pe G1 si G2 capsula (59 si 52 de cuvinte); pe G3 subtitlul de 28 de cuvinte, cu scutirea scrisa. G3 compara un singur tert, Google Drive cu Gemini (Q7 din fisa paginii), deci intrebarea si entitatile il numesc numai pe el.",
   "raspuns_autonom": {
     "/guides/e-invoice-archiving-eu": {
       "intrebare": "How long must e-invoices be kept in the EU?",
@@ -24,14 +24,9 @@
       ]
     },
     "/compare/3s-vs-google-and-box": {
-      "intrebare": "Should I choose 3S, Gemini Notebook, Gemini in Google Drive or Box AI?",
-      "entitati": [
-        "3S",
-        "Gemini Notebook",
-        "NotebookLM",
-        "Google Drive",
-        "Box AI"
-      ]
+      "intrebare": "Should I choose 3S or Google Drive with Gemini?",
+      "fara_regula_paragrafului": "G3 are forma eroului perechii RO /comparatie-drive (decizia 53): sub titlu sta un subtitlu scurt (28 de cuvinte), nu un paragraf de raspuns de 30-80, ca pe perechea RO (config/seo/comparatii-termene.json). Raspunsul paginii e titlul impreuna cu subtitlul si cu cardul divizat de dedesubt; entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",
+      "entitati": ["3S", "Google Drive", "Gemini"]
     }
   }
 }

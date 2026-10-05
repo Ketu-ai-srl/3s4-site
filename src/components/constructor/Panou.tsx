@@ -18,12 +18,16 @@
 //
 // Elementele scenei sunt in pagina de la inceput, ascunse prin opacitate: cardul are de la primul
 // cadru inaltimea finala, deci pagina nu sare sub ochii omului (ca la referinta).
+//
+// CONTINUTUL vine in `continut`, de la vederea lumii (`LumeVedere.tsx`); panoul nu importa nimic din
+// `src/content/`. Pe editiile 3s.md lipsesc lista de reguli si randul de integrari (decizia 43): ramurile
+// lor nu se randeaza. Pe RO amandoua exista, deci DOM-ul e cel de dinainte.
 
 import { Fragment, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
-import { CALE_INREGISTRARE } from "@/content/navigatie";
 import type { CodIndustrie } from "@/content/acasa";
-import { COMUN, completeaza, type Banda, type Scenariu } from "@/content/acasa-constructor";
+import type { Banda } from "@/content/acasa-constructor";
 import Tinta from "@/components/primitive/Tinta";
+import { atributeCanal, type ContinutLume, type ScenariuEditie } from "./LumeVedere";
 import { IcBifa, IcChevron, IcMarca, IcPosta, IcReluare, IcServer, IconitaActiuneBanda } from "./Iconite";
 import {
   PORNIRE_DUPA_ALEGERE,
@@ -47,7 +51,7 @@ export function semnalGol(): SemnalArbore {
 type Props = {
   industrie: CodIndustrie;
   numeIndustrie: string;
-  scenariu: Scenariu;
+  scenariu: ScenariuEditie;
   benzi: Banda[];
   /** Schimbarea ei reia programul de la 0. */
   cheie: number;
@@ -57,6 +61,7 @@ type Props = {
   laReluare: () => void;
   /** `performance.now()` la clicul care a ales industria: reperul primei porniri. */
   momentAlegere: number;
+  continut: ContinutLume;
 };
 
 function cls(...clase: (string | false | null | undefined)[]): string {
@@ -77,7 +82,9 @@ export default function Panou({
   semnal,
   laReluare,
   momentAlegere,
+  continut,
 }: Props) {
+  const COMUN = continut.comun;
   const L = benzi.length;
   const pasi = useMemo(() => programPasi(L), [L]);
   // La miscare redusa panoul se monteaza direct in starea finala, fara o randare intermediara goala.
@@ -177,34 +184,41 @@ export default function Panou({
               <h3 className={cls(s.durere, industrie === "contabilitate" && s.durereLata, a("X1") && s.in)}>
                 {scenariu.durere}
               </h3>
-              <ScenaIndustriei industrie={industrie} a={a} />
+              <ScenaIndustriei
+                industrie={industrie}
+                a={a}
+                scenarii={continut.scenarii}
+                completeaza={continut.text.completeaza}
+              />
             </div>
-            <div className={cls(s.automatizari, a("B1") && s.in)}>
-              <p className={s.etichetaAuto}>{COMUN.automatizari}</p>
-              <div className={s.benzi}>
-                {benzi.map((b, i) => (
-                  <div
-                    key={b.declansator + i}
-                    className={cls(
-                      s.banda,
-                      a(("B" + (i + 1)) as NumePas) && s.in,
-                      b.laPas !== null && a(("T" + b.laPas) as NumePas) && s.gata,
-                    )}
-                    data-banda={b.laPas !== null && a(("T" + b.laPas) as NumePas) ? "gata" : "asteapta"}
-                  >
-                    <span className={s.declansator}>{b.declansator}</span>
-                    <IcChevron marime={14} contur={1.5} className={s.sageata} />
-                    <span className={s.actiune}>
-                      <IconitaActiuneBanda fel={b.iconita} marime={16} contur={1.5} className={s.iconitaActiune} />
-                      <span>{b.actiune}</span>
-                    </span>
-                    <span className={s.locBifa}>
-                      <IcBifa marime={16} contur={2} className={s.bifa} />
-                    </span>
-                  </div>
-                ))}
+            {COMUN.automatizari === undefined ? null : (
+              <div className={cls(s.automatizari, a("B1") && s.in)}>
+                <p className={s.etichetaAuto}>{COMUN.automatizari}</p>
+                <div className={s.benzi}>
+                  {benzi.map((b, i) => (
+                    <div
+                      key={b.declansator + i}
+                      className={cls(
+                        s.banda,
+                        a(("B" + (i + 1)) as NumePas) && s.in,
+                        b.laPas !== null && a(("T" + b.laPas) as NumePas) && s.gata,
+                      )}
+                      data-banda={b.laPas !== null && a(("T" + b.laPas) as NumePas) ? "gata" : "asteapta"}
+                    >
+                      <span className={s.declansator}>{b.declansator}</span>
+                      <IcChevron marime={14} contur={1.5} className={s.sageata} />
+                      <span className={s.actiune}>
+                        <IconitaActiuneBanda fel={b.iconita} marime={16} contur={1.5} className={s.iconitaActiune} />
+                        <span>{b.actiune}</span>
+                      </span>
+                      <span className={s.locBifa}>
+                        <IcBifa marime={16} contur={2} className={s.bifa} />
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             <p className={cls(s.concluzie, gata && s.in)}>
               <IcBifa marime={18} contur={2} className={s.bifaConcluzie} />
               <span>{scenariu.concluzie}</span>
@@ -213,26 +227,28 @@ export default function Panou({
         </div>
         {/* Punctul dintre elemente e un element al randului, ca la referinta: la rupere ramane la
             capatul randului 1, nu coboara cu al doilea element. */}
-        <div className={cls(s.integrari, a("Y1") && s.in)}>
-          <span className={s.etichetaIntegrari}>{COMUN.integrari.eticheta}</span>
-          {COMUN.integrari.elemente.map((e, i) => (
-            <Fragment key={e.text}>
-              {i > 0 ? (
-                <span className={s.punct} aria-hidden="true">
-                  ·
+        {COMUN.integrari === undefined ? null : (
+          <div className={cls(s.integrari, a("Y1") && s.in)}>
+            <span className={s.etichetaIntegrari}>{COMUN.integrari.eticheta}</span>
+            {COMUN.integrari.elemente.map((e, i) => (
+              <Fragment key={e.text}>
+                {i > 0 ? (
+                  <span className={s.punct} aria-hidden="true">
+                    ·
+                  </span>
+                ) : null}
+                <span className={s.elementIntegrare}>
+                  {e.iconita === "server" ? (
+                    <IcServer marime={13} contur={1.5} className={s.iconitaIntegrare} />
+                  ) : (
+                    <IcPosta marime={13} contur={1.5} className={s.iconitaIntegrare} />
+                  )}
+                  <span>{e.text}</span>
                 </span>
-              ) : null}
-              <span className={s.elementIntegrare}>
-                {e.iconita === "server" ? (
-                  <IcServer marime={13} contur={1.5} className={s.iconitaIntegrare} />
-                ) : (
-                  <IcPosta marime={13} contur={1.5} className={s.iconitaIntegrare} />
-                )}
-                <span>{e.text}</span>
-              </span>
-            </Fragment>
-          ))}
-        </div>
+              </Fragment>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className={cls(s.final, gata && s.in)}>
@@ -243,15 +259,12 @@ export default function Panou({
           <p className={s.finalTitlu}>{COMUN.final.titlu}</p>
           <p className={s.finalSub}>{COMUN.final.subRand}</p>
         </div>
-        <Tinta
-          legatura={{ text: COMUN.final.buton, href: CALE_INREGISTRARE, ruta: CALE_INREGISTRARE }}
-          className={s.cta}
-        >
+        <Tinta legatura={continut.tinte.final.legatura} className={s.cta} {...atributeCanal(continut.tinte.final)}>
           {COMUN.final.buton}
         </Tinta>
       </div>
       <p className={s.anunt} role="status">
-        {gata ? completeaza(COMUN.anuntGata, { industrie: numeIndustrie }) : ""}
+        {gata ? continut.text.completeaza(COMUN.anuntGata, { industrie: numeIndustrie }) : ""}
       </p>
     </div>
   );

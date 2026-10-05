@@ -8,6 +8,9 @@
 // Stratul cu derulare primeste focus (tabIndex 0) si nume: la 390 tabelul e mai lat decat panoul,
 // iar un strat care se deruleaza trebuie sa poata fi derulat si de la tastatura. Numele lui e altul
 // decat al sectiunii (care poarta titlul de bloc), ca cele doua repere sa nu se confunde.
+//
+// PE EDITIE: legenda marcajelor, eticheta ei accesibila si sufixul pentru cititorul de ecran al
+// legaturilor spre surse vin prin proprietati, cu implicitul romanesc (pagina RO nu le paseaza).
 
 import { ChevronDown, ExternalLink } from "lucide-react";
 import type { CSSProperties } from "react";
@@ -24,21 +27,35 @@ export type TabelMarcajeProps = {
   tabel: TabelComparatie;
   /** Alte afirmatii despre terti de pe aceeasi pagina (cardurile), cu sursele lor. */
   surseSuplimentare?: SurseSuplimentare[];
+  /** Numele marcajelor (legenda si textul pentru cititorul de ecran din celule), in limba editiei. */
+  legenda?: Record<Marcaj, string>;
+  /** Eticheta accesibila a listei-legenda. */
+  etichetaLegenda?: string;
+  /** Textul pentru cititorul de ecran de dupa fiecare legatura spre o sursa, cu spatiul de inceput. */
+  fereastraNoua?: string;
 };
+
+const FEREASTRA_NOUA_RO = " (se deschide într-o fereastră nouă)";
 
 const ORDINE_LEGENDA: Marcaj[] = ["da", "partial", "nu"];
 
-function LegaturaSursa({ sursa }: { sursa: SursaOficiala }) {
+function LegaturaSursa({ sursa, fereastraNoua }: { sursa: SursaOficiala; fereastraNoua: string }) {
   return (
     <a className={s.legaturaExterna} href={sursa.url} target="_blank" rel="noopener nofollow">
       <span>{sursa.eticheta}</span>
-      <span className="doar-cititor"> (se deschide într-o fereastră nouă)</span>
+      <span className="doar-cititor">{fereastraNoua}</span>
       <ExternalLink size={13} strokeWidth={2} aria-hidden="true" focusable="false" />
     </a>
   );
 }
 
-export default function TabelMarcaje({ tabel, surseSuplimentare = [] }: TabelMarcajeProps) {
+export default function TabelMarcaje({
+  tabel,
+  surseSuplimentare = [],
+  legenda = LEGENDA_MARCAJE,
+  etichetaLegenda = "Legenda marcajelor",
+  fereastraNoua = FEREASTRA_NOUA_RO,
+}: TabelMarcajeProps) {
   // Latimile coloanelor de marcaj, ca variabile: sub 768 foaia de stil trece pe cea mica.
   const latimi = {
     minWidth: tabel.latimeMinima,
@@ -72,12 +89,12 @@ export default function TabelMarcaje({ tabel, surseSuplimentare = [] }: TabelMar
                   {r.terti.map((c, i) => (
                     <td key={tabel.coloaneTerti[i]} className={s.celula}>
                       <SemnMarcaj marcaj={c.marcaj} className={s.marcaj + " " + s.marcajTert} />
-                      <span className="doar-cititor">{LEGENDA_MARCAJE[c.marcaj]}</span>
+                      <span className="doar-cititor">{legenda[c.marcaj]}</span>
                     </td>
                   ))}
                   <td className={s.celula}>
                     <SemnMarcaj marcaj={r.noi.marcaj} className={s.marcaj + " " + s.marcajNoi} />
-                    <span className="doar-cititor">{LEGENDA_MARCAJE[r.noi.marcaj]}</span>
+                    <span className="doar-cititor">{legenda[r.noi.marcaj]}</span>
                   </td>
                 </tr>
               ))}
@@ -86,11 +103,11 @@ export default function TabelMarcaje({ tabel, surseSuplimentare = [] }: TabelMar
         </div>
       </div>
 
-      <ul className={s.legenda} aria-label="Legenda marcajelor">
+      <ul className={s.legenda} aria-label={etichetaLegenda}>
         {ORDINE_LEGENDA.map((m) => (
           <li key={m} className={s.legendaElement}>
             <SemnMarcaj marcaj={m} marime={14} className={s.marcajTert} />
-            <span>{LEGENDA_MARCAJE[m]}</span>
+            <span>{legenda[m]}</span>
           </li>
         ))}
       </ul>
@@ -108,11 +125,11 @@ export default function TabelMarcaje({ tabel, surseSuplimentare = [] }: TabelMar
               {r.terti.map((c, i) => (
                 <div key={tabel.coloaneTerti[i]}>
                   <p>
-                    {tabel.coloaneTerti[i]}: {LEGENDA_MARCAJE[c.marcaj].toLowerCase()}. {c.nota}
+                    {tabel.coloaneTerti[i]}: {legenda[c.marcaj].toLowerCase()}. {c.nota}
                   </p>
                   <p className={s.surseLegaturi}>
                     {c.surse.map((su) => (
-                      <LegaturaSursa key={su.url} sursa={su} />
+                      <LegaturaSursa key={su.url} sursa={su} fereastraNoua={fereastraNoua} />
                     ))}
                   </p>
                 </div>
@@ -124,7 +141,7 @@ export default function TabelMarcaje({ tabel, surseSuplimentare = [] }: TabelMar
               <p className={s.surseFunctie}>{g.titlu}</p>
               <p className={s.surseLegaturi}>
                 {g.surse.map((su) => (
-                  <LegaturaSursa key={su.url} sursa={su} />
+                  <LegaturaSursa key={su.url} sursa={su} fereastraNoua={fereastraNoua} />
                 ))}
               </p>
             </li>

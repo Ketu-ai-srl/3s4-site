@@ -2,14 +2,16 @@
 // (`src/app/page.tsx`, decizia 53), cu textul in engleza din `src/content/en/acasa-componente.ts`.
 //
 // Ordinea RO, cu ce lipseste si de ce (lista declarata a perechii: `config/congruenta/p01.json`):
-//   Erou, [BandaIntegrari: iese, decizia 43], [Constructor: forma lui pe editie e felia proprie, dupa aceasta],
-//   FunctionalitatiAcasa, BandaCifre, GrilaIndustrii, Testimonial, CardSecuritate, CardEnterprise, BandaPret,
-//   FaqAcasa, CtaFinalInchis.
+//   Erou, [BandaIntegrari: iese, decizia 43], Constructor (forma (a) a deciziei 59: fara reguli, integrari, benzi
+//   si toast-uri, sume fara lei, tinta pe WhatsApp), FunctionalitatiAcasa, BandaCifre, GrilaIndustrii, Testimonial,
+//   CardSecuritate, CardEnterprise, BandaPret, FaqAcasa, CtaFinalInchis.
 //
 // Canalele: butoanele eroului si ale finalului duc la WhatsApp, cu textul precompletat al paginii (`[ref:en-home]`,
-// din `home.ts`); fara formular (decizia 3). Scena eroului fara lansarea machetei (`lansare={false}`). Metadata,
-// nodul WebPage si registrul de afirmatii vin din `home.ts`; nodul FAQPage se construieste aici, din intrebarile
-// VIZIBILE ale paginii, ca sa le oglindeasca exact. Organizatia si site-ul le pune layout-ul.
+// din `home.ts`); fara formular (decizia 3). Constructorul primeste aceeasi legatura pentru butonul final al
+// panoului si CTA-ul estimarii (`ConstructorEn`, textul din `src/content/en/acasa-constructor*-componente.ts`). Scena
+// eroului fara lansarea machetei (`lansare={false}`). Metadata, nodul WebPage si registrul de afirmatii vin din
+// `home.ts`; nodul FAQPage se construieste aici, din intrebarile VIZIBILE ale paginii, ca sa le oglindeasca
+// exact. Organizatia si site-ul le pune layout-ul.
 
 import type { Metadata } from "next";
 import BandaCifre from "@/components/acasa/BandaCifre";
@@ -20,6 +22,7 @@ import FaqAcasa from "@/components/acasa/FaqAcasa";
 import GrilaIndustrii from "@/components/acasa/GrilaIndustrii";
 import Testimonial from "@/components/acasa/Testimonial";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
+import ConstructorEn from "@/components/constructor/ConstructorEn";
 import Erou from "@/components/erou/Erou";
 import FunctionalitatiAcasa from "@/components/functionalitati-acasa/FunctionalitatiAcasa";
 import PasiFunctionalitatiEn from "@/components/functionalitati-acasa/PasiFunctionalitatiEn";
@@ -124,6 +127,7 @@ export default function PaginaStartEn() {
           </>
         }
       />
+      <ConstructorEn tinta={href} />
       <FunctionalitatiAcasa continut={FUNCTIONALITATI_EN} pasi={<PasiFunctionalitatiEn />} />
       <BandaCifre continut={CIFRE_EN} />
       <GrilaIndustrii continut={INDUSTRII_EN} />

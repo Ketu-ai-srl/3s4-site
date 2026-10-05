@@ -17,19 +17,6 @@
       "motiv": "BandaIntegrari: integrarile nu se gasesc in codul platformei."
     },
     {
-      "tip": "componenta",
-      "radacina": {
-        "clasa": "Constructor_sectiune",
-        "eticheta": "constructor-titlu"
-      },
-      "cod": [
-        "d3",
-        "d43",
-        "d54"
-      ],
-      "motiv": "Constructor: forma RO trimite spre formularul de inregistrare (d3), poarta benzile si integrarile (d43) si sume in RON (d54). Forma lui pe editie (WhatsApp, fara integrari, EUR; decizia 59) e felia 122, dupa felia 99."
-    },
-    {
       "tip": "camp",
       "selector": "[class*=\"Erou_pastile__\"] > [class*=\"Erou_pastila__\"]",
       "ro": 1,
@@ -251,6 +238,7 @@
   ],
   "_nedeclarate": [
     "Erou: lansarea machetei (d43, d49) - nu e in HTML-ul servit; o masoara tests/browser/editie-start-en.spec.ts (zero <button> in scena dupa hidratare).",
-    "Testimonial, GrilaIndustrii, CardEnterprise, FaqAcasa: textul se schimba (d43, d49, d38, decizia 59), forma ramane - nu sunt randuri de forma."
+    "Testimonial, GrilaIndustrii, CardEnterprise, FaqAcasa: textul se schimba (d43, d49, d38, decizia 59), forma ramane - nu sunt randuri de forma.",
+    "Constructor: capul (titlul, intrebarea, cele 9 industrii) are forma RO, cu textul editiei (decizia 59, forma a). Lumea de dupa clic nu e in HTML-ul servit: pe 3s.md fara lista de reguli si randul de integrari ale panoului (d43), fara benzi si toast-uri in scene (d43), fara pista termenului in scena Avocatura (d43), tintele pe WhatsApp (d3), sume fara lei (d54). O masoara tests/constructor-editie.test.ts si tests/browser/constructor-editie.spec.ts."
   ]
 }

@@ -4,13 +4,36 @@
 // Randul CONFIRMAT: de cand curge termenul, temeiul legal in cutia cu linie albastra, apoi
 // legaturile spre sursele primare (fereastra noua). Randul NECONFIRMAT: de ce nu dam o cifra, plus
 // textele de lege pe care se sprijina motivul, cand exista.
+//
+// PE EDITIE: etichetele, contorul, nota, numele tipurilor de acte si sufixul pentru cititorul de
+// ecran vin prin `continut`, cu implicitul romanesc (componenta de server, deci functiile trec).
+// Tara insasi (randurile, sursele) vine deja prin `tara`.
 
 import { ChevronDown, ExternalLink } from "lucide-react";
-import { INSTRUMENT, numarConfirmate, numeTip, type RandTermen, type SursaPrimara, type Tara } from "@/content/termene/date";
+import { INSTRUMENT, numarConfirmate, numeTip, type CodTip, type RandTermen, type SursaPrimara, type Tara } from "@/content/termene/date";
 import Steag from "./Steag";
 import s from "./termene.module.css";
 
-function Surse({ surse }: { surse: SursaPrimara[] }) {
+export type ContinutPanouTara = {
+  contor: (confirmate: number, total: number) => string;
+  neconfirmat: string;
+  etichete: { inceput: string; temei: string; motiv: string };
+  nota: string;
+  numeTip: (cod: CodTip) => string;
+  /** Textul pentru cititorul de ecran de dupa fiecare sursa, cu spatiul de inceput. */
+  fereastraNoua: string;
+};
+
+const IMPLICIT: ContinutPanouTara = {
+  contor: INSTRUMENT.contor,
+  neconfirmat: INSTRUMENT.neconfirmat,
+  etichete: INSTRUMENT.etichete,
+  nota: INSTRUMENT.nota,
+  numeTip,
+  fereastraNoua: " (se deschide într-o fereastră nouă)",
+};
+
+function Surse({ surse, fereastraNoua }: { surse: SursaPrimara[]; fereastraNoua: string }) {
   if (surse.length === 0) return null;
   return (
     <ul className={s.surse}>
@@ -18,7 +41,7 @@ function Surse({ surse }: { surse: SursaPrimara[] }) {
         <li key={su.url}>
           <a className={s.sursa} href={su.url} target="_blank" rel="noopener nofollow">
             <span>{su.eticheta}</span>
-            <span className="doar-cititor"> (se deschide într-o fereastră nouă)</span>
+            <span className="doar-cititor">{fereastraNoua}</span>
             <ExternalLink size={13} strokeWidth={2} aria-hidden="true" focusable="false" />
           </a>
         </li>
@@ -27,16 +50,16 @@ function Surse({ surse }: { surse: SursaPrimara[] }) {
   );
 }
 
-function Rand({ rand }: { rand: RandTermen }) {
-  const e = INSTRUMENT.etichete;
+function Rand({ rand, c }: { rand: RandTermen; c: ContinutPanouTara }) {
+  const e = c.etichete;
   return (
     <details className={s.rand}>
       <summary className={s.rezumat}>
-        <span className={s.tip}>{numeTip(rand.tip)}</span>
+        <span className={s.tip}>{c.numeTip(rand.tip)}</span>
         {rand.valoare !== null ? (
           <span className={s.valoare}>{rand.valoare}</span>
         ) : (
-          <span className={s.lipsa}>{INSTRUMENT.neconfirmat}</span>
+          <span className={s.lipsa}>{c.neconfirmat}</span>
         )}
         <ChevronDown size={16} strokeWidth={2} className={s.chevron} aria-hidden="true" focusable="false" />
       </summary>
@@ -54,13 +77,14 @@ function Rand({ rand }: { rand: RandTermen }) {
             <dd className={s.text}>{rand.motiv}</dd>
           </dl>
         )}
-        <Surse surse={rand.surse} />
+        <Surse surse={rand.surse} fereastraNoua={c.fereastraNoua} />
       </div>
     </details>
   );
 }
 
-export default function PanouTara({ tara }: { tara: Tara }) {
+export default function PanouTara({ tara, continut = IMPLICIT }: { tara: Tara; continut?: ContinutPanouTara }) {
+  const c = continut;
   const idTitlu = "tara-" + tara.cod;
   return (
     <section className={s.panou} aria-labelledby={idTitlu}>
@@ -69,14 +93,14 @@ export default function PanouTara({ tara }: { tara: Tara }) {
           <Steag cod={tara.cod} className={s.steagTitlu} />
           {tara.nume}
         </h2>
-        <p className={s.contor}>{INSTRUMENT.contor(numarConfirmate(tara), tara.randuri.length)}</p>
+        <p className={s.contor}>{c.contor(numarConfirmate(tara), tara.randuri.length)}</p>
       </header>
       <div>
         {tara.randuri.map((r) => (
-          <Rand key={r.tip} rand={r} />
+          <Rand key={r.tip} rand={r} c={c} />
         ))}
       </div>
-      <p className={s.nota}>{INSTRUMENT.nota}</p>
+      <p className={s.nota}>{c.nota}</p>
     </section>
   );
 }

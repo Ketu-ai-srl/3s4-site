@@ -1,5 +1,5 @@
 {
-  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei en-produs: pagina EN P03, din Anexa B a arhitecturii continutului EN. P04 (/features/whatsapp) a iesit de la lansare prin decizia 49, deci nu are declaratie. Primul paragraf e capsula (54 de cuvinte).",
+  "_nota": "Declaratiile de raspuns (poarta G-AI-02) ale rutelor feliei en-produs: pagina EN P03, din Anexa B a arhitecturii continutului EN. P04 (/features/whatsapp) a iesit de la lansare prin decizia 49, deci nu are declaratie. Felia 105 (decizia 53, intrebarea 5 varianta a): pagina compune povestea cinema a perechii RO, deci declaratia urmeaza forma ei, ca pe RO (config/seo/cinema-1.json): entitatea 'pilot' a iesit (povestea nu are sectiunea de stare, ramasa in fisa), iar regula paragrafului e scutita cu motivul scris.",
   "raspuns_autonom": {
     "/features/search": {
       "intrebare": "How does 3S answer questions about my documents?",
@@ -8,9 +8,9 @@
         "questions",
         "documents",
         "source",
-        "Romanian",
-        "pilot"
-      ]
+        "Romanian"
+      ],
+      "fara_regula_paragrafului": "Eroul are forma masurata a sablonului cinema, ca perechea RO /functionalitati/cautare-ai: dupa eticheta-titlu vine intrebarea scrisa in terminal, apoi doua randuri scurte; primul <p> din <main> are sub 30 de cuvinte prin constructie. Raspunsul paginii e titlul impreuna cu povestea de sub erou (extragerea cu sursa citata si CTA-ul)."
     }
   }
 }

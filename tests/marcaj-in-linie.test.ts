@@ -114,9 +114,33 @@ async function componenteDin(dosar: string): Promise<{ fisier: string; texte: st
   return iesire
 }
 
+/**
+ * Felia 106 (decizia 53): modulele paginilor de referinta G1-G3 si piesele lor comune poarta contractele componentelor
+ * perechilor RO, nu o `pagina` randata prin CorpPagina. Se numara separat, iar sirurile lor trec prin acelasi detector
+ * de reziduuri, ca nimic sa nu iasa din proba.
+ */
+const MODULE_REFERINTA = new Set(['compare-3s-vs-google-and-box.ts', 'guides-e-invoice-archiving-eu.ts', 'guides-records-retention-moldova.ts', 'referinta-comun.ts'])
+
+/** Toate sirurile dintr-o valoare (frunzele de tip sir, recursiv). */
+function siruriReferinta(valoare: unknown, acc: string[] = []): string[] {
+  if (typeof valoare === 'string') acc.push(valoare)
+  else if (Array.isArray(valoare)) for (const v of valoare) siruriReferinta(v, acc)
+  else if (valoare && typeof valoare === 'object') for (const v of Object.values(valoare)) siruriReferinta(v, acc)
+  return acc
+}
+
+async function referintaDin(dosar: string): Promise<{ fisier: string; texte: string[] }[]> {
+  const iesire: { fisier: string; texte: string[] }[] = []
+  for (const fisier of fisiereTs(dosar).filter((f) => MODULE_REFERINTA.has(f.split(/[\\/]/).pop() ?? ''))) {
+    const modul = (await import(pathToFileURL(fisier).href)) as Record<string, unknown>
+    iesire.push({ fisier: relative(RADACINA, fisier), texte: siruriReferinta(Object.values(modul)) })
+  }
+  return iesire
+}
+
 async function paginiDin(dosar: string): Promise<{ fisier: string; pagina: PaginaContinut }[]> {
   const iesire: { fisier: string; pagina: PaginaContinut }[] = []
-  for (const fisier of fisiereTs(dosar)) {
+  for (const fisier of fisiereTs(dosar).filter((f) => !MODULE_REFERINTA.has(f.split(/[\\/]/).pop() ?? ''))) {
     const modul = (await import(pathToFileURL(fisier).href)) as { pagina?: PaginaContinut }
     if (modul.pagina) iesire.push({ fisier: relative(RADACINA, fisier), pagina: modul.pagina })
   }
@@ -283,11 +307,16 @@ describe('proba 1: zero reziduuri de marcaj in textul randat', () => {
     const compEn = await componenteDin(DOSAR_EN)
     const compRoMd = await componenteDin(DOSAR_RO_MD)
     expect(compEn.map((c) => c.fisier.split(/[\\/]/).pop())).toContain('acasa-componente.ts')
+    expect(compEn.map((c) => c.fisier.split(/[\\/]/).pop())).toContain('platforma-componente.ts')
     for (const c of [...compEn, ...compRoMd]) {
       expect(c.arePagina, c.fisier).toBe(false)
       expect(c.texte.length, c.fisier).toBeGreaterThan(20)
     }
-    expect(en.length).toBe(fisiereTs(DOSAR_EN).length - compEn.length)
+    // Si modulele paginilor de referinta congruente (felia 106), verificate tot mai jos, pe sirurile lor.
+    const referinta = await referintaDin(DOSAR_EN)
+    expect(referinta.map((r) => r.fisier.split(/[\\/]/).pop()).sort()).toEqual([...MODULE_REFERINTA].sort())
+    for (const r of referinta) expect(r.texte.length, r.fisier).toBeGreaterThan(5)
+    expect(en.length).toBe(fisiereTs(DOSAR_EN).length - compEn.length - referinta.length)
     expect(en.length).toBeGreaterThanOrEqual(7)
     expect(roMd.length).toBe(fisiereTs(DOSAR_RO_MD).length - compRoMd.length)
     const moduleMd = readdirSync(DOSAR_MD).filter((f) => /\.(ro|en)\.ts$/.test(f))
@@ -297,6 +326,7 @@ describe('proba 1: zero reziduuri de marcaj in textul randat', () => {
     const gasite: string[] = []
     for (const { fisier, pagina } of [...en, ...roMd]) for (const r of reziduuri(textDin(randeazaPagina(pagina)))) gasite.push(fisier + ': ' + r)
     for (const { fisier, texte } of [...compEn, ...compRoMd]) for (const t of texte) for (const r of reziduuri(t)) gasite.push(fisier + ': ' + r)
+    for (const { fisier, texte } of referinta) for (const t of texte) for (const r of reziduuri(t)) gasite.push(fisier + ': ' + r)
     for (const { nume, d } of [...md, ...see]) for (const r of reziduuri(textDin(randeazaDocument(d)))) gasite.push(nume + ': ' + r)
     expect(gasite).toEqual([])
     console.log(

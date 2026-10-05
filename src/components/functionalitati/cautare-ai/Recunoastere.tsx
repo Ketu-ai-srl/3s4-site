@@ -6,18 +6,23 @@
 // ECOUL e desenat din CSS (`content: attr(...)`), nu ca text in pagina: e acelasi titlu, pur decorativ.
 // Asa nu se citeste de doua ori si nu intra in masuratorile de contrast ca un text de citit.
 // La 390 ecoul dispare, iar titlul creste la 66,3 px, pe trei randuri (fisa S2).
+//
+// CONTINUTUL pe editie (`continut`), cu implicitul RO: pagina RO nu paseaza nimic, deci randeaza ce randa.
 
 import SectiuneScena from "@/components/cinema/SectiuneScena";
 import { RECUNOASTERE } from "@/content/functionalitati/cautare-ai";
 import s from "./cautare.module.css";
 
-export default function Recunoastere() {
+/** Textele recunoasterii, pe editie; tip structural, constanta RO (`RECUNOASTERE`) il satisface. */
+export type ContinutRecunoastere = { titlu: string; paragraf: string };
+
+export default function Recunoastere({ continut = RECUNOASTERE }: { continut?: ContinutRecunoastere }) {
   return (
     <SectiuneScena inaltime={55} inaltimeMobil={60} spatiere="mica" latime={null} className={s.recunoastere} nume="recunoastere">
-      <div className={s.ecou} data-ecou={RECUNOASTERE.titlu} aria-hidden="true" />
+      <div className={s.ecou} data-ecou={continut.titlu} aria-hidden="true" />
       <div className={s.recunoastereBloc}>
-        <h2 className={["t-h2-cinema", s.recunoastereTitlu].join(" ")}>{RECUNOASTERE.titlu}</h2>
-        <p className={s.recunoastereParagraf}>{RECUNOASTERE.paragraf}</p>
+        <h2 className={["t-h2-cinema", s.recunoastereTitlu].join(" ")}>{continut.titlu}</h2>
+        <p className={s.recunoastereParagraf}>{continut.paragraf}</p>
         <div className={s.linieAlbastra} aria-hidden="true" />
       </div>
     </SectiuneScena>

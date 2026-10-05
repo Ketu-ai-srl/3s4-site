@@ -9,6 +9,7 @@ import { ETICHETA_WHATSAPP_RO_MD, TEXTE_WHATSAPP_RO_MD } from '../src/content/na
 import { RUTE_EN_NUCLEU } from '../src/content/rute-en-nucleu'
 import { RUTE_RO_MD } from '../src/content/rute-ro-md'
 import * as acasa from '../src/content/ro-md/acasa'
+import * as componente from '../src/content/ro-md/acasa-componente'
 import * as contact from '../src/content/ro-md/contact'
 import { configurareCanale } from '../src/lib/canale-mediu'
 import { alternateSite } from '../src/lib/site'
@@ -120,10 +121,18 @@ describe('forma celor doua pagini, in toate variantele', () => {
     expect(pg.sectiuni.slice(iGrup + 1).every((s) => s.nivel === 3)).toBe(true)
   })
 
-  it('/ro: ancora "cum-pornesc" exista si e tinta legaturii secundare din erou', () => {
-    const pg = acasa.paginaAcasa()
-    expect(pg.sectiuni.map((s) => s.ancoraInainte).filter(Boolean)).toEqual(['cum-pornesc'])
-    expect(acasa.eroSecundar.href).toBe('#cum-pornesc')
+  // AUTORIZARE (felia editie-start-ro-md, decizia 53): cazul fixa forma veche, in care `/ro` randa modulul prin
+  // `CorpPagina` si legatura secundara din erou tintea sectiunea "Cum incep" (`#cum-pornesc`). Pagina compune acum
+  // componentele startului RO; sectiunea aceea nu mai e pe pagina, iar butonul secundar al eroului tinteste blocul de
+  // final (invitatia la pilot), ca pe startul EN. Eticheta ramane cea aprobata a modulului.
+  it('/ro: butonul secundar din erou are eticheta aprobata si tinteste ancora blocului de final, pusa de pagina', () => {
+    expect(componente.EROU_SECUNDAR_RO_MD.text).toBe(acasa.eroSecundar.text)
+    expect(componente.EROU_SECUNDAR_RO_MD.href).toBe('#' + componente.ANCORA_FINAL_RO_MD)
+    const pagina = readFileSync(join(RADACINA, 'src', 'app', '(romd)', 'ro', 'page.romd.tsx'), 'utf8')
+    expect(pagina).toMatch(/<CtaFinalInchis\s+id=\{ANCORA_FINAL_RO_MD\}/)
+    // Martorul: forma veche nu mai e pe pagina (nici `CorpPagina`, nici tinta `#cum-pornesc`).
+    expect(pagina).not.toContain('CorpPagina')
+    expect(pagina).not.toContain('eroSecundar')
   })
 })
 

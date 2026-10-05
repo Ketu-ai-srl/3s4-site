@@ -48,6 +48,15 @@
     {
       "tip": "componenta",
       "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-08"
+      },
+      "cod": "d31",
+      "motiv": "Raportare: procesul de raportare a vulnerabilitatilor nu e confirmat, iar securitatea platformei ramane in afara lansarii."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
         "clasa": "Seif_seif",
         "eticheta": "seif-titlu"
       },
@@ -56,10 +65,28 @@
         "d31"
       ],
       "motiv": "Seif: actele sub cheie si legatura spre inregistrare."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "securitate_mono",
+      "cod": "d31",
+      "motiv": "Clasa valorilor AES-256 si TLS 1.2 din specificatiile infrastructurii; pe 3s.md randurile lor poarta alte fapte, fara valoare monospatiata."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "produs_nerupt",
+      "cod": [
+        "d31",
+        "d42"
+      ],
+      "motiv": "Clasa grupurilor de text nerupte (nerupt.tsx); in sectiunile ramase, pe RO o poarta numai termenii scosi de pe 3s.md: 'AES-256' si 'TLS 1.2' (d31) si 'intr-o singura regiune' (d42). Textul EN al acelorasi sectiuni nu are niciun grup de felul asta."
     }
   ],
   "_nedeclarate": [
-    "AES/TLS/Jurnal (d31), Germania -> Frankfurt (d42): text.",
-    "Verificare (masoara conexiunea site-ului, nu platforma): de confirmat de owner."
+    "AES/TLS/Jurnal (d31), Germania -> Frankfurt (d42), hartia (poarta-juridica-40-41): text in elemente care raman (piloni 4, specificatii 4, ciclu 5, insigne 6, carduri 4, intrebari 6); nu sunt randuri de forma.",
+    "Reglementare: insignele raman 6 si cardurile 4, ca pe RO. Legatura de partajare cu termen si exportul zip al originalelor n-au intrare confirmata in registrul de afirmatii EN, deci sloturile lor (insignele 2 si 5, cardurile 3-4) iau fapte confirmate: raspunsul cu sursa citata si legea americana (CLOUD Act); text in elemente care raman, nu rand de forma.",
+    "Verificarea din browser ramane (intrebarea 9, decizia 59), cu textul care spune ca masoara acest site, nu platforma.",
+    "Ancorele `security` si `limits`: doua marcaje goale, fara clasa, in afara radacinilor de sectiune (componenta nu are proprietate de ancora); nu schimba nici radacinile, nici clasele.",
+    "Pagina nu are bloc de final, ca pagina RO (seiful ii tine locul acolo, iar seiful iese)."
   ]
 }
