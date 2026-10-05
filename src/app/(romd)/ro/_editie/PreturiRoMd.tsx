@@ -9,6 +9,9 @@
 // comutatorul, grila, lista ca PDF), pliurile si butonul de intoarcere din linia de baza. Contextul de intoarcere e cel
 // comun (`contextLume.ts`). Legatura WhatsApp a butoanelor din grila se rezolva pe server si ajunge ca proprietate a
 // pachetelor. Biroul se monteaza fara demonstratia dispozitivelor (`faraDispozitive`), ca pe EN.
+//
+// AL TREILEA PLIU (felia 129, deciziile 66-68, oglinda lui `PliuriEn`): suplimentele, taxa de conectare si intrebarile
+// despre limite, din `SUPLIMENTE_RO_MD`.
 
 import { createContext, useContext, type ReactNode } from "react";
 import BirouInteractivVedere from "@/components/preturi/BirouInteractivVedere";
@@ -37,6 +40,7 @@ import {
   PLIURI_RO_MD,
   POARTA_BAZA_RO_MD,
   POARTA_ENTERPRISE_RO_MD,
+  SUPLIMENTE_RO_MD,
   cuDeRoMd,
   dataRoMd,
   randuriPlanRoMd,
@@ -156,5 +160,5 @@ function BirouInteractivRoMd({ activ }: { activ: boolean }) {
 }
 
 export function PliuriRoMd({ tabel }: { tabel: ReactNode }) {
-  return <PliuriVedere tabel={tabel} continut={PLIURI_RO_MD} Birou={BirouInteractivRoMd} />;
+  return <PliuriVedere tabel={tabel} continut={PLIURI_RO_MD} Birou={BirouInteractivRoMd} suplimente={SUPLIMENTE_RO_MD} />;
 }

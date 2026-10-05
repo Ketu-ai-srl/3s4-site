@@ -73,7 +73,7 @@
   },
   {
     "id": "ro-md-pret-orientativ-eur",
-    "text": "Patru pachete, cu prețuri lunare în euro pentru întreaga firmă: Starter, Pro și Business au aceleași funcții, 90, 150 și 240 EUR pe lună pentru 5, 10 și 20 de conturi (75, 125 și 200 EUR pe lună la plata anuală, cu două luni gratuite); Enterprise de la 800 EUR pe lună, cu contract anual, peste 20 de conturi; grila are caracter orientativ",
+    "text": "Patru pachete, cu prețuri lunare în euro pentru întreaga firmă: Starter, Pro și Business au aceleași funcții, 90, 150 și 240 EUR pe lună pentru 5, 10 și 20 de conturi (75, 125 și 200 EUR pe lună la plata anuală, când se plătesc 10 luni din 12); Enterprise de la 800 EUR pe lună, cu contract anual, peste 20 de conturi; grila are caracter orientativ",
     "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/enterprise.ts, src/content/ro-md/preturi.ts",
     "stare": "confirmat",
     "sursa": "oglinda RO-MD a intrarii en-pret-orientativ-eur (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (deciziile 10, 18 si 19 ale owner-ului); pe 3s.md pretul e in EUR peste tot (decizia 54).",

@@ -66,6 +66,10 @@ const STIL_INLINE = new RegExp(
 const INDICIU_CSS = ':HL[' + Q + '/_next/static/css/'
 /** Anul din subsol, `(c) <an>` (semnul de drepturi de autor, U+00A9). */
 const AN_SUBSOL = /\u00a9 \d{4}/g
+/** Clasa variabilei de font de la next/font/google, `__variable_<6 hex>`: amprenta depinde de fisierul de font descarcat
+ *  de la Google la build, nu de arbore (05.10.2026: acelasi arbore a dat a76894... la 15:57Z si 16fca7... la 17:32Z,
+ *  41 de pagini-martor rosii fara nicio schimbare de cod). Numele fontului ramane in CSS; aici se scoate numai amprenta. */
+const FONT_VARIABILA = /__variable_[0-9a-f]{6}\b/g
 /** Capul unui rand de referinta client: `I[<id modul>,[<chunk-uri si cai>],` (sirurile din lista n-au paranteze). */
 const CAP_CLIENT = new RegExp('^I' + BS + '[[0-9a-z]+,' + BS + '[[^' + BS + ']]*' + BS + '],')
 
@@ -83,6 +87,7 @@ export function normalizeaza(html: string, idBuild: string): string {
     .replace(STATIC_CU_AMPRENTA, 'static/$1/X')
     .replace(PREFIX_PICTOGRAMA, 'pictograma-telefon-$1')
     .replace(AN_SUBSOL, '\u00a9 AN')
+    .replace(FONT_VARIABILA, '__variable_X')
 
   const bucati: string[] = []
   const dom = text.replace(SCRIPT_RSC, (_, c: string) => {

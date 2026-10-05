@@ -1,0 +1,38 @@
+[
+  {
+    "id": "en-limite-pe-plan",
+    "text": "Per organization, not per user: Starter 5 user accounts, 100 GB of storage, 80 AI answers a month, 1,000 OCR pages a month, 15 GB of downloads a month; Pro 10, 200 GB, 200, 2,500, 30 GB; Business 20, 400 GB, 400, 5,000, 60 GB; Enterprise base plan 21 to 60 user accounts, 500 GB, 600, 20,000, 200 GB. Monthly allowances reset on the 1st of each calendar month and do not carry over.",
+    "unde": "src/content/limite-planuri.ts, src/content/en/pricing-componente.ts, src/content/en/enterprise-componente.ts",
+    "stare": "confirmat",
+    "sursa": "deciziile 66 si 67 ale owner-ului (05.10.2026): limitele pe plan, cotele pe organizatie si pe luna calendaristica; decizia 69: publicare integrala",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-05",
+    "data": "2026-10-05"
+  },
+  {
+    "id": "en-limite-conectare",
+    "text": "Connection: EUR 6 per 1,000 pages imported, once, for the archive the customer brings in at the start; pages imported during the free pilot are included in it at the move to a paid plan, and a customer who does not continue after the pilot pays nothing.",
+    "unde": "src/content/limite-planuri.ts, src/content/en/pricing-componente.ts, src/content/en/enterprise-componente.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 68 a owner-ului (05.10.2026): taxa de conectare, 6 EUR la 1.000 de pagini importate, o singura data, paginile din pilot incluse la trecerea pe plata; decizia 69: publicare integrala",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-05",
+    "data": "2026-10-05"
+  },
+  {
+    "id": "en-limite-suplimente",
+    "text": "Add-ons, excluding VAT: 25 AI answers EUR 22 and 100 AI answers EUR 79, once, valid 90 days; 25 GB of storage EUR 9, 100 GB EUR 29 and 500 GB EUR 139, every month; 1,000 OCR pages EUR 6 and 5,000 OCR pages EUR 24, once, valid 90 days; 50 GB of downloads EUR 12, once, valid 90 days. No add-on for document processing or extra text.",
+    "unde": "src/content/limite-planuri.ts, src/content/en/pricing-componente.ts",
+    "stare": "confirmat",
+    "sursa": "deciziile 66 si 67 ale owner-ului (05.10.2026): suplimentele, preturile si valabilitatea de 90 de zile; decizia 69: publicare integrala",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-05",
+    "data": "2026-10-05"
+  },
+  {
+    "id": "en-limite-la-prag",
+    "text": "At 80% of a limit the app shows a warning; at the limit AI answers stop until the next month or an add-on, new uploads stop when storage is full, downloads stop, scans above the OCR allowance are stored and their text is recognized at the start of the next month; no data is deleted when a limit is reached; deleted documents count toward storage while in the trash, for up to 30 days.",
+    "unde": "src/content/en/pricing-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "comportamentul platformei la limita (avertizarea in aplicatie la 80%, oprirea raspunsurilor AI, a incarcarii si a descarcarii, amanarea OCR in luna urmatoare, cosul de 30 de zile socotit in stocare); decizia 69: publicare integrala",
+    "confirmat_de": "",
+    "data": "2026-10-05"
+  }
+]

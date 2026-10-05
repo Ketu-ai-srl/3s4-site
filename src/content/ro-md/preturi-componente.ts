@@ -12,18 +12,37 @@
 // clasarea automata (val-ro-i2), nota "fara card" (legata de 0 RON), contorul de dispozitive (val-ro-1.1); in locul lor
 // stau fapte confirmate, ca listele sa pastreze lungimea RO.
 //
+// LIMITELE PACHETELOR (deciziile 66-68, felia 129, oglinda lui 127 de pe `/pricing`): cifrele vin din
+// `src/content/limite-planuri.ts`, singurul loc in care se schimba; aici stau numai unitatile in romana ("GB de stocare",
+// "raspunsuri AI pe luna", "pagini OCR pe luna", "GB de descarcari pe luna"), cu punct la mii si cu "de" dupa
+// regula numeralului; randul conturilor pastreaza textul aprobat ("conturi pentru echipa"). Cardurile pastreaza 9 randuri (limitele iau locul faptelor care raman in tabel),
+// tabelul pastreaza 4 categorii si 14 randuri, in ordinea perechii EN, iar suplimentele, taxa de conectare si
+// intrebarile despre limite stau in al treilea pliu (`SUPLIMENTE_RO_MD`). Textul se publica integral (decizia 69), fara
+// "procesare" si fara documente procesate (decizia 66); pilotul, unde e numit in textul nou, are 14 zile (decizia 65).
+//
 // Modulul e numai date si functii pure: il importa invelitoarea client a preturilor /ro, deci nu aduce nimic din
-// continutul RO (tipurile vin prin `import type`; regula numeralului vine din `limba.ts`, fara continut).
+// continutul RO (tipurile vin prin `import type`; regula numeralului vine din `limba.ts`, cifrele din `limite-planuri.ts`,
+// amandoua fara continut).
 
 import type { ContinutBirouConturi } from "@/components/preturi/BirouInteractivVedere";
 import type { ContinutComutator } from "@/components/preturi/ComutatorPerioadaVedere";
 import type { ContinutFaqPreturi } from "@/components/preturi/FaqPreturi";
 import type { ContinutListaPdf } from "@/components/preturi/ListaPdfVedere";
 import type { ContinutLiniaDeBaza } from "@/components/preturi/LiniaDeBaza";
-import type { ContinutPliuri } from "@/components/preturi/PliuriVedere";
+import type { ContinutPliuri, ContinutSuplimente, RandSupliment } from "@/components/preturi/PliuriVedere";
 import type { ContinutTabelPlanuri } from "@/components/preturi/TabelPlanuri";
 import type { NivelFir } from "@/components/primitive/FirPagina";
 import { cereDe } from "@/content/limba";
+import {
+  CONECTARE,
+  LIMITE_PLANURI,
+  PRAG_AVERTIZARE_PROCENT,
+  RESURSE_SUPLIMENTE,
+  SUPLIMENTE,
+  VALABILITATE_SUPLIMENT_ZILE,
+  type CheiePlanLimite,
+  type ResursaSupliment,
+} from "@/content/limite-planuri";
 import type { Legatura } from "@/content/navigatie";
 import type { CardPoarta, CategorieTabel, CelulaTabel, CheiePlan, Cursor, Plan, RandPlan } from "@/content/preturi";
 
@@ -36,6 +55,34 @@ export const ANCORE_PRETURI_RO_MD = { pachete: "pachete", poarta: "alegere", int
 /** " de" cand numeralul o cere ("20 de colegi"), altfel nimic: aceeasi regula ca pe RO (`limba.ts`). */
 export function cuDeRoMd(n: number): string {
   return cereDe(n) ? " de" : "";
+}
+
+/** O cifra in formatul romanesc: punct la mii ("1.000", "20.000"). */
+export function miiRoMd(n: number): string {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/** Cifra urmata de unitate, cu "de" cand numeralul o cere: "80 de raspunsuri AI", "1.000 de pagini", "5 conturi". */
+function cuUnitate(n: number, unitate: string): string {
+  return miiRoMd(n) + cuDeRoMd(n) + " " + unitate;
+}
+
+/** Taxa de conectare, cuvant cu cuvant, cum o citesc pliul suplimentelor si /ro/enterprise. */
+export const CONECTARE_RO_MD = CONECTARE.eur + " EUR la " + cuUnitate(CONECTARE.pagini, "pagini importate") + ", o singură dată";
+
+/**
+ * Limitele unui plan (fara conturi), in unitatile editiei: cifra ingrosata si textul de dupa ea. Dupa GB nu se pune
+ * "de" ("100 GB de stocare"); dupa un numeral care il cere, da ("80 de raspunsuri AI pe luna").
+ */
+export function limiteRoMd(cheie: CheiePlanLimite): { cifra: string; text: string }[] {
+  const l = LIMITE_PLANURI[cheie];
+  const de = (n: number) => (cereDe(n) ? "de " : "");
+  return [
+    { cifra: miiRoMd(l.stocareGb), text: "GB de stocare" },
+    { cifra: miiRoMd(l.raspunsuriAiPeLuna), text: de(l.raspunsuriAiPeLuna) + "răspunsuri AI pe lună" },
+    { cifra: miiRoMd(l.paginiOcrPeLuna), text: de(l.paginiOcrPeLuna) + "pagini OCR pe lună" },
+    { cifra: miiRoMd(l.descarcariGbPeLuna), text: "GB de descărcări pe lună" },
+  ];
 }
 
 /** Eroul interior: `preturi.ts:66-76`. Subtitlul e capsula fisei, scurtata la cutia RO. */
@@ -56,7 +103,7 @@ export const ETICHETE_PRETURI_RO_MD = { poarta: "Cele două variante 3S", pliuri
 export const POARTA_BAZA_RO_MD: CardPoarta = {
   nume: "Starter, Pro, Business",
   titlu: "Toate funcțiile incluse",
-  text: "Alegi 5, 10 sau 20 de conturi, la un preț pe firmă, fără TVA. Pachetele diferă numai prin numărul de conturi.",
+  text: "Alegi 5, 10 sau 20 de conturi, la un preț pe firmă, fără TVA. Pachetele diferă prin numărul de conturi și prin limitele lunare.",
   mergi: "Alege un pachet",
 };
 
@@ -75,7 +122,7 @@ export const LINIA_DE_BAZA_RO_MD: ContinutLiniaDeBaza & { inapoi: string } = {
   titlu: "Starter, Pro, Business",
   promisiune: "Documentele firmei, ușor de regăsit.",
   paragraf:
-    "Prețurile sunt calculate pentru întreaga firmă, în euro, fără TVA. Toate pachetele au aceleași funcții și diferă numai prin numărul de conturi.",
+    "Prețurile sunt în euro, fără TVA, și se calculează pentru întreaga firmă, nu pentru fiecare utilizator. Starter, Pro și Business au aceleași funcții și diferă prin numărul de conturi de utilizator și prin limitele lunare.",
 };
 
 /**
@@ -119,22 +166,23 @@ export const GRILA_RO_MD = {
   detalii: (rand: string) => "Ce înseamnă: " + rand,
 };
 
-/** `preturi.ts:346-362`: lista de 9 randuri a unui plan; iconita "i" ramane pe randul al saselea. */
+/**
+ * `preturi.ts:346-362`: lista de 9 randuri a unui plan; iconita "i" ramane pe randul al saselea. Primele cinci randuri
+ * sunt conturile si limitele planului (decizia 66), in ordinea perechii EN; faptele pe care le inlocuiesc (textul din
+ * scanari, tipul de act, exportul) raman in tabelul comparativ.
+ */
 export function randuriPlanRoMd(plan: Plan): RandPlan[] {
   return [
     { cifra: String(plan.conturi), text: (cuDeRoMd(plan.conturi) === "" ? "" : "de ") + "conturi pentru echipă", explicatie: null },
-    { cifra: null, text: "Preț pe firmă", explicatie: null },
-    { cifra: null, text: "Căutare cu sursa citată", explicatie: null },
-    { cifra: null, text: "Text recunoscut în scanări", explicatie: null },
-    { cifra: null, text: "Recunoașterea tipului de act", explicatie: null },
+    ...limiteRoMd(plan.cheie).map((l) => ({ cifra: l.cifra, text: l.text, explicatie: null })),
     {
       cifra: null,
       text: "Termen de păstrare pe dosar",
       explicatie: "Pentru fiecare dosar poți stabili un termen de păstrare, care se aplică tuturor documentelor din el.",
     },
-    { cifra: null, text: "Exportul documentelor", explicatie: null },
+    { cifra: null, text: "Căutare cu sursa citată", explicatie: null },
     { cifra: null, text: "Găzduire în UE, Frankfurt", explicatie: null },
-    { cifra: null, text: "Lucrezi din browser", explicatie: null },
+    { cifra: null, text: "Preț pe firmă", explicatie: null },
   ];
 }
 
@@ -200,7 +248,7 @@ export const COMUTATOR_RO_MD: ContinutComutator = {
   eticheta: "Perioada de plată",
   lunar: "Lunar",
   anual: "Anual",
-  insigna: "2 luni gratuite",
+  insigna: "Plătești 10 luni din 12",
   nota: "Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.",
 };
 
@@ -229,7 +277,7 @@ export const PLIURI_RO_MD: ContinutPliuri = {
   birou: {
     titlu: "Pachetul stabilește numărul de conturi",
     paragraf:
-      "Starter, Pro și Business au aceleași funcții; fiecare include alt număr de conturi: 5, 10 sau 20. Prețul se calculează pentru întreaga firmă.",
+      "Starter, Pro și Business includ 5, 10 sau 20 de conturi de utilizator, iar limitele lunare cresc de la un pachet la următorul. Prețul se calculează pentru întreaga firmă, nu pentru fiecare utilizator.",
   },
   comparatie: { titlu: "Pachetele, față în față", paragraf: "Ce primești în fiecare pachet, rând cu rând" },
 };
@@ -245,47 +293,127 @@ const DA: CelulaTabel = { fel: "da" };
 const toate = (c: CelulaTabel): Record<CheiePlan, CelulaTabel> => ({ starter: c, pro: c, business: c });
 const valoare = (text: string): CelulaTabel => ({ fel: "valoare", text });
 
-/** `preturi.ts:431-476`: 4 categorii, 14 randuri, ca pe RO; randurile scoase sunt inlocuite cu fapte confirmate. */
+/** Celulele unui rand de limita: cifra fiecarui plan, cu unitatea scurta a tabelului ("100 GB", "1.000"). */
+function pePlan(cifra: (cheie: CheiePlan) => string): Record<CheiePlan, CelulaTabel> {
+  return { starter: valoare(cifra("starter")), pro: valoare(cifra("pro")), business: valoare(cifra("business")) };
+}
+
+/**
+ * `preturi.ts:431-476`: 4 categorii, 14 randuri, ca pe RO, in ordinea perechii EN. Randurile de limita (decizia 66) si
+ * taxa de conectare (decizia 68) iau locul celor de umplutura: jurnalul deschiderilor, incarcarea si raspunsurile din
+ * browser, inregistrarea prin invitatie si termenul de pastrare, care ramane pe carduri, cu explicatia lui. Randul
+ * pilotului ramane intre conturi si costul pe persoana, ca pe EN.
+ */
 export const TABEL_RO_MD: ContinutTabelPlanuri = {
   functie: "Funcție",
   inclus: "inclus",
   derulare: "Tabelul pachetelor; pe ecran îngust se derulează orizontal",
   categorii: [
     {
-      titlu: "Unde și cum stau fișierele",
+      titlu: "Unde stau fișierele",
       randuri: [
         { functie: "Regiunea din UE", celule: toate(valoare("Frankfurt")) },
-        { functie: "Termen de păstrare", celule: toate(DA) },
+        { functie: "Stocare", celule: pePlan((c) => miiRoMd(LIMITE_PLANURI[c].stocareGb) + " GB") },
       ],
     },
     {
-      titlu: "Echipa și conturile",
+      titlu: "Conturile și prețul",
       randuri: [
-        { functie: "Jurnalul deschiderilor", celule: toate(DA) },
+        { functie: "Lunar (EUR)", celule: { starter: valoare("90"), pro: valoare("150"), business: valoare("240") } },
         { functie: "Conturi pentru echipă", celule: { starter: valoare("5"), pro: valoare("10"), business: valoare("20") } },
-        { functie: "Pilot gratuit", celule: toate(DA) },
+        { functie: "Pilot gratuit de 14 zile", celule: toate(DA) },
         { functie: "Cost pe persoană", celule: toate(valoare("Inclus")) },
-        { functie: "Export de acte", celule: toate(DA) },
+        // Celula ramane scurta (coloana planului are 7,5rem): unitatea si "o singura data" stau in eticheta randului.
+        { functie: "Taxă de conectare, la " + cuUnitate(CONECTARE.pagini, "pagini") + " (o singură dată)", celule: toate(valoare(CONECTARE.eur + " EUR")) },
       ],
     },
     {
-      titlu: "Inteligența arhivei",
+      titlu: "Ce face arhiva",
       randuri: [
         { functie: "Căutare cu sursa citată", celule: toate(DA) },
         { functie: "Text din scanări și imagini", celule: toate(DA) },
         { functie: "Recunoașterea tipului de act", celule: toate(DA) },
-        { functie: "Încărcare din browser", celule: toate(DA) },
+        { functie: "Export de acte", celule: toate(DA) },
       ],
     },
     {
-      titlu: "Acces și preț",
+      titlu: "Limitele lunare",
       randuri: [
-        { functie: "Unde primești răspunsuri", celule: toate(valoare("În browser")) },
-        { functie: "Înregistrare", celule: toate(valoare("Prin invitație")) },
-        { functie: "Lunar (EUR)", celule: { starter: valoare("90"), pro: valoare("150"), business: valoare("240") } },
+        { functie: "Răspunsuri AI pe lună", celule: pePlan((c) => miiRoMd(LIMITE_PLANURI[c].raspunsuriAiPeLuna)) },
+        { functie: "Pagini OCR pe lună", celule: pePlan((c) => miiRoMd(LIMITE_PLANURI[c].paginiOcrPeLuna)) },
+        { functie: "Descărcări pe lună", celule: pePlan((c) => miiRoMd(LIMITE_PLANURI[c].descarcariGbPeLuna) + " GB") },
       ],
     },
   ] satisfies CategorieTabel[],
+};
+
+/** Numele resursei unui supliment (titlul grupului) si randul lui, in unitatile editiei. */
+const RESURSA_RO_MD: Record<ResursaSupliment, { grup: string; unitate: (n: number) => string }> = {
+  raspunsuriAi: { grup: "Răspunsuri AI", unitate: (n) => cuUnitate(n, "răspunsuri AI") },
+  stocare: { grup: "Stocare", unitate: (n) => miiRoMd(n) + " GB de stocare" },
+  paginiOcr: { grup: "Pagini OCR", unitate: (n) => cuUnitate(n, "pagini OCR") },
+  descarcari: { grup: "Descărcări", unitate: (n) => miiRoMd(n) + " GB de descărcări" },
+};
+
+/** Facturarea unui supliment platit o data: "valabile" se acorda cu continutul lui (raspunsuri, pagini, GB de ...). */
+const VALABIL_RO_MD = "O singură dată, valabile " + cuUnitate(VALABILITATE_SUPLIMENT_ZILE, "zile");
+
+/** Randurile tabelului de suplimente, din `SUPLIMENTE`, grupate pe resursa. */
+function grupuriSuplimenteRoMd(): { titlu: string; randuri: RandSupliment[] }[] {
+  return RESURSE_SUPLIMENTE.map((r) => ({
+    titlu: RESURSA_RO_MD[r].grup,
+    randuri: SUPLIMENTE.filter((x) => x.resursa === r).map((x) => ({
+      supliment: RESURSA_RO_MD[r].unitate(x.cantitate),
+      pret: miiRoMd(x.pretEur) + " EUR",
+      facturare: x.facturare === "lunar" ? "În fiecare lună" : VALABIL_RO_MD,
+    })),
+  }));
+}
+
+/**
+ * Al treilea pliu (deciziile 66-68), oglinda lui `SUPLIMENTE_EN`: suplimentele, taxa de conectare si intrebarile despre
+ * limite. Comportamentul la limita e cel scris pe EN (avertizare in aplicatie la 80%; raspunsurile AI, incarcarile si
+ * descarcarile se opresc; OCR-ul se amana in luna urmatoare; nicio stergere). Fara legaturi in pliu: comanda unui
+ * supliment trece prin butoanele de canal ale paginii.
+ */
+export const SUPLIMENTE_RO_MD: ContinutSuplimente = {
+  titlu: "Ai nevoie de mai mult? Suplimente și regulile limitelor",
+  paragrafe: [
+    "Dacă o limită lunară se epuizează înainte de sfârșitul lunii, poți adăuga un supliment fără să schimbi pachetul. Ca să comanzi un supliment, scrie-ne.",
+    "Conectare: " +
+      CONECTARE_RO_MD +
+      ". Taxa acoperă arhiva pe care o aduci la pornire; paginile importate în pilotul gratuit de 14 zile intră în ea la trecerea pe un pachet plătit.",
+  ],
+  coloane: { supliment: "Supliment", pret: "Preț", facturare: "Facturare" },
+  derulare: "Tabelul suplimentelor; pe ecran îngust se derulează orizontal",
+  grupuri: grupuriSuplimenteRoMd(),
+  nota: "Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.",
+  intrebari: [
+    {
+      intrebare: "Limitele se aplică pe utilizator sau pe firmă?",
+      raspuns:
+        "Pe firmă. Fiecare limită este comună tuturor conturilor de utilizator ale organizației și nu se calculează separat pentru fiecare persoană.",
+    },
+    {
+      intrebare: "Când se reiau limitele lunare?",
+      raspuns:
+        "În prima zi a fiecărei luni calendaristice. Ce nu folosești într-o lună nu se reportează în luna următoare. Stocarea nu este o limită lunară: reprezintă spațiul ocupat de documente, iar documentele șterse sunt incluse în ea cât timp stau în coșul de gunoi, cel mult 30 de zile.",
+    },
+    {
+      intrebare: "Ce se întâmplă când ajungi la o limită?",
+      raspuns:
+        "3S îți afișează un avertisment în aplicație când ajungi la " +
+        PRAG_AVERTIZARE_PROCENT +
+        "% dintr-o limită. La limită, răspunsurile AI se opresc până în luna următoare sau până adaugi un supliment, iar documentele rămân accesibile. Când stocarea este plină, încărcările noi se opresc până eliberezi spațiu sau adaugi stocare; documentele deja păstrate rămân neschimbate. Descărcările se opresc până în luna următoare sau până adaugi un supliment. Scanările peste limita de pagini OCR nu se pierd: sunt păstrate, iar textul lor este recunoscut la începutul lunii următoare. Nu ștergem niciodată date când se atinge o limită.",
+    },
+    {
+      intrebare: "Ce este taxa de conectare?",
+      raspuns:
+        "Este taxa pentru arhiva pe care o aduci în 3S la pornire: " +
+        CONECTARE_RO_MD +
+        ", fără TVA. Acoperă recunoașterea textului, indexarea pentru căutare și recunoașterea tipului de act pentru aceste pagini. Paginile importate în pilotul gratuit de 14 zile intră în această taxă la trecerea pe un pachet plătit; dacă nu continui după pilot, nu plătești nimic.",
+    },
+  ],
 };
 
 /** `preturi.ts:490-529`: cele sapte sectiuni ale fisei, in ordinea cutiilor RO. Raspunsurile sunt text simplu. */
@@ -300,7 +428,7 @@ export const INTREBARI_RO_MD: ContinutFaqPreturi = {
     {
       intrebare: "Există reduceri?",
       raspuns:
-        "Da, la plata anuală: două luni sunt gratuite. La Starter, Pro și Business plătești 10 luni pentru 12, adică 16,7% mai puțin. Prima lună după pilot se facturează la prețul din grilă.",
+        "Da, la plata anuală plătești 10 luni din 12. La Starter, Pro și Business plătești 10 luni pentru 12, adică 16,7% mai puțin. Prima lună după pilot se facturează la prețul din grilă.",
     },
     {
       intrebare: "De ce prețul este orientativ?",

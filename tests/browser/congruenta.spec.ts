@@ -211,6 +211,17 @@ function migrareInPagina(arg: {
     const gasite = [...main.querySelectorAll(selector)]
     gasite.slice(en).forEach((e) => e.remove())
     for (let i = gasite.length; i < en && gasite.length > 0; i++) gasite[gasite.length - 1].after(gasite[gasite.length - 1].cloneNode(true))
+    // Un camp pe care RO nu-l are deloc (ro 0, de pilda pliul suplimentelor, d66) nu are ce clona: migrarea il FABRICA
+    // in prima radacina ramasa, ca element fara clase, purtand numai atributul selectorului `[data-x]`.
+    const atribut = /^\[([a-z][a-z0-9-]*)\]$/.exec(selector)
+    if (gasite.length === 0 && en > 0 && atribut !== null) {
+      const gazda = radacini.find((_, i) => !deScos.has(i)) ?? main
+      for (let i = 0; i < en; i++) {
+        const nou = d.createElement('div')
+        nou.setAttribute(atribut[1], '')
+        gazda.append(nou)
+      }
+    }
   }
   if (arg.clasaStraina !== '') {
     const prima = radacini.find((_, i) => !deScos.has(i))

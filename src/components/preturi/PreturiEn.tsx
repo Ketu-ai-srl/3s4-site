@@ -15,6 +15,9 @@
 // BIROUL din primul pliu se monteaza fara demonstratia dispozitivelor (`faraDispozitive`): faptul ca dispozitivele nu
 // se numara nu e confirmat, deci ies contorul cu nota lui, butonul de adaugare si numele scenei; raman scena si banda
 // de conturi. Titlul si paragraful pliului sunt scrise pe faptul confirmat (conturile pe plan).
+//
+// AL TREILEA PLIU (felia 127, deciziile 66-68): suplimentele, taxa de conectare si intrebarile despre limite, din
+// `SUPLIMENTE_EN`; pagina RO nu il are (invelitoarea ei nu paseaza `suplimente`).
 
 import { createContext, useContext, type ReactNode } from "react";
 import type { Perioada, Plan } from "@/content/preturi";
@@ -32,6 +35,7 @@ import {
   PLANURI_EN,
   PLIURI_EN,
   POARTA_BAZA_EN,
+  SUPLIMENTE_EN,
   POARTA_ENTERPRISE_EN,
   dataEn,
   randuriPlanEn,
@@ -162,5 +166,5 @@ function BirouInteractivEn({ activ }: { activ: boolean }) {
 }
 
 export function PliuriEn({ tabel }: { tabel: ReactNode }) {
-  return <PliuriVedere tabel={tabel} continut={PLIURI_EN} Birou={BirouInteractivEn} />;
+  return <PliuriVedere tabel={tabel} continut={PLIURI_EN} Birou={BirouInteractivEn} suplimente={SUPLIMENTE_EN} />;
 }

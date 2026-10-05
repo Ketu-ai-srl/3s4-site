@@ -33,6 +33,7 @@
       "fel": "decizie",
       "rezumat": "Pretul in EUR peste tot pe 3s.md; zero RON."
     },
+    "d66": { "fel": "decizie", "rezumat": "Limitele pe plan (hibrid): cote pe organizatie, suplimente cu 90 de zile, fara documente procesate; publicate pe 3s.md (decizia 69)." },
     "val-ro-1.1": {
       "fel": "regula",
       "rezumat": "Faptele confirmate: eticheta automata de tip, fara campuri extrase din documente."

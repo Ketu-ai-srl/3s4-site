@@ -77,7 +77,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Pay annually: two months free. On Starter, Pro and Business, annual billing costs 10 monthly payments for 12 months, 16.7% less than monthly billing. The first month after the pilot is billed at the listed price, with no pilot discount.",
+            "Pay annually: you pay for 10 months and get 12. On Starter, Pro and Business, annual billing costs 10 monthly payments for 12 months, 16.7% less than monthly billing. The first month after the pilot is billed at the listed price, with no pilot discount.",
           ],
         },
       ],

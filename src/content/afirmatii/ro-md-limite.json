@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ro-md-limite-pe-plan",
+    "text": "Pe firmă, nu pe utilizator: Starter 5 conturi, 100 GB de stocare, 80 de răspunsuri AI pe lună, 1.000 de pagini OCR pe lună, 15 GB de descărcări pe lună; Pro 10, 200 GB, 200, 2.500, 30 GB; Business 20, 400 GB, 400, 5.000, 60 GB; Enterprise, pachetul de bază, între 21 și 60 de conturi de utilizator, 500 GB, 600, 20.000, 200 GB. Limitele lunare se reiau pe 1 ale fiecărei luni calendaristice și nu se reportează.",
+    "unde": "src/content/limite-planuri.ts, src/content/ro-md/preturi-componente.ts, src/content/ro-md/enterprise-componente.ts",
+    "stare": "confirmat",
+    "sursa": "deciziile 66 si 67 ale owner-ului (05.10.2026): limitele pe plan, cotele pe organizatie si pe luna calendaristica; decizia 69: publicare integrala",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-05",
+    "data": "2026-10-05"
+  },
+  {
+    "id": "ro-md-limite-conectare",
+    "text": "Conectare: 6 EUR la 1.000 de pagini importate, o singură dată, pentru arhiva adusă la pornire; paginile importate în pilotul gratuit intră în această taxă la trecerea pe un pachet plătit, iar clientul care nu continuă după pilot nu plătește nimic.",
+    "unde": "src/content/limite-planuri.ts, src/content/ro-md/preturi-componente.ts, src/content/ro-md/enterprise-componente.ts",
+    "stare": "confirmat",
+    "sursa": "decizia 68 a owner-ului (05.10.2026): taxa de conectare, 6 EUR la 1.000 de pagini importate, o singura data, paginile din pilot incluse la trecerea pe plata; decizia 69: publicare integrala",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-05",
+    "data": "2026-10-05"
+  },
+  {
+    "id": "ro-md-limite-suplimente",
+    "text": "Suplimentele, fără TVA: 25 de răspunsuri AI 22 EUR și 100 de răspunsuri AI 79 EUR, o singură dată, valabile 90 de zile; 25 GB de stocare 9 EUR, 100 GB 29 EUR și 500 GB 139 EUR, în fiecare lună; 1.000 de pagini OCR 6 EUR și 5.000 de pagini OCR 24 EUR, o singură dată, valabile 90 de zile; 50 GB de descărcări 12 EUR, o singură dată, valabile 90 de zile. Nu există supliment pentru procesarea documentelor sau pentru text suplimentar.",
+    "unde": "src/content/limite-planuri.ts, src/content/ro-md/preturi-componente.ts",
+    "stare": "confirmat",
+    "sursa": "deciziile 66 si 67 ale owner-ului (05.10.2026): suplimentele, preturile si valabilitatea de 90 de zile; decizia 69: publicare integrala",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-05",
+    "data": "2026-10-05"
+  },
+  {
+    "id": "ro-md-limite-la-prag",
+    "text": "La 80% dintr-o limită aplicația afișează un avertisment; la limită, răspunsurile AI se opresc până în luna următoare sau până la un supliment, încărcările noi se opresc când stocarea este plină, descărcările se opresc, scanările peste limita OCR sunt păstrate și textul lor este recunoscut la începutul lunii următoare; nicio dată nu se șterge la atingerea unei limite; documentele șterse sunt incluse în stocare cât timp stau în coșul de gunoi, cel mult 30 de zile.",
+    "unde": "src/content/ro-md/preturi-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "comportamentul platformei la limita, oglinda intrarii en-limite-la-prag (avertizarea in aplicatie la 80%, oprirea raspunsurilor AI, a incarcarii si a descarcarii, amanarea OCR in luna urmatoare, cosul de 30 de zile socotit in stocare); decizia 69: publicare integrala",
+    "confirmat_de": "",
+    "data": "2026-10-05"
+  }
+]

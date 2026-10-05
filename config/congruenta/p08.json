@@ -8,6 +8,14 @@
   ],
   "randuri": [
     {
+      "tip": "camp",
+      "selector": "[data-pliu-suplimente]",
+      "ro": 0,
+      "en": 1,
+      "cod": "d66",
+      "motiv": "Pliul suplimentelor (felia 127) exista numai pe /pricing: limitele si suplimentele deciziilor 66-68 se publica pe 3s.md; /preturi RO le primeste odata cu editia 3s.com.ro."
+    },
+    {
       "tip": "clasa",
       "clasa": "pliuri_adauga",
       "cod": "val-ro-1.1",

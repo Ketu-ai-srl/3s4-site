@@ -17,6 +17,17 @@
 import type { ContinutDrumDocument } from "@/components/enterprise/BandaDrumDocumentVedere";
 import type { ContinutEroulEnterprise } from "@/components/enterprise/EroulEnterprise";
 import type { ContinutListaLivrabile } from "@/components/enterprise/ListaLivrabile";
+import { CONTURI_MINIME_ENTERPRISE, LIMITE_PLANURI } from "@/content/limite-planuri";
+import { CONECTARE_EN, limiteEn } from "./pricing-componente";
+
+/**
+ * Limitele de baza ale planului Enterprise (deciziile 66-68; coloana Enterprise a tabelului final), din
+ * `src/content/limite-planuri.ts`: "500 GB of storage, 600 AI answers a month, ...". Intra in randul despre conturi
+ * si contract al listei, ca lista sa ramana la sase elemente.
+ */
+const LIMITE_ENTERPRISE_EN = limiteEn("enterprise").map((l) => l.cifra + " " + l.text);
+const LIMITE_DE_BAZA_EN =
+  LIMITE_ENTERPRISE_EN.slice(0, -1).join(", ") + " and " + LIMITE_ENTERPRISE_EN[LIMITE_ENTERPRISE_EN.length - 1];
 
 /** Eticheta accesibila a firului din erou, in limba editiei. */
 export const ETICHETA_FIR_EN = "Breadcrumb";
@@ -73,7 +84,19 @@ export const LIVRABILE_EN: ContinutListaLivrabile = {
       titlu: "Certifications and service levels",
       text: "None stated on this site. Tell us what you need, and we will say plainly whether we meet it.",
     },
-    { titlu: "Accounts and contract", text: "More than 20 user accounts, on an annual contract, from EUR 800 a month, excluding VAT." },
+    {
+      titlu: "Accounts, allowances and contract",
+      text:
+        "From " +
+        CONTURI_MINIME_ENTERPRISE +
+        " to " +
+        LIMITE_PLANURI.enterprise.conturi +
+        " user accounts on the base plan, on an annual contract billed monthly, from EUR 800 a month, excluding VAT. Base allowances, shared by the whole organization: " +
+        LIMITE_DE_BAZA_EN +
+        ". Connection: " +
+        CONECTARE_EN +
+        ".",
+    },
     {
       titlu: "A pilot on your own documents",
       text: "Every start is a free 14-day assisted pilot on your own documents. A written offer then confirms the plan and the price.",

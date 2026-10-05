@@ -254,7 +254,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
       blocuri: [
         {
           paragrafe: [
-            "3S are patru pachete, cu prețuri lunare în euro calculate pentru întreaga firmă. Starter, Pro și Business au aceleași funcții; pachetele se deosebesc numai prin numărul de conturi: 90, 150 și 240 EUR pe lună, pentru 5, 10 și, respectiv, 20 de conturi. Peste 20 de conturi se aplică pachetul Enterprise, de la 800 EUR pe lună, cu contract anual. La plata anuală beneficiezi de două luni gratuite, adică 75, 125 și, respectiv, 200 EUR pe lună. Grila are caracter orientativ. Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură. [Vezi pachetele](/ro/preturi).",
+            "3S are patru pachete, cu prețuri lunare în euro calculate pentru întreaga firmă. Starter, Pro și Business au aceleași funcții; pachetele se deosebesc numai prin numărul de conturi: 90, 150 și 240 EUR pe lună, pentru 5, 10 și, respectiv, 20 de conturi. Peste 20 de conturi se aplică pachetul Enterprise, de la 800 EUR pe lună, cu contract anual. La plata anuală plătești 10 luni din 12, adică 75, 125 și, respectiv, 200 EUR pe lună. Grila are caracter orientativ. Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură. [Vezi pachetele](/ro/preturi).",
           ],
         },
       ],

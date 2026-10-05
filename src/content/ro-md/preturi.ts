@@ -74,7 +74,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Da, la plata anuală: două luni sunt gratuite. La Starter, Pro și Business, plata anuală înseamnă 10 plăți lunare pentru 12 luni, adică un preț cu 16,7% mai mic decât la plata lunară. Prima lună după pilot se facturează la prețul din grilă, fără reducere de pilot.",
+            "Da, la plata anuală plătești 10 luni din 12. La Starter, Pro și Business, plata anuală înseamnă 10 plăți lunare pentru 12 luni, adică un preț cu 16,7% mai mic decât la plata lunară. Prima lună după pilot se facturează la prețul din grilă, fără reducere de pilot.",
           ],
         },
       ],

@@ -13,6 +13,14 @@
 // butonul de adaugare, numele scenei: val-ro-1.1) nu are fapt confirmat: biroul se monteaza fara ele
 // (`faraDispozitive`), cu scena si banda de conturi; titlul si paragraful pliului spun faptul confirmat (conturile pe plan).
 //
+// LIMITELE PLANURILOR (deciziile 66-68, felia 127): cifrele vin din `src/content/limite-planuri.ts`, singurul loc in
+// care se schimba; aici stau numai unitatile in engleza ("GB of storage", "AI answers a month", "OCR pages a month",
+// "GB of downloads a month"). Cardurile pastreaza 9 randuri (limitele iau locul faptelor care raman in tabel), tabelul
+// pastreaza 4 categorii si 14 randuri (limitele iau locul randurilor de umplutura), intrebarile paginii raman cele 7
+// aprobate; suplimentele, taxa de conectare si intrebarile despre limite stau in al treilea pliu (`SUPLIMENTE_EN`).
+// Textul despre limite se publica integral (decizia 69). Fara "processing" si fara documente procesate (decizia 66);
+// pilotul, unde e numit in textul nou, are 14 zile (decizia 65).
+//
 // Modulul e numai date si functii pure: il importa invelitoarea client a preturilor, deci nu aduce nimic din
 // continutul RO (tipurile vin prin `import type`, care dispare la compilare).
 
@@ -25,7 +33,37 @@ import type { ContinutPliuri } from "@/components/preturi/PliuriVedere";
 import type { ContinutTabelPlanuri } from "@/components/preturi/TabelPlanuri";
 import type { NivelFir } from "@/components/primitive/FirPagina";
 import type { Legatura } from "@/content/navigatie";
+import type { ContinutSuplimente, RandSupliment } from "@/components/preturi/PliuriVedere";
+import {
+  CONECTARE,
+  LIMITE_PLANURI,
+  PRAG_AVERTIZARE_PROCENT,
+  RESURSE_SUPLIMENTE,
+  SUPLIMENTE,
+  VALABILITATE_SUPLIMENT_ZILE,
+  type CheiePlanLimite,
+  type ResursaSupliment,
+} from "@/content/limite-planuri";
 import type { CardPoarta, CategorieTabel, CelulaTabel, CheiePlan, Cursor, Plan, RandPlan } from "@/content/preturi";
+
+/** O cifra in formatul american: virgula la mii ("1,000", "20,000"). */
+export function miiEn(n: number): string {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/** Taxa de conectare, cuvant cu cuvant, cum o citesc pliul suplimentelor si /enterprise. */
+export const CONECTARE_EN = "EUR " + CONECTARE.eur + " per " + miiEn(CONECTARE.pagini) + " pages imported, once";
+
+/** Limitele unui plan (fara conturi), in unitatile editiei: cifra ingrosata si textul de dupa ea. */
+export function limiteEn(cheie: CheiePlanLimite): { cifra: string; text: string }[] {
+  const l = LIMITE_PLANURI[cheie];
+  return [
+    { cifra: miiEn(l.stocareGb), text: "GB of storage" },
+    { cifra: miiEn(l.raspunsuriAiPeLuna), text: "AI answers a month" },
+    { cifra: miiEn(l.paginiOcrPeLuna), text: "OCR pages a month" },
+    { cifra: miiEn(l.descarcariGbPeLuna), text: "GB of downloads a month" },
+  ];
+}
 
 /** Calea paginii, scrisa dupa gazda in ultima nota a listei ca PDF. */
 export const CALE_PRETURI_EN = "/pricing";
@@ -58,7 +96,7 @@ export const ETICHETE_PRETURI_EN = { poarta: "The two 3S options", pliuri: "Acco
 export const POARTA_BAZA_EN: CardPoarta = {
   nume: "Starter, Pro, Business",
   titlu: "Same features in every plan",
-  text: "For 5, 10 or 20 user accounts, priced per company, excluding VAT. The plans differ only in accounts.",
+  text: "For 5, 10 or 20 user accounts, priced per company, excluding VAT. The plans differ in accounts and monthly allowances.",
   mergi: "Choose a plan",
 };
 
@@ -77,7 +115,7 @@ export const LINIA_DE_BAZA_EN: ContinutLiniaDeBaza & { inapoi: string } = {
   titlu: "Starter, Pro, Business",
   promisiune: "Your company's documents, easy to find.",
   paragraf:
-    "Prices are per company, not per user, in euros, excluding VAT. Starter, Pro and Business have the same features; they differ only in the number of user accounts.",
+    "Prices are per company, not per user, in euros, excluding VAT. Starter, Pro and Business have the same features; they differ in the number of user accounts and in their monthly allowances.",
 };
 
 /**
@@ -121,22 +159,23 @@ export const GRILA_EN = {
   detalii: (rand: string) => "What it means: " + rand,
 };
 
-/** `preturi.ts:346-362`: lista de 9 randuri a unui plan; iconita "i" ramane pe randul al saselea. */
+/**
+ * `preturi.ts:346-362`: lista de 9 randuri a unui plan; iconita "i" ramane pe randul al saselea. Primele cinci randuri
+ * sunt conturile si limitele planului (decizia 66); faptele pe care le inlocuiesc (textul din scanari, etichetele de
+ * tip, exportul zip) raman in tabelul comparativ.
+ */
 export function randuriPlanEn(plan: Plan): RandPlan[] {
   return [
     { cifra: String(plan.conturi), text: "user accounts", explicatie: null },
-    { cifra: null, text: "Priced per company", explicatie: null },
-    { cifra: null, text: "Search with cited sources", explicatie: null },
-    { cifra: null, text: "Text from scans and photos", explicatie: null },
-    { cifra: null, text: "Automatic type tags", explicatie: null },
+    ...limiteEn(plan.cheie).map((l) => ({ cifra: l.cifra, text: l.text, explicatie: null })),
     {
       cifra: null,
       text: "Retention set per folder",
       explicatie: "You can set a retention period for each folder, and it applies to the documents in it.",
     },
-    { cifra: null, text: "Zip export of originals", explicatie: null },
+    { cifra: null, text: "Search with cited sources", explicatie: null },
     { cifra: null, text: "EU hosting, Frankfurt", explicatie: null },
-    { cifra: null, text: "Works in the browser", explicatie: null },
+    { cifra: null, text: "Priced per company", explicatie: null },
   ];
 }
 
@@ -202,7 +241,7 @@ export const COMUTATOR_EN: ContinutComutator = {
   eticheta: "Billing period",
   lunar: "Monthly",
   anual: "Annual",
-  insigna: "2 months free",
+  insigna: "Pay 10 months, get 12",
   nota: "Prices exclude VAT; where VAT applies, it is added to the invoice.",
 };
 
@@ -230,7 +269,7 @@ export const PLIURI_EN: ContinutPliuri = {
   eticheta: ETICHETE_PRETURI_EN.pliuri,
   birou: {
     titlu: "Each plan sets your number of accounts",
-    paragraf: "Starter, Pro and Business differ only in the number of user accounts: 5, 10 or 20. The price is per company, not per user.",
+    paragraf: "Starter, Pro and Business come with 5, 10 or 20 user accounts, and each step up raises the monthly allowances. The price is per company, not per user.",
   },
   comparatie: { titlu: "The plans, side by side", paragraf: "What each plan includes, row by row" },
 };
@@ -249,7 +288,18 @@ const DA: CelulaTabel = { fel: "da" };
 const toate = (c: CelulaTabel): Record<CheiePlan, CelulaTabel> => ({ starter: c, pro: c, business: c });
 const valoare = (text: string): CelulaTabel => ({ fel: "valoare", text });
 
-/** `preturi.ts:431-476`: 4 categorii, 14 randuri, ca pe RO; randurile scoase sunt inlocuite cu fapte confirmate. */
+/** Celulele unui rand de limita: cifra fiecarui plan, cu unitatea scurta a tabelului ("100 GB", "1,000"). */
+function pePlan(cifra: (cheie: CheiePlan) => string): Record<CheiePlan, CelulaTabel> {
+  return { starter: valoare(cifra("starter")), pro: valoare(cifra("pro")), business: valoare(cifra("business")) };
+}
+
+/**
+ * `preturi.ts:431-476`: 4 categorii, 14 randuri, ca pe RO. Randurile de limita (decizia 66) si taxa de conectare
+ * (decizia 68) iau locul celor de umplutura, puse acolo numai ca listele sa pastreze lungimea RO: partajarea prin
+ * legatura, incarcarea si intrebarea din browser, inscrierea prin invitatie, si "Retention per folder", care ramane pe
+ * carduri, cu explicatia lui. Randul pilotului ramane pe locul lui, intre conturi si taxa pe utilizator, cu textul
+ * neatins: il schimba pe loc felia pilotului, deci mutarea lui ar lasa vechiul text in afara conflictului la pliere.
+ */
 export const TABEL_EN: ContinutTabelPlanuri = {
   functie: "Feature",
   inclus: "included",
@@ -259,17 +309,18 @@ export const TABEL_EN: ContinutTabelPlanuri = {
       titlu: "Where your files are stored",
       randuri: [
         { functie: "EU hosting region", celule: toate(valoare("Frankfurt")) },
-        { functie: "Retention per folder", celule: toate(DA) },
+        { functie: "Storage", celule: pePlan((c) => miiEn(LIMITE_PLANURI[c].stocareGb) + " GB") },
       ],
     },
     {
-      titlu: "Team and accounts",
+      titlu: "Accounts and price",
       randuri: [
-        { functie: "Share by expiring link", celule: toate(DA) },
+        { functie: "Monthly, EUR", celule: { starter: valoare("90"), pro: valoare("150"), business: valoare("240") } },
         { functie: "User accounts", celule: { starter: valoare("5"), pro: valoare("10"), business: valoare("20") } },
         { functie: "Free 14-day pilot", celule: toate(DA) },
         { functie: "Per-user fee", celule: toate(valoare("None")) },
-        { functie: "Zip export", celule: toate(DA) },
+        // Celula ramane scurta (coloana planului are 7,5rem): unitatea si "o data" stau in eticheta randului.
+        { functie: "One-time connection, per " + miiEn(CONECTARE.pagini) + " pages", celule: toate(valoare("EUR " + CONECTARE.eur)) },
       ],
     },
     {
@@ -278,18 +329,85 @@ export const TABEL_EN: ContinutTabelPlanuri = {
         { functie: "Answers with sources", celule: toate(DA) },
         { functie: "Text from scans and photos", celule: toate(DA) },
         { functie: "Automatic type tags", celule: toate(DA) },
-        { functie: "Upload from the browser", celule: toate(DA) },
+        { functie: "Zip export", celule: toate(DA) },
       ],
     },
     {
-      titlu: "Access and price",
+      titlu: "Monthly allowances",
       randuri: [
-        { functie: "Where you ask", celule: toate(valoare("In the browser")) },
-        { functie: "Sign-up", celule: toate(valoare("By invitation")) },
-        { functie: "Monthly, EUR", celule: { starter: valoare("90"), pro: valoare("150"), business: valoare("240") } },
+        { functie: "AI answers a month", celule: pePlan((c) => miiEn(LIMITE_PLANURI[c].raspunsuriAiPeLuna)) },
+        { functie: "OCR pages a month", celule: pePlan((c) => miiEn(LIMITE_PLANURI[c].paginiOcrPeLuna)) },
+        { functie: "Downloads a month", celule: pePlan((c) => miiEn(LIMITE_PLANURI[c].descarcariGbPeLuna) + " GB") },
       ],
     },
   ] satisfies CategorieTabel[],
+};
+
+/** Numele resursei unui supliment (titlul grupului) si randul lui, in unitatile editiei. */
+const RESURSA_EN: Record<ResursaSupliment, { grup: string; unitate: (n: number) => string }> = {
+  raspunsuriAi: { grup: "AI answers", unitate: (n) => miiEn(n) + " AI answers" },
+  stocare: { grup: "Storage", unitate: (n) => miiEn(n) + " GB of storage" },
+  paginiOcr: { grup: "OCR pages", unitate: (n) => miiEn(n) + " OCR pages" },
+  descarcari: { grup: "Downloads", unitate: (n) => miiEn(n) + " GB of downloads" },
+};
+
+const VALABIL_EN = "Once, valid " + VALABILITATE_SUPLIMENT_ZILE + " days";
+
+/** Randurile tabelului de suplimente, din `SUPLIMENTE`, grupate pe resursa. */
+function grupuriSuplimenteEn(): { titlu: string; randuri: RandSupliment[] }[] {
+  return RESURSE_SUPLIMENTE.map((r) => ({
+    titlu: RESURSA_EN[r].grup,
+    randuri: SUPLIMENTE.filter((x) => x.resursa === r).map((x) => ({
+      supliment: RESURSA_EN[r].unitate(x.cantitate),
+      pret: "EUR " + miiEn(x.pretEur),
+      facturare: x.facturare === "lunar" ? "Every month" : VALABIL_EN,
+    })),
+  }));
+}
+
+/**
+ * Al treilea pliu (deciziile 66-68): suplimentele, taxa de conectare si intrebarile despre limite. Comportamentul la
+ * limita e cel al platformei (avertizare in aplicatie la 80%; raspunsurile AI, incarcarile si descarcarile se opresc;
+ * OCR-ul se amana in luna urmatoare; nicio stergere). Nu promite e-mail la 80% si nici reluarea OCR-ului imediat dupa
+ * un supliment: nu sunt confirmate in platforma.
+ */
+export const SUPLIMENTE_EN: ContinutSuplimente = {
+  titlu: "Need more? Add-ons and how limits work",
+  paragrafe: [
+    "When an allowance runs out before the end of the month, you can add more without changing plan. To order an add-on, message us.",
+    "Connection: " +
+      CONECTARE_EN +
+      ". It covers the archive you bring in when you start; pages you import during the free 14-day pilot are included in it when you move to a paid plan.",
+  ],
+  coloane: { supliment: "Add-on", pret: "Price", facturare: "Billing" },
+  derulare: "Add-ons table; on a narrow screen it scrolls sideways",
+  grupuri: grupuriSuplimenteEn(),
+  nota: "Prices exclude VAT; where VAT applies, it is added to the invoice.",
+  intrebari: [
+    {
+      intrebare: "Are the limits per user or per company?",
+      raspuns: "Per company. Each allowance is shared by all the user accounts of your organization; it is not counted per person.",
+    },
+    {
+      intrebare: "When do the monthly allowances reset?",
+      raspuns:
+        "On the 1st of each calendar month. Allowances you do not use are not carried over. Storage is not monthly: it is the space your documents take up, and deleted documents count toward it while they stay in the trash, for up to 30 days.",
+    },
+    {
+      intrebare: "What happens when we reach a limit?",
+      raspuns:
+        "3S shows a warning in the app when you reach " +
+        PRAG_AVERTIZARE_PROCENT +
+        "% of a limit. At the limit, AI answers stop until the next month or until you add an add-on, and your documents stay accessible. When storage is full, new uploads stop until you free up space or add storage; the documents already stored stay as they are. Downloads stop until the next month or until you add an add-on. Scans above the OCR allowance are not lost: they are stored, and their text is recognized at the start of the next month. We never delete data when a limit is reached.",
+    },
+    {
+      intrebare: "What is the connection fee?",
+      raspuns:
+        "A one-time fee for the archive you bring into 3S when you start: " +
+        CONECTARE_EN +
+        ", excluding VAT. It covers text recognition, indexing for search and type tags for those pages. Pages you import during the free 14-day pilot are included in it when you move to a paid plan; if you do not continue after the pilot, you pay nothing.",
+    },
+  ],
 };
 
 /**
@@ -304,7 +422,7 @@ export const INTREBARI_EN: ContinutFaqPreturi = {
     {
       intrebare: "Are there discounts?",
       raspuns:
-        "Pay annually: two months free. On Starter, Pro and Business, annual billing costs 10 monthly payments for 12 months, 16.7% less. The first month after the pilot is billed at the listed price, with no pilot discount.",
+        "Pay annually: you pay for 10 months and get 12. On Starter, Pro and Business, annual billing costs 10 monthly payments for 12 months, 16.7% less. The first month after the pilot is billed at the listed price, with no pilot discount.",
     },
     {
       intrebare: "Why are the prices indicative?",
