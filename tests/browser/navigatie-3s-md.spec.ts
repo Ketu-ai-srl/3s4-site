@@ -3,6 +3,7 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writ
 import { createServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { ECHIVALENTE } from '../../src/content/echivalente'
 import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
@@ -23,6 +24,11 @@ import { RADACINA } from './ajutor/proiect'
  * cand pagina a devenit reala (altfel copia ar fi avut aceeasi cale de doua ori, static si in segmentul juridic).
  * `ajutor/copie-3s-md.ts` nu primeste fisiere de proba (copiaza sursa neschimbata), de aceea copia se face aici,
  * cu acelasi mediu. Sursa depozitului nu se atinge.
+ *
+ * MENIUL ANTETULUI /ro (felia meniu-antet-ro, decizia 59: /ro oglindeste EN): pe `/ro`, meniul principal are atatea
+ * intrari cate are cel EN pe `/`, in aceeasi ordine, fiecare tinta fiind perechea /ro (tabelul de echivalente) a
+ * tintei EN si raspunzand 200 pe copie; la fel elementele foilor (Produs, Ghiduri), deschise la hover pe 1440, si
+ * grupurile sertarului pe 390. Inainte meniul /ro avea numai "Contact".
  *
  * CONTROALE, fiecare cu esec zgomotos: injectia a aterizat (fisierul copiei contine marcajul probei), build-ul
  * copiei iese 0, serverul raspunde la `robots.txt`.
@@ -182,6 +188,31 @@ const fataApel = (hs: string[]) => hs.filter((h) => h.toLowerCase().startsWith(S
 const RAND_NUMAR = /^WhatsApp: \+\d{3} \d{2} \d{3} \d{3}$/
 const ref = (cod: string) => '%5Bref%3A' + cod + '%5D'
 
+/** Perechea /ro a fiecarei cai EN, din tabelul de echivalente (nu din contractul RO-MD pe care il masuram). */
+const PE_RO = new Map(Object.values(ECHIVALENTE).flatMap((p) => (p.en && p['ro-MD'] ? [[p.en, p['ro-MD']] as const] : [])))
+const pereche = (en: string) => PE_RO.get(en) ?? '(fara pereche: ' + en + ')'
+
+/** Tintele meniului principal din HTML-ul servit (eticheta accesibila a meniului alege editia). */
+function meniuServit(html: string, eticheta: string): string[] {
+  return hrefuri(bucata(html, new RegExp('<nav aria-label="' + eticheta + '"'), '</nav>'))
+}
+
+/** Tintele elementelor din foile meniului, deschise pe rand la hover pe declansatori (1440). */
+async function foiDeschise(page: import('@playwright/test').Page, cale: string): Promise<string[][]> {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto(copie.baza + cale)
+  const declansatori = page.locator('header nav [data-declansator]')
+  const n = await declansatori.count()
+  const foi: string[][] = []
+  for (let i = 0; i < n; i++) {
+    await declansatori.nth(i).hover()
+    const grup = page.locator('header [role="group"]:not([aria-hidden])')
+    await expect(grup).toBeVisible()
+    foi.push(await grup.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? '')))
+  }
+  return foi
+}
+
 test.beforeAll(async () => {
   test.setTimeout(600_000)
   copie = await pornesteCopia()
@@ -290,5 +321,50 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     expect(fataApel(hrefuri(html))).toEqual([])
     expect(subsol).toContain('>WhatsApp: +')
     expect(html).not.toContain('<form')
+  })
+
+  test('meniul antetului /ro: acelasi numar de intrari si aceeasi ordine ca EN, perechile /ro, fiecare tinta 200', async () => {
+    const en = await servit('/')
+    const ro = await servit('/ro')
+    expect(en.status).toBe(200)
+    expect(ro.status).toBe(200)
+    const meniuEn = meniuServit(en.html, 'Main menu')
+    const meniuRo = meniuServit(ro.html, 'Meniul principal')
+    // Controlul: EN are meniu (nu comparam doua liste goale) si tabelul cunoaste startul.
+    expect(meniuEn.length).toBeGreaterThan(1)
+    expect(pereche('/')).toBe('/ro')
+    expect(meniuRo).toEqual(meniuEn.map(pereche))
+    for (const t of meniuRo) expect((await servit(t)).status, '/ro -> ' + t).toBe(200)
+  })
+
+  test('foile meniului /ro (hover, 1440): aceleasi elemente ca pe EN, cu perechile /ro, fiecare 200; sertarul pe 390 le are pe toate', async ({ page }) => {
+    const foiEn = await foiDeschise(page, '/')
+    const foiRo = await foiDeschise(page, '/ro')
+    // Controlul: EN are foi cu elemente, deci egalitatea de mai jos nu e intre doua liste goale.
+    expect(foiEn.length).toBeGreaterThan(0)
+    expect(foiEn.every((f) => f.length > 0)).toBe(true)
+    expect(foiRo).toEqual(foiEn.map((f) => f.map(pereche)))
+    for (const t of foiRo.flat()) expect((await servit(t)).status, 'foaie /ro -> ' + t).toBe(200)
+
+    // Sertarul ia meniul din acelasi contract: pe 390 contine fiecare tinta a meniului si a foilor.
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(copie.baza + '/ro')
+    await page.locator('[data-hamburger]').click()
+    const sertar = page.locator('[data-sertar]')
+    await expect(sertar).toBeVisible()
+    const tinte = () => sertar.locator('nav a').evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''))
+    // Grupurile sertarului se deschid unul cate unul (deschiderea unuia il inchide pe celalalt): se aduna pe rand.
+    const tinteSertar = await tinte()
+    // Grupurile sunt declansatorii antetului (selectorul de limba din sertar e tot un buton pliabil, deci nu se numara).
+    const declansatori = await page.locator('header nav [data-declansator]').evaluateAll((as) => as.map((a) => a.getAttribute('data-declansator') ?? ''))
+    expect(declansatori, 'declansatori, unul pe foaie').toHaveLength(foiRo.length)
+    for (const nume of declansatori) {
+      const grup = sertar.locator('nav').getByRole('button', { name: nume, exact: true })
+      await grup.click()
+      await expect(grup).toHaveAttribute('aria-expanded', 'true')
+      tinteSertar.push(...(await tinte()))
+    }
+    const asteptate = [...meniuServit((await servit('/ro')).html, 'Meniul principal'), ...foiRo.flat()]
+    expect(asteptate.filter((t) => !tinteSertar.includes(t))).toEqual([])
   })
 })

@@ -36,6 +36,7 @@ import {
 } from '../src/content/navigatie'
 import { ETICHETA_WHATSAPP_EN, TEXTE_WHATSAPP_EN, navigatieEn } from '../src/content/navigatie-en'
 import { TEXTE_WHATSAPP_RO_MD, coloanaJuridic, navigatieRoMd } from '../src/content/navigatie-ro-md'
+import { ECHIVALENTE } from '../src/content/echivalente'
 import { configurareCanale } from '../src/lib/canale-mediu'
 import { citesteOperator } from '../src/lib/operator'
 import { continutPaletaContract } from '../src/components/global/PaletaCautare'
@@ -283,16 +284,88 @@ describe('selectorul pe editii (limbiPentruCale)', () => {
 })
 
 describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', () => {
-  it('antetul: sigla spre /ro, Contact, CTA-ul "Scrie-ne pe WhatsApp" cu textul paginii', () => {
+  it('antetul: sigla spre /ro, meniul oglinda EN, CTA-ul "Scrie-ne pe WhatsApp" cu textul paginii', () => {
     const md = navigatieRoMd(CANALE_3S_MD, null)
     expect(md.antet.sigla.href).toBe('/ro')
-    expect(md.antet.legaturi.map((l) => [l.text, l.href])).toEqual([['Contact', '/ro/contact']])
+    // AUTORIZARE (felia meniu-antet-ro, decizia 59: /ro oglindeste EN): aici se cerea meniul vechi, numai "Contact"
+    // (`/ro/contact`), cand EN avea Product, Guides, Pricing si About. Meniul e acum perechea celui EN, masurata
+    // intrare cu intrare in cazul urmator; faptul pazit aici ramane: sigla si CTA-ul cu textul paginii.
+    expect(md.antet.legaturi.map((l) => [l.text, l.href])).toEqual([
+      ['Produs', '/ro/platforma'],
+      ['Ghiduri', '/ro/ghiduri/arhivare-e-facturi-ue'],
+      ['Prețuri', '/ro/preturi'],
+      ['Despre 3S și securitate', '/ro/securitate'],
+    ])
     expect(md.antet.cta.text).toBe('Scrie-ne pe WhatsApp')
     const text = (cale: string) => decodeURIComponent(new URL(ctaPeCale(md.antet.cta, cale).href ?? '').searchParams.get('text') ?? '')
     expect(text('/ro')).toBe(TEXTE_WHATSAPP_RO_MD[0].text)
     expect(text('/ro/contact')).toContain('[ref:ro-md-contact]')
     expect(text('/ro/juridic/termeni')).toContain('[ref:ro-md-juridic]')
     expect(text('/ro/o-pagina-fara-intrare')).toContain('[ref:ro-md-acasa]')
+  })
+
+  it('meniul antetului /ro: acelasi numar de intrari si aceeasi ordine ca EN, fiecare tinta e perechea /ro a tintei EN', () => {
+    // Perechea asteptata vine din tabelul de echivalente (cheia paginii EN), nu din contractul RO-MD.
+    const peRo = new Map(Object.values(ECHIVALENTE).flatMap((p) => (p.en && p['ro-MD'] ? [[p.en, p['ro-MD']] as const] : [])))
+    const en = navigatieEn(CANALE_3S_MD).antet.legaturi
+    const md = navigatieRoMd(CANALE_3S_MD, null).antet.legaturi
+    // Controlul: EN are meniu (nu comparam doua liste goale), iar tabelul cunoaste macar startul.
+    expect(en.length).toBeGreaterThan(1)
+    expect(peRo.get('/')).toBe('/ro')
+    expect(md).toHaveLength(en.length)
+    en.forEach((l, i) => {
+      expect(md[i].href, 'intrarea ' + i + ' (' + l.text + ')').toBe(peRo.get(l.href ?? '') ?? '(fara pereche: ' + l.href + ')')
+      expect(md[i].foaie === null, 'foaia intrarii ' + i).toBe(l.foaie === null)
+      if (l.foaie && md[i].foaie) {
+        expect(md[i].foaie!.elemente.map((e) => e.href)).toEqual(l.foaie.elemente.map((e) => peRo.get(e.href ?? '') ?? '(fara pereche: ' + e.href + ')'))
+        expect(md[i].foaie!.elemente.map((e) => e.iconita)).toEqual(l.foaie.elemente.map((e) => e.iconita))
+      }
+    })
+    // Etichetele meniului sunt cele deja folosite pe /ro (subsol si paleta), nu text nou.
+    // Lista e FIXA, copiata din subsolul si paleta /ro de dinaintea meniului (main bf53bc7), nu citita din contract:
+    // coloanele Produs si Ghiduri ale subsolului se iau acum din aceleasi foi ca meniul, deci o eticheta noua intr-o
+    // foaie ar aparea simultan in meniu si in subsol, iar o multime derivata din contract n-ar putea pica.
+    // O eticheta noua in meniu se adauga aici numai cu decizia care o aproba.
+    const existente = new Set([
+      // titlurile coloanelor de subsol
+      'Produs',
+      'Ghiduri',
+      'Companie',
+      // coloana Produs
+      'Platforma',
+      'Căutare cu sursa citată',
+      'Enterprise',
+      // coloana Ghiduri
+      'Arhivarea e-facturilor în UE',
+      'Termene de păstrare în Moldova',
+      '3S și Google Drive',
+      // coloana Companie
+      'Despre 3S și securitate',
+      'Securitatea și locul datelor',
+      'Prețuri',
+      'Contact',
+      // paleta (in plus fata de subsol)
+      'Acasă',
+    ])
+    const etichete = md.flatMap((l) => [l.text, ...(l.foaie ? [l.foaie.eticheta, ...l.foaie.elemente.map((e) => e.text)] : [])])
+    // Controlul: meniul are etichete (nu filtram o lista goala): 4 intrari + 2 foi x (eticheta + 3 elemente).
+    expect(etichete).toHaveLength(12)
+    expect(etichete.filter((t) => !existente.has(t))).toEqual([])
+    // Lista fixa nu a ramas in urma contractului: fiecare eticheta de subsol si paleta de azi e tot in ea
+    // (coloana Juridic are titlurile documentelor, verificate in alta parte, deci se exclude).
+    const full = navigatieRoMd(CANALE_3S_MD, null)
+    const azi = [
+      ...full.subsol.coloane.filter((c) => c.titlu !== 'Juridic').flatMap((c) => [c.titlu, ...c.legaturi.map((x) => x.text)]),
+      ...full.paleta.grupuri.flatMap((g) => g.elemente.map((x) => x.text)),
+    ]
+    expect(azi.filter((t) => !existente.has(t))).toEqual([])
+  })
+
+  it('meniul antetului /ro: declansatorul Ghiduri duce la primul ghid care exista, ca pe EN', () => {
+    const ghiduri = (cai: Set<string>) => navigatieRoMd(CANALE_3S_MD, null, cai).antet.legaturi[1]
+    expect(ghiduri(new Set(['/ro/ghiduri/termene-pastrare-moldova', '/ro/comparatie-drive'])).href).toBe('/ro/ghiduri/termene-pastrare-moldova')
+    // Fara niciun ghid, tinta ramane pe primul (care nu exista), deci declansatorul nu se randeaza.
+    expect(ghiduri(new Set()).href).toBe('/ro/ghiduri/arhivare-e-facturi-ue')
   })
 
   it('coloana Juridic: cele 8 documente, adresele editiei ro, titlurile documentelor (nu scrise de mana)', () => {
