@@ -153,6 +153,162 @@ jobs:
         if: always()
         run: cat "$RUNNER_TEMP/server-3s-md.log" || true
 
+  # AL TREILEA BUILD: aplicatia 3s.com.ro. Acelasi site ca 3s.md (editiile en si ro-MD, acelasi operator), asezat cu
+  # romana la radacina si engleza sub /en (`SITE_ASEZARE=ro`, `src/lib/asezare.ts`), din `config/profil-3s-com-ro.json`.
+  # Pe asezarea `ro` se construiesc numai fisierele-geamana `*.comro.tsx` din `(comro)` si `(comroen)` (`pageExtensions`),
+  # deci nimic din joburile de mai sus nu masoara acest arbore. Aici: poarta oglinzii pe surse (si proba ei), build-ul,
+  # poarta juridica si poarta SEO pe HTML-ul lui, apoi pe server: multimea cailor servite egala cu geamanele cailor
+  # 3s.md (`perechi-asezare.mjs` + poarta oglinzii pe colectie), redirectarile vechilor adrese `/ro`, pagina de
+  # negasit romaneasca si documentele juridice nepublicate (poarta C) la 404. Colectia build-ului se publica ca artefact,
+  # pentru comparatiile intre domenii. Fara `BUILD_STANDALONE`, ca jobul 3s.md. Durata: masurata la primul verdict.
+  profil-3s-com-ro:
+    name: Profil 3s.com.ro
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: pnpm/action-setup@7088e561eb65bb68695d245aa206f005ef30921d # v4.1.0
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: |
+          echo "TEMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - run: pnpm install --frozen-lockfile
+      # Pe surse, inainte de build: fiecare pagina din (en) / (romd) are geamana ei, si geamana e o reexportare pura.
+      - run: python .claude/scripts/porti/probe/proba-oglinda-asezare.py
+      - run: python .claude/scripts/porti/poarta-oglinda-asezare.py
+      - name: Variabilele aplicatiei 3s.com.ro
+        run: |
+          node -e "const p=require('./config/profil-3s-com-ro.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
+      - run: pnpm build
+      # LIMITA DECLARATA: poarta juridica pe ro nu stie asezarea. Cauta paginile juridice la caile 3s.md
+      # (/ro/juridic/..., /legal/...), nu la cele servite pe 3s.com.ro (/juridic/..., /en/legal/...), deci
+      # avertismentele L-15 (pagina juridica lipsa) si L-01 (nicio legatura spre /ro/juridic/...) de cale sunt
+      # artefacte, iar "0 care opresc" de aici NU dovedeste paginile juridice ale build-ului. Pasul ramane pentru
+      # linia modelului D2 si pentru constatarile care nu tin de cale, pana cand poarta citeste caile prin asezare.
+      - name: Poarta juridica 3s.com.ro (staging, blocant)
+        run: |
+          python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-com-ro.log"
+          grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
+      - run: python .claude/scripts/porti/poarta-seo.py
+      # Colectia (ce serveste `next start`, cale cu cale) si perechile 3s.md -> 3s.com.ro (rutele 3s.md trecute prin
+      # `caleServita`); poarta oglinzii cere ca multimea cailor servite sa fie EXACT partea 3s.com.ro a perechilor, plus
+      # caile proprii asezarii (lista ei inchisa).
+      - name: Colectia build-ului si oglinda pe server
+        run: |
+          node .claude/scripts/porti/colecteaza-build.mjs --iesire "$RUNNER_TEMP/colectie-3s-com-ro" --port 4770
+          node .claude/scripts/porti/perechi-asezare.mjs --profil-a config/profil-3s-md.json --profil-b config/profil-3s-com-ro.json --iesire "$RUNNER_TEMP/perechi-3s-md-3s-com-ro.json"
+          python .claude/scripts/porti/poarta-oglinda-asezare.py --colectie "$RUNNER_TEMP/colectie-3s-com-ro" --perechi "$RUNNER_TEMP/perechi-3s-md-3s-com-ro.json"
+      # Pe server, cazurile pe care multimea cailor nu le vede: redirectarile permanente ale vechilor adrese ale romanei,
+      # pagina de negasit (romaneasca, noindex), un document juridic nepublicat la poarta curenta (dpa, poarta C: 404, deci
+      # `dynamicParams = false` scris literal in geamana functioneaza) si limba paginilor. Martorul serverului: robots.txt 200.
+      - name: Proba asezarii pe serverul build-ului 3s.com.ro
+        run: |
+          pnpm exec next start -p 4771 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-com-ro.log" 2>&1 &
+          for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:4771/robots.txt && break; sleep 1; done
+          A=http://127.0.0.1:4771
+          esec=0
+          verifica() { if [ "$2" = "$3" ]; then echo "OK    $1: $2"; else echo "PICA  $1: $2 (asteptat $3)"; esec=1; fi; }
+          verifica 'robots.txt (martorul serverului)' "$(curl -s -o /dev/null -w '%{http_code}' $A/robots.txt)" 200
+          verifica '/ status' "$(curl -s -o /dev/null -w '%{http_code}' $A/)" 200
+          verifica '/ lang' "$(curl -s $A/ | grep -o '<html lang="[a-z]*"' | head -1)" '<html lang="ro"'
+          verifica '/ Content-Language' "$(curl -s -D - -o /dev/null $A/ | tr -d '\r' | grep -i '^content-language:' | cut -d' ' -f2)" ro-RO
+          verifica '/contact status' "$(curl -s -o /dev/null -w '%{http_code}' $A/contact)" 200
+          verifica '/en lang' "$(curl -s $A/en | grep -o '<html lang="[a-z]*"' | head -1)" '<html lang="en"'
+          verifica '/en/pricing Content-Language' "$(curl -s -D - -o /dev/null $A/en/pricing | tr -d '\r' | grep -i '^content-language:' | cut -d' ' -f2)" en
+          verifica '/juridic/cookies status' "$(curl -s -o /dev/null -w '%{http_code}' $A/juridic/cookies)" 200
+          verifica '/juridic/dpa status (poarta C)' "$(curl -s -o /dev/null -w '%{http_code}' $A/juridic/dpa)" 404
+          verifica '/ro/contact status' "$(curl -s -o /dev/null -w '%{http_code}' $A/ro/contact)" 308
+          verifica '/ro/contact Location' "$(curl -s -D - -o /dev/null $A/ro/contact | tr -d '\r' | grep -i '^location:' | cut -d' ' -f2)" /contact
+          verifica '/ro status' "$(curl -s -o /dev/null -w '%{http_code}' $A/ro)" 308
+          verifica '/pricing status (engleza nu e la radacina)' "$(curl -s -o /dev/null -w '%{http_code}' $A/pricing)" 404
+          verifica '/nu-exista status' "$(curl -s -o /dev/null -w '%{http_code}' $A/nu-exista)" 404
+          verifica '/nu-exista lang' "$(curl -s $A/nu-exista | grep -o '<html lang="[a-z]*"' | head -1)" '<html lang="ro"'
+          verifica '/nu-exista X-Robots-Tag noindex' "$(curl -s -D - -o /dev/null $A/nu-exista | tr -d '\r' | grep -ic '^x-robots-tag:.*noindex')" 1
+          exit $esec
+      # Consola browserului pe cinci cai (criteriul de gata al arborelui): zero console.error si zero erori de pagina,
+      # adica nicio nepotrivire de hidratare (in productie React o raporteaza ca eroare a paginii, #418/#423/#425), pe
+      # un server propriu. Martorul pozitiv e in script: / cu un text adaugat in HTML-ul servit trebuie sa dea macar o
+      # eroare, altfel iesirea e 3 (masuratoare oarba). Comportamentul de dupa hidratare (selector, bara mobila,
+      # canalul, paleta) nu e aici: il acopera proba de browser a asezarii, intr-o felie separata.
+      - run: pnpm exec playwright install chromium
+      - name: Consola browserului pe 3s.com.ro (hidratare)
+        run: |
+          pnpm exec next start -p 4772 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-com-ro-hidratare.log" 2>&1 &
+          for i in $(seq 1 60); do curl -s -o /dev/null http://127.0.0.1:4772/robots.txt && break; sleep 1; done
+          mkdir -p node_modules/.cache
+          cat > node_modules/.cache/hidratare-3s-com-ro.cjs <<'SCRIPT'
+          // Consola browserului pe cinci cai ale build-ului 3s.com.ro: zero console.error si zero erori de pagina (in productie
+          // React raporteaza nepotrivirea de hidratare ca eroare nerecuperata a paginii, #418/#423/#425). Martorul pozitiv:
+          // aceeasi pagina /, cu un text adaugat in HTML-ul servit (interceptat), trebuie sa produca macar o eroare; altfel
+          // masuratoarea e oarba si iesirea e 3, nu 0.
+          const { chromium } = require('@playwright/test')
+          const A = process.argv[2] || 'http://127.0.0.1:4771'
+          const CAI = ['/', '/contact', '/en', '/en/pricing', '/juridic/cookies']
+
+          async function erori(browser, cale, strica) {
+            const pagina = await browser.newPage()
+            const gasite = []
+            pagina.on('console', (m) => { if (m.type() === 'error') gasite.push('console.error: ' + m.text().slice(0, 300)) })
+            pagina.on('pageerror', (e) => gasite.push('pageerror: ' + String(e.message).slice(0, 300)))
+            if (strica) {
+              await pagina.route(A + cale, async (ruta) => {
+                const r = await ruta.fetch()
+                const html = await r.text()
+                const i = html.indexOf('</h1>')
+                if (i < 0) throw new Error('martorul nu gaseste </h1> in ' + cale)
+                await ruta.fulfill({ response: r, body: html.slice(0, i) + ' martor' + html.slice(i) })
+              })
+            }
+            const r = await pagina.goto(A + cale, { waitUntil: 'load' })
+            await pagina.waitForTimeout(2500)
+            await pagina.close()
+            return { status: r ? r.status() : 0, gasite }
+          }
+
+          ;(async () => {
+            const browser = await chromium.launch()
+            let esec = 0
+            try {
+              const m = await erori(browser, '/', true)
+              if (m.gasite.length === 0) {
+                console.log('NEMASURAT  martorul (HTML-ul lui / modificat) nu a produs nicio eroare: masuratoarea e oarba')
+                process.exitCode = 3
+                return
+              }
+              console.log('OK    martor: / cu HTML modificat -> ' + m.gasite.length + ' erori (' + m.gasite[0].slice(0, 120) + ')')
+              for (const cale of CAI) {
+                const { status, gasite } = await erori(browser, cale, false)
+                if (status === 200 && gasite.length === 0) console.log('OK    ' + cale + ': 200, 0 erori in consola')
+                else { esec = 1; console.log('PICA  ' + cale + ': ' + status + ', ' + gasite.length + ' erori\n  ' + gasite.join('\n  ')) }
+              }
+              process.exitCode = esec
+            } finally {
+              await browser.close()
+            }
+          })().catch((e) => { console.log('NEMASURAT  ' + e.message); process.exitCode = 3 })
+          SCRIPT
+          node node_modules/.cache/hidratare-3s-com-ro.cjs http://127.0.0.1:4772
+      - name: Jurnalul serverului 3s.com.ro
+        if: always()
+        run: cat "$RUNNER_TEMP/server-3s-com-ro.log" || true
+      - name: Colectia 3s.com.ro, ca artefact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: colectie-3s-com-ro
+          path: |
+            ${{ runner.temp }}/colectie-3s-com-ro
+            ${{ runner.temp }}/perechi-3s-md-3s-com-ro.json
+          if-no-files-found: warn
+
   # INVARIANTA RELATIVA: o felie care declara ca NU schimba un site construit din acest cod (site-ul RO sau 3s.md)
   # il construieste de doua ori, pe baza ei si pe ea, colecteaza tot ce serveste `next start` (toate rutele
   # prerandate, plus robots, harta, llms, manifest, security.txt si o cale inexistenta) si cere ZERO diferente dupa

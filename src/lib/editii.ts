@@ -8,7 +8,8 @@
 //   - `ro-MD`: romana pentru Republica Moldova, sub `/ro`, din fisierele `page.romd.tsx` de sub `src/app/(romd)`.
 // Mecanismul e `pageExtensions` din `next.config.ts`: pe build-ul `ro-RO` lista e cea de azi (`ts`, `tsx`, `md`,
 // `mdx`), deci `page.en.tsx` nu e pagina; pe build-ul international `tsx` simplu lipseste din lista, deci
-// arborele romanesc nu e construit deloc, si raman numai sufixele editiilor.
+// arborele romanesc nu e construit deloc, si raman numai sufixele editiilor. Pe asezarea `ro` a site-ului international
+// (`src/lib/asezare.ts`: romana la radacina, engleza sub `/en`) raman numai fisierele-geamana `*.comro.tsx`.
 //
 // PROFILURILE ADMISE, si de ce numai ele (o combinatie gresita opreste construirea, nu produce un site stricat):
 //   - `ro-RO` singur. Impreuna cu `en`, doua editii ar avea radacina; impreuna cu `ro-MD`, layout-ul radacina
@@ -119,13 +120,32 @@ export function editiaInBuild(cod: CodEditie, editii: readonly CodEditie[] = edi
   return editii.includes(cod);
 }
 
-/** Valoarea lui `pageExtensions` pentru un profil. Pe `ro-RO`, exact lista de dinainte de editii. */
-export function extensiiPagini(editii: readonly CodEditie[]): string[] {
+/**
+ * Sufixul fisierelor-geamana ale asezarii `ro` (`src/lib/asezare.ts`): grupurile `(comro)` (romana la radacina) si
+ * `(comroen)` (engleza sub `/en`). Fiecare fisier de acolo reexporta pagina, ruta sau layout-ul geaman din `(romd)` sau
+ * `(en)`, deci continutul ramane unul singur; sufixul decide numai ce arbore construieste un build.
+ */
+export const SUFIX_ASEZARE_RO = "comro.tsx";
+
+/**
+ * Valoarea lui `pageExtensions` pentru un profil si o asezare. Pe `ro-RO`, exact lista de dinainte de editii. Pe
+ * asezarea `ro` (care cere profilul `en,ro-MD`), EXACT `["comro.tsx","ts","md","mdx"]`: daca ar ramane `en.tsx` sau
+ * `romd.tsx`, `/` ar fi servita de doua pagini (`(en)/page.en.tsx` si `(comro)/page.comro.tsx`), iar romana ar exista si
+ * sub `/ro`. Pe asezarea `md` (implicitul) lista e cea de dinainte de asezari, deci fisierele `*.comro.tsx` nu sunt
+ * rute nici pe 3s.md, nici pe site-ul romanesc (acelasi principiu ca `page.en.tsx` pe build-ul romanesc).
+ * Asezarea se da ca text (`md` / `ro`), nu prin tipul din `asezare.ts`: modulul acesta nu importa nimic.
+ */
+export function extensiiPagini(editii: readonly CodEditie[], asezare: "md" | "ro" = "md"): string[] {
   if (editii.includes("ro-RO")) return ["ts", "tsx", "md", "mdx"];
+  if (asezare === "ro") return [SUFIX_ASEZARE_RO, "ts", "md", "mdx"];
   return [...editii.map((c) => EDITII[c].sufix), "ts", "md", "mdx"];
 }
 
-/** Pagina de negasit globala (`global-not-found.en.tsx`) e pornita numai pe profilul cu `en`. */
+/**
+ * Pagina de negasit globala e pornita numai pe profilul cu `en`. Fisierul il alege `pageExtensions`, deci urmeaza
+ * singur asezarea: `global-not-found.en.tsx` pe `md`, `global-not-found.comro.tsx` (romana) pe `ro`. Asezarea `ro` cere
+ * profilul `en,ro-MD`, deci raspunsul e acelasi pe ambele asezari.
+ */
 export function cuNegasitGlobal(editii: readonly CodEditie[]): boolean {
   return editii.includes("en");
 }

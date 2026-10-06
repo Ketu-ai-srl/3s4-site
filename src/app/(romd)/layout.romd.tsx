@@ -11,7 +11,7 @@ import DateStructurateSite from "@/components/seo/DateStructurateSite";
 import { BRAND } from "@/content/entitate";
 import { navigatieRoMd } from "@/content/navigatie-ro-md";
 import { indexareaEstePermisa } from "@/content/rute";
-import { EDITII } from "@/lib/editii";
+import { atributeLimba } from "@/lib/asezare";
 import { CLASE_FONTURI } from "@/lib/fonturi";
 import { adresaSite } from "@/lib/site";
 
@@ -27,7 +27,11 @@ import { adresaSite } from "@/lib/site";
 // Ca pe layout-ul RO si pe cel EN (decizia 53, aceeasi experienta): culoarea marcii in bara navigatorului
 // (`viewport.themeColor`) si tranzitia de vedere la navigarea client (`TranzitieVedere`, oprita la miscare redusa).
 
-const EDITIE = EDITII["ro-MD"];
+// ASEZAREA (`src/lib/asezare.ts`): `lang` si `og:locale` vin din asezarea build-ului. Pe `md` sunt valorile din
+// catalogul editiilor (`ro`, `ro_MD`), deci HTML-ul 3s.md nu se schimba; pe `ro` (romana la radacina, 3s.com.ro)
+// `og:locale` e `ro_RO`. Layout-ul il reexporta geamana lui de pe asezarea `ro` (`src/app/(comro)/layout.comro.tsx`).
+
+const EDITIE = atributeLimba("ro-MD");
 
 export const metadata: Metadata = {
   metadataBase: new URL(adresaSite()),

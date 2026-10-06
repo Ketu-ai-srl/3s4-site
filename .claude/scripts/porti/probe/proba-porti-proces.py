@@ -812,6 +812,43 @@ def cazuri_reciprocitate():
         'masuratoarea e invalida')
 
 
+def cazuri_oglinda_asezare():
+    # Arbore minim: o pagina EN la radacina 3s.md si geamana ei pe asezarea ro, cu pagina de negasit pe ambele.
+    # Numele grupurilor si sufixul se asambleaza la rulare. Poarta nu are `--radacina` prin argparse, deci se
+    # copiaza in arbore si isi ia radacina din propria cale (cusatura de mai sus).
+    grup_en = '(' + 'com' + 'roen)'
+    sufix = '.' + 'comro' + '.tsx'
+
+    def arbore(cu_geamana=True):
+        def construieste(d):
+            app = os.path.join(d, 'src', 'app')
+            scrie(os.path.join(app, '(en)', 'pricing', 'page.en.tsx'),
+                  'export const metadata = {};\nexport default function P() {}\n')
+            if cu_geamana:
+                scrie(os.path.join(app, grup_en, 'en', 'pricing', 'page' + sufix),
+                      'export { default, metadata } from "@/app/(en)/pricing/page.en";\n')
+            scrie(os.path.join(app, 'global-not-found.en.tsx'), 'export default function N() {}\n')
+            scrie(os.path.join(app, 'global-not-found' + sufix), 'export default function N() {}\n')
+            # Imaginile sociale de la radacina: exceptarile din PROPRII_RO, cu sursa lor; fara ele poarta
+            # (corect) numeste exceptarea ramasa in urma si arborele n-ar mai fi curat.
+            for img in ('opengraph-image', 'twitter-image'):
+                scrie(os.path.join(app, '(en)', img, 'route.en.tsx'),
+                      'export const dynamic = "force-static";\nexport function GET() {}\n')
+                scrie(os.path.join(app, '(' + 'com' + 'ro)', img, 'route' + sufix),
+                      'export { GET } from "@/app/(en)/' + img + '/route.en";\n'
+                      'export const dynamic = "force-static";\n')
+                scrie(os.path.join(app, grup_en, 'en', img, 'route' + sufix),
+                      'export { GET } from "@/app/(en)/' + img + '/route.en";\n'
+                      'export const dynamic = "force-static";\n')
+        return construieste
+
+    caz('poarta-oglinda-asezare.py', 'pagina EN fara geamana pe asezarea ro: cod 1, mesajul o numeste',
+        arbore(cu_geamana=False), PICAT, 'OA-01')
+    caz('poarta-oglinda-asezare.py', 'pagina EN cu geamana ei: cod 0', arbore(), CURAT)
+    caz('poarta-oglinda-asezare.py', 'arbore fara surse in (en) / (romd): cod 3, nu 0',
+        gol, NEMASURAT, 'NEMASURAT')
+
+
 CAZURI = {
     'poarta-afirmatii.py': cazuri_afirmatii,
     'poarta-evidenta.py': cazuri_evidenta,
@@ -821,6 +858,7 @@ CAZURI = {
     'poarta-limba-en.py': cazuri_limba_en,
     'poarta-limba.py': cazuri_limba,
     'poarta-navigare.py': cazuri_navigare,
+    'poarta-oglinda-asezare.py': cazuri_oglinda_asezare,
     'poarta-reciprocitate.py': cazuri_reciprocitate,
     'poarta-regresie.py': cazuri_regresie,
     'poarta-registru-rute.py': cazuri_registru_rute,

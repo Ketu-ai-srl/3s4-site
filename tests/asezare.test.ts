@@ -298,7 +298,9 @@ describe('next.config.ts cu SITE_ASEZARE', () => {
   it('pe ro cu profilul en,ro-MD: cheia publica si redirectarile permanente /ro', async () => {
     const c = await configurare({ ...PROFIL_MD, SITE_ASEZARE: 'ro' })
     expect(c.env?.NEXT_PUBLIC_SITE_ASEZARE).toBe('ro')
-    expect(c.pageExtensions).toEqual(['en.tsx', 'romd.tsx', 'ts', 'md', 'mdx'])
+    // Pe ro arborele construit e NUMAI cel geaman (comro): daca ar ramane en.tsx sau romd.tsx, `/` ar exista de doua
+    // ori, din (en)/page.en.tsx si din (comro)/page.comro.tsx. Deci lista e exact asta, nu cea a profilului en,ro-MD.
+    expect(c.pageExtensions).toEqual(['comro.tsx', 'ts', 'md', 'mdx'])
     expect(await c.redirects?.()).toEqual(redirectariAsezare('ro'))
   })
 

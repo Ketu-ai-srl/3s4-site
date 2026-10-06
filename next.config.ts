@@ -5,7 +5,7 @@ import { alegeOperator, operatorComplet } from './src/lib/operator'
 import { VARIABILA_OPERATOR_NUMIT, operatorNumitInMediu } from './src/lib/operator-mediu'
 import { VARIABILA_FAMILIE_JURIDICA, familieJuridica } from './src/content/juridic/familie'
 import { EDITII, VARIABILA_EDITII_PUBLICA, cuNegasitGlobal, editiiDinText, extensiiPagini, origineSite, perechiAlternate, problemeCoerenta, type CodEditie } from './src/lib/editii'
-import { VARIABILA_ASEZARE_PUBLICA, asezareDinText, problemeAsezare, redirectariAsezare } from './src/lib/asezare'
+import { ASEZARI, VARIABILA_ASEZARE_PUBLICA, asezareDinText, problemeAsezare, redirectariAsezare, type CodAsezare } from './src/lib/asezare'
 
 // De ce e `output` conditionat: pe Windows fara drept de legaturi simbolice,
 // `standalone` cade cu EPERM la copierea fisierelor urmarite (masurat 2026-09-05,
@@ -45,11 +45,17 @@ export function anteteSecuritate(mediu: string | undefined = process.env.SITE_EN
 // editiei RO-MD (`/ro` si tot ce e sub el) codul ei, `ro-MD`. Regula prefixului vine DUPA cea generala: cand doua
 // reguli pun aceeasi cheie pe aceeasi cale, Next o pastreaza pe ultima. Pe build-ul romanesc (`ro-RO`) nu se pune
 // nimic: antetele lui raman cele de dinainte de editii.
-export function anteteLimba(editii: readonly CodEditie[]): { source: string; headers: { key: string; value: string }[] }[] {
+// ASEZAREA (`src/lib/asezare.ts`) decide prefixul si codul: pe `md` (implicitul) sunt chiar cele din catalogul
+// editiilor, deci regulile raman cele de azi; pe `ro` romana (continutul `ro-MD`) sta la radacina cu `ro-RO`, iar
+// engleza sub `/en`, cu `en`.
+export function anteteLimba(
+  editii: readonly CodEditie[],
+  asezare: CodAsezare = 'md',
+): { source: string; headers: { key: string; value: string }[] }[] {
   if (editii.includes('ro-RO')) return []
   const reguli: { source: string; headers: { key: string; value: string }[] }[] = []
   for (const cod of editii) {
-    const { prefix, inLanguage } = EDITII[cod]
+    const { prefix, inLanguage } = cod === 'ro-RO' ? EDITII[cod] : ASEZARI[asezare][cod]
     const antet = [{ key: 'Content-Language', value: inLanguage }]
     if (prefix === '') reguli.unshift({ source: '/:path*', headers: antet })
     else reguli.push({ source: prefix, headers: antet }, { source: prefix + '/:cale*', headers: antet })
@@ -100,6 +106,8 @@ if (EDITII_PUSE_DIN_AFARA !== '' && EDITII_PUSE_DIN_AFARA !== EDITII_PUBLICE) {
 // radacina, engleza sub `/en`) apar cheia `NEXT_PUBLIC_SITE_ASEZARE` in `env`, ca browserul sa traduca la fel ca
 // serverul, si redirectarile permanente ale vechilor adrese `/ro`. O valoare necunoscuta, o asezare `ro` pe alt profil
 // decat `en,ro-MD`, sau o valoare publica pusa din afara si diferita de cea calculata opresc construirea aici.
+// Tot asezarea alege arborele construit (`pageExtensions`: pe `ro` numai fisierele-geamana `*.comro.tsx` din grupurile
+// `(comro)` si `(comroen)`, deci aceleasi module servite la alte adrese) si `Content-Language` pe prefix (`anteteLimba`).
 const ASEZARE_BUILD = asezareDinText(process.env.SITE_ASEZARE)
 const problemeAsezareBuild = problemeAsezare(ASEZARE_BUILD, EDITII_BUILD)
 if (problemeAsezareBuild.length > 0) throw new Error(problemeAsezareBuild.join(' | '))
@@ -114,12 +122,12 @@ const REDIRECTARI_ASEZARE = redirectariAsezare(ASEZARE_BUILD)
 
 const nextConfig: NextConfig = {
   output: standalone ? 'standalone' : undefined,
-  pageExtensions: extensiiPagini(EDITII_BUILD),
+  pageExtensions: extensiiPagini(EDITII_BUILD, ASEZARE_BUILD),
   ...(cuNegasitGlobal(EDITII_BUILD) ? { experimental: { globalNotFound: true } } : {}),
   poweredByHeader: false,
   reactStrictMode: true,
   async headers() {
-    return [{ source: '/:path*', headers: anteteSecuritate() }, ...anteteLimba(EDITII_BUILD)]
+    return [{ source: '/:path*', headers: anteteSecuritate() }, ...anteteLimba(EDITII_BUILD, ASEZARE_BUILD)]
   },
   // OPERATORUL, PENTRU PACHETUL DE BROWSER (felia multi-domeniu, runda 1 de reparatii). Next inlocuieste in
   // pachetul de browser numai variabilele `NEXT_PUBLIC_*`, deci `OPERATOR_JSON` nu ajunge acolo, iar lista de

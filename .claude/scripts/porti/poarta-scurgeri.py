@@ -44,13 +44,16 @@ amprentele listei, sau se potriveste vreun RAND cu unul dintre tiparele de forma
   - telefon_plauzibil lasa DELIBERAT sa treaca numerele cu toate cifrele identice.
   - Se citeste arborele de LUCRU. Ce e deja in istoricul git nu se vede de aici.
   - Fisierele care nu se decodeaza UTF-8 se sar in tacere.
+  - Telefonul romanesc nu se cauta in profilurile de construire (EXCEPTARI_CALE, mai jos):
+    un numar scris acolo nu e prins, oricare ar fi el.
   - Materialul intern fara nume propriu (pret de cost, analiza, nota de vanzare) nu are
     nicio forma dupa care sa fie prins: acolo proza e singura garda.
 
 LA ROSU: CE AI VOIE SA EDITEZI
   DA  fisierul raportat, din care se scoate scurgerea.
       AMPRENTE, numai prin ADAUGARE, cu amprenta produsa de --amprenta.
-  NU  stergerea unei amprente, SARITE, EXTENSII, TIPARE, telefon_plauzibil, controale().
+  NU  stergerea unei amprente, SARITE, EXTENSII, TIPARE, telefon_plauzibil, controale(),
+      EXCEPTARI_CALE (nici o cale noua, nici un tipar nou in ea).
       O scurgere nu se rezolva scotand fisierul din multimea masurata.
 
 IESIRE: 0 curat - 1 scurgeri gasite - 2 folosire gresita - 3 control picat
@@ -98,6 +101,23 @@ TIPARE = [
     (re.compile(r'\bsk-[A-Za-z0-9]{20,}'), 'cheie de API', None),
 ]
 
+# Exceptari pe CALE EXACTA, fiecare numai pentru un fel de gasire. Profilurile de construire
+# (config/profil-<site>.json) sunt sursa DECLARATA a valorilor de contact publicate de site:
+# numarul operatorului din textele juridice si numarul de WhatsApp sunt publice prin destinatie,
+# iar profilul e locul unde se scriu, nu o scurgere. Exceptarea e ingusta: numai telefonul
+# romanesc, numai fisierele de forma exacta config/profil-<nume>.json din radacina. Numele
+# interzise, cheile si jetoanele se cauta si acolo. Acelasi numar scris intr-un modul din src/
+# ramane rosu (martorul din controale()).
+EXCEPTARI_CALE = [
+    (re.compile(r'^config/profil-[a-z0-9-]+\.json$'), 'numar de telefon romanesc'),
+]
+
+
+def exceptat(rel, fel):
+    rel = rel.replace(os.sep, '/')
+    return any(cale.match(rel) and fel == f for cale, f in EXCEPTARI_CALE)
+
+
 TIPAR_CUVANT = re.compile(r'[a-z0-9]{4,}')
 
 
@@ -105,8 +125,8 @@ def amprenta(cuvant):
     return hashlib.sha256(cuvant.lower().encode('utf-8')).hexdigest()[:16]
 
 
-def analizeaza(text):
-    """Intoarce lista de (numar_rand, fel, fragment)."""
+def analizeaza(text, rel=''):
+    """Intoarce lista de (numar_rand, fel, fragment); `rel` = calea relativa, pentru EXCEPTARI_CALE."""
     gasiri = []
     for numar, rand in enumerate(text.splitlines(), start=1):
         for cuvant in TIPAR_CUVANT.findall(rand.lower()):
@@ -115,7 +135,7 @@ def analizeaza(text):
                 gasiri.append((numar, fel + ': ' + cuvant, rand.strip()[:110]))
         for tipar, fel, filtru in TIPARE:
             m = tipar.search(rand)
-            if m and (filtru is None or filtru(m)):
+            if m and (filtru is None or filtru(m)) and not exceptat(rel, fel):
                 gasiri.append((numar, fel, rand.strip()[:110]))
     return gasiri
 
@@ -148,6 +168,18 @@ def controale():
     g = analizeaza(negativ)
     if g:
         return 'martorul negativ a fost prins: ' + '; '.join(f for _, f, _ in g)
+    # Exceptarea pe cale: acelasi numar e liber in profil, rosu in src/ si in alt JSON din config/,
+    # iar in profil o cheie privata ramane prinsa (exceptarea nu acopera alt fel de gasire).
+    numar = '+40 7' + '12 345 678'
+    rand_profil = '"telefon": "' + numar + '",'
+    if analizeaza(rand_profil, 'config/profil-martor.json'):
+        return 'exceptarea pe cale: numarul din profil e inca prins'
+    for alta in ('src/lib/martor.ts', 'config/martor.json', 'src/config/profil-martor.json', 'config/profil-martor.json.bak'):
+        if not any('telefon' in f for _, f, _ in analizeaza(rand_profil, alta)):
+            return 'exceptarea pe cale: numarul nu mai e prins in ' + alta
+    cheie = '-----' + 'BEGIN RSA PRIVATE KEY' + '-----'
+    if not any('cheie privata' in f for _, f, _ in analizeaza(cheie, 'config/profil-martor.json')):
+        return 'exceptarea pe cale: cheia privata din profil nu mai e prinsa'
     return None
 
 
@@ -188,7 +220,7 @@ def main():
         except (UnicodeDecodeError, OSError):
             continue
         rel = os.path.relpath(cale, RADACINA)
-        for numar, fel, fragment in analizeaza(continut):
+        for numar, fel, fragment in analizeaza(continut, rel):
             print(rel + ':' + str(numar) + '  ' + fel + '  | ' + fragment)
             total += 1
 
