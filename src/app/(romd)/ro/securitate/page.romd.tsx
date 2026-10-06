@@ -23,6 +23,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
 import { OPERATOR_SECURITATE_BUILD, pagina } from "@/content/ro-md/securitate";
 import { BUCATI_SECURITATE_RO_MD, ETICHETA_VERIFICARE_RO_MD, securitateRoMd } from "@/content/ro-md/securitate-componente";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 import VerificareBrowserRoMd from "../_editie/VerificareBrowserRoMd";
 
@@ -44,7 +45,7 @@ function nodFaq(): NodJsonLd {
     "@id": pag + "#intrebari",
     url: pag,
     name: CONTINUT.intrebari!.titlu,
-    inLanguage: "ro-MD",
+    inLanguage: atributeLimba("ro-MD").inLanguage,
     mainEntity: CONTINUT.intrebari!.intrebari.map((i) => ({
       "@type": "Question",
       name: i.intrebare,

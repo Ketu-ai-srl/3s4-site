@@ -12,6 +12,7 @@
 
 import { iduri } from "@/components/seo/date-structurate";
 import type { PaginaContinut } from "@/content/model/tipuri";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 
 /** Calea paginii de cautare; caile stau in constante, nu in proza (poarta de limba citeste proza). */
@@ -116,7 +117,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/ro/enterprise",
       name: TITLU,
       description: DESCRIERE,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
       isPartOf: { "@id": ID.site },
       about: { "@id": ID.organizatie },
       breadcrumb: { "@id": BAZA + "/ro/enterprise#breadcrumb" },

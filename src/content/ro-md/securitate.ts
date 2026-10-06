@@ -15,6 +15,7 @@
 import { iduri } from "@/components/seo/date-structurate";
 import { caleMd } from "@/content/juridic/md/registru";
 import type { PaginaContinut, SectiuneComuna } from "@/content/model/tipuri";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 import { operatorInregistrat } from "./acasa";
 import { titluSecuritateRoMd } from "./securitate-componente";
@@ -147,7 +148,7 @@ export function paginaSecuritate(operator: boolean = OPERATOR_SECURITATE_BUILD):
         url: BAZA + "/ro/securitate",
         name: titlu,
         description: desc,
-        inLanguage: "ro-MD",
+        inLanguage: atributeLimba("ro-MD").inLanguage,
         isPartOf: { "@id": ID.site },
         mainEntity: { "@id": ID.organizatie },
         breadcrumb: { "@id": BAZA + "/ro/securitate#breadcrumb" },

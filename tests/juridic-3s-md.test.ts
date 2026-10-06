@@ -170,8 +170,16 @@ describe('alternatele hreflang pe profilul 3s.md', () => {
     echivalente: ECHIVALENTE,
   }
 
-  it('controlul: lista de variante a profilului e citita (en, ro-MD, x-default)', () => {
-    expect(context.alternate.map((a) => a.hreflang).sort()).toEqual(['en', 'ro-MD', 'x-default'])
+  // Dupa felia hreflang-doua-domenii lista e comuna celor doua domenii: `ro-RO` e romana de la radacina 3s.com.ro
+  // (acelasi continut ca /ro de pe 3s.md), deci intra in grupul fiecarei pagini cu echivalente (specificatia 3s.com.ro §3).
+  const bazaRoRo = context.alternate.find((a) => a.hreflang === 'ro-RO')?.adresa
+  /** Calea pe 3s.com.ro a unei pagini /ro/... de pe 3s.md: fara prefixul /ro (asezarea ro), scris aici independent de cod. */
+  const peRadacina = (cale: string) => cale.replace(/^\/ro(?=\/|$)/, '') || '/'
+
+  it('controlul: lista de variante a profilului e citita (en, ro-MD, ro-RO, x-default)', () => {
+    expect(context.alternate.map((a) => a.hreflang).sort()).toEqual(['en', 'ro-MD', 'ro-RO', 'x-default'])
+    expect(bazaRoRo).toBe('https://3s.com.ro')
+    expect(peRadacina('/ro/juridic/termeni')).toBe('/juridic/termeni')
   })
 
   for (const cheie of CHEI_B) {
@@ -179,7 +187,12 @@ describe('alternatele hreflang pe profilul 3s.md', () => {
       const d = CONFIG.documente[cheie]
       const en = alternatePagina({ cale: d.en, editie: 'en', cheie }, context)
       const ro = alternatePagina({ cale: d.ro, editie: 'ro-MD', cheie }, context)
-      const asteptate = { en: PROFIL.SITE_URL + d.en, 'ro-MD': PROFIL.SITE_URL + d.ro, 'x-default': PROFIL.SITE_URL + d.en }
+      const asteptate = {
+        en: PROFIL.SITE_URL + d.en,
+        'ro-MD': PROFIL.SITE_URL + d.ro,
+        'ro-RO': bazaRoRo + peRadacina(d.ro),
+        'x-default': PROFIL.SITE_URL + d.en,
+      }
       expect(en.languages).toEqual(asteptate)
       expect(ro.languages).toEqual(asteptate)
       expect(en.canonical).toBe(d.en)

@@ -103,7 +103,10 @@ Intrebarea pe care o pune de fapt, pe cod:
   L-05  "apare undeva sintagma care numeste temeiul, si lipseste tiparul de consimtamant?"
         Ce face formularul in realitate nu se citeste.
   L-01 md  "pagina de informatii legale e in build la adresa din config/juridic-rute.json si are
-        valorile?" si "fiecare pagina are un <a href> spre adresa romaneasca?". Engleza se cere numai
+        valorile?" si "fiecare pagina are un <a href> spre adresa romaneasca?". Adresa e cea SERVITA de
+        build: adresa din fisier trecuta prin asezarea citita din build (PREFIXE_ASEZARE; pe 3s.com.ro
+        /juridic/... si /en/legal/...). Un build fara `.next/required-server-files.json` e luat drept `md`.
+        Engleza se cere numai
         cand o pagina construita are `<html lang="en">`; vizibilitatea legaturii (ascunsa, in subsol)
         nu se masoara. Familia se deduce din tara cu lista TARI_MD; orice alta tara pastreaza regulile
         SEE (o tara fara texte opreste construirea site-ului, nu poarta).
@@ -336,6 +339,22 @@ CALE_MODEL_D2 = ('config', 'model-d2.json')
 # Adresele documentelor familiei `md`, pe limba, si poarta la care se publica fiecare.
 CALE_RUTE_MD = ('config', 'juridic-rute.json')
 ORDINE_PORTI = ('B', 'C')
+
+# ASEZAREA (src/lib/asezare.ts): unde serveste un domeniu paginile editiilor internationale. Adresele din
+# config/juridic-rute.json sunt cele SURSA, adica ale asezarii `md` (3s.md: engleza la radacina, romana sub /ro).
+# Pe asezarea `ro` (3s.com.ro) romana sta la radacina si engleza sub /en, deci aceleasi documente se servesc la
+# alte adrese (/juridic/..., /en/legal/...). Poarta le cauta la adresele SERVITE de build-ul pe care il masoara,
+# altfel pe `ro` ar raporta drept lipsa pagini care exista si ar rata marcajele de pe paginile EN.
+# Asezarea se citeste din BUILD, nu din mediul shell-ului: `.next/required-server-files.json`, cheia
+# `config.env.NEXT_PUBLIC_SITE_ASEZARE`, pusa de next.config.ts numai pe `ro` (lipsa = `md`). Controlul citirii:
+# `NEXT_PUBLIC_FAMILIE_JURIDICA`, definita de next.config.ts pe ORICE profil; fara ea fisierul nu e cel asteptat si
+# verdictul e 3. Fara fisier (niciun build, arborii fabricati ai martorilor) asezarea e `md`.
+# PREFIXE_ASEZARE e oglinda catalogului ASEZARI din src/lib/asezare.ts, pe limba documentului (`ro` = editia ro-MD,
+# `en` = editia en); proba-juridic.py o compara cu sursa.
+CALE_PROFIL_BUILD = ('.next', 'required-server-files.json')
+VARIABILA_ASEZARE = 'NEXT_PUBLIC_SITE_ASEZARE'
+VARIABILA_MARTOR_BUILD = 'NEXT_PUBLIC_FAMILIE_JURIDICA'
+PREFIXE_ASEZARE = {'md': {'ro': '/ro', 'en': ''}, 'ro': {'ro': '', 'en': '/en'}}
 
 # Numele Republicii Moldova in campul `tara`: lista INCHISA, aceeasi ca TARI_MD din
 # src/content/juridic/familie.ts (proba-juridic.py le compara). Orice alta tara pastreaza regulile de
@@ -585,7 +604,56 @@ def rute_md(radacina):
             or not all(isinstance(d, dict) and isinstance(d.get('ro'), str) and isinstance(d.get('en'), str)
                        and d.get('poarta') in ORDINE_PORTI for d in documente.values())):
         return None, '/'.join(CALE_RUTE_MD) + ' nu are forma asteptata (poarta_curenta B/C; documente cu en, ro, poarta)'
-    return (documente, poarta), None
+    asezare, motiv = asezare_din_build(radacina)
+    if asezare is None:
+        return None, motiv
+    try:
+        servite = dict((cheie, dict(d, **dict((l, cale_servita(d[l], l, asezare)) for l in ('ro', 'en'))))
+                       for cheie, d in documente.items())
+    except ValueError as e:
+        return None, '/'.join(CALE_RUTE_MD) + ': ' + str(e)
+    return (servite, poarta), None
+
+
+def asezare_din_build(radacina):
+    """(asezare, None) sau (None, motivul pentru care nu se poate citi). Vezi PREFIXE_ASEZARE."""
+    cale = os.path.join(radacina, *CALE_PROFIL_BUILD)
+    if not os.path.isfile(cale):
+        return 'md', None
+    rel = '/'.join(CALE_PROFIL_BUILD)
+    try:
+        date = json.loads(citeste(cale))
+    except ValueError as e:
+        return None, rel + ' nu e JSON valid (' + str(e) + '), deci asezarea build-ului nu se poate citi'
+    config = date.get('config') if isinstance(date, dict) else None
+    env = config.get('env') if isinstance(config, dict) else None
+    if not isinstance(env, dict) or VARIABILA_MARTOR_BUILD not in env:
+        return None, (rel + ' nu are config.env.' + VARIABILA_MARTOR_BUILD + ', pusa de next.config.ts pe orice '
+                      'profil: fisierul nu e cel asteptat, deci asezarea build-ului nu se poate citi')
+    brut = env.get(VARIABILA_ASEZARE)
+    valoare = brut.strip() if isinstance(brut, str) else ''
+    if brut is not None and valoare == '':
+        return None, rel + ': config.env.' + VARIABILA_ASEZARE + ' e pusa, dar goala (next.config.ts o scrie numai pe ro)'
+    if valoare == '':
+        return 'md', None
+    if valoare not in PREFIXE_ASEZARE:
+        return None, (rel + ': config.env.' + VARIABILA_ASEZARE + ' = ' + json.dumps(brut, ensure_ascii=False)
+                      + ' nu e o asezare cunoscuta (' + ', '.join(sorted(PREFIXE_ASEZARE)) + ')')
+    return valoare, None
+
+
+def cale_servita(cale, limba, asezare):
+    """Adresa la care asezarea serveste documentul cu adresa SURSA `cale` in limba `limba` (`ro`/`en`): prefixul
+    limbii pe asezarea `md` inlocuit cu cel de pe asezarea data. Pe `md` identitatea. Arunca ValueError cand
+    adresa sursa nu poarta prefixul limbii ei (configurarea nu e in forma asezarii `md`)."""
+    vechi = PREFIXE_ASEZARE['md'][limba]
+    if not cale.startswith('/') or (vechi != '' and cale != vechi and not cale.startswith(vechi + '/')):
+        raise ValueError('adresa ' + cale + ' (' + limba + ') nu e sub prefixul sursa al limbii ("' + vechi + '")')
+    rest = cale[len(vechi):]
+    if rest == '/':
+        rest = ''
+    servita = PREFIXE_ASEZARE[asezare][limba] + rest
+    return servita or '/'
 
 
 def publicate_md(documente, poarta):
@@ -1242,6 +1310,24 @@ def controale():
         os.utime(html, (batran, batran))
         if not build_invechit(negativ):
             return 'martorul de prospetime: un build mai vechi decat sursa a trecut ca proaspat'
+
+        # Martorii asezarii: traducerea adreselor pe ambele asezari si citirea ei din build. Adresele se scriu din
+        # litere, nu din PREFIXE_ASEZARE: un martor construit din aceeasi constanta ar trece si cu o constanta gresita.
+        asteptate = [('/ro/juridic/termeni', 'ro', 'md', '/ro/juridic/termeni'), ('/legal/terms', 'en', 'md', '/legal/terms'),
+                     ('/ro/juridic/termeni', 'ro', 'ro', '/juridic/termeni'), ('/legal/terms', 'en', 'ro', '/en/legal/terms'),
+                     ('/ro', 'ro', 'ro', '/'), ('/', 'en', 'ro', '/en')]
+        for cale, limba, asez, asteptat in asteptate:
+            if cale_servita(cale, limba, asez) != asteptat:
+                return ('martorul asezarii: ' + cale + ' (' + limba + ') pe ' + asez + ' a dat '
+                        + cale_servita(cale, limba, asez) + ', asteptam ' + asteptat)
+        profil = os.path.join(temp, 'asezare')
+        for env, asteptat in (({VARIABILA_MARTOR_BUILD: 'md', VARIABILA_ASEZARE: 'ro'}, 'ro'),
+                              ({VARIABILA_MARTOR_BUILD: 'md'}, 'md'), ({VARIABILA_ASEZARE: 'ro'}, None),
+                              ({VARIABILA_MARTOR_BUILD: 'md', VARIABILA_ASEZARE: 'xx'}, None)):
+            scrie(os.path.join(profil, *CALE_PROFIL_BUILD), json.dumps({'config': {'env': env}}))
+            citita, _ = asezare_din_build(profil)
+            if citita != asteptat:
+                return 'martorul asezarii din build: ' + json.dumps(env) + ' a dat ' + str(citita) + ', asteptam ' + str(asteptat)
         return None
     finally:
         shutil.rmtree(temp, ignore_errors=True)
@@ -1269,6 +1355,11 @@ def main():
         print('poarta-juridic: HTML-ul construit e mai vechi decat sursa - as masura un site '
               'care nu mai exista. Ruleaza pnpm build.', file=sys.stderr)
         return 3
+    asezare, motiv_asezare = asezare_din_build(radacina)
+    if asezare is None:
+        print('poarta-juridic: ' + motiv_asezare + ' - as cauta documentele juridice la alte adrese decat cele '
+              'servite. NEMASURAT', file=sys.stderr)
+        return 3
     gasiri, numar = analizeaza(radacina, a.mediu, mediu_proces)
     if numar == 0:
         print('poarta-juridic: niciun fisier de citit - masuratoarea e invalida, nu curata', file=sys.stderr)
@@ -1284,8 +1375,13 @@ def main():
     print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de mediu OK, martor fara operator OK, '
           'martori L-15 dupa operator OK, martori L-15 politica de cookie-uri dupa banner OK, '
           'martori L-15 pe calea intreaga a paginii OK, martori exceptie C-01 OK, martor L-10 pe identificator OK, '
-          'martori C-01 dupa rel OK, martori OPERATOR_JSON OK, martori J-01 OK')
+          'martori C-01 dupa rel OK, martori OPERATOR_JSON OK, martori J-01 OK, martori asezare OK')
     print('MEDIU: ' + a.mediu + ' (la productie, avertismentele de mai sus devin opriri)')
+    # Linie separata la fiecare rulare: jobul CI al unui domeniu cu asezarea `ro` cere sa vada `asezare: ro`.
+    print('asezare: ' + asezare + ' (' + ('din ' + '/'.join(CALE_PROFIL_BUILD) if os.path.isfile(
+        os.path.join(radacina, *CALE_PROFIL_BUILD)) else 'fara build, implicitul') + '); documentele md se cauta la '
+          'adresele servite: romana sub "' + PREFIXE_ASEZARE[asezare]['ro'] + '/", engleza sub "'
+          + PREFIXE_ASEZARE[asezare]['en'] + '/"')
     stare, date, sursa, cfg = stare_operator(radacina, mediu_proces)
     print('operator: ' + stare + ', din ' + sursa)
     if stare == 'null':

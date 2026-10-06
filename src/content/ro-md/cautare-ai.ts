@@ -11,6 +11,7 @@
 
 import { iduri } from "@/components/seo/date-structurate";
 import type { PaginaContinut } from "@/content/model/tipuri";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 
 const BAZA = adresaSite();
@@ -65,7 +66,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/ro/functionalitati/cautare-ai",
       name: "Căutare AI în documentele firmei, cu sursa citată",
       description: DESCRIERE,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
       isPartOf: { "@id": ID.site },
     },
   ],

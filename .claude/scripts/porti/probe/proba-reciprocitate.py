@@ -7,7 +7,12 @@ Ce masoara, pe langa controalele din poarta (care probeaza logica in acelasi pro
   - ca profilul se citeste din BUILD (`.next/required-server-files.json`), nu din mediu: acelasi HTML cu
     alternate iese 0 cu profilul 3s.md si 1 cu profilul ro-RO, oricare ar fi `SITE_EDITII` din shell;
   - codul 3 pe: build lipsa, build mai vechi decat src/, profil necitibil, tinta pe alt domeniu si un
-    control stricat pe o COPIE a portii (mutant).
+    control stricat pe o COPIE a portii (mutant);
+  - modul `--intre-domenii`, pe doua colectii fabricate (formatul lui `colecteaza-build.mjs`) cu profilurile lor:
+    grupul comun reciproc pe trei capete iese 0; profilul unui capat fara `ro-RO` in lista iese 1 (R-01, R-08); copia
+    engleza a asezarii `ro` cu hreflang sau cu canonical pe ea insasi iese 1 (R-07); colectie lipsa, profil cu alta
+    origine si asezari din sursa diferite de copia portii ies 3; controalele R-06 si R-07 dezarmate pe o COPIE ies 3.
+    Copia lui `src/lib/asezare.ts` din arbore e fisierul REAL, deci proba masoara si citirea lui.
 
 Catalogul editiilor din arbori e COPIA fisierului real `src/lib/editii.ts`: poarta il compara cu lista ei, deci
 proba masoara si citirea lui. Fixturile HTML se asambleaza la RULARE, din bucati.
@@ -135,19 +140,22 @@ def arbore(html, ech=ECH_DOC, env='en,ro-MD', fara_martor=False, build_vechi=Fal
     return d
 
 
-def ruleaza_poarta(poarta, radacina):
+def ruleaza_poarta(poarta, radacina, argumente=()):
     # Mediul shell-ului NU trebuie sa conteze (profilul vine din build): proba pune intentionat un profil
     # contrar in mediu, ca un verdict care l-ar citi sa se vada.
     env = dict(os.environ, SITE_EDITII='ro-' + 'RO', NEXT_PUBLIC_SITE_EDITII='')
-    r = subprocess.run([sys.executable, poarta, '--radacina', radacina], capture_output=True, text=True,
+    r = subprocess.run([sys.executable, poarta, '--radacina', radacina, *argumente], capture_output=True, text=True,
                        encoding='utf-8', errors='replace', env=env)
     return r.returncode, (r.stdout or '') + (r.stderr or '')
 
 
 def caz(eticheta, construieste, cod_asteptat, contine=(), poarta=None):
     d = construieste()
+    argumente = []
+    if isinstance(d, tuple):
+        d, argumente = d
     try:
-        cod, iesire = ruleaza_poarta(poarta or POARTA, d)
+        cod, iesire = ruleaza_poarta(poarta or POARTA, d, argumente)
     finally:
         shutil.rmtree(d, ignore_errors=True)
     if cod != cod_asteptat:
@@ -178,6 +186,100 @@ def mutant(eticheta, ancora, inlocuitor, construieste, cod_asteptat, contine):
         shutil.rmtree(d, ignore_errors=True)
 
 
+# ------------------------------------------------------------------ intre domenii (`--intre-domenii`)
+
+ASEZARE = os.path.join(RADACINA, 'src', 'lib', 'asezare.ts')
+DOM_A = 'https://' + 'proba-' + 'domeniu-a.test'
+DOM_B = 'https://' + 'proba-' + 'domeniu-b.test'
+ECH_CONTACT = {'contact': {'en': '/contact', 'ro-MD': '/ro/contact'}}
+
+
+def pagina_pe(origine, cale, alternate, canonical=None):
+    adresa = canonical or (origine + ('' if cale == '/' else cale))
+    bucati = ['<html><head><link rel="canonical" href="' + adresa + '"/>']
+    for h, u in alternate:
+        bucati.append('<link rel="alternate" hrefLang="' + h + '" href="' + u + '"/>')
+    bucati.append('</head><body><h1>x</h1></body></html>')
+    return ''.join(bucati)
+
+
+def colectie(director, pagini):
+    """O colectie in formatul lui `colecteaza-build.mjs`: colectie.json + corpurile, plus un fisier text si negasitul."""
+    intrari = []
+    for i, (cale, html) in enumerate(sorted(pagini.items())):
+        fisier = 'corp/%04d.txt' % i
+        scrie(os.path.join(director, *fisier.split('/')), html)
+        intrari.append({'cale': cale, 'status': 200, 'antete': {'content-type': 'text/html; charset=utf-8'},
+                        'fisier': fisier, 'text': True})
+    scrie(os.path.join(director, 'corp', 'robots.txt'), 'User-agent: *\n')
+    intrari.append({'cale': '/robots.txt', 'status': 200, 'antete': {'content-type': 'text/plain'},
+                    'fisier': 'corp/robots.txt', 'text': True})
+    scrie(os.path.join(director, 'corp', 'negasit.txt'), pagina_pe(DOM_A, '/x', [('en', DOM_A + '/x')]))
+    intrari.append({'cale': '/colectie-cale-inexistenta-404', 'status': 404, 'antete': {'content-type': 'text/html'},
+                    'fisier': 'corp/negasit.txt', 'text': True})
+    scrie(os.path.join(director, 'colectie.json'), json.dumps({'format': 1, 'idBuild': 'proba',
+                                                              'caleInexistenta': '/colectie-cale-inexistenta-404',
+                                                              'pagini': intrari}))
+
+
+def doua_domenii(fara_ro_ro_pe_a=False, hreflang_pe_copie=False, copie_canonica_proprie=False, fara_colectie_b=False,
+                 url_b_gresit=False, variante_schimbate=False):
+    """Doua colectii fabricate cu profilurile lor: A = asezarea md (en la radacina, ro-MD sub /ro), B = asezarea ro
+    (romana la radacina, copia engleza sub /en), cu grupul hreflang comun pe contact. Intoarce (radacina, argumente)."""
+    d = tempfile.mkdtemp(prefix='proba-reciprocitate-intre-')
+    os.makedirs(os.path.join(d, 'src', 'lib'))
+    shutil.copyfile(CATALOG, os.path.join(d, 'src', 'lib', 'editii.ts'))
+    text_asezare = open(ASEZARE, encoding='utf-8').read()
+    if variante_schimbate:
+        text_asezare = text_asezare.replace('"ro-RO": { editie: "ro-MD", asezare: "ro" },',
+                                            '"ro-RO": { editie: "ro-MD", asezare: "ro" },\n  "ro-XX": { editie: "ro-MD", asezare: "ro" },')
+    scrie(os.path.join(d, 'src', 'lib', 'asezare.ts'), text_asezare)
+    scrie(os.path.join(d, 'src', 'content', 'echivalente.ts'), echivalente(ECH_CONTACT))
+    lista = ['en=' + DOM_A, 'ro-MD=' + DOM_A + '/ro', 'ro-RO=' + DOM_B, X + '=' + DOM_A]
+    lista_a = [x for x in lista if not (fara_ro_ro_pe_a and x.startswith('ro-RO='))]
+    grup = [('en', DOM_A + '/contact'), ('ro-MD', DOM_A + '/ro/contact'), ('ro-RO', DOM_B + '/contact'), (X, DOM_A + '/contact')]
+    grup_a = [p for p in grup if not (fara_ro_ro_pe_a and p[0] == 'ro-RO')]
+    colectie(os.path.join(d, 'col-a'), {
+        '/contact': pagina_pe(DOM_A, '/contact', grup_a),
+        '/ro/contact': pagina_pe(DOM_A, '/ro/contact', grup_a),
+        '/about': pagina_pe(DOM_A, '/about', [('en', DOM_A + '/about'), (X, DOM_A + '/about')]),
+    })
+    if not fara_colectie_b:
+        copie = DOM_B + '/en/contact' if copie_canonica_proprie else DOM_A + '/contact'
+        colectie(os.path.join(d, 'col-b'), {
+            '/contact': pagina_pe(DOM_B, '/contact', grup),
+            '/en/contact': pagina_pe(DOM_B, '/en/contact', grup if hreflang_pe_copie else [], canonical=copie),
+        })
+    profil = {'SITE_EDITII': 'en,ro-MD', 'SITE_ENV': 'staging'}
+    scrie(os.path.join(d, 'profil-a.json'), json.dumps(dict(profil, SITE_URL=DOM_A, SITE_ALTERNATE=','.join(lista_a))))
+    scrie(os.path.join(d, 'profil-b.json'), json.dumps(dict(profil, SITE_URL=DOM_A if url_b_gresit else DOM_B,
+                                                            SITE_ASEZARE='ro', SITE_ALTERNATE=','.join(lista))))
+    return d, ['--intre-domenii', '--colectie-a', os.path.join(d, 'col-a'), '--profil-a', os.path.join(d, 'profil-a.json'),
+               '--colectie-b', os.path.join(d, 'col-b'), '--profil-b', os.path.join(d, 'profil-b.json')]
+
+
+def cazuri_intre():
+    print('\n## intre domenii (3s.md pe asezarea md, 3s.com.ro pe asezarea ro), doua colectii cu profilurile lor')
+    caz('grupul comun, reciproc pe trei capete, copia engleza fara hreflang si cu canonical spre A: cod 0',
+        lambda: doua_domenii(), CURAT, ('2 cu pereche', 'legaturi pe cod: en 2, ro-MD 2, ro-RO 2, x-default 2',
+                                         'ASTEPTATE (din echivalente, pe toate domeniile): 3', 'DEFECTE DE RECIPROCITATE INTRE DOMENII: 0'))
+    caz('profilul A fara ro-RO in lista (martorul specificatiei): cod 1, R-01 si R-08',
+        lambda: doua_domenii(fara_ro_ro_pe_a=True), PICAT, ('R-01', 'nu listeaza ro-RO', 'R-08'))
+    caz('copia engleza cu hreflang: cod 1, R-07', lambda: doua_domenii(hreflang_pe_copie=True), PICAT, ('R-07', '/en/contact'))
+    caz('copia engleza cu canonical pe ea insasi: cod 1, R-07', lambda: doua_domenii(copie_canonica_proprie=True), PICAT,
+        ('R-07', 'asteptat ' + DOM_A + '/contact'))
+    caz('colectia B lipsa: cod 3, nu 0', lambda: doua_domenii(fara_colectie_b=True), NEMASURAT, ('nu se poate citi',))
+    caz('profilul B cu alta origine decat colectia lui: cod 3', lambda: doua_domenii(url_b_gresit=True), NEMASURAT,
+        ('aceeasi origine',))
+    caz('asezarile din sursa diferite de copia portii: cod 3', lambda: doua_domenii(variante_schimbate=True), NEMASURAT,
+        ('difera de copia portii',))
+    # Controalele intre domenii, stricate pe o COPIE: fara R-06 si fara R-07, martorii lor nu mai sunt prinsi -> 3, nu 0.
+    mutant('control picat (R-06 dezarmat pe copie): cod 3, nu 0', 'if inverse != alt:', 'if False:',
+           lambda: doua_domenii(), NEMASURAT, ('CONTROL PICAT', 'R-06'))
+    mutant('control picat (R-07 dezarmat pe copie): cod 3, nu 0', 'if alt:\n                defecte.append((\'R-07\'',
+           'if False:\n                defecte.append((\'R-07\'', lambda: doua_domenii(), NEMASURAT, ('CONTROL PICAT', 'R-07'))
+
+
 def main():
     global POARTA
     p = argparse.ArgumentParser(description='Proba portii de reciprocitate hreflang, ca proces.')
@@ -206,6 +308,8 @@ def main():
     caz('ro-RO fara alternate: cod 0', lambda: arbore({'index.html': pagina('/', [])}, ech=ECH_DOC, env=None), CURAT,
         ('PROFIL (din build): ro-RO',))
     caz('ro-RO cu alternate: cod 1, R-05', lambda: arbore(pereche(), env=None), PICAT, ('R-05',))
+
+    cazuri_intre()
 
     print('\n## NEMASURAT')
     caz('build lipsa: cod 3', lambda: arbore({}, fara_build=True), NEMASURAT, ('niciun HTML construit',))

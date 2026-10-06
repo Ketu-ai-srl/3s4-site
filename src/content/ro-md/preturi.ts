@@ -14,6 +14,7 @@
 
 import { iduri } from "@/components/seo/date-structurate";
 import type { PaginaContinut } from "@/content/model/tipuri";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 
 const BAZA = adresaSite();
@@ -159,7 +160,7 @@ export const pagina: PaginaContinut = {
       url: BAZA + "/ro/preturi",
       name: TITLU,
       description: DESCRIERE,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
       isPartOf: { "@id": ID.site },
       about: { "@id": ID.organizatie },
       breadcrumb: { "@id": BAZA + "/ro/preturi#breadcrumb" },

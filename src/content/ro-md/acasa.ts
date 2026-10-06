@@ -25,6 +25,7 @@ import { CANALE, legaturaEmail } from "@/content/canale";
 import { caleMd } from "@/content/juridic/md/registru";
 import type { PaginaContinut, SectiuneComuna } from "@/content/model/tipuri";
 import { RUTE } from "@/content/rute";
+import { atributeLimba } from "@/lib/asezare";
 import { configurareOperatorDinMediu } from "@/lib/operator-mediu";
 import { adresaSite } from "@/lib/site";
 
@@ -312,7 +313,8 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
         url: BAZA + "/ro",
         name: TITLU,
         description: DESCRIERE,
-        inLanguage: "ro-MD",
+        // Limba paginii pe domeniu, din asezare: `ro-MD` pe 3s.md, `ro-RO` pe 3s.com.ro (romana la radacina).
+        inLanguage: atributeLimba("ro-MD").inLanguage,
         isPartOf: { "@id": ID.site },
         about: { "@id": ID.organizatie },
       },

@@ -1,9 +1,10 @@
 {
-  "_nota": "Variabilele de construire ale aplicatiei 3s.com.ro: acelasi site ca 3s.md (editiile en si ro-MD, acelasi operator si aceleasi texte), asezat cu romana la radacina si engleza sub /en (SITE_ASEZARE=ro, src/lib/asezare.ts). Difera de config/profil-3s-md.json numai adresa (SITE_URL), asezarea si contactele: e-mailul si numarul operatorului din OPERATOR_JSON (cele din textele juridice) si numarul de WhatsApp din CANALE_JSON. Folosit de jobul CI \"Profil 3s.com.ro\". Fara secrete. Cheile care incep cu _ nu sunt variabile; o valoare obiect se scrie in mediu ca JSON. SITE_ENV ramane staging (noindex) pana la decizia de indexare. SITE_ALTERNATE lipseste intentionat: grupul hreflang comun celor doua domenii vine intr-o felie separata, odata pe ambele profiluri; fara ea lista e goala si nu se emite nicio legatura hreflang. CANALE_JSON are aceleasi chei ca pe 3s.md (fara telefon, numarul afisat ar iesi gol); e-mailul de contact al canalelor ramane gol pana cand adresa domeniului primeste posta.",
+  "_nota": "Variabilele de construire ale aplicatiei 3s.com.ro: acelasi site ca 3s.md (editiile en si ro-MD, acelasi operator si aceleasi texte), asezat cu romana la radacina si engleza sub /en (SITE_ASEZARE=ro, src/lib/asezare.ts). Difera de config/profil-3s-md.json numai adresa (SITE_URL), asezarea si contactele: e-mailul si numarul operatorului din OPERATOR_JSON (cele din textele juridice) si numarul de WhatsApp din CANALE_JSON. Folosit de jobul CI \"Profil 3s.com.ro\". Fara secrete. Cheile care incep cu _ nu sunt variabile; o valoare obiect se scrie in mediu ca JSON. SITE_ENV ramane staging (noindex) pana la decizia de indexare. SITE_ALTERNATE e lista comuna celor doua domenii, aceeasi valoare ca in config/profil-3s-md.json (grupul hreflang e unul singur: en si ro-MD pe 3s.md, ro-RO pe 3s.com.ro); paginile /en de aici nu intra in grup si au canonical-ul spre 3s.md. CANALE_JSON are aceleasi chei ca pe 3s.md (fara telefon, numarul afisat ar iesi gol); e-mailul de contact al canalelor ramane gol pana cand adresa domeniului primeste posta.",
   "SITE_URL": "https://3s.com.ro",
   "SITE_ENV": "staging",
   "SITE_EDITII": "en,ro-MD",
   "SITE_ASEZARE": "ro",
+  "SITE_ALTERNATE": "en=https://3s.md,ro-MD=https://3s.md/ro,ro-RO=https://3s.com.ro,x-default=https://3s.md",
   "OPERATOR_JSON": {
     "model": "D2",
     "operator": {

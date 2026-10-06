@@ -12,6 +12,12 @@
 // build-ul romanesc, `en` pe cel international), cu `inLanguage` din catalogul editiilor. Graful startului
 // (aplicatia cu pretul in RON si intrebarile in romana) e numai al editiei `ro-RO`.
 //
+// PE ASEZARE (`src/lib/asezare.ts`): pe asezarea `ro` (3s.com.ro) la radacina sta continutul `ro-MD`, iar limba lui
+// pe domeniu e `ro-RO`: `inLanguage` trece prin `hrefLangServit` (pe `md` identitatea, deci 3s.md nu se schimba).
+// Textele organizatiei raman cele ale site-ului international (descrierea in engleza, fara slogan) pe orice editie
+// care nu e `ro-RO`: graful comun e acelasi pe ambele domenii, iar textele din subsolul site-ului romanesc vechi nu
+// sunt ale lui.
+//
 // UN SINGUR `@id` PER ENTITATE, pe tot site-ul: organizatia, site-ul si aplicatia au fiecare un
 // identificator fix, derivat din adresa site-ului. Paginile interioare le refera prin `@id`, nu le
 // redeclara cu alt identificator; altfel motorul vede doua entitati acolo unde e una.
@@ -30,6 +36,7 @@ import { INTREBARI, META_ACASA } from "@/content/acasa";
 import { CANALE, type Canale } from "@/content/canale";
 import { BRAND, adresaMarcii } from "@/content/entitate";
 import { SUBSOL } from "@/content/navigatie";
+import { hrefLangServit } from "@/lib/asezare";
 import { EDITII, type CodEditie } from "@/lib/editii";
 import { adresaSite, editiaRadacinii, limbileDomeniului, urlAbsolut } from "@/lib/site";
 
@@ -93,8 +100,9 @@ export function nodOrganizatie(
   const posta = adresaMarcii(emailBrut);
   const whatsapp = canale.whatsapp === "" ? null : "https://wa.me/" + canale.whatsapp;
   const tari = TARI_DESERVITE.map((cod) => ({ "@type": "Country", name: cod }));
-  // Textele marcii: in romana din subsol; pe editia `en`, descrierea in engleza si fara slogan (n-are inca forma EN).
-  const texte = editie === "en" ? { description: DESCRIERE_EN } : { slogan: SUBSOL.brand.slogan, description: SUBSOL.brand.descriere };
+  // Textele marcii: in romana din subsolul site-ului romanesc (`ro-RO`); pe editiile site-ului international (`en`, si
+  // `ro-MD` la radacina pe asezarea `ro`), descrierea in engleza si fara slogan (n-are inca forma EN).
+  const texte = editie === "ro-RO" ? { slogan: SUBSOL.brand.slogan, description: SUBSOL.brand.descriere } : { description: DESCRIERE_EN };
   return {
     "@type": "Organization",
     "@id": id.organizatie,
@@ -135,7 +143,7 @@ export function nodSite(baza: string = adresaSite(), editie: CodEditie = editiaR
     "@id": id.site,
     url: baza + "/",
     name: BRAND.nume,
-    inLanguage: EDITII[editie].inLanguage,
+    inLanguage: hrefLangServit(EDITII[editie].inLanguage),
     publisher: { "@id": id.organizatie },
   };
 }

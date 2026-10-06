@@ -25,6 +25,7 @@ import { CANALE, legaturaEmail, numarAfisat } from "@/content/canale";
 import { caleMd } from "@/content/juridic/md/registru";
 import type { PaginaContinut, SectiuneComuna } from "@/content/model/tipuri";
 import { ruteJuridiceRoMd } from "@/content/rute-ro-md";
+import { atributeLimba } from "@/lib/asezare";
 import { editiaInBuild } from "@/lib/editii";
 import { adresaSite } from "@/lib/site";
 import { OPTIUNI_BUILD, type OptiuniPagina } from "./acasa";
@@ -175,7 +176,8 @@ export function paginaContact(o: OptiuniContact = OPTIUNI_CONTACT_BUILD): Pagina
         url: BAZA + "/ro/contact",
         name: t,
         description: d,
-        inLanguage: "ro-MD",
+        // Limba paginii pe domeniu, din asezare: `ro-MD` pe 3s.md, `ro-RO` pe 3s.com.ro (romana la radacina).
+        inLanguage: atributeLimba("ro-MD").inLanguage,
         isPartOf: { "@id": ID.site },
         mainEntity: { "@id": ID.organizatie },
         breadcrumb: { "@id": BAZA + "/ro/contact#breadcrumb" },

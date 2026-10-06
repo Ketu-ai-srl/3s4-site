@@ -25,6 +25,7 @@ import {
   TABEL_RO_MD,
 } from "@/content/ro-md/preturi-componente";
 import { stareAnalitica } from "@/lib/analitica";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 import { ButonInapoiRoMd, LumeaPreturiRoMd, PacheteRoMd, PliuriRoMd } from "../_editie/PreturiRoMd";
 
@@ -44,7 +45,7 @@ function noduri(baza: string): NodJsonLd[] {
   const faq = {
     "@type": "FAQPage",
     "@id": baza + pagina.meta.cale + "#faq",
-    inLanguage: "ro-MD",
+    inLanguage: atributeLimba("ro-MD").inLanguage,
     mainEntity: INTREBARI_RO_MD.intrebari.map((i) => ({
       "@type": "Question",
       name: i.intrebare,

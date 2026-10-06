@@ -20,6 +20,7 @@ import type { ContinutEfacturare } from "@/components/efacturare/SectiuniEfactur
 import type { ContinutCtaFinal } from "@/components/primitive/CtaFinalInchis";
 import type { Sursa } from "@/content/efacturare/surse";
 import type { PaginaReferinta } from "@/content/en/referinta-comun";
+import { atributeLimba } from "@/lib/asezare";
 
 const CALE = "/ro/ghiduri/arhivare-e-facturi-ue";
 
@@ -164,7 +165,8 @@ const SURSE_TABEL: Record<string, Sursa> = {
 
 export const EFACTURARE_RO_MD: ContinutEfacturare = {
   cale: CALE,
-  limba: "ro-MD",
+  // `limba` e `inLanguage` al nodului FAQPage (singurul cititor): din asezare, ca nodurile de mai jos.
+  limba: atributeLimba("ro-MD").inLanguage,
   surse: SURSE_TABEL,
   erou: {
     // pagina.ts:20-21.
@@ -455,7 +457,7 @@ export const PAGINA_EFACTURARE_RO_MD: PaginaReferinta = {
       "@type": "Article",
       headline: H1,
       description: META.descriere,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
       datePublished: "2026-09-30",
       dateModified: "2026-09-30",
       isAccessibleForFree: true,
@@ -466,7 +468,7 @@ export const PAGINA_EFACTURARE_RO_MD: PaginaReferinta = {
       "@type": "WebPage",
       name: META.titlu,
       description: META.descriere,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
     },
   ],
   afirmatii: [

@@ -252,11 +252,25 @@ describe('legaturile paginilor cu restul site-ului', () => {
       echivalente: ECHIVALENTE,
     }
     const adresa = (cale: string) => PROFIL.SITE_URL + (cale === '/' ? '' : cale)
+    // Dupa felia hreflang-doua-domenii lista e comuna celor doua domenii: `ro-RO` e romana de la radacina 3s.com.ro
+    // (acelasi continut ca /ro de pe 3s.md), deci intra in grup (specificatia 3s.com.ro §3). Calea ei se scrie aici
+    // independent de cod: pagina /ro/... fara prefixul /ro.
+    const bazaRoRo = context.alternate.find((a) => a.hreflang === 'ro-RO')?.adresa
+    expect(bazaRoRo, 'controlul: lista profilului are ro-RO').toBe('https://3s.com.ro')
+    const peRoRo = (cale: string) => {
+      const rest = cale.replace(/^\/ro(?=\/|$)/, '')
+      return bazaRoRo + (rest === '/' ? '' : rest)
+    }
     for (const cheie of ['home', 'contact']) {
       const cai = ECHIVALENTE[cheie]
       const en = alternatePagina({ cale: cai.en!, editie: 'en', cheie }, context)
       const ro = alternatePagina({ cale: cai['ro-MD']!, editie: 'ro-MD', cheie }, context)
-      const asteptate = { en: adresa(cai.en!), 'ro-MD': adresa(cai['ro-MD']!), 'x-default': adresa(cai.en!) }
+      const asteptate = {
+        en: adresa(cai.en!),
+        'ro-MD': adresa(cai['ro-MD']!),
+        'ro-RO': peRoRo(cai['ro-MD']!),
+        'x-default': adresa(cai.en!),
+      }
       expect(en.languages, cheie).toEqual(asteptate)
       expect(ro.languages, cheie).toEqual(asteptate)
     }

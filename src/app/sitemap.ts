@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { ARTICOLE, caleArticol } from "@/content/blog/registru";
 import { editiaRutei, rutePentruHarta } from "@/content/rute";
+import { asezareBuild } from "@/lib/asezare";
 import { editiaInBuild } from "@/lib/editii";
 import { dataUltimuluiCommit, surseleRutei } from "@/lib/istoric-git";
 import { adresaSite, urlAbsolut } from "@/lib/site";
@@ -27,6 +28,12 @@ import { adresaSite, urlAbsolut } from "@/lib/site";
 // dupa calea SURSA (`ruta.cale`), fiindca sursele paginii stau in arbore dupa ea: cu adresa servita, istoria git n-ar
 // gasi fisierul si campul ar disparea tacut. Pe asezarea `md` cele doua coincid.
 //
+// ENGLEZA PE ASEZAREA `ro` (3s.com.ro, recomandarea I1): paginile de sub `/en` sunt copii pentru vizitatori, cu
+// canonical-ul spre aceeasi pagina de pe 3s.md (`src/components/seo/metadata.ts`). O harta care ar lista o adresa al
+// carei canonical arata in alta parte i-ar cere motorului sa indexeze exact ce pagina ii spune sa nu indexeze, deci pe
+// `ro` harta are numai paginile romanesti. Regula tine de asezare, nu de lista hreflang: engleza indexata e una singura,
+// cea de pe 3s.md. Pe `md` engleza ramane in harta, neschimbat.
+//
 // `changeFrequency` si `priority` lipsesc deliberat: Google le ignora, iar ca declaratii despre
 // viitor nu le putem sustine.
 
@@ -39,7 +46,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     vazute.add(url);
     intrari.push(lastModified === null ? { url } : { url, lastModified });
   };
+  const faraEngleza = asezareBuild() === "ro";
   for (const ruta of rutePentruHarta()) {
+    if (faraEngleza && editiaRutei(ruta) === "en") continue;
     adauga(urlAbsolut(ruta.servita, baza), dataUltimuluiCommit(surseleRutei(ruta.cale, undefined, editiaRutei(ruta))));
   }
   for (const articol of editiaInBuild("ro-RO") ? ARTICOLE : []) {

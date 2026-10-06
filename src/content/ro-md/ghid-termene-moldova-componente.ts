@@ -20,6 +20,7 @@ import type { ContinutEroulInstrument } from "@/components/termene/EroulInstrume
 import type { ContinutPanouTara } from "@/components/termene/PanouTara";
 import type { PaginaReferinta } from "@/content/en/referinta-comun";
 import type { CodTip, IesireTermene, SursaPrimara, Tara } from "@/content/termene/date";
+import { atributeLimba } from "@/lib/asezare";
 import { ctaFinalReferintaRoMd } from "./ghid-e-facturare-componente";
 
 const CALE = "/ro/ghiduri/termene-pastrare-moldova";
@@ -202,7 +203,7 @@ export const PAGINA_TERMENE_RO_MD: PaginaReferinta = {
       "@type": "Article",
       headline: H1,
       description: META.descriere,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
       datePublished: "2026-09-30",
       dateModified: "2026-09-30",
       isAccessibleForFree: true,
@@ -213,7 +214,7 @@ export const PAGINA_TERMENE_RO_MD: PaginaReferinta = {
       "@type": "WebPage",
       name: META.titlu,
       description: META.descriere,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
     },
   ],
   afirmatii: ["ro-md-referinta-termene-moldova", "ro-md-termene-si-jurnal", "ro-md-ghiduri-cu-surse", "ro-md-raspunde-o-persoana", "ro-md-canale-de-contact"],

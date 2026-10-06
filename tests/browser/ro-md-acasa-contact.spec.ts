@@ -30,6 +30,17 @@ import { entitatiCuNumarul, LOC_NUMAR } from './ajutor/raspunsuri'
 
 const PROFIL = mediuProfil3sMd()
 const ORIGINE = PROFIL.SITE_URL.replace(/\/+$/, '')
+
+/**
+ * Varianta `ro-RO` din lista hreflang a profilului (dupa felia hreflang-doua-domenii lista e comuna 3s.md si 3s.com.ro):
+ * romana de la radacina 3s.com.ro, acelasi continut ca /ro de pe 3s.md. Calea ei se scrie aici independent de cod:
+ * pagina /ro/... fara prefixul /ro.
+ */
+const BAZA_RO_RO = (mediuProfil3sMd().SITE_ALTERNATE.split(',').find((v) => v.startsWith('ro-RO=')) ?? '').slice('ro-RO='.length)
+const peRoRo = (cale: string) => {
+  const rest = cale.replace(/^\/ro(?=\/|$)/, '')
+  return BAZA_RO_RO + (rest === '/' ? '' : rest)
+}
 const CANALE = JSON.parse(PROFIL.CANALE_JSON) as { whatsapp: string; telefon: string }
 const WA = 'https://wa.me/' + CANALE.whatsapp + '?text='
 const RON = new RegExp('\\b' + 'R' + 'ON\\b')
@@ -249,7 +260,8 @@ test('martor POZITIV al tiparelor: fraze fabricate sunt prinse, contactul cu o p
 for (const p of PERECHI) {
   test(p.cheie + ': hreflang reciproc intre pagina EN si pagina RO-MD, x-default pe pagina EN', async () => {
     const adresa = (cale: string) => ORIGINE + (cale === '/' ? '' : cale)
-    const asteptate = { en: adresa(p.en), 'ro-MD': adresa(p.ro), 'x-default': adresa(p.en) }
+    expect(BAZA_RO_RO, 'controlul: lista profilului are ro-RO').toMatch(/^https:\/\//)
+    const asteptate = { en: adresa(p.en), 'ro-MD': adresa(p.ro), 'ro-RO': peRoRo(p.ro), 'x-default': adresa(p.en) }
     expect(alternate((await servit(p.en)).html)).toEqual(asteptate)
     expect(alternate((await servit(p.ro)).html)).toEqual(asteptate)
   })

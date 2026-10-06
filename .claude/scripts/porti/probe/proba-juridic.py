@@ -17,6 +17,9 @@ Trei lucruri se probeaza aici, si ultimele doua sunt cele usor de uitat:
      juridice la adresele din `config/juridic-rute.json`), marcajele din paginile juridice (J-01),
      C-01 dupa `rel`, gazdele proprii si L-10 pe identificatori. Fiecare regula noua are cel putin un
      MUTANT pe o COPIE a portii, care o dezactiveaza: proba cere ca macar un caz sa se inroseasca pe el.
+  6. (asezarea) pe un build cu asezarea `ro` (3s.com.ro) documentele familiei `md` se cauta la adresele
+     SERVITE (romana la radacina, engleza sub /en), citite din `.next/required-server-files.json`; un fisier
+     de profil stricat da 3. PREFIXE_ASEZARE din poarta se compara cu catalogul din src/lib.
 
 MEDIUL SUBPROCESULUI: poarta citeste `OPERATOR_JSON` si `SITE_ENV`. Mediul in care ruleaza proba (o
 statie, un job CI cu profilul 3s.md) nu are voie sa schimbe verdictul cazurilor, deci subprocesul le
@@ -213,13 +216,32 @@ def html_pentru(cale):
     return 'index.html' if cale == '/' else cale.strip('/') + '.html'
 
 
+# ASEZAREA `ro` (3s.com.ro): romana la radacina, engleza sub /en. Traducerea adreselor din config/juridic-rute.json
+# se scrie aici din litere, nu din PREFIXE_ASEZARE din poarta: o proba construita din aceeasi constanta ar trece si
+# cu o constanta gresita. Sincronizarea constantei cu src/lib/asezare.ts o masoara prefixe_asezare_sincron().
+VAR_ASEZARE = 'NEXT_PUBLIC_SITE_' + 'ASEZARE'
+VAR_FAMILIE = 'NEXT_PUBLIC_FAMILIE_' + 'JURIDICA'
+
+
+def servita_ro(cale, limba):
+    """Adresa servita pe asezarea `ro` a unei adrese sursa (asezarea `md`)."""
+    if limba == 'ro':
+        assert cale == '/ro' or cale.startswith('/ro/'), cale
+        return cale[len('/ro'):] or '/'
+    return '/en' + ('' if cale == '/' else cale)
+
+
 def arbore_md(operator=None, limbi=('ro', 'en'), lipsa=(), fara_legatura=(), in_plus=None, marcaj_en=True,
-              fisiere_in_plus=None):
+              fisiere_in_plus=None, asezare=None, env_build=None, legatura=None):
     """Un build al domeniului 3s.md: startul, documentele publicate la poarta curenta in fiecare limba si
     datele firmei NUMAI pe pagina de informatii legale; pe fiecare pagina legatura spre informatiile
     legale in romana. `config/operator.json` ramane pe null: operatorul vine din mediu (env_operator).
     `lipsa` = adrese nescrise; `fara_legatura` = adrese fara legatura; `in_plus` = {adresa: html in plus};
-    `marcaj_en` False = pagina EN poarta marcajul romanesc (greseala de compunere)."""
+    `marcaj_en` False = pagina EN poarta marcajul romanesc (greseala de compunere).
+    `asezare` None = fara `.next/required-server-files.json` (arborii de dinainte); `md` sau `ro` = fisierul scris
+    ca de next.config.ts, iar pe `ro` paginile stau la adresele SERVITE (3s.com.ro), cu care se numesc si in
+    `lipsa`, `fara_legatura`, `in_plus`. `env_build` = cheile `config.env` scrise exact asa (martorii fisierului
+    stricat). `legatura` = adresa legaturii din subsol, implicit informatiile legale in romana la adresa servita."""
     operator = operator or operator_md()
     d = tempfile.mkdtemp(prefix='proba-juridic-md-')
     for rel, continut in (fisiere_in_plus or {}).items():
@@ -227,17 +249,28 @@ def arbore_md(operator=None, limbi=('ro', 'en'), lipsa=(), fara_legatura=(), in_
     scrie(os.path.join(d, 'config', 'operator.json'), json.dumps({'operator': None}) + '\n')
     scrie(os.path.join(d, 'config', 'model-d2.json'), config_real('model-d2.json'))
     scrie(os.path.join(d, 'config', 'juridic-rute.json'), config_real('juridic-rute.json'))
+    if env_build is None and asezare is not None:
+        env_build = {VAR_FAMILIE: 'md'}
+        if asezare == 'ro':
+            env_build[VAR_ASEZARE] = 'ro'
+    if env_build is not None:
+        scrie(os.path.join(d, '.next', 'required-server-files.json'), json.dumps({'config': {'env': env_build}}))
+    adresa = (lambda c, l: servita_ro(c, l)) if asezare == 'ro' else (lambda c, l: c)  # noqa: E731
+    il_ro, il_en = adresa(CALE_IL_RO, 'ro'), adresa(CALE_IL_EN, 'en')
+    # Startul: pe 3s.md cel EN (sau RO fara editia EN); pe 3s.com.ro cel RO la radacina si cel EN sub /en.
     pagini = {'/': 'en' if 'en' in limbi else 'ro'}
+    if asezare == 'ro':
+        pagini = {'/': 'ro', **({servita_ro('/', 'en'): 'en'} if 'en' in limbi else {})}
     for cheie in PUBLICATE_B:
         for limba in limbi:
-            pagini[RUTE_MD['documente'][cheie][limba]] = limba
+            pagini[adresa(RUTE_MD['documente'][cheie][limba], limba)] = limba
     for cale, limba in pagini.items():
         if cale in lipsa:
             continue
         corp = ['<html lang="' + limba + '"><head><title>3S</title></head><body>']
         if cale not in fara_legatura:
-            corp.append('<footer><a href="' + CALE_IL_RO + '">Informații legale</a></footer>')
-        if cale in (CALE_IL_RO, CALE_IL_EN):
+            corp.append('<footer><a href="' + (legatura or il_ro) + '">Informații legale</a></footer>')
+        if cale in (il_ro, il_en):
             for camp in CAMPURI_ID:
                 valoare = operator.get(camp, '')
                 if limba == 'en' and marcaj_en and valoare == D2_RO and camp in MODEL_D2['campuri']:
@@ -369,6 +402,44 @@ def cazuri_felia72():
     defineste('md-layout-sursa', 'layout.<sufix>.tsx e citit ca sursa: un nume de tert in el e C-01',
               lambda: arbore_md(fisiere_in_plus={'src/app/(en)/layout.en.tsx': 'const A = "' + adresa_gtag + '";\n'}),
               1, 'src/app/(en)/layout.en.tsx: apare furnizorul tert', env=env_operator())
+    # --- regula 4, pe asezare (3s.com.ro): documentele se cauta la adresele SERVITE de build ---
+    citita_ro = 'asezare: ro (din .next/required-server-files.json)'
+    defineste('ro-verde', 'asezarea ro: documentele la /juridic/... si /en/legal/..., legatura spre /juridic/...: verde',
+              lambda: arbore_md(asezare='ro'), 0, [citita_ro, 'familie juridica: md'], mediu='productie',
+              env=env_operator(), absent=['OPRESTE', 'L-15  ', 'nicio legatura'])
+    defineste('md-cu-profil', 'build md cu fisierul de profil (fara cheia asezarii): verde, ca fara fisier',
+              lambda: arbore_md(asezare='md'), 0, 'asezare: md (din .next/required-server-files.json)', mediu='productie',
+              env=env_operator(), absent=['OPRESTE', 'L-15  '])
+    term_ro_servit = servita_ro(term_ro, 'ro')
+    defineste('ro-fara-pagina', 'asezarea ro: o pagina juridica scoasa din build e prinsa la adresa servita (L-15)',
+              lambda: arbore_md(asezare='ro', lipsa={term_ro_servit}), 1,
+              'OPRESTE  L-15  familia md: lipseste pagina juridica ' + term_ro_servit + ' (termeni, ro',
+              mediu='productie', env=env_operator())
+    priv_en_servit = servita_ro(priv_en, 'en')
+    defineste('ro-fara-pagina-en', 'asezarea ro: documentul EN lipsa de sub /en e prins (L-15)',
+              lambda: arbore_md(asezare='ro', lipsa={priv_en_servit}), 1,
+              'OPRESTE  L-15  familia md: lipseste pagina juridica ' + priv_en_servit + ' (confidentialitate, en',
+              mediu='productie', env=env_operator())
+    defineste('ro-la-adresele-md', 'profil ro, dar paginile la adresele 3s.md: lipsesc la adresele servite (L-15)',
+              lambda: arbore_md(asezare='md', env_build={VAR_FAMILIE: 'md', VAR_ASEZARE: 'ro'}), 1,
+              ['OPRESTE  L-15  familia md: lipseste pagina juridica ' + servita_ro(CALE_IL_RO, 'ro') + ' ',
+               'OPRESTE  L-15  familia md: lipseste pagina juridica ' + servita_ro(CALE_IL_EN, 'en') + ' '],
+              mediu='productie', env=env_operator())
+    defineste('ro-legatura-veche', 'asezarea ro: legatura spre adresa 3s.md a informatiilor legale nu tine loc (L-01)',
+              lambda: arbore_md(asezare='ro', legatura=CALE_IL_RO), 1,
+              'familia md: nicio legatura spre informatiile legale in romana (' + servita_ro(CALE_IL_RO, 'ro') + ')',
+              mediu='productie', env=env_operator())
+    marcaj_proba = '[' + 'de ' + 'completat' + ']'
+    defineste('ro-j01-en', 'asezarea ro: marcajul de pe documentul EN de sub /en e prins (J-01)',
+              lambda: arbore_md(asezare='ro', in_plus={priv_en_servit: '<p>' + marcaj_proba + '</p>'}), 1,
+              'OPRESTE  J-01  .next/server/app/' + html_pentru(priv_en_servit) + ': marcaj fara decizie',
+              mediu='productie', env=env_operator())
+    defineste('ro-fara-martor', 'fisierul de profil fara cheia-martor: asezarea nu se poate citi, NEMASURAT (3)',
+              lambda: arbore_md(asezare='ro', env_build={VAR_ASEZARE: 'ro'}), 3,
+              'nu are config.env.' + VAR_FAMILIE, mediu='productie', env=env_operator())
+    defineste('ro-asezare-necunoscuta', 'asezare necunoscuta in build: NEMASURAT (3)',
+              lambda: arbore_md(asezare='ro', env_build={VAR_FAMILIE: 'md', VAR_ASEZARE: 'x' + 'y'}), 3,
+              'nu e o asezare cunoscuta', mediu='productie', env=env_operator())
     # --- regula 5: C-01 dupa rel, si gazdele proprii ---
     straina = 'https://gazda-' + 'straina.test/x'
     head = lambda el: ['<link ' + el + ' href="' + straina + '"/>']  # noqa: E731
@@ -445,6 +516,20 @@ MUTANTI = [
      ['gazda-3s-ro']),
     ('5: 3s.md scos din GAZDE_PROPRII', [("'3s.md', '3s.com.ro', 'localhost'", "'3s.com.ro', 'localhost'")],
      ['gazde-proprii']),
+    ('6: adresele lasate in forma 3s.md (asezarea ignorata la traducere)',
+     [("dict((l, cale_servita(d[l], l, asezare)) for l in ('ro', 'en'))", "dict((l, d[l]) for l in ('ro', 'en'))")],
+     ['ro-verde', 'ro-fara-pagina', 'ro-legatura-veche', 'ro-j01-en']),
+    ('6: cheia asezarii din build ignorata', [('    brut = env.get(VARIABILA_ASEZARE)\n', '    brut = None\n')],
+     ['ro-verde', 'ro-fara-pagina']),
+    ('6: fisierul fara cheia-martor citit drept md',
+     [('if not isinstance(env, dict) or VARIABILA_MARTOR_BUILD not in env:', 'if not isinstance(env, dict):')],
+     ['ro-fara-martor']),
+    ('6: asezarea necunoscuta acceptata', [('    if valoare not in PREFIXE_ASEZARE:\n', '    if False:\n')],
+     ['ro-asezare-necunoscuta']),
+    ('6: main() nu mai refuza asezarea necitibila',
+     [('    if asezare is None:\n        print(', '    if False:\n        print(')], ['ro-fara-martor']),
+    ('6: engleza servita tot la radacina pe ro',
+     [("'ro': {'ro': '', 'en': '/en'}}", "'ro': {'ro': '', 'en': ''}}")], ['ro-verde', 'ro-fara-pagina-en']),
     ('L-10: tiparul vechi, cu identificatori', [(r"r'(?<![\w.])num[ae]r[^\W\d_]*(?!\w).{0,120}?\boperator'",
                                                  r"r'\bnum[ae]r\w*\b.{0,120}?\boperator'")], ['l10-identificator']),
 ]
@@ -503,6 +588,34 @@ def tari_md_sincron():
         ok('TARI_MD din poarta e aceeasi lista ca in familie.ts: ' + ', '.join(lista_py))
     else:
         nu('TARI_MD difera: familie.ts ' + str(lista_ts) + ', poarta ' + str(lista_py))
+
+
+def prefixe_asezare_sincron():
+    """PREFIXE_ASEZARE din poarta = prefixele din sursa: pe `md` cele ale catalogului editiilor (src/lib/editii.ts,
+    din care asezarea `md` se copiaza), pe `ro` cele ale catalogului ASEZARI (src/lib/asezare.ts)."""
+    import ast
+    with open(os.path.join(RADACINA, 'src', 'lib', 'editii.ts'), encoding='utf-8') as f:
+        editii = f.read()
+    with open(os.path.join(RADACINA, 'src', 'lib', 'asezare.ts'), encoding='utf-8') as f:
+        asezare = f.read()
+    with open(POARTA, encoding='utf-8') as f:
+        py = re.search(r'^PREFIXE_ASEZARE = (\{.*\})$', f.read(), re.M)
+    md_en = re.search(r'\ben: \{ cod: "en", prefix: "([^"]*)"', editii)
+    md_ro = re.search(r'"ro-MD": \{ cod: "ro-MD", prefix: "([^"]*)"', editii)
+    bloc_ro = re.search(r'\n  ro: \{\n(.*?)\n  \},', asezare, re.S)
+    ro_en = re.search(r'\ben: \{ prefix: "([^"]*)"', bloc_ro.group(1)) if bloc_ro else None
+    ro_ro = re.search(r'"ro-MD": \{ prefix: "([^"]*)"', bloc_ro.group(1)) if bloc_ro else None
+    citite = (py, md_en, md_ro, ro_en, ro_ro)
+    if any(m is None for m in citite):
+        nu('PREFIXE_ASEZARE: sursa nu s-a putut citi (poarta, editii en, editii ro-MD, asezare ro en, asezare ro ro-MD: '
+           + ', '.join(str(m is not None) for m in citite) + ')')
+        return
+    din_sursa = {'md': {'ro': md_ro.group(1), 'en': md_en.group(1)}, 'ro': {'ro': ro_ro.group(1), 'en': ro_en.group(1)}}
+    din_poarta = ast.literal_eval(py.group(1))
+    if din_poarta == din_sursa and din_sursa['ro']['en'] != din_sursa['md']['en']:
+        ok('PREFIXE_ASEZARE din poarta = catalogul din src/lib/editii.ts si src/lib/asezare.ts: ' + json.dumps(din_sursa))
+    else:
+        nu('PREFIXE_ASEZARE difera: sursa ' + json.dumps(din_sursa) + ', poarta ' + json.dumps(din_poarta))
 
 
 def main():
@@ -688,6 +801,7 @@ def main():
         else:
             ok(c['nume'])
     tari_md_sincron()
+    prefixe_asezare_sincron()
     print('\nmutanti pe copii ale portii (fiecare trebuie sa inroseasca macar un caz):')
     ruleaza_mutanti()
 

@@ -55,6 +55,12 @@ const textProfil = (k: string) =>
     ? (PROFIL[k] as string)
     : JSON.stringify(PROFIL[k]);
 const BAZA = textProfil("SITE_URL");
+/** Originea aplicatiei 3s.com.ro (asezarea ro), din profilul ei: baza `ro-RO` din lista hreflang comuna. */
+const BAZA_RO = (
+  JSON.parse(
+    readFileSync(join(__dirname, "..", "config", "profil-3s-com-ro.json"), "utf8"),
+  ) as { SITE_URL: string }
+).SITE_URL;
 
 /** Modulele masurate, incarcate pe asezarea data (mediul ramane setat cat ruleaza blocul). */
 async function incarca(asezare: "md" | "ro") {
@@ -343,45 +349,71 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
   });
 
   it("metadataPagina: canonical si og:url servite; comparatia cu tabelul de echivalente ramane pe sursa", () => {
-    const date = {
-      titlu: "Contact 3S pentru o arhivă digitală",
-      descriere:
-        "Pagina de contact a echipei 3S, cu legăturile de mesagerie și datele de contact ale domeniului.",
-    };
-    const ro = M.metadata.metadataPagina({
-      ...date,
-      cale: "/ro/contact",
-      editie: "ro-MD",
-      cheie: "contact",
-    });
-    expect(ro.alternates?.canonical).toBe("/contact");
-    expect((ro.openGraph as { url?: string }).url).toBe("/contact");
-    expect((ro.alternates?.languages as Record<string, string>)["ro-MD"]).toBe(
-      BAZA + "/contact",
-    );
-    const en = M.metadata.metadataPagina({
-      ...date,
-      cale: "/pricing",
-      editie: "en",
-    });
-    expect(en.alternates?.canonical).toBe("/en/pricing");
-    expect((en.openGraph as { url?: string }).url).toBe("/en/pricing");
-    // Calea servita data drept cale a paginii e refuzata de tabel: comparatia se face pe sursa.
-    expect(() =>
-      M.metadata.metadataPagina({
+    // Dupa felia hreflang-doua-domenii, `SITE_ALTERNATE` pe asezarea ro cere ca adresa site-ului sa fie baza `ro-RO`
+    // din lista (`problemeAlternateAsezare`): cu originea 3s.md pe ro, build-ul s-ar opri. Cazul ruleaza deci cu
+    // originea profilului 3s.com.ro, ca aplicatia reala; restul blocului ramane pe originea 3s.md.
+    vi.stubEnv("SITE_URL", BAZA_RO);
+    try {
+      const date = {
+        titlu: "Contact 3S pentru o arhivă digitală",
+        descriere:
+          "Pagina de contact a echipei 3S, cu legăturile de mesagerie și datele de contact ale domeniului.",
+      };
+      const ro = M.metadata.metadataPagina({
         ...date,
-        cale: "/contact",
+        cale: "/ro/contact",
         editie: "ro-MD",
         cheie: "contact",
-      }),
-    ).toThrow(/tabelul de echivalente/);
-    // Martor pe md: identitatea.
-    const md = M.metadata.metadataPagina(
-      { ...date, cale: "/ro/contact", editie: "ro-MD", cheie: "contact" },
-      { asezare: "md" },
-    );
-    expect(md.alternates?.canonical).toBe("/ro/contact");
-    expect((md.openGraph as { url?: string }).url).toBe("/ro/contact");
+      });
+      expect(ro.alternates?.canonical).toBe("/contact");
+      expect((ro.openGraph as { url?: string }).url).toBe("/contact");
+      // Grupul pe variantele servite (specificatia 3s.com.ro §3): pagina insasi e `ro-RO` pe 3s.com.ro, iar `ro-MD`
+      // e acelasi continut pe 3s.md, sub /ro (inainte de felie, `ro-MD` era chiar adresa de aici).
+      expect(ro.alternates?.languages).toEqual({
+        en: BAZA + "/contact",
+        "ro-MD": BAZA + "/ro/contact",
+        "ro-RO": BAZA_RO + "/contact",
+        "x-default": BAZA + "/contact",
+      });
+      const en = M.metadata.metadataPagina({
+        ...date,
+        cale: "/pricing",
+        editie: "en",
+      });
+      // I1: copia engleza de sub /en are canonical-ul spre aceeasi pagina de pe 3s.md si nicio legatura hreflang;
+      // og:url ramane adresa servita aici.
+      expect(en.alternates?.canonical).toBe(BAZA + "/pricing");
+      expect(en.alternates?.languages).toBeUndefined();
+      expect((en.openGraph as { url?: string }).url).toBe("/en/pricing");
+      // Calea servita data drept cale a paginii e refuzata de tabel: comparatia se face pe sursa.
+      expect(() =>
+        M.metadata.metadataPagina({
+          ...date,
+          cale: "/contact",
+          editie: "ro-MD",
+          cheie: "contact",
+        }),
+      ).toThrow(/tabelul de echivalente/);
+      // Martorul coerentei: originea 3s.md pe asezarea ro opreste construirea (nu e baza ro-RO din lista).
+      vi.stubEnv("SITE_URL", BAZA);
+      expect(() =>
+        M.metadata.metadataPagina({
+          ...date,
+          cale: "/ro/contact",
+          editie: "ro-MD",
+          cheie: "contact",
+        }),
+      ).toThrow(/SITE_ALTERNATE pe asezarea ro/);
+      // Martor pe md: identitatea.
+      const md = M.metadata.metadataPagina(
+        { ...date, cale: "/ro/contact", editie: "ro-MD", cheie: "contact" },
+        { asezare: "md" },
+      );
+      expect(md.alternates?.canonical).toBe("/ro/contact");
+      expect((md.openGraph as { url?: string }).url).toBe("/ro/contact");
+    } finally {
+      vi.stubEnv("SITE_URL", BAZA);
+    }
   });
 
   it("JsonLd: url si item servite, @id neatinse, url-ul site-ului (Organization, WebSite) neatins", () => {
@@ -452,16 +484,24 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
     }
   });
 
-  it("harta: adresele servite, lastmod cautat dupa calea sursa", () => {
+  it("harta: adresele servite, lastmod cautat dupa calea sursa; fara engleza (I1)", () => {
     const intrari = M.sitemap();
     const url = intrari.map((i) => i.url);
     expect(url).toContain(BAZA + "/contact");
-    expect(url).toContain(BAZA + "/en/contact");
-    expect(url).toContain(BAZA + "/en/pricing");
+    // I1 (felia hreflang-doua-domenii): paginile de sub /en au canonical-ul spre 3s.md, deci nu intra in harta asezarii
+    // ro; inainte de felie harta le lista (17 din 34 pe 3s.com.ro). Controlul: rutele EN exista in manifest.
+    expect(
+      url.filter((u) => u === BAZA + "/en" || u.startsWith(BAZA + "/en/")),
+    ).toEqual([]);
     expect(
       url.filter((u) => u === BAZA + "/ro" || u.startsWith(BAZA + "/ro/")),
     ).toEqual([]);
-    const harta = M.rute.rutePentruHarta();
+    const toate = M.rute.rutePentruHarta();
+    const harta = toate.filter((r) => M.rute.editiaRutei(r) !== "en");
+    expect(
+      toate.length - harta.length,
+      "controlul: harta manifestului are rute EN",
+    ).toBeGreaterThan(5);
     expect(intrari).toHaveLength(harta.length);
     let cuData = 0;
     for (const r of harta) {
@@ -500,8 +540,12 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
       const rute = await import("../src/content/rute");
       const { surseleRutei } = await import("../src/lib/istoric-git");
       const intrari = sitemap();
-      const harta = rute.rutePentruHarta();
+      // Pe asezarea ro harta n-are engleza (I1): se masoara rutele romanesti, iar cele EN trebuie sa lipseasca.
+      const harta = rute
+        .rutePentruHarta()
+        .filter((r) => rute.editiaRutei(r) !== "en");
       expect(harta.length, "controlul: harta are rute").toBeGreaterThan(5);
+      expect(intrari).toHaveLength(harta.length);
       let cuSursa = 0;
       for (const r of harta) {
         const surse = surseleRutei(r.cale, undefined, rute.editiaRutei(r));

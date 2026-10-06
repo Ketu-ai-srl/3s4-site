@@ -88,8 +88,9 @@ def arbore(pagini):
 
 
 def ruleaza(radacina, poarta=None, argumente=(), mediu=None):
-    # Mediul subprocesului fara CANALE_JSON mostenit: profilul portii il dau cazurile, explicit (`mediu`).
-    env = {k: v for k, v in os.environ.items() if k != 'CANALE_JSON'}
+    # Mediul subprocesului fara profilul mostenit (CANALE_JSON, SITE_ASEZARE, SITE_ALTERNATE: jobul unui profil le are in
+    # mediu): profilul portii il dau cazurile, explicit (`mediu`).
+    env = {k: v for k, v in os.environ.items() if k not in ('CANALE_JSON', 'SITE_ASEZARE', 'SITE_ALTERNATE')}
     env.update(mediu or {})
     r = subprocess.run([sys.executable, poarta or POARTA, '--radacina', radacina] + list(argumente),
                        capture_output=True, text=True, encoding='utf-8', errors='replace', env=env)
@@ -284,6 +285,46 @@ def main():
     caz('CANALE_JSON care nu se citeste da 3', {'index': pagina()}, 3, 'NEMASURAT',
         mediu={'CANALE_JSON': '{' + '"telefon": '})
 
+    # --- S-02 pe asezarea ro (I1): paginile /en au canonical-ul spre domeniul englezei si nu poarta hreflang ---
+    # Gazdele si legatura hreflang se lipesc la rulare. Lotul: startul romanesc la radacina (auto-referential) si doua
+    # pagini engleze (startul englez si una interioara), ca pe 3s.com.ro.
+    gazda_en = 'engleza.' + 'test'
+    ro = {'SITE_ASEZARE': 'ro',
+          'SITE_ALTERNATE': 'en=https://' + gazda_en + ',ro-RO=https://exemplu.test,x-default=https://' + gazda_en}
+    descriere_en = 'How the archive that answers works, with the page each answer comes from cited in full.'
+
+    def lot_ro(canonical_start_en, canonical_despre_en, hreflang=False):
+        despre = pagina(titlu='About the archive that answers', descriere=descriere_en, canonical=canonical_despre_en)
+        if hreflang:
+            despre = despre.replace('</head>', '<link rel="' + 'alternate' + '" hreflang="ro-RO" '
+                                    'href="https://exemplu.test/despre"/></head>')
+        return {'index': pagina(),
+                'en': pagina(titlu='The archive that answers, in English', canonical=canonical_start_en,
+                             descriere='The archive that answers with the exact page, in English, for visitors abroad.'),
+                'en/despre': despre}
+
+    corect_ro = lot_ro('https://' + gazda_en, 'https://' + gazda_en + '/despre')
+    caz('asezarea ro: paginile /en cu canonical spre domeniul englezei trec', corect_ro, 0,
+        '3 pagini masurate, din care 2 sub /en', mediu=ro)
+    caz('asezarea ro: /en auto-referential opreste (I1)',
+        lot_ro('https://' + gazda_en, 'https://exemplu.test/en/despre'), 1, '(I1), arata spre exemplu.test/en/despre',
+        mediu=ro)
+    caz('asezarea ro: canonical spre domeniul englezei, alta cale, opreste',
+        lot_ro('https://' + gazda_en, 'https://' + gazda_en + '/altundeva'), 1, '(I1), arata spre', mediu=ro)
+    caz('asezarea ro: hreflang pe pagina /en opreste',
+        lot_ro('https://' + gazda_en, 'https://' + gazda_en + '/despre', hreflang=True), 1, 'legatura(i) hreflang',
+        mediu=ro)
+    caz('asezarea ro din argumente (--asezare, --alternate) trece', corect_ro, 0, 'din care 2 sub /en',
+        argumente=('--asezare', 'ro', '--alternate', ro['SITE_ALTERNATE']))
+    # Martori: fara asezarea ro, acelasi lot e defect (regula nu se aplica); pe ro fara baza en in lista, codul lasa
+    # canonical-ul auto-referential, deci si poarta.
+    caz('fara asezare, canonical-ul /en spre alt domeniu opreste', corect_ro, 1, 'nu e auto-referential')
+    caz('asezarea ro fara baza en: /en ramane pe auto-referinta',
+        lot_ro('https://exemplu.test/en', 'https://exemplu.test/en/despre'), 0, 'nu se aplica',
+        mediu={'SITE_ASEZARE': 'ro', 'SITE_ALTERNATE': 'ro-RO=https://exemplu.test'})
+    caz('baza en cu prefix de cale pe asezarea ro da 3', corect_ro, 3, 'prefix de cale',
+        mediu={'SITE_ASEZARE': 'ro', 'SITE_ALTERNATE': 'en=https://' + gazda_en + '/en'})
+
     # --- build fara nicio pagina (site-ul international inainte de paginile EN) ---
     caz_arbore('build fara pagini, confirmat de manifest, iese 0', arbore_fara_pagini(), 0, 'SURSA: 0 pagini')
     caz_arbore('manifest cu o pagina prerandata, fara HTML, da 3', arbore_fara_pagini(('/pricing',)), 3, '/pricing')
@@ -376,6 +417,16 @@ def main():
            'return camp == CAMP_TELEFON and bool(telefon_permis) and nod.get(camp) == telefon_permis',
            'return camp == CAMP_TELEFON and bool(telefon_permis)',
            cu_telefon, {'CANALE_JSON': canale(ALT_TELEFON)}, 1)
+
+    # --- MUTANTII I1 (S-02 pe asezarea ro): fiecare dezarmeaza o ramura, pe o copie a portii ---
+    mutant('fara refuzul hreflang pe /en',
+           "if pagina_engleza_ro(ruta.rstrip('/') or '/', engleza_externa) and c.hreflang:",
+           "if False:",
+           lot_ro('https://' + gazda_en, 'https://' + gazda_en + '/despre', hreflang=True), ro, 1)
+    mutant('fara compararea gazdei englezei',
+           "if cale_n != asteptata or gazda != gazda_en:",
+           "if cale_n != asteptata:",
+           lot_ro('https://' + gazda_en, 'https://exemplu.test/despre'), ro, 1)
 
     print('\nREZULTAT: ' + str(T) + ' trecute, ' + str(P) + ' picate')
     return 1 if P else 0

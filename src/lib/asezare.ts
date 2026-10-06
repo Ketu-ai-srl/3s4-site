@@ -133,6 +133,23 @@ export function hrefLangServit(cod: string, asezare: CodAsezare = asezareBuild()
   return editie === undefined ? cod : ASEZARI[asezare][editie].inLanguage;
 }
 
+/** O varianta a grupului hreflang: editia de CONTINUT si asezarea pe care o serveste. */
+export type VariantaServita = { readonly editie: EditieAsezata; readonly asezare: CodAsezare };
+
+/**
+ * VARIANTELE SERVITE ale grupului hreflang, pe codul lor: tabel INCHIS. Codul hreflang numeste o pagina servita (un
+ * domeniu cu o asezare), nu un continut: `ro-RO` e continutul `ro-MD` asezat la radacina 3s.com.ro, `ro-MD` acelasi
+ * continut sub `/ro` pe 3s.md. Fiecare cod e chiar `inLanguage` al editiei pe asezarea ei (proba o cere). Engleza de
+ * pe asezarea `ro` (`/en/...`) NU e varianta: e o copie pentru vizitatori, cu canonical-ul spre 3s.md, deci nu intra
+ * in grup. Un cod din `SITE_ALTERNATE` care nu e aici opreste construirea (`problemeAlternateAsezare`, editii.ts).
+ * Ordinea cheilor e ordinea in care se scriu legaturile in `<head>`.
+ */
+export const VARIANTE_SERVITE: Readonly<Record<string, VariantaServita>> = {
+  en: { editie: "en", asezare: "md" },
+  "ro-MD": { editie: "ro-MD", asezare: "md" },
+  "ro-RO": { editie: "ro-MD", asezare: "ro" },
+};
+
 /**
  * Redirectarile permanente ale asezarii, in forma cheii `redirects` din `next.config.ts`. Pe `ro`, vechile adrese ale
  * romanei (`/ro`, `/ro/...`) duc la adresele de la radacina. Pe `md` nu exista niciuna (cheia nici nu se scrie).
@@ -240,6 +257,18 @@ export function caleServita(cale: CaleSursa, rute: readonly RutaAsezabila[], ase
   }
   const s = harta(rute, asezare).servita.get(baza);
   return (s === undefined ? cale : s + rest) as CaleServita;
+}
+
+/**
+ * Calea SERVITA a unei pagini a carei editie e STIUTA (o cale din tabelul de echivalente, pe randul editiei ei), pe o
+ * asezare oarecare: prefixul editiei inlocuit cu cel al asezarii, fara manifestul rutelor. Pentru adresele altui
+ * domeniu (grupul hreflang): pagina 3s.md `/ro/contact` e servita pe 3s.com.ro la `/contact`, oricare ar fi build-ul
+ * care scrie legatura. Pe `md` identitatea (ca `caleServita`); arunca pe o cale care nu sta sub prefixul editiei ei.
+ */
+export function caleServitaEditiei(cale: CaleSursa, editie: EditieAsezata, asezare: CodAsezare): CaleServita {
+  if (asezare === "md") return cale as string as CaleServita;
+  const [baza, rest] = desparte(cale);
+  return (servitaRutei({ cale: baza, editie }, asezare) + rest) as CaleServita;
 }
 
 /**

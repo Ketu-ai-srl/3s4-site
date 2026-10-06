@@ -18,6 +18,12 @@ CE VERIFICA, cu codurile stabile din PORTI-FABRICA.md sectiunea 5:
         o singura <meta name="description"> nevida, 50-160 caractere, unica
   S-02  exact un <link rel="canonical">, absolut, https, fara parametri,
         auto-referential (calea din canonical = ruta paginii), gazda consecventa
+        EXCEPTIA ASEZARII ro (specificatia 3s.com.ro, recomandarea I1): pe un build cu
+        SITE_ASEZARE=ro, paginile engleze de sub /en sunt copii pentru vizitatori, iar
+        engleza indexata e pe domeniul bazei `en` din SITE_ALTERNATE. Acolo canonical-ul
+        cerut e ACEEASI pagina pe acel domeniu (`/en/x` -> https://<gazda en>/x) si pagina
+        nu are voie sa poarte legaturi hreflang (o pagina necanonica nu intra in grup).
+        Fara baza `en` in lista, regula ramane auto-referinta. Restul paginilor, neatinse.
   S-03  exact un <h1> nevid si nicio saritura de nivel (h2 urmat de h4 pica)
   S-09  fiecare bloc application/ld+json trece JSON.parse, @context e schema.org
         si fiecare @type e in vocabularul declarat
@@ -84,7 +90,11 @@ descriere, canonical, antete si blocuri de date structurate?" Nu "se indexeaza s
   - Telefonul permis se compara ca text exact cu CANALE_JSON; poarta nu verifica forma lui E.164
     (o valideaza construirea, `src/lib/canale-mediu.ts`).
   - Nu se ating: robots, sitemap, viteza, imagini, legaturi interne, limbi alternative,
-    redirectari.
+    redirectari. Singura privire spre limbile alternative e ABSENTA lor pe paginile /en ale
+    asezarii ro; reciprocitatea grupului o masoara poarta-reciprocitate.py.
+  - Prefixul englezei pe asezarea ro e scris aici (PREFIX_ENGLEZA_RO), nu citit din
+    src/lib/asezare.ts: daca asezarea il muta, paginile engleze ies pe regula obisnuita si
+    S-02 se inroseste pe ele (zgomot, nu tacere).
   - Se masoara HTML-ul STATIC generat la build. Ce adauga sau schimba codul din browser nu se
     vede de aici.
 
@@ -179,6 +189,9 @@ ENTITATI_UNICE = {'Organization', 'WebSite', 'SoftwareApplication', 'WebApplicat
 # Pagina de start poarta marca, ca organizatie si ca site (§8.2).
 TIPURI_CERUTE_START = ('Organization', 'WebSite')
 
+# ENGLEZA PE ASEZAREA ro (specificatia 3s.com.ro, recomandarea I1; felia hreflang-doua-domenii): prefixul sub care
+# asezarea `ro` serveste engleza. Paginile de sub el au canonical-ul spre domeniul bazei `en` si nu au hreflang.
+PREFIX_ENGLEZA_RO = '/en'
 OPRESTE = 'OPRESTE'
 AVERT = 'AVERT'
 
@@ -196,6 +209,7 @@ class Culegator(HTMLParser):
         self.titluri_pagina = []      # continutul fiecarui <title>
         self.descrieri = []           # continutul fiecarui meta[name=description]
         self.canonice = []            # href-ul fiecarui link[rel=canonical]
+        self.hreflang = []            # (hreflang, href) al fiecarui link[rel=alternate][hreflang]
         self.antete = []              # (nivel, text) in ordinea documentului
         self.blocuri_ld = []          # textul brut al fiecarui script ld+json
         self._in = None               # 'title' | 'ld' | 'antet'
@@ -210,8 +224,11 @@ class Culegator(HTMLParser):
             if (a.get('name') or '').lower() == 'description':
                 self.descrieri.append(a.get('content') or '')
         elif tag == 'link':
-            if 'canonical' in (a.get('rel') or '').lower().split():
+            rel = (a.get('rel') or '').lower().split()
+            if 'canonical' in rel:
                 self.canonice.append(a.get('href') or '')
+            if 'alternate' in rel and a.get('hreflang') is not None:
+                self.hreflang.append((a.get('hreflang') or '', a.get('href') or ''))
         elif tag == 'script':
             if (a.get('type') or '').lower().strip() == 'application/ld+json':
                 self._in, self._tampon = 'ld', []
@@ -354,7 +371,42 @@ def verifica_identitati(pagini):
     return g
 
 
-def analizeaza_pagina(ruta, html, gazda_asteptata=None, telefon_permis=''):
+def pagina_engleza_ro(ruta_n, engleza_externa):
+    """Ruta (normalizata) e o pagina engleza a asezarii ro, cu regula I1 aprinsa?"""
+    if engleza_externa is None:
+        return False
+    prefix = engleza_externa[0]
+    return ruta_n == prefix or ruta_n.startswith(prefix + '/')
+
+
+def engleza_externa_din(asezare, alternate):
+    """Regula I1 din mediul build-ului: (prefix, gazda bazei en) pe asezarea ro cu baza `en` in SITE_ALTERNATE; None
+    cand nu se aplica (asezarea md sau lipsa, lista fara `en`: codul lasa atunci canonical-ul auto-referential).
+    Intoarce un text (motivul) pe o valoare care nu se poate citi; build-ul s-ar fi oprit pe aceeasi valoare."""
+    asezare = (asezare or '').strip()
+    if asezare in ('', 'md'):
+        return None
+    if asezare != 'ro':
+        return 'SITE_ASEZARE necunoscuta: ' + asezare
+    for bucata in (alternate or '').split(','):
+        if not bucata.strip():
+            continue
+        cod, egal, adresa = bucata.partition('=')
+        if not egal:
+            return 'SITE_ALTERNATE: varianta fara "=": ' + bucata.strip()
+        if cod.strip() != 'en':
+            continue
+        adresa = adresa.strip()
+        if not adresa.startswith('https://'):
+            return 'SITE_ALTERNATE: baza en nu e https: ' + adresa
+        gazda, _, cale = adresa[len('https://'):].partition('/')
+        if cale.strip('/'):
+            return 'SITE_ALTERNATE: baza en are prefix de cale (' + adresa + '); pe asezarea ro engleza indexata e la radacina'
+        return (PREFIX_ENGLEZA_RO, gazda)
+    return None
+
+
+def analizeaza_pagina(ruta, html, gazda_asteptata=None, telefon_permis='', engleza_externa=None):
     """Verdictul pentru O pagina. Intoarce lista de (severitate, cod, mesaj).
 
     Functia asta e si ce ruleaza pe continutul real, si ce ruleaza pe martori.
@@ -407,11 +459,24 @@ def analizeaza_pagina(ruta, html, gazda_asteptata=None, telefon_permis=''):
             cale = '/' + (taiat[1] if len(taiat) > 1 else '')
             cale_n = cale.rstrip('/') or '/'
             ruta_n = ruta.rstrip('/') or '/'
-            if cale_n != ruta_n:
-                g.append((OPRESTE, 'S-02', ruta + ': canonical nu e auto-referential, arata spre ' + cale_n))
-            if gazda_asteptata and gazda != gazda_asteptata:
-                g.append((OPRESTE, 'S-02', ruta + ': canonical pe gazda ' + gazda
-                          + ', mediul servit e ' + gazda_asteptata))
+            if pagina_engleza_ro(ruta_n, engleza_externa):
+                # I1: copia engleza de pe asezarea ro trimite la originalul de pe domeniul englezei.
+                prefix, gazda_en = engleza_externa
+                asteptata = ruta_n[len(prefix):] or '/'
+                if cale_n != asteptata or gazda != gazda_en:
+                    g.append((OPRESTE, 'S-02', ruta + ': pe asezarea ro canonical-ul paginii engleze trebuie sa fie '
+                              'https://' + gazda_en + (asteptata if asteptata != '/' else '') + ' (I1), arata spre '
+                              + gazda + cale_n))
+            else:
+                if cale_n != ruta_n:
+                    g.append((OPRESTE, 'S-02', ruta + ': canonical nu e auto-referential, arata spre ' + cale_n))
+                if gazda_asteptata and gazda != gazda_asteptata:
+                    g.append((OPRESTE, 'S-02', ruta + ': canonical pe gazda ' + gazda
+                              + ', mediul servit e ' + gazda_asteptata))
+    if pagina_engleza_ro(ruta.rstrip('/') or '/', engleza_externa) and c.hreflang:
+        g.append((OPRESTE, 'S-02', ruta + ': pagina engleza a asezarii ro poarta ' + str(len(c.hreflang))
+                  + ' legatura(i) hreflang (' + ', '.join(sorted(h for h, _ in c.hreflang))
+                  + '); cu canonical-ul spre alt domeniu nu intra in grup (I1)'))
 
     # --- S-03 titluri (AVERT, conform tabelului de operare) ---
     h1 = [t for n, t in c.antete if n == 1]
@@ -453,11 +518,11 @@ def analizeaza_pagina(ruta, html, gazda_asteptata=None, telefon_permis=''):
     return g
 
 
-def analizeaza_lot(pagini, gazda_asteptata=None, telefon_permis=''):
+def analizeaza_lot(pagini, gazda_asteptata=None, telefon_permis='', engleza_externa=None):
     """Verdictul pe tot lotul: adauga unicitatea, care nu se poate masura pe o pagina."""
     g = []
     for ruta, html in pagini:
-        g.extend(analizeaza_pagina(ruta, html, gazda_asteptata, telefon_permis))
+        g.extend(analizeaza_pagina(ruta, html, gazda_asteptata, telefon_permis, engleza_externa))
 
     def aduna(extrage):
         harta = {}
@@ -657,6 +722,39 @@ def controale():
     # Exceptia e numai pentru telefon: un camp de firma ramane prins si pe build-ul cu canal de telefon.
     if not any('date de firma' in m for m in s09(fabrica_pagina_brand_defecta(), numar)):
         return 'martorul pozitiv al telefonului: canalul de telefon a scutit si un camp de firma'
+
+    # --- martorii englezei pe asezarea ro (I1), fiecare ramura cu dovada ei ---
+    # Gazda englezei si legatura hreflang se lipesc la rulare. Aceeasi pagina engleza, patru forme.
+    gazda_en = 'engleza-' + 'corecta.test'
+    i1 = (PREFIX_ENGLEZA_RO, gazda_en)
+    legatura = '<link rel="' + 'alternate' + '" hreflang="' + 'ro-RO' + '" href="https://exemplu-corect.test/"/>'
+
+    def engleza(canonical, cu_hreflang=False):
+        html = fabrica_pagina_corecta().replace('https://exemplu-corect.test/"', canonical + '"', 1)
+        return html.replace('</head>', legatura + '</head>') if cu_hreflang else html
+
+    def s02(ruta, html, regula):
+        return [m for _, c, m in analizeaza_pagina(ruta, html, 'exemplu-corect.test', '', regula) if c == 'S-02']
+
+    ruta_en = PREFIX_ENGLEZA_RO + '/despre'
+    if s02(ruta_en, engleza('https://' + gazda_en + '/despre'), i1):
+        return 'martorul negativ I1: canonical-ul spre pagina de pe domeniul englezei a fost prins: ' + '; '.join(
+            s02(ruta_en, engleza('https://' + gazda_en + '/despre'), i1))
+    if s02(PREFIX_ENGLEZA_RO, engleza('https://' + gazda_en), i1):
+        return 'martorul negativ I1: startul englez (prefixul gol) cu canonical-ul spre radacina englezei a fost prins'
+    if not any('(I1), arata spre' in m for m in s02(ruta_en, engleza('https://exemplu-corect.test' + ruta_en), i1)):
+        return 'martorul pozitiv I1: canonical-ul auto-referential al paginii engleze pe asezarea ro nu a fost prins'
+    if not any('(I1), arata spre' in m for m in s02(ruta_en, engleza('https://exemplu-corect.test/despre'), i1)):
+        return 'martorul pozitiv I1: canonical-ul cu calea buna pe alt domeniu decat al englezei nu a fost prins'
+    if not any('legatura(i) hreflang' in m for m in s02(ruta_en, engleza('https://' + gazda_en + '/despre', True), i1)):
+        return 'martorul pozitiv I1: legatura hreflang pe pagina engleza a asezarii ro nu a fost prinsa'
+    # Regula e a paginilor de sub prefix si numai pe asezarea ro: o cale care doar INCEPE cu literele prefixului ramane
+    # pe auto-referinta, iar fara regula (asezarea md) canonical-ul spre alt domeniu ramane defect.
+    vecina = PREFIX_ENGLEZA_RO + 'treprinderi'
+    if s02(vecina, engleza('https://exemplu-corect.test' + vecina), i1):
+        return 'martorul negativ I1: o cale care doar incepe cu literele prefixului a fost tratata ca engleza'
+    if not s02(ruta_en, engleza('https://' + gazda_en + '/despre'), None):
+        return 'martorul pozitiv I1: fara asezarea ro, canonical-ul spre alt domeniu nu a fost prins'
     return None
 
 
@@ -751,7 +849,17 @@ def main():
     p.add_argument('--canale-json', default=os.environ.get('CANALE_JSON', ''),
                    help='canalele domeniului, ca la construire (implicit variabila CANALE_JSON); '
                         'cu telefon nevid, S-09 permite acel numar in JSON-LD')
+    p.add_argument('--asezare', default=os.environ.get('SITE_ASEZARE', ''),
+                   help='asezarea build-ului (implicit SITE_ASEZARE); pe ro se aplica regula I1 paginilor /en')
+    p.add_argument('--alternate', default=os.environ.get('SITE_ALTERNATE', ''),
+                   help='lista hreflang a build-ului (implicit SITE_ALTERNATE); da domeniul englezei pentru I1')
     a = p.parse_args()
+
+    engleza_externa = engleza_externa_din(a.asezare, a.alternate)
+    if isinstance(engleza_externa, str):
+        print('poarta-seo: ' + engleza_externa + ' - NEMASURAT (build-ul s-ar fi oprit pe aceeasi valoare)',
+              file=sys.stderr)
+        return 3
 
     telefon_permis = telefon_din_canale(a.canale_json)
     if telefon_permis is None:
@@ -811,7 +919,7 @@ def main():
     for c in cai:
         pagini.append((ruta_din_cale(c, dosar), open(c, encoding='utf-8').read()))
 
-    gasiri = analizeaza_lot(pagini, a.gazda, telefon_permis)
+    gasiri = analizeaza_lot(pagini, a.gazda, telefon_permis, engleza_externa)
     opreste = [g for g in gasiri if g[0] == OPRESTE]
     avert = [g for g in gasiri if g[0] == AVERT]
 
@@ -822,10 +930,18 @@ def main():
 
     print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de lot OK, '
           'martori de brand OK (date de firma, note, @id, marca pe start, identitati pe lot), '
-          'martori ai telefonului OK (fara canal, alt numar, canalul domeniului)')
+          'martori ai telefonului OK (fara canal, alt numar, canalul domeniului), '
+          'martori I1 OK (canonical spre engleza, startul englez, auto-referinta, hreflang, cale vecina, fara asezare)')
     print('TELEFON IN JSON-LD: ' + ('permis numai ca ' + telefon_permis + ' (CANALE_JSON)' if telefon_permis
                                     else 'interzis (build fara canal de telefon in CANALE_JSON)'))
     print('SURSA: ' + str(len(pagini)) + ' pagina(i) construita(e): ' + ', '.join(r for r, _ in pagini))
+    if engleza_externa is None:
+        print('ENGLEZA PE ASEZAREA ro (I1): nu se aplica (asezarea ' + (a.asezare or 'md') + ', sau lista fara baza en)')
+    else:
+        pe_en = [r for r, _ in pagini if pagina_engleza_ro(r.rstrip('/') or '/', engleza_externa)]
+        print('ENGLEZA PE ASEZAREA ro (I1): ' + str(len(pagini)) + ' pagini masurate, din care '
+              + str(len(pe_en)) + ' sub ' + engleza_externa[0] + ' cu canonical-ul cerut spre https://' + engleza_externa[1]
+              + ' si zero hreflang')
     print('GAZDA ASTEPTATA: ' + (a.gazda if a.gazda else 'nedeclarata (S-02 verifica doar forma si auto-referinta)'))
     print('DEFECTE SEO: ' + str(len(opreste)) + ' care opresc, ' + str(len(avert)) + ' de avertisment')
     return 1 if opreste else 0

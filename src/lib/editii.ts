@@ -230,3 +230,42 @@ export function problemeCoerenta(
   }
   return probleme;
 }
+
+/**
+ * Coerenta lui `SITE_ALTERNATE` cu ASEZAREA (`src/lib/asezare.ts`), pe build-ul international; goala = coerent. Se masoara
+ * la scrierea alternatelor (`alternatePagina`), deci o lista gresita opreste construirea paginilor, cu mesajul de aici.
+ * Spre deosebire de `problemeCoerenta`, se aplica si cand profilul e scris explicit: asezarea nu e o uitare de profil, ci
+ * o adresa gresita in grupul hreflang comun al domeniilor.
+ *   - fiecare cod (in afara de `x-default`) trebuie sa fie o varianta servita (`coduri`, tabelul inchis din asezare);
+ *   - pe asezarea `ro` (3s.com.ro), baza acestui site (`SITE_URL`, fara prefix) trebuie sa apara in lista cu `ro-RO`, si
+ *     numai cu el: romana de la radacina e varianta `ro-RO`; engleza de sub `/en` nu intra in grup (canonical spre 3s.md).
+ * `alternate` sunt variantele validate (`alternateSite`), `baza` originea acestui site. Lista goala = nimic de masurat.
+ */
+export function problemeAlternateAsezare(
+  asezare: "md" | "ro",
+  alternate: readonly { hreflang: string; adresa: string }[],
+  baza: string,
+  coduri: readonly string[],
+): string[] {
+  if (alternate.length === 0) return [];
+  const probleme: string[] = [];
+  for (const a of alternate) {
+    if (a.hreflang === "x-default" || coduri.includes(a.hreflang)) continue;
+    probleme.push(
+      "SITE_ALTERNATE: codul " + a.hreflang + " (" + a.adresa + ") nu e o varianta servita; variantele sunt " + coduri.join(", ") + " si x-default",
+    );
+  }
+  if (asezare === "ro") {
+    const peBaza = alternate.filter((a) => a.hreflang !== "x-default" && (a.adresa === baza || a.adresa.startsWith(baza + "/")));
+    const ro = peBaza.filter((a) => a.hreflang === "ro-RO" && a.adresa === baza);
+    if (ro.length === 0 || peBaza.length !== ro.length) {
+      probleme.push(
+        "SITE_ALTERNATE pe asezarea ro: adresa acestui site (" +
+          baza +
+          ") trebuie sa apara in lista o singura data, cu ro-RO si fara prefix (varianta de la radacina); lista o numeste " +
+          (peBaza.length === 0 ? "deloc" : peBaza.map((a) => a.hreflang + "=" + a.adresa).join(", ")),
+      );
+    }
+  }
+  return probleme;
+}

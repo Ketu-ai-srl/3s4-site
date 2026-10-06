@@ -25,6 +25,7 @@ import type { SurseSuplimentare } from "@/components/comparatii/TabelMarcaje";
 import type { NivelFir } from "@/components/primitive/FirPagina";
 import type { Marcaj, SursaOficiala, TabelComparatie } from "@/content/comparatii";
 import type { PaginaReferinta } from "@/content/en/referinta-comun";
+import { atributeLimba } from "@/lib/asezare";
 import { ETICHETA_BUTON_CANAL_RO_MD } from "./ghid-e-facturare-componente";
 
 const CALE = "/ro/comparatie-drive";
@@ -176,7 +177,7 @@ export const PAGINA_COMPARATIE_RO_MD: PaginaReferinta = {
       "@type": "Article",
       headline: H1,
       description: META.descriere,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
       datePublished: "2026-09-30",
       dateModified: "2026-09-30",
       isAccessibleForFree: true,
@@ -186,7 +187,7 @@ export const PAGINA_COMPARATIE_RO_MD: PaginaReferinta = {
       "@type": "WebPage",
       name: META.titlu,
       description: META.descriere,
-      inLanguage: "ro-MD",
+      inLanguage: atributeLimba("ro-MD").inLanguage,
     },
   ],
   afirmatii: [

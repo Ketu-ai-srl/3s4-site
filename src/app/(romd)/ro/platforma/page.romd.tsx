@@ -32,6 +32,7 @@ import {
   PLATFORMA_RO_MD,
   SECTIUNI_PLATFORMA_RO_MD,
 } from "@/content/ro-md/platforma-componente";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 
 export const metadata: Metadata = metadataPagina({
@@ -75,7 +76,7 @@ function nodFaq(): NodJsonLd {
     "@id": pag + "#intrebari",
     url: pag,
     name: PLATFORMA_RO_MD.intrebari!.titlu,
-    inLanguage: "ro-MD",
+    inLanguage: atributeLimba("ro-MD").inLanguage,
     mainEntity: PLATFORMA_RO_MD.intrebari!.intrebari.map((i) => ({
       "@type": "Question",
       name: i.intrebare,

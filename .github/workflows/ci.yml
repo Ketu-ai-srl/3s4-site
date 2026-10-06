@@ -141,9 +141,19 @@ jobs:
           python .claude/scripts/porti/poarta-juridic.py --mediu productie || echo "poarta juridica pe productie a iesit $? (informativ pana la poarta B)"
       # Poarta de SEO pe HTML-ul build-ului 3s.md: CANALE_JSON din profil e in mediu, deci telefonul canalului e permis in JSON-LD, si numai el.
       - run: python .claude/scripts/porti/poarta-seo.py
-      # Reciprocitatea hreflang pe build-ul 3s.md: profilul (en, ro-MD) se citeste din build, perechile asteptate din
-      # src/content/echivalente.ts. Pe build-ul romanesc poarta ruleaza in porti:build si cere zero alternate.
-      - run: python .claude/scripts/porti/poarta-reciprocitate.py
+      # Reciprocitatea hreflang a lui 3s.md NU se mai masoara aici, pe un singur build: grupul hreflang e comun celor
+      # doua domenii (`ro-RO` -> 3s.com.ro, `SITE_ALTERNATE` din profil), deci o pereche are un capat pe fiecare si
+      # poarta pe un build ar iesi 3 pe tintele 3s.com.ro. Se masoara in jobul "Profil 3s.com.ro", cu
+      # `poarta-reciprocitate.py --intre-domenii` pe colectia de mai jos si pe a lui (R-01 - R-04, R-06 - R-08, pe
+      # ambele domenii). Pe build-ul romanesc poarta ruleaza in porti:build, pe un build, si cere zero alternate.
+      - name: Colectia 3s.md, pentru reciprocitatea intre domenii
+        run: node .claude/scripts/porti/colecteaza-build.mjs --iesire "$RUNNER_TEMP/colectie-3s-md" --port 4751
+      - name: Colectia 3s.md, ca artefact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: colectie-3s-md
+          path: ${{ runner.temp }}/colectie-3s-md
+          if-no-files-found: error
       - name: Proba editiilor, pe serverul build-ului 3s.md
         run: |
           pnpm exec next start -p 4750 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-md.log" 2>&1 &
@@ -163,6 +173,8 @@ jobs:
   # pentru comparatiile intre domenii. Fara `BUILD_STANDALONE`, ca jobul 3s.md. Durata: masurata la primul verdict.
   profil-3s-com-ro:
     name: Profil 3s.com.ro
+    # Asteapta jobul 3s.md: reciprocitatea hreflang intre domenii are nevoie de colectia lui (artefactul `colectie-3s-md`).
+    needs: profil-3s-md
     runs-on: windows-latest
     defaults:
       run:
@@ -188,15 +200,14 @@ jobs:
         run: |
           node -e "const p=require('./config/profil-3s-com-ro.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
       - run: pnpm build
-      # LIMITA DECLARATA: poarta juridica pe ro nu stie asezarea. Cauta paginile juridice la caile 3s.md
-      # (/ro/juridic/..., /legal/...), nu la cele servite pe 3s.com.ro (/juridic/..., /en/legal/...), deci
-      # avertismentele L-15 (pagina juridica lipsa) si L-01 (nicio legatura spre /ro/juridic/...) de cale sunt
-      # artefacte, iar "0 care opresc" de aici NU dovedeste paginile juridice ale build-ului. Pasul ramane pentru
-      # linia modelului D2 si pentru constatarile care nu tin de cale, pana cand poarta citeste caile prin asezare.
+      # Poarta juridica pe build-ul 3s.com.ro: citeste asezarea din build (.next/required-server-files.json) si cauta
+      # documentele familiei md la adresele servite (/juridic/..., /en/legal/...). Iesirea trebuie sa poarte linia
+      # modelului D2 si linia asezarii `ro` (altfel poarta ar masura caile 3s.md pe un arbore care nu le are).
       - name: Poarta juridica 3s.com.ro (staging, blocant)
         run: |
           python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-com-ro.log"
           grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
+          grep -q '^asezare: ro ' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'asezare: ro' din iesirea portii juridice"; exit 1; }
       - run: python .claude/scripts/porti/poarta-seo.py
       # Colectia (ce serveste `next start`, cale cu cale) si perechile 3s.md -> 3s.com.ro (rutele 3s.md trecute prin
       # `caleServita`); poarta oglinzii cere ca multimea cailor servite sa fie EXACT partea 3s.com.ro a perechilor, plus
@@ -206,6 +217,21 @@ jobs:
           node .claude/scripts/porti/colecteaza-build.mjs --iesire "$RUNNER_TEMP/colectie-3s-com-ro" --port 4770
           node .claude/scripts/porti/perechi-asezare.mjs --profil-a config/profil-3s-md.json --profil-b config/profil-3s-com-ro.json --iesire "$RUNNER_TEMP/perechi-3s-md-3s-com-ro.json"
           python .claude/scripts/porti/poarta-oglinda-asezare.py --colectie "$RUNNER_TEMP/colectie-3s-com-ro" --perechi "$RUNNER_TEMP/perechi-3s-md-3s-com-ro.json"
+      # Reciprocitatea hreflang INTRE domenii: grupul comun (`SITE_ALTERNATE`, aceeasi valoare pe ambele profiluri) are
+      # capete pe 3s.md (en, ro-MD) si pe 3s.com.ro (ro-RO), deci se masoara pe ambele colectii odata: fiecare pereche are
+      # inversa (R-01), tinta e o pagina servita (R-02), auto-referinta (R-03), paginile cu pereche = echivalentele (R-04),
+      # aceeasi multime pe toate capetele (R-06), copia engleza a lui 3s.com.ro fara hreflang si cu canonical spre 3s.md
+      # (R-07), aceeasi lista pe ambele profiluri (R-08). Iesirea numara legaturile pe cod, pe fiecare domeniu.
+      - name: Colectia 3s.md (artefactul jobului 3s.md)
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: colectie-3s-md
+          path: ${{ runner.temp }}/colectie-3s-md
+      - name: Reciprocitatea hreflang intre 3s.md si 3s.com.ro
+        run: |
+          python .claude/scripts/porti/poarta-reciprocitate.py --intre-domenii \
+            --colectie-a "$RUNNER_TEMP/colectie-3s-md" --profil-a config/profil-3s-md.json \
+            --colectie-b "$RUNNER_TEMP/colectie-3s-com-ro" --profil-b config/profil-3s-com-ro.json
       # Pe server, cazurile pe care multimea cailor nu le vede: redirectarile permanente ale vechilor adrese ale romanei,
       # pagina de negasit (romaneasca, noindex), un document juridic nepublicat la poarta curenta (dpa, poarta C: 404, deci
       # `dynamicParams = false` scris literal in geamana functioneaza) si limba paginilor. Martorul serverului: robots.txt 200.
@@ -368,6 +394,27 @@ jobs:
         if: matrix.profil == '3s.md'
         run: |
           node -e "const p=require('./config/profil-3s-md.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
+      # Felia 119 adauga varianta `ro-RO` (3s.com.ro) in `SITE_ALTERNATE` a profilului 3s.md: singura schimbare voita pe
+      # 3s.md e perechea `ro-RO` in <head>, pe paginile cu echivalente. compara-build.py nu are o scutire numarata pentru
+      # ea, deci, cat timp baza nu poarta inca varianta, ambele build-uri ale acestei rulari folosesc lista BAZEI si
+      # invarianta masoara ca nimic altceva nu se schimba in cod. Pasul se aplica NUMAI cand lista feliei e exact lista
+      # bazei plus `ro-RO=https://3s.com.ro` (conditie pe continut, nu pe numele ramurii: tine si pe ramurile de lot).
+      # Dupa promovare baza are varianta si pasul nu mai face nimic; orice alta schimbare a listei se masoara normal.
+      # Perechea noua o masoara, numarata pe cod si pe domeniu, poarta de reciprocitate intre domenii din jobul
+      # "Profil 3s.com.ro".
+      - name: Lista hreflang a bazei (cat timp baza nu are varianta ro-RO, profilul 3s.md)
+        if: matrix.profil == '3s.md'
+        run: |
+          LISTA="$(MSYS_NO_PATHCONV=1 git show "$BAZA:config/profil-3s-md.json" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>process.stdout.write(JSON.parse(s).SITE_ALTERNATE||''))")"
+          [ -n "$LISTA" ] || { echo "lista bazei nu se poate citi"; exit 3; }
+          FEL="$(LB="$LISTA" node -e "const b=process.env.LB.split(','),f=(process.env.SITE_ALTERNATE||'').split(','),fara=f.filter(x=>x!=='ro-RO=https://3s.com.ro');process.stdout.write(b.some(x=>x.startsWith('ro-RO='))?'baza':(fara.length===f.length-1&&fara.join(',')===b.join(','))?'pereche':'alta')")"
+          echo "SITE_ALTERNATE a feliei: $SITE_ALTERNATE"
+          echo "SITE_ALTERNATE a bazei: $LISTA"
+          echo "felul schimbarii: $FEL"
+          if [ "$FEL" = "pereche" ]; then
+            echo "lista bazei se foloseste pe ambele build-uri"
+            echo "SITE_ALTERNATE=$LISTA" >> "$GITHUB_ENV"
+          fi
       - name: Baza - build si colectie
         run: |
           git checkout -q --detach "$BAZA"

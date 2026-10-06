@@ -32,6 +32,17 @@ const CONFIG = JSON.parse(readFileSync(join(RADACINA, 'config', 'juridic-rute.js
 const D2 = JSON.parse(readFileSync(join(RADACINA, 'config', 'model-d2.json'), 'utf8')) as { marcaj: { ro: string; en: string } }
 const ORIGINE = mediuProfil3sMd().SITE_URL.replace(/\/+$/, '')
 
+/**
+ * Varianta `ro-RO` din lista hreflang a profilului (dupa felia hreflang-doua-domenii lista e comuna 3s.md si 3s.com.ro):
+ * romana de la radacina 3s.com.ro, acelasi continut ca /ro de pe 3s.md. Calea ei se scrie aici independent de cod:
+ * pagina /ro/... fara prefixul /ro.
+ */
+const BAZA_RO_RO = (mediuProfil3sMd().SITE_ALTERNATE.split(',').find((v) => v.startsWith('ro-RO=')) ?? '').slice('ro-RO='.length)
+const peRoRo = (cale: string) => {
+  const rest = cale.replace(/^\/ro(?=\/|$)/, '')
+  return BAZA_RO_RO + (rest === '/' ? '' : rest)
+}
+
 const B = Object.entries(CONFIG.documente).filter(([, d]) => d.poarta === 'B')
 const C = Object.entries(CONFIG.documente).filter(([, d]) => d.poarta === 'C')
 const CAI_C = C.flatMap(([, d]) => [d.en, d.ro])
@@ -113,7 +124,8 @@ test('martor NEGATIV: pagina de negasit nu are alternate hreflang, iar o pagina 
 
 for (const [cheie, d] of B) {
   test(cheie + ': hreflang reciproc intre ' + d.en + ' si ' + d.ro + ', x-default pe pagina EN', async () => {
-    const asteptate = { en: ORIGINE + d.en, 'ro-MD': ORIGINE + d.ro, 'x-default': ORIGINE + d.en }
+    expect(BAZA_RO_RO, 'controlul: lista profilului are ro-RO').toMatch(/^https:\/\//)
+    const asteptate = { en: ORIGINE + d.en, 'ro-MD': ORIGINE + d.ro, 'ro-RO': peRoRo(d.ro), 'x-default': ORIGINE + d.en }
     expect(alternate((await servit(d.en)).html)).toEqual(asteptate)
     expect(alternate((await servit(d.ro)).html)).toEqual(asteptate)
   })

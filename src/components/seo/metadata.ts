@@ -37,15 +37,26 @@
 // s-a retras odata cu editiile (`/preturi` si `/pricing` sunt aceeasi pagina). Regulile, in `alternatePagina`.
 //
 // ASEZAREA (`src/lib/asezare.ts`): `cale` e calea SURSA a paginii (cea din `RUTE` si din tabelul de echivalente) si
-// se compara asa; canonical-ul, `og:url` si adresa paginii insesi in lista hreflang se scriu cu calea SERVITA.
-// Celelalte variante din lista hreflang raman pe regula de azi. Pe asezarea `md` calea servita e chiar calea.
+// se compara asa; canonical-ul, `og:url` si adresa paginii insesi in lista hreflang se scriu cu calea SERVITA. Lista
+// hreflang se face pe variantele servite ale celor doua domenii (`alternatePagina`), iar `og:locale` vine din asezare
+// (pe 3s.com.ro romana e `ro_RO`). Pe asezarea `md` calea servita e chiar calea, iar atributele sunt cele din catalog.
 
 import type { Metadata } from "next";
 import { ECHIVALENTE, type CaiPeEditie } from "@/content/echivalente";
 import { BRAND } from "@/content/entitate";
 import { RUTE } from "@/content/rute";
-import { asezareBuild, caSursa, caleServita, type CodAsezare, type RutaAsezabila } from "@/lib/asezare";
-import { EDITII, editiiBuild, type CodEditie } from "@/lib/editii";
+import {
+  VARIANTE_SERVITE,
+  asezareBuild,
+  atributeLimba,
+  caSursa,
+  caleServita,
+  caleServitaEditiei,
+  hrefLangServit,
+  type CodAsezare,
+  type RutaAsezabila,
+} from "@/lib/asezare";
+import { EDITII, editiiBuild, problemeAlternateAsezare, type CodEditie } from "@/lib/editii";
 import { X_DEFAULT, adresaSite, alternateSite, type Alternata } from "@/lib/site";
 
 /**
@@ -118,28 +129,28 @@ export function adresaPagina(origine: string, cale: string): string {
   return origine + (cale === "/" ? "" : cale);
 }
 
-/** Codul unei variante din lista acopera editia? Aceeasi limba; regiunea, cand e scrisa pe ambele, aceeasi. */
-function variantaPentru(hreflang: string, editie: CodEditie): boolean {
-  const [limba, regiune] = hreflang.toLowerCase().split("-");
-  const [limbaE, regiuneE] = EDITII[editie].inLanguage.toLowerCase().split("-");
-  return limba === limbaE && (regiune === undefined || regiuneE === undefined || regiune === regiuneE);
-}
-
 /**
  * `alternates` pentru o pagina: canonical-ul ei si, cand `SITE_ALTERNATE` e setata, legaturile hreflang.
  *
- * REGULILE (planul 3s.md, P-11 si P-17; harta limbi §5.3):
+ * REGULILE (planul 3s.md, P-11 si P-17; harta limbi §5.3; doua domenii, specificatia 3s.com.ro §3):
  *   - fara `SITE_ALTERNATE`, numai canonical-ul, exact ca inainte (HTML-ul romanesc nu se schimba);
- *   - pagina se listeaza pe ea insasi, cu codul editiei ei din catalog (`en`, `ro-MD`, `ro-RO`);
- *   - o alta editie intra numai daca tabelul de echivalente are pagina ei pentru `cheie` SI lista are o baza
- *     pentru limba ei; adresa e originea bazei plus calea din tabel (care include prefixul, `/ro/...`). Pe
- *     domeniul propriu, o editie pe care build-ul nu o construieste nu intra (pagina ei nu exista);
- *   - `ro-RO` si celelalte editii nu se leaga intre ele (P-17): gazda romaneasca nu serveste azi site-ul,
- *     deci reciproca n-ar exista, iar o pereche nereciproca e ignorata de Google;
- *   - `x-default` = echivalentul EN, cand intra; altfel pagina insasi.
- * Reciprocitatea iese din constructie: doua pagini echivalente citesc acelasi rand din tabel si aceeasi lista,
- * deci emit aceeasi multime. Arunca pe un tabel care contrazice pagina (alta cale pentru editia ei) si pe o
- * cale din tabel care nu sta sub prefixul bazei ei.
+ *   - grupul se face pe VARIANTELE SERVITE (`VARIANTE_SERVITE`, `src/lib/asezare.ts`), nu pe editiile de continut: un cod
+ *     numeste un continut asezat pe un domeniu (`ro-RO` = continutul `ro-MD` la radacina 3s.com.ro, `ro-MD` = acelasi
+ *     continut sub `/ro` pe 3s.md). Pagina se listeaza pe ea insasi, cu codul variantei ei (pe asezarea `ro`, pagina
+ *     `ro-MD` e `ro-RO`), si sare numai varianta ei, nu editia ei de continut: altfel, pe 3s.com.ro, echivalentul
+ *     `https://3s.md/ro/...` (acelasi continut, alta varianta) n-ar fi emis niciodata;
+ *   - o alta varianta intra numai daca tabelul de echivalente are pagina editiei ei pentru `cheie` SI lista are baza
+ *     codului ei; adresa e originea bazei plus calea SERVITA pe asezarea variantei. Pe domeniul propriu, o varianta pe
+ *     care build-ul nu o construieste (alta asezare, editie lipsa din profil) nu intra (pagina ei nu exista);
+ *   - P-17, ingustata: paginile site-ului romanesc vechi (editia `ro-RO`, 3s4.ke2.in) se listeaza numai pe ele;
+ *   - pe asezarea `ro`, paginile engleze (`/en/...`) nu au legaturi hreflang si au canonical-ul spre aceeasi pagina de
+ *     pe domeniul englezei din lista (`canonicalEnglezei`): nu sunt varianta canonica a englezei, deci nu intra in grup;
+ *   - `x-default` = varianta `en`, cand intra; altfel pagina insasi.
+ * Reciprocitatea iese din constructie: paginile unui grup citesc acelasi rand din tabel si aceeasi lista, pe orice
+ * domeniu, deci emit aceeasi multime. Adresa altei variante se traduce dupa EDITIA ei (`caleServitaEditiei`), nu dupa
+ * manifestul acestui build: pe 3s.md, pagina `/ro/contact` scrie `ro-RO` -> `https://3s.com.ro/contact`. Arunca pe un
+ * tabel care contrazice pagina (alta cale pentru editia ei), pe o cale care nu sta sub prefixul editiei ei sau al bazei
+ * ei, si pe o lista necoerenta cu asezarea (`problemeAlternateAsezare`).
  */
 export function alternatePagina(
   date: Pick<DatePagina, "cale" | "editie" | "cheie">,
@@ -156,25 +167,53 @@ export function alternatePagina(
   const servita = caleServitaPagina(date.cale, context);
   const canonical = { canonical: servita };
   if (context.alternate.length === 0) return canonical;
+  const adresaProprie = adresaPagina(context.baza, servita);
+  if (editie === "ro-RO") {
+    return { ...canonical, languages: { [EDITII["ro-RO"].inLanguage]: adresaProprie, [X_DEFAULT]: adresaProprie } };
+  }
+  const asezare = context.asezare ?? asezareBuild();
+  const probleme = problemeAlternateAsezare(asezare, context.alternate, context.baza, Object.keys(VARIANTE_SERVITE));
+  if (probleme.length > 0) throw new Error(probleme.join(" | "));
+  if (asezare === "ro" && editie === "en") return { canonical: canonicalEnglezei(date.cale, context.alternate) };
 
-  const limbi: [string, string][] = [[EDITII[editie].inLanguage, adresaPagina(context.baza, servita)]];
-  for (const alta of Object.keys(EDITII) as CodEditie[]) {
-    const cale = rand?.[alta];
-    if (alta === editie || cale === undefined) continue;
-    if (alta === "ro-RO" || editie === "ro-RO") continue;
-    const varianta = context.alternate.find((a) => a.hreflang !== X_DEFAULT && variantaPentru(a.hreflang, alta));
-    if (varianta === undefined) continue;
-    const url = new URL(varianta.adresa);
-    if (url.origin === context.baza && !context.editii.includes(alta)) continue;
+  const limbi: [string, string][] = [[hrefLangServit(editie, asezare), adresaProprie]];
+  for (const [cod, varianta] of Object.entries(VARIANTE_SERVITE)) {
+    if (varianta.editie === editie && varianta.asezare === asezare) continue;
+    const cale = rand?.[varianta.editie];
+    if (cale === undefined) continue;
+    const baza = context.alternate.find((a) => a.hreflang === cod);
+    if (baza === undefined) continue;
+    const url = new URL(baza.adresa);
+    if (url.origin === context.baza && (varianta.asezare !== asezare || !context.editii.includes(varianta.editie))) continue;
+    const servitaVariantei: string = caleServitaEditiei(caSursa(cale), varianta.editie, varianta.asezare);
     const prefix = url.pathname.replace(/\/+$/, "");
-    if (prefix !== "" && cale !== prefix && !cale.startsWith(prefix + "/")) {
-      throw new Error("tabelul de echivalente: calea " + cale + " (" + alta + ") nu sta sub prefixul " + prefix + " al bazei " + varianta.adresa);
+    if (prefix !== "" && servitaVariantei !== prefix && !servitaVariantei.startsWith(prefix + "/")) {
+      throw new Error(
+        "tabelul de echivalente: calea " + servitaVariantei + " (" + cod + ") nu sta sub prefixul " + prefix + " al bazei " + baza.adresa,
+      );
     }
-    limbi.push([EDITII[alta].inLanguage, adresaPagina(url.origin, cale)]);
+    limbi.push([cod, adresaPagina(url.origin, servitaVariantei)]);
   }
   const en = limbi.find(([cod]) => cod === EDITII.en.inLanguage);
   limbi.push([X_DEFAULT, (en ?? limbi[0])[1]]);
   return { ...canonical, languages: Object.fromEntries(limbi) };
+}
+
+/**
+ * Canonical-ul unei pagini engleze de pe asezarea `ro` (3s.com.ro/en/...): adresa COMPLETA a aceleiasi pagini pe
+ * domeniul englezei din grup (baza `en` din `SITE_ALTERNATE`, adica 3s.md), unde engleza e indexata. Copia de sub `/en`
+ * ramane pentru vizitatori, cu contactele domeniului, dar nu concureaza in index cu originalul. Fara lista, domeniul
+ * englezei nu se cunoaste, deci canonical-ul ramane calea servita a paginii (ca fara `SITE_ALTERNATE` peste tot).
+ */
+function canonicalEnglezei(cale: string, alternate: readonly Alternata[]): string {
+  const en = alternate.find((a) => a.hreflang === EDITII.en.inLanguage);
+  if (en === undefined) return caleServitaPagina(cale, { asezare: "ro" });
+  const url = new URL(en.adresa);
+  const prefix = url.pathname.replace(/\/+$/, "");
+  if (prefix !== "") {
+    throw new Error("SITE_ALTERNATE: baza en (" + en.adresa + ") are prefix de cale; pe asezarea ro canonical-ul englezei cere engleza la radacina");
+  }
+  return adresaPagina(url.origin, caleServitaEditiei(caSursa(cale), "en", "md"));
 }
 
 /** Ce nu respecta pragurile sau forma caii. Lista goala = metadata buna. */
@@ -209,7 +248,7 @@ export function metadataPagina(date: DatePagina, asezare: Pick<ContextAlternate,
     alternates: alternatePagina(date, { ...contextBuild(), ...asezare }),
     openGraph: {
       type: "website",
-      locale: EDITII[editie].ogLocale,
+      locale: editie === "ro-RO" ? EDITII[editie].ogLocale : atributeLimba(editie, asezare.asezare ?? asezareBuild()).ogLocale,
       siteName: BRAND.nume,
       title: titlu,
       description: descriere,

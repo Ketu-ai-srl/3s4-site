@@ -17,6 +17,10 @@
 //
 // ADRESELE sunt cele SERVITE (`ruta.servita`, asezarea din `src/lib/asezare.ts`), deci pe un domeniu cu alta
 // asezare legaturile duc la paginile lui; pe asezarea `md` sunt chiar caile din manifest.
+//
+// PE ASEZAREA `ro` (3s.com.ro) la radacina sta continutul `ro-MD` (`editiaRadacinii`), dar fisierul ramane ramura EN a
+// site-ului international, fara text nou: acelasi titlu si rezumat ca pe 3s.md, cu originea domeniului si adresele
+// servite (paginile EN sub `/en`). Ramura romaneasca veche (blogul, pretul in RON) e numai a editiei `ro-RO`.
 
 import { META_ACASA } from "@/content/acasa";
 import { ARTICOLE, caleArticol } from "@/content/blog/registru";
@@ -57,7 +61,7 @@ function textEn(baza: string, rute: readonly RutaAsezata[]): string {
 }
 
 export function textLlms(baza: string, editie: CodEditie = editiaRadacinii().cod): string {
-  if (editie === "en") {
+  if (editie !== "ro-RO") {
     return textEn(
       baza,
       rutePentruHarta().filter((r) => r.editie === "en"),

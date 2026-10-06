@@ -31,6 +31,7 @@
 // listei: `alternateSite`, mai jos, si `docs/ziua-operatorului.md`.
 
 import { ADRESA_BAZA } from "@/content/rute";
+import { asezareBuild, prefixServit, type CodAsezare } from "@/lib/asezare";
 import { EDITII, editiiBuild, type CodEditie, type Editie } from "@/lib/editii";
 
 /**
@@ -210,9 +211,14 @@ export function alternateSite(
  * Editia de la radacina domeniului: `ro-RO` pe build-ul romanesc, `en` pe cel international (profilul admis are
  * exact una la radacina, `src/lib/editii.ts`). Din ea vin graful comun de date structurate, `llms.txt`,
  * `security.txt` si manifestul aplicatiei web, care sunt unul singur pe domeniu.
+ *
+ * PE ASEZARE (`src/lib/asezare.ts`): radacina e a editiei SERVITE fara prefix pe asezarea build-ului, nu a celei cu
+ * prefixul sursa gol. Pe `md` sunt aceleasi (`en` pe 3s.md); pe `ro` (3s.com.ro) la radacina sta continutul `ro-MD`,
+ * deci editia intoarsa e `ro-MD`. Atributele ei de limba pe domeniu (`inLanguage` `ro-RO`) le da asezarea
+ * (`atributeLimba`, `hrefLangServit`), nu catalogul editiilor.
  */
-export function editiaRadacinii(editii: readonly CodEditie[] = editiiBuild()): Editie {
-  const cod = editii.find((c) => EDITII[c].prefix === "");
+export function editiaRadacinii(editii: readonly CodEditie[] = editiiBuild(), asezare: CodAsezare = asezareBuild()): Editie {
+  const cod = editii.find((c) => (c === "ro-RO" ? EDITII[c].prefix : prefixServit(c, asezare)) === "");
   if (cod === undefined) {
     throw new Error("profilul " + editii.join(",") + " nu are nicio editie la radacina domeniului");
   }

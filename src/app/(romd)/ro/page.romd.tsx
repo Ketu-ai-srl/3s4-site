@@ -59,6 +59,7 @@ import {
   TESTIMONIAL_RO_MD,
   TESTIMONIAL_RO_MD_FARA_GHIDURI,
 } from "@/content/ro-md/acasa-componente";
+import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
 
 export const metadata: Metadata = metadataPagina({
@@ -110,7 +111,7 @@ function nodFaq(): NodJsonLd {
   return {
     "@type": "FAQPage",
     "@id": baza + "/ro#faq",
-    inLanguage: "ro-MD",
+    inLanguage: atributeLimba("ro-MD").inLanguage,
     mainEntity: INTREBARI_RO_MD.intrebari.map((i) => ({
       "@type": "Question",
       name: i.intrebare,
