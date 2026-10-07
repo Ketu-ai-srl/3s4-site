@@ -11,6 +11,11 @@
 // pasajul citat e in romana (singura limba confirmata), deci `limbaCitat` ii pune `lang`; fara ea, fara atribut.
 // Atributul se pune numai prin raspandire conditionata: copiii trec prin `SectiuneScena` (client), deci props-urile
 // lor intra in fluxul RSC, iar un `lang` nedefinit ar scrie acolo "$undefined" pe pagina RO.
+//
+// GLOSA (`continut.glosa`, decizia 75): pe paginile EN ale lui 3s.md, sub cardul raspunsului apare traducerea
+// pasajului citat, in limba paginii, cu `lang` propriu. Sta in afara cardului: e traducerea noastra, nu iesirea 3S
+// (cardul e macheta raspunsului din exemplu, in romana). Fara camp (RO), copiii sectiunii sunt cei de dinainte,
+// element cu element (raza, cardul, legenda), fara un loc gol in plus in fluxul RSC.
 
 import { Check } from "lucide-react";
 import { PatratTip } from "@/components/cinema/Fereastra";
@@ -29,9 +34,13 @@ export type ContinutExtragere = {
   citat: string;
   meta: string;
   legenda: string;
+  /** Glosa raspunsului (decizia 75): traducerea citatului in limba paginii, cu codul limbii. Lipsa = fara glosa (RO). */
+  glosa?: { text: string; limba: string };
 };
 
 export default function Extragere({ continut = EXTRAGERE, limbaCitat }: { continut?: ContinutExtragere; limbaCitat?: string }) {
+  const legenda = <p className={s.legenda}>{continut.legenda}</p>;
+  const glosa = continut.glosa;
   return (
     <SectiuneScena inaltime={95} latime={680} nume="extragere" interiorClassName={s.extragere}>
       <div className={s.raza} aria-hidden="true" />
@@ -52,7 +61,16 @@ export default function Extragere({ continut = EXTRAGERE, limbaCitat }: { contin
         </div>
         <figcaption className="doar-cititor">{continut.declaratie}</figcaption>
       </figure>
-      <p className={s.legenda}>{continut.legenda}</p>
+      {glosa === undefined ? (
+        legenda
+      ) : (
+        <>
+          <p lang={glosa.limba} data-glosa="raspuns">
+            {glosa.text}
+          </p>
+          {legenda}
+        </>
+      )}
     </SectiuneScena>
   );
 }

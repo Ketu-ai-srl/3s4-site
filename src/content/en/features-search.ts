@@ -231,8 +231,25 @@ export const inJur = {
 // modulele din acest dosar sunt numai ASCII (poarta de limba engleza). Iese pe 3s.md: cipul "WhatsApp" din dosar
 // (decizia 49); butonul spre cont devine legatura WhatsApp cu `ref`-ul paginii (decizia 3).
 //
+// GLOSA (decizia 75, "Romana + glosa EN"): demonstratia ramane in romana, cum raspunde produsul, iar sub fiecare
+// intrebare si sub fiecare raspuns romanesc VIZIBIL apare traducerea lor in engleza americana, subordonata vizual, cu
+// `lang` propriu: sub terminalul eroului (prima aparitie a intrebarii, pe primul ecran), sub bara din lumina, sub
+// cardul extragerii si sub desenul "Acum" (intrebarea, apoi raspunsul). E traducerea NOASTRA, fidela, propozitie cu
+// propozitie, nu iesirea 3S si nu o promisiune noua (decizia 43): pagina nu promite intrebari in engleza peste documente
+// romanesti. Textele stau aici (`glosa` din EROU_POVESTE, LUMINA_POVESTE, EXTRAGERE_POVESTE si CONTRAST_POVESTE.acum),
+// ca date; componentele le randeaza numai cand le primesc, deci paginile romanesti raman cum erau.
+//
 // Modulul e numai date: il importa si invelitorile client ale insulelor (avalansa, frustrarea, lumina).
 // ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Glosa intrebarii scenei (`SCENA_CAUTARE_3S_MD.intrebare`), aceeasi in erou (sub terminal) si in lumina (sub bara),
+ * fiindca e aceeasi intrebare scrisa de doua ori. "Garantie" e "warranty".
+ */
+const GLOSA_INTREBARE = {
+  text: "What warranty does the compressor in hall 2 have, and from what date is it calculated?",
+  limba: "en",
+} as const;
 
 /** Eroul: eticheta-titlu (h1) in doua bucati, legate de pagina cu punctul de mijloc (`cautare-ai.ts:40-49`). */
 export const EROU_POVESTE = {
@@ -241,6 +258,8 @@ export const EROU_POVESTE = {
   rand1: "The report was signed on site.",
   rand2: "...over two years ago.",
   indiciu: "scroll",
+  // Decizia 75: glosa intrebarii din terminal, sub el, pe primul ecran.
+  glosa: GLOSA_INTREBARE,
 } as const;
 
 export const AVALANSA_POVESTE = {
@@ -311,6 +330,8 @@ export const LUMINA_POVESTE = {
   // cautare-ai.ts:153, :155.
   declaratie: "Example: the archive search bar with the question from the top of the page, in Romanian",
   indicatie: "send with Enter",
+  // Decizia 75: traducerea intrebarii din scena, sub bara; aceeasi glosa ca in erou (`GLOSA_INTREBARE`).
+  glosa: GLOSA_INTREBARE,
 } as const;
 
 export const EXTRAGERE_POVESTE = {
@@ -321,6 +342,11 @@ export const EXTRAGERE_POVESTE = {
   pagina: "Excerpt",
   meta: "Answer with its source",
   legenda: "The excerpt comes with the file it is from.",
+  // Decizia 75: traducerea pasajului citat (`SCENA_CAUTARE_3S_MD.citat`), sub cardul raspunsului; data in forma SUA.
+  glosa: {
+    text: "The warranty period for the compressor is 24 months, from commissioning on May 28, 2024.",
+    limba: "en",
+  },
 } as const;
 
 export const CONTRAST_POVESTE = {
@@ -344,6 +370,14 @@ export const CONTRAST_POVESTE = {
     // Eticheta accesibila a desenului, cu traducerea intrebarii scurte (fisa, nota 2); ghilimele drepte (ASCII).
     declaratie: 'Example: "How long is the warranty?" asked in Romanian, and its answer',
     sursa: "commissioning_report.pdf",
+    // Decizia 75: textele romanesti ale desenului se vad, deci au glosa lor, randata ca text sub desen:
+    // intrebarea scurta (`SCENA_CAUTARE_3S_MD.intrebareScurta`) si raspunsul (`raspunsInceput` + `raspunsAccent`,
+    // apoi `raspunsNota`), fara semn final, ca originalul. "Garantie de 24 de luni" e "a 24-month warranty".
+    glosa: {
+      intrebare: "What warranty does the compressor have?",
+      raspuns: "A 24-month warranty, from the day of commissioning",
+      limba: "en",
+    },
     metrici: [
       { valoare: "1", cheie: "Questions" },
       { valoare: "1 file", cheie: "Source cited" },

@@ -22,6 +22,10 @@
 // Variantele masurate: automatizari-ai nu are terminal, iar subtitlul insusi se scrie litera cu litera
 // (`<SubtitluErou scris="..." />`); cautare-ai nu are h1 in erou la referinta - la 3S eticheta e h1,
 // cu aceeasi forma vizuala (`<EtichetaErou titlu>`), iar titlul CTA-ului final devine h2.
+//
+// GLOSA (`<TerminalErou glosa={...} />`, decizia 75): pe pagina EN a cautarii intrebarea din terminal e in romana,
+// iar sub terminal apare traducerea ei in limba paginii. Fara proprietate (RO si celelalte pagini) terminalul e singur,
+// ca inainte, fara niciun element sau atribut in plus.
 
 import {
   createContext,
@@ -133,14 +137,50 @@ export type TerminalErouProps = {
    * cititorul de ecran s-o pronunte corect. Absenta (RO): fara atribut.
    */
   limba?: string;
+  /**
+   * Glosa intrebarii (decizia 75): traducerea ei in limba paginii, cu codul limbii (`lang` pe glosa). Se randeaza sub
+   * terminal, in afara lui (e traducerea noastra, nu ce scrie produsul), si intra odata cu subtitlul, dupa scriere.
+   * Absenta (RO si celelalte pagini): terminalul singur, fara niciun element in plus.
+   */
+  glosa?: { text: string; limba: string };
   className?: string;
 };
 
+/**
+ * Asezarea si corpul glosei, pe latimea terminalului. Stau in atributul `style`, nu intr-o clasa noua: proba de
+ * congruenta compara multimea claselor de modul din fiecare sectiune a perechii, iar o clasa care exista numai pe
+ * pagina EN ar fi o abatere nedeclarata. Glosa poarta numai clasa subtitlului (`s.subtitlu`), care e deja in erou pe
+ * toate paginile perechii; de la ea ia intrarea dupa scriere (`data-intrare`, aceeasi ca la subtitluri, cu ascunderea
+ * dinaintea hidratarii) si haloul blocului. Ce scrie aici bate ce da clasa (corpul de 20 si marginea 0).
+ *   - Cutia are latimea terminalului si e centrata ca el (660 sau 600, cu marginile egale din bloc), deci la 390 ia
+ *     toata latimea, ca terminalul. Textul porneste unde porneste paragraful intrebarii in terminal: chenar 1 +
+ *     spatierea corpului 22,4 = 23,4 px (lupa sta in randul intai al intrebarii, nu e o coloana).
+ *   - Corpul e mai mic decat intrebarea, ca la celelalte glose ale paginii: 14,4 (intrebarea 18,4) si, sub 768 de
+ *     pixeli, 13,6 (intrebarea 15,2). Pragul e cel al foii eroului (`max-width: 767px`), scris ca treapta in `clamp`:
+ *     sub 767,5 px termenul din mijloc e negativ (13,6), peste el e mare (14,4).
+ *   - Culoarea e a textelor secundare ale eroului (alb .6, ca al doilea rand si indiciul): peste forma din hartii
+ *     pragul cadrului (.5) nu ajunge (masuratoarea din `EroulCinema.module.css`, abaterea de contrast).
+ */
+function stilGlosa(latime: 600 | 660): CSSProperties {
+  return {
+    boxSizing: "border-box",
+    width: latime,
+    maxWidth: "100%",
+    margin: "12px auto 0",
+    padding: "0 23.4px",
+    fontSize: "clamp(13.6px, calc((100vw - 767.5px) * 1000), 14.4px)",
+    lineHeight: 1.6,
+    textAlign: "left",
+    textWrap: "pretty",
+    color: "rgba(255, 255, 255, 0.6)",
+  };
+}
+
 /** Terminalul cu intrebarea scrisa (fisa §4.1): card `ardezie-9`, bara de 35 px, lupa, text scris. */
-export function TerminalErou({ text, pas, latime = 600, marime = "normala", marca = "3S", limba, className }: TerminalErouProps) {
-  const { laScris } = useContext(ContextErou);
+export function TerminalErou({ text, pas, latime = 600, marime = "normala", marca = "3S", limba, glosa, className }: TerminalErouProps) {
+  const { faza, laScris } = useContext(ContextErou);
   const scriere = useScriere(text, { pas, laFinal: laScris });
-  return (
+  const terminal = (
     <div
       className={[s.terminal, latime === 660 ? s.terminalLat : "", className].filter(Boolean).join(" ")}
       data-terminal=""
@@ -159,6 +199,17 @@ export function TerminalErou({ text, pas, latime = 600, marime = "normala", marc
         />
       </div>
     </div>
+  );
+  if (glosa === undefined) return terminal;
+  // Intrarea, ca la subtitlul care vine dupa scriere: ascunsa cat se scrie, intra cand s-a scris; statica altfel.
+  const intrare = faza === "static" ? "static" : faza === "scrie" ? "asteapta" : "intra";
+  return (
+    <>
+      {terminal}
+      <p className={s.subtitlu} lang={glosa.limba} data-glosa="intrebare" data-intrare={intrare} style={stilGlosa(latime)}>
+        {glosa.text}
+      </p>
+    </>
   );
 }
 

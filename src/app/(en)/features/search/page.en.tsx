@@ -7,6 +7,9 @@
 // Diferentele fata de RO, toate in lista declarata a perechii (`config/congruenta/p03.json`): cipul "WhatsApp" din
 // dosar iese (decizia 49); butonul CTA-ului duce la WhatsApp, cu textul precompletat si `ref`-ul paginii (decizia 3),
 // in locul contului. Fara WhatsApp pe domeniu, butonul nu se randeaza. O pagina, un h1: eticheta eroului, ca pe RO.
+// Glosa EN a scenei (decizia 75) e notata in aceeasi lista (`_nedeclarate`): sub terminalul eroului (`glosa` pe
+// TerminalErou), sub bara din lumina, sub cardul extragerii si sub desenul "Acum" (`glosa` in continutul lui), cu
+// textele din `EROU_POVESTE`, `LUMINA_POVESTE`, `EXTRAGERE_POVESTE` si `CONTRAST_POVESTE.acum`.
 
 import { ArrowRight } from "lucide-react";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
@@ -56,7 +59,7 @@ export default function Pagina() {
 
       <EroulCinema forma="lupa" samanta={11}>
         <EtichetaErou titlu>{EROU_POVESTE.etichetaNumar + SEMNE_3S_MD.mijloc + EROU_POVESTE.etichetaNume}</EtichetaErou>
-        <TerminalErou text={scena.intrebare} pas={35} latime={660} marime="mare" limba={LIMBA_SCENEI} />
+        <TerminalErou text={scena.intrebare} pas={35} latime={660} marime="mare" limba={LIMBA_SCENEI} glosa={EROU_POVESTE.glosa} />
         <SubtitluErou varianta="rand-1" dupaScriere>
           {EROU_POVESTE.rand1}
         </SubtitluErou>
@@ -102,6 +105,7 @@ export default function Pagina() {
                 raspunsAccent: scena.raspunsAccent,
                 raspunsNota: scena.raspunsNota,
                 sursa: c.acum.sursa,
+                glosa: c.acum.glosa,
               }}
               limba={LIMBA_SCENEI}
             />

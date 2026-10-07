@@ -18,6 +18,7 @@
   ],
   "_nedeclarate": [
     "Butonul CtaCinema spre /inregistrare devine legatura WhatsApp cu ref-ul paginii (acelasi loc, aceeasi clasa de buton, alt canal, decizia 3): nu schimba forma.",
-    "Scena (intrebarea din terminal si din bara, pasajul citat, textele desenului 'Acum') e in romana pe 3s.md, sub lang=\"ro\", cu etichetele accesibile in engleza (fisa paginii, nota 2): schimba textul, nu forma."
+    "Scena (intrebarea din terminal si din bara, pasajul citat, textele desenului 'Acum') e in romana pe 3s.md, sub lang=\"ro\", cu etichetele accesibile in engleza (fisa paginii, nota 2): schimba textul, nu forma.",
+    "Glosa EN a scenei (decizia 75, 'Romana + glosa EN') e o abatere de FORMA numai pe pagina EN a perechii: /features/search (pe 3s.com.ro, aceeasi pagina la /en/features/search) are 5 elemente [data-glosa] cu lang=\"en\" - un <p> sub terminalul eroului, un <p> sub bara din sectiunea lumina, un <p> sub cardul din sectiunea extragere si doua <p> sub desenul 'Acum' din contrast, langa SVG intr-un <div data-desen-glosa> fara clasa -, iar /functionalitati/cautare-ai si /ro/functionalitati/cautare-ai au 0. Nu e rand in lista fiindca schema de azi nu o poate exprima: un rand 'camp' are o singura numaratoare 'en' pentru ambele pagini 3s.md ale perechii (aici 5 pe /features/search si 0 pe /ro/functionalitati/cautare-ai), iar decizia 75 nu are cod in temeiuri.json. Extinderea schemei (numaratoarea pe pagina si codul deciziei) vine in felia 141. Pana atunci numaratoarea exacta o tin tests/glosa-demo-cautare.test.ts si tests/browser/glosa-demo-cautare.spec.ts. Semnatura de forma nu vede glosele: n-au clasa de modul proprie (paragraful din erou poarta numai clasa subtitlului, prezenta in erou pe toate paginile perechii)."
   ]
 }

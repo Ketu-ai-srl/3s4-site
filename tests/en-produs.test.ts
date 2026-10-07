@@ -356,19 +356,29 @@ describe('rutele si declaratiile G-AI-02 ale grupului', () => {
     }
   })
 
-  it('entitatile si H1-ul stau in primele 400 de cuvinte ale textului paginii (H1, capsula, sectiuni)', () => {
+  // Cazul masoara <main>-ul RANDAT al paginii servite, nu modelul `pagina`: din decizia 53 pagina se compune din
+  // componentele cinema (eroul, scena, glosa), iar `pagina` nu mai e ce se publica. Acelasi text il citesc celelalte
+  // doua masuratori G-AI-02 (tests/editie-cautare-ai.test.ts si spec-ul de browser en-produs), cu aceeasi normalizare.
+  it('entitatile si H1-ul stau in primele 400 de cuvinte din <main>-ul randat al paginii', async () => {
+    const PAGINI: Record<string, () => Promise<{ default: () => import('react').ReactElement }>> = {
+      '/features/search': () => import('../src/app/(en)/features/search/page.en'),
+    }
+    const cuvinte = (t: string) =>
+      t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').split(' ').filter((c) => /[a-z0-9]/.test(c))
+    const decodeaza = (t: string) =>
+      t.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
     for (const m of Object.values(MODULE)) {
-      const p = m.pagina
-      const text = [
-        p.h1,
-        p.capsula,
-        ...p.sectiuni.flatMap((s) => [s.titlu, ...s.blocuri.flatMap((b) => [...b.paragrafe, ...(b.lista?.elemente ?? [])])]),
-      ]
-        .map(textSimplu)
-        .join(' ')
-      const fereastra = text.split(/\s+/).slice(0, 400).join(' ').toLowerCase()
-      const lipsa = decl[p.meta.cale].entitati.filter((e) => !fereastra.includes(e.toLowerCase()))
-      expect(lipsa, p.meta.cale).toEqual([])
+      const cale = m.pagina.meta.cale
+      expect(PAGINI[cale], cale + ': pagina randata e legata in proba').toBeDefined()
+      const html = renderToStaticMarkup(createElement((await PAGINI[cale]()).default))
+      const main = html.slice(html.indexOf('<main'), html.lastIndexOf('</main>'))
+      expect(main.length, cale + ': <main> randat').toBeGreaterThan(0)
+      const fereastra = ' ' + cuvinte(decodeaza(main.replace(/<script\b[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' '))).slice(0, 400).join(' ') + ' '
+      const lipsa = decl[cale].entitati.filter((e) => !new RegExp('(^|[^a-z0-9])' + cuvinte(e).join(' ') + '($|[^a-z0-9])').test(fereastra))
+      expect(lipsa, cale).toEqual([])
+      const h1 = /<h1\b[^>]*>([\s\S]*?)<\/h1>/.exec(main)
+      expect(h1, cale + ': un <h1> in <main>').not.toBeNull()
+      expect(fereastra, cale + ': h1').toContain(' ' + cuvinte(decodeaza((h1?.[1] ?? '').replace(/<[^>]+>/g, ' '))).join(' ') + ' ')
     }
   })
 })

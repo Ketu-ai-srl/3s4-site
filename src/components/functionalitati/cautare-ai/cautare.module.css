@@ -439,6 +439,44 @@
   transition: opacity 0.4s ease;
 }
 
+/* GLOSA (decizia 75), numai pe paginile EN ale lui 3s.md: traducerea intrebarii romanesti, sub bara si in afara ei.
+   Subordonata vizual: corp mai mic decat intrebarea (14,4 fata de 17,6; 13,6 fata de 15,2 la 390) si alb .5, nivelul
+   textului secundar pe inchis (`globals.css`, `.t-subtitlu-cinema`: 5,30:1 pe negru-cinema). Cutia are latimea barei,
+   iar textul porneste unde porneste intrebarea in bara (chenar 1 + spatiere 22,4 + lupa 20 + spatiu 12,8 = 56,2 px);
+   scara barei o urmeaza, ca alinierea sa tina si cat bara creste. Apare odata cu indicatia, dupa ce intrebarea s-a
+   scris; in HTML-ul servit si la miscare redusa e deja vizibila.
+   SELECTATA PRIN ATRIBUTUL EI (`data-glosa`, acelasi pe care il numara probele glosei), nu printr-o clasa de modul.
+   Celelalte glose ale paginii au stilul langa piesa lor: sub terminalul eroului (`EroulCinema.tsx`, `TerminalErou`) si
+   sub desenul "Acum" (stil inline in `DeseneContrast.tsx`).
+   LIMITA DECLARATA: glosa e o abatere de FORMA numai pe pagina EN a perechii (5 elemente in plus: erou, lumina,
+   extragere si doua sub desen), iar semnatura de forma din proba congruentei NU o vede - un element fara clasa de modul
+   proprie, in interiorul unei sectiuni, nu schimba nici radacinile, nici clasele de modul. Abaterea e NOTATA in
+   `_nedeclarate` din `config/congruenta/p03.json`, nu e rand al listei: un rand `camp` pe `[data-glosa]` cere o
+   numaratoare EN pe fiecare pagina a perechii (`/features/search` are 5 glose, `/ro/functionalitati/cautare-ai` are
+   0) si codul deciziei 75 in `config/congruenta/temeiuri.json`; schema de azi nu le are (extinderea ei vine in felia
+   141). Pana atunci numaratoarea exacta (5 pe EN, 0 pe paginile romanesti) o tin probele glosei. Nu e un tipar de
+   refolosit: o piesa numai pe EN se declara in lista. */
+.lumina > [data-glosa] {
+  box-sizing: border-box;
+  width: 620px;
+  max-width: 100%;
+  margin: 12px auto 0;
+  padding: 0 23.4px 0 56.2px;
+  font-size: 14.4px;
+  line-height: 23.04px;
+  text-align: left;
+  /* Ca paragrafele din foile produsului (`produs.module.css`): fara un cuvant singur pe ultimul rand. Masurat pe
+     capturi, la 1440 si 390: fara regula, "calculated?" singur pe ultimul rand; cu `pretty`, glosa se rupe ca
+     intrebarea din bara ("...date is / it calculated?"); cu `balance`, "hall / 2" la 1440. */
+  text-wrap: pretty;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: var(--scris-gata, 1);
+  transform: scale(calc(0.85 + 0.15 * var(--p)));
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
 /* --- S6, extragerea -------------------------------------------------------------------------- */
 
 .extragere {
@@ -536,6 +574,29 @@
      25.09). ABATERE: tot dupa card (pragul lui e 0,35), intreaga la p 0,45. */
   opacity: clamp(0, calc(10 * (var(--p) - 0.35)), 1);
   transition: opacity 0.5s ease;
+}
+
+/* GLOSA (decizia 75), numai pe paginile EN ale lui 3s.md: traducerea pasajului citat, sub card si in afara lui
+   (cardul e macheta produsului; glosa e traducerea noastra). Corp mai mic decat citatul (14,4 fata de 19,2; 13,6 fata
+   de 16 la 390), alb .5, ca la glosa intrebarii. Textul porneste unde porneste citatul in card (chenar 1 + margine
+   19,2 + bara albastra 3 + spatiere 14,4 = 37,6 px). Intra odata cu cardul (`--pornit`, aceeasi miscare). Selectata
+   prin atribut, cu limita declarata la glosa intrebarii (abaterea de forma e notata in `_nedeclarate` din p03.json). */
+.extragere > [data-glosa] {
+  margin: 12px 0 0;
+  padding: 0 34.6px 0 37.6px;
+  font-size: 14.4px;
+  line-height: 23.04px;
+  text-align: left;
+  /* Randuri echilibrate, ca titlurile din foile produsului. Masurat pe capturi, la 1440 si 390: fara regula, "2024."
+     singur pe ultimul rand; cu `pretty`, data rupta "May / 28, 2024" la ambele latimi; cu `balance`, data intreaga la
+     ambele, iar la 1440 ruptura cade intre "24" si "months". */
+  text-wrap: balance;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: var(--pornit);
+  transform: translateY(calc(20px - 20px * var(--pornit)));
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 /* --- S7, desenele contrastului ------------------------------------------------------------------ */
@@ -694,5 +755,11 @@
   .legenda {
     font-size: 16px;
     line-height: 25.6px;
+  }
+
+  .lumina > [data-glosa],
+  .extragere > [data-glosa] {
+    font-size: 13.6px;
+    line-height: 21.76px;
   }
 }

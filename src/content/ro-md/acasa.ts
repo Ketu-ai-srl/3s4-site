@@ -82,7 +82,8 @@ const BAZA = adresaSite();
 const ID = iduri(BAZA);
 const LEGAL = caleMd("informatii-legale", "ro");
 
-const TITLU = "Arhivă digitală cu căutare AI pentru firme din Moldova | 3S";
+// Titlul neutru pe startul ambelor site-uri (decizia 58, I2): pagina e aceeasi pe 3s.md/ro si pe 3s.com.ro.
+const TITLU = "Arhivă digitală cu căutare AI pentru firme | 3S";
 const DESCRIERE =
   "Arhivă digitală pentru firme: formulezi întrebări în română și primești răspunsul cu sursa lui. Fișierele sunt păstrate în UE, regiunea principală Frankfurt.";
 

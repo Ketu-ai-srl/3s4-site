@@ -19,6 +19,11 @@
 // LIMBA INTREBARII (`limbaIntrebare`): cand intrebarea e in alta limba decat pagina (pe 3s.md, intrebarea e in
 // romana, singura limba confirmata pentru intrebari), elementul care o poarta primeste `lang`, ca cititorul de ecran
 // s-o pronunte corect. Fara proprietate (RO) elementul e cel de dinainte, fara atribut.
+//
+// GLOSA (`continut.glosa`, decizia 75): pe paginile EN ale lui 3s.md, sub bara apare traducerea intrebarii, in limba
+// paginii, cu `lang` propriu, si apare odata cu indicatia, dupa ce intrebarea s-a scris. Sta intre bara si indicatie,
+// in afara barei: e traducerea noastra, nu ce afiseaza produsul. Fara camp (RO), arborele e cel de dinainte, element
+// cu element (bara, apoi indicatia), fara un loc gol in plus.
 
 import { useMemo, type CSSProperties, type ComponentProps, type ElementType } from "react";
 import { CornerDownLeft, Search } from "lucide-react";
@@ -36,6 +41,8 @@ export type ContinutLumina = {
   declaratie: string;
   /** Indicatia de sub bara. */
   indicatie: string;
+  /** Glosa intrebarii (decizia 75): traducerea ei in limba paginii, cu codul limbii. Lipsa = fara glosa (RO). */
+  glosa?: { text: string; limba: string };
 };
 
 /** Scrierea legata de derulare (fisa S5): incepe la p 0,18 si dureaza 0,32 din sectiune. */
@@ -67,6 +74,13 @@ function BaraCautare({ continut, limbaIntrebare }: { continut: ContinutLumina; l
   const scrise = useDinProgres((p) => caractereDupaProgres(p, text.length, SCRIERE_LUMINA.start, SCRIERE_LUMINA.durata));
   const gata = !miscare || scrise >= text.length;
   const stare = !miscare ? "static" : gata ? "gata" : "scrie";
+  const dupaScriere = { "--scris-gata": gata ? "1" : "0" } as CSSProperties;
+  const indicatie = (
+    <p className={s.indicatie} style={dupaScriere}>
+      {continut.indicatie}
+    </p>
+  );
+  const glosa = continut.glosa;
   return (
     <>
       <div className={s.locBara}>
@@ -86,9 +100,16 @@ function BaraCautare({ continut, limbaIntrebare }: { continut: ContinutLumina; l
           <figcaption className="doar-cititor">{continut.declaratie}</figcaption>
         </figure>
       </div>
-      <p className={s.indicatie} style={{ "--scris-gata": gata ? "1" : "0" } as CSSProperties}>
-        {continut.indicatie}
-      </p>
+      {glosa === undefined ? (
+        indicatie
+      ) : (
+        <>
+          <p lang={glosa.limba} data-glosa="intrebare" style={dupaScriere}>
+            {glosa.text}
+          </p>
+          {indicatie}
+        </>
+      )}
     </>
   );
 }
