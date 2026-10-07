@@ -12,7 +12,7 @@ import { familiePublicata, verificaComutator } from '../src/content/juridic/comu
 import { CHEI_L284 } from '../src/content/juridic/cookie-uri'
 import { familieDinTara, familieJuridica } from '../src/content/juridic/familie'
 import { grupaPentruCale } from '../src/content/juridic/harta'
-import { documentMdBrut, documentPentruSlug, rezolvaLegaturi, texteJuridice } from '../src/content/juridic/index'
+import { contextMd, documentMdBrut, documentPentruSlug, rezolvaLegaturi, texteJuridice } from '../src/content/juridic/index'
 import { MESAJ_S_C, conditiiActive, intrariMasurare, masurareDin, type Masurare } from '../src/content/juridic/masurare'
 import { valoareCamp } from '../src/content/juridic/md/context'
 import { CHEI_MD, MARCAJ_SECTIUNI_MD, REGISTRU_MD, cheiPublicate, tintaLegatura, type CheieMd } from '../src/content/juridic/md/registru'
@@ -230,8 +230,13 @@ describe('legaturile interne pe cheie', () => {
       for (const [cheie, d] of texteJuridice(operatorModel(), { limba }) ?? []) {
         const tinte = legaturi(d)
         expect(tinte.filter((t) => /^cale(-ro)?:/.test(t)), cheie).toEqual([])
+        // O tinta interna e un document al registrului sau o pagina legata PUBLICATA in configurare, in limba
+        // paginii (felia 132: Termeni 15.11 duce la sectiunea existenta `securitate-si-locul-datelor`).
+        const legatePublicate = Object.values(rute.pagini_legate as Record<string, { en: string | null; ro: string | null; publicata: boolean }>)
+          .filter((p) => p.publicata && p[limba] !== null)
+          .map((p) => p[limba] as string)
         for (const t of tinte.filter((x) => x.startsWith('/'))) {
-          expect([...Object.values(REGISTRU_MD).flatMap((r) => [r.en, r.ro])], cheie + ' ' + t).toContain(t)
+          expect([...Object.values(REGISTRU_MD).flatMap((r) => [r.en, r.ro]), ...legatePublicate], cheie + ' ' + t).toContain(t)
           expect([REGISTRU_MD.dpa[limba], REGISTRU_MD.subimputerniciti[limba]], cheie).not.toContain(t)
         }
       }
@@ -256,9 +261,11 @@ describe('legaturile interne pe cheie', () => {
 
   it('tokenurile din afara pachetului sunt cunoscute si se rezolva fara oprire, in toate starile, la B si la C', () => {
     const numara = (tipar: string) => MODULE_MD.reduce((n, f) => n + sursa(f).split(tipar).length - 1, 0)
-    // Numarate in blocurile publicabile ale pachetului: 4, 4, 2 si 1 (raportul conversiei)
+    // Numarate in blocurile publicabile ale pachetului: 4, 4, 2 si 1 (raportul conversiei). Felia 132 (decizia 74,
+    // marcajele de lucru din termeni): 3.8 trimite numai la DPA si la descrierea data in scris, la cerere, deci
+    // `securitate-si-locul-datelor` ramane numai in 15.11, RO si EN: 2 din cele 4.
     expect(numara('](cale:preturi)')).toBe(4)
-    expect(numara('](cale:securitate-si-locul-datelor)')).toBe(4)
+    expect(numara('](cale:securitate-si-locul-datelor)')).toBe(2)
     expect(numara('](cale:comutare-si-export)')).toBe(2)
     expect(numara('](cale-ro:')).toBe(1)
     for (const { m, linkedin } of STARI) {
@@ -271,6 +278,28 @@ describe('legaturile interne pe cheie', () => {
     // preturi: pagina /pricing nu e publicata inca -> text; cheile nescrise -> text
     expect(tintaLegatura('cale', 'preturi', 'en')).toEqual({ fel: 'text' })
     expect(tintaLegatura('cale', 'comutare-si-export', 'ro')).toEqual({ fel: 'text' })
+  })
+
+  it('Termeni 15.11 identifica sectiunea existenta a site-ului (Data Act art. 28 alin. (2)) si nu declara publicate masurile', () => {
+    // Felia 132, reparatia rundei 3: clauza trimitea la cheia `securitate-si-locul-datelor` cu adrese nule, deci la
+    // randare nu purta nicio adresa, iar EN spunea ca masurile "are published" desi sectiunea nu le are inca.
+    // Cheia duce acum la ancora existenta a paginii despre 3S, iar masurile sunt un angajament la viitor, EN = RO.
+    expect(tintaLegatura('cale', 'securitate-si-locul-datelor', 'en')).toEqual({ fel: 'adresa', cale: '/about#security' })
+    expect(tintaLegatura('cale', 'securitate-si-locul-datelor', 'ro')).toEqual({ fel: 'adresa', cale: '/ro/securitate#security' })
+    const clauza: Record<'ro' | 'en', [string, RegExp, RegExp]> = {
+      ro: ['/ro/securitate#security', /3S va adăuga în aceeași secțiune/, /măsurilor[^.]*(?:se publică|sunt publicate)/],
+      en: ['/about#security', /3S will add to the same section/, /measures[^.]*(?:are published|is published)/],
+    }
+    for (const limba of ['ro', 'en'] as const) {
+      const d = texteJuridice(operatorModel(), { limba })?.get('termeni')
+      expect(d).toBeDefined()
+      const p = siruri(d as DocumentJuridic).find((x) => x.includes('15.11'))
+      expect(p).toBeDefined()
+      const [adresa, viitor, prezent] = clauza[limba]
+      expect(p).toContain('](' + adresa + ')')
+      expect(p).toMatch(viitor)
+      expect(p).not.toMatch(prezent)
+    }
   })
 
   it('martor POZITIV: o cheie necunoscuta opreste construirea; un URL extern ramane neatins', () => {
@@ -596,6 +625,114 @@ describe('CorpDocument randeaza preambulul si subelementele documentelor md', ()
       expect(faraSpatii(html)).not.toBe(corpAmprenta(sintetic()))
     } finally {
       rmSync(d, { recursive: true, force: true })
+    }
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// I. Politica de confidentialitate: datele verificarii in s. 6 si jurnalul dupa incetare in s. 3, 4, 15
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * De ce exista (felia 132, runda 3): s. 6 spunea „la data ultimei actualizari a paginii” despre doua
+ * liste externe (Cadrul UE-SUA si lista de adecvare a Comisiei). Orice schimbare de text din ALTA sectiune
+ * muta `versiune` si re-data afirmatia fara ca listele sa fi fost recitite. Acum fiecare afirmatie isi
+ * poarta data verificarii, scrisa literal; proba schimba `versiune` pe o COPIE a modulului si cere ca
+ * afirmatia sa ramana pe data ei, iar un mutant (tot pe copie) care readuce formula relativa o inroseste.
+ * A doua parte: randul din s. 7 (jurnalul de activitate dupa incetare, 3S operator, interes legitim) are
+ * corespondent in tabelul din s. 3, in lista interesului legitim din s. 4 si in exceptia din s. 15.
+ */
+describe('Politica: datele verificarii (s. 6) si jurnalul dupa incetare (s. 3, 4, 15)', () => {
+  // Data ultimei recitiri documentate a celor doua liste; se schimba numai cu o recitire noua.
+  const DATA_VERIFICARII: Record<LimbaJuridica, string> = { ro: ['7', 'octombrie', '2026'].join(' '), en: ['October', '7,', '2026'].join(' ') }
+  // Formula relativa la versiune, asamblata din bucati: proba nu poarta intreg ce vaneaza.
+  const RELATIVA: Record<LimbaJuridica, string> = { ro: ['ultimei', 'actualizări'].join(' '), en: ['last', 'update', 'of', 'this', 'page'].join(' ') }
+  const JURNAL: Record<LimbaJuridica, RegExp> = { ro: /jurnal\w* de activitate/i, en: /activity log/i }
+  const NOTIFICARI: Record<LimbaJuridica, RegExp> = { ro: /notificăril/, en: /notices/ }
+  const INTERES: Record<LimbaJuridica, RegExp> = { ro: /lit\. f\)/, en: /6\(1\)\(f\)/ }
+
+  const textSectiune = (d: DocumentJuridic, cheie: string) =>
+    textIntreg({ ...d, titlu: '', introducere: '', preambul: [], sectiuni: d.sectiuni.filter((s) => s.cheie === cheie) })
+  const textCelula = (c: string | { text: string }) => (typeof c === 'string' ? c : c.text)
+
+  /** Ce e gresit in s. 6: lista goala inseamna ca ambele afirmatii au data lor si nicio formula relativa. */
+  function defecteS6(d: DocumentJuridic, limba: LimbaJuridica): string[] {
+    const t = textSectiune(d, 's6')
+    const defecte: string[] = []
+    if (t.split(DATA_VERIFICARII[limba]).length - 1 !== 2) defecte.push('data verificarii nu apare de 2 ori')
+    if (t.includes(RELATIVA[limba])) defecte.push('formula relativa la versiune')
+    const an = (d.versiune ?? '').slice(0, 4)
+    if (t.includes(an) && !DATA_VERIFICARII[limba].includes(an)) defecte.push('anul versiunii in s. 6')
+    return defecte
+  }
+
+  /** Ce lipseste in s. 3, 4 si 15 fata de randul jurnalului din s. 7. */
+  function lipsuriJurnal(d: DocumentJuridic, limba: LimbaJuridica): string[] {
+    const blocuri = (cheie: string) => d.sectiuni.filter((s) => s.cheie === cheie).flatMap((s) => s.blocuri)
+    const randuri = (cheie: string) => blocuri(cheie).flatMap((b) => b.tabel?.randuri ?? []).map((r) => r.map(textCelula))
+    const elemente = (cheie: string) => blocuri(cheie).flatMap((b) => b.lista?.elemente ?? [])
+    const lipsuri: string[] = []
+    if (!randuri('s7').some((r) => JURNAL[limba].test(r[0] ?? ''))) lipsuri.push('s7')
+    if (!randuri('s3').some((r) => JURNAL[limba].test(r[1] ?? '') && INTERES[limba].test(r[3] ?? ''))) lipsuri.push('s3')
+    if (!elemente('s4').some((e) => JURNAL[limba].test(e) && NOTIFICARI[limba].test(e))) lipsuri.push('s4')
+    if (!elemente('s15').some((e) => JURNAL[limba].test(e) && e.includes('3S Demerzel SRL') && INTERES[limba].test(e))) lipsuri.push('s15')
+    return lipsuri
+  }
+
+  it('s. 6 in ambele limbi: fiecare afirmatie pe o lista externa are data ei, fara formula relativa', () => {
+    for (const limba of ['ro', 'en'] as const) expect(defecteS6(documentMdBrut('confidentialitate', operatorModel(), limba, S0), limba), limba).toEqual([])
+  })
+
+  it('pe o COPIE a modulului cu alta `versiune`, s. 6 ramane pe data ei; mutantul cu formula relativa e prins', async () => {
+    const d = mkdtempSync(join(tmpdir(), 'conf-versiune-'))
+    try {
+      for (const limba of ['ro', 'en'] as const) {
+        const original = sursa('confidentialitate.' + limba + '.ts')
+        const importuri = (s: string) =>
+          s
+            .replaceAll('from "./context"', 'from ' + JSON.stringify(pathToFileURL(join(DOSAR_MD, 'context.ts')).href))
+            .replaceAll('from "../tipuri"', 'from ' + JSON.stringify(pathToFileURL(join(DOSAR_MD, '..', 'tipuri.ts')).href))
+        const versiuneNoua = ['2031', '03', '15'].join('-')
+        const copie = importuri(original.replace(/versiune: "\d{4}-\d{2}-\d{2}"/, 'versiune: "' + versiuneNoua + '"'))
+        const formula = limba === 'ro' ? 'La data ' + RELATIVA.ro + ' a paginii' : 'At the date of the ' + RELATIVA.en
+        const mutant = copie.replace((limba === 'ro' ? 'La ' : 'On ') + DATA_VERIFICARII[limba], formula)
+        // Controalele: copia a schimbat versiunea, mutantul a schimbat textul
+        expect(copie).not.toBe(importuri(original))
+        expect(mutant).not.toBe(copie)
+        const incarca = async (nume: string, text: string) => {
+          const f = join(d, nume + '.' + limba + '.ts')
+          writeFileSync(f, text, 'utf8')
+          const m = (await import(/* @vite-ignore */ pathToFileURL(f).href)) as { default: (c: ReturnType<typeof contextMd>) => DocumentJuridic }
+          return m.default(contextMd(operatorModel(), limba, S0, conditiiActive(S0, false), 'https://' + ['3s', 'md'].join('.')))
+        }
+        const doc = await incarca('copie', copie)
+        expect(doc.versiune, limba).toBe(versiuneNoua)
+        expect(defecteS6(doc, limba), limba).toEqual([])
+        expect(defecteS6(await incarca('mutant', mutant), limba), limba).toContain('formula relativa la versiune')
+      }
+    } finally {
+      rmSync(d, { recursive: true, force: true })
+    }
+  })
+
+  it('randul jurnalului din s. 7 are corespondent in s. 3, s. 4 si s. 15, in fiecare stare si limba', () => {
+    for (const { nume, m, linkedin } of STARI) {
+      for (const limba of ['ro', 'en'] as const) {
+        expect(lipsuriJurnal(documentMdBrut('confidentialitate', operatorModel(), limba, m, linkedin), limba), limba + ' / ' + nume).toEqual([])
+      }
+    }
+  })
+
+  it('martor POZITIV: fara randul din s. 3, fara elementul din s. 4 si fara exceptia din s. 15, detectorul le numeste', () => {
+    for (const limba of ['ro', 'en'] as const) {
+      const d = structuredClone(documentMdBrut('confidentialitate', operatorModel(), limba, S0))
+      for (const s of d.sectiuni) {
+        for (const b of s.blocuri) {
+          if (s.cheie === 's3' && b.tabel) b.tabel.randuri = b.tabel.randuri.filter((r) => !JURNAL[limba].test(textCelula(r[1] ?? '')))
+          if ((s.cheie === 's4' || s.cheie === 's15') && b.lista) b.lista.elemente = b.lista.elemente.filter((e) => !JURNAL[limba].test(e))
+        }
+      }
+      expect(lipsuriJurnal(d, limba), limba).toEqual(['s3', 's4', 's15'])
     }
   })
 })

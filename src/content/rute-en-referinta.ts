@@ -31,7 +31,7 @@ export const RUTE_EN_REFERINTA: RutaEditie<"en">[] = [
   },
   {
     cale: "/compare/3s-vs-google-and-box",
-    scurt: "3S vs Google and Box AI",
+    scurt: "3S vs Google Drive",
     descriere: "A comparison with a section on when not to choose 3S.",
     inHarta: true,
     editie: "en",

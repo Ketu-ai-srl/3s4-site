@@ -203,7 +203,7 @@ export const pagina: PaginaContinut = {
             elemente: [
               "[Records retention in Moldova](/guides/records-retention-moldova)",
               "[E-invoice archiving in the EU](/guides/e-invoice-archiving-eu)",
-              "[3S vs Google and Box AI](/compare/3s-vs-google-and-box)",
+              "[3S vs Google Drive](/compare/3s-vs-google-and-box)",
             ],
           },
         },

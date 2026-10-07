@@ -16,7 +16,7 @@
 import { createContext, useContext, type ReactNode } from "react";
 import BirouInteractivVedere from "@/components/preturi/BirouInteractivVedere";
 import ButonInapoiVedere from "@/components/preturi/ButonInapoiVedere";
-import { calculeaza, FORMAT_ROMANESC, formatOre } from "@/components/preturi/calcul";
+import { calculeaza, FORMAT_ROMANESC, formatOreZecimal, oreAfisate, type FormatCifre } from "@/components/preturi/calcul";
 import CalculatorVedere, { type ContinutCalculator } from "@/components/preturi/CalculatorVedere";
 import ComutatorPerioadaVedere from "@/components/preturi/ComutatorPerioadaVedere";
 import GrilaPlanuriVedere from "@/components/preturi/GrilaPlanuriVedere";
@@ -49,6 +49,12 @@ import {
 
 const PLANURI: readonly Plan[] = PLANURI_RO_MD;
 
+/**
+ * Formatul romanesc al editiei (punct la mii, virgula zecimala), cu orele sub 100 cu o zecimala ("36,7 h") si de la 100
+ * intregi ("2.200 h"), ca inmultirea din fraza calculatorului sa se poata verifica pe ecran (`formatOreZecimal`).
+ */
+export const FORMAT_RO_MD: FormatCifre = { ...FORMAT_ROMANESC, ore: (n) => formatOreZecimal(n) };
+
 /** Legatura WhatsApp a paginii (cu `ref`-ul ei), rezolvata pe server; `null` = domeniul fara WhatsApp. */
 const ContextWhatsApp = createContext<string | null>(null);
 
@@ -76,14 +82,17 @@ const IMPLICITE = {
   tarif: CURSOARE_RO_MD.tarif.implicit,
 };
 
-/** Textul teaserului, din valorile de pornire: "Cu 4 colegi care cauta acte cate 25 de minute zilnic". */
+/**
+ * Textul teaserului, din valorile de pornire: "Cu 4 colegi care cauta acte cate 25 de minute zilnic", "se aduna 36,7 ore
+ * lunar". Numeralul se acorda cu valoarea AFISATA: cu zecimala fara "de" ("36,7 ore"), intreaga dupa regula ("22 de ore").
+ */
 export function textTeaserRoMd(): { presupuneri: string; rezultat: string } {
   const r = calculeaza(IMPLICITE, "anual", PLANURI, CALCULATOR_RO_MD.zileLucratoare);
   const p = IMPLICITE.persoane;
   const m = IMPLICITE.minute;
   return {
     presupuneri: CALCULATOR_RO_MD.teaser.presupuneri(p + cuDeRoMd(p) + (p === 1 ? " coleg" : " colegi"), m + cuDeRoMd(m) + " minute"),
-    rezultat: CALCULATOR_RO_MD.teaser.rezultat(formatOre(r.ore) + cuDeRoMd(Math.round(r.ore)) + " ore"),
+    rezultat: CALCULATOR_RO_MD.teaser.rezultat(FORMAT_RO_MD.ore(r.ore) + cuDeRoMd(oreAfisate(r.ore)) + " ore"),
   };
 }
 
@@ -115,7 +124,7 @@ function CalculatorRoMd({ perioada, analitica }: { perioada: Perioada; analitica
       perioada={perioada}
       continut={perioada === "anual" ? CONTINUT_CALCULATOR_ANUAL : CONTINUT_CALCULATOR}
       planuri={PLANURI}
-      format={FORMAT_ROMANESC}
+      format={FORMAT_RO_MD}
       laPrimaFolosire={laPrimaFolosire}
     />
   );

@@ -40,6 +40,11 @@
 // se compara asa; canonical-ul, `og:url` si adresa paginii insesi in lista hreflang se scriu cu calea SERVITA. Lista
 // hreflang se face pe variantele servite ale celor doua domenii (`alternatePagina`), iar `og:locale` vine din asezare
 // (pe 3s.com.ro romana e `ro_RO`). Pe asezarea `md` calea servita e chiar calea, iar atributele sunt cele din catalog.
+//
+// CARDUL SOCIAL URMEAZA CANONICAL-UL (`adreseSociale`): `og:url` e canonical-ul paginii, iar `og:image` si
+// `twitter:image` stau pe originea lui, ca in regula GEO a proiectului (`tests/browser/ajutor/geo.ts`). Singurul
+// canonical care nu e calea servita a paginii e cel al copiei engleze de pe asezarea `ro` (spre 3s.md, I1), deci numai
+// acolo cardul social se muta pe domeniul englezei; peste tot in rest valorile raman cele de dinainte.
 
 import type { Metadata } from "next";
 import { ECHIVALENTE, type CaiPeEditie } from "@/content/echivalente";
@@ -133,7 +138,9 @@ export function adresaPagina(origine: string, cale: string): string {
  * `alternates` pentru o pagina: canonical-ul ei si, cand `SITE_ALTERNATE` e setata, legaturile hreflang.
  *
  * REGULILE (planul 3s.md, P-11 si P-17; harta limbi §5.3; doua domenii, specificatia 3s.com.ro §3):
- *   - fara `SITE_ALTERNATE`, numai canonical-ul, exact ca inainte (HTML-ul romanesc nu se schimba);
+ *   - fara `SITE_ALTERNATE`, numai canonical-ul, exact ca inainte (HTML-ul romanesc nu se schimba). Pe asezarea `ro`
+ *     lista e obligatorie si trebuie sa aiba baza `en`: coerenta se masoara INAINTEA acestui return, altfel o lista
+ *     goala ar trece tacut si copia engleza de sub `/en` ar ramane canonica pe 3s.com.ro;
  *   - grupul se face pe VARIANTELE SERVITE (`VARIANTE_SERVITE`, `src/lib/asezare.ts`), nu pe editiile de continut: un cod
  *     numeste un continut asezat pe un domeniu (`ro-RO` = continutul `ro-MD` la radacina 3s.com.ro, `ro-MD` = acelasi
  *     continut sub `/ro` pe 3s.md). Pagina se listeaza pe ea insasi, cu codul variantei ei (pe asezarea `ro`, pagina
@@ -166,14 +173,18 @@ export function alternatePagina(
   }
   const servita = caleServitaPagina(date.cale, context);
   const canonical = { canonical: servita };
+  const asezare = context.asezare ?? asezareBuild();
+  // Coerenta listei cu asezarea, INAINTEA oricarui return (si a celui de lista goala): pe `ro` o lista goala sau fara `en`
+  // e o problema, nu "nimic de scris". Paginile site-ului romanesc vechi (`ro-RO`) nu se aseaza: nu se masoara, ca inainte.
+  if (editie !== "ro-RO") {
+    const probleme = problemeAlternateAsezare(asezare, context.alternate, context.baza, Object.keys(VARIANTE_SERVITE));
+    if (probleme.length > 0) throw new Error(probleme.join(" | "));
+  }
   if (context.alternate.length === 0) return canonical;
   const adresaProprie = adresaPagina(context.baza, servita);
   if (editie === "ro-RO") {
     return { ...canonical, languages: { [EDITII["ro-RO"].inLanguage]: adresaProprie, [X_DEFAULT]: adresaProprie } };
   }
-  const asezare = context.asezare ?? asezareBuild();
-  const probleme = problemeAlternateAsezare(asezare, context.alternate, context.baza, Object.keys(VARIANTE_SERVITE));
-  if (probleme.length > 0) throw new Error(probleme.join(" | "));
   if (asezare === "ro" && editie === "en") return { canonical: canonicalEnglezei(date.cale, context.alternate) };
 
   const limbi: [string, string][] = [[hrefLangServit(editie, asezare), adresaProprie]];
@@ -202,12 +213,15 @@ export function alternatePagina(
 /**
  * Canonical-ul unei pagini engleze de pe asezarea `ro` (3s.com.ro/en/...): adresa COMPLETA a aceleiasi pagini pe
  * domeniul englezei din grup (baza `en` din `SITE_ALTERNATE`, adica 3s.md), unde engleza e indexata. Copia de sub `/en`
- * ramane pentru vizitatori, cu contactele domeniului, dar nu concureaza in index cu originalul. Fara lista, domeniul
- * englezei nu se cunoaste, deci canonical-ul ramane calea servita a paginii (ca fara `SITE_ALTERNATE` peste tot).
+ * ramane pentru vizitatori, cu contactele domeniului, dar nu concureaza in index cu originalul. Lista si baza ei `en` le
+ * cere `problemeAlternateAsezare`, masurata inainte in `alternatePagina`; fara ele, canonical-ul ar fi fost calea servita
+ * a copiei (o copie concurenta), deci aici lipsa bazei opreste construirea.
  */
 function canonicalEnglezei(cale: string, alternate: readonly Alternata[]): string {
   const en = alternate.find((a) => a.hreflang === EDITII.en.inLanguage);
-  if (en === undefined) return caleServitaPagina(cale, { asezare: "ro" });
+  if (en === undefined) {
+    throw new Error("SITE_ALTERNATE pe asezarea ro: lipseste baza en, deci pagina " + cale + " (engleza, sub /en) n-are canonical spre domeniul englezei");
+  }
   const url = new URL(en.adresa);
   const prefix = url.pathname.replace(/\/+$/, "");
   if (prefix !== "") {
@@ -233,6 +247,27 @@ export function abateriMetadata({ titlu, descriere, cale }: DatePagina): string[
   return abateri;
 }
 
+/**
+ * Adresele cardului social, din canonical-ul paginii (regula GEO a proiectului, `tests/browser/ajutor/geo.ts`):
+ * `og:url` e chiar canonical-ul (protocolul Open Graph cere adresa canonica a paginii), iar `og:image` si
+ * `twitter:image` stau pe originea lui. Un canonical relativ (calea servita, compusa de Next cu `metadataBase`) da
+ * imaginile relative, deci valorile de dinainte. Pe asezarea `ro`, copia engleza de sub `/en` are canonical-ul pe
+ * domeniul englezei (`canonicalEnglezei`, I1): si cardul ei social arata acolo, unde engleza e indexata, iar imaginile
+ * sunt servite si de acel domeniu, cu aceiasi octeti (aceeasi imagine pe ambele arbori). Arunca pe un canonical care nu
+ * e un sir (`alternatePagina` scrie mereu unul).
+ */
+export function adreseSociale(canonical: NonNullable<Metadata["alternates"]>["canonical"]): {
+  url: string;
+  imagineOg: string;
+  imagineCard: string;
+} {
+  if (typeof canonical !== "string") {
+    throw new Error("metadataPagina: canonical-ul paginii trebuie sa fie un sir, nu " + String(canonical));
+  }
+  const origine = /^https?:\/\//.test(canonical) ? new URL(canonical).origin : "";
+  return { url: canonical, imagineOg: origine + CALE_IMAGINE_OG, imagineCard: origine + CALE_IMAGINE_CARD };
+}
+
 export function metadataPagina(date: DatePagina, asezare: Pick<ContextAlternate, "asezare" | "rute"> = {}): Metadata {
   const abateri = abateriMetadata(date);
   if (abateri.length > 0) {
@@ -242,24 +277,26 @@ export function metadataPagina(date: DatePagina, asezare: Pick<ContextAlternate,
   const descriere = date.descriere.trim();
   const editie = date.editie ?? "ro-RO";
   const imagine = { ...MARIME_IMAGINE, alt: altImagine(editie), type: TIP_IMAGINE };
+  const alternates = alternatePagina(date, { ...contextBuild(), ...asezare });
+  const social = adreseSociale(alternates.canonical);
   return {
     title: { absolute: titlu },
     description: descriere,
-    alternates: alternatePagina(date, { ...contextBuild(), ...asezare }),
+    alternates,
     openGraph: {
       type: "website",
       locale: editie === "ro-RO" ? EDITII[editie].ogLocale : atributeLimba(editie, asezare.asezare ?? asezareBuild()).ogLocale,
       siteName: BRAND.nume,
       title: titlu,
       description: descriere,
-      url: caleServitaPagina(date.cale, asezare),
-      images: [{ url: CALE_IMAGINE_OG, ...imagine }],
+      url: social.url,
+      images: [{ url: social.imagineOg, ...imagine }],
     },
     twitter: {
       card: "summary_large_image",
       title: titlu,
       description: descriere,
-      images: [{ url: CALE_IMAGINE_CARD, ...imagine }],
+      images: [{ url: social.imagineCard, ...imagine }],
     },
   };
 }

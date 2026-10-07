@@ -157,10 +157,14 @@ inclusiv ca `page.<sufix>.tsx` sub un grup de rute (`src/app/(en)/legal/privacy/
 
 **Marcajele din paginile juridice (J-01).** Un text intre paranteze drepte, vizibil pe o pagina juridica
 construita si care nu e o legatura, e AVERT pe staging si OPRESTE la productie, cu exceptia marcajelor
-din registrul portii (`MARCAJE_ADMISE`, fiecare cu decizia lui pe rand): cele trei
-`[de publicat înainte de primul client]` din termeni, cu perechea engleza, si marcajul D2 cat timp
-modelul e aprins. Marcajul reprezentantului in UE, N23 si data publicarii NU sunt admise: se rezolva
-inainte de publicare. Acoladele duble (un token de compunere nerezolvat) OPRESC pe orice pagina
+din registrul portii (`MARCAJE_ADMISE`, fiecare cu decizia lui pe rand) si a marcajului D2 cat timp
+modelul e aprins. Registrul e azi gol. Forma `[de publicat ...]` din termeni, cu perechea engleza
+`[to be published ...]`, a fost admisa pana la felia 132, cand cele trei aparitii au devenit text
+contractual; de atunci e un marcaj fara decizie ca oricare altul (AVERT pe staging, OPRESTE la
+productie). Martorii din `controale()` ai portii o cer prinsa la fiecare rulare, iar proba portii
+(`.claude/scripts/porti/probe/proba-juridic.py`, cazurile `j01-de-publicat` si
+`j01-de-publicat-staging`, plus un mutant care o readmite in registru) fixeaza regula. Marcajul
+reprezentantului in UE, N23 si data publicarii NU sunt admise: se rezolva inainte de publicare. Acoladele duble (un token de compunere nerezolvat) OPRESC pe orice pagina
 construita, pe orice mediu.
 
 Politica de cookie-uri (`/juridic/cookies`) se publica acum, odata cu celelalte, nu dupa GA4: din

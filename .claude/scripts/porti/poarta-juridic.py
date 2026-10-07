@@ -143,7 +143,7 @@ LA ROSU: CE AI VOIE SA EDITEZI
       EXCEPTII_TERTI numai cu o decizie a owner-ului citata pe rand si cu proba de browser
       care arata ca fisierul exceptat nu contacteaza tertul inainte de accept.
       MARCAJE_ADMISE prin ADAUGARE, numai cu decizia citata pe rand (marcajul reprezentantului
-      in UE: numai cu confirmarea scrisa a juristului).
+      in UE: numai cu confirmarea scrisa a juristului). Scoaterea unei intrari strange regula.
       `"model"` iese din configurare in ziua extrasului; marcajele din config/model-d2.json nu
       se schimba din configurarea unui domeniu.
   NU  RUTE_JURIDICE, RUTA_COOKIE, MARCAJ_BANNER, CAMPURI_IDENTITATE, TIPAR_SUBSTITUENT, temeiurile
@@ -893,12 +893,12 @@ def verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, mode
 # fiecare cu decizia lui pe rand; marcajul D2 (din config/model-d2.json) numai cu "model": "D2".
 # NU intra: N23 (tara gazdei, conditie de fapt a portii B), marcajul reprezentantului in UE (P-22 tine
 # de poarta B; intra numai cu confirmarea scrisa a juristului), data publicarii (se inlocuieste la
-# publicare). Adaugarea se face numai cu decizia citata pe rand.
-MARCAJE_ADMISE = {
-    '[de publicat înainte de primul client]': 'pachetul juridic, README §2, 04: publicabila la poarta B cu '
-                                              'cele trei marcaje, pana la paginile de la poarta C',
-    '[to be published before the first client]': 'perechea EN a marcajului de mai sus, aceeasi decizie',
-}
+# publicare). Adaugarea se face numai cu decizia citata pe rand; scoaterea unei intrari doar strange regula.
+# Forma "de publicat inainte de primul client" (si perechea ei engleza) a fost admisa pana la felia 132,
+# cand cele trei aparitii din termeni au devenit text contractual (decizia 74 a owner-ului: fara note de
+# lucru pe paginile juridice publice). De atunci e un marcaj fara decizie ca oricare altul: martorii din
+# controale() si proba portii o cer prinsa, pe ambele limbi. Registrul e gol, iar D2 ramane admis prin model.
+MARCAJE_ADMISE = {}
 TEMEI_MARCAJ = ('un marcaj pe o pagina juridica publicata spune ca informatia lipseste; se publica numai '
                 'marcajele cu decizie (MARCAJE_ADMISE si marcajul D2 cu modelul aprins)')
 TEMEI_ACOLADE = 'un token de compunere nerezolvat in pagina livrata (acolade duble) e text stricat, nu informare'
@@ -1279,20 +1279,31 @@ def controale():
         if gm:
             return 'martorul mediului: o variabila goala a schimbat verdictul fisierului'
 
-        # --- martorii J-01: marcajele din paginile juridice (felia 72) ---
+        # --- martorii J-01: marcajele din paginile juridice (felia 72; felia 132: forma "de publicat") ---
+        # Pe termeni: un marcaj fara decizie, forma romaneasca "de publicat" (admisa pana la felia 132) si o
+        # legatura; pe confidentialitate: forma engleza. Fiecare marcaj iese o data, AVERT pe staging si OPRESTE
+        # la productie; legatura nu iese. Un marcaj inca admis, daca registrul are vreunul, sta pe ambele pagini
+        # si nu are voie sa iasa. Marcajele se lipesc din bucati: poarta nu poarta intreg ce vaneaza.
         marcaje = os.path.join(temp, 'marcaje')
         fabrica_arbore(marcaje, defect=False, cu_rute=False)
-        admis = next(iter(MARCAJE_ADMISE))
-        construita(marcaje, 'juridic/termeni.html', '<html><body><p>Sediul: [sediul ' + 'firmei, de ' + 'aflat]</p>'
-                   '<p>' + admis + '</p><p><a href="/juridic/confidentialitate">[Politica]</a></p></body></html>')
-        construita(marcaje, 'juridic/confidentialitate.html', '<html><body><p>' + admis + '</p></body></html>')
-        gs, _ = analizeaza(marcaje, 'staging')
-        gp, _ = analizeaza(marcaje, 'productie')
-        j01 = [m for _, c, m in gp if c == 'J-01']
-        if not any(c == 'J-01' and sev == AVERT for sev, c, _ in gs) or len(j01) != 1 or 'termeni' not in j01[0] \
-                or not any(c == 'J-01' and sev == OPRESTE for sev, c, _ in gp):
-            return ('martorii J-01: un marcaj fara decizie trebuie sa iasa o data, AVERT pe staging si OPRESTE la '
-                    'productie, iar cel admis si legatura nu: ' + '; '.join(j01))
+        fara_decizie = '[sediul ' + 'firmei, de ' + 'aflat]'
+        de_publicat_ro = '[de publicat ' + 'înainte de primul client]'
+        de_publicat_en = '[to be published ' + 'before the first client]'
+        admis = ''.join('<p>' + k + '</p>' for k in list(MARCAJE_ADMISE)[:1])
+        construita(marcaje, 'juridic/termeni.html', '<html><body><p>Sediul: ' + fara_decizie + '</p><p>Pagina '
+                   + de_publicat_ro + '</p>' + admis + '<p><a href="/juridic/confidentialitate">[Politica]</a></p>'
+                   '</body></html>')
+        construita(marcaje, 'juridic/confidentialitate.html', '<html><body><p>Page ' + de_publicat_en + '</p>'
+                   + admis + '</body></html>')
+        asteptate = [('termeni', fara_decizie), ('termeni', de_publicat_ro), ('confidentialitate', de_publicat_en)]
+        for mediu_martor, sev_ceruta in (('staging', AVERT), ('productie', OPRESTE)):
+            gm, _ = analizeaza(marcaje, mediu_martor)
+            j01 = [(sev, m) for sev, c, m in gm if c == 'J-01']
+            prinse = all(any(pagina in m and nfc(marcaj) in m for _, m in j01) for pagina, marcaj in asteptate)
+            if len(j01) != len(asteptate) or not prinse or any(sev != sev_ceruta for sev, _ in j01):
+                return ('martorii J-01 (' + mediu_martor + '): marcajul fara decizie si cele doua forme "de publicat" '
+                        'trebuie sa iasa cate o data, ' + sev_ceruta + ', iar cel admis si legatura nu: '
+                        + '; '.join(m for _, m in j01))
         acolade = os.path.join(temp, 'acolade')
         fabrica_arbore(acolade, defect=False)
         construita(acolade, 'despre.html', '<html><body><p>Vezi ' + '{' * 2 + 'cale:termeni' + '}' * 2 + '</p></body></html>')

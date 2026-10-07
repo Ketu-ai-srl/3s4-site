@@ -530,12 +530,24 @@ describe('ce nu ajunge pe paginile RO-MD', () => {
     ).toEqual([])
   })
 
+  // Legatura spre comparatie de pe startul /ro (felia 141, M7): eticheta numeste ce compara pagina, "3S comparat cu
+  // Google Drive". E o comparatie, nu o integrare (decizia 43 scoate integrarile cu nume). Iese din text numai legatura
+  // intreaga, exacta; orice alta aparitie a numelui ramane acuzata.
+  const LEGATURA_COMPARATIE = '[3S comparat cu Google ' + 'Drive](/ro/comparatie-drive)'
+  const faraComparatie = (t: string) => t.split(LEGATURA_COMPARATIE).join('')
+
+  it('martorii exceptiei: legatura exacta iese, aceeasi denumire in alta fraza ramane acuzata', () => {
+    expect(textulTuturorVariantelor()).toContain(LEGATURA_COMPARATIE)
+    expect(incalcari(faraComparatie('Vezi ' + LEGATURA_COMPARATIE + '.'))).toEqual([])
+    expect(incalcari(faraComparatie(LEGATURA_COMPARATIE + ' Conectezi Google ' + 'Drive dintr-un clic.'))).toContain('integrarile cu nume (decizia 43)')
+  })
+
   it('zero incalcari in tot textul paginilor, in toate variantele', () => {
     const text = textulTuturorVariantelor()
     // Controlul extragerii: textul strans are numele canalului si pretul in EUR.
     expect(text).toContain(WA)
     expect(text).toContain('800 EUR')
-    expect(incalcari(text)).toEqual([])
+    expect(incalcari(faraComparatie(text))).toEqual([])
   })
 
   it('adresa de e-mail nu apare in variantele de dinainte de P-40', () => {

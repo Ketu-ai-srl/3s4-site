@@ -26,6 +26,7 @@ import {
   type FoaieMeniu,
   type Legatura,
   type LegaturaAntet,
+  type LegaturaLocala,
   type Limba,
 } from "./navigatie";
 import { emailPePagina, propozitieFaraMarcaj, whatsappPePagina, type TextPePagina } from "@/components/canale/pe-pagina";
@@ -82,7 +83,7 @@ export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
   {
     cale: "/compare/3s-vs-google-and-box",
     ref: "en-vs",
-    text: "Hello 3S, I read your comparison with Google and Box AI [ref:en-vs]. I would like to ask whether 3S fits our case.",
+    text: "Hello 3S, I read your comparison with Google Drive [ref:en-vs]. I would like to ask whether 3S fits our case.",
   },
 ];
 
@@ -136,7 +137,7 @@ const FOAIE_PRODUS = foaie("3S product", [
 const FOAIE_GHIDURI = foaie("Guides", [
   element("E-invoice archiving in the EU", "/guides/e-invoice-archiving-eu", "file-text"),
   element("Records retention in Moldova", "/guides/records-retention-moldova", "archive"),
-  element("3S vs Google and Box AI", "/compare/3s-vs-google-and-box", "chart-column"),
+  element("3S vs Google Drive", "/compare/3s-vs-google-and-box", "chart-column"),
 ]);
 
 /** Selectorul de limba al domeniului: engleza la radacina, romana pentru Republica Moldova sub `/ro`. */
@@ -144,6 +145,25 @@ export const LIMBI_3S_MD: Limba[] = [
   { text: "English", cod: "EN", editie: "en", href: "/", ruta: "/", activa: false },
   { text: "Română", cod: "RO", editie: "ro-MD", href: "/ro", ruta: "/ro", activa: false },
 ];
+
+/** Glosa engleza scurta langa eticheta romaneasca a informatiilor legale (m18, prin analogie cu decizia 75). */
+export const GLOSA_INFORMATII_LEGALE_EN = "in Romanian";
+
+/**
+ * Informatiile legale din randul de jos: eticheta ramane in ROMANA (legea Republicii Moldova le cere in romana), cu
+ * `lang` ro si `hrefLang` pe limba paginii tinta (`ro-MD` in date; pe asezarea `ro` subsolul o scrie `ro-RO`, limba
+ * servita a perechii romanesti, prin `legaturaLocalaServita`). Langa ea, o glosa engleza scurta, in limba paginii,
+ * ca cititorul englez sa stie ce deschide. Glosa e un camp in plus al legaturii: subsolul o randeaza in afara
+ * elementului cu `lang` ro, deci cititorul de ecran o pronunta in engleza.
+ */
+const INFORMATII_LEGALE_EN: LegaturaLocala & { glosa: string } = {
+  text: "Informații legale",
+  href: caleMd("informatii-legale", "ro"),
+  ruta: caleMd("informatii-legale", "ro"),
+  lang: "ro",
+  hrefLang: "ro-MD",
+  glosa: GLOSA_INFORMATII_LEGALE_EN,
+};
 
 /** Contractul EN, cu canalele domeniului si caile existente ale build-ului. */
 export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXISTENTE): ContractNavigatie {
@@ -236,13 +256,7 @@ export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXI
       copyright: { detinator: "3S Scan Store Solve", mentiune: "", drepturi: "All rights reserved." },
       urmariti: "",
       retele: [],
-      legaturaLocala: {
-        text: "Informații legale",
-        href: caleMd("informatii-legale", "ro"),
-        ruta: caleMd("informatii-legale", "ro"),
-        lang: "ro",
-        hrefLang: "ro-MD",
-      },
+      legaturaLocala: INFORMATII_LEGALE_EN,
       setariCookie: "Cookie settings",
     },
     bara: {

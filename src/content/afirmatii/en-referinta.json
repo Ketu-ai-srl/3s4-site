@@ -316,10 +316,10 @@
   },
   {
     "id": "en-referinta-comparatii-publicitate-comparativa",
-    "text": "The comparison page names Google (Gemini Notebook, Gemini in Google Drive) and Box AI, without logos, with an official source and a read date on every vendor cell",
+    "text": "The comparison page names Google Drive with its Gemini features, without logos, with an official source and a read date on every vendor cell",
     "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
     "stare": "confirmat",
-    "sursa": "decizia 11 a owner-ului (30.09.2026; planul 3s.md §0.1): 3S numește Google și Box, cu sursă și dată pe fiecare celulă. Oglinda EN a intrării comparatii-publicitate-comparativa (neconfirmată pe site-ul RO, unde privea alte produse). Regimul juridic al publicității comparative în Republica Moldova n-a fost evaluat",
+    "sursa": "decizia 11 a owner-ului (30.09.2026; planul 3s.md §0.1): 3S numește Google și Box, cu sursă și dată pe fiecare celulă. Din decizia 59 (întrebarea 7 a specificației de congruență) pagina compară numai Google Drive cu funcțiile Gemini; Gemini Notebook și Box AI au rămas în fișa paginii, deci textul intrării numește ce compară pagina. Oglinda EN a intrării comparatii-publicitate-comparativa (neconfirmată pe site-ul RO, unde privea alte produse). Regimul juridic al publicității comparative în Republica Moldova n-a fost evaluat",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 (decizia 11)",
     "data": "2026-09-30"
   },
@@ -345,10 +345,10 @@
     "id": "en-referinta-comparatii-marcaje-box-ai",
     "text": "Box AI: questions on one file from the Business plan and on up to 10 files from Enterprise Plus, hubs of up to 20,000 files, text processed up to 2 MB per file, citations on hover and through the API, per-user pricing with a minimum of 3 users, Box Zones across 10 regions, KeySafe, 1,500+ integrations, e-sign requests, and the standards Box names on its security and pricing pages",
     "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
-    "stare": "neconfirmat",
-    "sursa": "paginile oficiale Box S13-S19 din tabelul surselor paginii G3, citite pe 30.09.2026 (box.com prin browser, fiindcă refuză cererile simple). Fiecare celulă se recitește la sursă înainte de poarta B",
+    "stare": "retras",
+    "sursa": "retrasă de felia 141: din decizia 59 (întrebarea 7 a specificației de congruență) pagina G3 compară numai Google Drive cu funcțiile Gemini, iar Box AI a rămas numai în fișa paginii, deci afirmația nu mai apare pe site. Sursele de atunci: paginile oficiale Box S13-S19 din tabelul surselor paginii G3, citite pe 30.09.2026; se recitesc la sursă dacă Box AI revine pe o pagină",
     "confirmat_de": "",
-    "data": "2026-09-30"
+    "data": "2026-10-07"
   },
   {
     "id": "en-referinta-comparatii-nespuse-pe-site",

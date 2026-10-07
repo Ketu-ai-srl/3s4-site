@@ -1,0 +1,369 @@
+/* Vizualul pasului 2 pe editiile 3s.md (`MachetaDosare.tsx`): arborele de dosare, fara cuvinte.
+
+   LIMBAJUL VECINILOR. Valorile vin din `Machete.module.css`, nu se inventeaza: radacina are padding-ul
+   machetelor cautarii si registrului (16 x 18,4; 16 pana la 900 px), capul are inaltimea etichetei lor
+   (24,32) si spatiul de sub capul registrului (10,4), insigna zip are forma insignei din capul registrului
+   (padding 3,84 x 9,6, raza 6), in culorile insignelor albastre. Arborele are chenarul, raza si umbra
+   tabelului din registru (gri-2, 8, `--shadow-fir`), banda lui de sus fundalul si linia capului de tabel,
+   iar liniile dintre randuri sunt ale randurilor registrului. Placuta formatului are culorile placutelor
+   PDF si foaie de calcul din cautare, eticheta de tip culorile `.tip` (factura, albastru, raport) si raza
+   lui, bifa culoarea bifelor din registru. Intrarea unui document e cea a verificarii din registru: urca
+   6 px si apare din transparent in 250 ms, ease-out cubic.
+
+   INTREG IN RAMA. Radacina e o coloana cu inaltimea ramei (slotul cardului lipit peste 900 px, cardul
+   pistei sub el); arborele ia ce ramane sub cap, iar randurile il impart in parti egale (`flex: 1 1 0`,
+   `min-height: 0`). Nimic nu are inaltime fixa mai mare decat randul, deci vizualul se strange cu rama si
+   nu iese din ea; proba feliei o masoara la 1440 si 390. Pana la 900 px banda de sus a arborelui lipseste
+   (rama e de 280 px la 390), ca randurile sa ramana de cel putin 30 px.
+
+   LINIILE ARBORELUI. Fiecare document isi deseneaza bucata de linie: verticala pe axa iconitei dosarului
+   (`--ghid`) si cotul spre placuta lui (`--indent`). Primul document al dosarului o urca pana sub iconita
+   dosarului, ultimul o opreste la mijlocul lui. Asa linia apare odata cu documentul ei si nu ramane
+   atarnata cat documentele sunt inca ascunse. */
+
+.dosare {
+  /* Axa verticala a liniilor, centrul iconitei dosarului: 12 padding + 12 sageata + 7 spatiu = 31, plus
+     jumatate din iconita de 18 = 40. Placuta documentului incepe la 52. */
+  --ghid: 40px;
+  --indent: 52px;
+
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  margin: 0;
+  padding: 16px 18.4px;
+  overflow: hidden;
+  overflow: clip;
+  background: var(--color-alb);
+  color: var(--color-ardezie-8);
+}
+
+/* --- capul: iconita arborelui, bara numelui, insigna zip ------------------------------------- */
+
+.cap {
+  display: flex;
+  height: 24.32px;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5.6px;
+  margin-bottom: 10.4px;
+}
+
+.cap > svg {
+  flex-shrink: 0;
+  color: var(--color-albastru);
+}
+
+.zip {
+  display: inline-flex;
+  height: 29.14px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 0 9.6px;
+  border: 1px solid var(--color-albastru-chenar);
+  border-radius: 6px;
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru);
+}
+
+.zip > svg {
+  flex-shrink: 0;
+}
+
+/* Bara din insigna: locul unui cuvant scurt, in culoarea insignei. */
+.zip::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+/* --- barele: locul textului ---------------------------------------------------------------- */
+
+.bara {
+  display: block;
+  min-width: 0;
+  height: 7px;
+  flex-shrink: 1;
+  border-radius: 999px;
+  background: var(--color-ardezie-3);
+}
+
+/* Numele arborelui, in albastrul etichetei machetelor. */
+.bara[data-ton="titlu"] {
+  width: 132px;
+  height: 10px;
+  background: var(--color-albastru);
+  opacity: 0.4;
+}
+
+.bara[data-ton="coloana"] {
+  height: 5px;
+}
+
+/* Numele dosarului e mai apasat decat al documentului, ca un text ingrosat. */
+.bara[data-ton="dosar"] {
+  height: 8px;
+  background: var(--color-ardezie-4);
+  opacity: 0.75;
+}
+
+/* --- arborele: tabelul registrului --------------------------------------------------------- */
+
+.arbore {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-gri-2);
+  border-radius: 8px;
+  background: var(--color-alb);
+  box-shadow: var(--shadow-fir);
+}
+
+/* Banda de sus: capul de tabel al registrului (inaltimea lui, 17,41 + 2 x 8), cu trei coloane aliniate
+   cu randurile: numele (barele dosarelor), tipul (etichetele) si starea (bifele). */
+.capArbore {
+  display: flex;
+  height: 33.41px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border-bottom: 1px solid #f0f1f3;
+  background: var(--color-fundal-bara);
+}
+
+/* Inceputul barelor dosarelor: 12 sageata + 7 + 18 iconita + 7, dupa padding-ul de 12. */
+.capArbore > .bara:nth-child(1) {
+  width: 22%;
+  margin-left: 44px;
+}
+
+.capArbore > .bara:nth-child(2) {
+  width: 50px;
+  margin-left: auto;
+}
+
+.capArbore > .bara:nth-child(3) {
+  width: 13px;
+}
+
+.randuri {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dosar,
+.document {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.randuri > :last-child {
+  border-bottom: 0;
+}
+
+.dosar {
+  padding: 0 12px;
+}
+
+.dosar > svg {
+  flex-shrink: 0;
+  color: var(--color-ardezie-4);
+}
+
+.dosar > .iconitaDosar {
+  width: 18px;
+  height: 18px;
+  color: var(--color-albastru);
+  fill: var(--color-albastru-pal);
+}
+
+.document {
+  padding: 0 12px 0 var(--indent);
+  transition:
+    opacity 0.25s cubic-bezier(0.33, 1, 0.68, 1),
+    transform 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Documentul inca nevazut al secventei: jos cu 6 px, transparent. Nu iese din pagina, deci arborele
+   isi pastreaza inaltimea. */
+.document[data-ascuns] {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* Linia arborelui: verticala pe axa dosarului si cotul spre placuta documentului. */
+.document::before,
+.document::after {
+  content: "";
+  position: absolute;
+  left: var(--ghid);
+  pointer-events: none;
+}
+
+.document::before {
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--color-ardezie-3);
+}
+
+/* Primul document urca linia pana sub iconita dosarului: randul de deasupra are aceeasi inaltime, deci
+   jumatatea lui e -50% din randul de fata; iconita are 18 px, linia porneste la 2 px sub ea. */
+.document[data-primul]::before {
+  top: calc(-50% + 11px);
+}
+
+.document[data-ultim]::before {
+  bottom: 50%;
+}
+
+.document::after {
+  top: 50%;
+  width: calc(var(--indent) - var(--ghid) - 4px);
+  border-top: 1px solid var(--color-ardezie-3);
+}
+
+/* Placuta formatului: `.placuta` din cautare, mai mica, cu iconita in locul literelor. */
+.placuta {
+  display: grid;
+  width: 26px;
+  height: 22px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 6px;
+}
+
+.placuta[data-format="pdf"] {
+  background: #fdecec;
+  color: var(--color-rosu-inchis);
+}
+
+.placuta[data-format="xls"] {
+  background: #e9f7ef;
+  color: var(--color-verde-calm);
+}
+
+/* Eticheta de tip: pastila `.tip` din machete, cu o bara in locul cuvantului. */
+.eticheta {
+  display: inline-flex;
+  width: 50px;
+  height: 24px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border: 1px solid;
+  border-radius: 6px;
+}
+
+.eticheta::before {
+  content: "";
+  display: block;
+  width: 56%;
+  height: 4px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.eticheta[data-tip="factura"] {
+  border-color: #f5e3c2;
+  background: #fdf5e8;
+  color: var(--color-chihlimbar);
+}
+
+.eticheta[data-tip="albastru"] {
+  border-color: var(--color-albastru-chenar);
+  background: var(--color-albastru-ceata-3);
+  color: var(--color-albastru);
+}
+
+.eticheta[data-tip="raport"] {
+  border-color: var(--color-ardezie-2);
+  background: var(--color-ardezie-1);
+  color: var(--color-ardezie-6);
+}
+
+.bifa {
+  flex-shrink: 0;
+  color: var(--color-verde);
+}
+
+/* --- pana la 900 px: cardul pistei si cardurile stivuite (rama de ~280 px la 390) ------------ */
+
+@media (max-width: 900px) {
+  .dosare {
+    /* 10 padding + 12 sageata + 6 spatiu = 28, plus jumatate din iconita de 16 = 36. */
+    --ghid: 36px;
+    --indent: 46px;
+
+    padding: 16px;
+  }
+
+  .cap {
+    margin-bottom: 8px;
+  }
+
+  .capArbore {
+    display: none;
+  }
+
+  .dosar,
+  .document {
+    gap: 6px;
+  }
+
+  .dosar {
+    padding: 0 10px;
+  }
+
+  .document {
+    padding-right: 10px;
+  }
+
+  .dosar > .iconitaDosar {
+    width: 16px;
+    height: 16px;
+  }
+
+  .document[data-primul]::before {
+    top: calc(-50% + 10px);
+  }
+
+  .placuta {
+    width: 22px;
+    height: 19px;
+    border-radius: 5px;
+  }
+
+  .eticheta {
+    width: 38px;
+    height: 19px;
+  }
+
+  .eticheta::before {
+    height: 3px;
+  }
+}

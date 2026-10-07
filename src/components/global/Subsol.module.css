@@ -87,6 +87,31 @@
   color: var(--color-cerneala);
 }
 
+/* Cuvantul cu cratima dintr-o legatura nu se rupe dupa cratima ("cookie-" / "uri"): Subsol.tsx, `cuvinteNerupte`.
+   Ruperea ramane intre cuvinte. */
+.nerupt {
+  white-space: nowrap;
+}
+
+/* Numarul de WhatsApp pe un singur rand. In coloana de 140 px randul "WhatsApp: +.. ... ..." se rupea in mijlocul
+   numarului (masurat la 1440 si 2304). De la 1200 px, cand containerul are latimea maxima, coloana de canale (ultima)
+   ia latimea continutului ei, iar randul nu se mai rupe deloc; celelalte coloane impart restul (raman peste latimea
+   celui mai lung cuvant al lor, masurat). Randul ramane un singur text, fara marcaj in plus.
+   Tot de la 1200 px, o legatura scurta (cel mult trei cuvinte, `.scurta` din Subsol.tsx) sta pe un rand ("Politica de
+   cookie-uri" mergea pe doua in coloana de 133 px): coloana ei e cel putin cat ea, iar celelalte si brandul impart
+   restul. Legaturile lungi se rup in continuare intre cuvinte: toate pe un rand nu incap in containerul de 1152 px
+   (masurat: grila iesea cu 34-62 px, iar brandul ajungea la 0 pe romana). */
+@media (min-width: 1200px) {
+  .grila:has(> [data-subsol-contact]) {
+    grid-template-columns: 1.8fr repeat(var(--coloane-legaturi, 4), minmax(min-content, 1fr)) max-content;
+  }
+
+  .grila:has(> [data-subsol-contact]) .scurta,
+  .grila [data-subsol-contact] [data-numar-whatsapp] {
+    white-space: nowrap;
+  }
+}
+
 .insigne {
   display: flex;
   flex-wrap: wrap;

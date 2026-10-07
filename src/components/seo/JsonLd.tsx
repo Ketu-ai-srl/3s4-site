@@ -8,10 +8,17 @@
 // legaturile `{"@id": x}` din graf. Tot la nivelul site-ului stau `url`-urile nodurilor `Organization` si
 // `WebSite`: adresa lor e site-ul (radacina domeniului), nu pagina EN de start, deci nu se traduc. Pe asezarea `md`
 // graful iese exact cel primit (acelasi obiect).
+//
+// ADRESELE PAGINILOR ENGLEZE PE ASEZAREA `ro` URMEAZA CANONICAL-UL. Pe 3s.com.ro copia engleza de sub `/en` are
+// canonical-ul (si `og:url`, cardul social) pe domeniul englezei din `SITE_ALTERNATE` (baza `en`, adica 3s.md), unde
+// engleza e indexata (`canonicalEnglezei` in metadata.ts). Un `url`/`item` care numeste o pagina engleza (o ruta a
+// editiei `en` din manifest) se scrie deci pe acel domeniu, cu calea SURSA (pe 3s.md asezarea e `md`, deci calea servita
+// acolo e chiar calea sursa): exact adresa pe care o scrie 3s.md pentru aceeasi pagina. Asa nodul `WebPage` si firul nu
+// mai spun alta adresa decat canonical-ul. Paginile romanesti si nodurile de site raman cum erau.
 
 import { RUTE } from "@/content/rute";
 import { asezareBuild, caSursa, caleServita, type CodAsezare, type RutaAsezabila } from "@/lib/asezare";
-import { adresaSite } from "@/lib/site";
+import { adresaSite, alternateSite } from "@/lib/site";
 import { serializeaza, type GrafJsonLd } from "./date-structurate";
 
 /** Cheile ale caror valori sunt adrese de pagina. */
@@ -20,8 +27,34 @@ const CHEI_ADRESA = new Set(["url", "item"]);
 /** Tipurile de nod care descriu site-ul, nu o pagina: `url`-ul lor e radacina domeniului. */
 const TIPURI_SITE = new Set(["Organization", "WebSite"]);
 
-/** Ce trebuie sa stie traducerea: originea site-ului, manifestul rutelor si asezarea. */
-export type ContextAdrese = { baza: string; rute: readonly RutaAsezabila[]; asezare: CodAsezare };
+/**
+ * Ce trebuie sa stie traducerea: originea site-ului, manifestul rutelor, asezarea si originea domeniului englezei (baza
+ * `en` din `SITE_ALTERNATE`). Ultima se citeste numai cand graful chiar numeste o pagina engleza pe asezarea `ro`.
+ */
+export type ContextAdrese = { baza: string; rute: readonly RutaAsezabila[]; asezare: CodAsezare; englezei?: () => string };
+
+/** Editia `en` din manifest: numai rutele ei au canonical-ul pe domeniul englezei cand site-ul e asezat `ro`. */
+function esteRutaEn(cale: string, rute: readonly RutaAsezabila[]): boolean {
+  const i = cale.search(/[?#]/);
+  const fara = i < 0 ? cale : cale.slice(0, i);
+  return rute.some((r) => r.cale === fara && r.editie === "en");
+}
+
+/**
+ * Originea domeniului englezei: baza `en` din `SITE_ALTERNATE`, fara prefix de cale (aceeasi conditie ca la canonical-ul
+ * paginilor `/en`). Arunca daca lipseste: pe asezarea `ro` metadata o cere deja, deci aici lipsa e o configurare rupta.
+ */
+export function origineaEnglezei(alternate: ReturnType<typeof alternateSite> = alternateSite()): string {
+  const en = alternate.find((a) => a.hreflang === "en");
+  if (en === undefined) {
+    throw new Error("JSON-LD pe asezarea ro: SITE_ALTERNATE n-are baza en, deci adresele paginilor engleze n-au domeniul canonical-ului");
+  }
+  const url = new URL(en.adresa);
+  if (url.pathname.replace(/\/+$/, "") !== "") {
+    throw new Error("JSON-LD pe asezarea ro: baza en din SITE_ALTERNATE (" + en.adresa + ") are prefix de cale");
+  }
+  return url.origin;
+}
 
 function esteNodSite(nod: Record<string, unknown>): boolean {
   const tip = nod["@type"];
@@ -31,7 +64,10 @@ function esteNodSite(nod: Record<string, unknown>): boolean {
 /** Adresa servita a unei adrese absolute pe originea site-ului; orice alta valoare ramane cum e. */
 function adresaServita(valoare: string, c: ContextAdrese): string {
   if (!valoare.startsWith(c.baza + "/")) return valoare;
-  return c.baza + caleServita(caSursa(valoare.slice(c.baza.length)), c.rute, c.asezare);
+  const cale = valoare.slice(c.baza.length);
+  // Pagina engleza pe asezarea `ro`: adresa canonical-ului (domeniul englezei, calea sursa), nu copia de sub `/en`.
+  if (c.asezare === "ro" && esteRutaEn(cale, c.rute)) return (c.englezei ?? origineaEnglezei)() + cale;
+  return c.baza + caleServita(caSursa(cale), c.rute, c.asezare);
 }
 
 function traduce(valoare: unknown, c: ContextAdrese): unknown {
@@ -46,11 +82,19 @@ function traduce(valoare: unknown, c: ContextAdrese): unknown {
   return iesire;
 }
 
-/** Graful cu adresele `url`/`item` servite (vezi antetul). Pe asezarea `md`, graful primit, neatins. */
+/**
+ * Graful cu adresele `url`/`item` servite (vezi antetul): pe asezarea `ro`, paginile romanesti la adresa servita, cele
+ * engleze la canonical-ul lor (domeniul englezei). Pe asezarea `md`, graful primit, neatins.
+ */
 export function adreseServite(date: GrafJsonLd, context: Partial<ContextAdrese> = {}): GrafJsonLd {
   const asezare = context.asezare ?? asezareBuild();
   if (asezare === "md") return date;
-  return traduce(date, { baza: context.baza ?? adresaSite(), rute: context.rute ?? RUTE, asezare }) as GrafJsonLd;
+  return traduce(date, {
+    baza: context.baza ?? adresaSite(),
+    rute: context.rute ?? RUTE,
+    asezare,
+    englezei: context.englezei ?? (() => origineaEnglezei()),
+  }) as GrafJsonLd;
 }
 
 export default function JsonLd({ date }: { date: GrafJsonLd }) {

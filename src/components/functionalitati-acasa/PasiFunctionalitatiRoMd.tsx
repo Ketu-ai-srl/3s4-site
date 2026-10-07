@@ -5,7 +5,8 @@
 // `src/content/ro-md/acasa-componente.ts`. Pagina `/ro` o pune in slotul `pasi` al lui `FunctionalitatiAcasa`.
 //
 // Machetele: cautarea (pasul 1) si dosarul cu termenul lui (pasul 3), prin vederile lor. Pasul 2 n-are macheta:
-// macheta portalului clientilor nu se monteaza pe 3s.md (decizia 43), iar vederea lasa locul gol.
+// macheta portalului clientilor nu se monteaza pe 3s.md (decizia 43); in locul ei sta vizualul fara cuvinte al
+// dosarelor (`MachetaDosare.tsx`), acelasi pe toate editiile 3s.md.
 //
 // Nu importa nimic din continutul RO, ca acesta sa nu intre in pachetul paginilor 3s.md.
 
@@ -18,6 +19,7 @@ import {
   PUNCTE_PISTA_RO_MD,
 } from "@/content/ro-md/acasa-componente";
 import MachetaCautareVedere, { type ContinutMachetaCautare, type MachetaProps } from "./MachetaCautareVedere";
+import MachetaDosare from "./MachetaDosare";
 import MachetaRegistruVedere, { type ContinutMachetaRegistru } from "./MachetaRegistruVedere";
 import PasiFunctionalitatiVedere from "./PasiFunctionalitatiVedere";
 
@@ -35,7 +37,7 @@ function MachetaRegistruRoMd(props: MachetaProps) {
   return <MachetaRegistruVedere {...props} continut={REGISTRU} />;
 }
 
-const MACHETE: (ComponentType<MachetaProps> | undefined)[] = [MachetaCautareRoMd, undefined, MachetaRegistruRoMd];
+const MACHETE: (ComponentType<MachetaProps> | undefined)[] = [MachetaCautareRoMd, MachetaDosare, MachetaRegistruRoMd];
 
 export default function PasiFunctionalitatiRoMd() {
   return <PasiFunctionalitatiVedere pasi={PASI_RO_MD} machete={MACHETE} puncte={PUNCTE_PISTA_RO_MD} />;

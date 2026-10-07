@@ -25,6 +25,10 @@ export const ETICHETA_FIR_EN = "Breadcrumb";
 export const BUTON_CASETA_EN = "Message us on WhatsApp";
 export const BUTON_FINAL_EN = "Message us";
 
+/**
+ * Legatura unui card spre o pagina: textul e calea SURSA, ca `href`-ul (datele poarta cai sursa). Pe card se vede calea
+ * SERVITA a tintei (`textCaleCard` din `PaginaContact`): pe 3s.md `/pricing`, pe 3s.com.ro `/en/pricing`.
+ */
 const cale = (c: string) => ({ text: c, href: c, ruta: c });
 
 /** `conversie.ts:76-118`: cinci carduri din sapte, in ordinea RO; fiecare duce la perechea lui de pe 3s.md. */

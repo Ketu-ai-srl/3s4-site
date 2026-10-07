@@ -46,6 +46,9 @@ export const metadata: Metadata = {
     locale: EDITIE.ogLocale,
     siteName: BRAND.nume,
   },
+  // Numarul de WhatsApp apare ca text (subsolul, pagina de contact); fara meta-ul acesta Safari pe iOS il face
+  // legatura de apel GSM, exact ce scoate decizia 56. `<meta name="format-detection" content="telephone=no">`.
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {

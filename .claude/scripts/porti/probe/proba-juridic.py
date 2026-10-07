@@ -14,7 +14,8 @@ Trei lucruri se probeaza aici, si ultimele doua sunt cele usor de uitat:
      poarta bannerul de consimtamant, oricare ar fi operatorul; fara banner, nu.
   5. (felia 72) operatorul din `OPERATOR_JSON`, modelul D2, familia `md` (datele pe pagina de
      informatii legale din fiecare limba, legatura spre ea in romana pe fiecare pagina, paginile
-     juridice la adresele din `config/juridic-rute.json`), marcajele din paginile juridice (J-01),
+     juridice la adresele din `config/juridic-rute.json`), marcajele din paginile juridice (J-01; din
+     felia 132 si forma "de publicat", RO si EN, care nu mai e admisa),
      C-01 dupa `rel`, gazdele proprii si L-10 pe identificatori. Fiecare regula noua are cel putin un
      MUTANT pe o COPIE a portii, care o dezactiveaza: proba cere ca macar un caz sa se inroseasca pe el.
   6. (asezarea) pe un build cu asezarea `ro` (3s.com.ro) documentele familiei `md` se cauta la adresele
@@ -346,12 +347,20 @@ def cazuri_felia72():
     defineste('j01-reprezentant', 'marcajul reprezentantului in UE nu e admis: OPRESTE la productie',
               lambda: arbore_md(in_plus={CALE_IL_RO: '<p>' + rep_ue + '</p>'}), 1, 'OPRESTE  J-01', mediu='productie',
               env=env_operator())
+    # Forma "de publicat" (RO si EN) a fost admisa pana la felia 132, cand cele trei aparitii din termeni au
+    # devenit text contractual (decizia 74 a owner-ului). De atunci e un marcaj fara decizie, prins pe ambele limbi.
     termeni = RUTE_MD['documente']['termeni']
-    admise = {termeni['ro']: '<p>Vezi [de publicat ' + 'înainte de primul client].</p>',
-              termeni['en']: '<p>See [to be published ' + 'before the first client].</p>'}
-    defineste('j01-admise', 'marcajele admise (cele trei din 04, RO si EN): nicio constatare J-01 la productie',
-              lambda: arbore_md(in_plus=admise), 0, 'DEFECTE JURIDICE: 0 care opresc, 3 de avertisment', mediu='productie',
-              env=env_operator(), absent='    J-01  ')
+    de_publicat = {termeni['ro']: '[de publicat ' + 'înainte de primul client]',
+                   termeni['en']: '[to be published ' + 'before the first client]'}
+    cu_de_publicat = dict((cale, '<p>Vezi ' + m + '.</p>') for cale, m in de_publicat.items())
+    defineste('j01-de-publicat', 'forma "de publicat" pe termeni, RO si EN: J-01 OPRESTE la productie, pe fiecare pagina',
+              lambda: arbore_md(in_plus=cu_de_publicat), 1,
+              ['OPRESTE  J-01  .next/server/app/' + html_pentru(cale) + ': marcaj fara decizie pe pagina juridica ' + m
+               for cale, m in de_publicat.items()], mediu='productie', env=env_operator())
+    defineste('j01-de-publicat-staging', 'forma "de publicat" pe termeni, RO si EN: J-01 AVERT pe staging',
+              lambda: arbore_md(in_plus=cu_de_publicat), 0,
+              ['AVERT    J-01  .next/server/app/' + html_pentru(cale) + ': marcaj fara decizie pe pagina juridica ' + m
+               for cale, m in de_publicat.items()], env=env_operator())
     legaturi = {pag_ro: '<p><a href="/legal/privacy">[Privacy policy]</a> si [Termeni](' + termeni['ro'] + ')</p>'
                         '<script>self.__next_f.push([1,"[N23: ' + 'x]"])</script>'}
     defineste('j01-legaturi', 'legaturile si payload-ul din <script> nu sunt marcaje: nicio constatare J-01',
@@ -484,7 +493,11 @@ MUTANTI = [
       ("if cfg['model'] != 'D2':", "if cfg.get('model', 'D2') != 'D2':")], ['d2-fara-model']),
     ('2: orice valoare a lui "model" acceptata', [("if cfg['model'] != 'D2':", 'if False:')], ['d2-model-necunoscut']),
     ('3: registrul de marcaje admite tot', [('if nfc(marcaj) not in admise:', 'if False:')],
-     ['j01-staging', 'j01-productie', 'j01-reprezentant']),
+     ['j01-staging', 'j01-productie', 'j01-reprezentant', 'j01-de-publicat']),
+    ('3: forma "de publicat" readmisa in registru (starea de dinainte de felia 132)',
+     [('MARCAJE_ADMISE = {}\n', "MARCAJE_ADMISE = {'[de publicat ' + 'înainte de primul client]': 'mutant', "
+                                "'[to be published ' + 'before the first client]': 'mutant'}\n")],
+     ['j01-de-publicat', 'j01-de-publicat-staging']),
     ('3: acoladele duble nu mai opresc', [("if '" + '{' * 2 + "' in html_fara_cod(text):", 'if False:')], ['j01-acolade']),
     ('3: legaturile in stil markdown luate drept marcaje', [(r"\](?!\()', text_vizibil", r"\]', text_vizibil")],
      ['j01-legaturi']),

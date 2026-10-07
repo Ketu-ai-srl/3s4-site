@@ -46,6 +46,9 @@ const peRoRo = (cale: string) => {
 const B = Object.entries(CONFIG.documente).filter(([, d]) => d.poarta === 'B')
 const C = Object.entries(CONFIG.documente).filter(([, d]) => d.poarta === 'C')
 const CAI_C = C.flatMap(([, d]) => [d.en, d.ro])
+// Felia 140: o cale /ro/... inexistenta primeste 404-ul ROMANESC (pagina globala de negasit alege editia dupa cale), deci
+// limba asteptata urmeaza editia caii: en pe /legal/*, ro pe /ro/juridic/*.
+const CAI_C_EDITIE = C.flatMap(([, d]) => [{ cale: d.en, lang: 'en' as const }, { cale: d.ro, lang: 'ro' as const }])
 const PAGINI = B.flatMap(([cheie, d]) => [
   { cheie, cale: d.en, lang: 'en', limba: 'en' as const },
   { cheie, cale: d.ro, lang: 'ro', limba: 'ro' as const },
@@ -142,11 +145,11 @@ test('marcajul modelului D2 pe informatiile legale, in limba paginii', async () 
   expect(ro).not.toContain(D2.marcaj.en)
 })
 
-for (const cale of CAI_C) {
-  test(cale + ': 404, pagina de negasit EN, noindex', async () => {
+for (const { cale, lang } of CAI_C_EDITIE) {
+  test(cale + ': 404, pagina de negasit a editiei (lang ' + lang + '), noindex', async () => {
     const { status, html, robots } = await servit(cale)
     expect(status).toBe(404)
-    expect(html).toMatch(/<html[^>]*\blang="en"/)
+    expect(html).toMatch(lang === 'en' ? /<html[^>]*\blang="en"/ : /<html[^>]*\blang="ro"/)
     expect(robots).toContain('noindex')
   })
 }

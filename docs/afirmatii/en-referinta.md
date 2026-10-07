@@ -6,7 +6,7 @@
 Lista de mai jos e ce trebuie sa bifeze cineva care stie afacerea, inainte de publicare.
 Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 
-**De confirmat: 29 din 40**
+**De confirmat: 28 din 40**
 
 | # | Afirmatia, asa cum apare pe site | Unde |
 |---|---|---|
@@ -38,5 +38,4 @@ Pana atunci, afirmatiile stau pe site ca text redactional, nu ca fapt verificat.
 | 26 | Moldova: Law 86 of May 21, 2026, takes effect on January 1, 2027; on legis.md its amendment markers in Law 287/2017 sit on article 4 (size limits) and on the harmonization clause, not on article 17; the National Archives Agency lists Order 57/2016 among the acts it applies | `src/content/en/guides-records-retention-moldova.ts` |
 | 27 | Gemini Notebook (formerly NotebookLM, renamed July 16, 2026): sources of up to 500,000 words or 200 MB, in-line citations, 50 to 600 sources per notebook by tier (subject to change), free standard access with a Google account, data location not stated on its pages; Google's compliance pages list NotebookLM among the Workspace services in scope | `src/content/en/compare-3s-vs-google-and-box.ts` |
 | 28 | Gemini in Google Drive: cited and grounded answers over Drive content, on Workspace Standard, Plus and Enterprise but not Starter, per-user pricing, data regions by the file creator's policy on supported editions, client-side encryption and e-signatures on some plans, a marketplace of apps; Google's compliance pages list Drive and Gemini in Workspace among the services in scope | `src/content/en/compare-3s-vs-google-and-box.ts` |
-| 29 | Box AI: questions on one file from the Business plan and on up to 10 files from Enterprise Plus, hubs of up to 20,000 files, text processed up to 2 MB per file, citations on hover and through the API, per-user pricing with a minimum of 3 users, Box Zones across 10 regions, KeySafe, 1,500+ integrations, e-sign requests, and the standards Box names on its security and pricing pages | `src/content/en/compare-3s-vs-google-and-box.ts` |
 

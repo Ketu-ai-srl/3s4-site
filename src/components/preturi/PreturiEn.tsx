@@ -43,7 +43,7 @@ import {
 } from "@/content/en/pricing-componente";
 import BirouInteractivVedere from "./BirouInteractivVedere";
 import ButonInapoiVedere from "./ButonInapoiVedere";
-import { calculeaza, formatBani, formatOre, formatZecimal, type FormatCifre } from "./calcul";
+import { calculeaza, formatBani, formatOreZecimal, formatZecimal, type FormatCifre } from "./calcul";
 import CalculatorVedere, { type ContinutCalculator } from "./CalculatorVedere";
 import ComutatorPerioadaVedere from "./ComutatorPerioadaVedere";
 import GrilaPlanuriVedere from "./GrilaPlanuriVedere";
@@ -52,10 +52,14 @@ import LumeaPreturiVedere from "./LumeaPreturiVedere";
 import PacheteVedere, { type PiesePachete } from "./PacheteVedere";
 import PliuriVedere from "./PliuriVedere";
 
-/** Formatul american: virgula la mii (si la ore), punctul zecimal ("EUR 1,833", "2,200 h", "1.5 h"). */
+/**
+ * Formatul american: virgula la mii, punctul zecimal ("EUR 1,833", "1.5 h"). Orele sub 100 au o zecimala ("36.7 h"),
+ * de la 100 in sus sunt intregi, cu virgula la mii ("2,200 h"), ca inmultirea din fraza calculatorului sa se poata
+ * verifica pe ecran (`formatOreZecimal`).
+ */
 export const FORMAT_EN: FormatCifre = {
   bani: (n) => formatBani(n, ","),
-  ore: (n) => formatOre(n, ","),
+  ore: (n) => formatOreZecimal(n, ",", "."),
   zecimal: (n) => formatZecimal(n, "."),
 };
 

@@ -13,7 +13,7 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
     cheie: "informatii-legale",
     limba: "ro",
     titlu: "Informații legale",
-    versiune: "2026-10-01",
+    versiune: "2026-10-06",
     introducere: "Pagina spune cine furnizează serviciul 3S și cum ne puteți contacta. Legea Republicii Moldova cere aceste informații pe site, în limba română, cu acces ușor, direct și permanent (Legea nr. 284/2004 privind serviciile societății informaționale, art. 12).",
     sectiuni: [
       {
@@ -43,7 +43,7 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s5", titlu: "5. Puncte de contact pentru autorități și pentru utilizatori (Regulamentul privind serviciile digitale)",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["În măsura în care Regulamentul (UE) 2022/2065 (Regulamentul privind serviciile digitale) se aplică serviciilor 3S de stocare a documentelor clienților, punctele noastre de contact sunt cele de mai jos.", "**Autorități (art. 11).** Autoritățile statelor membre, Comisia Europeană și Comitetul european pentru servicii digitale ne pot contacta direct, prin mijloace electronice, la " + c.contact.email + ". Limbile de comunicare: engleza și româna.", "**Utilizatorii serviciului (art. 12).** Utilizatorii ne pot contacta direct și rapid, la alegere, prin e-mail (" + c.contact.email + ") sau pe WhatsApp (" + c.contact.telefon + ", mesaje și apeluri). Canalele sunt deservite de oameni.", "**Reprezentant legal în Uniunea Europeană (art. 13).** 3S Demerzel SRL nu este stabilită în Uniunea Europeană. Reprezentantul nostru legal, odată desemnat, primește și solicitările privind protecția datelor (Regulamentul (UE) 2016/679, art. 27) și, în măsura în care se aplică, cele din Regulamentul (UE) 2023/2854 (Regulamentul privind datele, art. 37 alin. (11)). Reprezentant: [reprezentant în UE: în curs de desemnare]. Numele, adresa poștală, adresa de e-mail și numărul de telefon ale reprezentantului apar aici după desemnare."] },
+          { jurisdictie: null, paragrafe: ["În măsura în care Regulamentul (UE) 2022/2065 (Regulamentul privind serviciile digitale) se aplică serviciilor 3S de stocare a documentelor clienților, punctele noastre de contact sunt cele de mai jos.", "**Autorități (art. 11).** Autoritățile statelor membre, Comisia Europeană și Comitetul european pentru servicii digitale ne pot contacta direct, prin mijloace electronice, la " + c.contact.email + ". Limbile de comunicare: engleza și româna.", "**Utilizatorii serviciului (art. 12).** Utilizatorii ne pot contacta direct și rapid, la alegere, prin e-mail (" + c.contact.email + ") sau pe WhatsApp (" + c.contact.telefon + ", mesaje și apeluri). Canalele sunt deservite de oameni.", "**Reprezentant legal în Uniunea Europeană (art. 13).** 3S Demerzel SRL nu este stabilită în Uniunea Europeană. Reprezentantul nostru legal, odată desemnat, primește și solicitările privind protecția datelor (Regulamentul (UE) 2016/679, art. 27) și, în măsura în care se aplică, cele din Regulamentul (UE) 2023/2854 (Regulamentul privind datele, art. 37 alin. (11)). Reprezentantul nu este încă desemnat. Până la desemnare, solicitările destinate reprezentantului ni se trimit direct, la " + c.contact.email + ". Numele, adresa poștală, adresa de e-mail și numărul de telefon ale reprezentantului apar aici după desemnare."] },
         ],
       },
       {

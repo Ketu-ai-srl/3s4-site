@@ -125,6 +125,21 @@
   }
 }
 
+/* Panoul nu iese niciodata din fereastra: latimea fixa are plafonul ferestrei minus marginile site-ului. In
+   subsol, pana la 768 px inclusiv, randul de jos trece pe coloana si butonul sta in STANGA (Subsol.module.css,
+   aceeasi limita), deci panoul se aliniaza la stanga butonului si creste spre dreapta. Peste 768 butonul e in
+   dreapta randului si panoul ramane aliniat la dreapta lui, ca in antet. */
+.panou {
+  max-width: calc(100vw - 32px);
+}
+
+@media (max-width: 768px) {
+  .panouSus {
+    right: auto;
+    left: 0;
+  }
+}
+
 /* in subsol butonul are conturul propriu (2 px albastru, decalaj 2) - acelasi cu regula globala */
 .subsol .buton {
   padding: 6px 10px;

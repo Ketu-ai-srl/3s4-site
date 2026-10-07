@@ -139,7 +139,7 @@
     "text": "Comparația numește Google Drive cu funcțiile Gemini, fără sigle, cu sursă oficială și dată pe fiecare marcaj; marcajele Google sunt cele ale documentației publice Google, citite pe 25 septembrie 2026; certificările din card sunt cele declarate de Google pentru serviciile lui",
     "unde": "src/content/ro-md/comparatie-componente.ts",
     "stare": "neconfirmat",
-    "sursa": "decizia 11 a owner-ului (30.09.2026: 3S numeste Google si Box, cu sursa si data pe fiecare celula); oglinda RO-MD a intrarilor en-referinta-comparatii-publicitate-comparativa (confirmat) si en-referinta-comparatii-marcaje-gemini-drive (neconfirmat), cu starea cea mai slaba; marcajele se recitesc la sursa inainte de poarta B",
+    "sursa": "decizia 11 a owner-ului (30.09.2026: 3S numeste Google si Box, cu sursa si data pe fiecare celula); comparatia de azi numeste numai Google Drive (decizia 59, intrebarea 7 a specificatiei de congruenta), Box AI a ramas in fisa; oglinda RO-MD a intrarilor en-referinta-comparatii-publicitate-comparativa (confirmat) si en-referinta-comparatii-marcaje-gemini-drive (neconfirmat), cu starea cea mai slaba; marcajele se recitesc la sursa inainte de poarta B",
     "confirmat_de": "",
     "data": "2026-10-05"
   }

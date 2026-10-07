@@ -62,6 +62,29 @@
     },
     {
       "tip": "camp",
+      "selector": "[data-macheta-dosare]",
+      "ro": 0,
+      "en": 2,
+      "clase": [
+        "MachetaDosare_arbore",
+        "MachetaDosare_bara",
+        "MachetaDosare_bifa",
+        "MachetaDosare_cap",
+        "MachetaDosare_capArbore",
+        "MachetaDosare_document",
+        "MachetaDosare_dosar",
+        "MachetaDosare_dosare",
+        "MachetaDosare_eticheta",
+        "MachetaDosare_iconitaDosar",
+        "MachetaDosare_placuta",
+        "MachetaDosare_randuri",
+        "MachetaDosare_zip"
+      ],
+      "cod": "d43",
+      "motiv": "FunctionalitatiAcasa: vizualul fara cuvinte al pasului Store (arborele de dosare, MachetaDosare), in varianta mobila si in cea lata, pus in locul machetei portalului clientilor scoase prin d43. O macheta cu text ar fi cerut text nou de aprobat; pe RO pasul pastreaza macheta portalului. Clasele lui de modul exista numai pe 3s.md si sunt numite una cu una in `clase`."
+    },
+    {
+      "tip": "camp",
       "selector": "[class*=\"acasa_cifra__\"]",
       "ro": 3,
       "en": 2,

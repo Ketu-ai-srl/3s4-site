@@ -270,8 +270,15 @@ describe('layout-urile radacina si pagina de negasit (proba-sora a celei din tes
     expect(metadataRoMd.openGraph).toMatchObject({ locale: 'ro_MD' })
   })
 
-  it('global-not-found.en.tsx: <html lang="en">, titlul in engleza, fara diacritice (in afara listei albe)', () => {
-    const html = renderToStaticMarkup(createElement(NegasitGlobalEn))
+  it('global-not-found.en.tsx: <html lang="en">, titlul in engleza, fara diacritice (in afara listei albe)', async () => {
+    // Exportul implicit (`NegasitGlobalEn`) alege editia dupa calea ceruta: antetul pus de middleware, citit cu
+    // `headers()`, care in afara unei cereri Next arunca. De aceea se randeaza direct pagina englezeasca, iar alegerea
+    // se masoara pe regula ei (pe 3s.md: sub `/ro` romana, caile-vecine si restul engleza; fara `ro-MD` in profil, engleza).
+    const M = await import('../src/app/global-not-found.en')
+    expect(['/ro', '/ro/x', '/ro/juridic/x', '/rox-x', '/robots-x', '/x/ro/y', '/', null].map((c) => M.editiaPaginiiNegasite(c, 'md', ['en', 'ro-MD']))).toEqual(['ro-MD', 'ro-MD', 'ro-MD', 'en', 'en', 'en', 'en', 'en'])
+    expect(M.editiaPaginiiNegasite('/ro/x', 'md', ['en'])).toBe('en')
+    expect(typeof NegasitGlobalEn).toBe('function')
+    const html = renderToStaticMarkup(createElement(M.PaginaNegasitEn))
     expect(html).toMatch(/^<html lang="en"[^>]*>/)
     // Titlul poarta clasele paginii de negasit (stilul site-ului, felia 134), deci se masoara continutul lui.
     expect(html).toMatch(/<h1[^>]*>Page not found<\/h1>/)

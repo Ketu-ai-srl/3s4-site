@@ -19,7 +19,7 @@
 // asezarea nu le alege. Pe asezarea `md` toate sunt identitatea.
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import LegaturaCanal from "@/components/canale/LegaturaCanal";
 import SetariCookie from "@/components/consimtamant/SetariCookie";
 import { CAI_EXISTENTE } from "@/content/cai";
@@ -49,18 +49,43 @@ export function esteExterna(href: string): boolean {
   return /^(mailto:|https?:)/.test(href);
 }
 
-function Legaturi({ legatura, className }: { legatura: Legatura; className: string }) {
+/**
+ * Textul unei legaturi din coloane, cu fiecare cuvant care contine o cratima tinut pe un singur rand: in coloana
+ * ingusta a subsolului navigatorul rupea dupa cratima din cuvant ("cookie-" / "uri"). Spatiile raman puncte de
+ * rupere, deci legatura lunga trece tot pe doua randuri, dar intre cuvinte. Textul (si `textContent`) e acelasi.
+ */
+export function cuvinteNerupte(text: string, clasa: string): ReactNode {
+  const bucati = text.split(/(\S*\p{L}-\p{L}\S*)/u);
+  if (bucati.length === 1) return text;
+  return bucati.map((b, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className={clasa}>
+        {b}
+      </span>
+    ) : (
+      b
+    ),
+  );
+}
+
+/** Legatura scurta (cel mult trei cuvinte): de la 1200 px nu se rupe deloc (Subsol.module.css, `.scurta`). */
+export function esteScurta(text: string): boolean {
+  return text.trim().split(/\s+/).length <= 3;
+}
+
+function Legaturi({ legatura, className, text }: { legatura: Legatura; className: string; text?: ReactNode }) {
   const href = legatura.href ?? "/";
+  const continut = text ?? legatura.text;
   if (esteExterna(href)) {
     return (
       <a href={href} className={className}>
-        {legatura.text}
+        {continut}
       </a>
     );
   }
   return (
     <Link href={hrefTinta(href)} className={className}>
-      {legatura.text}
+      {continut}
     </Link>
   );
 }
@@ -103,16 +128,27 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
   const contact = SUBSOL.contact ?? null;
   const areContact = contact !== null && (contact.whatsapp !== null || contact.numar !== null || contact.email !== null);
   const locala = SUBSOL.legaturaLocala && seVede(SUBSOL.legaturaLocala, cai) ? legaturaLocalaServita(SUBSOL.legaturaLocala, RUTE) : null;
+  // Glosa legaturii locale (pe 3s.md: "in Romanian" langa eticheta romaneasca a informatiilor legale), in limba
+  // PAGINII, deci in afara elementului cu `lang` al legaturii. Campul e optional si lipseste din contractul romanesc:
+  // acolo nu se scrie nimic.
+  const glosa = locala !== null && "glosa" in locala && typeof locala.glosa === "string" && locala.glosa !== "" ? locala.glosa : null;
   // Grila are 5 coloane de legaturi pe contractul romanesc (fara coloana de canale si fara atribut de stil);
   // pe un contract cu canale, numarul de coloane trece prin variabila CSS. Atributul lipseste cu totul pe contractul
   // romanesc: un `style` nedefinit ar intra totusi in datele paginii (masurat pe proba de invarianta RO).
   const nrColoane = coloane.length + (areContact ? 1 : 0);
+  // Cuvintele cu cratima din legaturi (`cuvinteNerupte`) se tin intregi numai pe contractele editiilor: pe contractul
+  // romanesc coloanele sunt mai late (fara coloana de canale), iar HTML-ul lui ramane cel fixat de proba de invarianta.
   // Selectorul si butonul de setari sunt piese de browser: tot ce primesc ajunge in datele paginii. Pe contractul
   // romanesc nu primesc nimic in plus (implicitele lor sunt aceleasi valori), deci HTML-ul servit ramane identic.
-  const limbaContract = navigatie === NAVIGATIE_RO ? {} : { limbi: navigatie.limbi, eticheta: navigatie.selector.eticheta };
+  const peContractRo = navigatie === NAVIGATIE_RO;
+  const limbaContract = peContractRo ? {} : { limbi: navigatie.limbi, eticheta: navigatie.selector.eticheta };
   const textSetari = SUBSOL.setariCookie === undefined ? {} : { text: SUBSOL.setariCookie };
+  // `--coloane-legaturi`: coloanele de legaturi fara cea de canale; de la 1200 px coloana de canale ia latimea
+  // continutului ei, ca numarul de WhatsApp sa stea pe un rand (Subsol.module.css).
   const stilGrila: CSSProperties | undefined =
-    SUBSOL.contact === undefined ? undefined : ({ "--coloane-subsol": Math.max(nrColoane, 1) } as CSSProperties);
+    SUBSOL.contact === undefined
+      ? undefined
+      : ({ "--coloane-subsol": Math.max(nrColoane, 1), "--coloane-legaturi": Math.max(coloane.length, 1) } as CSSProperties);
 
   return (
     <footer className={s.subsol}>
@@ -138,7 +174,11 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
               <ul className={s.lista}>
                 {c.legaturi.map((l) => (
                   <li key={l.text}>
-                    <Legaturi legatura={l} className={s.legatura} />
+                    <Legaturi
+                      legatura={l}
+                      className={peContractRo || !esteScurta(l.text) ? s.legatura : s.legatura + " " + s.scurta}
+                      {...(peContractRo ? {} : { text: cuvinteNerupte(l.text, s.nerupt) })}
+                    />
                   </li>
                 ))}
               </ul>
@@ -195,6 +235,7 @@ export default function Subsol({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }
                 <Link href={locala.href ?? "/"} className={s.legatura} lang={locala.lang} hrefLang={locala.hrefLang}>
                   {locala.text}
                 </Link>
+                {glosa === null ? null : <span data-glosa-locala="">{" (" + glosa + ")"}</span>}
               </p>
             ) : null}
             {/* Retragerea consimtamantului, pe orice pagina (felia seo-geo-gdpr, plan S4 §9): numai

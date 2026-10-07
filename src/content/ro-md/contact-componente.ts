@@ -20,6 +20,10 @@ import { caleMd } from "@/content/juridic/md/registru";
 /** Butonul casetei si al blocului de final: eticheta deciziei 35, tinta WhatsApp cu `ref`-ul paginii. */
 export const BUTON_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
 
+/**
+ * Legatura unui card spre o pagina: textul e calea SURSA, ca `href`-ul (datele poarta cai sursa). Pe card se vede calea
+ * SERVITA a tintei (`textCaleCard` din `PaginaContact`): pe 3s.md `/ro/preturi`, pe 3s.com.ro `/preturi`.
+ */
 const cale = (c: string) => ({ text: c, href: c, ruta: c });
 
 /** Cinci carduri din sapte, in ordinea RO; fiecare duce la perechea /ro a paginii (decizia 59). */

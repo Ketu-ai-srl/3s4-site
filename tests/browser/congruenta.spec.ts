@@ -21,6 +21,11 @@ import { configurareCanale } from '../../src/lib/canale-mediu'
  *     sectiune deasupra lor in `<main>`), fiecare ca tuplu (tag; prima clasa de modul CSS fara hash, altfel prima clasa
  *     globala; `aria-labelledby`, altfel `id`; prezenta lui `aria-label`; `data-ciot`), plus multimea claselor de modul
  *     din `<main>` si numaratorile randurilor `camp`. Diferentele permise sunt numai randurile listei declarate.
+ *     O clasa de modul pe care RO n-o are e permisa pe 3s.md NUMAI numita, una cu una, in `clase` pe un rand `camp` cu
+ *     `ro: 0`, adica pe un element pe care RO nu-l are deloc si pe care randul il numara (vizualul fara cuvinte al
+ *     pasului Store din P01, pus in locul machetei portalului): fara asta, regula "clase de modul pe 3s.md care nu
+ *     exista pe RO" refuza orice componenta adaugata, oricat de declarata ar fi. Ce NU verifica: ca o clasa numita
+ *     apare numai in elementul numarat (o regaseste oriunde in `<main>`).
  *  2. Stilurile calculate ale radacinilor (fundal, spatiere, `grid-template-columns`, inaltimea minima), la 1440 si la
  *     390 de pixeli, cu `innerWidth` citit din pagina.
  *  3. Zero text RO pe paginile EN (dictionarul de siruri al editiei RO, construit din sursa la rulare) si zero
@@ -45,8 +50,10 @@ import { configurareCanale } from '../../src/lib/canale-mediu'
  * `CorpPagina`, (e2) o migrare rosie deghizata in nemigrata (un `article[data-pagina]` gol langa ea, radacinile
  * invelite intr-un `bloc_proza`, sau mutata intreaga intr-un `article[data-pagina]`, forma sloturilor lui CorpPagina).
  * (d) cere ca un text schimbat sa ramana verde, (e3) ca paginile reale CorpPagina si
- * CorpDocument ale copiei sa fie recunoscute. Controlul (f), randul fara cod sau cu un cod din afara
- * listei inchise, e in `tests/congruenta.test.ts`.
+ * CorpDocument ale copiei sa fie recunoscute. (a3) cere ca o clasa straina numita in `clase` pe un camp cu `ro: 0` sa
+ * nu mai fie abatere, si ca aceeasi clasa sa ramana abatere fara rand, numita pe un camp pe care RO il are, sau cand
+ * randul numeste alta clasa; plus, pe partea RO, o clasa "noua" care exista deja pe RO. Controlul (f), randul fara
+ * cod sau cu un cod din afara listei inchise, e in `tests/congruenta.test.ts`.
  *
  * DOMENIUL verificarilor de text: paginile EN ale perechilor; al verificarii RON: toate paginile din harta site-ului
  * copiei. Bucatile JS cerute se culeg din jurnalul de retea, cu miscare permisa, cu derulare pana jos si cu paleta
@@ -74,7 +81,8 @@ type Cod = string | string[]
 type Rand =
   | { tip: 'componenta'; radacina: Radacina; cod: Cod; motiv: string }
   | { tip: 'clasa'; clasa: string; cod: Cod; motiv: string }
-  | { tip: 'camp'; selector: string; ro: number; en: number; cod: Cod; motiv: string }
+  /** `clase`: numai cu `ro: 0`, clasele de modul (fara hash) ale elementului adaugat pe 3s.md, una cu una. */
+  | { tip: 'camp'; selector: string; ro: number; en: number; clase?: string[]; cod: Cod; motiv: string }
 type Pereche = { pereche: string; ro: string; pagini_3s_md: string[]; randuri: Rand[] }
 
 function citesteJson<T>(nume: string): T {
@@ -291,6 +299,11 @@ function verificaPeRo(p: Pereche, ro: Semnatura): { abateri: string[]; scoase: n
     if (r.tip === 'camp' && ro.numaratori[r.selector] !== r.ro) {
       abateri.push(p.pereche + ': campul ' + r.selector + ' are ' + ro.numaratori[r.selector] + ' elemente pe RO, lista spune ' + r.ro)
     }
+    // Clasele noi ale unui element adaugat: numai pe un camp pe care RO nu-l are, si numai clase pe care RO nu le are.
+    if (r.tip === 'camp' && r.clase !== undefined) {
+      if (r.ro !== 0) abateri.push(p.pereche + ': campul ' + r.selector + ' numeste clase noi, dar exista pe RO (ro ' + r.ro + ')')
+      for (const c of r.clase) if (claseRamase.has(c)) abateri.push(p.pereche + ': clasa noua "' + c + '" a campului ' + r.selector + ' exista deja pe RO')
+    }
   }
   return { abateri, scoase }
 }
@@ -308,7 +321,12 @@ function compara(p: Pereche, ro: Semnatura, en: Semnatura, scoase: number[]): st
   const claseEn = new Set([...en.claseInAfara, ...en.clasePeRadacina.flat()])
   const lipsaNedeclarate = [...claseRo].filter((c) => !claseEn.has(c) && !claseDeclarate.has(c))
   const declarateDarPrezente = [...claseDeclarate].filter((c) => claseEn.has(c))
-  const inPlus = [...claseEn].filter((c) => !claseRo.has(c))
+  // O clasa pe care RO n-o are trece numai numita in `clase` pe un camp cu ro 0 (un element adaugat, numarat de rand).
+  // Fara exceptarea asta regula de mai jos refuza orice componenta adaugata pe 3s.md, oricat de declarata, iar pasul
+  // Store din P01 n-ar putea avea vizualul care inlocuieste macheta portalului (d43). Exceptarea numeste clase, nu
+  // tipare: o clasa noua nenumita, sau numita pe un camp pe care RO il are, ramane abatere (controlul (a3)).
+  const claseNoi = new Set(p.randuri.flatMap((r) => (r.tip === 'camp' && r.ro === 0 ? (r.clase ?? []) : [])))
+  const inPlus = [...claseEn].filter((c) => !claseRo.has(c) && !claseNoi.has(c))
   if (lipsaNedeclarate.length > 0) abateri.push('clase de modul care lipsesc pe 3s.md fara rand in lista: ' + lipsaNedeclarate.join(', '))
   if (declarateDarPrezente.length > 0) abateri.push('clase declarate scoase, dar prezente pe 3s.md: ' + declarateDarPrezente.join(', '))
   if (inPlus.length > 0) abateri.push('clase de modul pe 3s.md care nu exista pe RO: ' + inPlus.join(', '))
@@ -547,6 +565,32 @@ test('martor POZITIV (a2): o clasa de modul pe care RO n-o are, adaugata pe copi
   const p = pereche('P01')
   const { ro, en, scoase } = await simulata(browser, baseURL!, p, { clasaStraina: 'Strain_martor__' + 'Ab1cD' })
   expect(compara(p, ro, en, scoase).join('\n')).toContain('clase de modul pe 3s.md care nu exista pe RO: Strain_martor')
+})
+
+test('martor NEGATIV si POZITIV (a3): o clasa noua trece numai numita in `clase` pe un camp pe care RO nu-l are (ro 0)', async ({ browser, baseURL }) => {
+  const p = pereche('P01')
+  // Clasa straina si atributul campului adaugat se asambleaza la rulare.
+  const straina = 'Strain_' + 'adaugat'
+  const { ro, en, scoase } = await simulata(browser, baseURL!, p, { clasaStraina: straina + '__' + 'Ab1cD' })
+  const cuCamp = (roCamp: number, clase: string[]): Pereche => ({
+    ...p,
+    randuri: [...p.randuri, { tip: 'camp', selector: '[data-' + 'martor-adaugat]', ro: roCamp, en: 0, clase, cod: 'd43', motiv: 'Rand-martor asamblat la rulare.' }],
+  })
+  const inPlus = (lista: Pereche) => compara(lista, ro, en, scoase).filter((x) => x.startsWith('clase de modul pe 3s.md care nu exista pe RO'))
+  // NEGATIV: numita pe un camp adaugat (ro 0), clasa nu mai e abatere.
+  expect(inPlus(cuCamp(0, [straina]))).toEqual([])
+  // POZITIV: fara rand, numita pe un camp pe care RO il are, sau cu randul numind alta clasa, ramane abatere.
+  expect(inPlus(p).join('\n')).toContain(straina)
+  expect(inPlus(cuCamp(1, [straina])).join('\n')).toContain(straina)
+  expect(inPlus(cuCamp(0, ['Alta_' + 'clasa'])).join('\n')).toContain(straina)
+  // POZITIV cu ACELASI prefix: randul numeste o clasa vecina (`Strain_` + alt nume). Exceptarea numeste clase, nu
+  // tipare, deci clasa de pe copie ramane abatere; o scutire dupa prefix (partea dinaintea primului `_`) ar trece-o.
+  expect(inPlus(cuCamp(0, ['Strain_' + 'altceva'])).join('\n')).toContain(straina)
+  // POZITIV pe partea RO: o clasa "noua" care exista deja pe RO, si clase noi pe un camp pe care RO il are.
+  const clasaRo = [...ro.claseInAfara, ...ro.clasePeRadacina.flatMap((c, i) => (scoase.includes(i) ? [] : c))][0]
+  expect(clasaRo, 'o clasa de modul pe RO, in afara radacinilor scoase').toBeDefined()
+  expect(verificaPeRo(cuCamp(0, [clasaRo]), ro).abateri.join('\n')).toContain('clasa noua "' + clasaRo + '"')
+  expect(verificaPeRo(cuCamp(1, [straina]), ro).abateri.join('\n')).toContain('numeste clase noi, dar exista pe RO')
 })
 
 test('martor NEGATIV (d): un text schimbat pe copie lasa proba verde', async ({ browser, baseURL }) => {

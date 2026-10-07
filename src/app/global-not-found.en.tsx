@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
 import "./globals.css";
 import BaraMobil from "@/components/canale/BaraMobil";
@@ -8,9 +9,10 @@ import Subsol from "@/components/global/Subsol";
 import { BRAND } from "@/content/entitate";
 import { navigatieEn } from "@/content/navigatie-en";
 import { RUTE, editiaRutei } from "@/content/rute";
-import { atributeLimba } from "@/lib/asezare";
-import { EDITII } from "@/lib/editii";
+import { atributeLimba, prefixServit, type EditieAsezata } from "@/lib/asezare";
+import { EDITII, editiaInBuild, editiiBuild, type CodEditie } from "@/lib/editii";
 import { CLASE_FONTURI } from "@/lib/fonturi";
+import { PaginaNegasitRo, metadataRo } from "./global-not-found.comro";
 import s from "./negasita.module.css";
 
 // PAGINA DE NEGASIT a site-ului international (fundatia editiilor, `src/lib/editii.ts`). Pe build-ul cu `en`
@@ -32,13 +34,56 @@ import s from "./negasita.module.css";
 // (`negasita.module.css`: bloc centrat sub antetul fix, titlul si subtitlul interior), legatura de sarit la continut,
 // bannerul de consimtamant (fara el, "Cookie settings" din subsol n-avea ce panou sa deschida) si bara de canale de
 // pe telefon. Textele sunt cele de dinainte; nu se adauga text nou.
+//
+// PE EDITIA CAII CERUTE. Next are o singura pagina de negasit globala pe build, dar un build poarta doua editii: pe
+// 3s.md romana sta sub `/ro`, pe 3s.com.ro engleza sta sub `/en`. O adresa inexistenta primeste pagina editiei careia
+// ii apartine calea (`editiaPaginiiNegasite`): pe `md`, `/ro/...` primeste pagina romaneasca (`PaginaNegasitRo`, aceeasi
+// ca pe 3s.com.ro, cu legaturile asezarii build-ului), orice alta adresa pe cea englezeasca; pe `ro` invers, prin
+// geamana (`global-not-found.comro.tsx`). Calea vine din antetul `x-3s-cale`, pus pe CERERE de `src/middleware.ts`.
+// Citirea antetului face pagina DINAMICA: se randeaza la fiecare cerere, cu mediul de RULARE al aplicatiei (canalele,
+// operatorul, analitica), care trebuie sa fie egal cu cel de la build.
 
-export const metadata: Metadata = {
+/** Numele antetului de cerere cu calea ceruta (scris de middleware, citit aici). */
+export const ANTET_CALE = "x-3s-cale";
+
+/**
+ * Editia careia ii apartine o cale inexistenta, pe o asezare: editia cu prefix nevid, cand calea e prefixul ei sau sub
+ * el (cu bara: `/rox-...` si `/robots-...` nu sunt sub `/ro`, `/english` nu e sub `/en`) si editia e in profilul
+ * construit; altfel editia de la radacina. Fara cale (antet lipsa) tot editia de la radacina, adica pagina de dinainte.
+ */
+export function editiaPaginiiNegasite(
+  cale: string | null,
+  asezare?: "md" | "ro",
+  editiiProfil: readonly CodEditie[] = editiiBuild(),
+): EditieAsezata {
+  const editii: EditieAsezata[] = ["en", "ro-MD"];
+  const sub = editii.find((e) => {
+    const prefix = prefixServit(e, asezare);
+    return prefix !== "" && cale !== null && (cale === prefix || cale.startsWith(prefix + "/")) && editiaInBuild(e, editiiProfil);
+  });
+  return sub ?? editii.find((e) => prefixServit(e, asezare) === "") ?? "en";
+}
+
+/** Editia paginii de negasit pentru cererea curenta. */
+export async function editiaCererii(): Promise<EditieAsezata> {
+  return editiaPaginiiNegasite((await headers()).get(ANTET_CALE));
+}
+
+export const metadataEn: Metadata = {
   title: "Page not found | " + BRAND.nume,
   robots: { index: false, follow: false },
 };
 
-export default function NegasitGlobalEn() {
+export async function generateMetadata(): Promise<Metadata> {
+  return (await editiaCererii()) === "ro-MD" ? metadataRo : metadataEn;
+}
+
+export default async function NegasitGlobalEn() {
+  return (await editiaCererii()) === "ro-MD" ? <PaginaNegasitRo /> : <PaginaNegasitEn />;
+}
+
+/** Pagina de negasit englezeasca (fara alegerea editiei). */
+export function PaginaNegasitEn() {
   const drumuri = RUTE.filter((r) => editiaRutei(r) === "en" && r.inHarta);
   const indexRoMd = RUTE.find((r) => editiaRutei(r) === "ro-MD" && r.cale === EDITII["ro-MD"].prefix);
   const navigatie = navigatieEn();

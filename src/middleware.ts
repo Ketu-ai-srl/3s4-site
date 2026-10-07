@@ -83,11 +83,26 @@ async function evidentaConsimtamant(request: NextRequest): Promise<NextResponse>
 //
 // Regula, scrisa in directia asta deliberat: implicitul e NEindexarea. O variabila uitata
 // trebuie sa lase site-ul in afara indexului, nu in el.
+//
+// CALEA CERUTA, PENTRU PAGINA DE NEGASIT GLOBALA (`src/app/global-not-found.en.tsx` si geamana `.comro.tsx`). Next nu
+// da paginii de negasit globale nici calea, nici parametrii, iar ea trebuie sa stie carei editii ii apartine adresa
+// (pe 3s.md `/ro/...` primeste pagina romaneasca, pe 3s.com.ro `/en/...` pe cea englezeasca). Antetul se pune pe
+// CERERE, nu pe raspuns, deci nu ajunge la client; o valoare trimisa de client sub acelasi nume e suprascrisa aici,
+// deci pagina vede mereu calea reala. Acelasi nume il citeste pagina (`ANTET_CALE` acolo); nu se importa de acolo,
+// fiindca modulul paginii ar aduce in middleware componentele si stilurile ei.
+const ANTET_CALE = 'x-3s-cale'
+
+function cuCale(request: NextRequest): NextResponse {
+  const antete = new Headers(request.headers)
+  antete.set(ANTET_CALE, request.nextUrl.pathname)
+  return NextResponse.next({ request: { headers: antete } })
+}
+
 export async function middleware(request: NextRequest) {
   const evidenta = request.nextUrl.pathname === CALE_EVIDENTA && stareAnalitica().activa
 
   if (process.env.SITE_ENV === 'productie') {
-    return evidenta ? evidentaConsimtamant(request) : NextResponse.next()
+    return evidenta ? evidentaConsimtamant(request) : cuCale(request)
   }
 
   // Autentificarea de baza ramane optionala si separata: e o poarta de ACCES, nu de
@@ -111,7 +126,7 @@ export async function middleware(request: NextRequest) {
 
   // Evidenta trece si ea prin autentificarea de mai sus: pe un mediu cu acces restrans, o cerere
   // neautentificata nu are voie sa scrie in jurnal.
-  const raspuns = evidenta ? await evidentaConsimtamant(request) : NextResponse.next()
+  const raspuns = evidenta ? await evidentaConsimtamant(request) : cuCale(request)
   raspuns.headers.set('X-Robots-Tag', 'noindex, nofollow')
   return raspuns
 }

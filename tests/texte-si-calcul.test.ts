@@ -16,6 +16,9 @@ import { afterAll, describe, expect, it, vi } from 'vitest'
  * Partea RO a HTML-ului servit (identic cu baza) o dovedeste `tests/invarianta-ro.test.ts`, pe build.
  *
  * FIXTURILE (cuvintele vechi cautate) se asambleaza la rulare, din bucati.
+ *
+ * M9 (testul editiei 3s.com.ro din 06.10.2026, la final): calea afisata ca text pe cardurile de contact e calea SERVITA
+ * a legaturii, pe fiecare asezare; martorul e o cale sursa plantata, prinsa de aceeasi masura.
  */
 
 vi.hoisted(() => {
@@ -197,11 +200,17 @@ describe('M7: comparatia spune ce compara (Google), fara Box AI', () => {
       expect(t).toContain('Google')
       expect(t).not.toContain(BOX)
     }
-    // Textul vazut al paginii (fara etichete si atribute). Textul precompletat al legaturii WhatsApp inca numeste Box:
-    // el e cel din navigatia EN (`navigatie-en.ts`), pe care proba `en-referinta` il cere identic, deci nu e al feliei.
+    // Textul vazut al paginii (fara etichete si atribute) si, din felia 141 (M7 ramas), si atributele: textul
+    // precompletat al legaturii WhatsApp (in `href`, codat) spune acum "comparison with Google Drive".
     const main = mainFaraScripturi(randeaza(ComparatieEn))
     expect(main).toContain('<h1')
     expect(main.replace(/<[^>]*>/g, ' ')).not.toContain(BOX)
+    // Cuvant intreg: atributul SVG `viewBox` nu e o mentiune a produsului.
+    const cuvantBox = new RegExp('\\b' + BOX + '\\b')
+    // Martorul detectorului: textul precompletat vechi (asamblat aici) e prins, `viewBox` nu.
+    expect(cuvantBox.test('comparison with Google and ' + BOX + ' AI')).toBe(true)
+    expect(cuvantBox.test('<svg view' + BOX + '="0 0 16 16">')).toBe(false)
+    expect(decodeURIComponent(main)).not.toMatch(cuvantBox)
   })
 
   it('startul: fraza si butonul spre comparatie numesc Google Drive, nu Box; adresa paginii ramane aceeasi', () => {
@@ -302,5 +311,109 @@ describe('m2 pe asezarea ro (3s.com.ro): legatura spre informatiile legale trece
     expect(contactRo).toContain('href="/preturi"')
     expect(legaturi(sectiune(contactRo, 'contact-marca'), servitaRo)).toEqual([NUME_LEGAL_RO])
     expect(legaturi(contactRo, LEGAL_RO)).toEqual([])
+  })
+})
+
+/**
+ * Cardurile din "Raspunsuri disponibile deja pe site": fiecare rand albastru care numeste o cale (incepe cu "/") trebuie
+ * sa fie egal cu calea legaturii cardului, fara fragment si interogare. `comparate` numara cardurile cu legatura si cu
+ * text-cale: un card inert (fara `href`) nu se compara, deci numarul asteptat se scrie in fiecare caz.
+ */
+function abateriCaiCarduri(html: string): { comparate: number; texte: string[]; abateri: string[] } {
+  const s = sectiune(html, 'contact-subiecte')
+  const texte: string[] = []
+  const abateri: string[] = []
+  for (const m of s.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)) {
+    const href = /\shref="([^"]*)"/.exec(m[1])?.[1]
+    const text = /class="[^"]*cardAdresa[^"]*"[^>]*>([^<]*)</.exec(m[2])?.[1]
+    if (href === undefined || text === undefined || !text.startsWith('/')) continue
+    texte.push(text)
+    const cale = href.split(/[?#]/)[0]
+    if (text !== cale) abateri.push(text + ' (legatura ' + cale + ')')
+  }
+  return { comparate: texte.length, texte, abateri }
+}
+
+describe('M9: calea afisata pe cardurile de contact e calea servita, pe fiecare asezare', () => {
+  const text = (v: unknown) => (typeof v === 'string' ? v : JSON.stringify(v))
+  const profil = (nume: string) => JSON.parse(readFileSync(join(__dirname, '..', 'config', 'profil-' + nume + '.json'), 'utf8')) as Record<string, unknown>
+
+  /** Pagina de contact si piesele ei, cu mediul aplicatiei date (rutele si asezarea se citesc la import si la randare). */
+  async function cuProfil(nume: '3s-md' | '3s-com-ro') {
+    const p = profil(nume)
+    for (const k of ['SITE_URL', 'SITE_ENV', 'SITE_EDITII', 'SITE_ASEZARE', 'SITE_ALTERNATE', 'OPERATOR_JSON', 'CANALE_JSON'])
+      vi.stubEnv(k, p[k] === undefined ? '' : text(p[k]))
+    for (const k of ['NEXT_PUBLIC_SITE_EDITII', 'NEXT_PUBLIC_SITE_ASEZARE', 'NEXT_PUBLIC_OPERATOR_NUMIT', 'NEXT_PUBLIC_FAMILIE_JURIDICA'])
+      vi.stubEnv(k, '')
+    vi.resetModules()
+    return {
+      ContactEn: (await import('../src/app/(en)/contact/page.en')).default,
+      ContactRoMd: (await import('../src/app/(romd)/ro/contact/page.romd')).default,
+      PaginaContact: (await import('../src/components/conversie/PaginaContact')).default,
+      CONTACT_RO_MD: (await import('../src/content/ro-md/contact-componente')).CONTACT_RO_MD,
+    }
+  }
+
+  afterAll(() => {
+    vi.unstubAllEnvs()
+    vi.resetModules()
+  })
+
+  // Caile sursa din date (aceleasi pe ambele domenii) si caile servite pe 3s.com.ro (romana la radacina, engleza sub
+  // /en: deciziile 71-72), scrise aici, nu calculate de codul probat.
+  const SURSA_EN = ['/enterprise', '/pricing', '/about', '/platform', '/guides/records-retention-moldova']
+  const SURSA_RO = ['/ro/enterprise', '/ro/preturi', '/ro/securitate', '/ro/platforma', '/ro/ghiduri/termene-pastrare-moldova']
+  const SERVITE_EN = SURSA_EN.map((c) => '/en' + c)
+  const SERVITE_RO = ['/enterprise', '/preturi', '/securitate', '/platforma', '/ghiduri/termene-pastrare-moldova']
+
+  it('martorul masurii, pe HTML asamblat la rulare: o cale sursa plantata e prinsa, calea servita trece, un text care nu e cale nu se numara', () => {
+    const card = (href: string, t: string) =>
+      '<section aria-labelledby="contact-subiecte"><ul><li><a href="' + href + '" class="c_card"><span class="c_cardAdresa">' + t + '</span></a></li></ul></section>'
+    const plantata = '/r' + 'o/preturi'
+    expect(abateriCaiCarduri(card('/preturi', plantata))).toEqual({ comparate: 1, texte: [plantata], abateri: [plantata + ' (legatura /preturi)'] })
+    expect(abateriCaiCarduri(card('/preturi#pachete', '/preturi')).abateri).toEqual([])
+    expect(abateriCaiCarduri(card('/preturi', 'Pachete')).comparate).toBe(0)
+  })
+
+  it('martorul de editie: pe ro-RO (/contact) cele 7 carduri au textul egal cu legatura, ca inainte', () => {
+    const m = abateriCaiCarduri(randeaza(ContactRo))
+    expect(m.comparate).toBe(7)
+    expect(m.abateri).toEqual([])
+  })
+
+  it('3s.md (asezarea md): pe /contact si /ro/contact textul ramane calea din date, egala cu legatura', async () => {
+    const p = await cuProfil('3s-md')
+    const en = abateriCaiCarduri(randeaza(p.ContactEn))
+    const ro = abateriCaiCarduri(randeaza(p.ContactRoMd))
+    expect([en.texte, en.abateri]).toEqual([SURSA_EN, []])
+    expect([ro.texte, ro.abateri]).toEqual([SURSA_RO, []])
+  })
+
+  it('3s.com.ro (asezarea ro): pe /contact si /en/contact textul e calea servita, egala cu legatura', async () => {
+    const p = await cuProfil('3s-com-ro')
+    expect(profil('3s-com-ro').SITE_ASEZARE).toBe('ro')
+    const ro = abateriCaiCarduri(randeaza(p.ContactRoMd))
+    const en = abateriCaiCarduri(randeaza(p.ContactEn))
+    expect([ro.texte, ro.abateri]).toEqual([SERVITE_RO, []])
+    expect([en.texte, en.abateri]).toEqual([SERVITE_EN, []])
+    // Martorul pe randarea reala: un card al carui text e o cale sursa care NU e tinta lui ramane neschimbat si e prins.
+    const plantata = '/r' + 'o/preturi'
+    const carduri = p.CONTACT_RO_MD.subiecte.carduri.map((c, i) => (i === 0 ? { ...c, legatura: { ...c.legatura, text: plantata } } : c))
+    const html = renderToStaticMarkup(createElement(p.PaginaContact, { continut: { ...p.CONTACT_RO_MD, subiecte: { ...p.CONTACT_RO_MD.subiecte, carduri } } }))
+    expect(abateriCaiCarduri(html).abateri).toEqual([plantata + ' (legatura /enterprise)'])
+  })
+
+  it('textCaleCard: identitatea pe md, traducerea pe ro numai cand textul numeste tinta cardului', async () => {
+    const { textCaleCard } = await import('../src/components/conversie/PaginaContact')
+    const rute = [
+      { cale: '/ro/preturi', editie: 'ro-MD' as const },
+      { cale: '/pricing', editie: 'en' as const },
+    ]
+    const leg = (t: string, h: string | null) => ({ text: t, href: h, ruta: h })
+    expect(textCaleCard(leg('/ro/preturi', '/ro/preturi'), rute, 'md')).toBe('/ro/preturi')
+    expect(textCaleCard(leg('/ro/preturi', '/ro/preturi'), rute, 'ro')).toBe('/preturi')
+    expect(textCaleCard(leg('/pricing', '/pricing'), rute, 'ro')).toBe('/en/pricing')
+    expect(textCaleCard(leg('Prețuri', '/ro/preturi'), rute, 'ro')).toBe('Prețuri')
+    expect(textCaleCard(leg('/ro/preturi', null), rute, 'ro')).toBe('/ro/preturi')
   })
 })

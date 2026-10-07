@@ -31,7 +31,7 @@
 // listei: `alternateSite`, mai jos, si `docs/ziua-operatorului.md`.
 
 import { ADRESA_BAZA } from "@/content/rute";
-import { asezareBuild, prefixServit, type CodAsezare } from "@/lib/asezare";
+import { ASEZARI, asezareBuild, prefixServit, type CodAsezare } from "@/lib/asezare";
 import { EDITII, editiiBuild, type CodEditie, type Editie } from "@/lib/editii";
 
 /**
@@ -190,10 +190,15 @@ export function alternateSite(
     throw new Error("SITE_ALTERNATE nu contine nicio varianta de limba (doar x-default sau nimic)");
   }
   if (!limbi.some((v) => v.adresa === baza)) {
+    // Pe asezarea `ro` (3s.com.ro) codul e stiut: romana de la radacina e varianta ro-RO (`problemeAlternateAsezare`), deci
+    // mesajul il numeste. Pe `md` codul e al editiei de la radacina domeniului, ales de cine scrie lista.
+    const cod = asezareBuild() === "ro" ? ASEZARI.ro["ro-MD"].inLanguage : "cod";
     throw new Error(
       "SITE_ALTERNATE nu contine adresa acestui site (" +
         baza +
-        ") fara prefix de cale: fiecare pagina se refera si pe ea insasi, iar variantele se confirma una pe alta. Se adauga perechea cod=" +
+        ") fara prefix de cale: fiecare pagina se refera si pe ea insasi, iar variantele se confirma una pe alta. Se adauga perechea " +
+        cod +
+        "=" +
         baza,
     );
   }

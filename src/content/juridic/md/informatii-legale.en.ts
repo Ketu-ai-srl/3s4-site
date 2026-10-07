@@ -13,7 +13,7 @@ export default function informatiiLegaleEn(c: ContextMd): DocumentJuridic {
     cheie: "informatii-legale",
     limba: "en",
     titlu: "Legal notice",
-    versiune: "2026-10-01",
+    versiune: "2026-10-06",
     introducere: "This page states who provides the 3S service and how to contact us. The law of the Republic of Moldova requires this information on the website, in Romanian, with easy, direct and permanent access (Law No. 284/2004 on information society services, Article 12). The authentic version is the Romanian page [Informații legale](cale-ro:informatii-legale); this English text is a courtesy translation.",
     sectiuni: [
       {
@@ -43,7 +43,7 @@ export default function informatiiLegaleEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s5", titlu: "5. Points of contact for authorities and for users (Digital Services Act)",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["To the extent that Regulation (EU) 2022/2065 (the Digital Services Act) applies to 3S's services for storing clients' documents, our points of contact are as follows.", "**Authorities (Article 11).** The authorities of the Member States, the European Commission and the European Board for Digital Services can contact us directly, by electronic means, at " + c.contact.email + ". Languages of communication: English and Romanian.", "**Users of the service (Article 12).** Users can contact us directly and quickly, at their choice, by e-mail (" + c.contact.email + ") or on WhatsApp (" + c.contact.telefon + ", messages and calls). The channels are staffed by people.", "**Legal representative in the European Union (Article 13).** 3S Demerzel SRL is not established in the European Union. Our legal representative, once appointed, also receives requests concerning data protection (Regulation (EU) 2016/679, Article 27) and, to the extent that it applies, those under Regulation (EU) 2023/2854 (the Data Act, Article 37(11)). Representative: [EU representative: appointment pending]. The representative's name, postal address, e-mail address and telephone number will appear here once appointed."] },
+          { jurisdictie: null, paragrafe: ["To the extent that Regulation (EU) 2022/2065 (the Digital Services Act) applies to 3S's services for storing clients' documents, our points of contact are as follows.", "**Authorities (Article 11).** The authorities of the Member States, the European Commission and the European Board for Digital Services can contact us directly, by electronic means, at " + c.contact.email + ". Languages of communication: English and Romanian.", "**Users of the service (Article 12).** Users can contact us directly and quickly, at their choice, by e-mail (" + c.contact.email + ") or on WhatsApp (" + c.contact.telefon + ", messages and calls). The channels are staffed by people.", "**Legal representative in the European Union (Article 13).** 3S Demerzel SRL is not established in the European Union. Our legal representative, once appointed, also receives requests concerning data protection (Regulation (EU) 2016/679, Article 27) and, to the extent that it applies, those under Regulation (EU) 2023/2854 (the Data Act, Article 37(11)). The representative has not yet been appointed. Until the appointment, requests intended for the representative are sent directly to us at " + c.contact.email + ". The representative's name, postal address, e-mail address and telephone number will appear here once appointed."] },
         ],
       },
       {

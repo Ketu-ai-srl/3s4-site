@@ -12,7 +12,7 @@
   },
   "pagini_legate": {
     "preturi": { "en": "/pricing", "ro": "/pricing", "publicata": false },
-    "securitate-si-locul-datelor": { "en": null, "ro": null, "publicata": false },
+    "securitate-si-locul-datelor": { "en": "/about#security", "ro": "/ro/securitate#security", "publicata": true },
     "comutare-si-export": { "en": null, "ro": null, "publicata": false }
   }
 }

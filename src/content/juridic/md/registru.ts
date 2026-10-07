@@ -9,8 +9,10 @@
 // legatura, nu propozitia).
 //
 // PAGINILE LEGATE din afara pachetului: `preturi` (pagina de preturi a domeniului, `/pricing`, singura de
-// pe 3s.md; pana o publica felia paginilor EN, text fara legatura), `securitate-si-locul-datelor` si
-// `comutare-si-export` (cunoscute, nescrise: text fara legatura). Orice alta cheie opreste construirea.
+// pe 3s.md; pana o publica felia paginilor EN, text fara legatura), `securitate-si-locul-datelor` (sectiunea
+// existenta a paginii despre 3S, ancora `security`: /about#security si /ro/securitate#security, traduse pe
+// fiecare asezare de `Tinta`; inerta unde ruta lipseste) si `comutare-si-export` (nescrisa: text fara
+// legatura). Orice alta cheie opreste construirea.
 //
 // MODULUL E MIC: il importa si `../publicare.ts`, care ajunge in pachetul de browser.
 

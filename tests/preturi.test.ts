@@ -5,19 +5,24 @@ import { describe, expect, it } from 'vitest'
 import Preturi, { metadata } from '../src/app/preturi/page'
 import { asezare, GRILA_MESE, LOCURI_PE_MASA, locul, numarMese } from '../src/components/preturi/birou-asezare'
 import { directieCamera, ORBITA } from '../src/components/preturi/birou-scena'
+import { FORMAT_RO_MD, textTeaserRoMd } from '../src/app/(romd)/ro/_editie/PreturiRoMd'
 import {
   calculeaza,
   ePeGrila,
   formatBani,
   formatOre,
+  formatOreZecimal,
   formatZecimal,
+  oreAfisate,
   oreCautare,
   oreEchivalent,
   planPentru,
+  PRAG_ORE_INTREGI,
   valoareOre,
   valoriCursor,
 } from '../src/components/preturi/calcul'
 import { textTeaser } from '../src/components/preturi/Calculator'
+import { FORMAT_EN, textTeaserEn } from '../src/components/preturi/PreturiEn'
 import { grafIntrebariPreturi } from '../src/components/preturi/date-structurate'
 import { dataRomaneasca, FoaieOferta, REGULI_TIPAR } from '../src/components/preturi/ListaPdf'
 import LumeaPreturi from '../src/components/preturi/LumeaPreturi'
@@ -262,6 +267,74 @@ describe('formula calculatorului (fisa §6b)', () => {
       expect(respinse, cursor.eticheta).toEqual([1, 20, 25, 50, 120])
     }
     expect(lipita(c.minute, 25)).toBe('25 minute pe zi')
+  })
+})
+
+/**
+ * ORELE CU O ZECIMALA pe editiile en si ro-MD (3s.md, 3s.com.ro). La 1 coleg, 10 min si 5 EUR/h fraza spunea
+ * "EUR 18 ... for the 4 h": cititorul inmultea 4 x 5 = 20 si nu ajungea la 18. Decizia dispecerului (07.10.2026): sub
+ * 100 de ore o zecimala ("3.7 h", "3,7 h"), de la 100 intregi, cu separatorul de mii al editiei. Proprietatea aparata e
+ * ca inmultirea de pe ecran (orele afisate x tariful) cade la cel mult o jumatate de zecimala x tariful de banii afisati
+ * din orele exacte, pe toata grila cursoarelor; cu orele intregi, abaterea ajunge la o jumatate de ora x tariful (martorul).
+ * Editia ro-RO pastreaza orele intregi (`formatOre`, cazurile de mai sus): HTML-ul ei e fixat de proba de invarianta RO.
+ */
+describe('orele afisate pe editiile en si ro-MD: o zecimala sub 100, intregi de la 100', () => {
+  it('formatul: o zecimala sub prag, intregi cu separatorul de mii de la prag; intreg dupa rotunjire fara ",0"', () => {
+    expect(PRAG_ORE_INTREGI).toBe(100)
+    const cazuri: [number, string, string][] = [
+      [oreCautare(1, 10, 22), '3,7', '3.7'],
+      [oreCautare(4, 25, 22), '36,7', '36.7'],
+      [16.5, '16,5', '16.5'],
+      [22, '22', '22'],
+      [99.94, '99,9', '99.9'],
+      [99.96, '100', '100'],
+      [100, '100', '100'],
+      [116.6, '117', '117'],
+      [1155, '1.155', '1,155'],
+      [2200, '2.200', '2,200'],
+    ]
+    for (const [n, ro, en] of cazuri) {
+      expect([formatOreZecimal(n), FORMAT_RO_MD.ore(n), FORMAT_EN.ore(n)], String(n)).toEqual([ro, ro, en])
+    }
+    expect([oreAfisate(oreCautare(4, 25, 22)), oreAfisate(116.6), oreAfisate(99.96)]).toEqual([36.7, 117, 100])
+  })
+
+  it('exemplul din testul 3s.md (1 coleg, 10 min, 5 EUR/h): 18 EUR langa 3,7 h, nu langa 4 h', () => {
+    const r = calculeaza({ persoane: 1, minute: 10, tarif: 5 }, 'anual', PLANURI, 22)
+    expect([FORMAT_EN.bani(r.bani), FORMAT_EN.ore(r.ore)]).toEqual(['18', '3.7'])
+    expect([FORMAT_RO_MD.bani(r.bani), FORMAT_RO_MD.ore(r.ore)]).toEqual(['18', '3,7'])
+    // Martorul: forma de dinainte, cu ora intreaga, era "4".
+    expect(formatOre(r.ore)).toBe('4')
+  })
+
+  it('pe toata grila cursoarelor EN (1-50, 10-120, 5-100 EUR/h): orele afisate x tariful cad langa banii afisati', () => {
+    let comparate = 0
+    let maxNou = 0
+    let maxVechi = 0
+    for (let p = 1; p <= 50; p++) {
+      for (let m = 10; m <= 120; m += 5) {
+        const ore = oreCautare(p, m, 22)
+        if (ore >= PRAG_ORE_INTREGI) continue
+        for (let t = 5; t <= 100; t++) {
+          const bani = valoareOre(ore, t)
+          comparate++
+          maxNou = Math.max(maxNou, Math.abs(oreAfisate(ore) * t - bani) / t)
+          maxVechi = Math.max(maxVechi, Math.abs(Math.round(ore) * t - bani) / t)
+        }
+      }
+    }
+    expect(comparate).toBeGreaterThan(10000)
+    // Cu o zecimala, abaterea e cel mult o jumatate de zecimala (0,05 h) inmultita cu tariful.
+    expect(maxNou).toBeLessThanOrEqual(0.05 + 1e-9)
+    // Martorul: cu ora intreaga, abaterea ajunge la o jumatate de ora (proba deosebeste cele doua forme).
+    expect(maxVechi).toBeGreaterThan(0.45)
+  })
+
+  it('teaserul pe EN si pe ro-MD (valorile de pornire, 36,67 h): zecimala, cu numeralul acordat cu valoarea afisata', () => {
+    expect(textTeaserEn().rezultat).toBe('totals 36.7 h a month')
+    expect(textTeaserRoMd().rezultat).toBe('se adună 36,7 ore lunar')
+    // Martorul de editie: teaserul ro-RO ramane pe ora intreaga, cu "de" (cazul de mai sus, `textTeaser`).
+    expect(textTeaser().rezultat).toBe('se adună 37 de ore lunar')
   })
 })
 

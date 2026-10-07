@@ -1,5 +1,5 @@
 {
-  "_nota": "Lista INCHISA a codurilor de temei pentru randurile listelor de congruenta (config/congruenta/<pereche>.json). Un rand fara cod sau cu un cod care nu e aici e refuzat de tests/congruenta.test.ts. Codurile dNN sunt deciziile owner-ului proiectului; val-ro-1.1, val-ro-i2 si poarta-juridica-40-41 sunt reguli de lucru fara numar de decizie pana la raspunsul owner-ului, si se inlocuiesc cu numarul cand il primesc. ro-doar e regula dispecerului pentru o piesa care exista numai pe RO prin natura ei, nu pentru una scoasa din alt motiv (acelea poarta codul temeiului lor).",
+  "_nota": "Lista INCHISA a codurilor de temei pentru randurile listelor de congruenta (config/congruenta/<pereche>.json). Un rand fara cod sau cu un cod care nu e aici e refuzat de tests/congruenta.test.ts. Codurile dNN sunt deciziile owner-ului proiectului; val-ro-1.1, val-ro-i2 si poarta-juridica-40-41 sunt reguli de lucru fara numar de decizie pana la raspunsul owner-ului, si se inlocuiesc cu numarul cand il primesc. ro-doar e regula dispecerului pentru o piesa care exista numai pe RO prin natura ei, nu pentru una scoasa din alt motiv (acelea poarta codul temeiului lor). canal-fara-program e regula dispecerului pe constatarea m1 a testului in browser al lui 3s.md din 06.10.2026: randurile de canal fara stare si fara ceas.",
   "coduri": {
     "d3": {
       "fel": "decizie",
@@ -53,6 +53,10 @@
     "ro-doar": {
       "fel": "regula",
       "rezumat": "Piesa exista numai pe site-ul RO prin natura ei (un obiect al statului roman, cu ruta numai pe RO); nu se foloseste pentru piese scoase din alt motiv."
+    },
+    "canal-fara-program": {
+      "fel": "regula",
+      "rezumat": "Pe 3s.md un rand de canal nu poarta stare si nici ceas: pagina nu publica un program si nu promite un termen de raspuns, iar 'Open' / 'Deschis' cu ceas se citea ca ora de lucru (constatarea m1 a testului in browser din 06.10.2026)."
     }
   }
 }

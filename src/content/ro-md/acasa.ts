@@ -275,7 +275,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
                   elemente: [
                     "[Termenele de păstrare a actelor în Moldova](" + CAI_GHIDURI[0] + ")",
                     "[Arhivarea facturilor electronice în UE](" + CAI_GHIDURI[1] + ")",
-                    "[3S comparat cu Google și Box AI](" + CAI_GHIDURI[2] + ")",
+                    "[3S comparat cu Google Drive](" + CAI_GHIDURI[2] + ")",
                   ],
                 },
               },

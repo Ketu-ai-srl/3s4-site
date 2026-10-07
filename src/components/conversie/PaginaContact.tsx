@@ -7,7 +7,8 @@
 //   - caseta principala nu arata o adresa de e-mail pana cand `config/brand.json` nu are una
 //     confirmata; pana atunci butonul duce la formularul de pe pagina;
 //   - cardurile nu sunt casute de posta pe departamente (3S nu are asemenea adrese): fiecare duce la
-//     pagina site-ului care raspunde subiectului, iar randul albastru e calea paginii;
+//     pagina site-ului care raspunde subiectului, iar randul albastru e calea paginii, cea SERVITA pe
+//     domeniu (`textCaleCard`: pe 3s.com.ro `/preturi`, nu `/ro/preturi`);
 //   - panoul nu promite termene de raspuns (nicio tinta asumata in registrul de afirmatii): arata
 //     canalele si starea lor, citita din comutatorul operatorului si din adresa marcii;
 //   - cardurile de jos nu numesc o firma (decizia owner-ului din 24.09, doar brandul): arata marca si
@@ -23,12 +24,13 @@ import type { ComponentType, ReactNode } from "react";
 import Buton from "@/components/primitive/Buton";
 import CapBloc from "@/components/primitive/CapBloc";
 import EroulInterior from "@/components/primitive/EroulInterior";
-import Tinta from "@/components/primitive/Tinta";
+import Tinta, { hrefTinta } from "@/components/primitive/Tinta";
 import { stareFormular, type StareFormular } from "@/components/formular/stare";
 import { cuLegatura, type LegaturaInText } from "@/components/produs/legaturaInText";
 import { adresaMarcii } from "@/content/entitate";
 import { ANCORA_FORMULAR_CONTACT, CALE_CONTACT, CONTACT, type CardSubiect } from "@/content/conversie";
 import type { Legatura } from "@/content/navigatie";
+import type { CodAsezare, RutaAsezabila } from "@/lib/asezare";
 import s from "./contact.module.css";
 
 const ICONITE: Record<CardSubiect["iconita"], ComponentType<{ size?: number; strokeWidth?: number; className?: string; "aria-hidden"?: boolean }>> = {
@@ -82,6 +84,19 @@ export function randuriCanale(stare: StareFormular, adresa: string | null): Rand
       : { nume: c.posta.nume, legatura: null, text: c.postaFaraAdresa, stare: c.starePostaInchisa },
     { nume: c.tur.nume, legatura: c.tur.legatura, stare: c.tur.stare },
   ];
+}
+
+/**
+ * Textul randului albastru al unui card: calea paginii (forma aprobata a cardului). Datele poarta calea SURSA, ca
+ * `href`-ul (`/ro/preturi`, `/pricing`); cand textul numeste chiar tinta cardului, se scrie calea SERVITA, prin
+ * aceeasi traducere ca adresa legaturii (`hrefTinta`), deci textul si `href`-ul nu pot diverge. Pe asezarea `md`
+ * (3s.md, site-ul RO) e identitatea, deci HTML-ul nu se schimba; pe `ro` (3s.com.ro) `/ro/preturi` devine `/preturi`,
+ * iar `/pricing` devine `/en/pricing`. Un text care nu e calea tintei (sau un card fara tinta) ramane cum e.
+ * `rute` si `asezare` sunt cele ale build-ului; parametri numai pentru probe.
+ */
+export function textCaleCard(legatura: Legatura, rute?: readonly RutaAsezabila[], asezare?: CodAsezare): string {
+  if (legatura.href === null || legatura.text !== legatura.href) return legatura.text;
+  return hrefTinta(legatura.href, rute, asezare);
 }
 
 /** Tinta butonului din caseta: adresa marcii, cand e confirmata; altfel formularul de pe pagina. */
@@ -163,7 +178,7 @@ export default function PaginaContact({
                     <Ic size={20} strokeWidth={1.5} className={s.cardIconita} aria-hidden />
                     <span className={s.cardTitlu}>{card.titlu}</span>
                     <span className={s.cardText}>{card.descriere}</span>
-                    <span className={s.cardAdresa}>{card.legatura.text}</span>
+                    <span className={s.cardAdresa}>{textCaleCard(card.legatura)}</span>
                   </Tinta>
                 </li>
               );

@@ -380,11 +380,14 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
         cale: "/pricing",
         editie: "en",
       });
-      // I1: copia engleza de sub /en are canonical-ul spre aceeasi pagina de pe 3s.md si nicio legatura hreflang;
-      // og:url ramane adresa servita aici.
+      // I1: copia engleza de sub /en are canonical-ul spre aceeasi pagina de pe 3s.md si nicio legatura hreflang. Open
+      // Graph cere in og:url adresa canonica a paginii, deci cardul social urmeaza canonical-ul: og:url e adresa de pe
+      // 3s.md (nu adresa servita aici), iar imaginile stau pe originea ei (regula GEO, tests/browser/ajutor/geo.ts).
       expect(en.alternates?.canonical).toBe(BAZA + "/pricing");
       expect(en.alternates?.languages).toBeUndefined();
-      expect((en.openGraph as { url?: string }).url).toBe("/en/pricing");
+      expect((en.openGraph as { url?: string }).url).toBe(BAZA + "/pricing");
+      expect((en.openGraph as { images?: { url: string }[] }).images?.[0]?.url).toBe(BAZA + "/opengraph-image");
+      expect((en.twitter as { images?: { url: string }[] }).images?.[0]?.url).toBe(BAZA + "/twitter-image");
       // Calea servita data drept cale a paginii e refuzata de tabel: comparatia se face pe sursa.
       expect(() =>
         M.metadata.metadataPagina({
@@ -449,9 +452,18 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
     >[];
     expect(iesire[0].url).toBe(BAZA + "/contact");
     expect(iesire[0]["@id"]).toBe(BAZA + "/ro/contact#webpage");
+    // Felia 141 (observatia criticilor lui 121): adresele paginilor ENGLEZE urmeaza canonical-ul, adica domeniul englezei
+    // din SITE_ALTERNATE (baza `en`, aici 3s.md) cu calea sursa, nu copia de sub `/en`. Inainte: BAZA + "/en" si
+    // BAZA + "/en/contact". Pagina romaneasca de mai sus ramane la adresa servita.
+    const englezei = new URL(
+      textProfil("SITE_ALTERNATE")
+        .split(",")
+        .find((v) => v.startsWith("en="))!
+        .slice(3),
+    ).origin;
     expect(
       (iesire[1].itemListElement as { item: string }[]).map((i) => i.item),
-    ).toEqual([BAZA + "/en", BAZA + "/en/contact"]);
+    ).toEqual([englezei + "/", englezei + "/contact"]);
     expect(iesire[2].url).toBe(BAZA + "/");
     expect((iesire[2].logo as { url: string }).url).toBe(BAZA + "/sigla.png");
     expect(iesire[3].url).toBe(BAZA + "/");
@@ -694,8 +706,16 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
     expect(inchideri).toBe(2);
   });
 
-  it("pagina de negasit: legaturile EN sub /en, legatura spre romana la radacina, cu hreflang ro-RO", () => {
-    const html = randeaza(createElement(M.NegasitGlobalEn), "/nu-exista");
+  it("pagina de negasit: legaturile EN sub /en, legatura spre romana la radacina, cu hreflang ro-RO", async () => {
+    // Exportul implicit alege editia dupa calea ceruta (antetul pus de middleware, citit cu `headers()`, care in afara
+    // unei cereri Next arunca), deci se randeaza direct pagina englezeasca; pe asezarea `ro` alegerea da engleza numai
+    // sub `/en` (simetricul lui `/ro` de pe 3s.md).
+    const P = await import("../src/app/global-not-found.en");
+    expect(
+      ["/en", "/en/x", "/en/legal/x", "/english", "/x", "/x/en/y", "/ro/x", null].map((c) => P.editiaPaginiiNegasite(c, "ro", ["en", "ro-MD"])),
+    ).toEqual(["en", "en", "en", "ro-MD", "ro-MD", "ro-MD", "ro-MD", "ro-MD"]);
+    expect(typeof M.NegasitGlobalEn).toBe("function");
+    const html = randeaza(createElement(P.PaginaNegasitEn), "/nu-exista");
     const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
     const adrese = hrefuri(main);
     expect(adrese.length).toBeGreaterThan(1);

@@ -355,6 +355,12 @@
   font-weight: 600;
   line-height: 1.12;
   letter-spacing: -0.03em;
+  /* Fara un singur cuvant pe ultimul rand ("lui." singur la 1440). `pretty` repara ultima propozitie. Prima
+     propozitie (inainte de `<br>`) pastreaza cuvantul singur si cand e blocul ei: masurat cu `pretty` si cu
+     `balance`, ruperea nu se muta sau trece pe primul rand (primul cuvant singur), fiindca propozitia de trei
+     cuvinte nu incape pe un rand si orice impartire in doua lasa un cuvant singur; pe engleza `balance` o lasa pe
+     loc. Se repara numai din text sau din latimea titlului. */
+  text-wrap: pretty;
 }
 
 @media (max-width: 1180px) {
@@ -454,6 +460,11 @@
   font-weight: 600;
   line-height: 46px;
   letter-spacing: -0.8px;
+  /* Fara un singur cuvant pe ultimul rand (masurat: "3S" singur pe titlul constructorului la 390). `balance` schimba
+     numai locul ruperii, nu textul si nici numarul de randuri. Regula sta pe clasa titlurilor de sectiune, nu pe
+     toate h1/h2: CTA-ul final, eroul interior si acordeonul raman deliberat fara `text-wrap` (proba pieselor
+     inghetate de pe paginile de produs). */
+  text-wrap: balance;
 }
 
 .t-h2-cta {
@@ -683,4 +694,40 @@
 
 .sari-la-continut:focus {
   top: 12px;
+}
+
+/* ============================================================================================
+   TIPARIREA unei pagini obisnuite (Ctrl P / Salvare ca PDF). Hartia A4 e mai ingusta de 768 px, deci pagina
+   ia asezarea de telefon; piesele fixe (pastila antetului, bara de canale de jos, bannerul, sertarul, paleta)
+   s-ar repeta pe FIECARE foaie, peste continut. Pe hartie nu au rost: ies din flux, iar continutul ramane
+   in latimea paginii. Elementele care apar la derulare se tiparesc vizibile, fiindca pe hartie nu se deruleaza.
+   Foaia de oferta a listei de preturi are regulile ei (clasa pusa pe `html` de butonul de tiparire); nimic de
+   aici nu o atinge.
+   ============================================================================================ */
+
+@media print {
+  html:not(.tipar-oferta-3s)
+    :is(
+      header[data-antet],
+      [data-bara-mobil],
+      [data-bara-distantier],
+      [data-consimtamant],
+      [data-sertar],
+      [data-sertar-fundal],
+      [data-paleta],
+      .sari-la-continut
+    ) {
+    display: none !important;
+  }
+
+  /* Stratul temei inchise a constructorului e fix pe ecran (taiat de cutia sectiunii); pe hartie un element fix se
+     repeta pe fiecare foaie, deci stratul ramane numai in cutia sectiunii lui. */
+  html:not(.tipar-oferta-3s) section[data-ciot="constructor"] > [aria-hidden="true"] {
+    position: absolute !important;
+  }
+
+  html:not(.tipar-oferta-3s) .reveal-ascuns {
+    opacity: 1;
+    transform: none;
+  }
 }

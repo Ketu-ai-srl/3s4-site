@@ -10,6 +10,7 @@ import { navigatieRoMd } from "@/content/navigatie-ro-md";
 import { RUTE, editiaRutei } from "@/content/rute";
 import { atributeLimba } from "@/lib/asezare";
 import { EDITII } from "@/lib/editii";
+import { PaginaNegasitEn, editiaCererii, metadataEn } from "./global-not-found.en";
 import Buton from "@/components/primitive/Buton";
 import { CLASE_FONTURI } from "@/lib/fonturi";
 import s from "./negasita.module.css";
@@ -26,13 +27,26 @@ import s from "./negasita.module.css";
 // Ca geamana ei EN si ca pagina de negasit romaneasca: acelasi stil (`negasita.module.css`), eticheta, butonul spre
 // start (cu calea SURSA, pe care `Buton` o serveste), legatura de sarit la continut, bannerul de consimtamant (ca
 // "Setari cookie-uri" din subsol sa deschida panoul) si bara de canale de pe telefon. Textele raman cele existente.
+//
+// PE EDITIA CAII CERUTE (regula e scrisa o singura data, in `global-not-found.en.tsx`): pe 3s.com.ro o adresa
+// inexistenta de sub `/en` primeste pagina de negasit englezeasca, cu legaturile asezarii, iar restul pe cea de mai jos.
+// Pe 3s.md pagina romaneasca de aici e cea pe care o primesc adresele inexistente de sub `/ro`.
 
-export const metadata: Metadata = {
+export const metadataRo: Metadata = {
   title: "Pagina nu există | " + BRAND.nume,
   robots: { index: false, follow: false },
 };
 
-export default function NegasitGlobalRo() {
+export async function generateMetadata(): Promise<Metadata> {
+  return (await editiaCererii()) === "en" ? metadataEn : metadataRo;
+}
+
+export default async function NegasitGlobalRo() {
+  return (await editiaCererii()) === "en" ? <PaginaNegasitEn /> : <PaginaNegasitRo />;
+}
+
+/** Pagina de negasit romaneasca (fara alegerea editiei). */
+export function PaginaNegasitRo() {
   const indexRo = EDITII["ro-MD"].prefix;
   const drumuri = RUTE.filter((r) => editiaRutei(r) === "ro-MD" && r.inHarta && r.cale !== indexRo);
   const start = RUTE.find((r) => editiaRutei(r) === "ro-MD" && r.cale === indexRo);

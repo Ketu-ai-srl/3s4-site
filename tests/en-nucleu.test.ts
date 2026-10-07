@@ -276,9 +276,21 @@ describe('ce nu ajunge pe paginile EN nucleu', () => {
     expect(definitie(mutant)).not.toEqual(prima)
   })
 
+  // Legatura spre pagina de comparatie de pe start (felia 141, M7): eticheta numeste ce compara pagina, "3S vs Google
+  // Drive". E o comparatie, nu o integrare (decizia 43 scoate integrarile cu nume), iar butonul startului spre aceeasi
+  // pagina are deja eticheta asta. Iese din text numai legatura intreaga, exacta; orice alta aparitie ramane acuzata.
+  const LEGATURA_COMPARATIE = '[3S vs Google ' + 'Drive](/compare/3s-vs-google-and-box)'
+  const faraComparatie = (t: string) => t.split(LEGATURA_COMPARATIE).join('')
+
+  it('martorii exceptiei: legatura exacta iese, aceeasi denumire in alta fraza ramane acuzata', () => {
+    expect(textModul(home)).toContain(LEGATURA_COMPARATIE)
+    expect(incalcari(faraComparatie('See ' + LEGATURA_COMPARATIE + '.'))).toEqual([])
+    expect(incalcari(faraComparatie(LEGATURA_COMPARATIE + ' Connect Google ' + 'Drive in one click.'))).toContain('integrarile cu nume (decizia 43)')
+  })
+
   for (const [cheie, m] of Object.entries({ home, platform, pricing, enterprise, contact, about })) {
     it(cheie + ': zero incalcari in tot ce exporta modulul', () => {
-      expect(incalcari(textModul(m))).toEqual([])
+      expect(incalcari(faraComparatie(textModul(m)))).toEqual([])
     })
   }
 

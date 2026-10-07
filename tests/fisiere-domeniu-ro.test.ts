@@ -1,6 +1,12 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
-import { createElement } from "react";
+import {
+  Children,
+  createElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -68,6 +74,7 @@ async function incarca(
     DateStructurateSite: (
       await import("../src/components/seo/DateStructurateSite")
     ).default,
+    JsonLdPeCale: (await import("../src/components/seo/JsonLdPeCale")).default,
     robots: await import("../src/app/robots.txt/route"),
     acasaRoMd: await import("../src/content/ro-md/acasa"),
     contactRoMd: await import("../src/content/ro-md/contact"),
@@ -149,6 +156,35 @@ async function jsonLdPaginiRoMd(asezare: "md" | "ro") {
 const aparitii = (blocuri: string[], sir: string) =>
   blocuri.join(" ").split('"' + sir + '"').length - 1;
 
+/**
+ * Puntile `JsonLdPeCale` din arborele lui `DateStructurateSite`, cu proprietatea `json` primita de fiecare.
+ * `JsonLdPeCale` e o componenta de BROWSER: proprietatile ei intra in datele de hidratare ale FIECAREI pagini, oricare
+ * ar fi calea, si cand pe server nu randeaza nimic. De aceea se masoara proprietatea, nu HTML-ul randat: pe asezarea
+ * `ro` calea sursa a lui `/` e `/ro`, deci randarea cu `usePathname` = `/` iese goala ORICE ar primi puntea (proba pe
+ * HTML era oarba la mutantul conditiei, `editie !== "en"`: trecea cu el, 17 din 17).
+ */
+function puntiPeCale(M: Module): string[] {
+  const arbore = M.DateStructurateSite() as ReactElement<{
+    children?: ReactNode;
+  }>;
+  return Children.toArray(arbore.props.children)
+    .filter(
+      (e): e is ReactElement<{ json: string }> =>
+        isValidElement(e) && e.type === M.JsonLdPeCale,
+    )
+    .map((e) => e.props.json);
+}
+
+/** Profilul site-ului romanesc vechi (`ro-RO`, asezarea md): fara variabilele de domeniu, ca build-ul implicit. */
+const PROFIL_RO_RO: Record<string, string> = {
+  SITE_URL: "",
+  SITE_EDITII: "",
+  SITE_ALTERNATE: "",
+  SITE_ASEZARE: "",
+  OPERATOR_JSON: "",
+  CANALE_JSON: "",
+};
+
 describe("profilurile masurate", () => {
   it("3s.md si 3s.com.ro au originile din tabelul domeniilor si asezarile md / ro", () => {
     expect([
@@ -180,6 +216,10 @@ describe("asezarea md (3s.md): fisierele domeniului, neschimbate", () => {
     const graf = M.dateStructurate.grafSite();
     const site = graf["@graph"].find((n) => n["@type"] === "WebSite");
     expect(site?.inLanguage).toBe("en");
+  });
+
+  it("graful startului vechi nu ajunge nici in datele de hidratare: nicio punte JsonLdPeCale pe 3s.md", () => {
+    expect(puntiPeCale(M)).toEqual([]);
   });
 
   it("martorul literalilor: exact doua `ro-MD` in nodurile WebPage ale startului si contactului", () => {
@@ -293,6 +333,11 @@ describe("asezarea ro (3s.com.ro): fisierele domeniului", () => {
       expect(html).not.toContain(interzis);
   });
 
+  it("graful startului vechi (RON, SoftwareApplication) nu ajunge in datele de hidratare: nicio punte JsonLdPeCale pe 3s.com.ro", () => {
+    // Masurat pe proprietatea `json` a puntii (vezi `puntiPeCale`), nu pe HTML: asta ar fi trimis-o, pe fiecare pagina.
+    expect(puntiPeCale(M)).toEqual([]);
+  });
+
   it("graful comun e acelasi ca pe 3s.md, in afara originii, a limbii si a numarului de WhatsApp", async () => {
     const ro = JSON.stringify(M.dateStructurate.grafSite());
     const Mmd = await incarca("md");
@@ -361,6 +406,29 @@ describe("asezarea ro (3s.com.ro): fisierele domeniului", () => {
     expect(cuLiteral).toEqual([]);
     // Martorul regexului: prinde forma literala, asamblata aici.
     expect(literal.test("inLanguage: " + JSON.stringify(COD_ROMD) + ",")).toBe(true);
+  });
+});
+
+// MARTORUL POZITIV al puntii: pe profilul `ro-RO` (site-ul romanesc vechi, radacina `ro-RO`) graful startului e chiar
+// al lui, deci aceeasi masuratoare GASESTE puntea, cu RON si SoftwareApplication in `json`. Fara el, zeroul de pe 3s.md si
+// de pe 3s.com.ro ar putea veni dintr-o masuratoare care nu vede nimic.
+describe("martorul pozitiv: profilul ro-RO trimite graful startului prin punte", () => {
+  let M: Module;
+  beforeAll(async () => {
+    M = await incarca("md", PROFIL_RO_RO);
+  });
+  afterAll(() => vi.unstubAllEnvs());
+
+  it("puntea exista o data, cu SoftwareApplication si RON in `json`, iar pe `/` blocul ajunge si in HTML", () => {
+    expect(M.site.editiaRadacinii().cod).toBe("ro-RO");
+    const punti = puntiPeCale(M);
+    expect(punti).toHaveLength(1);
+    expect(punti[0]).toContain('"SoftwareApplication"');
+    expect(punti[0]).toContain('"RON"');
+    // Pe asezarea md calea sursa a lui `/` e chiar `/`: randarea o arata (deci si proba pe HTML vede puntea aici).
+    const html = renderToStaticMarkup(createElement(M.DateStructurateSite));
+    expect(blocuriJsonLd(html)).toHaveLength(2);
+    expect(html).toContain("SoftwareApplication");
   });
 });
 

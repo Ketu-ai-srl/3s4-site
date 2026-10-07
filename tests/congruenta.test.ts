@@ -215,6 +215,53 @@ describe('controlul (f): randul fara cod, cu un cod din afara listei sau un camp
   })
 })
 
+/**
+ * Temeiul randului de canal pe P10: starea si ceasul randurilor panoului de canale ies pe 3s.md fiindca randul
+ * WhatsApp nu publica un program (constatarea m1 a testului in browser din 06.10.2026), nu fiindca 3s.md n-are
+ * formulare. Validarea de forma de mai sus primeste orice cod din lista inchisa, deci un `d3` pus la loc pe aceste
+ * doua randuri trecea verde; cazul de aici cere codul anume si refuza `d3`.
+ */
+const CLASE_CANAL = ['contact_randStare', 'contact_randCeas']
+const COD_CANAL = 'canal-fara-' + 'program'
+
+function abateriTemeiCanal(lista: Json): string[] {
+  const randuri = (lista.randuri as Json[]).filter((r) => r.tip === 'clasa' && CLASE_CANAL.includes(r.clasa as string))
+  const abateri: string[] = []
+  for (const clasa of CLASE_CANAL) if (!randuri.some((r) => r.clasa === clasa)) abateri.push(clasa + ': randul lipseste')
+  for (const r of randuri) {
+    const coduri = typeof r.cod === 'string' ? [r.cod] : (r.cod as string[])
+    if (!coduri.includes(COD_CANAL)) abateri.push(r.clasa + ': fara codul ' + COD_CANAL)
+    if (coduri.includes('d' + '3')) abateri.push(r.clasa + ': poarta inca temeiul formularelor')
+  }
+  return abateri
+}
+
+describe('P10: randurile de stare si ceas ale panoului de canale poarta temeiul canalului fara program', () => {
+  const p10 = PERECHI.find((p) => p.lista.pereche === 'P10')?.lista as Json
+
+  it('codul e in lista inchisa, ca regula', () => {
+    expect(TEMEIURI.coduri[COD_CANAL]?.fel).toBe('regula')
+  })
+
+  it('pe lista reala: ambele randuri au codul canalului, niciunul pe cel al formularelor', () => {
+    expect(abateriTemeiCanal(p10)).toEqual([])
+  })
+
+  it('martor POZITIV: o copie in memorie cu temeiul formularelor pus la loc e prinsa pe ambele randuri', () => {
+    const copie = JSON.parse(JSON.stringify(p10)) as Json
+    for (const r of copie.randuri as Json[]) if (CLASE_CANAL.includes(r.clasa as string)) r.cod = 'd' + '3'
+    const abateri = abateriTemeiCanal(copie)
+    expect(abateri.filter((a) => a.includes('poarta inca')).length).toBe(2)
+    expect(abateri.filter((a) => a.includes('fara codul')).length).toBe(2)
+    // Si varianta cu ambele coduri: `d3` alaturi de cel nou ramane refuzat.
+    for (const r of copie.randuri as Json[]) if (CLASE_CANAL.includes(r.clasa as string)) r.cod = [COD_CANAL, 'd' + '3']
+    expect(abateriTemeiCanal(copie).length).toBe(2)
+    // Un rand scos din lista e si el prins.
+    copie.randuri = (copie.randuri as Json[]).filter((r) => r.clasa !== 'contact_randCeas')
+    expect(abateriTemeiCanal(copie).join('\n')).toContain('contact_randCeas: randul lipseste')
+  })
+})
+
 describe('exceptiile pachetului JS si lista alba a textului', () => {
   it('fiecare exceptie numeste module care exista, pana cand si de ce', () => {
     const e = citeste('exceptii-pachet.json') as { exceptii: { module: string[]; pana_la: string; motiv: string }[] }

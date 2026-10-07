@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import type { Browser, Page } from '@playwright/test'
 import { navigheaza } from './navigare'
 import { nemasurat } from './proiect'
@@ -258,13 +259,22 @@ export type ImagineSociala = {
   eticheta: 'og:image' | 'twitter:image'
   /** Adresa din eticheta, `null` cand eticheta lipseste. */
   adresa: string | null
-  /** Adresa ceruta de fapt: aceeasi cale, pe serverul local. */
+  /** Adresa ceruta de fapt: aceeasi cale, pe serverul local care serveste originea DECLARATA (`origineLocala`). */
   ceruta: string | null
   status: number | null
   tip: string | null
   octeti: number
   png: boolean
+  /** Amprenta SHA-256 a octetilor primiti (hex), `null` cand imaginea nu s-a cerut. */
+  sha256: string | null
 }
+
+/**
+ * Serverele locale ale originilor declarate: originea dintr-o eticheta (`https://3s.md`) -> originea serverului local
+ * care serveste build-ul acelui domeniu (`http://127.0.0.1:4751`). O proba care masoara pagini al caror card social
+ * arata alt domeniu (copia engleza a lui 3s.com.ro, cu canonical-ul pe 3s.md) da aici serverul acelui domeniu.
+ */
+export type OriginiLocale = Readonly<Record<string, string>>
 
 export type MasuraSociala = {
   url: string
@@ -279,11 +289,36 @@ export type MasuraSociala = {
 /** Semnatura oricarui fisier PNG (specificatia PNG, sectiunea 5.2). */
 const SEMNATURA_PNG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
 
+/** Calea fara bara finala (radacina ramane `/`), ca `https://x` si `https://x/` sa fie aceeasi pagina. */
+function caleFaraBara(cale: string): string {
+  const c = cale.replace(/\/+$/, '')
+  return c === '' ? '/' : c
+}
+
 /**
- * Imaginea unei etichete, ceruta de la serverul LOCAL. Eticheta poarta adresa absoluta a site-ului
- * (`metadataBase`, din SITE_URL), deci o cerere pe ea ar pleca spre mediul public, nu spre build-ul
- * masurat: se cere aceeasi cale pe originea paginii deschise, dupa ce se verifica faptul ca
- * adresa e pe originea canonical-ului.
+ * Serverul local care serveste originea DECLARATA a unei imagini, sau `null` cand nu se stie. Ordinea:
+ *   1. `origini` (dat de proba), pe originea declarata;
+ *   2. pagina deschisa E documentul canonical (aceeasi cale ca a canonical-ului, iar imaginea e pe originea lui): atunci
+ *      serverul paginii serveste chiar originea canonical-ului, deci si imaginea declarata acolo;
+ *   3. altfel nu exista un server cunoscut pentru originea declarata. Inainte, imaginea se cerea mereu pe originea
+ *      paginii deschise, deci o copie servita aici, cu canonical-ul pe alt domeniu, masura imaginea ei, nu pe cea
+ *      declarata (corect numai cat timp cele doua erau aceiasi octeti).
+ */
+function origineLocala(declarata: URL, canonical: string | null, urlPagina: string, origini: OriginiLocale): string | null {
+  const data = origini[declarata.origin]
+  if (data !== undefined) return data
+  if (canonical === null) return null
+  const c = new URL(canonical, urlPagina)
+  const p = new URL(urlPagina)
+  return c.origin === declarata.origin && caleFaraBara(c.pathname) === caleFaraBara(p.pathname) ? p.origin : null
+}
+
+/**
+ * Imaginea unei etichete, ceruta la adresa DECLARATA, prin serverul local al originii ei (`origineLocala`). Eticheta
+ * poarta adresa absoluta a site-ului (`metadataBase`, din SITE_URL), deci o cerere directa ar pleca spre mediul public,
+ * nu spre build-ul masurat: se cere aceeasi cale pe serverul care serveste originea declarata. O imagine care nu e pe
+ * originea canonical-ului e deja o abatere; ea se cere, informativ, pe originea paginii (forma de dinainte). O imagine
+ * pe originea canonical-ului fara server cunoscut e NEMASURATA si se scrie ca abatere, nu se masoara in alt loc.
  */
 async function masoaraImaginea(
   eticheta: ImagineSociala['eticheta'],
@@ -291,8 +326,9 @@ async function masoaraImaginea(
   canonical: string | null,
   urlPagina: string,
   abateri: string[],
+  origini: OriginiLocale,
 ): Promise<ImagineSociala> {
-  const gol: ImagineSociala = { eticheta, adresa, ceruta: null, status: null, tip: null, octeti: 0, png: false }
+  const gol: ImagineSociala = { eticheta, adresa, ceruta: null, status: null, tip: null, octeti: 0, png: false, sha256: null }
   if (adresa === null) {
     abateri.push('lipseste ' + eticheta)
     return gol
@@ -304,18 +340,25 @@ async function masoaraImaginea(
     abateri.push(eticheta + ' nu e o adresa absoluta: ' + adresa)
     return gol
   }
-  if (canonical !== null && absoluta.origin !== new URL(canonical, urlPagina).origin) {
+  const peCanonical = canonical === null || absoluta.origin === new URL(canonical, urlPagina).origin
+  if (!peCanonical) {
     abateri.push(eticheta + ' (' + adresa + ') nu e pe originea canonical-ului (' + canonical + ')')
   }
-  const ceruta = new URL(absoluta.pathname + absoluta.search, new URL(urlPagina).origin).toString()
+  const server = origineLocala(absoluta, canonical, urlPagina, origini) ?? (peCanonical ? null : new URL(urlPagina).origin)
+  if (server === null) {
+    abateri.push(eticheta + ' (' + adresa + ') NEMASURAT: originea declarata nu are server local (se da in `origini`)')
+    return gol
+  }
+  const ceruta = new URL(absoluta.pathname + absoluta.search, server).toString()
   const raspuns = await fetch(ceruta, { redirect: 'manual' })
   const corp = new Uint8Array(await raspuns.arrayBuffer())
   const tip = raspuns.headers.get('content-type')
   const png = SEMNATURA_PNG.every((b, i) => corp[i] === b)
+  const sha256 = createHash('sha256').update(corp).digest('hex')
   if (raspuns.status !== 200) abateri.push(eticheta + ' raspunde ' + raspuns.status + ' la ' + ceruta)
   else if (!(tip ?? '').startsWith('image/png')) abateri.push(eticheta + ' are tipul ' + tip + ', nu image/png')
   else if (!png) abateri.push(eticheta + ' se declara image/png, dar nu are semnatura PNG')
-  return { eticheta, adresa, ceruta, status: raspuns.status, tip, octeti: corp.length, png }
+  return { eticheta, adresa, ceruta, status: raspuns.status, tip, octeti: corp.length, png, sha256 }
 }
 
 /**
@@ -324,11 +367,12 @@ async function masoaraImaginea(
  * metadata proprie (`metadataPagina`) ar imparti in retele startul, nu pe ea.
  *
  * Si are imaginea: `og:image` si `twitter:image` exista, sunt pe originea site-ului si raspund
- * 200 image/png, cu semnatura PNG. Un `openGraph` declarat de pagina inlocuieste obiectul din
- * layout cu imagine cu tot, deci o pagina interioara poate pierde imaginea fara ca nimic altceva
- * sa se schimbe (constatarea criticului, 25.09.2026).
+ * 200 image/png, cu semnatura PNG, la adresa DECLARATA (prin serverul local al originii ei, vezi
+ * `origineLocala`; `origini` le da pe cele pe care pagina deschisa nu le serveste). Un `openGraph`
+ * declarat de pagina inlocuieste obiectul din layout cu imagine cu tot, deci o pagina interioara
+ * poate pierde imaginea fara ca nimic altceva sa se schimbe (constatarea criticului, 25.09.2026).
  */
-export async function masoaraMetadataSociala(browser: Browser, url: string): Promise<MasuraSociala> {
+export async function masoaraMetadataSociala(browser: Browser, url: string, origini: OriginiLocale = {}): Promise<MasuraSociala> {
   const { pagina, inchide } = await deschideFaraJs(browser, url)
   const date = await pagina.evaluate(() => ({
     titlu: document.title,
@@ -347,8 +391,8 @@ export async function masoaraMetadataSociala(browser: Browser, url: string): Pro
   }
   if (date.ogTitlu !== date.titlu) abateri.push('og:title (' + date.ogTitlu + ') nu e titlul (' + date.titlu + ')')
   const imagini = [
-    await masoaraImaginea('og:image', date.ogImagine, date.canonical, url, abateri),
-    await masoaraImaginea('twitter:image', date.cardImagine, date.canonical, url, abateri),
+    await masoaraImaginea('og:image', date.ogImagine, date.canonical, url, abateri, origini),
+    await masoaraImaginea('twitter:image', date.cardImagine, date.canonical, url, abateri, origini),
   ]
   return {
     url,

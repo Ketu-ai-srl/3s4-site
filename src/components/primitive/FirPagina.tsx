@@ -6,7 +6,19 @@
 // Adresele din `BreadcrumbList` vin din `adresaSite()`, adica din `SITE_URL`, ca toate celelalte
 // adrese absolute ale site-ului (felia seo-tehnic, auditul SEO D2). Pana atunci veneau direct din
 // `ADRESA_BAZA`, deci la lansare firul ar fi ramas pe domeniul de proba.
+//
+// ASEZAREA (`src/lib/asezare.ts`): nivelurile poarta cai SURSA (ca legaturile lor, pe care `Tinta` le traduce), deci
+// `item`-urile se traduc la emitere prin `adreseServite` (`src/components/seo/JsonLd.tsx`), aceeasi functie ca restul
+// JSON-LD-ului. Fara ea, pe 3s.com.ro firul arata spre adresele sursa: `/ro/...` (redirect) pe paginile romanesti, iar
+// pe cele englezesti `/pricing` (inexistenta) si startul romanesc in locul lui `/en`. Pe asezarea `md` graful iese
+// exact cel de dinainte (acelasi obiect, deci acelasi text).
+//
+// SERIALIZAREA trece prin `serializeaza` (`src/components/seo/date-structurate.ts`), ca in `JsonLd.tsx`: `<` devine
+// secventa de evadare unicode, deci un nume de nivel care contine `</script>` nu poate inchide eticheta. Pe datele de azi niciun nume nu
+// are `<`, deci textul scris e acelasi ca al lui `JSON.stringify`.
 
+import { adreseServite } from "@/components/seo/JsonLd";
+import { serializeaza } from "@/components/seo/date-structurate";
 import { adresaSite } from "@/lib/site";
 import Tinta from "./Tinta";
 import s from "./primitive.module.css";
@@ -55,6 +67,14 @@ export function dateFir(niveluri: NivelFir[], baza: string = adresaSite()) {
   };
 }
 
+/**
+ * `BreadcrumbList` cu adresele SERVITE (vezi antetul). `adreseServite` primeste un graf: firul intra ca singurul nod al
+ * unui graf si iese de acolo, deci obiectul scris in pagina e acelasi ca al lui `dateFir` (pe `md`, chiar el).
+ */
+export function dateFirServite(niveluri: NivelFir[]) {
+  return adreseServite({ "@context": "https://schema.org", "@graph": [dateFir(niveluri)] })["@graph"][0];
+}
+
 export default function FirPagina({
   niveluri,
   aliniere = "stanga",
@@ -86,7 +106,7 @@ export default function FirPagina({
           );
         })}
       </ol>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(dateFir(niveluri)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeaza(dateFirServite(niveluri)) }} />
     </nav>
   );
 }

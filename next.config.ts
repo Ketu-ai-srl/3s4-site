@@ -48,6 +48,11 @@ export function anteteSecuritate(mediu: string | undefined = process.env.SITE_EN
 // ASEZAREA (`src/lib/asezare.ts`) decide prefixul si codul: pe `md` (implicitul) sunt chiar cele din catalogul
 // editiilor, deci regulile raman cele de azi; pe `ro` romana (continutul `ro-MD`) sta la radacina cu `ro-RO`, iar
 // engleza sub `/en`, cu `en`.
+// `llms.txt` e text ENGLEZESC pe ambele asezari (pe `ro` e ramura EN a lui 3s.md, cu originea si caile servite,
+// `src/lib/llms.ts`), deci pe `ro` primeste limba englezei, nu pe a radacinii: regula vine ULTIMA, ca sa castige.
+// Pe `md` radacina e chiar engleza, deci regula nu se scrie si lista ramane cea de azi.
+const CALE_LLMS = '/llms.txt'
+
 export function anteteLimba(
   editii: readonly CodEditie[],
   asezare: CodAsezare = 'md',
@@ -59,6 +64,10 @@ export function anteteLimba(
     const antet = [{ key: 'Content-Language', value: inLanguage }]
     if (prefix === '') reguli.unshift({ source: '/:path*', headers: antet })
     else reguli.push({ source: prefix, headers: antet }, { source: prefix + '/:cale*', headers: antet })
+  }
+  const engleza = ASEZARI[asezare].en
+  if (editii.includes('en') && engleza.prefix !== '') {
+    reguli.push({ source: CALE_LLMS, headers: [{ key: 'Content-Language', value: engleza.inLanguage }] })
   }
   return reguli
 }

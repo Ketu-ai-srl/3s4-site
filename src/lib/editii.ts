@@ -238,8 +238,12 @@ export function problemeCoerenta(
  * o adresa gresita in grupul hreflang comun al domeniilor.
  *   - fiecare cod (in afara de `x-default`) trebuie sa fie o varianta servita (`coduri`, tabelul inchis din asezare);
  *   - pe asezarea `ro` (3s.com.ro), baza acestui site (`SITE_URL`, fara prefix) trebuie sa apara in lista cu `ro-RO`, si
- *     numai cu el: romana de la radacina e varianta `ro-RO`; engleza de sub `/en` nu intra in grup (canonical spre 3s.md).
- * `alternate` sunt variantele validate (`alternateSite`), `baza` originea acestui site. Lista goala = nimic de masurat.
+ *     numai cu el: romana de la radacina e varianta `ro-RO`; engleza de sub `/en` nu intra in grup (canonical spre 3s.md);
+ *   - tot pe `ro`, lista trebuie sa existe si sa aiba baza `en`: canonical-ul paginilor `/en` e pagina de pe domeniul
+ *     englezei (`canonicalEnglezei`, metadata.ts). Fara lista, sau fara `en` in ea, copia engleza ar ramane canonica
+ *     aici, adica o copie concurenta a lui 3s.md, iar romana de la radacina ar iesi fara grupul hreflang.
+ * `alternate` sunt variantele validate (`alternateSite`), `baza` originea acestui site. Lista goala: pe `md` nimic de
+ * masurat (site-ul fara variante), pe `ro` o problema.
  */
 export function problemeAlternateAsezare(
   asezare: "md" | "ro",
@@ -247,7 +251,15 @@ export function problemeAlternateAsezare(
   baza: string,
   coduri: readonly string[],
 ): string[] {
-  if (alternate.length === 0) return [];
+  if (alternate.length === 0) {
+    if (asezare === "md") return [];
+    return [
+      "SITE_ALTERNATE pe asezarea ro: lista lipseste (goala sau nesetata). Pe acest site ea poarta varianta ro-RO=" +
+        baza +
+        " si baza en (domeniul englezei), spre care au canonical-ul paginile /en; fara ea copia engleza ar fi canonica aici." +
+        " Se seteaza lista comuna celor doua domenii",
+    ];
+  }
   const probleme: string[] = [];
   for (const a of alternate) {
     if (a.hreflang === "x-default" || coduri.includes(a.hreflang)) continue;
@@ -264,6 +276,11 @@ export function problemeAlternateAsezare(
           baza +
           ") trebuie sa apara in lista o singura data, cu ro-RO si fara prefix (varianta de la radacina); lista o numeste " +
           (peBaza.length === 0 ? "deloc" : peBaza.map((a) => a.hreflang + "=" + a.adresa).join(", ")),
+      );
+    }
+    if (!alternate.some((a) => a.hreflang === "en")) {
+      probleme.push(
+        "SITE_ALTERNATE pe asezarea ro: lipseste baza en (domeniul englezei); paginile /en ale acestui site au canonical-ul spre ea, altfel copia engleza ar fi canonica aici",
       );
     }
   }

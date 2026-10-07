@@ -183,7 +183,7 @@ export const SURSE_CARD_EN: SurseSuplimentare[] = [
 const CTA = {
   ref: "en-vs",
   textWhatsapp:
-    "Hello 3S, I read your comparison with Google and Box AI [ref:en-vs]. I would like to ask whether 3S fits our case.",
+    "Hello 3S, I read your comparison with Google Drive [ref:en-vs]. I would like to ask whether 3S fits our case.",
   subiectEmail: "3S inquiry [ref:en-vs]",
 };
 
@@ -222,7 +222,8 @@ export const pagina: PaginaReferinta = {
       inLanguage: "en",
     },
   ],
-  // Registrul `en-referinta.json` ramane neschimbat (felia en-referinta): intrarile lui numesc modulul in `unde`.
+  // Registrul `en-referinta.json`: intrarile lui numesc modulul in `unde`. Intrarea despre Box AI e retrasa (stare
+  // `retras`, cu motivul in registru): pagina compara numai Google Drive, iar Box AI a ramas numai in fisa paginii.
   afirmatii: [
     "en-referinta-comparatii-publicitate-comparativa",
     "en-referinta-comparatii-marcaje-gemini-notebook",

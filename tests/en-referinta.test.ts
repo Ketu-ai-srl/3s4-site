@@ -449,7 +449,10 @@ describe('registrul de afirmatii en-referinta', () => {
   it('faptele de lege si ale furnizorilor raman neconfirmate pana la reverificarea dinaintea portii B', () => {
     const deVerificat = REGISTRU.filter((i) => /^en-referinta-(termene-|efacturare-arhivare-|comparatii-marcaje-)/.test(i.id))
     expect(deVerificat.length).toBeGreaterThanOrEqual(20)
-    expect(deVerificat.filter((i) => i.stare !== 'neconfirmat').map((i) => i.id)).toEqual([])
+    // Felia 141: intrarea Box AI e `retras` (pagina compara numai Google Drive), nu confirmata; o retragere nu e o
+    // confirmare, deci regula ramane "niciuna confirmata": neconfirmat sau retras.
+    expect(deVerificat.filter((i) => i.stare !== 'neconfirmat' && i.stare !== 'retras').map((i) => i.id)).toEqual([])
+    expect(deVerificat.filter((i) => i.stare === 'retras').map((i) => i.id)).toEqual(['en-referinta-comparatii-marcaje-' + 'bo' + 'x-ai'])
   })
 
   it('martor POZITIV: o pagina care citeaza un id absent din registru e prinsa de aceeasi verificare', () => {

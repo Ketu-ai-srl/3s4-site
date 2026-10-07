@@ -13,8 +13,12 @@
 //
 // DE CE ORELE EXACTE, desi referinta inmultea orele rotunjite: rotunjirea inainte de inmultire muta costul
 // pana la 9% fata de datele introduse (1 coleg x 10 min x 22 de zile = 3,67 h; la 5 EUR/h costul e 18,3, iar
-// formula veche afisa 20, adica 4 h x 5). Afisarea ramane pe numere intregi (orele si banii), cu separator
-// de mii pe amandoua ("2.200 h", "2,200 h" pe editia EN).
+// formula veche afisa 20, adica 4 h x 5). Banii se afiseaza intregi, cu separator de mii ("2.200", "2,200" pe EN).
+//
+// ORELE AFISATE, pe editie. Pe editiile en si ro-MD (3s.md, 3s.com.ro): sub 100 cu o zecimala, de la 100 intregi, cu
+// separatorul de mii al editiei (`formatOreZecimal`), ca inmultirea din fraza sa se poata verifica pe ecran: la 1 coleg,
+// 10 min si 5 EUR/h fraza spune 18 EUR langa 3,7 h (3,7 x 5 = 18,5), nu langa 4 h (4 x 5 = 20). Editia ro-RO pastreaza
+// orele intregi (`formatOre`), fiindca HTML-ul ei e fixat de proba de invarianta RO.
 
 import type { Cursor, Perioada, Plan } from "@/content/preturi";
 
@@ -83,10 +87,30 @@ export function formatBani(n: number, separatorMii: string = "."): string {
 
 /**
  * Orele, rotunjite la ora intreaga, cu separator de mii ca banii ("2.200"; pe EN "2,200"). La referinta orele
- * n-aveau separator ("1155 h"), iar in aceeasi fraza banii il aveau: doua forme pentru cifre vecine.
+ * n-aveau separator ("1155 h"), iar in aceeasi fraza banii il aveau: doua forme pentru cifre vecine. Forma editiei
+ * ro-RO; editiile en si ro-MD folosesc `formatOreZecimal`.
  */
 export function formatOre(n: number, separatorMii: string = "."): string {
   return formatBani(n, separatorMii);
+}
+
+/** Pragul de la care orele se afiseaza intregi pe editiile en si ro-MD; sub el, cu o zecimala. */
+export const PRAG_ORE_INTREGI = 100;
+
+/** Valoarea orelor asa cum se afiseaza pe editiile en si ro-MD: sub prag la o zecimala, de la prag la ora intreaga. */
+export function oreAfisate(n: number): number {
+  return Math.abs(n) < PRAG_ORE_INTREGI ? Math.round(n * 10) / 10 : Math.round(n);
+}
+
+/**
+ * Orele pe editiile en si ro-MD: sub 100 cu o zecimala ("3,7"; pe EN "3.7"), de la 100 in sus intregi, cu separatorul
+ * de mii al editiei ("2.200"; pe EN "2,200"). O valoare care iese intreaga dupa rotunjire se scrie fara zecimala ("22",
+ * nu "22,0"), ca la `formatZecimal`. Numeralul romanesc se acorda cu valoarea afisata (`oreAfisate`): "36,7 ore", dar
+ * "22 de ore".
+ */
+export function formatOreZecimal(n: number, separatorMii: string = ".", semnZecimal: string = ","): string {
+  const v = oreAfisate(n);
+  return Number.isInteger(v) ? formatBani(v, separatorMii) : v.toFixed(1).replace(".", semnZecimal);
 }
 
 /**

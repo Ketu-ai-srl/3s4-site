@@ -21,6 +21,7 @@
 // statistica; CTA-urile catre cont si contact se prind singure, dintr-un ascultator pe document,
 // ca butoanele sa nu poarte fiecare cod de analitica.
 
+import type { CodAsezare } from "@/lib/asezare";
 import { ga4Pornit } from "./stare-ga4";
 
 /** Formularele site-ului, in ordinea feliilor care le construiesc. */
@@ -130,8 +131,30 @@ export type CanalContact = (typeof CANALE_CONTACT)[number];
 export const LIMBI_EVENIMENT = ["en", "ro"] as const;
 export type LimbaEveniment = (typeof LIMBI_EVENIMENT)[number];
 
-/** Caile paginilor de contact ale editiilor (romana si engleza la `/contact`, romana pentru Moldova sub `/ro`). */
+/** Caile SURSA ale paginilor de contact ale editiilor (romana si engleza la `/contact`, romana pentru Moldova sub `/ro`). */
 export const CAI_CONTACT = ["/contact", "/ro/contact"] as const;
+
+/**
+ * Caile SERVITE ale paginilor de contact pe asezarea `ro` (3s.com.ro), in ordinea din `CAI_CONTACT`: engleza sub `/en`,
+ * romana la radacina. Scrise aici, nu calculate cu `caleServitaEditiei`: modulul intra in pachetul bannerului de pe
+ * toate site-urile, iar importul lui `src/lib/asezare.ts` muta bucatile JS ale site-ului romanesc (masurat pe
+ * invarianta ro-RO). Proba lor (`tests/analitica-s-b.test.ts`) le cere egale cu traducerea din `src/lib/asezare.ts`.
+ */
+export const CAI_CONTACT_RO = ["/en/contact", "/contact"] as const;
+
+/** Asezarea build-ului, citita ca in `asezareBuild` (valoarea publica, scrisa literal ca Next s-o inlocuiasca). */
+function asezareEveniment(): CodAsezare {
+  const valoare = process.env.NEXT_PUBLIC_SITE_ASEZARE || process.env.SITE_ASEZARE || "";
+  return valoare.trim().toLowerCase() === "ro" ? "ro" : "md";
+}
+
+/**
+ * Caile SERVITE ale paginilor de contact pe asezare: tinta unui clic se citeste din bara de adrese (calea servita), deci
+ * se compara cu acestea, nu cu caile sursa. Pe `md` sunt chiar `CAI_CONTACT`; pe `ro`, `CAI_CONTACT_RO`.
+ */
+export function caiContactServite(asezare: CodAsezare = asezareEveniment()): readonly string[] {
+  return asezare === "ro" ? CAI_CONTACT_RO : CAI_CONTACT;
+}
 
 export type ParametriEvenimentUmami = {
   contact: { canal: CanalContact; lang: LimbaEveniment };
@@ -173,12 +196,14 @@ type EvenimentUmami = { [N in NumeEvenimentUmami]: [N, ParametriEvenimentUmami[N
 
 /**
  * Evenimentul unui clic pe legatura data, sau `null`. Pura (fara document), ca s-o poata masura proba:
- * `href` e adresa absoluta a legaturii, `lang` atributul ei, `pagina` adresa paginii si `limbaPagina` limba ei.
+ * `href` e adresa absoluta a legaturii, `lang` atributul ei, `pagina` adresa paginii si `limbaPagina` limba ei;
+ * `asezare` da caile servite ale paginilor de contact (implicit asezarea build-ului).
  */
 export function evenimentDinLegatura(
   legatura: { href: string; lang: string | null },
   pagina: string,
   limbaPagina: string | null,
+  asezare: CodAsezare = asezareEveniment(),
 ): EvenimentUmami | null {
   const lang = limbaDin(limbaPagina);
   if (lang === null) return null;
@@ -197,7 +222,7 @@ export function evenimentDinLegatura(
   if (adresa.origin !== origine.origin) return null;
   const tinta = limbaDin(legatura.lang);
   if (tinta !== null && tinta !== lang) return ["lang_switch", { lang: tinta }];
-  if ((CAI_CONTACT as readonly string[]).includes(adresa.pathname)) return ["cta_contact", { lang }];
+  if (caiContactServite(asezare).includes(adresa.pathname)) return ["cta_contact", { lang }];
   return null;
 }
 

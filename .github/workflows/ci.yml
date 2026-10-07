@@ -132,9 +132,10 @@ jobs:
           python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-staging.log"
           grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-staging.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
       # Pe productie, INFORMATIV pana la poarta B: raman intentionat marcajele reprezentantului UE (asteapta juristul),
-      # N20 (acceptarea termenilor pe client) si N26 (stergerea completa a datelor unui client), cum le raporteaza
-      # poarta pe productie; N23 (tara gazdei) a iesit din textele juridice. Pasul nu pica jobul; iesirea numeste ce
-      # mai opreste publicarea.
+      # cum le raporteaza poarta pe productie. Ce alte marcaje mai admite J-01 (forma "[de publicat ...]" si perechea ei
+      # engleza) se citeste in registrul MARCAJE_ADMISE din poarta, iar ce note mai raman in textele juridice (N20, N26)
+      # se citeste in iesirea ei pe productie: comentariul nu le fixeaza, fiindca se schimba odata cu textele juridice.
+      # N23 (tara gazdei) a iesit din textele juridice. Pasul nu pica jobul; iesirea numeste ce mai opreste publicarea.
       # Trecerea lui pe blocant e pasul portii B, nu al feliei.
       - name: Poarta juridica 3s.md (productie, informativ)
         run: |
@@ -148,12 +149,15 @@ jobs:
       # ambele domenii). Pe build-ul romanesc poarta ruleaza in porti:build, pe un build, si cere zero alternate.
       - name: Colectia 3s.md, pentru reciprocitatea intre domenii
         run: node .claude/scripts/porti/colecteaza-build.mjs --iesire "$RUNNER_TEMP/colectie-3s-md" --port 4751
+      # Artefactul il citeste jobul "Profil 3s.com.ro" din ACEEASI rulare (si, la nevoie, cine analizeaza o identitate rosie
+      # in zilele urmatoare): 7 zile ajung, nu cele 90 implicite.
       - name: Colectia 3s.md, ca artefact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: colectie-3s-md
           path: ${{ runner.temp }}/colectie-3s-md
           if-no-files-found: error
+          retention-days: 7
       - name: Proba editiilor, pe serverul build-ului 3s.md
         run: |
           pnpm exec next start -p 4750 -H 127.0.0.1 > "$RUNNER_TEMP/server-3s-md.log" 2>&1 &
@@ -249,6 +253,7 @@ jobs:
           verifica '/contact status' "$(curl -s -o /dev/null -w '%{http_code}' $A/contact)" 200
           verifica '/en lang' "$(curl -s $A/en | grep -o '<html lang="[a-z]*"' | head -1)" '<html lang="en"'
           verifica '/en/pricing Content-Language' "$(curl -s -D - -o /dev/null $A/en/pricing | tr -d '\r' | grep -i '^content-language:' | cut -d' ' -f2)" en
+          verifica '/llms.txt Content-Language (text englezesc pe ambele domenii)' "$(curl -s -D - -o /dev/null $A/llms.txt | tr -d '\r' | grep -i '^content-language:' | cut -d' ' -f2)" en
           verifica '/juridic/cookies status' "$(curl -s -o /dev/null -w '%{http_code}' $A/juridic/cookies)" 200
           verifica '/juridic/dpa status (poarta C)' "$(curl -s -o /dev/null -w '%{http_code}' $A/juridic/dpa)" 404
           verifica '/ro/contact status' "$(curl -s -o /dev/null -w '%{http_code}' $A/ro/contact)" 308
@@ -334,6 +339,23 @@ jobs:
             ${{ runner.temp }}/colectie-3s-com-ro
             ${{ runner.temp }}/perechi-3s-md-3s-com-ro.json
           if-no-files-found: warn
+      # IDENTITATEA celor doua domenii (decizia 55: "unica diferenta trebuie sa fie emailurile si numerele de contact"):
+      # colectia 3s.md (artefactul jobului 3s.md) contra colectiei 3s.com.ro, pagina cu pagina, pe perechile scrise mai
+      # sus din manifestul de rute, cu lista INCHISA de diferente permise din `compara-build.py --regula identitate`
+      # (originea, asezarea romanei si a englezei, contactele care difera, limba romanei, harta fara /en, randurile DNS si
+      # posta din tabelul destinatarilor din politica de confidentialitate). Orice alta diferenta inroseste jobul. Iesirea tipareste numarul de perechi comparate si
+      # numarul de aplicari pe fiecare regula; o regula fara nicio aplicare e tot rosu (normalizator stricat, nu
+      # identitate). A doua axa, pe fiecare colectie: adresele paginilor (`url`/`item` din JSON-LD, `og:url`) duc la o pagina
+      # servita, 200, in aceeasi limba (o adresa gresita la fel pe ambele domenii trece de comparatie, nu si de asta).
+      # Ultimul pas al jobului, ca un rosu aici sa nu ascunda masuratorile de mai sus.
+      - name: Identitatea 3s.md si 3s.com.ro
+        if: ${{ !cancelled() }}
+        run: |
+          python .claude/scripts/porti/compara-build.py --regula identitate --perechi "$RUNNER_TEMP/perechi-3s-md-3s-com-ro.json" \
+            "$RUNNER_TEMP/colectie-3s-md" "$RUNNER_TEMP/colectie-3s-com-ro" > "$RUNNER_TEMP/identitate.log" 2>&1 && cod=0 || cod=$?
+          cat "$RUNNER_TEMP/identitate.log"
+          grep -Eq '^perechi comparate [1-9][0-9]*;' "$RUNNER_TEMP/identitate.log" || { echo "lipseste numarul de perechi comparate (N > 0)"; exit 3; }
+          exit $cod
 
   # INVARIANTA RELATIVA: o felie care declara ca NU schimba un site construit din acest cod (site-ul RO sau 3s.md)
   # il construieste de doua ori, pe baza ei si pe ea, colecteaza tot ce serveste `next start` (toate rutele
@@ -341,10 +363,14 @@ jobs:
   # normalizarea identificatorilor de build (`compara-build.py --regula invarianta`). Acopera toate rutele, nu
   # paginile-martor din `tests/invarianta-ro.test.ts`.
   #
-  # CAND RULEAZA: numai pe instantaneele feliilor care declara invarianta (lista de mai jos) si la pornire manuala.
-  # Pe celelalte ramuri jobul e sarit, fiindca o felie care schimba legitim HTML-ul ar iesi rosie aici prin
-  # constructie. Felia care adauga jobul e in lista: pe ea baza si felia au acelasi `src/`, deci zero diferente e
-  # controlul uneltei pe doua build-uri reale.
+  # CAND RULEAZA: pe instantaneele feliilor care declara invarianta (lista de mai jos) si la pornire manuala
+  # (`workflow_dispatch`). Pe celelalte ramuri, inclusiv pe instantaneele LOTURILOR (`ci/lot-*`), jobul e sarit, fiindca
+  # o felie sau un lot care schimba legitim HTML-ul 3s.md sau ro-RO ar iesi rosu aici prin constructie, si odata cu el
+  # toata rularea. Un lot care trebuie sa fie invariant (de pilda numai din felii invariante: doua felii invariante luate
+  # separat nu fac un lot invariant) se ruleaza manual, cu `workflow_dispatch` pe ramura lui; pe celelalte loturi
+  # diferentele de HTML sunt cele enumerate de feliile lor.
+  # Felia care adauga jobul e in lista: pe ea baza si felia au acelasi `src/`, deci zero diferente e controlul uneltei
+  # pe doua build-uri reale.
   #
   # BAZA = parintele instantaneului (`main` in momentul impingerii). Comparatia e deci fata de `main`, nu fata de
   # baza de lucru a feliei: daca felia a pornit de pe un lot inca neimbinat, diferentele lotului apar aici si NU sunt
@@ -388,6 +414,30 @@ jobs:
           U="$RUNNER_TEMP/unealta"
           mkdir -p "$U"
           cp .claude/scripts/porti/colecteaza-build.mjs .claude/scripts/porti/compara-build.py tests/fixturi/invarianta-ro/normalizeaza.ts "$U/"
+          # Profilul 3s.md al FELIEI, copiat inainte ca checkout-ul bazei sa-l schimbe: cheile lui se scot din mediul
+          # build-ului bazei (vezi pasul "Baza - build si colectie").
+          cp config/profil-3s-md.json "$U/profil-3s-md-felie.json"
+          cat > "$U/cu-profil.cjs" <<'SCRIPT'
+          // Ruleaza o comanda cu variabilele profilului BAZEI in locul celor ale FELIEI: cheile profilului dat la --fara (al
+          // feliei, puse in mediu de pasul "Variabilele aplicatiei 3s.md") se scot, apoi se pun cele ale profilului dat la
+          // --cu (al bazei, citit dupa checkout). Cheile cu _ sunt note; o valoare obiect intra ca JSON, exact ca in pasul care
+          // scrie GITHUB_ENV. Codul de iesire e al comenzii.
+          const { readFileSync } = require('node:fs')
+          const { spawnSync } = require('node:child_process')
+          const a = process.argv.slice(2)
+          if (a[0] !== '--fara' || a[2] !== '--cu' || a[4] !== '--' || a.length < 6) {
+            console.error('folosire: cu-profil.cjs --fara <profil> --cu <profil> -- <comanda> [argumente]')
+            process.exit(2)
+          }
+          const chei = (cale) => Object.entries(JSON.parse(readFileSync(cale, 'utf8'))).filter(([k]) => !k.startsWith('_'))
+          const env = { ...process.env }
+          for (const [k] of chei(a[1])) delete env[k]
+          for (const [k, v] of chei(a[3])) env[k] = typeof v === 'string' ? v : JSON.stringify(v)
+          console.log('mediul comenzii: profilul ' + a[3] + ' (' + chei(a[3]).map(([k]) => k).join(', ') + ')')
+          const r = spawnSync(a[5], a.slice(6), { env, stdio: 'inherit', shell: process.platform === 'win32' })
+          if (r.error) console.error(String(r.error))
+          process.exit(r.status === null ? 1 : r.status)
+          SCRIPT
       # Proba uneltei pe colectii fabricate, inainte de a avea incredere intr-un zero pe build-uri reale.
       - run: python .claude/scripts/porti/probe/proba-compara-build.py
       - name: Variabilele aplicatiei 3s.md
@@ -399,9 +449,11 @@ jobs:
       # ea, deci, cat timp baza nu poarta inca varianta, ambele build-uri ale acestei rulari folosesc lista BAZEI si
       # invarianta masoara ca nimic altceva nu se schimba in cod. Pasul se aplica NUMAI cand lista feliei e exact lista
       # bazei plus `ro-RO=https://3s.com.ro` (conditie pe continut, nu pe numele ramurii: tine si pe ramurile de lot).
-      # Dupa promovare baza are varianta si pasul nu mai face nimic; orice alta schimbare a listei se masoara normal.
-      # Perechea noua o masoara, numarata pe cod si pe domeniu, poarta de reciprocitate intre domenii din jobul
-      # "Profil 3s.com.ro".
+      # Cand baza are deja varianta, pasul nu face nimic. Nu e inca mort: o pornire manuala pe `main` compara `main` cu
+      # parintele lui, iar cat timp parintele n-are varianta, pasul lucreaza acolo. Orice alta schimbare a listei (si a
+      # oricarei variabile din profil) se masoara normal: baza se construieste cu profilul EI, felia cu al ei (pasul
+      # "Baza - build si colectie"). Perechea noua o masoara, numarata pe cod si pe domeniu, poarta de reciprocitate
+      # intre domenii din jobul "Profil 3s.com.ro".
       - name: Lista hreflang a bazei (cat timp baza nu are varianta ro-RO, profilul 3s.md)
         if: matrix.profil == '3s.md'
         run: |
@@ -415,12 +467,20 @@ jobs:
             echo "lista bazei se foloseste pe ambele build-uri"
             echo "SITE_ALTERNATE=$LISTA" >> "$GITHUB_ENV"
           fi
+      # Pe 3s.md baza se construieste si se serveste cu PROFILUL EI, nu cu al feliei: variabilele scrise mai sus in mediu
+      # sunt ale feliei, iar fara pasul asta ar intra si in build-ul bazei, deci o schimbare de profil n-ar putea iesi
+      # niciodata ca diferenta (invarianta ar masura numai codul). Pe ro-RO nu exista profil: mediul ramane cel implicit.
       - name: Baza - build si colectie
         run: |
           git checkout -q --detach "$BAZA"
           pnpm install --frozen-lockfile
-          pnpm build
-          node "$RUNNER_TEMP/unealta/colecteaza-build.mjs" --iesire "$RUNNER_TEMP/colectie-baza" --port 4760
+          cu_profil() {
+            if [ "${{ matrix.profil }}" != "3s.md" ]; then "$@"; return; fi
+            [ -f config/profil-3s-md.json ] || { echo "baza nu are config/profil-3s-md.json: profilul bazei nu se poate citi"; exit 3; }
+            node "$RUNNER_TEMP/unealta/cu-profil.cjs" --fara "$RUNNER_TEMP/unealta/profil-3s-md-felie.json" --cu config/profil-3s-md.json -- "$@"
+          }
+          cu_profil pnpm build
+          cu_profil node "$RUNNER_TEMP/unealta/colecteaza-build.mjs" --iesire "$RUNNER_TEMP/colectie-baza" --port 4760
       - name: Felia - build si colectie
         run: |
           git checkout -q --detach "$FELIE"

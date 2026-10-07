@@ -129,6 +129,14 @@ describe('SITE_ALTERNATE: forma listei', () => {
     vi.stubEnv('SITE_URL', 'https://3s-altul.test')
     expect(mesaj(() => alternateSite())).toMatch(/nu contine adresa acestui site/)
   })
+
+  it('domeniul lipsa din lista: pe asezarea ro mesajul numeste codul ro-RO, pe md ramane forma generala cod=', () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_ASEZARE', '')
+    vi.stubEnv('SITE_ASEZARE', 'ro')
+    expect(mesaj(() => alternateSite('en=' + INT, RO))).toContain('Se adauga perechea ro-RO=' + RO)
+    vi.stubEnv('SITE_ASEZARE', '')
+    expect(mesaj(() => alternateSite('en=' + INT, RO))).toContain('Se adauga perechea cod=' + RO)
+  })
 })
 
 // ---------------------------------------------------------------------------------------------
@@ -246,8 +254,22 @@ describe('alternatePagina: legaturile scrise pe server, din echivalente', () => 
   it('pe asezarea ro, paginile engleze (/en/...) nu au hreflang, iar canonical-ul e pagina de pe domeniul englezei (3s.md)', () => {
     expect(alternatePagina({ cale: '/contact', editie: 'en', cheie: 'contact' }, ctx3sComRo())).toEqual({ canonical: INT + '/contact' })
     expect(alternatePagina({ cale: '/', editie: 'en' }, ctx3sComRo({ rute: [...RUTE_INT, { cale: '/', editie: 'en' }] }))).toEqual({ canonical: INT })
-    // Martor NEGATIV: fara lista, domeniul englezei nu se stie, deci canonical-ul ramane calea servita a copiei.
-    expect(alternatePagina({ cale: '/contact', editie: 'en', cheie: 'contact' }, ctx3sComRo({ alternate: [] }))).toEqual({ canonical: '/en/contact' })
+    // Fara lista, sau cu o lista fara baza en, domeniul englezei nu se stie. Inainte, canonical-ul ramanea atunci calea servita
+    // a copiei (/en/contact pe 3s.com.ro): o copie concurenta a lui 3s.md, tacut. Acum constructia se opreste, cu motivul
+    // (specificatia 3s.com.ro, felia 119: pe ro, adresa site-ului apare in lista cu ro-RO).
+    expect(mesaj(() => alternatePagina({ cale: '/contact', editie: 'en', cheie: 'contact' }, ctx3sComRo({ alternate: [] })))).toMatch(
+      /SITE_ALTERNATE pe asezarea ro: lista lipseste/,
+    )
+    const faraEn = alternateSite('ro-MD=' + INT + '/ro,ro-RO=' + RO, RO)
+    expect(mesaj(() => alternatePagina({ cale: '/contact', editie: 'en', cheie: 'contact' }, ctx3sComRo({ alternate: faraEn })))).toMatch(
+      /lipseste baza en/,
+    )
+    // Si romana de la radacina se opreste pe aceeasi lista (grupul ei ar iesi fara en si fara x-default spre engleza).
+    expect(mesaj(() => alternatePagina({ cale: '/ro/contact', editie: 'ro-MD', cheie: 'contact' }, ctx3sComRo({ alternate: [] })))).toMatch(
+      /lista lipseste/,
+    )
+    // Martor NEGATIV: pe asezarea md, lista goala ramane "numai canonical-ul" (site-ul fara variante).
+    expect(alternatePagina({ cale: '/contact', editie: 'en', cheie: 'contact' }, ctx3sMd({ alternate: [] }))).toEqual({ canonical: '/contact' })
   })
 
   it('o pagina fara echivalent (sau fara cheie) se listeaza numai pe ea, cu x-default spre ea insasi; canonical-ul ramane calea', () => {
@@ -309,11 +331,19 @@ describe('alternatePagina: legaturile scrise pe server, din echivalente', () => 
     const coduri = Object.keys(VARIANTE_SERVITE)
     expect(problemeAlternateAsezare('md', alternateSite(LISTA_COMUNA, INT), INT, coduri)).toEqual([])
     expect(problemeAlternateAsezare('ro', alternateSite(LISTA_COMUNA, RO), RO, coduri)).toEqual([])
-    expect(problemeAlternateAsezare('ro', [], RO, coduri)).toEqual([])
+    // Lista goala pe ro e o PROBLEMA (cazul era invers inainte: "nimic de masurat"). Pe 3s.com.ro lista poarta varianta
+    // ro-RO a romanei de la radacina si baza en spre care au canonical-ul paginile /en; fara ea build-ul trecea tacut, cu
+    // canonical-ul englezei pe copia de aici (o copie concurenta a lui 3s.md, contra I1) si cu romana fara grup hreflang
+    // (specificatia 3s.com.ro §4, felia 119). Pe md lista goala ramane fara probleme.
+    const goala = problemeAlternateAsezare('ro', [], RO, coduri).join(' | ')
+    expect(goala).toMatch(/^SITE_ALTERNATE pe asezarea ro: lista lipseste/)
+    expect(goala).toContain('ro-RO=' + RO)
+    expect(problemeAlternateAsezare('md', [], INT, coduri)).toEqual([])
     const rele: [string, 'md' | 'ro', string, string, RegExp][] = [
       ['cod in afara tabelului', 'md', 'en=' + INT + ',fr=' + INT + '/fr', INT, /codul fr .* nu e o varianta servita/],
       ['ro: site-ul numit cu ro-MD', 'ro', 'en=' + INT + ',ro-MD=' + RO, RO, /lista o numeste ro-MD=/],
       ['ro: site-ul numit si cu en sub prefix', 'ro', 'ro-RO=' + RO + ',en=' + RO + '/en', RO, /lista o numeste ro-RO=.*en=/],
+      ['ro: fara baza en (canonical-ul paginilor /en n-ar avea domeniu)', 'ro', 'ro-MD=' + INT + '/ro,ro-RO=' + RO, RO, /lipseste baza en/],
     ]
     for (const [caz, asezare, lista, baza, tipar] of rele) {
       expect(problemeAlternateAsezare(asezare, alternateSite(lista, baza), baza, coduri).join(' | '), caz).toMatch(tipar)
@@ -333,16 +363,27 @@ describe('alternatePagina: legaturile scrise pe server, din echivalente', () => 
   })
 
   it('og:locale din asezare: ro_RO pe romana 3s.com.ro, ro_MD ramane pe 3s.md /ro, en_US pe engleza, catalogul pe ro-RO', () => {
-    vi.stubEnv('SITE_ALTERNATE', '')
     const date = { titlu: 'Contact 3S pentru arhiva firmei', descriere: 'Pagina de contact a echipei 3S, cu legăturile de mesagerie și datele de contact.' }
     const og = (m: ReturnType<typeof metadataPagina>) => m.openGraph as { locale?: string; url?: string }
+    // Pe asezarea ro lista e obligatorie (problemeAlternateAsezare), deci cazurile ro ruleaza ca aplicatia reala: lista
+    // comuna, pe originea 3s.com.ro. Cazurile md raman fara lista, ca inainte.
+    vi.stubEnv('SITE_ALTERNATE', LISTA_COMUNA)
+    vi.stubEnv('SITE_URL', RO)
+    vi.stubEnv('SITE_EDITII', 'en,ro-MD')
     const ro = og(metadataPagina({ ...date, cale: '/ro/contact', editie: 'ro-MD', cheie: 'contact' }, { asezare: 'ro', rute: RUTE_INT }))
     expect(ro).toMatchObject({ locale: 'ro_RO', url: '/contact' })
+    expect(og(metadataPagina({ ...date, cale: '/contact', editie: 'en', cheie: 'contact' }, { asezare: 'ro', rute: RUTE_INT })).locale).toBe('en_US')
+    vi.stubEnv('SITE_ALTERNATE', '')
+    vi.stubEnv('SITE_URL', INT)
     const md = og(metadataPagina({ ...date, cale: '/ro/contact', editie: 'ro-MD', cheie: 'contact' }, { asezare: 'md', rute: RUTE_INT }))
     expect(md).toMatchObject({ locale: 'ro_MD', url: '/ro/contact' })
-    expect(og(metadataPagina({ ...date, cale: '/contact', editie: 'en', cheie: 'contact' }, { asezare: 'ro', rute: RUTE_INT })).locale).toBe('en_US')
     expect(og(metadataPagina({ ...date, cale: '/contact', editie: 'en', cheie: 'contact' }, { asezare: 'md', rute: RUTE_INT })).locale).toBe('en_US')
+    vi.stubEnv('SITE_EDITII', '')
     expect(og(metadataPagina({ ...date, cale: '/contact' })).locale).toBe('ro_RO')
+    // Martorul garzii pe drumul real (metadataPagina, nu numai functia de coerenta): pe ro, fara lista, constructia se opreste.
+    expect(mesaj(() => metadataPagina({ ...date, cale: '/contact', editie: 'en', cheie: 'contact' }, { asezare: 'ro', rute: RUTE_INT }))).toMatch(
+      /SITE_ALTERNATE pe asezarea ro: lista lipseste/,
+    )
   })
 
   it('metadataPagina scrie alternatele din mediu: fara SITE_ALTERNATE numai canonical, cu ea pagina proprie si x-default', () => {

@@ -73,7 +73,7 @@ export const FUNCTIONALITATI_RO_MD: ContinutFunctionalitatiAcasa = {
   titlu: "Arhiva firmei, organizată și pregătită pentru întrebările tale.",
   subtitlu: "3S Scan Store Solve: în trei pași ajungi de la fișierele încărcate la răspunsul cu documentul-sursă.",
   final: {
-    // acasa.ts:479, :481; tinta e ghidul G3 (comparatia cu Google si Box AI), pe perechea lui /ro.
+    // acasa.ts:479, :481; tinta e ghidul G3 (comparatia cu Google Drive; Box AI a ramas in fisa), pe perechea lui /ro.
     fraza: "Lucrezi deja cu Google Drive sau cu Box?",
     buton: { text: "Vezi comparația cu 3S", href: "/ro/comparatie-drive", ruta: "/ro/comparatie-drive" },
   },

@@ -6,14 +6,17 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { valideazaEvidenta } from '../src/components/consimtamant/evidenta'
 import {
   CAI_CONTACT,
+  CAI_CONTACT_RO,
   CANALE_CONTACT,
   EVENIMENTE,
+  caiContactServite,
   EVENIMENTE_UMAMI,
   evenimentDinLegatura,
   evenimentUmamiValid,
   limbaDin,
 } from '../src/components/consimtamant/evenimente'
 import { CAI_POLITICI, legaturiPolitici } from '../src/components/consimtamant/PunctConsimtamant'
+import { caSursa, caleServitaEditiei } from '../src/lib/asezare'
 import {
   MESAJ_EN_FARA_UMAMI,
   TEXTE_BANNER,
@@ -463,6 +466,25 @@ describe('evenimentele Umami', () => {
     expect(ev('/ro/contact', PAGINA_RO, null, 'ro')).toEqual(['cta_contact', { lang: 'ro' }])
     expect(ev('/ro', PAGINA_EN, 'ro')).toEqual(['lang_switch', { lang: 'ro' }])
     expect(ev('/', PAGINA_RO, 'en', 'ro')).toEqual(['lang_switch', { lang: 'en' }])
+  })
+
+  it('cta_contact pe asezarea ro (3s.com.ro): tinta se recunoaste pe calea SERVITA, cu martorul 3s.md neschimbat', () => {
+    // Tinta se citeste din bara de adrese (calea servita), iar pe 3s.com.ro engleza sta sub /en: o comparatie pe caile
+    // sursa (/contact, /ro/contact) n-ar recunoaste /en/contact si cele 20 de legaturi spre el n-ar numara nimic.
+    const origineRo = ['https://3s', 'com', 'ro'].join('.')
+    const evRo = (href: string, pagina: string, limbaPagina: string) => evenimentDinLegatura({ href, lang: null }, pagina, limbaPagina, 'ro')
+    expect(caiContactServite('ro')).toEqual(['/en/contact', '/contact'])
+    // Lista scrisa in modul (fara importul asezarii, care ar muta bucatile JS) e chiar traducerea din src/lib/asezare.ts.
+    expect([...CAI_CONTACT_RO]).toEqual([caleServitaEditiei(caSursa('/contact'), 'en', 'ro'), caleServitaEditiei(caSursa('/ro/contact'), 'ro-MD', 'ro')])
+    expect(evRo('/en/contact', origineRo + '/en/pricing', 'en')).toEqual(['cta_contact', { lang: 'en' }])
+    expect(evRo('/contact', origineRo + '/preturi', 'ro')).toEqual(['cta_contact', { lang: 'ro' }])
+    // Martor negativ pe ro: /ro/contact nu e servita acolo, iar /en/pricing nu e contact.
+    expect(evRo('/ro/contact', origineRo + '/preturi', 'ro')).toBeNull()
+    expect(evRo('/en/pricing', origineRo + '/en/contact', 'en')).toBeNull()
+    // Martorul 3s.md: asezarea md pastreaza caile de dinainte, iar /en/contact nu e acolo o pagina de contact.
+    expect(caiContactServite('md')).toEqual([...CAI_CONTACT])
+    expect(evenimentDinLegatura({ href: '/contact', lang: null }, PAGINA_EN, 'en', 'md')).toEqual(['cta_contact', { lang: 'en' }])
+    expect(evenimentDinLegatura({ href: '/en/contact', lang: null }, PAGINA_EN, 'en', 'md')).toBeNull()
   })
 
   it('martor NEGATIV: legaturi obisnuite, alta origine, aceeasi limba, pagina fara limba cunoscuta = nimic', () => {
