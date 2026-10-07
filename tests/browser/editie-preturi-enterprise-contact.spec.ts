@@ -114,20 +114,53 @@ test('/pricing: sumele in EUR pe ambele perioade, fraza calculatorului cu "EUR" 
   await page.goto(copie.baza + '/pricing#pachete')
   const sume = page.locator('[class*="pachete_suma__"]')
   await expect(sume).toHaveText(['75', '125', '200'])
-  await expect(page.locator('[class*="pachete_unitatePret__"]').first()).toHaveText('EUR / month')
+  // Pretul anual pe luna poarta perioada langa el (testul 3s.md din 06.10: 75 / 125 / 200 se citeau ca preturi lunare).
+  await expect(page.locator('[class*="pachete_unitatePret__"]').first()).toHaveText('EUR / month, billed annually')
   const perioada = page.getByRole('group', { name: NUME_EN.perioada })
   await perioada.getByRole('button', { name: NUME_EN.lunar }).click()
   await expect(sume).toHaveText(['90', '150', '240'])
+  await expect(page.locator('[class*="pachete_unitatePret__"]').first()).toHaveText('EUR / month')
   await page.getByRole('button', { name: NUME_EN.teaser }).click()
   const grup = page.getByRole('group', { name: NUME_EN.calculator })
   const tarif = grup.locator('input[type="range"]').nth(2)
   await tarif.focus()
   await page.keyboard.press('End')
-  // 4 persoane x 25 de minute x 22 de zile = 37 h; la 100 EUR pe ora, 3.700 EUR: scris "EUR 3,700".
-  await expect(page.locator('[class*="pachete_frazaIesire__"]').first()).toContainText('Today you pay EUR 3,700 a month for the 37 h')
+  // 4 persoane x 25 de minute x 22 de zile = 36,67 h (afisat 37); la 100 EUR pe ora, 3.666,67 EUR din orele exacte:
+  // scris "EUR 3,667" (formula veche inmultea orele rotunjite: 3,700).
+  await expect(page.locator('[class*="pachete_frazaIesire__"]').first()).toContainText('Today you pay EUR 3,667 a month for the 37 h')
   await expect(page.locator('[class*="pachete_frazaPlan__"]')).toContainText('The plan that fits is Starter: EUR 90 a month')
   expect(RON.test(await page.locator('main').innerText())).toBe(false)
 })
+
+/**
+ * Testul 3s.md din 06.10: pretul anual pe luna fara perioada langa el, in cardurile si in fraza calculatorului, si
+ * orele fara separator de mii langa banii cu separator. Pe fiecare editie: unitatea cardurilor si fraza pachetului la
+ * Anual (implicit) si la Lunar (martorul: fraza lunara nu numeste plata anuala), apoi orele la capetele cursoarelor.
+ */
+for (const e of [
+  { cale: '/pricing', nume: NUME_EN, anual: 'EUR / month, billed annually', lunar: 'EUR / month', planAnual: 'The plan that fits is Starter: EUR 75 a month billed annually', planLunar: 'The plan that fits is Starter: EUR 90 a month, the cost of', ore: 'for the 2,200 h', marcaAnual: 'billed annually' },
+  { cale: '/ro/preturi', nume: NUME_RO, anual: 'EUR / lună, la plata anuală', lunar: 'EUR / lună', planAnual: 'Se potrivește pachetul Starter: 75 EUR pe lună, la plata anuală', planLunar: 'Se potrivește pachetul Starter: 90 EUR pe lună, adică', ore: 'pentru cele 2.200 h', marcaAnual: 'la plata anuală' },
+]) {
+  test(e.cale + ': perioada langa pretul anual (carduri si calculator) si separatorul de mii la ore', async ({ page }) => {
+    await page.goto(copie.baza + e.cale + '#pachete')
+    const unitati = page.locator('[class*="pachete_unitatePret__"]')
+    await expect(unitati).toHaveText([e.anual, e.anual, e.anual])
+    await page.getByRole('button', { name: e.nume.teaser }).click()
+    const grup = page.getByRole('group', { name: e.nume.calculator })
+    const plan = page.locator('[class*="pachete_frazaPlan__"]')
+    await expect(plan).toContainText(e.planAnual)
+    const perioada = page.getByRole('group', { name: e.nume.perioada })
+    await perioada.getByRole('button', { name: e.nume.lunar }).click()
+    await expect(unitati).toHaveText([e.lunar, e.lunar, e.lunar])
+    await expect(plan).toContainText(e.planLunar)
+    await expect(plan).not.toContainText(e.marcaAnual)
+    const cursoare = grup.locator('input[type="range"]')
+    await cursoare.nth(0).press('End')
+    await cursoare.nth(1).press('End')
+    // 50 x 120 min x 22 de zile = 2.200 h, scrisa cu separatorul editiei, ca banii din aceeasi fraza.
+    await expect(page.locator('[class*="pachete_frazaIesire__"]').first()).toContainText(e.ore)
+  })
+}
 
 test('/pricing: insigna pe Starter; JSON-LD fara Offer si priceCurrency, cu FAQPage egal cu intrebarile vizibile', async ({ page }) => {
   const html = await (await fetch(copie.baza + '/pricing')).text()

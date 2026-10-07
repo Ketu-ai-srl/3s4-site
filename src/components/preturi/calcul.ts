@@ -2,25 +2,30 @@
 // referinta si verificata acolo pe 16 combinatii, la ambele latimi). Functii pure: le folosesc
 // componenta si probele, deci o schimbare aici se vede in amandoua.
 //
-//   ore            = rotunjire(persoane x minute / 60 x zile lucratoare)
-//   bani           = ore x tarif          (pe orele deja rotunjite, ca la referinta)
+//   ore            = persoane x minute / 60 x zile lucratoare      (exacte; se rotunjesc numai la afisare)
+//   bani           = ore x tarif          (pe orele EXACTE; se rotunjesc numai la afisare)
 //   plan           = primul pachet ale carui conturi ajung pentru persoane (5 / 10 / 20); peste
 //                    cel mai mare niciunul (null), iar iesirea trimite la 3S Enterprise
 //   ore-echivalent = rotunjire(pretul planului / tarif x 10) / 10
 //
 // Cu pretul de astazi (0 RON, decizia D3) ultimul rezultat e 0 h: calculul nu promite nimic, doar
 // pune pretul langa timpul pe care vizitatorul spune ca il pierde acum.
+//
+// DE CE ORELE EXACTE, desi referinta inmultea orele rotunjite: rotunjirea inainte de inmultire muta costul
+// pana la 9% fata de datele introduse (1 coleg x 10 min x 22 de zile = 3,67 h; la 5 EUR/h costul e 18,3, iar
+// formula veche afisa 20, adica 4 h x 5). Afisarea ramane pe numere intregi (orele si banii), cu separator
+// de mii pe amandoua ("2.200 h", "2,200 h" pe editia EN).
 
 import type { Cursor, Perioada, Plan } from "@/content/preturi";
 
 export type Intrari = { persoane: number; minute: number; tarif: number };
 
-/** Orele pe luna petrecute cautand acte. */
+/** Orele pe luna petrecute cautand acte, exacte (fara rotunjire: o face numai afisarea). */
 export function oreCautare(persoane: number, minute: number, zileLucratoare: number): number {
-  return Math.round(((persoane * minute) / 60) * zileLucratoare);
+  return ((persoane * minute) / 60) * zileLucratoare;
 }
 
-/** Valoarea acelor ore, la tariful dat (pe orele deja rotunjite). */
+/** Valoarea acelor ore, la tariful dat (pe orele exacte). */
 export function valoareOre(ore: number, tarif: number): number {
   return ore * tarif;
 }
@@ -76,9 +81,12 @@ export function formatBani(n: number, separatorMii: string = "."): string {
   return semn + String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, separatorMii);
 }
 
-/** Orele, fara separator de mii ("1155 h" la referinta). */
-export function formatOre(n: number): string {
-  return String(Math.round(n));
+/**
+ * Orele, rotunjite la ora intreaga, cu separator de mii ca banii ("2.200"; pe EN "2,200"). La referinta orele
+ * n-aveau separator ("1155 h"), iar in aceeasi fraza banii il aveau: doua forme pentru cifre vecine.
+ */
+export function formatOre(n: number, separatorMii: string = "."): string {
+  return formatBani(n, separatorMii);
 }
 
 /**
@@ -97,10 +105,10 @@ export type FormatCifre = {
   zecimal: (n: number) => string;
 };
 
-/** Formatul romanesc: punct la mii, virgula zecimala, orele fara separator. */
+/** Formatul romanesc: punct la mii (si la ore), virgula zecimala. */
 export const FORMAT_ROMANESC: FormatCifre = {
   bani: (n) => formatBani(n),
-  ore: formatOre,
+  ore: (n) => formatOre(n),
   zecimal: (n) => formatZecimal(n),
 };
 

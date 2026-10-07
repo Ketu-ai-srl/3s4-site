@@ -184,3 +184,35 @@
   margin-left: auto;
   font-weight: 500;
 }
+
+/* Butonul de inchidere: pe ecranele cu hover arata tasta "esc"; X-ul e pentru ecranele tactile. */
+.tastaEscIconita {
+  display: none;
+}
+
+/* ECRAN TACTIL (fara hover, aceeasi conditie ca tasta din antet): fara indicatii de tastatura. Randul de jos
+   (sagetile, Enter, "Ctrl K") nu se arata, iar butonul de inchidere poarta un X, cu tinta de 32 px. */
+@media (hover: none) {
+  .subsol {
+    display: none;
+  }
+
+  .tastaEsc {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .tastaEscText {
+    display: none;
+  }
+
+  .tastaEscIconita {
+    display: block;
+  }
+}

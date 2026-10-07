@@ -38,7 +38,7 @@ import { useEffect, useMemo, useRef, useState, type ComponentType } from "react"
 import type { PasFunctionalitate } from "@/content/acasa";
 import Scena3D from "@/components/scena3d/Scena3D";
 import { areMiscareRedusa, useMedia, useMiscareRedusa, useMontat } from "./ceas";
-import { cardDinProgres, pasDupaPraguri, progresPista, tintaPunct, translatieBanda } from "./derulare";
+import { cardDinProgres, pasDupaPraguri, progresPista, tintaPunct, translatieCard } from "./derulare";
 import type { MachetaProps } from "./MachetaCautareVedere";
 import { construiestePanza, type StarePanza } from "./panza";
 import s from "./FunctionalitatiAcasa.module.css";
@@ -113,8 +113,9 @@ export default function PasiFunctionalitatiVedere({ pasi, machete, puncte }: Pas
       if (!b || !p || !f) return;
       if (modPista) {
         const progres = progresPista(p.getBoundingClientRect().top, p.offsetHeight, f.offsetHeight);
-        b.style.transform = translatieBanda(progres);
+        // Banda sta pe cardul activ si trece la altul in pas (`derulare.ts`, abaterea de la referinta).
         const c = cardDinProgres(progres);
+        b.style.transform = translatieCard(c);
         if (c !== cardRef.current) {
           cardRef.current = c;
           setCard(c);

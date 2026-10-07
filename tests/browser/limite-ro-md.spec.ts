@@ -8,7 +8,8 @@ import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
  *  1. HTML-ul servit /ro/preturi: limitele fiecarui card (cifra ingrosata + unitatea), randurile de limita ale
  *     tabelului, pliul suplimentelor cu tabelul si intrebarile lui; /ro/enterprise: limitele de baza;
  *  2. cu toate pliurile deschise, la 1440 si la 390 (latimea citita din pagina), pagina nu se deruleaza pe orizontala,
- *     iar tabelul suplimentelor se deruleaza in panoul lui la 390 (controlul: tabelul e mai lat decat panoul);
+ *     tabelul suplimentelor incape la 390 in panoul lui (felia 133), iar tabelul pachetelor se deruleaza in al lui
+ *     (controlul: el e mai lat decat panoul);
  *  3. detectorul pliului gaseste pe /ro/preturi ce gaseste pe /pricing (trei pliuri, unul cu suplimentele: perechea
  *     P08 are pliul pe ambele pagini 3s.md), iar pe /ro/enterprise, care nu are pliuri de preturi, zero suplimente
  *     (martorul NEGATIV, pe aceeasi copie, ca prezenta pe /ro/preturi sa nu vina dintr-un selector care prinde orice).
@@ -87,12 +88,22 @@ for (const latime of [1440, 390]) {
         pagina: document.documentElement.scrollWidth,
         panou: r.clientWidth,
         tabel: (r.querySelector('table') as HTMLElement).scrollWidth,
+        // Controlul de continere: tabelul pachetelor (pliul al doilea, deschis si el) ramane mai lat decat panoul lui la 390.
+        panouPlanuri: (document.querySelector('[role="region"][aria-label^="Tabelul pachetelor"]') as HTMLElement).clientWidth,
+        tabelPlanuri: (document.querySelector('[role="region"][aria-label^="Tabelul pachetelor"] table') as HTMLElement).scrollWidth,
       }
     })
     console.log('[f129] /ro/preturi ' + JSON.stringify(m))
     expect(m.latime).toBe(latime)
     expect(m.pagina).toBeLessThanOrEqual(m.latime)
-    if (latime === 390) expect(m.tabel).toBeGreaterThan(m.panou)
+    // De la felia 133 tabelul suplimentelor INCAPE la 390 (eticheta pe 8,5rem, doua valori pe 6,5rem): controlul vechi
+    // (tabelul mai lat decat panoul) masura asezarea defecta. Zeroul de derulare a paginii ramane semnificativ prin
+    // tabelul pachetelor, care se deruleaza in panoul lui; suplimentele se cer vizibile si pe toata latimea panoului.
+    if (latime === 390) {
+      expect(m.tabelPlanuri).toBeGreaterThan(m.panouPlanuri)
+      expect(m.tabel).toBeLessThanOrEqual(m.panou)
+      expect(m.tabel).toBeGreaterThanOrEqual(m.panou - 1)
+    }
   })
 }
 

@@ -17,6 +17,9 @@
 // blocului de infrastructura si inaintea intrebarilor. Fragmentele nu adauga niciun element, deci radacinile de
 // sectiune raman aceleasi, in aceeasi ordine; regula globala `[id]` da marcajului marginea de sub antetul fix.
 //
+// Numele paginii "Legal information" din piloni si din raspunsul "Who runs 3S?" devine legatura la randare
+// (`legaturaInText`); textul ramane sir, deci FAQPage are acelasi raspuns.
+//
 // Metadata, nodul WebPage si registrul de afirmatii vin din `about.ts`; nodul FAQPage se construieste aici, din
 // intrebarile VIZIBILE. Firul il emite `FirPagina` (BreadcrumbList), deci nodul BreadcrumbList al modulului nu se mai
 // pune. Organizatia si site-ul le pune layout-ul.
@@ -29,6 +32,7 @@ import type { NodJsonLd } from "@/components/seo/date-structurate";
 import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
 import { pagina } from "@/content/en/about";
+import { LEGATURA_INFORMATII_LEGALE_EN } from "@/content/en/contact-componente";
 import {
   BUCATI_DESPRE_EN,
   DESPRE_EN,
@@ -85,6 +89,7 @@ export default function PaginaDespreEn() {
             etichetaFir={ETICHETA_FIR_DESPRE_EN}
             etichetaVerificare={ETICHETA_VERIFICARE_EN}
             verificare={<VerificareBrowserEn />}
+            legaturaInText={LEGATURA_INFORMATII_LEGALE_EN}
           />
         </Fragment>
       ))}

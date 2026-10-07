@@ -83,9 +83,10 @@ export const FUNCTIONALITATI_EN: ContinutFunctionalitatiAcasa = {
   subtitlu:
     "3S is a digital archive, operated from Moldova, that answers questions about your files. Its name gives the three steps.",
   final: {
-    // acasa.ts:479; butonul: legatura aprobata spre comparatie (decizia 11).
-    fraza: "For a few dozen files, Google Drive or Box may be enough.",
-    buton: { text: "3S vs Google and Box AI", href: "/compare/3s-vs-google-and-box", ruta: "/compare/3s-vs-google-and-box" },
+    // acasa.ts:479; butonul: legatura aprobata spre comparatie (decizia 11). Pagina compara numai Google Drive (Box AI
+    // a ramas in fisa), deci fraza si butonul numesc numai Google Drive; adresa paginii ramane aceeasi.
+    fraza: "For a few dozen files, Google Drive may be enough.",
+    buton: { text: "3S vs Google Drive", href: "/compare/3s-vs-google-and-box", ruta: "/compare/3s-vs-google-and-box" },
   },
 };
 

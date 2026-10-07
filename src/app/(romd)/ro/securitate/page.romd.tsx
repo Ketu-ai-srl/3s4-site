@@ -12,6 +12,9 @@
 // ANCORELE `security` si `limits`, ca pe EN: componenta se randeaza in trei bucati, cu cate un marcaj gol, fara clasa si
 // fara inaltime, inaintea blocului de infrastructura si inaintea intrebarilor; radacinile de sectiune raman aceleasi.
 //
+// Numele paginii "Informatii legale" din piloni si din raspunsul despre operator devine legatura la randare
+// (`legaturaInText`); textul ramane sir, deci FAQPage are acelasi raspuns.
+//
 // Nodul FAQPage se construieste aici, din intrebarile VIZIBILE. Firul il emite `FirPagina` (BreadcrumbList), cu
 // eticheta lui implicita, in romana.
 
@@ -22,6 +25,7 @@ import type { NodJsonLd } from "@/components/seo/date-structurate";
 import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
 import { OPERATOR_SECURITATE_BUILD, pagina } from "@/content/ro-md/securitate";
+import { LEGATURA_INFORMATII_LEGALE_RO_MD } from "@/content/ro-md/contact-componente";
 import { BUCATI_SECURITATE_RO_MD, ETICHETA_VERIFICARE_RO_MD, securitateRoMd } from "@/content/ro-md/securitate-componente";
 import { atributeLimba } from "@/lib/asezare";
 import { adresaSite } from "@/lib/site";
@@ -76,6 +80,7 @@ export default function PaginaSecuritateRoMd() {
             sectiuni={b.sectiuni}
             etichetaVerificare={ETICHETA_VERIFICARE_RO_MD}
             verificare={<VerificareBrowserRoMd />}
+            legaturaInText={LEGATURA_INFORMATII_LEGALE_RO_MD}
           />
         </Fragment>
       ))}

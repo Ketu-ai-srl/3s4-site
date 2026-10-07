@@ -90,6 +90,11 @@ export type ConsimtamantProps = {
   umami: UmamiActiv | null;
   /** Versiunea informarii (`versiuneInformare`), purtata de fiecare alegere. */
   versiune: string;
+  /**
+   * Versiunea de catalog (`versiune.ts`), numai pe un domeniu cu mai multe limbi: valabilitatea alegerii se masoara
+   * pe ea, ca alegerea sa tina in toate limbile. Lipsa = alegerea e legata de `versiune`, ca pe site-ul romanesc.
+   */
+  catalog?: string;
   legaturi: LegaturiPolitici;
   /** Textele si randurile panoului, in limba paginii, pentru uneltele care ruleaza. */
   informare: InformareConsimtamant;
@@ -190,7 +195,7 @@ function Categorie({ titlu, insigna, insignaPastila, descriere, serviciu, cookie
   );
 }
 
-export default function Consimtamant({ idGa4, umami, versiune, legaturi, informare }: ConsimtamantProps) {
+export default function Consimtamant({ idGa4, umami, versiune, catalog, legaturi, informare }: ConsimtamantProps) {
   const { banner: TEXTE_BANNER, panou: TEXTE_PANOU } = informare;
   // `undefined` = inca necitita (pe server si la prima randare); `null` = nicio alegere valabila.
   const [alegere, setAlegere] = useState<Alegere | null | undefined>(undefined);
@@ -207,14 +212,14 @@ export default function Consimtamant({ idGa4, umami, versiune, legaturi, informa
   const idPanou = useId();
 
   useEffect(() => {
-    const pastrata = citesteAlegere(versiune);
+    const pastrata = citesteAlegere(versiune, Date.now(), catalog);
     setAlegere(pastrata);
     statisticaDorita.current = pastrata?.statistica === true;
     if (statisticaDorita.current) {
       if (idGa4 !== null) pornesteGa4LaAccept(idGa4, statisticaDorita);
       if (umami !== null) pornesteUmamiLaAccept(umami, statisticaDorita);
     }
-  }, [idGa4, umami, versiune]);
+  }, [idGa4, umami, versiune, catalog]);
 
   // Aparitia: clasa se pune la cadrul urmator, ca tranzitia de 0,25 s sa aiba de unde porni.
   useEffect(() => {
@@ -252,6 +257,7 @@ export default function Consimtamant({ idGa4, umami, versiune, legaturi, informa
         moment: new Date().toISOString(),
         statistica,
         metoda,
+        ...(catalog === undefined ? {} : { catalog }),
       };
       scrieAlegere(noua);
       // Intai fanionul: de aici incolo incarcatorul Umami nu mai lasa nimic sa plece (`data-before-send`).
@@ -266,7 +272,7 @@ export default function Consimtamant({ idGa4, umami, versiune, legaturi, informa
       setAlegere(noua);
       panou.current?.close();
     },
-    [alegere, idGa4, umami, versiune],
+    [alegere, idGa4, umami, versiune, catalog],
   );
 
   const vizibil = alegere === null;

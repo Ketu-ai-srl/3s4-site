@@ -273,7 +273,8 @@ describe('layout-urile radacina si pagina de negasit (proba-sora a celei din tes
   it('global-not-found.en.tsx: <html lang="en">, titlul in engleza, fara diacritice (in afara listei albe)', () => {
     const html = renderToStaticMarkup(createElement(NegasitGlobalEn))
     expect(html).toMatch(/^<html lang="en"[^>]*>/)
-    expect(html).toContain('<h1>Page not found</h1>')
+    // Titlul poarta clasele paginii de negasit (stilul site-ului, felia 134), deci se masoara continutul lui.
+    expect(html).toMatch(/<h1[^>]*>Page not found<\/h1>/)
     // Lista alba explicita, pe TOATA pagina (antetul si subsolul inclusiv, nu numai <main>): semnul dreptului de
     // autor din subsol si textul legaturii in romana spre informatiile legale (legatura e in limba operatorului, pe
     // fiecare pagina EN, si apare cand ruta exista). Orice alt caracter in afara ASCII e text romanesc scapat in

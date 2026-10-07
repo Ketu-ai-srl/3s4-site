@@ -58,6 +58,16 @@
   transform: none;
 }
 
+/* Cat e deschis sertarul de pe telefon (`[data-sertar]`) sau paleta de cautare (`[data-paleta]`), elemente care
+   exista numai cat sunt deschise, bannerul se retrage: altfel, la z-index 2000 peste sertar (1002) si paleta (1400),
+   le acoperea partea de jos (in sertar, butonul WhatsApp; in paleta, rezultatele). Amandoua sunt dialoguri modale,
+   deci bannerul oricum nu putea fi folosit cat stau deschise; la inchidere reapare neschimbat, alegerea nu se pierde. */
+:global(html:has([data-sertar], [data-paleta])) .banner {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .corp {
   display: flex;
 }

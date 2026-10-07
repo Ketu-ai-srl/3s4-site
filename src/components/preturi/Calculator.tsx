@@ -29,7 +29,7 @@ export function textTeaser(): { presupuneri: string; rezultat: string } {
   const m = IMPLICITE.minute;
   return {
     presupuneri: CALCULATOR.teaser.presupuneri(p + cuDe(p) + (p === 1 ? " coleg" : " colegi"), m + cuDe(m) + " minute"),
-    rezultat: CALCULATOR.teaser.rezultat(formatOre(r.ore) + cuDe(r.ore) + " ore"),
+    rezultat: CALCULATOR.teaser.rezultat(formatOre(r.ore) + cuDe(Math.round(r.ore)) + " ore"),
   };
 }
 

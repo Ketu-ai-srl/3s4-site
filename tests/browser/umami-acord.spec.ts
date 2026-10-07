@@ -150,7 +150,7 @@ async function pornesteCopia(instanta: string): Promise<Copie> {
     symlinkSync(join(RADACINA, 'node_modules'), join(director, 'node_modules'), 'junction')
 
     // Paginile de start EN si RO-MD, numai daca lipsesc (le aduc feliile paginilor). Pagina de negasit EN are
-    // propriul <html> si nu trece prin layout-ul editiei, deci bannerul nu e acolo.
+    // propriul <html> si nu trece prin layout-ul editiei; bannerul il monteaza ea insasi (felia 134).
     for (const [dosar, fisier, continut] of [
       [join(director, 'src', 'app', '(en)'), 'page.en.tsx', PAGINA_EN],
       [join(director, 'src', 'app', '(romd)', 'ro'), 'page.romd.tsx', PAGINA_RO_MD],

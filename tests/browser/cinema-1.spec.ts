@@ -1422,3 +1422,41 @@ test.describe('eroul cand documentul soseste in doua bucati, 390, procesor incet
     expect(cls[1]).toBeLessThanOrEqual(PRAG_CLS)
   })
 })
+
+/**
+ * m6 (testul 3s.md din 06.10): la 390 calea dosarului din fereastra avalansei e mai lata decat titlul
+ * ferestrei, care o taie cu `text-overflow: ellipsis`. Punctele de suspensie se pun numai pe continut
+ * in linie: un segment cu text intr-o cutie atomica (`inline-flex`, `inline-block`) e taiat brusc, fara
+ * ele ("Supplie" lipit de numarul de elemente). Se cere: titlul chiar taie (controlul), are elipsa, iar
+ * niciun element cu text din cale nu e atomic. Martorul POZITIV pune inapoi `inline-flex`.
+ */
+test.describe('calea dosarului din avalansa, 390', () => {
+  test.use({ viewport: { width: 390, height: 844 } })
+
+  for (const martor of [false, true]) {
+    test(martor ? 'martor POZITIV: calea in cutii inline-flex e prinsa' : 'calea taiata are puncte de suspensie: text in linie, fara cutii atomice', async ({ page }) => {
+      await page.goto('/functionalitati/cautare-ai', { waitUntil: 'networkidle' })
+      if (martor) await page.addStyleTag({ content: '[class*="cautare_caleDosar__"]{display:inline-flex!important}' })
+      const cale = page.locator('[class*="cautare_caleDosar__"]').first()
+      await cale.scrollIntoViewIfNeeded()
+      const m = await cale.evaluate((e) => {
+        const titlu = e.parentElement!
+        const cuText = [e, ...e.querySelectorAll('*')].filter((n) => [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent!.trim() !== ''))
+        return {
+          latime: window.innerWidth,
+          taie: titlu.scrollWidth > titlu.clientWidth,
+          elipsa: getComputedStyle(titlu).textOverflow,
+          atomice: cuText.filter((n) => getComputedStyle(n).display !== 'inline').length,
+          cuText: cuText.length,
+        }
+      })
+      console.log('[cale 390' + (martor ? ' martor' : '') + '] innerWidth CITIT: ' + m.latime + ' | titlul taie: ' + m.taie + ' | text-overflow: ' + m.elipsa + ' | elemente cu text: ' + m.cuText + ', atomice: ' + m.atomice)
+      expect(m.latime).toBe(390)
+      expect(m.taie).toBe(true)
+      expect(m.elipsa).toBe('ellipsis')
+      expect(m.cuText).toBeGreaterThan(1)
+      if (martor) expect(m.atomice).toBeGreaterThan(0)
+      else expect(m.atomice).toBe(0)
+    })
+  }
+})

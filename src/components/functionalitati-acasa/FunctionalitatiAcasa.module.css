@@ -371,11 +371,14 @@
     background: var(--color-alb);
   }
 
-  /* Banda: 3 ferestre; translatia vine din derulare, fara easing (fisa §11). */
+  /* Banda: 3 ferestre; sta pe cardul activ si trece la urmatorul intr-o tranzitie scurta, nu urmeaza
+     derularea continuu ca la referinta (fisa §11), unde se vedeau jumatati de card cu textul taiat.
+     Miscarea redusa nu ajunge aici: fara ea pista nu se construieste, cardurile stau unul sub altul. */
   .grila[data-pista] .pasi {
     display: flex;
     width: 300%;
     height: 100%;
+    transition: transform 0.45s cubic-bezier(0.25, 0.7, 0.3, 1);
     will-change: transform;
   }
 

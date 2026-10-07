@@ -83,7 +83,7 @@ export function textTeaserRoMd(): { presupuneri: string; rezultat: string } {
   const m = IMPLICITE.minute;
   return {
     presupuneri: CALCULATOR_RO_MD.teaser.presupuneri(p + cuDeRoMd(p) + (p === 1 ? " coleg" : " colegi"), m + cuDeRoMd(m) + " minute"),
-    rezultat: CALCULATOR_RO_MD.teaser.rezultat(formatOre(r.ore) + cuDeRoMd(r.ore) + " ore"),
+    rezultat: CALCULATOR_RO_MD.teaser.rezultat(formatOre(r.ore) + cuDeRoMd(Math.round(r.ore)) + " ore"),
   };
 }
 
@@ -100,6 +100,9 @@ const CONTINUT_CALCULATOR: ContinutCalculator = {
   enterprise: POARTA_ENTERPRISE_RO_MD.tinta,
 };
 
+/** Cu comutatorul pe Anual, fraza pachetului spune ca pretul e cel la plata anuala. */
+const CONTINUT_CALCULATOR_ANUAL: ContinutCalculator = { ...CONTINUT_CALCULATOR, pretInOre: CALCULATOR_RO_MD.pretInOreAnual };
+
 function CalculatorRoMd({ perioada, analitica }: { perioada: Perioada; analitica: boolean }) {
   // Ca pe RO si pe EN: evenimentul pleaca o singura data, la prima folosire, iar codul lui se cere lenes, numai cu analitica.
   const laPrimaFolosire = () => {
@@ -110,7 +113,7 @@ function CalculatorRoMd({ perioada, analitica }: { perioada: Perioada; analitica
   return (
     <CalculatorVedere
       perioada={perioada}
-      continut={CONTINUT_CALCULATOR}
+      continut={perioada === "anual" ? CONTINUT_CALCULATOR_ANUAL : CONTINUT_CALCULATOR}
       planuri={PLANURI}
       format={FORMAT_ROMANESC}
       laPrimaFolosire={laPrimaFolosire}
@@ -129,7 +132,7 @@ function GrilaRoMd({ perioada }: { perioada: Perioada }) {
       perioada={perioada}
       continut={{
         recomandat: GRILA_RO_MD.recomandat,
-        unitate: GRILA_RO_MD.unitate,
+        unitate: perioada === "anual" ? GRILA_RO_MD.unitateAnual : GRILA_RO_MD.unitate,
         buton: { text: GRILA_RO_MD.buton, href: whatsapp, ruta: null },
         detalii: GRILA_RO_MD.detalii,
       }}

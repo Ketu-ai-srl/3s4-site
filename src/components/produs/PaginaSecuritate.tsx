@@ -52,6 +52,7 @@ import HartaEuropa, { type ContinutHartaEuropa } from "./HartaEuropa";
 import IconitaProdus from "./IconitaProdus";
 import Seif from "./Seif";
 import VerificareBrowser from "./VerificareBrowser";
+import { cuLegatura, type LegaturaInText } from "./legaturaInText";
 import { nerupt } from "./nerupt";
 import s from "./securitate.module.css";
 
@@ -137,7 +138,7 @@ function ceruta<T>(valoare: T | undefined, sectiune: SectiuneSecuritate): T {
   return valoare;
 }
 
-function Piloni({ p }: { p: NonNullable<ContinutPaginaSecuritate["piloni"]> }) {
+function Piloni({ p, legatura }: { p: NonNullable<ContinutPaginaSecuritate["piloni"]>; legatura?: LegaturaInText }) {
   return (
     <section className={s.piloni} aria-labelledby="securitate-piloni">
       <div className="container-site">
@@ -151,7 +152,7 @@ function Piloni({ p }: { p: NonNullable<ContinutPaginaSecuritate["piloni"]> }) {
                 <IconitaProdus nume={x.iconita} marime={22} />
               </span>
               <h3 className={s.cardTitlu + " " + s.pilonTitlu}>{nerupt(x.titlu)}</h3>
-              <p className={s.cardText}>{nerupt(x.text)}</p>
+              <p className={s.cardText}>{cuLegatura(x.text, legatura, nerupt)}</p>
             </li>
           ))}
         </ul>
@@ -456,12 +457,14 @@ function Raportare({ b }: { b: NonNullable<ContinutPaginaSecuritate["raportare"]
   );
 }
 
-function Intrebari({ q }: { q: NonNullable<ContinutPaginaSecuritate["intrebari"]> }) {
+function Intrebari({ q, legatura }: { q: NonNullable<ContinutPaginaSecuritate["intrebari"]>; legatura?: LegaturaInText }) {
+  // Raspunsurile raman text simplu in continut (acelasi sir ajunge in FAQPage); legatura se pune numai la randare.
+  const elemente = legatura === undefined ? q.intrebari : q.intrebari.map((i) => ({ ...i, raspuns: cuLegatura(i.raspuns, legatura) }));
   return (
     <section className="sectiune-standard" aria-labelledby="securitate-intrebari">
       <div className="container-site">
         <CapNumeratSecuritate id="securitate-intrebari" numar={q.numar} titlu={q.titlu} centrat />
-        <Acordeon varianta="securitate" elemente={q.intrebari} />
+        <Acordeon varianta="securitate" elemente={elemente} />
       </div>
     </section>
   );
@@ -477,6 +480,11 @@ export type PaginaSecuritateProps = {
   etichetaVerificare?: string;
   /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul RO. */
   etichetaFir?: string;
+  /**
+   * Pagina numita in text care devine legatura (in piloni si in raspunsurile intrebarilor), pe editie; lipsa = niciuna,
+   * deci textul RO ramane neatins.
+   */
+  legaturaInText?: LegaturaInText;
 };
 
 export default function PaginaSecuritate({
@@ -485,6 +493,7 @@ export default function PaginaSecuritate({
   verificare,
   etichetaVerificare = "Verificarea conexiunii din browser",
   etichetaFir,
+  legaturaInText,
 }: PaginaSecuritateProps) {
   const c = continut;
   const are = (k: SectiuneSecuritate) => sectiuni === undefined || sectiuni.includes(k);
@@ -498,7 +507,7 @@ export default function PaginaSecuritate({
           {...(etichetaFir !== undefined ? { etichetaFir } : {})}
         />
       ) : null}
-      {are("piloni") ? <Piloni p={ceruta(c.piloni, "piloni")} /> : null}
+      {are("piloni") ? <Piloni p={ceruta(c.piloni, "piloni")} legatura={legaturaInText} /> : null}
       {are("infrastructura") ? <Infrastructura b={ceruta(c.infrastructura, "infrastructura")} /> : null}
       {are("verificare") ? <Verificare eticheta={etichetaVerificare} insula={verificare ?? <VerificareBrowser />} /> : null}
       {are("stocareProprie") ? <StocareProprie b={ceruta(c.stocareProprie, "stocareProprie")} /> : null}
@@ -508,7 +517,7 @@ export default function PaginaSecuritate({
       {are("reglementare") ? <Reglementare b={ceruta(c.reglementare, "reglementare")} /> : null}
       {are("originale") ? <Originale b={ceruta(c.originale, "originale")} /> : null}
       {are("raportare") ? <Raportare b={ceruta(c.raportare, "raportare")} /> : null}
-      {are("intrebari") ? <Intrebari q={ceruta(c.intrebari, "intrebari")} /> : null}
+      {are("intrebari") ? <Intrebari q={ceruta(c.intrebari, "intrebari")} legatura={legaturaInText} /> : null}
       {are("seif") ? <Seif /> : null}
     </>
   );

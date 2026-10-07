@@ -220,6 +220,48 @@
     border-radius: 0;
     overflow: visible;
   }
+
+  /* Tabelele DOCUMENTELOR JURIDICE: cele cu antet de cookie-uri si de confidentialitate au 3-4 coloane de
+     text lung. La 390 coloanele isi luau latimea din cuvantul cel mai lung: un cuvant pe rand, iar ultima
+     (scopul cookie-ului) ramanea la marginea panoului cu 1-2 litere vizibile pe rand. Aici prima coloana
+     (numele) are 9rem, se rupe si sta lipita la stanga, cu fundal; celelalte au cel putin 10rem, deci se
+     citesc, iar tabelul se deruleaza pe sub prima coloana.
+     LEGATURA cu documentele juridice se face prin atributele pe care randatorul lor (CorpDocument) le pune
+     deja pe fiecare sectiune (`data-sectiune`, `data-art13`, `data-l284`) si pe preambul (`data-preambul`),
+     nu printr-o clasa noua: o clasa ar schimba HTML-ul paginilor /juridic ale site-ului RO, pe care garda
+     editiei il cere identic cu baza. Tabelele articolelor de blog (doua sau trei coloane, unele incap la 390)
+     nu stau in asemenea sectiuni si raman exact cum erau. */
+
+  /* Semnul ca tabelul continua: umbra la marginea dreapta din doua fundaluri ale invelisului (unul se
+     misca odata cu continutul, unul sta pe loc), deci apare numai cat mai e ceva de derulat. Numai pe
+     invelisul care chiar se deruleaza: dupa hidratare ZonaDerulabila lasa `tabindex` doar acolo. */
+  :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabelInvelis[tabindex] {
+    background:
+      linear-gradient(to left, var(--color-alb) 45%, rgb(255 255 255 / 0)) right center / 32px 100% no-repeat local,
+      linear-gradient(to left, rgb(15 23 42 / 0.2), rgb(15 23 42 / 0)) right center / 14px 100% no-repeat scroll;
+  }
+
+  :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabel:has(thead th:nth-child(3)) {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabel:has(thead th:nth-child(3)) :is(th, td):first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 9rem;
+    overflow-wrap: anywhere;
+    box-shadow: inset -1px 0 0 var(--color-ardezie-2);
+  }
+
+  :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabel:has(thead th:nth-child(3)) td:first-child {
+    background: var(--color-alb);
+  }
+
+  :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabel:has(thead th:nth-child(3)) :is(th, td):not(:first-child) {
+    width: 10rem;
+  }
 }
 
 /* --- EroulInterior: padding 120 / 0 / 40 (88 / 0 / 24), bloc 880 -------------------------- */

@@ -52,10 +52,10 @@ import LumeaPreturiVedere from "./LumeaPreturiVedere";
 import PacheteVedere, { type PiesePachete } from "./PacheteVedere";
 import PliuriVedere from "./PliuriVedere";
 
-/** Formatul american: virgula la mii, punctul zecimal, orele fara separator ("EUR 1,833", "1.5 h"). */
+/** Formatul american: virgula la mii (si la ore), punctul zecimal ("EUR 1,833", "2,200 h", "1.5 h"). */
 export const FORMAT_EN: FormatCifre = {
   bani: (n) => formatBani(n, ","),
-  ore: formatOre,
+  ore: (n) => formatOre(n, ","),
   zecimal: (n) => formatZecimal(n, "."),
 };
 
@@ -95,7 +95,7 @@ export function textTeaserEn(): { presupuneri: string; rezultat: string } {
   const m = IMPLICITE.minute;
   return {
     presupuneri: CALCULATOR_EN.teaser.presupuneri(p + (p === 1 ? " person" : " people"), m + (m === 1 ? " minute" : " minutes")),
-    rezultat: CALCULATOR_EN.teaser.rezultat(formatOre(r.ore) + " h"),
+    rezultat: CALCULATOR_EN.teaser.rezultat(FORMAT_EN.ore(r.ore) + " h"),
   };
 }
 
@@ -112,6 +112,9 @@ const CONTINUT_CALCULATOR: ContinutCalculator = {
   enterprise: POARTA_ENTERPRISE_EN.tinta,
 };
 
+/** Cu comutatorul pe Annual, fraza planului spune ca pretul e cel la plata anuala. */
+const CONTINUT_CALCULATOR_ANUAL: ContinutCalculator = { ...CONTINUT_CALCULATOR, pretInOre: CALCULATOR_EN.pretInOreAnual };
+
 function CalculatorEn({ perioada, analitica }: { perioada: Perioada; analitica: boolean }) {
   // Ca pe RO: evenimentul pleaca o singura data, la prima folosire, iar codul lui se cere lenes, numai cu analitica.
   const laPrimaFolosire = () => {
@@ -120,7 +123,13 @@ function CalculatorEn({ perioada, analitica }: { perioada: Perioada; analitica: 
     }
   };
   return (
-    <CalculatorVedere perioada={perioada} continut={CONTINUT_CALCULATOR} planuri={PLANURI} format={FORMAT_EN} laPrimaFolosire={laPrimaFolosire} />
+    <CalculatorVedere
+      perioada={perioada}
+      continut={perioada === "anual" ? CONTINUT_CALCULATOR_ANUAL : CONTINUT_CALCULATOR}
+      planuri={PLANURI}
+      format={FORMAT_EN}
+      laPrimaFolosire={laPrimaFolosire}
+    />
   );
 }
 
@@ -135,7 +144,7 @@ function GrilaEn({ perioada }: { perioada: Perioada }) {
       perioada={perioada}
       continut={{
         recomandat: GRILA_EN.recomandat,
-        unitate: GRILA_EN.unitate,
+        unitate: perioada === "anual" ? GRILA_EN.unitateAnual : GRILA_EN.unitate,
         buton: { text: GRILA_EN.buton, href: whatsapp, ruta: null },
         detalii: GRILA_EN.detalii,
       }}

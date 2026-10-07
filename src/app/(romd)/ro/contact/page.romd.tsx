@@ -24,7 +24,13 @@ import { CANALE, legaturaWhatsApp, numarAfisat } from "@/content/canale";
 import type { LegaturaPeCale } from "@/content/navigatie";
 import { CTA_FINAL_RO_MD } from "@/content/ro-md/acasa-componente";
 import { emailContact, pagina } from "@/content/ro-md/contact";
-import { BUTON_WHATSAPP_RO_MD, CANALE_RO_MD, CONTACT_RO_MD, subtitluContactRoMd } from "@/content/ro-md/contact-componente";
+import {
+  BUTON_WHATSAPP_RO_MD,
+  CANALE_RO_MD,
+  CONTACT_RO_MD,
+  LEGATURA_INFORMATII_LEGALE_RO_MD,
+  subtitluContactRoMd,
+} from "@/content/ro-md/contact-componente";
 
 export const metadata: Metadata = metadataPagina({
   titlu: pagina.meta.titlu,
@@ -68,8 +74,8 @@ export default function PaginaContactRoMd() {
   const numar = numarAfisat();
   const mailto = emailContact();
   const randuri: RandPanou[] = [
-    ...(href === null ? [] : [{ nume: CANALE_RO_MD.whatsapp, legatura: { text: numar, href, ruta: null }, stare: CANALE_RO_MD.deschis }]),
-    ...(mailto === null ? [] : [{ nume: CANALE_RO_MD.email, legatura: { text: CANALE.email, href: mailto, ruta: null }, stare: CANALE_RO_MD.deschis }]),
+    ...(href === null ? [] : [{ nume: CANALE_RO_MD.whatsapp, legatura: { text: numar, href, ruta: null } }]),
+    ...(mailto === null ? [] : [{ nume: CANALE_RO_MD.email, legatura: { text: CANALE.email, href: mailto, ruta: null } }]),
   ];
   const continut = { ...CONTACT_RO_MD, erou: { ...CONTACT_RO_MD.erou, subtitlu: subtitluContactRoMd(numar, mailto === null ? "" : CANALE.email) } };
 
@@ -79,6 +85,7 @@ export default function PaginaContactRoMd() {
       <PaginaContact
         continut={continut}
         randuri={randuri}
+        legaturaInText={LEGATURA_INFORMATII_LEGALE_RO_MD}
         butonCaseta={<ButonCanal legatura={whatsapp} varianta="plin" marime="plat" sageata={false} />}
       />
       <CtaFinalInchis continut={CTA_FINAL_RO_MD} butoane={<ButonCanal legatura={whatsapp} varianta="alb-pe-inchis" marime="mare" sageata />} />

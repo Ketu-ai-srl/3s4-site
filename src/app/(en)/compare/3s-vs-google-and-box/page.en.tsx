@@ -9,6 +9,8 @@
 //   Tabelul primeste legenda, eticheta ei si sufixul pentru ferestre noi in engleza, plus grupul de surse al
 //   afirmatiilor despre Google din cardul divizat (decizia 11). Butonul cutiei de final duce la WhatsApp, cu textul
 //   precompletat al paginii (fara formular, decizia 3).
+//   Cardul divizat pune bifele pe "When does 3S fit?" si avertizarile pe "When should you not choose 3S?"
+//   (`bifeLaDreapta`): pe RO coloanele spun altceva (ce face bine un drive / unde incepe o arhiva).
 //
 // Datele structurate: nodurile Article si WebPage din modul (`_referinta/date-structurate.ts`); organizatia si site-ul le pune layout-ul. Firul pune
 // singur `BreadcrumbList`, ca pe RO.
@@ -63,6 +65,7 @@ export default function Pagina() {
             <CardDivizat
               stanga={DIVIZAT_EN.stanga}
               dreapta={DIVIZAT_EN.dreapta}
+              bifeLaDreapta
             />
           </div>
         </div>

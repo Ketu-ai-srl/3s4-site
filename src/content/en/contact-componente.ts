@@ -16,6 +16,7 @@
 import type { ContinutPaginaContact } from "@/components/conversie/PaginaContact";
 import type { ContinutCtaFinal } from "@/components/primitive/CtaFinalInchis";
 import type { CardSubiect } from "@/content/conversie";
+import { caleMd } from "@/content/juridic/md/registru";
 
 /** Eticheta accesibila a firului din erou, in limba editiei. */
 export const ETICHETA_FIR_EN = "Breadcrumb";
@@ -74,12 +75,17 @@ export function subtitluContactEn(numar: string, email: string): string {
   return s.inainte + numar + s.dupaNumar + (email === "" ? "" : s.inainteDeEmail + email) + s.final;
 }
 
-/** Randurile panoului de canale (`conversie.ts:123-149`): WhatsApp in locul formularului, e-mailul dupa P-40. */
+/**
+ * Randurile panoului de canale (`conversie.ts:123-149`): WhatsApp in locul formularului, e-mailul dupa P-40. Fara stare:
+ * textul panoului spune ca nu publicam un program, deci un "Open" cu ceas langa canal ar contrazice fraza.
+ */
 export const CANALE_EN = {
   whatsapp: "WhatsApp, for messages and calls",
   email: "E-mail",
-  deschis: "Open",
 };
+
+/** Numele paginii din textul blocului marcii, legat la pagina de informatii legale a editiei. */
+export const LEGATURA_INFORMATII_LEGALE_EN = { text: "Legal information", href: caleMd("informatii-legale", "en") };
 
 /** Continutul paginii (`conversie.ts:52-170`); subtitlul eroului se completeaza cu `subtitluContactEn`. */
 export const CONTACT_EN: ContinutPaginaContact = {

@@ -22,10 +22,12 @@
 import { CAI_EXISTENTE } from "@/content/cai";
 import { caleMd } from "@/content/juridic/md/registru";
 import { stareMasurare } from "@/content/juridic/masurare";
-import { stareAnalitica, unelteActive, versiuneInformare } from "@/lib/analitica";
+import { amprenta, stareAnalitica, unelteActive, versiuneInformare } from "@/lib/analitica";
+import { editiiBuild, type CodEditie } from "@/lib/editii";
 import type { LegaturiPolitici } from "./Consimtamant";
 import ConsimtamantLenes from "./ConsimtamantLenes";
-import { informareConsimtamant, type LimbaBanner } from "./texte";
+import { informareConsimtamant, informareLaTu, type LimbaBanner } from "./texte";
+import { domeniuCuMaiMulteLimbi, versiuneCatalog } from "./versiune";
 
 /** Caile politicilor pe site-ul romanesc, cum le numeste coloana Juridic din contractul de navigatie. */
 export const CAI_POLITICI = {
@@ -49,20 +51,40 @@ export function legaturiPolitici(cai: ReadonlySet<string> = CAI_EXISTENTE, limba
   return { confidentialitate: prima("confidentialitate"), cookie: prima("cookie") };
 }
 
-export default function PunctConsimtamant({ limba = "ro" }: { limba?: LimbaBanner } = {}) {
+// DOMENIUL CU MAI MULTE LIMBI (3s.md: engleza si romana). O alegere priveste scopurile si furnizorii, nu limba:
+// facuta pe `/`, tine si pe `/ro`, si invers, cat timp catalogul e acelasi (`versiune.ts`). Componenta primeste atunci
+// si versiunea de catalog, dupa care se masoara valabilitatea; versiunea textului ramane in alegere si in evidenta, si
+// se calculeaza din informarea RANDATA (celulele panoului la "tu" in romana, `informareLaTu`), ca evidenta sa numeasca
+// exact textul aratat. Pe site-ul romanesc (o singura limba) nimic din toate acestea: aceleasi proprietati ca inainte.
+
+export default function PunctConsimtamant({ limba = "ro", editii }: { limba?: LimbaBanner; editii?: readonly CodEditie[] } = {}) {
   stareMasurare();
   const stare = stareAnalitica();
   if (!stare.activa) {
     return null;
   }
   const unelte = unelteActive(stare);
+  const legaturi = legaturiPolitici(CAI_EXISTENTE, limba);
+  if (!domeniuCuMaiMulteLimbi(editii ?? editiiBuild())) {
+    return (
+      <ConsimtamantLenes
+        idGa4={stare.idGa4}
+        umami={stare.umami}
+        versiune={versiuneInformare(limba, unelte)}
+        legaturi={legaturi}
+        informare={informareConsimtamant(limba, unelte)}
+      />
+    );
+  }
+  const informare = informareLaTu(informareConsimtamant(limba, unelte));
   return (
     <ConsimtamantLenes
       idGa4={stare.idGa4}
       umami={stare.umami}
-      versiune={versiuneInformare(limba, unelte)}
-      legaturi={legaturiPolitici(CAI_EXISTENTE, limba)}
-      informare={informareConsimtamant(limba, unelte)}
+      versiune={limba + "-" + amprenta(JSON.stringify({ informare: versiuneInformare(limba, unelte), randata: informare }))}
+      catalog={versiuneCatalog(unelte)}
+      legaturi={legaturi}
+      informare={informare}
     />
   );
 }

@@ -5,6 +5,8 @@
 // Ordinea RO (lista declarata a perechii: `config/congruenta/g3.json`): EroulInterior, CardDivizat, [DiagramaConectori:
 // d43], [SinaPasi: poarta juridica 40-41, d31, d43], TabelMarcaje, CutieCta880. Butonul cutiei duce la WhatsApp, cu
 // `[ref:ro-md-comparatie]`; fara WhatsApp pe domeniu ramane inert (`Tinta`), cu acelasi aspect, ca pe EN.
+// Cardul divizat pune bifele pe "Cand se potriveste 3S" si avertizarile pe "Cand 3S nu este prima alegere"
+// (`bifeLaDreapta`), ca pe EN.
 
 import type { Metadata } from "next";
 import { grafReferinta } from "@/app/(en)/guides/_referinta/date-structurate";
@@ -49,7 +51,7 @@ export default function Pagina() {
       <section className={s.sectiuneLipita}>
         <div className="container-site">
           <div className={s.bloc}>
-            <CardDivizat stanga={DIVIZAT_COMPARATIE_RO_MD.stanga} dreapta={DIVIZAT_COMPARATIE_RO_MD.dreapta} />
+            <CardDivizat stanga={DIVIZAT_COMPARATIE_RO_MD.stanga} dreapta={DIVIZAT_COMPARATIE_RO_MD.dreapta} bifeLaDreapta />
           </div>
         </div>
       </section>

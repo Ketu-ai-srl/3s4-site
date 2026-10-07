@@ -6,7 +6,8 @@
 // interactiune. E declarata in politica de cookie-uri (`COOKIE_ALEGERE` din furnizori).
 //
 // O alegere veche se cere din nou in doua cazuri: s-a schimbat informarea (alta versiune, deci alt
-// text decat cel la care a spus da sau nu) sau au trecut 6 luni. Pragul de 6 luni e ales de noi:
+// text decat cel la care a spus da sau nu) sau au trecut 6 luni. Pe un domeniu cu mai multe limbi
+// (3s.md), primul caz se masoara pe catalogul scopurilor si al furnizorilor (`versiune.ts`), nu pe text. Pragul de 6 luni e ales de noi:
 // legea nu da o durata, iar o jumatate de an tine alegerea fresca fara sa intrebe la fiecare vizita.
 //
 // Orice citire sau scriere poate cadea (fereastra privata, stocare blocata, cota plina): atunci
@@ -31,6 +32,11 @@ export type Alegere = {
   moment: string;
   statistica: boolean;
   metoda: Metoda;
+  /**
+   * Versiunea de catalog (`versiune.ts`), numai pe un domeniu cu mai multe limbi: acolo valabilitatea se masoara pe
+   * ea, nu pe `versiune`, ca alegerea sa tina in toate limbile cat timp scopurile si furnizorii sunt aceiasi.
+   */
+  catalog?: string;
 };
 
 const ZI_MS = 24 * 60 * 60 * 1000;
@@ -47,17 +53,22 @@ export function alegereValida(x: unknown): x is Alegere {
     typeof a.moment === "string" &&
     !Number.isNaN(Date.parse(a.moment)) &&
     typeof a.statistica === "boolean" &&
-    (METODE as readonly string[]).includes(a.metoda as string)
+    (METODE as readonly string[]).includes(a.metoda as string) &&
+    (a.catalog === undefined || (typeof a.catalog === "string" && a.catalog.length > 0 && a.catalog.length <= 64))
   );
 }
 
-/** Alegerea pastrata, daca exista, e pe versiunea curenta si nu a expirat. Altfel `null`. */
-export function citesteAlegere(versiune: string, acum: number = Date.now()): Alegere | null {
+/**
+ * Alegerea pastrata, daca exista, e pe versiunea curenta si nu a expirat. Altfel `null`. Cu `catalog` (domeniu cu
+ * mai multe limbi), alegerea e valabila cand catalogul ei e cel curent, oricare ar fi limba in care s-a facut.
+ */
+export function citesteAlegere(versiune: string, acum: number = Date.now(), catalog?: string): Alegere | null {
   try {
     const brut = window.localStorage.getItem(CHEIE_ALEGERE);
     if (brut === null) return null;
     const a: unknown = JSON.parse(brut);
-    if (!alegereValida(a) || a.versiune !== versiune) return null;
+    if (!alegereValida(a)) return null;
+    if (catalog === undefined ? a.versiune !== versiune : a.catalog !== catalog) return null;
     if (acum - Date.parse(a.moment) > VALABILITATE_ZILE * ZI_MS) return null;
     return a;
   } catch {

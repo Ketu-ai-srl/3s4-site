@@ -11,6 +11,7 @@ import {
   progresPista,
   tintaPunct,
   translatieBanda,
+  translatieCard,
 } from '../src/components/functionalitati-acasa/derulare'
 import { ESTOMPARE_MAXIMA, inaltimeEstompare } from '../src/components/functionalitati-acasa/estompare'
 import { deplasareRand, MARGINE_FOCUS } from '../src/components/functionalitati-acasa/MachetaCautare'
@@ -299,6 +300,19 @@ describe('pista de mobil (fisa §11)', () => {
     expect(translatieBanda(0.5)).toBe('translate3d(-33.3333%, 0px, 0px)')
     expect(translatieBanda(1)).toBe('translate3d(-66.6667%, 0px, 0px)')
     expect(translatieBanda(3)).toBe('translate3d(-66.6667%, 0px, 0px)')
+  })
+
+  it('banda sta pe cardul activ: o fereastra intreaga per card, fara pozitii intermediare (m5, 06.10)', () => {
+    expect([0, 1, 2].map(translatieCard)).toEqual(['translate3d(0%, 0px, 0px)', 'translate3d(-33.3333%, 0px, 0px)', 'translate3d(-66.6667%, 0px, 0px)'])
+    expect(translatieCard(-1)).toBe(translatieCard(0))
+    expect(translatieCard(5)).toBe(translatieCard(2))
+    // Pe tot intervalul unui card translatia e aceeasi: lantul vedere -> card -> translatie.
+    const pePrag = (p: number) => translatieCard(cardDinProgres(p))
+    expect(new Set([0, 0.1, 0.2, 0.33].map(pePrag)).size).toBe(1)
+    expect(new Set([0.34, 0.45, 0.5, 0.66].map(pePrag)).size).toBe(1)
+    expect(new Set([0.67, 0.8, 1].map(pePrag)).size).toBe(1)
+    // Martor: translatia continua (referinta) da valori diferite in acelasi interval.
+    expect(new Set([0, 0.1, 0.2, 0.33].map(translatieBanda)).size).toBe(4)
   })
 
   it('punctul n deruleaza pana cand cardul n sta exact in fereastra (fisa §14.12)', () => {

@@ -9,6 +9,12 @@
 // romanesc continutul e exact cel din `paleta.ts`; pe altul, `continutPaletaContract` aplica aceleasi
 // reguli peste grupurile contractului (`paleta.ts` citeste numai contractul romanesc).
 //
+// PE ECRAN TACTIL (fara hover, ca tasta din antet): tastele nu au sens, deci randul de jos cu sagetile, Enter si
+// "Ctrl K" nu se arata, iar butonul de inchidere poarta un X in loc de "esc" (aceeasi eticheta accesibila).
+//
+// EDITIA PAGINII: pe un domeniu cu mai multe editii (3s.md), rezultatele sunt numai ale editiei din care s-a deschis
+// paleta (`editiileContractului`): o pagina in engleza nu propune pagini in romana si invers.
+//
 // ASEZAREA (`src/lib/asezare.ts`): continutul se calculeaza pe cai SURSA; navigarea (`router.push`) si calea
 // afisata langa fiecare rezultat folosesc adresa SERVITA (`cuCaiServite`). Pe asezarea `md` coincid.
 
@@ -16,10 +22,22 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ARTICOLE, caleArticol, type ArticolBlog } from "@/content/blog/registru";
 import { PALETA, vizibile, type CaiExistente, type ContractPaleta } from "@/content/navigatie";
-import { RUTE, type Ruta } from "@/content/rute";
+import { RUTE, editiaRutei, type Ruta } from "@/content/rute";
+import type { CodEditie } from "@/lib/editii";
 import Iconita from "@/components/primitive/Iconita";
 import { continutPaleta, cuCaiServite, normalizeaza, type GrupPaletaRezultat } from "./paleta";
 import s from "./PaletaCautare.module.css";
+
+/**
+ * Editiile paginilor numite de contract (grupurile lui, dupa rutele carora le apartin caile). Contractul unei editii
+ * numeste numai pagini ale ei, deci multimea spune din ce editie s-a deschis paleta. `null` cand contractul nu
+ * numeste nicio ruta cunoscuta: atunci nu se filtreaza nimic.
+ */
+export function editiileContractului(paleta: ContractPaleta, rute: readonly Ruta[]): ReadonlySet<CodEditie> | null {
+  const cai = new Set(paleta.grupuri.flatMap((g) => g.elemente.map((l) => l.href ?? "")));
+  const editii = new Set(rute.filter((r) => cai.has(r.cale)).map(editiaRutei));
+  return editii.size === 0 ? null : editii;
+}
 
 /**
  * Continutul paletei pentru un contract dat: aceleasi reguli ca `continutPaleta` (fara interogare, grupurile
@@ -48,10 +66,12 @@ export function continutPaletaContract(
     ].filter((g) => g.elemente.length > 0);
   }
   const dinContract = new Set(pagini.map((p) => p.cale));
+  // Numai rutele editiei contractului: pe 3s.md, paleta de pe o pagina EN nu propune pagini RO si invers.
+  const editii = editiileContractului(paleta, rute);
   const toatePaginile = [
     ...pagini.map((p) => ({ ...p, descriere: rute.find((r) => r.cale === p.cale)?.descriere ?? "" })),
     ...rute
-      .filter((r) => cai.has(r.cale) && !dinContract.has(r.cale))
+      .filter((r) => cai.has(r.cale) && !dinContract.has(r.cale) && (editii === null || editii.has(editiaRutei(r))))
       .map((r) => ({ titlu: r.scurt, cale: r.cale, descriere: r.descriere })),
   ];
   return [
@@ -155,7 +175,8 @@ export default function PaletaCautare({ cai, paleta = PALETA, onInchide }: Palet
             onKeyDown={laTasta}
           />
           <button type="button" className={s.tastaEsc} onClick={onInchide} aria-label={paleta.inchide}>
-            {paleta.tastaInchidere}
+            <span className={s.tastaEscText}>{paleta.tastaInchidere}</span>
+            <Iconita nume="x" marime={16} contur={2} className={s.tastaEscIconita} />
           </button>
         </div>
         {plate.length === 0 ? (

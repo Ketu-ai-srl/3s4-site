@@ -46,6 +46,11 @@
   color: var(--color-albastru-apasat);
 }
 
+/* Legatura spre cealalta limba a domeniului (paginile de negasit globale ale lui 3s.md), sub lista de drumuri. */
+.altaLimba {
+  margin: 24px 0 0;
+}
+
 @media (max-width: 767px) {
   .pagina {
     padding: 120px 0 64px;

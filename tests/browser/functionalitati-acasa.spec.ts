@@ -621,7 +621,7 @@ test.describe('atingerea, pe un ecran tactil de 1440 x 900', () => {
 test.describe('pista la 390 x 844, cu miscare', () => {
   test.use({ viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' })
 
-  test('pista: 300lvh, banda urmeaza derularea fara magnet, cardul se schimba la 0,34 si 0,67', async ({ page }) => {
+  test('pista: 300lvh, cardul se schimba la 0,34 si 0,67, iar banda sta pe cardul activ (m5)', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
     expect(await citesteLatimea(page, 'pista 390')).toBe(390)
     const m = await page.evaluate((sel) => {
@@ -649,6 +649,18 @@ test.describe('pista la 390 x 844, cu miscare', () => {
     }
     await deruleaza(page, m.top + 0.5 * cursa)
     await expect(banda).toHaveAttribute('style', /translate3d\(-33\.33\d*%/)
+    // m5 (testul 3s.md din 06.10): la referinta banda urma derularea continuu si pe cea mai mare parte
+    // a cursei se vedeau doua jumatati de card, cu textul taiat. Acum, in orice punct al cursei, dupa
+    // tranzitie, cardul activ sta intreg in fereastra (marginea lui la x 0) si niciun card nu e taiat.
+    const stangi = () => page.locator(SECTIUNE + ' ol > li').evaluateAll((li) => li.map((e) => Math.round(e.getBoundingClientRect().left)))
+    for (const p of [0.05, 0.2, 0.3, 0.4, 0.55, 0.62, 0.75, 0.9]) {
+      await deruleaza(page, m.top + p * cursa)
+      const c = Number(await card())
+      await expect.poll(async () => Math.abs((await stangi())[c]), { message: 'p ' + p + ': cardul activ ' + c + ' intreg' }).toBeLessThanOrEqual(1)
+      const x = await stangi()
+      console.log('[pista 390] p ' + p + ' | card ' + c + ' | marginile cardurilor: ' + x.join(', '))
+      expect(x.every((v) => Math.abs(v % 390) <= 1 || Math.abs(Math.abs(v % 390) - 390) <= 1), 'p ' + p + ': niciun card taiat de fereastra').toBe(true)
+    }
   })
 
   test('clicul pe punctul n aliniaza exact cardul n (abaterea §14.12)', async ({ page }) => {
@@ -667,9 +679,10 @@ test.describe('pista la 390 x 844, cu miscare', () => {
           return a === (await page.evaluate(() => window.scrollY))
         })
         .toBe(true)
-      const stanga = await page.locator(SECTIUNE + ' ol > li').nth(n).evaluate((li) => li.getBoundingClientRect().left)
-      console.log('[puncte 390] punctul ' + (n + 1) + ': cardul la x ' + stanga.toFixed(2))
-      expect(Math.abs(stanga)).toBeLessThan(1.5)
+      // Banda trece la card intr-o tranzitie scurta (m5): se asteapta pana sta.
+      const stanga = () => page.locator(SECTIUNE + ' ol > li').nth(n).evaluate((li) => li.getBoundingClientRect().left)
+      await expect.poll(async () => Math.abs(await stanga())).toBeLessThan(1.5)
+      console.log('[puncte 390] punctul ' + (n + 1) + ': cardul la x ' + (await stanga()).toFixed(2))
       await expect(puncte.nth(n)).toHaveAttribute('aria-current', 'step')
     }
   })

@@ -162,6 +162,8 @@ export const GRILA_RO_MD = {
   eticheta: "Pachetele 3S",
   recomandat: "Recomandat",
   unitate: "EUR / lună",
+  // Langa pretul anual pe luna (75 / 125 / 200), ca sa nu se citeasca drept pret lunar.
+  unitateAnual: "EUR / lună, la plata anuală",
   buton: "Scrie-ne pe WhatsApp",
   detalii: (rand: string) => "Ce înseamnă: " + rand,
 };
@@ -231,6 +233,13 @@ export const CALCULATOR_RO_MD = {
   zileLucratoare: 22,
   timpAcum: { inainte: "Acum plătești ", dupaBani: " EUR lunar pentru cele ", dupaOre: " h în care echipa caută acte prin dosare." },
   pretInOre: { inainte: "Se potrivește pachetul ", dupaPlan: ": ", dupaPret: " EUR pe lună, adică ", dupaOre: " h plătite la tariful ales." },
+  // Cu comutatorul pe Anual, pretul pachetului e cel anual pe luna: fraza spune perioada.
+  pretInOreAnual: {
+    inainte: "Se potrivește pachetul ",
+    dupaPlan: ": ",
+    dupaPret: " EUR pe lună, la plata anuală, adică ",
+    dupaOre: " h plătite la tariful ales.",
+  },
   pesteConturi: {
     inainte: (persoane: number) => "Pentru " + persoane + cuDeRoMd(persoane) + " persoane, pachetele nu ajung: discută cu echipa 3S despre ",
     dupa: ".",
@@ -322,7 +331,9 @@ export const TABEL_RO_MD: ContinutTabelPlanuri = {
         { functie: "Lunar (EUR)", celule: { starter: valoare("90"), pro: valoare("150"), business: valoare("240") } },
         { functie: "Conturi pentru echipă", celule: { starter: valoare("5"), pro: valoare("10"), business: valoare("20") } },
         { functie: "Pilot gratuit de 14 zile", celule: toate(DA) },
-        { functie: "Cost pe persoană", celule: toate(valoare("Inclus")) },
+        // Pretul e pe firma: celula spune ca nu exista cost pe persoana, ca pe EN ("Per-user fee": "None"); "Inclus"
+        // se citea si ca "costul pe persoana e inclus", si era singura celula cu majuscula langa "inclus".
+        { functie: "Cost pe persoană", celule: toate(valoare("Nu există")) },
         // Celula ramane scurta (coloana planului are 7,5rem): unitatea si "o singura data" stau in eticheta randului.
         { functie: "Taxă de conectare, la " + cuUnitate(CONECTARE.pagini, "pagini") + " (o singură dată)", celule: toate(valoare(CONECTARE.eur + " EUR")) },
       ],
@@ -428,7 +439,7 @@ export const INTREBARI_RO_MD: ContinutFaqPreturi = {
     {
       intrebare: "Există reduceri?",
       raspuns:
-        "Da, la plata anuală plătești 10 luni din 12. La Starter, Pro și Business plătești 10 luni pentru 12, adică 16,7% mai puțin. Prima lună după pilot se facturează la prețul din grilă.",
+        "Da. La plata anuală, pentru Starter, Pro și Business plătești 10 luni din 12, adică cu 16,7% mai puțin. Prima lună după pilot se facturează la prețul din grilă.",
     },
     {
       intrebare: "De ce prețul este orientativ?",

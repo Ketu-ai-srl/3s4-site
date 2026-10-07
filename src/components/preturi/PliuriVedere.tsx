@@ -16,7 +16,7 @@
 // acordeonul `preturi`, acelasi ca la intrebarile paginii), deci nu aduce nicio clasa de modul noua pe pagina; nu are
 // legaturi, ca numarul legaturilor de canal din <main> sa ramana cel al perechii RO.
 
-import { useState, type ComponentType, type ReactNode, type SyntheticEvent } from "react";
+import { useEffect, useRef, useState, type ComponentType, type ReactNode, type RefObject, type SyntheticEvent } from "react";
 import Acordeon from "@/components/primitive/Acordeon";
 import Iconita from "@/components/primitive/Iconita";
 import s from "./pliuri.module.css";
@@ -113,10 +113,51 @@ function TabelSuplimente({ c }: { c: ContinutSuplimente }) {
   );
 }
 
+/**
+ * Marcheaza panourile de tabel care chiar se deruleaza (`data-deruleaza`), ca foaia de stil sa arate indicatia
+ * scrisa numai atunci: pe 390 tabelul pachetelor se deruleaza, al suplimentelor incape. Atributul il pune numai
+ * clientul, dupa masuratoare, deci HTML-ul servit ramane cel de pana acum. Masuratoarea se reia cand panoul isi
+ * schimba marimea, inclusiv la deschiderea pliului (inchis, panoul are latimea 0).
+ *
+ * Tot aici, deplasarea orizontala a panoului ajunge in variabila `--derulat`: randurile de categorie au o singura
+ * celula pe toata latimea, care nu se poate lipi la stanga ca prima coloana, deci titlul ei se muta cu atat cat s-a
+ * derulat (foaia de stil, `text-indent`) si ramane citibil langa eticheta randului.
+ */
+function useDerulareTabele(sectiune: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const radacina = sectiune.current;
+    if (!radacina || typeof ResizeObserver === "undefined") return;
+    const panouri = Array.from(radacina.querySelectorAll<HTMLElement>("." + s.derulare));
+    const potriveste = (el: HTMLElement) => el.toggleAttribute("data-deruleaza", el.scrollWidth > el.clientWidth + 1);
+    const observator = new ResizeObserver((intrari) => {
+      for (const i of intrari) {
+        const panou = (i.target as HTMLElement).closest<HTMLElement>("." + s.derulare);
+        if (panou) potriveste(panou);
+      }
+    });
+    const laDerulare = (e: Event) => {
+      const panou = e.currentTarget as HTMLElement;
+      panou.style.setProperty("--derulat", panou.scrollLeft + "px");
+    };
+    for (const p of panouri) {
+      potriveste(p);
+      observator.observe(p);
+      if (p.firstElementChild) observator.observe(p.firstElementChild);
+      p.addEventListener("scroll", laDerulare, { passive: true });
+    }
+    return () => {
+      observator.disconnect();
+      for (const p of panouri) p.removeEventListener("scroll", laDerulare);
+    };
+  }, [sectiune]);
+}
+
 export default function PliuriVedere({ tabel, continut, Birou, suplimente }: PliuriVedereProps) {
   const [birouDeschis, setBirouDeschis] = useState(false);
+  const sectiune = useRef<HTMLElement>(null);
+  useDerulareTabele(sectiune);
   return (
-    <section className={s.pliuri} aria-label={continut.eticheta}>
+    <section ref={sectiune} className={s.pliuri} aria-label={continut.eticheta}>
       <div className="container-site">
         <div className={s.bloc}>
           <details

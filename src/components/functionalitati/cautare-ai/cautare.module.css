@@ -26,13 +26,16 @@
   max-width: 760px;
 }
 
+/* Calea e text in linie, nu `inline-flex`: titlul ferestrei o taie cu `text-overflow: ellipsis`, iar
+   punctele de suspensie se pun numai pe continut in linie. O cutie flex e atomica, deci titlul o
+   taia brusc, fara ele (06.10, la 390: "Supplie" lipit de numarul de elemente). */
 .caleDosar {
-  display: inline-flex;
-  align-items: center;
+  display: inline;
 }
 
 .separator {
   display: inline-block;
+  vertical-align: middle;
   width: 0;
   height: 0;
   margin: 0 6px;

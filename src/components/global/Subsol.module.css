@@ -133,6 +133,13 @@
   line-height: 19.2px;
 }
 
+/* Legatura din randul drepturilor (pe editia EN, informatiile legale in romana): corpul de litera al randului
+   (12 / 19,2), ca vecinii ei, nu cel al coloanelor (14 / 1,5). Pe site-ul romanesc randul n-are legatura. */
+.drepturi .legatura {
+  font-size: inherit;
+  line-height: inherit;
+}
+
 /* "Setari cookie-uri" (felia seo-geo-gdpr): un buton cu aspect de legatura, in randul drepturilor,
    12 px `cerneala-3` (4,74:1), subliniat la hover; exista numai cand analitica e pornita. */
 .setariCookie {

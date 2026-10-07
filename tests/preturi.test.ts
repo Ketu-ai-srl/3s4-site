@@ -92,33 +92,52 @@ function siruri(v: unknown, adanc = 0): string[] {
 }
 
 describe('formula calculatorului (fisa §6b)', () => {
-  // Combinatiile citite pe referinta: persoane, minute, tarif -> ore, bani afisati.
-  const MASURATE: [number, number, number, number, string][] = [
-    [1, 10, 71, 4, '284'],
-    [1, 120, 71, 44, '3.124'],
-    [3, 15, 71, 17, '1.207'],
-    [5, 30, 71, 55, '3.905'],
-    [7, 45, 71, 116, '8.236'],
-    [11, 30, 71, 121, '8.591'],
-    [35, 90, 71, 1155, '82.005'],
-    [50, 120, 71, 2200, '156.200'],
-    [8, 40, 23, 117, '2.691'],
-    [8, 40, 207, 117, '24.219'],
+  // Combinatiile citite pe referinta: persoane, minute, tarif -> orele afisate, banii afisati. Referinta inmultea
+  // orele ROTUNJITE cu tariful; testul 3s.md din 06.10 a masurat abaterea (pana la 9%: 1 x 10 min x 22 de zile =
+  // 3,67 h, la 5 EUR/h 18,3 EUR, afisat 20), deci banii vin acum din orele EXACTE si se rotunjesc numai la afisare.
+  // Orele afisate raman cele ale referintei; banii s-au schimbat acolo unde orele nu erau intregi (284 -> 260,
+  // 1.207 -> 1.172, 8.236 -> 8.201, 2.691 -> 2.699, 24.219 -> 24.288), iar orele au separator de mii.
+  const MASURATE: [number, number, number, string, string][] = [
+    [1, 10, 71, '4', '260'],
+    [1, 120, 71, '44', '3.124'],
+    [3, 15, 71, '17', '1.172'],
+    [5, 30, 71, '55', '3.905'],
+    [7, 45, 71, '116', '8.201'],
+    [11, 30, 71, '121', '8.591'],
+    [35, 90, 71, '1.155', '82.005'],
+    [50, 120, 71, '2.200', '156.200'],
+    [8, 40, 23, '117', '2.699'],
+    [8, 40, 207, '117', '24.288'],
   ]
 
   for (const [p, m, t, ore, bani] of MASURATE) {
     it(p + ' persoane, ' + m + ' min, ' + t + ' RON/h -> ' + ore + ' h, ' + bani + ' RON', () => {
       const r = calculeaza({ persoane: p, minute: m, tarif: t }, 'anual', PLANURI, CALCULATOR.zileLucratoare)
-      expect(r.ore).toBe(ore)
-      expect(formatOre(r.ore)).toBe(String(ore))
+      expect(formatOre(r.ore)).toBe(ore)
       expect(formatBani(r.bani)).toBe(bani)
     })
   }
 
-  it('rotunjirea e pe ore, iar banii se calculeaza din orele deja rotunjite', () => {
-    // 3 x 15 / 60 x 22 = 16,5 -> 17 h; banii 17 x 71, nu 16,5 x 71.
-    expect(oreCautare(3, 15, 22)).toBe(17)
-    expect(valoareOre(17, 71)).toBe(1207)
+  it('banii vin din orele exacte; rotunjirea e numai la afisare', () => {
+    // 3 x 15 / 60 x 22 = 16,5 h: afisat 17, iar banii 16,5 x 71 = 1.171,5 (afisat 1.172), nu 17 x 71 = 1.207.
+    expect(oreCautare(3, 15, 22)).toBe(16.5)
+    expect(valoareOre(16.5, 71)).toBe(1171.5)
+    expect(formatOre(oreCautare(3, 15, 22))).toBe('17')
+  })
+
+  it('exemplele masurate pe 3s.md (06.10): 550, nu 555; 18,3, nu 20; separatorul de mii la ore pe ambele editii', () => {
+    // 4 colegi x 25 min x 22 de zile = 36,67 h; la 15 EUR/h costul e 550 (formula veche: 37 x 15 = 555).
+    const a = calculeaza({ persoane: 4, minute: 25, tarif: 15 }, 'anual', PLANURI, 22)
+    expect(a.ore).toBeCloseTo(36.667, 3)
+    expect(a.bani).toBeCloseTo(550, 9)
+    expect([formatBani(a.bani), formatOre(a.ore)]).toEqual(['550', '37'])
+    // 1 x 10 min x 22 de zile = 3,67 h; la 5 EUR/h 18,33 (formula veche: 4 x 5 = 20).
+    const b = calculeaza({ persoane: 1, minute: 10, tarif: 5 }, 'anual', PLANURI, 22)
+    expect(b.bani).toBeCloseTo(18.333, 3)
+    expect(formatBani(b.bani)).toBe('18')
+    // 50 x 120 min x 22 de zile = 2.200 h, cu separatorul editiei: "2.200" pe RO, "2,200" pe EN.
+    const c = calculeaza({ persoane: 50, minute: 120, tarif: 100 }, 'anual', PLANURI, 22)
+    expect([formatOre(c.ore), formatOre(c.ore, ','), formatBani(c.bani)]).toEqual(['2.200', '2,200', '220.000'])
   })
 
   it('pachetul potrivit: primul cu destule conturi; peste cel mai mare, niciunul', () => {
@@ -151,12 +170,13 @@ describe('formula calculatorului (fisa §6b)', () => {
     expect(oreEchivalent(100, 0)).toBe(0)
   })
 
-  it('formatarea: punct la mii, orele fara separator, zecimala cu virgula', () => {
+  it('formatarea: punct la mii (si la ore), zecimala cu virgula', () => {
     expect(formatBani(0)).toBe('0')
     expect(formatBani(999)).toBe('999')
     expect(formatBani(1000)).toBe('1.000')
     expect(formatBani(1234567)).toBe('1.234.567')
-    expect(formatOre(1155)).toBe('1155')
+    expect(formatOre(1155)).toBe('1.155')
+    expect(formatOre(999.5)).toBe('1.000')
     expect(formatZecimal(0)).toBe('0')
     expect(formatZecimal(2)).toBe('2')
     expect(formatZecimal(1.25)).toBe('1,3')

@@ -372,3 +372,84 @@
     padding: 8px 14px;
   }
 }
+
+/* Suplimentele pe ecran lat: coloana a treia (facturarea) are randuri lungi ("O singura data, valabile
+   90 de zile") si se rupea pe trei randuri in 120 px, langa o coloana Supliment pe jumatate goala.
+   Pe ecran lat textul ei sta pe un rand, coloana se strange pe el (`width: 1%`), iar coloana
+   Supliment pastreaza restul. Selectorul prinde numai
+   tabelul cu trei coloane (al treilea cap e si ultimul), deci tabelul pachetelor (patru) ramane cum
+   era; o coloana in plus la suplimente scoate tacut regula, nu strica alt tabel. */
+@media (min-width: 769px) {
+  .tabel thead th.coloanaPlan:nth-child(3):last-child,
+  .tabel tbody td.celulaValoare:nth-child(3):last-child {
+    width: 1%;
+    white-space: nowrap;
+  }
+}
+
+/* =============================================================================================
+   Tabelele pe ecran ingust (390): prima coloana fixata si ingusta, valorile la vedere.
+   Pana aici prima coloana nu se rupea (`nowrap`) si lua 288-377 din cei 356 px ai panoului, deci la
+   390 nu se vedea nicio valoare fara derulare. Acum: eticheta randului are 8,5rem, se rupe pe randuri
+   si sta lipita la stanga (cu fundal, ca valorile sa treaca pe sub ea); coloanele de valori au 6,5rem.
+   Tabelul pachetelor (3 valori) are 448 px, deci la 390 se vad eticheta si doua valori intregi; al
+   suplimentelor (2 valori) are 344 px si incape intreg.
+   Semnul ca tabelul continua: o umbra la marginea dreapta, facuta din doua fundaluri ale panoului
+   derulabil (unul se misca odata cu continutul, unul sta pe loc), deci apare numai cat mai e ceva
+   de derulat si dispare singura la capat; se pune numai pe panoul care se deruleaza (`data-deruleaza`). Celulele cu fundal (capetele,
+   randurile de categorie) o acopera; randurile de valori, fara fundal, o lasa la vedere.
+   Indicatia scrisa: numele panoului (`aria-label`, textul `derulare` al editiei) apare deasupra
+   tabelului cat timp panoul chiar se deruleaza (`data-deruleaza`, pus de vedere dupa masuratoare).
+   Textul generat are alternativa goala (`/ ""`), ca cititorul de ecran sa nu-l auda de doua ori.
+   ============================================================================================= */
+@media (max-width: 768px) {
+  .derulare[data-deruleaza] {
+    background:
+      linear-gradient(to left, var(--color-alb) 45%, rgb(255 255 255 / 0)) right center / 32px 100% no-repeat local,
+      linear-gradient(to left, rgb(15 23 42 / 0.2), rgb(15 23 42 / 0)) right center / 14px 100% no-repeat scroll;
+  }
+
+  .derulare[data-deruleaza]::before {
+    content: attr(aria-label);
+    content: attr(aria-label) / "";
+    position: sticky;
+    left: 0;
+    display: block;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--color-ardezie-1);
+    color: var(--color-ardezie-5);
+    font-size: 13px;
+    line-height: 19.2px;
+  }
+
+  /* Latimea tabelului = suma coloanelor declarate (cel putin panoul): fara asta, latimea 100% strangea
+     coloanele sub valorile de mai jos si asezarea depindea de textul celulelor. */
+  .tabel {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .tabel thead th:first-child,
+  .tabel tbody th.celulaFunctie {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 8.5rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+    box-shadow: inset -1px 0 0 var(--color-ardezie-2);
+  }
+
+  .tabel tbody th.celulaFunctie {
+    background: var(--color-alb);
+  }
+
+  .tabel thead th.coloanaPlan {
+    width: 6.5rem;
+  }
+
+  /* Titlul randului de categorie urmeaza derularea (`--derulat`, pus de vedere), altfel ar iesi pe stanga. */
+  .randCategorie th {
+    text-indent: var(--derulat, 0px);
+  }
+}

@@ -653,6 +653,20 @@
   .colMarcaj {
     width: var(--latime-coloana-mica);
   }
+
+  /* Pe telefon coloana 3S (ultima) e tocmai partea care conteaza. Latimea minima din date (420 / 560 px,
+     stil pe element) impingea 3S dincolo de marginea panoului de 356 px la 390: se vedea functia si
+     tertul. Aici tabelul ia latimea panoului, iar functia, limitata la 40%, se rupe pe randuri: la 390
+     toate coloanele incap, si cu un tert (comparatia cu drive-ul), si cu doi (comparatia stocarii;
+     coloanele de marcaj se strang sub latimea din date, marcajele fiind iconite de 16 px). `!important`
+     bate stilul pe element, numai sub 768. */
+  .tabel {
+    min-width: 0 !important;
+  }
+
+  .tabel thead th:first-child {
+    width: 40%;
+  }
 }
 
 /* --- CarduriVariante: 3 x 1fr pe 1100, gap 16; cardul nostru cu chenar albastru --------------- */

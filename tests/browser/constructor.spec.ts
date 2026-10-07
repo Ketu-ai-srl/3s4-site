@@ -373,6 +373,54 @@ test.describe('tema inchisa si antetul', () => {
   })
 })
 
+/**
+ * M4 (testul 3s.md din 06.10): stratul temei inchise e TAIAT la cutia sectiunii. Pe tema inchisa,
+ * cu sectiunea urmatoare deja in ecran sub constructor, titlul ei se vede si se atinge: punctul lui
+ * da chiar titlul, nu stratul. Pozitia de masura e aleasa ca la defect: marginea de jos a sectiunii
+ * la 70% din fereastra (sectiunea taie inca banda din mijloc, deci tema e inchisa), titlul urmator sub
+ * ea, in ecran. Martorul POZITIV scoate taietura si cere ca acelasi punct sa dea stratul.
+ */
+async function titlulUrmator(page: Page) {
+  return page.locator('#constructor').evaluate((s) => {
+    const strat = s.firstElementChild as HTMLElement
+    const h2 = s.nextElementSibling!.querySelector('h2')!
+    const r = h2.getBoundingClientRect()
+    const x = Math.round(r.left + Math.min(40, r.width / 2))
+    const y = Math.round(r.top + Math.min(16, r.height / 2))
+    const el = y > 0 && y < innerHeight ? document.elementFromPoint(x, y) : null
+    return {
+      tema: (s as HTMLElement).dataset.tema,
+      opacitate: getComputedStyle(strat).opacity,
+      josSectiune: Math.round(s.getBoundingClientRect().bottom),
+      titluY: y,
+      laTitlu: el === null ? 'in afara ecranului' : el === h2 || h2.contains(el) ? 'titlu' : el === strat ? 'strat' : 'alt element',
+    }
+  })
+}
+
+for (const [w, h] of [[1440, 900], [390, 844]] as const) {
+  for (const miscare of ['reduce', 'no-preference'] as const) {
+    test.describe('M4: stratul temei nu acopera sectiunea urmatoare, la ' + w + ' x ' + h + ', miscare ' + miscare, () => {
+      test.use({ viewport: { width: w, height: h }, reducedMotion: miscare })
+
+      test('pe tema inchisa, titlul sectiunii urmatoare se vede si se atinge; martor POZITIV fara taietura', async ({ page }) => {
+        const citit = await deschide(page)
+        expect(citit).toBe(w)
+        const { y, h: inaltime } = await sectiune(page)
+        await page.evaluate((v) => window.scrollTo({ top: v, behavior: 'instant' }), Math.round(y + inaltime - 0.7 * h))
+        await expect.poll(async () => (await sectiune(page)).tema).toBe('inchisa')
+        await expect.poll(async () => (await titlulUrmator(page)).opacitate).toBe('1')
+        const m = await titlulUrmator(page)
+        console.log('[M4 ' + w + ' ' + miscare + '] innerWidth CITIT: ' + citit + ' | jos sectiune ' + m.josSectiune + ' | titlu la y ' + m.titluY + ' | punctul da: ' + m.laTitlu)
+        expect(m.titluY).toBeGreaterThan(m.josSectiune)
+        expect(m.laTitlu).toBe('titlu')
+        await page.addStyleTag({ content: '#constructor{clip-path:none!important}' })
+        expect((await titlulUrmator(page)).laTitlu, 'martor POZITIV: fara taietura stratul acopera titlul').toBe('strat')
+      })
+    })
+  }
+}
+
 test.describe('alinierea automata (fara miscare redusa)', () => {
   test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' })
 

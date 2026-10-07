@@ -80,6 +80,18 @@
         "d43"
       ],
       "motiv": "Clasa celui de-al doilea buton din blocul de final ('Un tur prin aplicatie'), scos odata cu el."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "contact_randStare",
+      "cod": "d3",
+      "motiv": "Starea randurilor panoului de canale ('Deschis', 'Porneste odata cu politica de confidentialitate') e pe RO starea formularului si a contului, citita din comutatorul operatorului; pe 3s.md nu exista formular, iar randul WhatsApp care il inlocuieste nu are stare: pagina nu publica un program, deci 'Open' / 'Deschis' cu ceas contrazicea fraza panoului (testul in browser din 06.10.2026)."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "contact_randCeas",
+      "cod": "d3",
+      "motiv": "Ceasul din fata starii unui rand al panoului de canale, scos odata cu starea (randul de mai sus)."
     }
   ],
   "_nedeclarate": [

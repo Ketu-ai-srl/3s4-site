@@ -100,6 +100,9 @@
   position: relative;
   z-index: 10;
   padding: 52px 0 56px;
+  /* Stratul fix al temei se vede numai in cutia sectiunii (mai jos, la `.strat`). `clip-path` taie si
+     descendentii cu `position: fixed`, fara sa le schimbe blocul continator. */
+  clip-path: inset(0);
 }
 
 .sectiune[data-tema="inchisa"] {
@@ -188,11 +191,14 @@
   --sc-warn: var(--color-chihlimbar-clar);
 }
 
-/* Stratul de tema (§3): fix peste toata fereastra, in planul sectiunii (z 10), deci acopera restul
-   paginii; antetul (z 1000) pleaca singur. Intrare 0,9 s, iesire 0,6 s.
-   Pe tema inchisa stratul primeste evenimentele: ce se vede e o suprafata inchisa, deci un clic pe
-   ea nu are voie sa ajunga la o legatura ascunsa dedesubt (de pilda sectiunea urmatoare). Pe tema
-   deschisa e transparent si le lasa sa treaca, altfel ar bloca toata pagina.
+/* Stratul de tema (§3): fix peste toata fereastra, in planul sectiunii (z 10), dar TAIAT la cutia
+   sectiunii (`clip-path` pe `.sectiune`); antetul (z 1000) pleaca singur. Intrare 0,9 s, iesire 0,6 s.
+   ABATERE DE LA REFERINTA: acolo stratul acopera toata pagina cat sectiunea taie banda din mijloc,
+   deci si inceputul sectiunii urmatoare, aflat deja in ecran (masurat 06.10 pe /ro la 1440: titlul
+   urmator la y 788, sub stratul opac, nevazut si neatins de clic). Tema ramane aceeasi; se schimba
+   doar intinderea ei: sectiunile vecine se vad si se ating normal.
+   Pe tema inchisa stratul primeste evenimentele din cutia sectiunii: ce se vede acolo e o suprafata
+   inchisa. Pe tema deschisa e transparent si le lasa sa treaca.
    La referinta stratul are z-index -1; aici 0, cu continutul pe un plan de z 1 deasupra lui. Pe
    ecran e acelasi lucru, dar un z-index negativ intr-un context de suprapunere imbricat nu e
    ordonat corect de unealta de accesibilitate, care masura atunci textul pe albul paginii. */

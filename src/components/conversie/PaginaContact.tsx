@@ -25,6 +25,7 @@ import CapBloc from "@/components/primitive/CapBloc";
 import EroulInterior from "@/components/primitive/EroulInterior";
 import Tinta from "@/components/primitive/Tinta";
 import { stareFormular, type StareFormular } from "@/components/formular/stare";
+import { cuLegatura, type LegaturaInText } from "@/components/produs/legaturaInText";
 import { adresaMarcii } from "@/content/entitate";
 import { ANCORA_FORMULAR_CONTACT, CALE_CONTACT, CONTACT, type CardSubiect } from "@/content/conversie";
 import type { Legatura } from "@/content/navigatie";
@@ -40,7 +41,11 @@ const ICONITE: Record<CardSubiect["iconita"], ComponentType<{ size?: number; str
   compass: Compass,
 };
 
-export type RandPanou = { nume: string; legatura: Legatura | null; text?: string; stare: string };
+/**
+ * Un rand al panoului de canale. `stare` lipsa = randul n-are stare (fara ceas si fara text): pe 3s.md pagina nu publica
+ * un program, deci o stare "Deschis" ar citi ca ora de lucru; randurile RO au mereu stare, deci acelasi DOM.
+ */
+export type RandPanou = { nume: string; legatura: Legatura | null; text?: string; stare?: string };
 
 /** Continutul paginii, pe editie; constanta RO (`CONTACT`) il satisface fara editare. */
 export type ContinutPaginaContact = {
@@ -96,6 +101,8 @@ export type PaginaContactProps = {
   butonCaseta?: ReactNode;
   /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul RO. */
   etichetaFir?: string;
+  /** Pagina numita in textul blocului marcii care devine legatura, pe editie; lipsa = textul ramane simplu. */
+  legaturaInText?: LegaturaInText;
 };
 
 export default function PaginaContact({
@@ -105,6 +112,7 @@ export default function PaginaContact({
   randuri,
   butonCaseta,
   etichetaFir,
+  legaturaInText,
 }: PaginaContactProps) {
   const c = continut;
   const tinta = tintaCaseta(adresa, c.caseta.butonFormular);
@@ -181,10 +189,12 @@ export default function PaginaContact({
                       <span className={s.randText}>{r.text}</span>
                     )}
                   </span>
-                  <span className={s.randStare}>
-                    <Clock size={14} strokeWidth={1.5} className={s.randCeas} aria-hidden />
-                    {r.stare}
-                  </span>
+                  {r.stare !== undefined ? (
+                    <span className={s.randStare}>
+                      <Clock size={14} strokeWidth={1.5} className={s.randCeas} aria-hidden />
+                      {r.stare}
+                    </span>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -200,7 +210,7 @@ export default function PaginaContact({
       <section className={s.sectiuneBloc} aria-labelledby="contact-marca">
         <div className="container-site">
           <div className={s.bloc}>
-            <CapBloc id="contact-marca" titlu={c.marca.titlu} text={c.marca.text} marimeText={16} margineJos={0} />
+            <CapBloc id="contact-marca" titlu={c.marca.titlu} text={cuLegatura(c.marca.text, legaturaInText)} marimeText={16} margineJos={0} />
             <div className={s.carduriMarca}>
               {c.marca.carduri.map((card) => (
                 <article key={card.titlu} className={s.cardMarca}>

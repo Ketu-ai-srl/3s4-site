@@ -218,3 +218,76 @@ export function informareConsimtamant(limba: LimbaBanner, unelte: UnelteBanner):
     numaiCitit: ETICHETA_NUMAI_CITIT[limba],
   };
 }
+
+// ---------------------------------------------------------------------------------------------
+// ADRESAREA "TU" IN CELULELE PANOULUI (romana de pe 3s.md, decizia 35)
+// ---------------------------------------------------------------------------------------------
+//
+// Textele panoului sunt la "tu", dar celulele "Scop" ale tabelelor vin din catalogul furnizorilor
+// (`src/content/juridic/furnizori.ts`), scris la persoana a II-a plural de politete, ca documentele juridice din care e citit. In acelasi
+// dialog se amestecau doua registre. Catalogul ramane neatins (il citesc si documentele juridice); dialogul primeste
+// formularile lui numai acolo unde registrul difera. Restul celulelor (fara adresare) raman cele din catalog.
+//
+// O formulare la "tu" e scrisa pentru UN text al catalogului si se aplica numai pe el: perechea poarta numele cheii si
+// amprenta textului-sursa EXACT, iar inlocuirea cere ambele. Daca scopul se schimba in catalog, versiunea de catalog se
+// schimba (`versiune.ts`) si bannerul intreaba din nou; formularea veche nu mai acopera textul nou, deci dialogul arata
+// scopul declarat, din catalog, nu parafraza celui vechi. Atunci proba (tests/pagini-globale.test.ts) se inroseste pe
+// registru si pe perechea ramasa fara sursa, pana se scrie formularea noua. Perechea poarta amprenta, nu textul-sursa:
+// sursa e la registrul de politete, iar fisierele din afara juridicului nu il poarta deloc (tests/limba.test.ts).
+//
+// Se aplica pe domeniul cu mai multe limbi (`PunctConsimtamant`), unde versiunea textului se calculeaza din informarea
+// randata. Site-ul romanesc pastreaza informarea de azi: versiunea lui (dovada textului din evidenta,
+// `src/lib/analitica.ts`) se calculeaza din celulele catalogului, deci o celula schimbata numai in dialog ar lasa
+// evidenta sa numeasca alt text decat cel aratat.
+
+/**
+ * Amprenta textului-sursa al unei celule (FNV-1a pe 32 de biti, 8 cifre hexazecimale, ca amprentele din
+ * `src/lib/analitica.ts`). E scrisa aici, nu importata de acolo: analitica importa modulul asta, iar un import invers
+ * ar face un ciclu. Nu e criptografie: o eticheta care se schimba cand se schimba textul.
+ */
+export function amprentaScop(text: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
+
+/** O formulare la "tu" a celulei "Scop": cheia, amprenta textului din catalog pentru care e scrisa si formularea. */
+export type ScopLaTu = { readonly nume: string; readonly amprentaSursa: string; readonly laTu: string };
+
+/** Formularile la "tu": alegerea din banner si cheia de excludere a analiticii proprii. */
+export const SCOP_LA_TU: readonly ScopLaTu[] = [
+  {
+    nume: ALEGERE_PANOU.ro.nume,
+    amprentaSursa: "414fde7e",
+    laTu: "Ține minte ce ai ales în bannerul de cookie-uri, ca să nu te întrebăm la fiecare pagină.",
+  },
+  {
+    nume: "umami.disabled",
+    amprentaSursa: "40d23d88",
+    laTu: "Dacă l-ai pus tu în browser, măsurarea te exclude.",
+  },
+];
+
+/** Formularea la "tu" pentru o celula, numai daca a fost scrisa pentru exact textul ei din catalog. */
+export function formulareLaTu(r: RandPanou): ScopLaTu | undefined {
+  const sursa = amprentaScop(r.scop);
+  return SCOP_LA_TU.find((p) => p.nume === r.nume && p.amprentaSursa === sursa);
+}
+
+const laTu = (r: RandPanou): RandPanou => {
+  const p = formulareLaTu(r);
+  return p === undefined ? r : { ...r, scop: p.laTu };
+};
+
+/** Informarea in romana cu celulele panoului la "tu"; in engleza (si in afara tabelului) neschimbata. */
+export function informareLaTu(informare: InformareConsimtamant): InformareConsimtamant {
+  if (informare.limba !== "ro") return informare;
+  return {
+    ...informare,
+    alegere: laTu(informare.alegere),
+    statistica: informare.statistica.map((f) => ({ ...f, randuri: f.randuri.map(laTu) })),
+  };
+}

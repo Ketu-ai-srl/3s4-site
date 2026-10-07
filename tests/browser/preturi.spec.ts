@@ -296,16 +296,17 @@ test.describe('poarta si lumea pachetelor la 1440 x 900, cu miscare', () => {
     // "25 minute pe zi" si "50 lei pe oră", iar la capete "50 persoane" si "1 persoane".
     const spuse = () => cursoare.evaluateAll((l) => l.map((c) => c.getAttribute('aria-valuetext')))
     expect(await spuse()).toEqual(['4 persoane', '25 de minute pe zi', '50 de lei pe oră'])
-    // valorile de pornire: 4 persoane, 25 min, 50 RON -> 37 h, 1.850 RON; pachetul Starter, 0 RON, 0 h
-    // (toContainText normalizeaza spatiile, inclusiv pe cel neseparabil dintre suma si moneda)
-    await expect(iesire).toContainText(CALCULATOR.timpAcum.inainte.trim() + ' 1.850 RON lunar pentru cele 37 h')
-    await expect(iesire).toContainText('1.850 RON')
+    // valorile de pornire: 4 persoane, 25 min, 50 RON -> 36,67 h (afisat 37), 1.833 RON din orele EXACTE (formula
+    // referintei inmultea orele rotunjite si dadea 1.850; testul 3s.md din 06.10 a masurat abaterea, vezi `calcul.ts`);
+    // pachetul Starter, 0 RON, 0 h (toContainText normalizeaza spatiile, inclusiv pe cel neseparabil dintre suma si moneda)
+    await expect(iesire).toContainText(CALCULATOR.timpAcum.inainte.trim() + ' 1.833 RON lunar pentru cele 37 h')
+    await expect(iesire).toContainText('1.833 RON')
     await expect(iesire).toContainText('Se potrivește pachetul Starter: 0 RON pe lună')
-    // capetele din tastatura: 50 persoane, 120 min -> 2200 h; niciun pachet nu ajunge, deci iesirea
+    // capetele din tastatura: 50 persoane, 120 min -> 2.200 h (cu separatorul de mii, ca banii); niciun pachet nu ajunge, deci iesirea
     // trimite la Enterprise (inert fara ruta, legatura cu ea - dupa RUTE), nu recomanda Business
     await cursoare.nth(0).press('End')
     await cursoare.nth(1).press('End')
-    await expect(iesire).toContainText('pentru cele 2200 h în care')
+    await expect(iesire).toContainText('pentru cele 2.200 h în care')
     await expect(iesire).toContainText('110.000 RON')
     await expect(iesire).not.toContainText('Se potrivește')
     await expect(iesire).toContainText(CALCULATOR.pesteConturi.inainte('50 de') + '3S Enterprise.')

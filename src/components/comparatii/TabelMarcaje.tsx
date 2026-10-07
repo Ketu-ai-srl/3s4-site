@@ -5,8 +5,9 @@
 // tert: ce spune documentatia oficiala si legatura spre ea (publicitate comparativa, Legea nr.
 // 158/2008: comparatia trebuie sa poata fi verificata). Pliata, nu schimba forma paginii.
 //
-// Stratul cu derulare primeste focus (tabIndex 0) si nume: la 390 tabelul e mai lat decat panoul,
-// iar un strat care se deruleaza trebuie sa poata fi derulat si de la tastatura. Numele lui e altul
+// Stratul cu derulare primeste focus (tabIndex 0) si nume: un tabel mai lat decat panoul (pe ecran
+// ingust, la o latura mai mica de 390, sau cu mai multi terti) trebuie sa poata fi derulat si de la
+// tastatura. La 390 tabelul incape, cu coloana 3S la vedere (comparatii.module.css). Numele lui e altul
 // decat al sectiunii (care poarta titlul de bloc), ca cele doua repere sa nu se confunde.
 //
 // PE EDITIE: legenda marcajelor, eticheta ei accesibila si sufixul pentru cititorul de ecran al

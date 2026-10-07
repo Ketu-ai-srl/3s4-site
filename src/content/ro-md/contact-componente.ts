@@ -15,6 +15,7 @@
 
 import type { ContinutPaginaContact } from "@/components/conversie/PaginaContact";
 import type { CardSubiect } from "@/content/conversie";
+import { caleMd } from "@/content/juridic/md/registru";
 
 /** Butonul casetei si al blocului de final: eticheta deciziei 35, tinta WhatsApp cu `ref`-ul paginii. */
 export const BUTON_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
@@ -68,12 +69,17 @@ export function subtitluContactRoMd(numar: string, email: string): string {
   return s.inainte + numar + (email === "" ? "" : s.inainteDeEmail + email) + s.final;
 }
 
-/** Randurile panoului de canale: WhatsApp in locul formularului, e-mailul dupa P-40. */
+/**
+ * Randurile panoului de canale: WhatsApp in locul formularului, e-mailul dupa P-40. Fara stare: textul panoului spune
+ * ca nu publicam un program, deci un "Deschis" cu ceas langa canal ar contrazice fraza.
+ */
 export const CANALE_RO_MD = {
   whatsapp: "WhatsApp, mesaje și apeluri",
   email: "E-mail",
-  deschis: "Deschis",
 };
+
+/** Numele paginii din textul blocului marcii, legat la pagina de informatii legale a editiei. */
+export const LEGATURA_INFORMATII_LEGALE_RO_MD = { text: "Informații legale", href: caleMd("informatii-legale", "ro") };
 
 /** Continutul paginii; subtitlul eroului se completeaza cu `subtitluContactRoMd`. */
 export const CONTACT_RO_MD: ContinutPaginaContact = {

@@ -155,6 +155,8 @@ export const GRILA_EN = {
   eticheta: "3S plans",
   recomandat: "Recommended",
   unitate: "EUR / month",
+  // Langa pretul anual pe luna (75 / 125 / 200), ca sa nu se citeasca drept pret lunar.
+  unitateAnual: "EUR / month, billed annually",
   buton: "Message us",
   detalii: (rand: string) => "What it means: " + rand,
 };
@@ -224,6 +226,13 @@ export const CALCULATOR_EN = {
   zileLucratoare: 22,
   timpAcum: { inainte: "Today you pay EUR ", dupaBani: " a month for the ", dupaOre: " h your team spends searching through folders." },
   pretInOre: { inainte: "The plan that fits is ", dupaPlan: ": EUR ", dupaPret: " a month, the cost of ", dupaOre: " h of work at the chosen rate." },
+  // Cu comutatorul pe Annual, pretul planului e cel anual pe luna: fraza spune perioada.
+  pretInOreAnual: {
+    inainte: "The plan that fits is ",
+    dupaPlan: ": EUR ",
+    dupaPret: " a month billed annually, the cost of ",
+    dupaOre: " h of work at the chosen rate.",
+  },
   pesteConturi: {
     inainte: (persoane: number) => "For " + persoane + " people, the plans are not enough: talk to the 3S team about ",
     dupa: ".",
@@ -422,7 +431,7 @@ export const INTREBARI_EN: ContinutFaqPreturi = {
     {
       intrebare: "Are there discounts?",
       raspuns:
-        "Pay annually: you pay for 10 months and get 12. On Starter, Pro and Business, annual billing costs 10 monthly payments for 12 months, 16.7% less. The first month after the pilot is billed at the listed price, with no pilot discount.",
+        "Yes. With annual billing on Starter, Pro and Business, you pay for 10 months and get 12, which is 16.7% less. The first month after the pilot is billed at the listed price, with no pilot discount.",
     },
     {
       intrebare: "Why are the prices indicative?",

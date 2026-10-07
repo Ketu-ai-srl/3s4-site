@@ -1003,6 +1003,15 @@
   }
 }
 
+/* Pana la 768 px containerul are gutter de 16 px si rigla sta lipita de el: decalajul de -8 px al
+   etichetei de emitere (centrata pe ac la referinta) o scotea in gutter, la x 8 la 390. Aici
+   eticheta porneste din dreptul acului, deci de la marginea continutului. */
+@media (max-width: 768px) {
+  .riglaEmitere {
+    transform: none;
+  }
+}
+
 /* --- §10 Standardele ------------------------------------------------------------------------- */
 
 .standarde {

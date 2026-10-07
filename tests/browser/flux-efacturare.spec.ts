@@ -173,6 +173,29 @@ test.describe('rigla de pe /e-facturare', () => {
     expect(m.ani).toBe(3)
     expect(m.suprapuse).toBeGreaterThan(0)
   })
+
+  // m17 (testul 3s.md din 06.10): eticheta de emitere (numele fisierului si fraza de sub el) pornea la
+  // x 8, in gutter-ul de 16 px. Se cere sa porneasca din dreptul acului, adica de la marginea
+  // continutului; martorul POZITIV pune inapoi decalajul referintei si cere sa fie prins.
+  for (const martor of [false, true]) {
+    test(martor ? 'martor POZITIV: decalajul de -8 px al referintei scoate eticheta in gutter' : 'la 390 eticheta de emitere sta in continut, nu in gutter-ul de 16 px', async ({ page }) => {
+      await page.goto('/e-facturare', { waitUntil: 'networkidle' })
+      if (martor) await page.addStyleTag({ content: '[data-rigla] > div:first-child{transform:translateX(-8px)!important}' })
+      await page.locator('[data-rigla]').scrollIntoViewIfNeeded()
+      const m = await page.locator('[data-rigla]').evaluate((r) => {
+        const x = (e: Element) => Math.round(e.getBoundingClientRect().left * 10) / 10
+        const emitere = r.firstElementChild!
+        return { latime: window.innerWidth, ac: x(r.children[1]), etichete: [...emitere.children].map(x) }
+      })
+      console.log('[rigla 390' + (martor ? ' martor' : '') + '] innerWidth CITIT: ' + m.latime + ' | acul la x ' + m.ac + ' | etichetele la x ' + m.etichete.join(', '))
+      expect(m.latime).toBe(390)
+      // Controlul: acul (marginea pistei) e chiar la gutter-ul de 16 px.
+      expect(m.ac).toBe(16)
+      expect(m.etichete).toHaveLength(2)
+      if (martor) expect(Math.min(...m.etichete)).toBeLessThan(16)
+      else expect(Math.min(...m.etichete)).toBeGreaterThanOrEqual(16)
+    })
+  }
 })
 
 /** Suprapunerile dintre eticheta benzii si anii vizibili ai riglei. */

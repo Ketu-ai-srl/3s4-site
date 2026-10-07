@@ -29,6 +29,7 @@ import {
   CONTACT_EN,
   CTA_FINAL_CONTACT_EN,
   ETICHETA_FIR_EN,
+  LEGATURA_INFORMATII_LEGALE_EN,
   subtitluContactEn,
 } from "@/content/en/contact-componente";
 import { alegePeCale, type LegaturaPeCale } from "@/content/navigatie";
@@ -81,8 +82,8 @@ export default function PaginaContactEn() {
   const posta = navigatieEn().subsol.contact?.email?.legatura ?? null;
   const mailto = posta === null ? null : alegePeCale(posta, pagina.meta.cale);
   const randuri: RandPanou[] = [
-    ...(href === null ? [] : [{ nume: CANALE_EN.whatsapp, legatura: { text: numar, href, ruta: null }, stare: CANALE_EN.deschis }]),
-    ...(mailto === null ? [] : [{ nume: CANALE_EN.email, legatura: { text: CANALE.email, href: mailto, ruta: null }, stare: CANALE_EN.deschis }]),
+    ...(href === null ? [] : [{ nume: CANALE_EN.whatsapp, legatura: { text: numar, href, ruta: null } }]),
+    ...(mailto === null ? [] : [{ nume: CANALE_EN.email, legatura: { text: CANALE.email, href: mailto, ruta: null } }]),
   ];
   const continut = { ...CONTACT_EN, erou: { ...CONTACT_EN.erou, subtitlu: subtitluContactEn(numar, mailto === null ? "" : CANALE.email) } };
 
@@ -93,6 +94,7 @@ export default function PaginaContactEn() {
         continut={continut}
         etichetaFir={ETICHETA_FIR_EN}
         randuri={randuri}
+        legaturaInText={LEGATURA_INFORMATII_LEGALE_EN}
         butonCaseta={<ButonCanal legatura={whatsapp} text={BUTON_CASETA_EN} varianta="plin" marime="plat" sageata={false} />}
       />
       <CtaFinalInchis

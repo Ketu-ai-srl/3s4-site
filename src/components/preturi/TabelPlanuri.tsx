@@ -1,7 +1,9 @@
 // Tabelul pachetelor din al doilea pliu (preturi.md §7): 4 categorii, 14 randuri, coloana
-// pachetului recomandat cu antet si bife albastre. Tabelul are minim 560 px, deci pe ecran ingust se
-// deruleaza in panoul lui, nu pagina; panoul primeste focus si nume, ca derularea sa mearga si din
-// tastatura. Componenta de server: tabelul e static si ajunge intreg in HTML-ul servit.
+// pachetului recomandat cu antet si bife albastre. Pe ecran lat tabelul are minim 560 px; pe ecran ingust
+// (<= 768) eticheta randului se rupe si sta lipita la stanga, iar tabelul se deruleaza in panoul lui, nu
+// pagina (pliuri.module.css). Panoul primeste focus si nume, ca derularea sa mearga si din tastatura;
+// numele lui (`derulare`) e si indicatia scrisa de deasupra tabelului cand panoul chiar se deruleaza.
+// Componenta de server: tabelul e static si ajunge intreg in HTML-ul servit.
 //
 // PE EDITIE: textele tabelului si planurile vin prin proprietati, cu implicitul RO; pagina RO nu pasa
 // nimic. Valorile celulelor (moneda, locul fisierelor) sunt continut, deci tot ale editiei.

@@ -7,10 +7,13 @@
 // La referinta regula iesea dintr-un observator de intersectii cu banda 20%-80%; aici e scrisa
 // direct, cum recomanda fisa, deci nu depinde de latenta asincrona a observatorului.
 //
-// MOBIL (fisa §11): p = cat din cursa pistei s-a parcurs, 0..1, fara easing si fara magnet; banda
-// de 3 carduri se muta cu 2 ferestre inmultit cu p. Cardul activ: p < 0,34 -> 1, < 0,67 -> 2,
-// altfel 3. Clicul pe un punct aliniaza EXACT cardul lui (fisa §14.12: la referinta punctele 1 si 3
-// lasau cardul decalat cu o treime de ecran).
+// MOBIL (fisa §11): p = cat din cursa pistei s-a parcurs, 0..1. Cardul activ: p < 0,34 -> 1,
+// < 0,67 -> 2, altfel 3. Clicul pe un punct aliniaza EXACT cardul lui (fisa §14.12: la referinta
+// punctele 1 si 3 lasau cardul decalat cu o treime de ecran).
+// ABATERE DE LA REFERINTA: acolo banda urma derularea continuu (translatia = 2 ferestre x p), deci
+// pe cea mai mare parte a cursei se vedeau doua jumatati de card, cu textul taiat de marginea
+// ecranului (masurat 06.10 la 390: la p 0,3 pasul 01 la x -234 si pasul 02 la x 156). Aici banda
+// sta pe cardul activ (`translatieCard`) si trece la urmatorul in pas, cu tranzitia din CSS.
 
 /** Pragul de coborare, fractie din inaltimea ferestrei. */
 export const PRAG_JOS = 0.4;
@@ -50,6 +53,11 @@ export function cardDinProgres(p: number): number {
 export function translatieBanda(p: number): string {
   const procent = (-200 / 3) * Math.min(1, Math.max(0, p));
   return "translate3d(" + (Math.round(procent * 10000) / 10000 || 0) + "%, 0px, 0px)";
+}
+
+/** Translatia benzii cand sta pe cardul `card` (0..2): exact o fereastra per card. */
+export function translatieCard(card: number): string {
+  return translatieBanda(Math.min(2, Math.max(0, card)) / 2);
 }
 
 /** Derularea la care cardul `index` (0..2) sta exact in fereastra: p = index / 2. */
