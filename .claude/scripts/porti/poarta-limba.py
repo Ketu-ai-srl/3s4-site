@@ -18,6 +18,9 @@ Verifica patru lucruri, in textul VIZIBIL:
      <head>: titlul si descrierea paginii, inclusiv `og:` si `twitter:`. Exceptiile au nume in EXCEPTII_META.
      A treia suprafata: descrierile romanesti ale acelorasi documente din rute (`DESCRIERE_MD` din
      `src/content/juridic/publicare.ts`), care ajung in paleta de cautare, in `/llms.txt` si in pachetul de browser.
+     A patra suprafata: titlurile scurte si descrierile din `DOCUMENTE_JURIDICE` (familia SEE, acelasi fisier). Familia
+     nu e publicata pe 3s.md si 3s.com.ro, dar sirurile ajung in pachetul de browser al startului (`rute.ts` importa
+     modulul), deci le citeste oricine deschide pachetul.
 
 CONTROALE la fiecare rulare:
   - martor pozitiv, fabricat la rulare: un text cu toate cele trei defecte; daca nu-l prinde,
@@ -119,6 +122,13 @@ FISIER_DESCRIERE_MD = 'src/content/juridic/publicare.ts'
 TIPAR_BLOC_DESCRIERE_MD = re.compile(r'export const DESCRIERE_MD\b[^=]*=\s*\{(.*?)\n\};', re.S)
 TIPAR_RO_DESCRIERE = re.compile(r'\bro\s*:\s*("[^"\n]*"|' + "'[^'\\n]*'" + r'|`[^`]*`)')
 
+# Punctul 4, a patra suprafata (felia 148): `DOCUMENTE_JURIDICE` din acelasi fisier, o lista de obiecte
+# `{ slug, scurt, descriere }`. Se citesc `scurt` si `descriere` ale fiecarei intrari, pe slug; familia SEE nu are
+# documente exceptate (DPA si subimputernicitii au exceptie numai in familia `md`).
+TIPAR_BLOC_DOCUMENTE = re.compile(r'export const DOCUMENTE_JURIDICE\b[^=]*=\s*\[(.*?)\n\];', re.S)
+TIPAR_INTRARE_DOCUMENT = re.compile(r'\{\s*slug\s*:\s*"([a-z][a-z-]*)"(.*?)\}', re.S)
+TIPAR_CAMP_DOCUMENT = re.compile(r'\b(?:scurt|descriere)\s*:\s*("[^"\n]*"|' + "'[^'\\n]*'" + r'|`[^`]*`)')
+
 
 def meta_formal(continut):
     """Formele formale din intrarile `ro` ale `META_DOCUMENTE_MD`.
@@ -131,6 +141,26 @@ def meta_formal(continut):
 def descriere_formal(continut):
     """Formele formale din intrarile `ro` ale `DESCRIERE_MD`; acelasi fel de rezultat ca `meta_formal`."""
     return bloc_formal(continut, TIPAR_BLOC_DESCRIERE_MD, TIPAR_RO_DESCRIERE)
+
+
+def documente_formal(continut):
+    """Formele formale din `scurt` si `descriere` ale intrarilor `DOCUMENTE_JURIDICE`.
+
+    Intoarce (gasiri, sluguri) sau None daca blocul lipseste; `gasiri` = (slug, numar_rand, forma), ca la meta.
+    """
+    bloc = TIPAR_BLOC_DOCUMENTE.search(continut)
+    if not bloc:
+        return None
+    interior, deplasare = bloc.group(1), bloc.start(1)
+    gasiri, sluguri = [], []
+    for intrare in TIPAR_INTRARE_DOCUMENT.finditer(interior):
+        sluguri.append(intrare.group(1))
+        for camp in TIPAR_CAMP_DOCUMENT.finditer(intrare.group(2)):
+            for sir in siruri_din_cod(camp.group(1)):
+                for m in TIPAR_FORMAL_SINGUR.finditer(sir):
+                    rand = continut.count(chr(10), 0, deplasare + intrare.start(2) + camp.start()) + 1
+                    gasiri.append((intrare.group(1), rand, m.group(0)))
+    return gasiri, sluguri
 
 
 def bloc_formal(continut, tipar_bloc, tipar_ro):
@@ -431,6 +461,22 @@ def controale():
                 + ', asteptat 5, numai pe cookie-uri (nu pe DPA, nu in en, nu in DOCUMENTE_JURIDICE)')
     if descriere_formal(bloc_d.replace('DESCRIERE_MD', 'DESCRIERE_ALTCEVA')) is not None:
         return 'martorul descrierilor negativ: un bloc cu alt nume a fost citit drept DESCRIERE_MD'
+
+    # Punctul 4 pe `DOCUMENTE_JURIDICE` (felia 148), pe acelasi bloc fabricat plus o intrare multi-rand la "tu": fraza
+    # formala e prinsa pe slugul ei, intrarea la "tu" nu, iar `DESCRIERE_MD` de dupa bloc nu e citita.
+    bloc_s = bloc_d.replace('  { slug: "cookies"', '  {' + chr(10) + '    slug: "termeni",' + chr(10) + '    scurt: "Termeni",'
+                            + chr(10) + '    descriere: "' + cu_tu + '",' + chr(10) + '  },' + chr(10) + '  { slug: "cookies"', 1)
+    rezultat = documente_formal(bloc_s)
+    if rezultat is None:
+        return 'martorul documentelor SEE: blocul DOCUMENTE_JURIDICE fabricat nu a fost gasit'
+    gasiri_s, sluguri_s = rezultat
+    if sluguri_s != ['termeni', 'cookies']:
+        return 'martorul documentelor SEE: intrarile citite sunt ' + str(sluguri_s) + ', asteptat 2'
+    if sorted(set(x[0] for x in gasiri_s)) != ['cookies'] or len(gasiri_s) != 5:
+        return ('martorul documentelor SEE: ' + str(len(gasiri_s)) + ' forme prinse pe ' + str(sorted(set(x[0] for x in gasiri_s)))
+                + ', asteptat 5, numai pe cookies (nu pe intrarea la "tu", nu in DESCRIERE_MD)')
+    if documente_formal(bloc_s.replace('DOCUMENTE_JURIDICE', 'DOCUMENTE_ALTCEVA')) is not None:
+        return 'martorul documentelor SEE negativ: un bloc cu alt nume a fost citit drept DOCUMENTE_JURIDICE'
     return None
 
 
@@ -486,10 +532,25 @@ def main():
             total += 1
         stare_descriere = str(len(rezultat[1])) + ' intrari ro citite'
 
+    # Punctul 4 pe `DOCUMENTE_JURIDICE`: cu `publicare.ts` in arbore (sau familia `md`), blocul trebuie gasit si citit.
+    stare_documente = 'nemasurat (publicare.ts lipseste din arbore)'
+    if familie_md or os.path.isfile(cale_descriere):
+        rezultat = documente_formal(open(cale_descriere, encoding='utf-8').read()) if os.path.isfile(cale_descriere) else None
+        if rezultat is None or not rezultat[1]:
+            print('poarta-limba: DOCUMENTE_JURIDICE nu a fost gasit sau nu are intrari in ' + FISIER_DESCRIERE_MD
+                  + ' - masuratoarea e invalida', file=sys.stderr)
+            return 3
+        for slug, numar, forma in rezultat[0]:
+            print(FISIER_DESCRIERE_MD + ':' + str(numar) + '  adresare formala in DOCUMENTE_JURIDICE, documentul '
+                  + slug + ' (decizia 77; ajunge in pachetul de browser): ' + forma)
+            total += 1
+        stare_documente = str(len(rezultat[1])) + ' intrari citite'
+
     print('CONTROALE: martor pozitiv OK, martor negativ OK')
     print('META_DOCUMENTE_MD: ' + stare_meta + '; exceptii numite: '
           + '; '.join(k + ' (' + v + ')' for k, v in sorted(EXCEPTII_META.items())))
     print('DESCRIERE_MD: ' + stare_descriere + '; aceleasi exceptii numite')
+    print('DOCUMENTE_JURIDICE: ' + stare_documente + '; fara exceptii')
     print('ADRESARE FORMALA, EXCEPTII NUMITE: ' + '; '.join(k + ' (' + v + ')' for k, v in sorted(EXCEPTII_FORMAL.items())))
     print('SURSA: ' + str(len(lista)) + ' fisier(e)')
     print('DEFECTE DE LIMBA: ' + str(total))

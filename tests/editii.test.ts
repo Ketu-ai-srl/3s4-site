@@ -40,7 +40,7 @@ import {
   scripturi,
   texteCap,
 } from './browser/ajutor/juridic-servit'
-import { DESCRIERE_MD } from '../src/content/juridic/publicare'
+import { DESCRIERE_MD, DOCUMENTE_JURIDICE, SLUGURI_JURIDICE } from '../src/content/juridic/publicare'
 import { caleMd } from '../src/content/juridic/md/registru'
 import { navigatieEn } from '../src/content/navigatie-en'
 
@@ -603,5 +603,38 @@ describe('felia 144 runda 3: descrierile din rute la "tu", Cookies fara masurare
     expect(cookie.length, JSON.stringify(cookie)).toBeGreaterThan(0)
     for (const x of cookie) expect(x.text).not.toMatch(ETICHETA_CU_MASURARE)
     expect(cookie.map((x) => x.text)).toContain('Cookie policy')
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// Felia 148: DOCUMENTE_JURIDICE (familia SEE, nepublicata pe 3s.md) ajunge in pachetul de browser al startului
+// ---------------------------------------------------------------------------------------------
+
+/** Intrarile `DOCUMENTE_JURIDICE` dintr-un pachet JS desfacut, in forma minificatorului (masurata pe 3s.md, 08.10). */
+function intrariSee(js: string): { slug: string; text: string }[] {
+  const tipar = new RegExp('slug:"(' + SLUGURI_JURIDICE.join('|') + ')",scurt:"([^"]*)",descriere:"([^"]*)"', 'g')
+  return [...js.matchAll(tipar)].map((m) => ({ slug: m[1], text: m[2] + ' ' + m[3] }))
+}
+
+describe('felia 148: DOCUMENTE_JURIDICE la "tu" in pachetul servit', () => {
+  it('martor: extragerea si detectorul, pe un pachet fabricat la rulare cu descrierea de pe baza', () => {
+    const veche = 'cum ' + 'v' + 'ă d' + 'ați sau ' + 'v' + 'ă retrag' + 'eți acordul.'
+    const js = 'x=[{slug:"cookies",scurt:"Cookie-uri",descriere:"Ce se stochează, ' + veche + '"},{slug:"termeni",scurt:"T",descriere:"Ce ai."}]'
+    const i = intrariSee(js)
+    expect(i.map((x) => x.slug)).toEqual(['cookies', 'termeni'])
+    expect(i.flatMap((x) => formePolitete(x.text))).toHaveLength(4)
+    expect(intrariSee(js.replace('slug:"cookies"', 'slug:"altceva"'))).toHaveLength(1)
+  })
+
+  it.runIf(ADRESA !== '')('3s.md servit: startul are in pachet toate cele 7 intrari, cu 0 forme de politete (baza: 5)', async () => {
+    const acasa = await fetch(ADRESA + '/')
+    expect(acasa.status).toBe(200)
+    let js = ''
+    for (const s of scripturi(await acasa.text())) js += faraEvadari(await (await fetch(new URL(s, ADRESA))).text()) + String.fromCharCode(10)
+    const intrari = intrariSee(js)
+    // Controlul: lista e in pachet, intreaga, cu descrierile curente (altfel 0 forme n-ar masura nimic).
+    expect(intrari.map((x) => x.slug).sort()).toEqual([...SLUGURI_JURIDICE].sort())
+    for (const d of DOCUMENTE_JURIDICE) expect(js.includes(d.descriere), d.slug).toBe(true)
+    expect(intrari.flatMap((x) => formePolitete(x.text))).toEqual([])
   })
 })

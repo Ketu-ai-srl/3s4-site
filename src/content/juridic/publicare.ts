@@ -91,6 +91,8 @@ export type IntrareJuridica = {
   descriere: string;
 };
 
+// Familia SEE: nepublicata pe 3s.md si 3s.com.ro, dar descrierile ajung in pachetul de browser al startului (rute.ts),
+// deci sunt la "tu" ca restul site-ului (decizia 77); poarta-limba le citeste ca a patra suprafata.
 export const DOCUMENTE_JURIDICE: readonly IntrareJuridica[] = [
   {
     slug: "informatii-legale",
@@ -101,7 +103,7 @@ export const DOCUMENTE_JURIDICE: readonly IntrareJuridica[] = [
   {
     slug: "confidentialitate",
     scurt: "Politica de confidențialitate",
-    descriere: "Ce date personale prelucrează site-ul, în ce scop, pe ce temei, cui le transmite și ce drepturi aveți.",
+    descriere: "Ce date personale prelucrează site-ul, în ce scop, pe ce temei, cui le transmite și ce drepturi ai.",
   },
   {
     slug: "termeni",
@@ -111,7 +113,7 @@ export const DOCUMENTE_JURIDICE: readonly IntrareJuridica[] = [
   {
     slug: "cookies",
     scurt: "Cookie-uri",
-    descriere: "Ce se stochează în browser, pentru ce, cât timp și cum vă dați sau vă retrageți acordul.",
+    descriere: "Ce se stochează în browser, pentru ce, cât timp și cum îți dai sau îți retragi acordul.",
   },
   {
     slug: "politici-publice",

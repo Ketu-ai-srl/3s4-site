@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import type { Page } from '@playwright/test'
 import { join } from 'node:path'
 import { numarAfisat } from '../../src/content/canale'
 import { configurareCanale } from '../../src/lib/canale-mediu'
@@ -246,6 +247,62 @@ for (const r of ruteFelie()) {
     expect(m.abateri).toEqual([])
   })
 }
+
+// Felia 148: numarul de telefon din fraza de sub H1 de pe paginile de contact nu se rupe la capat de rand (U+00A0 intre
+// grupe). Masurat pe ecran, cu Range.getClientRects pe numar, la 390, 768 si 1440. Controlul pozitiv, pe aceeasi pagina:
+// cu spatiile readuse la forma de dinainte (U+00A0 inlocuit in DOM), metoda vede ruperea in macar o asezare (pe baza:
+// RO la 768 si 1440, EN la 390), iar paragraful intreg are mai multe randuri.
+async function randuriNumar(page: Page, readuSpatiile: boolean): Promise<{ numar: string; randuri: number; paragraf: number }> {
+  return page.evaluate((readu) => {
+    const h1 = document.querySelector('h1')
+    if (h1 === null) throw new Error('NEMASURAT: pagina nu are H1')
+    let p: Element | null = h1
+    while (p !== null && p.tagName !== 'P') p = p.nextElementSibling ?? p.parentElement?.nextElementSibling ?? null
+    if (p === null) throw new Error('NEMASURAT: fara paragraf dupa H1')
+    const randuri = (r: Range) => new Set([...r.getClientRects()].filter((x) => x.width > 0).map((x) => Math.round(x.top))).size
+    const tw = document.createTreeWalker(p, NodeFilter.SHOW_TEXT)
+    for (let n = tw.nextNode() as Text | null; n !== null; n = tw.nextNode() as Text | null) {
+      const m = /\+\d{1,3}(?:[ \u00a0]\d{2,4})+/.exec(n.data)
+      if (m === null) continue
+      let numar = m[0]
+      if (readu) {
+        const cuSpatii = numar.replace(/\u00a0/g, ' ')
+        n.data = n.data.replace(numar, cuSpatii)
+        numar = cuSpatii
+      }
+      const i = n.data.indexOf(numar)
+      const r = document.createRange()
+      r.setStart(n, i)
+      r.setEnd(n, i + numar.length)
+      const rp = document.createRange()
+      rp.selectNodeContents(p)
+      return { numar, randuri: randuri(r), paragraf: randuri(rp) }
+    }
+    throw new Error('NEMASURAT: subtitlul nu are numar de telefon')
+  }, readuSpatiile)
+}
+
+test('felia 148: numarul din fraza de sub H1 de pe paginile de contact RO si EN nu se rupe la 390, 768 si 1440; cu spatiile readuse, ruperea se vede', async ({ page }) => {
+  test.setTimeout(180_000)
+  const rupte: string[] = []
+  for (const latime of [390, 768, 1440]) {
+    await page.setViewportSize({ width: latime, height: 900 })
+    for (const cale of ['/ro/contact', '/contact']) {
+      await page.goto(copie.baza + cale)
+      await page.evaluate(() => document.fonts.ready)
+      expect(await page.evaluate(() => innerWidth)).toBe(latime)
+      const acum = await randuriNumar(page, false)
+      expect(acum.numar, cale + ' ' + latime).toContain('\u00a0')
+      expect(acum.numar, cale + ' ' + latime).not.toContain(' ')
+      expect(acum.randuri, cale + ' ' + latime + ': ' + acum.numar).toBe(1)
+      expect(acum.paragraf, cale + ' ' + latime).toBeGreaterThan(1)
+      const inainte = await randuriNumar(page, true)
+      if (inainte.randuri > 1) rupte.push(cale + ' ' + latime)
+    }
+  }
+  // Controlul pozitiv: forma cu spatii obisnuite se rupe macar o data (pe baza: 3 din 6 asezari).
+  expect(rupte.length, JSON.stringify(rupte)).toBeGreaterThan(0)
+})
 
 test('martor POZITIV al tiparelor: fraze fabricate sunt prinse, contactul cu o persoana pe WhatsApp nu', () => {
   expect(gasite(POLITETE, 'V' + 'ă rugăm să ne scrie' + 'ți; dumnea' + 'voastră alege' + 'ți.')).toHaveLength(4)

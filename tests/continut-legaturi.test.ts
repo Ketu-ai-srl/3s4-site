@@ -28,7 +28,7 @@ import { afterAll, describe, expect, it, vi } from 'vitest'
  *  (11) /platforma si /enterprise, RO si EN: "Pagina Despre 3S" / "About page" si ghidurile din raspunsuri sunt
  *       legaturi, cu adresa servita a fiecarui domeniu; FAQPage poarta raspunsul ca sir; implicitul RO fara legaturi;
  *  (12) numarul de pe /contact: NEFACUT in runda 2 (comparatia de identitate dintre build-uri cauta numarul cu
- *       spatii obisnuite si cere ca poarta ei sa invete spatiul nedespartitor; vezi raportul feliei);
+ *       spatii obisnuite); facut in felia 148, cu proba in `tests/numar-curatenie-limba.test.ts`;
  *  (13) /en/pricing: sumele lipite de EUR, "euros" lipit de cuvantul dinainte in H1, orele teaserului lipite de unitate;
  *  (15) "RO e-Factura" pe /en/compare, legat ca pe /ro;
  *  (16) punctul frazei de sub intrebarile startului sta dupa legatura, si pe forma cu adresa de posta (dupa P-40).

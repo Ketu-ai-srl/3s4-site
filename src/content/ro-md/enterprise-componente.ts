@@ -107,7 +107,7 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
     },
     {
       titlu: "Locul datelor",
-      text: "Fișierele sunt găzduite în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul și efectul legii americane asupra datelor.",
+      text: "Fișierele sunt găzduite în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul și explică efectul legii americane asupra datelor.",
       // Tinta aprobata a paginii pentru gazduire (calea SURSA; adresa servita o scrie componenta).
       legaturaInText: { text: "Pagina Despre 3S", href: "/ro/securitate#security" },
     },

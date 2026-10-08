@@ -25,7 +25,14 @@ Ce masoara, cu martor pe fiecare clasa:
       si e prins numai de adrese, pe fiecare colectie; og:url-ul copiei engleze egal cu canonical-ul ei (adresa lui A)
       e forma corecta (regula 4c, impreuna cu imaginile pe originea lui A); adresa servita a copiei, imaginile pe B sau
       og:url spre alta pagina a lui A sunt rosii; zero adrese masurate e rosu. Liniile adreselor (`DIF adresa ...`) se
-      numara separat de ale comparatiei, ca fiecare caz vechi sa ramana o singura diferenta a comparatiei.
+      numara separat de ale comparatiei, ca fiecare caz vechi sa ramana o singura diferenta a comparatiei;
+  (9) NUMARUL NEDESPARTIT (felia 148): numarul afisat cu U+00A0 intre grupe pe ambele domenii (langa forma cu spatii
+      obisnuite, pe aceeasi pagina) e VERDE pe identitate; numarul lui A, nedespartit, ramas pe B e ROSU si numit ca
+      valoare a lui A. Trei mutanti in (5): tiparul fara U+00A0, forma nepastrata la inlocuire, cautarea literala.
+  (9b) numarul lui A NUMAI nedespartit in celelalte trei locuri in care unealta il cauta: sectiunile unui document
+      (amprenta scoasa, VERDE), un rand al destinatarilor care numeste si e-mailul (ramane comparat, ROSU pe B cu numarul
+      lui A) si o pagina fara cifrele de WhatsApp (ramane pagina cu contact, numarul egal cu martorul). Trei mutanti in
+      (5), cu potrivirea literala readusa in fiecare cautare.
 
 Fixturile se asambleaza la RULARE, din bucati: numerele, domeniile si adresele nu stau scrise intregi aici.
 `--compara <cale>` ruleaza proba pe alta copie a uneltei (de pilda un mutant scris de mana).
@@ -644,6 +651,89 @@ def cazuri(unealta, d):
         cod, out = ruleaza(stricata, '--regula', 'invarianta', ca, ca)
         bun = cod == 3 and 'martorul normalizarii ' + eticheta in out
         (ok if bun else nu)('(6) normalizarea %s stricata pe o copie: cod %s, asteptat 3 cu martorul ei numit' % (eticheta, cod))
+
+    # (9) NUMARUL NEDESPARTIT (felia 148): in subtitlul paginii de contact numarul afisat poarta U+00A0 intre grupe, pe
+    # ambele domenii, iar in restul paginii spatii obisnuite. Fixtura: fraza "... la <numar>" a fiecarei pagini primeste
+    # numarul nedespartit, randul `T` si sectiunile raman cu spatii obisnuite (ambele forme pe aceeasi pagina).
+    nbsp = chr(0xa0)
+
+    def nedespartit(colectie, v):
+        vechi = 'la ' + v['telefonAfisat']
+        nou = 'la ' + v['telefonAfisat'].replace(' ', nbsp)
+        return dict((k, (s_, h, c.replace(vechi, nou) if isinstance(c, str) else c)) for k, (s_, h, c) in colectie.items())
+    A_nd, B_nd = nedespartit(A, DA), nedespartit(B, DB)
+    ca_nd2 = scrie_colectie(os.path.join(d, 'A-nedespartit'), id_a, A_nd)
+    cb_nd2 = scrie_colectie(os.path.join(d, 'B-nedespartit'), id_b, B_nd)
+    ta_nd, tb_nd = tot_textul(ca_nd2), tot_textul(cb_nd2)
+    bun = (('la ' + DA['telefonAfisat'].replace(' ', nbsp)) in ta_nd and DA['telefonAfisat'] in ta_nd
+           and ('la ' + DB['telefonAfisat'].replace(' ', nbsp)) in tb_nd and DB['telefonAfisat'] in tb_nd)
+    (ok if bun else nu)('(9) controlul fixturii: A si B poarta numarul propriu si nedespartit (U+00A0), si cu spatii obisnuite')
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, ca_nd2, cb_nd2)
+    (ok if cod == 0 and comparate(out) == (n + 1, 0) else nu)(
+        '(9) numarul nedespartit pe ambele domenii: cod %s, %s, asteptat 0 si (%d, 0); %r' % (cod, comparate(out), n + 1, difuri(out)[:3]))
+    # Martorul negativ: pe B ramane numarul lui A, nedespartit (forma pe care o comparatie literala n-o vede).
+    B_ramas = dict(B_nd)
+    s_, h, c = B_nd['/contact']
+    B_ramas['/contact'] = (s_, h, c.replace(DB['telefonAfisat'].replace(' ', nbsp), DA['telefonAfisat'].replace(' ', nbsp)))
+    (ok if B_ramas['/contact'][2] != c else nu)('(9) controlul fixturii: numarul nedespartit al lui B e pe /contact, deci inlocuirea a aterizat')
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, ca_nd2,
+                       scrie_colectie(os.path.join(d, 'B-nedespartit-ramas'), id_b, B_ramas))
+    (ok if cod == 1 and any('valorile de contact ale lui A raman pe B: telefonAfisat' in x for x in difuri(out)) else nu)(
+        '(9) numarul lui A, nedespartit, ramas pe B: cod %s, numit ca valoare a lui A: %r' % (cod, difuri(out)[:3]))
+
+    # (9b) Numarul lui A care apare NUMAI nedespartit, in fiecare loc in care unealta il cauta pe A (nu il inlocuieste):
+    # sectiunile unui document (amprenta, regula 10), un rand al tabelului destinatarilor (regula 11) si o pagina fara
+    # cifrele de WhatsApp (paginile lui A cu contact). Fiecare are un mutant in (5), cu potrivirea literala readusa.
+    def fara_spatii(v):
+        return v['telefonAfisat'].replace(' ', nbsp)
+
+    def schimba(colectie, cale, perechi_text):
+        s_, h, c = colectie[cale]
+        for vechi, nou in perechi_text:
+            c = c.replace(vechi, nou)
+        return dict(colectie, **{cale: (s_, h, c)}), c != colectie[cale][2]
+
+    # Sectiunile documentului: numarul din `<section data-sectiune>` al paginii /pricing, nedespartit pe ambele domenii
+    # (in restul paginii ramane cu spatii obisnuite). Amprenta difera prin constructie si se scoate: VERDE.
+    A_d, a_ok = schimba(colectie_domeniu(DA, id_a, defect='numar in document'), '/pricing',
+                        [('<p>Suna la ' + DA['telefonAfisat'], '<p>Suna la ' + fara_spatii(DA))])
+    B_d, b_ok = schimba(colectie_domeniu(DB, id_b, defect='numar in document'), DB['servita']('/pricing'),
+                        [('<p>Suna la ' + DB['telefonAfisat'], '<p>Suna la ' + fara_spatii(DB))])
+    (ok if a_ok and b_ok else nu)('(9b) controlul fixturii: numarul din sectiunile documentului e nedespartit pe A si pe B')
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, scrie_colectie(os.path.join(d, 'A-nd-document'), id_a, A_d),
+                       scrie_colectie(os.path.join(d, 'B-nd-document'), id_b, B_d))
+    (ok if cod == 0 and comparate(out) == (n + 1, 0) else nu)(
+        '(9b) numarul nedespartit numai in sectiunile documentului: cod %s, %s, asteptat 0 si (%d, 0); %r' % (cod, comparate(out), n + 1, difuri(out)[:3]))
+
+    # Tabelul destinatarilor: randul mesageriei al lui A numeste e-mailul lui A si poarta numarul lui A, nedespartit;
+    # deci nu e un rand DNS sau posta si ramane comparat. Pe B, acelasi rand pastreaza numarul lui A: ROSU, numit.
+    rand_a = '<td>Mesageria pe ' + DA['telefonAfisat'] + '</td>'
+    A_t, a_ok = schimba(A, CONF_RO, [(rand_a, '<td>Mesageria pe ' + fara_spatii(DA) + ', posta ' + DA['email'] + '</td>')])
+    B_t, b_ok = schimba(B, DB['servita'](CONF_RO), [('<td>Mesageria pe ' + DB['telefonAfisat'] + '</td>',
+                                                     '<td>Mesageria pe ' + fara_spatii(DA) + ', posta ' + DB['email'] + '</td>')])
+    (ok if a_ok and b_ok else nu)('(9b) controlul fixturii: randul mesageriei poarta numarul lui A nedespartit si e-mailul, pe A si pe B')
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, scrie_colectie(os.path.join(d, 'A-nd-destinatari'), id_a, A_t),
+                       scrie_colectie(os.path.join(d, 'B-nd-destinatari'), id_b, B_t))
+    bun = cod == 1 and any(x.startswith('DIF ' + CONF_RO + ' -> ') and 'valorile de contact ale lui A raman pe B: telefonAfisat' in x
+                           for x in difuri(out))
+    (ok if bun else nu)('(9b) numarul lui A nedespartit intr-un rand al destinatarilor care numeste e-mailul: cod %s, %r' % (cod, difuri(out)[:3]))
+
+    # Paginile lui A cu contact: pe /pricing (ambele domenii) numarul apare numai nedespartit si legatura WhatsApp n-are
+    # cifre. Pagina ramane una cu contact: numarul de pagini cu contact e acelasi ca pe colectiile de la (3) (martorul).
+    def pagini_cu_contact(text):
+        m = re.search(r'pagini lui A cu contact: (\d+)', text)
+        return int(m.group(1)) if m else None
+    _, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, ca, cb)
+    martor = pagini_cu_contact(out)
+    A_c, a_ok = schimba(A, '/pricing', [(DA['telefonAfisat'], fara_spatii(DA)), ('wa.me/' + DA['whatsapp'], 'wa.me/')])
+    B_c, b_ok = schimba(B, DB['servita']('/pricing'), [(DB['telefonAfisat'], fara_spatii(DB)), ('wa.me/' + DB['whatsapp'], 'wa.me/')])
+    bun = a_ok and b_ok and DA['telefonAfisat'] not in A_c['/pricing'][2] and DA['whatsapp'] not in A_c['/pricing'][2]
+    (ok if bun else nu)('(9b) controlul fixturii: /pricing poarta numarul numai nedespartit si nicio cifra de WhatsApp')
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, scrie_colectie(os.path.join(d, 'A-nd-contact'), id_a, A_c),
+                       scrie_colectie(os.path.join(d, 'B-nd-contact'), id_b, B_c))
+    bun = cod == 0 and comparate(out) == (n + 1, 0) and martor and pagini_cu_contact(out) == martor
+    (ok if bun else nu)('(9b) pagina cu numarul numai nedespartit ramane cu contact: cod %s, %s, pagini cu contact %s, martorul %s' % (
+        cod, comparate(out), pagini_cu_contact(out), martor))
     return P - inainte
 
 
@@ -701,7 +791,8 @@ def main():
             ('randurile lui B mascate fara controlul numarului', 'if numar:', 'if False:'),
             ('domeniul fara margini', "_sub(r'(?<![" + BS + "w@/." + BS + "-])' + re.escape(va['domeniu']) + r'(?![" + BS + "w" + BS + "-]|"
              + BS + "." + BS + "w)', vb['domeniu']", "_sub(re.escape(va['domeniu']), vb['domeniu']"),
-            ('valoarea egala tratata ca valoare a lui A', "if va[k] != vb[k] and va[k] in text]", "if va[k] in text]"),
+            ('valoarea egala tratata ca valoare a lui A', "if va[k] != vb[k] and contine_valoare(va, k, text)]",
+             "if contine_valoare(va, k, text)]"),
             ('numarul din document ignorat la amprenta', 'or contact_in_document(brut_a, va, vb)', 'or False'),
             ('regula e-mailului ceruta si la adrese egale', "if regula == 'email' and va['email'] == vb['email']:", 'if False:'),
             ('fluxul RSC necomparat', 'return [LUNGIME_RAND_T.sub(', 'return [] and [LUNGIME_RAND_T.sub('),
@@ -738,6 +829,21 @@ def main():
             ('JSON-LD-ul celuilalt domeniu respins si pe copia engleza', "elif cheie in ('url', 'item') and canon and re.match(", 'elif False and re.match('),
             ('JSON-LD-ul celuilalt domeniu primit pe orice pagina', "elif cheie in ('url', 'item') and canon and re.match(re.escape(oy) + r'(?:/|$)', canon.group(1)):",
              "elif cheie in ('url', 'item'):"),
+            # Felia 148: U+00A0 tratat ca spatiu numai in numarul afisat (tiparul, forma pastrata la inlocuire, cautarea
+            # valorilor lui A ramase pe B).
+            ('U+00A0 netratat in numarul afisat', "return re.compile(('[ ' + NBSP + ']').join(", "return re.compile((' ').join("),
+            ('numarul lui B scris cu spatii obisnuite si pe aparitia nedespartita',
+             "return nou.replace(' ', NBSP) if NBSP in m.group(0) else nou", 'return nou'),
+            ('valorile lui A ramase pe B cautate literal', "if va[k] != vb[k] and contine_valoare(va, k, text)]",
+             "if va[k] != vb[k] and va[k] in text]"),
+            # Runda de reparatii: cele trei cautari ale numarului lui A (9b), fiecare cu potrivirea literala readusa.
+            ('numarul din sectiunile documentului cautat literal',
+             "if any(va[k] != vb[k] and contine_valoare(va, k, text) for k in ('email', 'telefonAfisat')):",
+             "if any(va[k] != vb[k] and va[k] in text for k in ('email', 'telefonAfisat')):"),
+            ('numarul din randul destinatarilor cautat literal', "return are_numar_afisat(v['telefonAfisat'], text) or",
+             "return v['telefonAfisat'] in text or"),
+            ('numarul paginii cu contact cautat literal', "return are_numar_afisat(va['telefonAfisat'], text) or",
+             "return va['telefonAfisat'] in text or"),
         ):
             copie = mutant(d, ancora, inlocuitor)
             if copie is None:

@@ -52,7 +52,7 @@ export const EROU_RO_MD: Omit<ContinutErou, "bucla"> = {
     // acasa.ts:119; numai randul gazduirii ramane (d42).
     randuri: [{ iconita: "globe", text: "În UE, cu regiunea principală la Frankfurt." }],
     // Fara rand in fisa (acasa.ts:123): tinta aprobata a paginii pentru gazduire, pe perechea /ro a paginii despre 3S.
-    legatura: { text: "Pagina despre 3S", href: "/ro/securitate#security", ruta: "/ro/securitate" },
+    legatura: { text: "Pagina Despre 3S", href: "/ro/securitate#security", ruta: "/ro/securitate" },
   },
   // H1 aprobat, impartit ca pe RO: prima propozitie (A), apoi a doua cu accentul (acasa.ts:132, :134).
   titlu: {
@@ -159,7 +159,9 @@ export const MACHETA_CAUTARE_RO_MD: Omit<ContinutMachetaCautare, "exemplu" | "bi
 /** Macheta pasului 3: un dosar, cu acelasi termen de pastrare pe fiecare rand (termenul e pe dosar). */
 export const MACHETA_REGISTRU_RO_MD: Omit<ContinutMachetaRegistru, "exemplu"> = {
   // acasa-functionalitati.ts:261-278; codul de culoare al randului 2 ramane cel RO (fisa nu il schimba). Tipurile sunt
-  // din vocabularul platformei (decizia 43): bonul fiscal e "Chitanta" (RECEIPT), ca in constructorul aceleiasi pagini.
+  // din vocabularul platformei (decizia 43): "Chitanta" (RECEIPT), ca in constructorul aceleiasi pagini; numele fisierului
+  // fictiv de pe randul 2 numeste o chitanta, coerent cu tipul; scurt, ca sa incapa in coloana la 1440 px (masurat:
+  // "Chitanta_chirie_martie.pdf" o depasea cu 1 px langa eticheta "Chitanta", mai lata decat "Bon").
   declaratie: "Exemplu cu date fictive: documentele unui dosar, cu termenul de păstrare stabilit pentru dosar",
   eticheta: "Dosarul Depozit",
   insigna: "Același termen",
@@ -167,7 +169,7 @@ export const MACHETA_REGISTRU_RO_MD: Omit<ContinutMachetaRegistru, "exemplu"> = 
   stare: "păstrat",
   randuri: [
     { nr: "001", fisier: "Factura_chirie_martie.pdf", tip: { cod: "factura", text: "Factură" }, termen: "2035" },
-    { nr: "002", fisier: "Bon_motorina_martie.pdf", tip: { cod: "albastru", text: "Chitanță" }, termen: "2035" },
+    { nr: "002", fisier: "Chitanta_martie.pdf", tip: { cod: "albastru", text: "Chitanță" }, termen: "2035" },
     { nr: "003", fisier: "Contract_paza.pdf", tip: { cod: "albastru", text: "Contract" }, termen: "2035" },
   ],
   verificari: [

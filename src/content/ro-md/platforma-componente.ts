@@ -220,7 +220,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
         intrebare: "Unde rulează 3S?",
         raspuns:
           "3S rulează în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul de găzduire și explică ce prevede legea americană pentru datele unei companii din SUA.",
-        // Tinta aprobata a paginii pentru gazduire, ca legatura "Citește pagina Despre 3S" de mai sus (calea SURSA).
+        // Tinta aprobata a paginii pentru gazduire, ca legatura "Citeste pagina Despre 3S" de mai sus (calea SURSA).
         legaturiInText: [{ text: "Pagina Despre 3S", href: "/ro/securitate#security" }],
       },
       {
@@ -232,7 +232,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
         intrebare: "Pot stabili cât timp se păstrează documentele?",
         // Site-ul nu are o pagina-index a ghidurilor, deci fraza numeste cele doua ghiduri si le leaga pe fiecare.
         raspuns:
-          "Da. Pentru fiecare dosar alegi un termen de păstrare, valabil pentru toate documentele din el. Ghidurile noastre despre termenele de păstrare în Moldova și despre arhivarea e-facturilor în UE citează sursele.",
+          "Da. Pentru fiecare dosar alegi un termen de păstrare, valabil pentru toate documentele din el. Ghidurile noastre citează sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.",
         legaturiInText: [
           { text: "termenele de păstrare în Moldova", href: "/ro/ghiduri/termene-pastrare-moldova" },
           { text: "arhivarea e-facturilor în UE", href: "/ro/ghiduri/arhivare-e-facturi-ue" },

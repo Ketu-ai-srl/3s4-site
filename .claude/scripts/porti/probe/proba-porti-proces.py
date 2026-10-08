@@ -477,6 +477,29 @@ def cazuri_limba():
         cu_meta(meta_real, descriere=descriere_ia), NEMASURAT, 'CONTROL PICAT',
         mutatie=('poarta-limba.py', "re.compile(r'export const DESCRIERE_MD", "re.compile(r'export const DESCRIERE_NIMIC"))
 
+    # Punctul 4 pe DOCUMENTE_JURIDICE (felia 148): titlurile si descrierile familiei SEE, nepublicata pe 3s.md si 3s.com.ro,
+    # ajung in pachetul de browser al startului. Copia reala a `publicare.ts`, cu forma formala plantata la rulare in
+    # descrierea documentului de cookie-uri, din bucati.
+    ancora_s = 'cât timp și cum îți dai'
+    if descriere_real.count(ancora_s) != 1:
+        nemasurat('ancora martorului DOCUMENTE_JURIDICE nu mai e, o data, in ' + real_descriere)
+    documente_formal = descriere_real.replace(ancora_s, 'cât timp și cum ' + 'v' + 'ă dați')
+    caz('poarta-limba.py', 'publicare.ts real (copie), DOCUMENTE_JURIDICE la "tu": cod 0', cu_meta(meta_real), CURAT,
+        'DOCUMENTE_JURIDICE: 7 intrari citite')
+    caz('poarta-limba.py', 'aceeasi copie cu o forma formala in descrierea SEE a cookie-urilor: cod 1, numeste documentul',
+        cu_meta(meta_real, descriere=documente_formal), PICAT, 'adresare formala in DOCUMENTE_JURIDICE, documentul cookies')
+    # Fara familia `md` in arbore (fara registru), lista SEE e masurata la fel: suprafata nu depinde de familie.
+    caz('poarta-limba.py', 'aceeasi forma, fara registrul familiei md: cod 1, numeste documentul',
+        cu_meta(meta_real, registru=False, descriere=documente_formal), PICAT, 'adresare formala in DOCUMENTE_JURIDICE, documentul cookies')
+    caz('poarta-limba.py', 'publicare.ts fara blocul DOCUMENTE_JURIDICE: cod 3, nu 0',
+        cu_meta(meta_real, descriere=descriere_real.replace('export const DOCUMENTE_JURIDICE', 'export const DOCUMENTE_REDENUMIT')),
+        NEMASURAT, 'DOCUMENTE_JURIDICE nu a fost gasit')
+    # Controlul stricat pe o COPIE a portii: tiparul blocului nu mai gaseste lista, deci martorul ei din `controale()` pica
+    # si poarta iese 3, nu 0, chiar pe copia cu forma formala plantata.
+    caz('poarta-limba.py', 'control DOCUMENTE_JURIDICE picat (tiparul blocului stricat pe copie): cod 3, nu 0',
+        cu_meta(meta_real, descriere=documente_formal), NEMASURAT, 'CONTROL PICAT',
+        mutatie=('poarta-limba.py', "re.compile(r'export const DOCUMENTE_JURIDICE", "re.compile(r'export const DOCUMENTE_NIMIC"))
+
 
 def cazuri_rute():
     def manifest(rute, pagini):

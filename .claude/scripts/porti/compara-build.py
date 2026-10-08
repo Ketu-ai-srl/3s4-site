@@ -324,6 +324,34 @@ def _inlocuieste(text, vechi, nou, cont, regula):
     return text.replace(vechi, nou)
 
 
+# 5b'. NUMARUL AFISAT poate purta spatii nedespartitoare (U+00A0) intre grupe: in subtitlul paginii de contact numarul
+# nu se rupe la capat de rand (`numarNedespartit` din PaginaContact.tsx), iar in restul paginii ramane cu spatii
+# obisnuite. Numai pentru numarul de telefon, U+00A0 se trateaza ca spatiu: tiparul primeste oricare dintre cele doua
+# intre grupe, iar inlocuirea pastreaza forma aparitiei (una nedespartita a lui A devine numarul lui B nedespartit).
+# Celelalte valori (e-mail, domeniu, cifrele de WhatsApp) se compara literal, ca inainte.
+NBSP = chr(0xa0)
+
+
+def tipar_numar(numar):
+    """Tiparul numarului afisat, cu spatiu obisnuit sau U+00A0 intre grupe."""
+    return re.compile(('[ ' + NBSP + ']').join(re.escape(g) for g in numar.split(' ')))
+
+
+def are_numar_afisat(numar, text):
+    return tipar_numar(numar).search(text) is not None
+
+
+def _inlocuieste_numar(text, vechi, nou, cont, regula):
+    def inlocuire(m):
+        return nou.replace(' ', NBSP) if NBSP in m.group(0) else nou
+    return _sub(tipar_numar(vechi), inlocuire, text, cont, regula)
+
+
+def contine_valoare(v, k, text):
+    """Valoarea `k` a domeniului `v` apare in text; numarul afisat, in oricare forma a spatiilor dintre grupe."""
+    return are_numar_afisat(v[k], text) if k == 'telefonAfisat' else v[k] in text
+
+
 # 4c. Cardul social al copiei engleze a lui B (vezi `transforma`): elementul `<meta>` si obiectul `meta` al fluxului RSC
 # (`{"property":"og:url","content":...}`, cu ghilimelele escapate in HTML), NUMAI pentru `og:url`, `og:image` si
 # `twitter:image`, cu numele intreg: `og:image:width` si celelalte atribute ale imaginii nu poarta adrese.
@@ -432,7 +460,7 @@ def transforma(text, va, vb, tabel, cale_b, cont=None, cai=True, limba=True, dub
     # 5b. numerele: intai forma afisata, apoi cifrele de WhatsApp, numai ca numar intreg. Forma E.164 (`telefonE164`)
     # NU se inlocuieste: dupa decizia 56 (fara apeluri GSM) HTML-ul servit nu o mai poarta, iar o regula fara aplicari
     # ar fi rosie prin constructie. Daca reapare pe A, ramane pe B ca diferenta si `valori_contact_a` o numeste.
-    text = _inlocuieste(text, va['telefonAfisat'], vb['telefonAfisat'], cont, 'telefonAfisat')
+    text = _inlocuieste_numar(text, va['telefonAfisat'], vb['telefonAfisat'], cont, 'telefonAfisat')
     text = _sub(r'(?<![\d+])' + re.escape(va['whatsapp']) + r'(?!\d)', vb['whatsapp'], text, cont, 'whatsapp')
     # 5c. numele domeniului in text (nu parte dintr-o adresa sau dintr-un alt nume).
     text = _sub(r'(?<![\w@/.\-])' + re.escape(va['domeniu']) + r'(?![\w\-]|\.\w)', vb['domeniu'], text, cont, 'domeniu')
@@ -511,7 +539,7 @@ def contact_in_document(html, va, vb):
     text = ''.join(SECTIUNE_DOCUMENT.findall(html))
     if not text:
         return False
-    if any(va[k] != vb[k] and va[k] in text for k in ('email', 'telefonAfisat')):
+    if any(va[k] != vb[k] and contine_valoare(va, k, text) for k in ('email', 'telefonAfisat')):
         return True
     return va['whatsapp'] != vb['whatsapp'] and re.search(r'(?<![\d+])' + re.escape(va['whatsapp']) + r'(?!\d)', text) is not None
 
@@ -546,7 +574,7 @@ def _celule(rand):
 
 def are_numar(text, v):
     """Textul poarta numarul afisat sau cifrele de WhatsApp ale domeniului `v`."""
-    return v['telefonAfisat'] in text or re.search(r'(?<![\d+])' + re.escape(v['whatsapp']) + r'(?!\d)', text) is not None
+    return are_numar_afisat(v['telefonAfisat'], text) or re.search(r'(?<![\d+])' + re.escape(v['whatsapp']) + r'(?!\d)', text) is not None
 
 
 def e_rand_dns_posta(rand, va):
@@ -773,7 +801,7 @@ def valori_contact_a(text, va, vb):
     """Valorile de contact ale lui A (e-mail, numarul afisat si E.164, cifrele de WhatsApp) gasite intr-un text al lui B.
     Domeniul nu intra: adresele lui A raman legitim pe B in grupul hreflang si in canonical-ul paginilor /en. O valoare
     egala pe ambele domenii nu intra (e si a lui B)."""
-    gasite = [k for k in ('email', 'telefonAfisat', 'telefonE164') if va[k] != vb[k] and va[k] in text]
+    gasite = [k for k in ('email', 'telefonAfisat', 'telefonE164') if va[k] != vb[k] and contine_valoare(va, k, text)]
     if va['whatsapp'] != vb['whatsapp'] and re.search(r'(?<![\d+])' + re.escape(va['whatsapp']) + r'(?!\d)', text):
         gasite.append('whatsapp')
     return gasite
@@ -781,7 +809,7 @@ def valori_contact_a(text, va, vb):
 
 def are_contact(text, va):
     """Pagina lui A poarta contactul operatorului (numarul afisat sau cifrele de WhatsApp)."""
-    return va['telefonAfisat'] in text or re.search(r'(?<![\d+])' + re.escape(va['whatsapp']) + r'(?!\d)', text) is not None
+    return are_numar_afisat(va['telefonAfisat'], text) or re.search(r'(?<![\d+])' + re.escape(va['whatsapp']) + r'(?!\d)', text) is not None
 
 
 def compara(A, B, perechi_cai, regula, valori, tabel, normalizator, arata, cont=None, cont_contact=None, duble=frozenset()):

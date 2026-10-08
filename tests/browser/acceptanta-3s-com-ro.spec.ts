@@ -6,7 +6,7 @@ import { mediuProfil3sComRo, pornesteCopia3sComRo, type Copie3sComRo, type Mutat
 import { asteaptaHidratarea } from './ajutor/hidratare'
 import { RADACINA } from './ajutor/proiect'
 import { BAZA_RUNDA_3, ETICHETA_CU_MASURARE, MASURARE, ancore, faraEvadari, formePolitete, scripturi, texteCap } from './ajutor/juridic-servit'
-import { DESCRIERE_MD } from '../../src/content/juridic/publicare'
+import { DESCRIERE_MD, DOCUMENTE_JURIDICE, SLUGURI_JURIDICE } from '../../src/content/juridic/publicare'
 import { ECHIVALENTE } from '../../src/content/echivalente'
 
 /**
@@ -412,6 +412,76 @@ test('juridic servit, runda 3: descrierile din rute la "tu" si fara masurare in 
   expect(en.map((x) => x.text)).toContain('Cookie policy')
   const ro = ancore(acasa).filter((x) => x.atribute.href === servitaRo(doc('cookie-uri').ro))
   expect(ro.map((x) => x.text), JSON.stringify(ro)).toContain('Politica de cookie-uri')
+})
+
+test('juridic servit, felia 148: DOCUMENTE_JURIDICE (familia SEE, nepublicata) in pachetul startului, toate 7, la "tu"', async () => {
+  test.setTimeout(120_000)
+  const r = await fetch(new URL('/', copie.baza), { redirect: 'manual' })
+  expect(r.status).toBe(200)
+  let js = ''
+  for (const s of scripturi(await r.text())) js += faraEvadari(await (await fetch(new URL(s, copie.baza))).text()) + String.fromCharCode(10)
+  const tipar = new RegExp('slug:"(' + SLUGURI_JURIDICE.join('|') + ')",scurt:"([^"]*)",descriere:"([^"]*)"', 'g')
+  const intrari = [...js.matchAll(tipar)]
+  // Controlul: lista e in pachet, intreaga, cu descrierile curente (pe baza, aceeasi extragere da 5 forme).
+  expect(intrari.map((m) => m[1]).sort()).toEqual([...SLUGURI_JURIDICE].sort())
+  for (const d of DOCUMENTE_JURIDICE) expect(js.includes(d.descriere), d.slug).toBe(true)
+  expect(intrari.flatMap((m) => formePolitete(m[2] + ' ' + m[3]))).toEqual([])
+})
+
+// Felia 148: numarul de telefon din fraza de sub H1 de pe paginile de contact nu se rupe la capat de rand (U+00A0 intre
+// grupe). Masurat pe ecran, cu Range.getClientRects pe numar, la 390, 768 si 1440. Controlul pozitiv, pe aceeasi pagina:
+// cu spatiile readuse la forma de dinainte (U+00A0 inlocuit in DOM), metoda vede ruperea in macar o asezare (pe baza:
+// RO la 768 si 1440, EN la 390), iar paragraful intreg are mai multe randuri.
+async function randuriNumar(page: Page, readuSpatiile: boolean): Promise<{ numar: string; randuri: number; paragraf: number }> {
+  return page.evaluate((readu) => {
+    const h1 = document.querySelector('h1')
+    if (h1 === null) throw new Error('NEMASURAT: pagina nu are H1')
+    let p: Element | null = h1
+    while (p !== null && p.tagName !== 'P') p = p.nextElementSibling ?? p.parentElement?.nextElementSibling ?? null
+    if (p === null) throw new Error('NEMASURAT: fara paragraf dupa H1')
+    const randuri = (r: Range) => new Set([...r.getClientRects()].filter((x) => x.width > 0).map((x) => Math.round(x.top))).size
+    const tw = document.createTreeWalker(p, NodeFilter.SHOW_TEXT)
+    for (let n = tw.nextNode() as Text | null; n !== null; n = tw.nextNode() as Text | null) {
+      const m = /\+\d{1,3}(?:[ \u00a0]\d{2,4})+/.exec(n.data)
+      if (m === null) continue
+      let numar = m[0]
+      if (readu) {
+        const cuSpatii = numar.replace(/\u00a0/g, ' ')
+        n.data = n.data.replace(numar, cuSpatii)
+        numar = cuSpatii
+      }
+      const i = n.data.indexOf(numar)
+      const r = document.createRange()
+      r.setStart(n, i)
+      r.setEnd(n, i + numar.length)
+      const rp = document.createRange()
+      rp.selectNodeContents(p)
+      return { numar, randuri: randuri(r), paragraf: randuri(rp) }
+    }
+    throw new Error('NEMASURAT: subtitlul nu are numar de telefon')
+  }, readuSpatiile)
+}
+
+test('felia 148: numarul din fraza de sub H1 de pe paginile de contact RO si EN nu se rupe la 390, 768 si 1440; cu spatiile readuse, ruperea se vede', async ({ page }) => {
+  test.setTimeout(180_000)
+  const rupte: string[] = []
+  for (const latime of [390, 768, 1440]) {
+    await page.setViewportSize({ width: latime, height: 900 })
+    for (const cale of ['/contact', PREFIX_EN + '/contact']) {
+      await page.goto(copie.baza + cale)
+      await page.evaluate(() => document.fonts.ready)
+      expect(await page.evaluate(() => innerWidth)).toBe(latime)
+      const acum = await randuriNumar(page, false)
+      expect(acum.numar, cale + ' ' + latime).toContain('\u00a0')
+      expect(acum.numar, cale + ' ' + latime).not.toContain(' ')
+      expect(acum.randuri, cale + ' ' + latime + ': ' + acum.numar).toBe(1)
+      expect(acum.paragraf, cale + ' ' + latime).toBeGreaterThan(1)
+      const inainte = await randuriNumar(page, true)
+      if (inainte.randuri > 1) rupte.push(cale + ' ' + latime)
+    }
+  }
+  // Controlul pozitiv: forma cu spatii obisnuite se rupe macar o data (pe baza: 3 din 6 asezari).
+  expect(rupte.length, JSON.stringify(rupte)).toBeGreaterThan(0)
 })
 
 test('martor POZITIV: fiecare detector prinde defectul lui, pe date asamblate la rulare', () => {

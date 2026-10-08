@@ -18,6 +18,11 @@
 // structural si il accepta). Alta editie isi da randurile panoului de canale (`randuri`), butonul casetei
 // (`butonCaseta`, cand canalul ei nu e formularul) si caile firului; nota casetei si nota panoului sunt
 // optionale in tip si se randeaza conditionat (pe RO exista mereu, deci ramura da acelasi DOM).
+//
+// NUMARUL DE TELEFON din subtitlul eroului nu se rupe la capat de rand (masurat pe baza: "+40 743 130" / "567" la
+// 768 si 1440 px, numarul de pe 3s.md la 390 px): spatiile din interiorul lui devin spatii nedespartitoare la randare
+// (`numarNedespartit`), in text, nu prin CSS. Subtitlul RO nu are numar, deci sirul lui trece neatins (acelasi HTML).
+// Comparatia de identitate dintre build-uri (`compara-build.py`) trateaza U+00A0 ca spatiu numai in numarul afisat.
 
 import { CalendarClock, Clock, Building2, Compass, Layers, Plug, ShieldCheck, Wallet } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
@@ -63,6 +68,14 @@ export type ContinutPaginaContact = {
     carduri: readonly { titlu: string; rol: string; fapte: readonly { eticheta: string; valoare: string; mono: boolean }[] }[];
   };
 };
+
+/** Un numar international scris cu grupuri despartite prin spatiu (prefixul tarii, apoi grupuri de 2-4 cifre). */
+const NUMAR_TELEFON = /\+\d{1,3}(?: \d{2,4})+/g;
+
+/** Textul, cu spatiile din fiecare numar de telefon facute nedespartitoare (U+00A0); restul textului neatins. */
+export function numarNedespartit(text: string): string {
+  return text.replace(NUMAR_TELEFON, (n) => n.replace(/ /g, "\u00a0"));
+}
 
 /** Randurile panoului de canale, dupa starea formularului si adresa marcii. Functie pura, pentru probe. */
 export function randuriCanale(stare: StareFormular, adresa: string | null): RandPanou[] {
@@ -139,7 +152,7 @@ export default function PaginaContact({
           { text: c.fir.pagina, cale: c.fir.calePagina ?? CALE_CONTACT },
         ]}
         titlu={c.erou.titlu}
-        subtitlu={c.erou.subtitlu}
+        subtitlu={numarNedespartit(c.erou.subtitlu)}
         {...(etichetaFir !== undefined ? { etichetaFir } : {})}
       />
 
