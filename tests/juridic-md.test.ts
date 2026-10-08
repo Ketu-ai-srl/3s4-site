@@ -18,10 +18,21 @@ import { valoareCamp } from '../src/content/juridic/md/context'
 import { CHEI_MD, MARCAJ_SECTIUNI_MD, REGISTRU_MD, cheiPublicate, tintaLegatura, type CheieMd } from '../src/content/juridic/md/registru'
 import { META_DOCUMENTE_MD, linieVersiuneMd } from '../src/content/juridic/pagini'
 import { ruteJuridice, ruteJuridiceMd } from '../src/content/juridic/publicare'
-import { textIntreg, textPentruAmprenta, textSimplu, type BlocJuridic, type DocumentJuridic, type LimbaJuridica } from '../src/content/juridic/tipuri'
+import {
+  PREFIX_LEGATURA_RO,
+  fragmenteInLinie,
+  textIntreg,
+  textPentruAmprenta,
+  textSimplu,
+  type BlocJuridic,
+  type DocumentJuridic,
+  type LimbaJuridica,
+} from '../src/content/juridic/tipuri'
+import TextInLinie from '../src/components/juridic/TextInLinie'
 import CorpDocument, { type CorpDocumentIntrare } from '../src/components/juridic/CorpDocument'
 import type { PaginaContinut } from '../src/content/model/tipuri'
 import type { Operator } from '../src/lib/operator'
+import { caSursa, caleServitaEditiei } from '../src/lib/asezare'
 
 /**
  * Felia 73: familia juridica `md` (operatorul din Republica Moldova). Criteriul de gata, punct cu punct:
@@ -256,7 +267,9 @@ describe('legaturile interne pe cheie', () => {
 
   it('pagina EN de informatii legale trimite la versiunea autentica, in romana (cale-ro)', () => {
     const en = texteJuridice(operatorModel(), { limba: 'en' })?.get('informatii-legale')
-    expect(en && legaturi(en)).toContain(REGISTRU_MD['informatii-legale'].ro)
+    // Felia 144 (pct. 97 e): adresa rezolvata a unei legaturi `cale-ro:` poarta prefixul limbii, ca pagina sa-i scrie
+    // `lang` si `hrefLang`; inainte forma se pierdea aici. Fragmentele dau calea curata (proba de mai jos).
+    expect(en && legaturi(en)).toContain(PREFIX_LEGATURA_RO + REGISTRU_MD['informatii-legale'].ro)
   })
 
   it('tokenurile din afara pachetului sunt cunoscute si se rezolva fara oprire, in toate starile, la B si la C', () => {
@@ -264,7 +277,9 @@ describe('legaturile interne pe cheie', () => {
     // Numarate in blocurile publicabile ale pachetului: 4, 4, 2 si 1 (raportul conversiei). Felia 132 (decizia 74,
     // marcajele de lucru din termeni): 3.8 trimite numai la DPA si la descrierea data in scris, la cerere, deci
     // `securitate-si-locul-datelor` ramane numai in 15.11, RO si EN: 2 din cele 4.
-    expect(numara('](cale:preturi)')).toBe(4)
+    // Felia 144 (pct. 97, trimiterile la preturi fara legatura): „Pe scurt” din Termeni trimitea la pagina de preturi in
+    // text simplu, RO si EN; acum poarta si el cheia, deci 4 + 2 = 6.
+    expect(numara('](cale:preturi)')).toBe(6)
     expect(numara('](cale:securitate-si-locul-datelor)')).toBe(2)
     expect(numara('](cale:comutare-si-export)')).toBe(2)
     expect(numara('](cale-ro:')).toBe(1)
@@ -275,8 +290,10 @@ describe('legaturile interne pe cheie', () => {
         }
       }
     }
-    // preturi: pagina /pricing nu e publicata inca -> text; cheile nescrise -> text
-    expect(tintaLegatura('cale', 'preturi', 'en')).toEqual({ fel: 'text' })
+    // preturi: pagina exista pe ambele site-uri (felia 144), deci legatura se publica, in limba documentului;
+    // cheile nescrise -> text
+    expect(tintaLegatura('cale', 'preturi', 'en')).toEqual({ fel: 'adresa', cale: '/pricing' })
+    expect(tintaLegatura('cale', 'preturi', 'ro')).toEqual({ fel: 'adresa', cale: '/ro/preturi' })
     expect(tintaLegatura('cale', 'comutare-si-export', 'ro')).toEqual({ fel: 'text' })
   })
 
@@ -734,5 +751,198 @@ describe('Politica: datele verificarii (s. 6) si jurnalul dupa incetare (s. 3, 4
       }
       expect(lipsuriJurnal(d, limba), limba).toEqual(['s3', 's4', 's15'])
     }
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// Felia 144: adresarea "tu" (decizia 77) si itemii juridici ai testului 3s.com.ro (pct. 97)
+// ---------------------------------------------------------------------------------------------
+
+/** Textul vizibil al unui document compus: marcajul scos, sirurile unite cu un rand nou. */
+const textDocument = (d: DocumentJuridic) => siruri(d).map(textSimplu).join('\n')
+
+/** Documentele publicate la poarta B, compuse si cu legaturile rezolvate, in limba si starea data. */
+function publicate(limba: LimbaJuridica, m: Masurare, linkedin = false): [CheieMd, DocumentJuridic][] {
+  const texte = texteJuridice(operatorModel(), { limba, masurare: m, linkedin })
+  expect(texte).not.toBeNull()
+  return PUBLICATE_B.map((k) => [k, texte?.get(k) as DocumentJuridic])
+}
+
+describe('felia 144: adresarea "tu" in documentele juridice romanesti publice (decizia 77)', () => {
+  // Pronumele si posesivele de politete, auxiliarul de persoana a II-a plural si forma "v-" dinaintea verbului.
+  // Tiparele se lipesc din bucati, ca fisierul sa nu le poarte pe litere.
+  const PRONUME = new RegExp(
+    '(?<!\\p{L})(' + ['dumnea' + 'voastr\\p{L}*', 'dv' + 's', 'v' + 'ă', 'v' + 'i', 'voas' + 'tr\\p{L}*', 'vos' + 'tru', 'a' + 'ți'].join('|') + ')(?!\\p{L})|(?<!\\p{L})v-(?=\\p{L})',
+    'giu',
+  )
+  // Verbele la persoana a II-a plural se termina in -ati, -eti, -iti; acelasi final il au si participiile la plural
+  // ("Utilizatori autorizati") si cateva verbe la persoana a II-a singular ("trimiti"). Ele se numesc aici, cu motivul,
+  // si nimic altceva nu trece: un verb nou la plural ramane prins.
+  const VERB_PLURAL = /\p{L}+(ați|eți|iți|âți)(?!\p{L})/giu
+  const NU_SUNT_PLURAL_DE_POLITETE = new Set([
+    // participii sau adjective la plural, despre altii decat cititorul
+    'autorizați',
+    'stabiliți',
+    'obligați',
+    'implicați',
+    'anunțați',
+    'subîmputerniciți',
+    'enumerați',
+    'îndreptățiți',
+    'legați',
+    // verbe la persoana a II-a singular, chiar forma ceruta de decizia 77
+    'trimiți',
+    'exerciți',
+    'repeți',
+  ])
+  const forme = (text: string) => [
+    // "VI" e numeralul roman din "capitolul VI" (Termeni 15.1), nu pronumele.
+    ...[...text.matchAll(PRONUME)].map((m) => m[0]).filter((w) => w !== 'VI'),
+    ...[...text.matchAll(VERB_PLURAL)].map((m) => m[0]).filter((w) => !NU_SUNT_PLURAL_DE_POLITETE.has(w.toLowerCase())),
+  ]
+
+  it('martori: o fraza formala fabricata e prinsa pe fiecare forma; forma cu "tu" nu', () => {
+    const formala = ['Dacă ', 'dumnea' + 'voastră ', 'ne scrie' + 'ți, ', 'v' + 'ă răspundem ', 'și ', 'v' + '-am scris ', 'ce a' + 'ți cerut.'].join('')
+    expect(forme(formala)).toHaveLength(5)
+    expect(forme('Dacă ne scrii, îți răspundem; poți cere oricând datele tale. Utilizatorii autorizați primesc informații.')).toEqual([])
+  })
+
+  it('zero forme de politete in cele 6 documente publice, in toate starile masurarii; textul are formele cu "tu"', () => {
+    for (const { nume, m, linkedin } of STARI) {
+      for (const [cheie, d] of publicate('ro', m, linkedin)) {
+        expect(forme(textDocument(d)), nume + ' ' + cheie).toEqual([])
+      }
+      // Controlul extragerii: textul strans are adresarea "tu" in fiecare document care se adreseaza cititorului.
+      for (const [cheie, d] of publicate('ro', m, linkedin).filter(([k]) => k !== 'termeni')) {
+        expect(textDocument(d), nume + ' ' + cheie).toMatch(/(?<!\p{L})(poți|tău|tale|îți|te)(?!\p{L})/u)
+      }
+    }
+    // Termenii raman la persoana a treia; singurul pasaj care se adreseaza cititorului e la "tu".
+    const termeni = publicate('ro', S0).find(([k]) => k === 'termeni')?.[1] as DocumentJuridic
+    expect(textDocument(termeni)).toContain('Clauzele pe care te rugăm să le citești cu atenție')
+  })
+
+  it('runda 2: meta-descrierile romanesti (titlu si descriere, in <head>) ale celor 5 documente la "tu", fara forme de politete', () => {
+    // Textul lor sta in META_DOCUMENTE_MD, nu in module; in runda 1 ramasesera formale, deci <head> contrazicea <main>.
+    // Termenii sunt la persoana a treia; DPA si Subimputernicitii sunt ai feliei 145 (exceptia numita si in poarta-limba).
+    const CINCI: CheieMd[] = ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale']
+    for (const k of CINCI) {
+      const { titlu, descriere } = META_DOCUMENTE_MD[k].ro
+      expect(forme(titlu + ' ' + descriere), k).toEqual([])
+    }
+    // Controlul: descrierile care se adreseaza cititorului au forma cu "tu" (o extragere goala ar trece de mai sus).
+    for (const k of ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale'] as const) {
+      expect(META_DOCUMENTE_MD[k].ro.descriere, k).toMatch(/(?<!\p{L})(tău|îți|contactezi|semnalezi|vorbești)(?!\p{L})/u)
+    }
+  })
+
+  it('campul versiune al documentelor schimbate de felie e data commitului; afirmatiile datate din Politica s. 6 raman', () => {
+    // Romana: cele cinci documente trecute la "tu", plus Termenii (pasajul catre cititor, legatura, indicele). Engleza:
+    // numai documentele atinse de itemii 2 b-d; IA si Informatii legale in engleza nu se schimba, deci data lor ramane.
+    const SCHIMBATE: Record<LimbaJuridica, CheieMd[]> = {
+      ro: ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale', 'termeni'],
+      en: ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'termeni'],
+    }
+    for (const limba of ['ro', 'en'] as const) {
+      const texte = texteJuridice(operatorModel(), { limba, masurare: S0 })
+      for (const k of SCHIMBATE[limba]) expect(texte?.get(k)?.versiune, limba + ' ' + k).toBe('2026-10-07')
+    }
+    const conf = texteJuridice(operatorModel(), { limba: 'ro', masurare: S0 })?.get('confidentialitate') as DocumentJuridic
+    const s6 = conf.sectiuni.filter((s) => s.cheie === 's6')
+    expect(siruri({ ...conf, titlu: '', introducere: '', preambul: [], sectiuni: s6 }).join(' ').split('La 7 octombrie 2026').length - 1).toBe(2)
+  })
+})
+
+describe('felia 144: itemii juridici din testul 3s.com.ro (pct. 97)', () => {
+  it('(a) trimiterile la pagina de preturi au legatura, in limba documentului, pe fiecare asezare', () => {
+    // Informatii legale s. 4 si Termeni („Pe scurt” si 8.1): trei trimiteri pe limba.
+    const legaturi = (d: DocumentJuridic) => siruri(d).flatMap((s) => [...s.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]))
+    for (const [limba, cale] of [
+      ['ro', '/ro/preturi'],
+      ['en', '/pricing'],
+    ] as const) {
+      const texte = texteJuridice(operatorModel(), { limba, masurare: S0 })
+      const n = ['informatii-legale', 'termeni'].reduce((s, k) => s + legaturi(texte?.get(k) as DocumentJuridic).filter((t) => t === cale).length, 0)
+      expect(n, limba).toBe(3)
+    }
+    // Adresa servita: pe 3s.md identitatea; pe 3s.com.ro romana la radacina, engleza sub /en.
+    expect(caleServitaEditiei(caSursa('/ro/preturi'), 'ro-MD', 'md')).toBe('/ro/preturi')
+    expect(caleServitaEditiei(caSursa('/ro/preturi'), 'ro-MD', 'ro')).toBe('/preturi')
+    expect(caleServitaEditiei(caSursa('/pricing'), 'en', 'md')).toBe('/pricing')
+    expect(caleServitaEditiei(caSursa('/pricing'), 'en', 'ro')).toBe('/en/pricing')
+  })
+
+  it('(b) niciun indice de articol cu caret in documentele publice, RO si EN; exponentul e acolo', () => {
+    const CARET = /\d\^\d/
+    expect(CARET.test('art. 169' + '^' + '1')).toBe(true)
+    expect(CARET.test('art. 169¹')).toBe(false)
+    for (const { nume, m, linkedin } of STARI) {
+      for (const limba of ['ro', 'en'] as const) {
+        for (const [cheie, d] of publicate(limba, m, linkedin)) expect(CARET.test(textDocument(d)), nume + ' ' + limba + ' ' + cheie).toBe(false)
+      }
+    }
+    for (const limba of ['ro', 'en'] as const) {
+      const texte = texteJuridice(operatorModel(), { limba, masurare: S0 })
+      const notificare = textDocument(texte?.get('notificare-si-actiune') as DocumentJuridic)
+      for (const indice of ['169¹', '175¹', '176¹', '201¹', '208¹', '279²']) expect(notificare, limba + ' ' + indice).toContain(indice)
+      expect(textDocument(texte?.get('termeni') as DocumentJuridic), limba).toContain('25¹')
+    }
+  })
+
+  it('(c) exemplul LinkedIn din Cookies s. 10 apare numai cand exista pagina 3S de pe LinkedIn', () => {
+    for (const limba of ['ro', 'en'] as const) {
+      const s10 = (linkedin: boolean) => {
+        const d = texteJuridice(operatorModel(), { limba, masurare: S0, linkedin })?.get('cookie-uri') as DocumentJuridic
+        return textDocument({ ...d, titlu: '', introducere: '', preambul: [], sectiuni: d.sectiuni.filter((s) => s.cheie === 's10') })
+      }
+      expect(s10(false), limba).not.toContain('LinkedIn')
+      expect(s10(false), limba).toContain('WhatsApp')
+      // Martor: cu indicatorul pornit, exemplul revine.
+      expect(s10(true), limba).toContain('LinkedIn')
+    }
+  })
+
+  it('(d) varianta fara masurare (S0) a Cookies si a Confidentialitatii nu trimite la masurarea vizitelor', () => {
+    const MASURARE: Record<LimbaJuridica, RegExp> = {
+      ro: /măsur\p{L}* (a )?vizit|măsurăm vizitele/iu,
+      en: /measur\p{L}* (of )?visits|visit measurement|measuring visits|measure visits/iu,
+    }
+    for (const limba of ['ro', 'en'] as const) {
+      const s0 = texteJuridice(operatorModel(), { limba, masurare: S0 })
+      const conf = textDocument(s0?.get('confidentialitate') as DocumentJuridic)
+      const cookies = s0?.get('cookie-uri') as DocumentJuridic
+      expect(conf.match(MASURARE[limba]), limba + ' confidentialitate').toBeNull()
+      expect(cookies.introducere, limba + ' cookie-uri').not.toMatch(MASURARE[limba])
+      // Martor: cu masurare (S-B), aceleasi locuri o descriu.
+      const sb = texteJuridice(operatorModel(), { limba, masurare: { stare: 'S-B', ga4: false } })
+      expect(textDocument(sb?.get('confidentialitate') as DocumentJuridic), limba).toMatch(MASURARE[limba])
+      expect((sb?.get('cookie-uri') as DocumentJuridic).introducere, limba).toMatch(MASURARE[limba])
+    }
+    // Runda 2: descrierea paginii (meta, una pentru toate starile) nu mai pomeneste masurarea, RO si EN; martorul e
+    // tiparul, care prinde descrierea de pe baza.
+    expect('Ce stochează site-ul 3S în browser, cum măsurăm vizitele și cum te răzgândești.').toMatch(MASURARE.ro)
+    expect('What the website stores, how we measure visits and how to change your mind.').toMatch(MASURARE.en)
+    for (const limba of ['ro', 'en'] as const) {
+      expect(META_DOCUMENTE_MD['cookie-uri'][limba].descriere, limba).not.toMatch(MASURARE[limba])
+    }
+  })
+
+  it('(e) legatura cale-ro: pastreaza limba pana in pagina: lang="ro" si hrefLang al editiei RO-MD; celelalte, fara atribute', () => {
+    // Rezolvarea: prefixul limbii in adresa, numai pe `cale-ro:`.
+    expect(rezolvaLegaturi('Vezi [Informații legale](cale-ro:informatii-legale).', 'en')).toBe(
+      'Vezi [Informații legale](' + PREFIX_LEGATURA_RO + REGISTRU_MD['informatii-legale'].ro + ').',
+    )
+    expect(rezolvaLegaturi('See [Legal notice](cale:informatii-legale).', 'en')).toBe('See [Legal notice](' + REGISTRU_MD['informatii-legale'].en + ').')
+    // Fragmentele: calea curata, limba separat; o legatura obisnuita nu primeste cheia `limba`.
+    const en = texteJuridice(operatorModel(), { limba: 'en', masurare: S0 })?.get('informatii-legale') as DocumentJuridic
+    const ro = fragmenteInLinie(en.introducere).filter((f) => f.fel === 'legatura')
+    expect(ro).toEqual([{ fel: 'legatura', text: 'Informații legale', adresa: REGISTRU_MD['informatii-legale'].ro, limba: 'ro' }])
+    expect(fragmenteInLinie('[x](/pricing)')).toEqual([{ fel: 'legatura', text: 'x', adresa: '/pricing' }])
+    // Pagina: ancora sau elementul inert poarta atributele numai pe legatura in romana (`a` extern, ca martor de randare:
+    // calea interna trece prin `Tinta`, care depinde de rutele build-ului).
+    const html = (t: string) => renderToStaticMarkup(createElement(TextInLinie, { text: t }))
+    const extern = html('[Informații legale](' + PREFIX_LEGATURA_RO + 'https://exemplu.test/ro) si [Legal](https://exemplu.test/en)')
+    expect(extern).toContain('<a href="https://exemplu.test/ro" lang="ro" hrefLang="ro-MD">Informații legale</a>')
+    expect(extern).toContain('<a href="https://exemplu.test/en">Legal</a>')
   })
 })

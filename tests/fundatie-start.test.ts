@@ -58,7 +58,9 @@ const FELII = [
 describe('pagina de start randata pe server', () => {
   it('are un singur h1, cel al eroului', () => {
     expect(html.match(/<h1\b/g)).toHaveLength(1)
-    expect(html).toContain(EROU.titlu.accent)
+    // Felia 147: ultimele doua cuvinte ale accentului stau intr-un `<span data-lipit="">` (randul nu ramane cu un
+    // singur cuvant); textul e acelasi, deci se cauta fara eticheta legaturii.
+    expect(html.replace(/<span data-lipit="">([^<]*)<\/span>/g, '$1')).toContain(EROU.titlu.accent)
   })
 
   it('are ancorele pe care le cere navigatia', () => {

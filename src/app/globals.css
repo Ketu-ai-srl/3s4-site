@@ -730,4 +730,19 @@
     opacity: 1;
     transform: none;
   }
+
+  /* Tema inchisa a constructorului, tiparita FARA grafica de fundal: suprafata inchisa nu se tiparea, iar textul ei
+     alb iesea pe hartie alba (navigatorul il coboara singur la #ababab, 2,3:1; masurat pe PDF, 23 de fragmente pe
+     pagina constructorului). Suprafata e parte din continut, deci se tipareste oricum. */
+  html:not(.tipar-oferta-3s) section[data-ciot="constructor"][data-tema="inchisa"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Demonstratia de cautare: rezumatul unui rand inchis are inaltime zero pe ecran (randul de grila 0fr, taiat), dar
+     la tiparire se picta intreg peste randul urmator ("Factura_energie" peste rezumatul randului "Contract"). Pe
+     hartie nu se deschide nimic, deci rezumatele inchise (marcate `aria-hidden`) ies din pagina. */
+  html:not(.tipar-oferta-3s) [data-rand] + [aria-hidden="true"] {
+    display: none;
+  }
 }

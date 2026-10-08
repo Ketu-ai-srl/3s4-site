@@ -198,7 +198,7 @@ export const pagina: PaginaContinut = {
       titlu: "Can I check your facts?",
       blocuri: [
         {
-          paragrafe: ["Each guide on this site cites primary sources and shows the date each row was checked. Guides are not legal advice."],
+          paragrafe: ["Each guide on this site cites primary sources and shows the date they were checked. Guides are not legal advice."],
           lista: {
             elemente: [
               "[Records retention in Moldova](/guides/records-retention-moldova)",

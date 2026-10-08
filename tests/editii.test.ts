@@ -30,6 +30,19 @@ import { surseleRutei } from '../src/lib/istoric-git'
 import { citesteOperator, operatorComplet } from '../src/lib/operator'
 import { alternateSite } from '../src/lib/site'
 import { citesteDeclaratiile } from './browser/ajutor/raspunsuri'
+import {
+  BAZA_RUNDA_3,
+  ETICHETA_CU_MASURARE,
+  MASURARE,
+  ancore,
+  faraEvadari,
+  formePolitete,
+  scripturi,
+  texteCap,
+} from './browser/ajutor/juridic-servit'
+import { DESCRIERE_MD } from '../src/content/juridic/publicare'
+import { caleMd } from '../src/content/juridic/md/registru'
+import { navigatieEn } from '../src/content/navigatie-en'
 
 /**
  * FUNDATIA EDITIILOR (`src/lib/editii.ts`): profilul din `SITE_EDITII`, catalogul, coerenta cu `SITE_ALTERNATE`,
@@ -455,5 +468,140 @@ describe('build-ul 3s.md, servit', () => {
 
   it.runIf(ADRESA !== '')('martor POZITIV al serverului: robots.txt raspunde 200 (deci 404-urile de mai sus nu vin dintr-un server mort)', async () => {
     expect((await cere('/robots.txt')).status).toBe(200)
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// Felia 144, runda 2: documentele juridice in octetii serviti ai build-ului 3s.md (numai in jobul "Profil 3s.md")
+// ---------------------------------------------------------------------------------------------
+
+describe('felia 144: documentele juridice servite pe 3s.md (<head> la "tu", Cookies fara masurare, legatura cale-ro)', () => {
+  const RUTE_JURIDICE = JSON.parse(readFileSync(join(RADACINA, 'config', 'juridic-rute.json'), 'utf8')) as {
+    documente: Record<string, { en: string; ro: string }>
+  }
+  const CINCI = ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale']
+  const html = async (cale: string) => {
+    const r = await fetch(ADRESA + cale, { redirect: 'manual' })
+    expect(r.status, cale).toBe(200)
+    return r.text()
+  }
+
+  it('martori pe date asamblate la rulare: detectorii prind forma formala, masurarea si legatura fara atribute', () => {
+    const formal = '<html><head><title>T</title><meta name="description" content="Cum ne ' + 'contacta' + 'ți și cum ' + 'v' + 'ă exercitați drepturile."/></head></html>'
+    expect(formePolitete(texteCap(formal).descrieri.join(' '))).toHaveLength(3)
+    expect(formePolitete('Cum ne contactezi și cum îți exerciți drepturile. Capitolul VI.')).toEqual([])
+    expect('cum măsurăm vizitele').toMatch(MASURARE.ro)
+    const a = ancore('<p><a href="/ro/x" lang="ro" hrefLang="ro-MD">Informații legale</a> <a href="/legal/y">Y</a></p>')
+    expect(a).toEqual([
+      { atribute: { href: '/ro/x', lang: 'ro', hrefLang: 'ro-MD' }, text: 'Informații legale' },
+      { atribute: { href: '/legal/y' }, text: 'Y' },
+    ])
+  })
+
+  it.runIf(ADRESA !== '')('<head> al celor 5 documente RO: zero forme de politete in titlu si descrieri; descrierea e la "tu"', async () => {
+    for (const k of CINCI) {
+      const t = texteCap(await html(RUTE_JURIDICE.documente[k].ro))
+      // Controlul extragerii: titlul si cele trei descrieri exista, deci zero-ul de mai jos nu vine dintr-o citire goala.
+      expect(t.titlu, k).not.toBe('')
+      expect(t.descrieri, k).toHaveLength(3)
+      expect(formePolitete([t.titlu, ...t.titluri, ...t.descrieri].join('\n')), k).toEqual([])
+      expect(t.descrieri[0], k).toMatch(/(?<!\p{L})(tău|îți|contactezi|semnalezi|vorbești)(?!\p{L})/u)
+    }
+  })
+
+  it.runIf(ADRESA !== '')('descrierea Cookies nu pomeneste masurarea vizitelor, RO si EN (aceeasi in toate starile)', async () => {
+    for (const limba of ['ro', 'en'] as const) {
+      const t = texteCap(await html(RUTE_JURIDICE.documente['cookie-uri'][limba]))
+      expect(t.descrieri, limba).toHaveLength(3)
+      for (const d of t.descrieri) expect(d, limba).not.toMatch(MASURARE[limba])
+    }
+  })
+
+  it.runIf(ADRESA !== '')('/legal/legal-information: „Informații legale” din introducere are lang="ro" si hrefLang="ro-MD", ca eticheta din subsol; legaturile /legal/ nu au lang', async () => {
+    const a = ancore(await html(RUTE_JURIDICE.documente['informatii-legale'].en))
+    const ro = a.filter((x) => x.text === 'Informații legale')
+    // Doua: introducerea documentului si eticheta locala din subsol (martorul pozitiv, felia 141).
+    expect(ro, JSON.stringify(ro)).toHaveLength(2)
+    for (const x of ro) {
+      expect(x.atribute.href).toBe(RUTE_JURIDICE.documente['informatii-legale'].ro)
+      expect(x.atribute.lang).toBe('ro')
+      expect(x.atribute.hrefLang).toBe('ro-MD')
+    }
+    // Martorul negativ: legaturile obisnuite spre documentele EN (bara laterala) raman fara atribute de limba.
+    const en = a.filter((x) => (x.atribute.href ?? '').startsWith('/legal/'))
+    expect(en.length).toBeGreaterThan(3)
+    for (const x of en) expect(x.atribute.lang === undefined && x.atribute.hrefLang === undefined, x.atribute.href).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// Felia 144, runda 3: descrierile din rute (paleta, /llms.txt, pachetul de browser) si eticheta EN de cookie-uri
+// ---------------------------------------------------------------------------------------------
+
+describe('felia 144 runda 3: descrierile din rute la "tu", Cookies fara masurare, eticheta EN adevarata pe ambele asezari', () => {
+  const CINCI = ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale'] as const
+  const etichetaCookieEn = () => {
+    const legaturi = navigatieEn().subsol.coloane.flatMap((c) => c.legaturi)
+    return legaturi.filter((l) => l.href === caleMd('cookie-uri', 'en')).map((l) => l.text)
+  }
+
+  it('martori pe baza, asamblati la rulare: detectorii prind descrierile si eticheta dinainte de runda 3', () => {
+    expect(formePolitete(BAZA_RUNDA_3.descrieriRo.join(' '))).toHaveLength(5)
+    expect(BAZA_RUNDA_3.descrieriRo.join(' ')).toMatch(MASURARE.ro)
+    expect(BAZA_RUNDA_3.cookieEn).toMatch(MASURARE.en)
+    expect(BAZA_RUNDA_3.etichetaEn).toMatch(ETICHETA_CU_MASURARE)
+    const bs = String.fromCharCode(92)
+    const evadat = '"Ce stoche' + bs + 'u0103z' + bs + 'u0103"'
+    expect(evadat).toContain(bs)
+    expect(faraEvadari(evadat)).toBe('"Ce stocheăză"')
+    // Forma pe care minificatorul o da literelor Latin-1 („î”, „â”), masurata pe pachetul servit.
+    expect(faraEvadari('cum hotăr' + bs + 'xe2m, ' + bs + 'xeen browser')).toBe('cum hotărâm, în browser')
+    expect(scripturi('<script src="/_next/a.js" async=""></script><script>x</script><script src="/_next/a.js"></script>')).toEqual(['/_next/a.js'])
+  })
+
+  it('DESCRIERE_MD: descrierile romanesti ale celor 5 documente publice fara forme de politete; Cookies fara masurare, RO si EN', () => {
+    for (const k of CINCI) {
+      expect(DESCRIERE_MD[k].ro, k).not.toBe('')
+      expect(formePolitete(DESCRIERE_MD[k].ro), k).toEqual([])
+    }
+    expect(DESCRIERE_MD['cookie-uri'].ro).not.toMatch(MASURARE.ro)
+    expect(DESCRIERE_MD['cookie-uri'].en).not.toMatch(MASURARE.en)
+  })
+
+  it('subsolul EN: eticheta paginii de cookie-uri nu promite masurarea (3s.com.ro ruleaza fara ea); pereche cu „Politica de cookie-uri”', () => {
+    // Controlul extragerii: exact o legatura spre pagina de cookie-uri in subsol.
+    expect(etichetaCookieEn()).toEqual(['Cookie policy'])
+  })
+
+  it.runIf(ADRESA !== '')('3s.md servit: /llms.txt si pachetul de browser (paleta) poarta descrierile noi, nu pe cele de pe baza', async () => {
+    const llms = await fetch(ADRESA + '/llms.txt')
+    expect(llms.status).toBe(200)
+    const text = await llms.text()
+    // Controlul: linia documentului de cookie-uri exista si poarta descrierea curenta.
+    const linie = text.split(/\r?\n/).filter((l) => l.includes(caleMd('cookie-uri', 'en') + ')'))
+    expect(linie, text.slice(0, 400)).toHaveLength(1)
+    expect(linie[0]).toContain(DESCRIERE_MD['cookie-uri'].en)
+    expect(linie[0]).not.toMatch(MASURARE.en)
+    expect(text).not.toContain(BAZA_RUNDA_3.cookieEn)
+
+    const acasa = await fetch(ADRESA + '/')
+    expect(acasa.status).toBe(200)
+    const html = await acasa.text()
+    const surse = scripturi(html)
+    expect(surse.length).toBeGreaterThan(0)
+    let js = ''
+    for (const s of surse) js += faraEvadari(await (await fetch(new URL(s, ADRESA))).text()) + String.fromCharCode(10)
+    // Controlul: descrierile curente sunt in pachet (paleta le cauta), RO si EN, deci absenta de mai jos e masurata.
+    for (const k of CINCI) {
+      expect(js.includes(DESCRIERE_MD[k].ro), 'ro ' + k).toBe(true)
+      expect(js.includes(DESCRIERE_MD[k].en), 'en ' + k).toBe(true)
+    }
+    for (const vechi of [...BAZA_RUNDA_3.descrieriRo, BAZA_RUNDA_3.cookieEn]) expect(js.includes(vechi), vechi).toBe(false)
+
+    // Subsolul servit al paginii EN de la radacina: eticheta legaturii spre cookie-uri.
+    const cookie = ancore(html).filter((x) => x.atribute.href === caleMd('cookie-uri', 'en'))
+    expect(cookie.length, JSON.stringify(cookie)).toBeGreaterThan(0)
+    for (const x of cookie) expect(x.text).not.toMatch(ETICHETA_CU_MASURARE)
+    expect(cookie.map((x) => x.text)).toContain('Cookie policy')
   })
 })

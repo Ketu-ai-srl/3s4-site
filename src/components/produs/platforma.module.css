@@ -605,6 +605,29 @@
   .comparatieAlternativa {
     font-size: 14.72px;
   }
+
+  /* Pe card capul coloanei nu se vede, deci fiecare celula isi arata eticheta deasupra (din `data-eticheta`,
+     acelasi text ca al capului). Textul alternativ gol (`/ ""`) o tine afara din arborele de accesibilitate:
+     cititoarele de ecran aud tabelul ca inainte, cu capul de coloana ramas in DOM. */
+  .comparatieAlternativa::before,
+  .comparatieCelulaNoi::before {
+    display: block;
+    margin-bottom: 1.6px;
+    content: attr(data-eticheta) / "";
+    color: var(--color-ardezie-5);
+    font-size: 12.8px;
+    font-weight: 600;
+    line-height: 19.2px;
+    letter-spacing: -0.07px;
+  }
+
+  .comparatieCelulaNoi::before {
+    color: var(--color-albastru);
+  }
+
+  .comparatieCelulaNoi {
+    margin-top: 6.4px;
+  }
 }
 
 /* --- 9. Suveranitatea: grila 1.15fr 0.85fr, gap 40 --------------------------------------------- */

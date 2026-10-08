@@ -154,7 +154,7 @@
   },
   {
     "id": "en-ghiduri-cu-surse",
-    "text": "Guides cite primary sources with links and the date each row was checked; they are not legal advice.",
+    "text": "Guides cite primary sources with links and the date they were checked; they are not legal advice.",
     "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-ghiduri-cu-surse (politica editoriala a arhitecturii continutului EN)",

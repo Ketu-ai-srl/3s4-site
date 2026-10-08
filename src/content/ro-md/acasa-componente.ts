@@ -73,8 +73,9 @@ export const FUNCTIONALITATI_RO_MD: ContinutFunctionalitatiAcasa = {
   titlu: "Arhiva firmei, organizată și pregătită pentru întrebările tale.",
   subtitlu: "3S Scan Store Solve: în trei pași ajungi de la fișierele încărcate la răspunsul cu documentul-sursă.",
   final: {
-    // acasa.ts:479, :481; tinta e ghidul G3 (comparatia cu Google Drive; Box AI a ramas in fisa), pe perechea lui /ro.
-    fraza: "Lucrezi deja cu Google Drive sau cu Box?",
+    // acasa.ts:479, :481; tinta e ghidul G3, pe perechea lui /ro. Fraza numeste ce compara pagina: numai Google Drive
+    // (Box AI a ramas in fisa, nu pe pagina).
+    fraza: "Lucrezi deja cu Google Drive?",
     buton: { text: "Vezi comparația cu 3S", href: "/ro/comparatie-drive", ruta: "/ro/comparatie-drive" },
   },
 };
@@ -87,7 +88,7 @@ export const PASI_RO_MD: { numar: "01" | "02" | "03"; eticheta: string; titlu: s
     eticheta: "Scan: încărcare și OCR",
     titlu: "Fișierele pe care le ai deja în format electronic se încarcă direct în arhiva digitală.",
     paragraf:
-      "Încarci fișierele din browser: PDF-uri, documente Office sau imagini. Pe paginile scanate, fără text selectabil, 3S citește textul prin OCR, iar fiecare document primește automat o etichetă de tip, de pildă contract, factură sau bon. Apoi cauți direct în conținutul documentelor.",
+      "Încarci fișierele din browser: PDF-uri, documente Office sau imagini. Pe paginile scanate, fără text selectabil, 3S citește textul prin OCR, iar fiecare document primește automat o etichetă de tip, de pildă contract, factură sau chitanță. Apoi cauți direct în conținutul documentelor.",
   },
   {
     numar: "02",
@@ -127,7 +128,7 @@ export const MACHETA_CAUTARE_RO_MD: Omit<ContinutMachetaCautare, "exemplu" | "bi
       scanat: false,
       rezumat: {
         titlu: "Fragment din document",
-        text: "Chiria depozitului pentru martie: 650,00 EUR plus TVA, cu plata până la 10 aprilie 2025.",
+        text: "Chiria depozitului pentru martie: 650,00\u00a0EUR plus TVA, cu plata până la 10 aprilie 2025.",
       },
     },
     {
@@ -157,7 +158,8 @@ export const MACHETA_CAUTARE_RO_MD: Omit<ContinutMachetaCautare, "exemplu" | "bi
 
 /** Macheta pasului 3: un dosar, cu acelasi termen de pastrare pe fiecare rand (termenul e pe dosar). */
 export const MACHETA_REGISTRU_RO_MD: Omit<ContinutMachetaRegistru, "exemplu"> = {
-  // acasa-functionalitati.ts:261-278; codul de culoare al randului 2 ramane cel RO (fisa nu il schimba).
+  // acasa-functionalitati.ts:261-278; codul de culoare al randului 2 ramane cel RO (fisa nu il schimba). Tipurile sunt
+  // din vocabularul platformei (decizia 43): bonul fiscal e "Chitanta" (RECEIPT), ca in constructorul aceleiasi pagini.
   declaratie: "Exemplu cu date fictive: documentele unui dosar, cu termenul de păstrare stabilit pentru dosar",
   eticheta: "Dosarul Depozit",
   insigna: "Același termen",
@@ -165,7 +167,7 @@ export const MACHETA_REGISTRU_RO_MD: Omit<ContinutMachetaRegistru, "exemplu"> = 
   stare: "păstrat",
   randuri: [
     { nr: "001", fisier: "Factura_chirie_martie.pdf", tip: { cod: "factura", text: "Factură" }, termen: "2035" },
-    { nr: "002", fisier: "Bon_motorina_martie.pdf", tip: { cod: "albastru", text: "Bon" }, termen: "2035" },
+    { nr: "002", fisier: "Bon_motorina_martie.pdf", tip: { cod: "albastru", text: "Chitanță" }, termen: "2035" },
     { nr: "003", fisier: "Contract_paza.pdf", tip: { cod: "albastru", text: "Contract" }, termen: "2035" },
   ],
   verificari: [
@@ -273,18 +275,36 @@ export const CARD_ENTERPRISE_RO_MD: ContinutCardEnterprise = {
 /** acasa.ts:689-693. */
 export const BANDA_PRET_RO_MD: ContinutBandaPret = {
   titlu: "Cât costă 3S?",
-  fraza: "3S are patru pachete, de la 75 EUR pe lună la plata anuală, pentru întreaga firmă, fără TVA.",
+  fraza: "3S are patru pachete, de la 75\u00a0EUR pe lună la plata anuală, pentru întreaga firmă, fără TVA.",
   // Fara rand in fisa (acasa.ts:693): eticheta aprobata a paginii ("Vezi pachetele"), spre /ro/preturi.
   legatura: { text: "Vezi pachetele", href: "/ro/preturi", ruta: "/ro/preturi" },
 };
 
-/** Fraza de sub intrebari inainte de P-40 (acasa.ts:767): fara adresa, numai WhatsApp. */
-export const SUBSOL_FAQ_FARA_EMAIL = "Ai altă întrebare? Scrie-ne pe WhatsApp.";
+/**
+ * Fraza de sub intrebari inainte de P-40 (acasa.ts:767), fara adresa: intrebarea, apoi o propozitie intreaga care e
+ * legatura spre pagina de contact (`LEGATURA_CONTACT_FAQ_RO_MD`), unde stau WhatsApp si numarul. Forma veche
+ * ("Scrie-ne pe WhatsApp.") nu avea tinta, iar legatura wa.me cu `ref`-ul paginii o construieste numai pagina, din
+ * canalele domeniului. Punctul final sta DUPA legatura (`dupaSubsol` din `INTREBARI_RO_MD`), pe ambele forme: si dupa
+ * P-40, cand fraza se incheie cu adresa de posta.
+ */
+export const SUBSOL_FAQ_FARA_EMAIL = "Ai altă întrebare?";
 
-/** Inceputul frazei de sub intrebari dupa P-40, urmat de adresa domeniului (fisa, "Ne poți scrie și la"). */
-export const SUBSOL_FAQ_CU_EMAIL = "Ne poți scrie și la";
+/** Legatura frazei de sub intrebari: pagina de contact a editiei (calea SURSA, servita de `Tinta`). */
+export const LEGATURA_CONTACT_FAQ_RO_MD = {
+  text: "Vezi canalele prin care ne poți scrie",
+  href: "/ro/contact",
+  ruta: "/ro/contact",
+};
 
-/** acasa.ts:718-767. Raspunsurile sunt text simplu: FAQPage din JSON-LD le oglindeste exact. */
+/** Inceputul frazei de sub intrebari dupa P-40, urmat de adresa domeniului (fisa, fara "și": dupa P-40 fraza nu mai urmeaza unui alt canal). */
+export const SUBSOL_FAQ_CU_EMAIL = "Ne poți scrie la";
+
+/**
+ * acasa.ts:718-767. Raspunsurile sunt text simplu: FAQPage din JSON-LD le oglindeste exact. Numele unei pagini din
+ * raspuns devine legatura la randare (`legaturaInText`, adresa servita pe domeniu); calea e cea SURSA, scrisa literal
+ * fiindca modulul e numai date (proba o leaga de registrul juridic). Acordul de prelucrare a datelor nu e public
+ * (poarta C a pachetului juridic), deci raspunsul spune ca se trimite odata cu oferta, fara legatura.
+ */
 // Raspunsul 4 (acasa.ts:759) are in fata frazei fisei inceputul pasului 1 aprobat ("descrie pe scurt arhiva firmei"),
 // ca WhatsApp si stabilirea intrebarilor de testat sa stea in propozitii diferite: in aceeasi propozitie, proba
 // paginilor RO-MD (asistentul pe WhatsApp, decizia 49) o citeste ca pe o promisiune de raspuns pe WhatsApp.
@@ -309,11 +329,14 @@ export const INTREBARI_RO_MD: ContinutFaqAcasa = {
     {
       intrebare: "Cum încep să folosesc 3S?",
       raspuns:
-        "Ne scrii pe WhatsApp și descrii pe scurt arhiva firmei. Stabilim apoi în scris documentele și întrebările de testat. Pilotul gratuit de 14 zile începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor, iar la final decizi dacă alegi un pachet.",
+        "Ne scrii pe WhatsApp și descrii pe scurt arhiva firmei. Stabilim apoi în scris documentele și întrebările de testat. Pilotul gratuit de 14 zile începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor, pe care ți-l trimitem odată cu oferta. La final, decizi dacă alegi un pachet.",
+      legaturaInText: { text: "Termenii și condițiile", href: "/ro/juridic/termeni" },
     },
   ],
   // Forma de dinainte de P-40; dupa P-40 pagina pune `SUBSOL_FAQ_CU_EMAIL` si adresa.
-  subsol: { inainte: SUBSOL_FAQ_FARA_EMAIL, posta: { text: "", href: null, ruta: null } },
+  subsol: { inainte: SUBSOL_FAQ_FARA_EMAIL, posta: LEGATURA_CONTACT_FAQ_RO_MD },
+  // Punctul final, in afara legaturii; ramane si cand pagina inlocuieste `subsol` cu forma cu adresa.
+  dupaSubsol: ".",
 };
 
 /** acasa.ts:800-828. Butonul secundar iese (`/incepe` nu exista pe 3s.md); butoanele le pune pagina. */

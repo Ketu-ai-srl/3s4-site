@@ -56,9 +56,22 @@ function decodeaza(t: string): string {
     .replace(/&amp;/g, '&')
 }
 
+/**
+ * Felia 147: titlul eroului leaga ultimele doua cuvinte ale fiecarei propozitii intr-un `<span data-lipit="">`, ca
+ * randul sa nu ramana cu un singur cuvant. Legatura nu e text nou (textContent-ul ramane sirul din continut), dar
+ * imparte sirul in doua noduri de text; aici se scoate eticheta ei, ca sirul sa se caute intreg, cum il vede omul.
+ */
+function faraLipire(html: string): string {
+  return html.replace(/<span data-lipit="">([^<]*)<\/span>/g, '$1')
+}
+
 /** Textele dintre etichete si valorile etichetelor accesibile, decodate. */
 function texteHtml(html: string): string {
-  const texte = [...html.matchAll(/>([^<]+)</g)].map((m) => decodeaza(m[1]))
+  // Legaturile din text (felia 143: numele paginii din raspunsul FAQ, `legaturaInText`) se desfac inainte de citire, ca
+  // fraza sa ramana un singur text: altfel "... on the <a>Legal information</a> page." ar iesi in trei bucati si sirul
+  // raspunsului, intreg in continut si in FAQPage, n-ar mai fi gasit. Textul legaturii ramane in fraza.
+  // Lipirea din titlul eroului (felia 147, `faraLipire`) se scoate dupa legaturi, din acelasi motiv.
+  const texte = [...faraLipire(html.replace(/<a\b[^>]*>|<\/a>/g, '')).matchAll(/>([^<]+)</g)].map((m) => decodeaza(m[1]))
   const atribute = [...html.matchAll(/\s(?:aria-label|title|alt)="([^"]*)"/g)].map((m) => decodeaza(m[1]))
   return [...texte, ...atribute].join('\n')
 }

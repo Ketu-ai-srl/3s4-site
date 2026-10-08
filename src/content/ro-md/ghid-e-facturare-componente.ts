@@ -92,7 +92,7 @@ const SURSE_ARTICOL: readonly { nume: string; url: string }[] = [
 const META = {
   titlu: "Arhivarea e-facturilor în UE: termene și format pe țări",
   descriere:
-    "Cât timp păstrezi e-facturile și în ce format: Germania, Franța, Polonia, Belgia și România, cu surse primare și data verificării fiecărui rând.",
+    "Cât timp păstrezi e-facturile și în ce format: Germania, Franța, Polonia, Belgia și România, cu surse primare și data verificării.",
   cale: CALE,
 };
 
@@ -175,9 +175,10 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
       { text: "E-facturi", cale: CALE },
     ],
     titlu: H1,
-    // pagina.ts:29: capsula fisei.
+    // pagina.ts:29: capsula fisei, fara fraza care promitea temeiul legal si data verificarii pentru fiecare termen:
+    // termenele n-au temei afisat pe pagina, iar data verificarii e una singura, sub tabel.
     subtitlu:
-      "Fiecare stat din UE își stabilește termenul de păstrare a facturilor: 8 ani în Germania, 10 în Franța, 7 în Belgia și 5 în România. În Polonia, sistemul KSeF păstrează facturile structurate timp de 10 ani. Germania și Franța prevăd păstrarea fișierului electronic original, de regulă XML-ul. Pentru fiecare termen, ghidul indică temeiul legal și data verificării.",
+      "Fiecare stat din UE își stabilește termenul de păstrare a facturilor: 8 ani în Germania, 10 în Franța, 7 în Belgia și 5 în România. În Polonia, sistemul KSeF păstrează facturile structurate timp de 10 ani. Germania și Franța prevăd păstrarea fișierului electronic original, de regulă XML-ul.",
     // Butoanele eroului le pune pagina (canalul WhatsApp si celelalte canale); aici numai cel de contur, ca tinta.
     butonPlin: { text: ETICHETA_BUTON_CANAL_RO_MD, href: null, ruta: null },
     butonContur: { text: "Alte canale", href: "/ro/contact", ruta: "/ro/contact" },
@@ -263,6 +264,8 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
       },
     ],
     ancoraEvidentiata: "romania",
+    // Numele tarii duce la ghidul ANAF (PDF extern): iconita externa, ca la celelalte legaturi spre surse.
+    taraSursaExterna: true,
     titluModificari: "Schimbări recente",
     modificari: [
       { text: "1 septembrie 2026, FR: încep să emită firmele mari și cele de talie intermediară." },

@@ -113,6 +113,12 @@ export type ContinutEfacturare = {
     piete: readonly RandPiata[];
     /** Tara al carei nume e legatura in tabel. */
     ancoraEvidentiata: string;
+    /**
+     * Legatura din numele tarii duce la documentul oficial (prima ei sursa), deci poarta iconita EXTERNA, ca celelalte
+     * legaturi spre surse. Lipsa = sageata dreapta a paginii RO, unde tinta era la referinta un articol intern;
+     * paginile 3s.md si 3s.com.ro o pun.
+     */
+    taraSursaExterna?: boolean;
     titluModificari: string;
     modificari: readonly { text: string }[];
     /** Calendarul `.ics`: numai pe editia care are ruta lui. */
@@ -410,12 +416,21 @@ export function TabelPiete({ continut = EFACTURARE_RO }: CuContinut) {
                         rel="noopener noreferrer external"
                       >
                         {p.tara}
-                        <ArrowRight
-                          width={13}
-                          height={13}
-                          strokeWidth={2}
-                          aria-hidden="true"
-                        />
+                        {t.taraSursaExterna ? (
+                          <ExternalLink
+                            width={13}
+                            height={13}
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <ArrowRight
+                            width={13}
+                            height={13}
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          />
+                        )}
                       </a>
                     ) : (
                       p.tara

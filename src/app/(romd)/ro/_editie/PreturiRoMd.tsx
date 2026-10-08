@@ -92,7 +92,8 @@ export function textTeaserRoMd(): { presupuneri: string; rezultat: string } {
   const m = IMPLICITE.minute;
   return {
     presupuneri: CALCULATOR_RO_MD.teaser.presupuneri(p + cuDeRoMd(p) + (p === 1 ? " coleg" : " colegi"), m + cuDeRoMd(m) + " minute"),
-    rezultat: CALCULATOR_RO_MD.teaser.rezultat(FORMAT_RO_MD.ore(r.ore) + cuDeRoMd(oreAfisate(r.ore)) + " ore"),
+    // Cifra, "de" si "ore" raman pe acelasi rand: spatii nedespartitoare ("36,7 ore" se rupea la capat de rand).
+    rezultat: CALCULATOR_RO_MD.teaser.rezultat((FORMAT_RO_MD.ore(r.ore) + cuDeRoMd(oreAfisate(r.ore)) + " ore").replace(/ /g, "\u00a0")),
   };
 }
 

@@ -3,15 +3,19 @@
 //
 // PE EDITIE: tipul continutului e structural, declarat aici; constanta RO (`LIVRABILE`) il satisface
 // fara editare. Alta editie paseaza lista ei (alt numar de elemente e permis).
+//
+// LEGATURA DIN TEXT (optionala, pe element): `legaturaInText` face legatura din numele unei pagini din text, la
+// randare (`cuLegatura`, adresa SERVITA pe domeniu prin `hrefTinta`). Fara ea (implicitul RO) textul trece neatins.
 
 import CapBloc from "@/components/primitive/CapBloc";
+import { cuLegatura, type LegaturaInText } from "@/components/produs/legaturaInText";
 import { LIVRABILE } from "@/content/enterprise";
 import s from "./enterprise.module.css";
 
 export type ContinutListaLivrabile = {
   titlu: string;
   text: string;
-  elemente: { titlu: string; text: string }[];
+  elemente: { titlu: string; text: string; legaturaInText?: LegaturaInText }[];
 };
 
 export default function ListaLivrabile({ continut = LIVRABILE }: { continut?: ContinutListaLivrabile }) {
@@ -25,7 +29,7 @@ export default function ListaLivrabile({ continut = LIVRABILE }: { continut?: Co
             {l.elemente.map((e) => (
               <li key={e.titlu} className={s.livrabil}>
                 <h3 className={s.livrabilTitlu}>{e.titlu}</h3>
-                <p className={s.livrabilText}>{e.text}</p>
+                <p className={s.livrabilText}>{e.legaturaInText === undefined ? e.text : cuLegatura(e.text, e.legaturaInText)}</p>
               </li>
             ))}
           </ul>

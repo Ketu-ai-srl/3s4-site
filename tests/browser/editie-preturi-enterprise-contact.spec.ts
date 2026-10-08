@@ -127,8 +127,8 @@ test('/pricing: sumele in EUR pe ambele perioade, fraza calculatorului cu "EUR" 
   await page.keyboard.press('End')
   // 4 persoane x 25 de minute x 22 de zile = 36,67 h; la 100 EUR pe ora, 3.666,67 EUR din orele exacte: scris "EUR 3,667"
   // (formula veche inmultea orele rotunjite: 3,700). Orele sub 100 se scriu din 07.10 cu o zecimala ("36.7 h", inainte
-  // "37 h"), ca inmultirea din fraza sa se poata verifica pe ecran.
-  await expect(page.locator('[class*="pachete_frazaIesire__"]').first()).toContainText('Today you pay EUR 3,667 a month for the 36.7 h')
+  // "37 h"), ca inmultirea din fraza sa se poata verifica pe ecran. Din felia 143 orele rotunjite au "about" in fata.
+  await expect(page.locator('[class*="pachete_frazaIesire__"]').first()).toContainText('Today you pay EUR 3,667 a month for about 36.7 h')
   await expect(page.locator('[class*="pachete_frazaPlan__"]')).toContainText('The plan that fits is Starter: EUR 90 a month')
   expect(RON.test(await page.locator('main').innerText())).toBe(false)
 })
@@ -138,11 +138,12 @@ test('/pricing: sumele in EUR pe ambele perioade, fraza calculatorului cu "EUR" 
  * orele fara separator de mii langa banii cu separator. Pe fiecare editie: unitatea cardurilor si fraza pachetului la
  * Anual (implicit) si la Lunar (martorul: fraza lunara nu numeste plata anuala), apoi orele la capetele cursoarelor.
  * Din 07.10 si orele sub 100 cu o zecimala: la 1 coleg, 10 min si 5 EUR/h fraza spunea "EUR 18 ... for the 4 h" (4 x 5 =
- * 20, nu 18); acum "3.7 h" / "3,7 h", deci inmultirea se verifica pe ecran.
+ * 20, nu 18); acum "3.7 h" / "3,7 h", deci inmultirea se verifica pe ecran. Din felia 143 orele rotunjite au "about" /
+ * "circa" in fata.
  */
 for (const e of [
-  { cale: '/pricing', nume: NUME_EN, anual: 'EUR / month, billed annually', lunar: 'EUR / month', planAnual: 'The plan that fits is Starter: EUR 75 a month billed annually', planLunar: 'The plan that fits is Starter: EUR 90 a month, the cost of', ore: 'for the 2,200 h', oreMici: 'EUR 18 a month for the 3.7 h', marcaAnual: 'billed annually' },
-  { cale: '/ro/preturi', nume: NUME_RO, anual: 'EUR / lună, la plata anuală', lunar: 'EUR / lună', planAnual: 'Se potrivește pachetul Starter: 75 EUR pe lună, la plata anuală', planLunar: 'Se potrivește pachetul Starter: 90 EUR pe lună, adică', ore: 'pentru cele 2.200 h', oreMici: '18 EUR lunar pentru cele 3,7 h', marcaAnual: 'la plata anuală' },
+  { cale: '/pricing', nume: NUME_EN, anual: 'EUR / month, billed annually', lunar: 'EUR / month', planAnual: 'The plan that fits is Starter: EUR 75 a month billed annually', planLunar: 'The plan that fits is Starter: EUR 90 a month, the cost of', ore: 'for about 2,200 h', oreMici: 'EUR 18 a month for about 3.7 h', marcaAnual: 'billed annually' },
+  { cale: '/ro/preturi', nume: NUME_RO, anual: 'EUR / lună, la plata anuală', lunar: 'EUR / lună', planAnual: 'Se potrivește pachetul Starter: 75 EUR pe lună, la plata anuală', planLunar: 'Se potrivește pachetul Starter: 90 EUR pe lună, adică', ore: 'pentru cele circa 2.200 h', oreMici: '18 EUR lunar pentru cele circa 3,7 h', marcaAnual: 'la plata anuală' },
 ]) {
   test(e.cale + ': perioada langa pretul anual (carduri si calculator), separatorul de mii la ore si zecimala sub 100 de ore', async ({ page }) => {
     await page.goto(copie.baza + e.cale + '#pachete')

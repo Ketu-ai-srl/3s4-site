@@ -13,8 +13,8 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
     cheie: "cookie-uri",
     limba: "en",
     titlu: "Cookie policy",
-    versiune: "2026-10-01",
-    introducere: "Here you can find out what information the website " + c.domeniu + " stores or reads in your browser (cookies and local storage), how we measure visits, who receives the data and how you can change your mind. The operator's details are in the [Legal notice](cale:informatii-legale), and how we process personal data, with your full rights, in the [Privacy policy](cale:confidentialitate).",
+    versiune: "2026-10-07",
+    introducere: "Here you can find out what information the website " + c.domeniu + " stores or reads in your browser (cookies and local storage)" + (c.active.has("s0") ? " and who receives the data" : ", how we measure visits, who receives the data and how you can change your mind") + ". The operator's details are in the [Legal notice](cale:informatii-legale), and how we process personal data, with your full rights, in the [Privacy policy](cale:confidentialitate).",
     sectiuni: [
       {
         cheie: "t1", titlu: "In short",
@@ -105,7 +105,8 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s10", titlu: "10. Links to other services",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Links to other services, for example WhatsApp or LinkedIn, take you outside the website. From the moment you open them, the rules of those services apply, and we do not control what they keep in your browser."] },
+          { jurisdictie: null, // LinkedIn apare ca exemplu numai cand exista pagina 3S de pe LinkedIn (indicatorul `linkedin`, implicit oprit).
+          paragrafe: ["Links to other services, for example " + (c.active.has("linkedin") ? "WhatsApp or LinkedIn" : "WhatsApp") + ", take you outside the website. From the moment you open them, the rules of those services apply, and we do not control what they keep in your browser."] },
         ],
       },
       {

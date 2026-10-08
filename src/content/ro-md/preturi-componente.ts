@@ -68,7 +68,7 @@ function cuUnitate(n: number, unitate: string): string {
 }
 
 /** Taxa de conectare, cuvant cu cuvant, cum o citesc pliul suplimentelor si /ro/enterprise. */
-export const CONECTARE_RO_MD = CONECTARE.eur + " EUR la " + cuUnitate(CONECTARE.pagini, "pagini importate") + ", o singură dată";
+export const CONECTARE_RO_MD = CONECTARE.eur + "\u00a0EUR la\u00a0" + cuUnitate(CONECTARE.pagini, "pagini importate") + ", o singură dată";
 
 /**
  * Limitele unui plan (fara conturi), in unitatile editiei: cifra ingrosata si textul de dupa ea. Dupa GB nu se pune
@@ -92,8 +92,9 @@ export const ANTET_PRETURI_RO_MD: { fir: NivelFir[]; titlu: string; subtitlu: st
     { text: "Prețuri", cale: CALE_PRETURI_RO_MD },
   ],
   titlu: "Prețurile 3S: patru pachete, în euro",
+  // Suma si moneda nu se despart la capat de rand: spatiu nedespartitor intre cifra si "EUR".
   subtitlu:
-    "3S are patru pachete, cu prețuri pentru întreaga firmă, în euro, fără TVA: Starter 90 EUR, Pro 150 EUR și Business 240 EUR pe lună, pentru 5, 10 și 20 de conturi; Enterprise de la 800 EUR pe lună. Orice colaborare începe cu un pilot gratuit.",
+    "3S are patru pachete, cu prețuri pentru întreaga firmă, în euro, fără TVA: Starter 90\u00a0EUR, Pro 150\u00a0EUR și Business 240\u00a0EUR pe lună, pentru 5, 10 și 20 de conturi; Enterprise de la 800\u00a0EUR pe lună. Orice colaborare începe cu un pilot gratuit.",
 };
 
 /** `preturi.ts:48-49`: numele accesibile ale poartei si ale pliurilor. */
@@ -111,7 +112,7 @@ export const POARTA_BAZA_RO_MD: CardPoarta = {
 export const POARTA_ENTERPRISE_RO_MD: CardPoarta & { tinta: Legatura } = {
   nume: "Enterprise",
   titlu: "Pentru peste 20 de conturi",
-  text: "De la 800 EUR pe lună, cu contract anual. Îți transmitem o ofertă scrisă.",
+  text: "De la 800\u00a0EUR pe lună, cu contract anual. Îți transmitem o ofertă scrisă.",
   mergi: "Detalii Enterprise",
   tinta: { text: "3S Enterprise", href: "/ro/enterprise", ruta: "/ro/enterprise" },
 };
@@ -222,23 +223,28 @@ export const CURSOARE_RO_MD: Record<"persoane" | "minute" | "tarif", Cursor> = {
   },
 };
 
-/** Textele calculatorului (`preturi.ts:161-232`); suma sta inaintea monedei, ca in romana ("1.833 EUR"). */
+/**
+ * Textele calculatorului (`preturi.ts:161-232`); suma sta inaintea monedei, ca in romana ("1.833 EUR"), legata de ea
+ * prin spatiu nedespartitor; tot asa cifra orelor de "h" si "circa" de cifra. Orele afisate sunt rotunjite (o zecimala
+ * sub 100, intregi de la 100), iar calculul insusi porneste de la estimari (persoane, minute, 22 de zile), deci fraza
+ * spune "circa" langa ore.
+ */
 export const CALCULATOR_RO_MD = {
   teaser: {
     presupuneri: (oameni: string, minute: string) => "Cu " + oameni + " care caută acte câte " + minute + " zilnic",
-    rezultat: (ore: string) => "se adună " + ore + " lunar",
+    rezultat: (ore: string) => "se adună circa\u00a0" + ore + " lunar",
     cta: "Încearcă cu cifrele firmei",
   },
   eticheta: "Calculul timpului pierdut căutând acte",
   zileLucratoare: 22,
-  timpAcum: { inainte: "Acum plătești ", dupaBani: " EUR lunar pentru cele ", dupaOre: " h în care echipa caută acte prin dosare." },
-  pretInOre: { inainte: "Se potrivește pachetul ", dupaPlan: ": ", dupaPret: " EUR pe lună, adică ", dupaOre: " h plătite la tariful ales." },
+  timpAcum: { inainte: "Acum plătești ", dupaBani: " EUR lunar pentru cele circa ", dupaOre: " h în care echipa caută acte prin dosare." },
+  pretInOre: { inainte: "Se potrivește pachetul ", dupaPlan: ": ", dupaPret: " EUR pe lună, adică circa ", dupaOre: " h plătite la tariful ales." },
   // Cu comutatorul pe Anual, pretul pachetului e cel anual pe luna: fraza spune perioada.
   pretInOreAnual: {
     inainte: "Se potrivește pachetul ",
     dupaPlan: ": ",
-    dupaPret: " EUR pe lună, la plata anuală, adică ",
-    dupaOre: " h plătite la tariful ales.",
+    dupaPret: " EUR pe lună, la plata anuală, adică circa ",
+    dupaOre: " h plătite la tariful ales.",
   },
   pesteConturi: {
     inainte: (persoane: number) => "Pentru " + persoane + cuDeRoMd(persoane) + " persoane, pachetele nu ajung: discută cu echipa 3S despre ",
@@ -335,7 +341,7 @@ export const TABEL_RO_MD: ContinutTabelPlanuri = {
         // se citea si ca "costul pe persoana e inclus", si era singura celula cu majuscula langa "inclus".
         { functie: "Cost pe persoană", celule: toate(valoare("Nu există")) },
         // Celula ramane scurta (coloana planului are 7,5rem): unitatea si "o singura data" stau in eticheta randului.
-        { functie: "Taxă de conectare, la " + cuUnitate(CONECTARE.pagini, "pagini") + " (o singură dată)", celule: toate(valoare(CONECTARE.eur + " EUR")) },
+        { functie: "Taxă de conectare, la " + cuUnitate(CONECTARE.pagini, "pagini") + " (o singură dată)", celule: toate(valoare(CONECTARE.eur + " EUR")) },
       ],
     },
     {
@@ -375,7 +381,7 @@ function grupuriSuplimenteRoMd(): { titlu: string; randuri: RandSupliment[] }[] 
     titlu: RESURSA_RO_MD[r].grup,
     randuri: SUPLIMENTE.filter((x) => x.resursa === r).map((x) => ({
       supliment: RESURSA_RO_MD[r].unitate(x.cantitate),
-      pret: miiRoMd(x.pretEur) + " EUR",
+      pret: miiRoMd(x.pretEur) + " EUR",
       facturare: x.facturare === "lunar" ? "În fiecare lună" : VALABIL_RO_MD,
     })),
   }));

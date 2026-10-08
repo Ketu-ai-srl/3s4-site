@@ -21,6 +21,10 @@
 // pe care alta editie nu le are sunt optionale in tip si se randeaza conditionat; pe RO exista mereu,
 // deci ramura da acelasi DOM. `butoane` inlocuieste butoanele eroului cand editia are alt canal, iar
 // cele doua etichete scrise pana acum direct in componenta au implicitul RO.
+//
+// LEGATURILE DIN RASPUNSURI (optionale, pe intrebare): `legaturiInText` face legatura din numele unei pagini sau al
+// unui ghid din raspuns, la randare (`cuLegatura`, adresa SERVITA pe domeniu prin `hrefTinta`). Raspunsul ramane sir,
+// fiindca acelasi sir ajunge in nodul FAQPage; fara proprietate (implicitul RO) raspunsul trece neatins, acelasi HTML.
 
 import type { ReactNode } from "react";
 import { Check } from "lucide-react";
@@ -50,12 +54,25 @@ import type { Legatura } from "@/content/navigatie";
 import type { IconitaProdus as NumeIconita } from "@/content/produs/iconite";
 import type { BlocIntrebari } from "@/content/produs/intrebari";
 import { CapCentrat, CapNumeratPlatforma } from "./Capete";
+import { cuLegatura, type LegaturaInText as NumeLegat } from "./legaturaInText";
 import IconitaProdus from "./IconitaProdus";
 import MachetaStrat, { type ContinutMachetaStrat } from "./MachetaStrat";
 import { nerupt } from "./nerupt";
 import s from "./platforma.module.css";
 
 type TitluText = { titlu: string; text: string };
+/** Intrebarile, cu legaturile optionale din raspuns (numele paginii, cum apare in text, si adresa ei SURSA). */
+type BlocIntrebariCuLegaturi = {
+  titlu: string;
+  intrebari: (BlocIntrebari["intrebari"][number] & { legaturiInText?: readonly NumeLegat[] })[];
+};
+
+/** Raspunsul, cu fiecare nume din `legaturi` facut legatura (prima aparitie); fara legaturi, sirul neatins. */
+function cuLegaturi(text: string, legaturi: readonly NumeLegat[] | undefined): ReactNode {
+  if (legaturi === undefined || legaturi.length === 0) return text;
+  const bucata = legaturi.reduceRight<(s: string) => ReactNode>((rest, l) => (s) => cuLegatura(s, l, rest), (s) => s);
+  return bucata(text);
+}
 type BlocNumerotat = { numar: string; titlu: string; subtitlu: string };
 
 /** Continutul paginii, pe sectiuni; constantele RO il satisfac fara editare. */
@@ -112,7 +129,7 @@ export type ContinutPaginaPlatforma = {
     /** Numele accesibil al listei de insigne; implicit RO. */
     etichetaInsigne?: string;
   };
-  intrebari?: BlocIntrebari;
+  intrebari?: BlocIntrebariCuLegaturi;
 };
 
 /** Sectiunile paginii, in ordinea fixa de randare. */
@@ -400,10 +417,10 @@ function Comparatie({ c }: { c: NonNullable<ContinutPaginaPlatforma["comparatie"
               <span role="rowheader" className={s.comparatieDimensiune}>
                 {nerupt(r.dimensiune)}
               </span>
-              <span role="cell" className={s.comparatieAlternativa}>
+              <span role="cell" className={s.comparatieAlternativa} data-eticheta={c.coloane[0]}>
                 {nerupt(r.alternativa)}
               </span>
-              <span role="cell">
+              <span role="cell" className={s.comparatieCelulaNoi} data-eticheta={c.coloane[1]}>
                 <span className={s.comparatieNoi}>
                   <Check width={15} height={15} strokeWidth={2.5} aria-hidden="true" focusable="false" />
                   {nerupt(r.noi)}
@@ -550,7 +567,10 @@ function Intrebari({ q }: { q: NonNullable<ContinutPaginaPlatforma["intrebari"]>
     <section className="sectiune-standard" aria-labelledby="platforma-intrebari">
       <div className="container-site">
         <CapCentrat id="platforma-intrebari" titlu={q.titlu} />
-        <Acordeon varianta="platforma" elemente={q.intrebari} />
+        <Acordeon
+          varianta="platforma"
+          elemente={q.intrebari.map((i) => ({ intrebare: i.intrebare, raspuns: cuLegaturi(i.raspuns, i.legaturiInText) }))}
+        />
       </div>
     </section>
   );

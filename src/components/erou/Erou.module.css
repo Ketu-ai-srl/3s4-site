@@ -236,6 +236,55 @@ a.popoverLegatura:hover {
   color: var(--color-albastru);
 }
 
+/* Fiecare propozitie a titlului in blocul ei, cu randurile echilibrate (Erou.tsx, "titlul fara cuvant singur"). */
+.propozitie {
+  display: block;
+  text-wrap: balance;
+}
+
+/* Ultimele doua cuvinte ale propozitiei nu se despart (Erou.tsx, `Lipit`). */
+.propozitie [data-lipit] {
+  white-space: nowrap;
+}
+
+/* Pe doua coloane, propozitia scurta (cel mult trei cuvinte) poate folosi si golul dintre coloane (acelasi
+   `gap` ca `.grila`): la 1440 "Intreaba documentele firmei." are 589 px, coloana 560, golul 57,6, deci incape pe
+   un rand. Mai departe nu se intinde: coloana ramane la 560 px, iar cu marimea din `.t-h1-erou` (pana la
+   52,8 px) propozitia ajungea la 697 px la 1920 si intra in inelul figurii, deci `balance` o rupea dupa primul
+   cuvant. De aceea marimea titlului startului are plafon (regula de mai jos). */
+@media (min-width: 1181px) {
+  .propozitie[data-scurta] {
+    margin-right: calc(-1 * clamp(2rem, 4vw, 4.5rem));
+  }
+}
+
+/* Pe o coloana titlul e centrat; propozitia scurta ia cate 6 px din marginile laterale. La 390 ea are 359 px, iar
+   titlul 358: fara cei 12 px s-ar rupe dupa primul cuvant. Textul centrat ramane la ~16 px de marginea ecranului. */
+@media (max-width: 1180px) {
+  .propozitie[data-scurta] {
+    margin-inline: -6px;
+  }
+}
+
+/* Plafonul titlului startului pe doua coloane: 2.875rem (46 px), atins la ~1484 px. Peste el, `.t-h1-erou` crestea
+   pana la 52,8 px pe aceeasi coloana de 560 px, iar propozitia scurta nu mai incapea pe un rand (primul cuvant
+   ramanea singur la 1600, 1920 si 2304). Cu 46 px propozitia are ~607 px, sub coloana plus golul (>= 620 px de la
+   1520), si se departeaza de inel cu cat fereastra creste. Selectorul are doua clase, ca sa bata `.t-h1-erou`. */
+@media (min-width: 1181px) {
+  .titluBloc .titlu {
+    font-size: clamp(2rem, 3.1vw, 2.875rem);
+  }
+}
+
+/* Sub 390 px marimea minima din `.t-h1-erou` (1.7rem, 27,2 px) nu mai scade, iar titlul se ingusteaza: propozitia
+   scurta (359 px la 27,2 px) nu mai incape in titlu plus cei 12 px (355 la 375, 340 la 360). Aici marimea
+   urmeaza fereastra, 7vw: ~26,3 px la 375, ~25,2 px la 360, cu minimul 1.4rem la 320. */
+@media (max-width: 389px) {
+  .titluBloc .titlu {
+    font-size: clamp(1.4rem, 7vw, 1.7rem);
+  }
+}
+
 .subtitlu {
   margin-bottom: 28px;
   color: var(--color-cerneala-2);

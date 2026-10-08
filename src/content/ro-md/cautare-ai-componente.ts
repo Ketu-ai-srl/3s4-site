@@ -114,7 +114,9 @@ export const EXTRAGERE_CAUTARE_RO_MD = {
 export const CONTRAST_CAUTARE_RO_MD = {
   // cautare-ai.ts:185-222.
   titlu: "Aceeași garanție, căutată de două ori",
-  paragraf: "În stânga, dosarele deschise pe rând. În dreapta, răspunsul cu documentul-sursă, pe care îl poți verifica.",
+  // Fraza pune fata in fata cele doua feluri de lucru, nu asezarea cardurilor: sub 768 px grila trece pe o coloana
+  // si "in stanga / in dreapta" ar fi fals. Nici "Acum primesti" nu merge: vizitatorul inca nu foloseste 3S.
+  paragraf: "Fără 3S, deschizi dosarele pe rând. Cu 3S, primești răspunsul cu documentul-sursă și îl poți verifica.",
   inainte: {
     titlu: "Înainte",
     subtitlu: "dosar cu dosar",

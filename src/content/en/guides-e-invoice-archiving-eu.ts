@@ -213,7 +213,7 @@ const SURSE: readonly {
 const META = {
   titlu: "E-Invoice Archiving in the EU: Retention and Format by Country",
   descriere:
-    "How long to keep e-invoices and in what format: Germany, France, Poland, Belgium and Romania, with primary sources and the date each row was checked.",
+    "How long to keep e-invoices and in what format: Germany, France, Poland, Belgium and Romania, with primary sources and the date they were checked.",
   cale: CALE,
 };
 
@@ -380,6 +380,8 @@ export const EFACTURARE_EN: ContinutEfacturare = {
       },
     ],
     ancoraEvidentiata: "romania",
+    // Numele tarii duce la ghidul ANAF (PDF extern): iconita externa, ca la celelalte legaturi spre surse.
+    taraSursaExterna: true,
     titluModificari: "Recent changes",
     modificari: [
       {

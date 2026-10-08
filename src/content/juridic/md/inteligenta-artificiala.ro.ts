@@ -12,29 +12,29 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
     cheie: "inteligenta-artificiala",
     limba: "ro",
     titlu: "Inteligența artificială în serviciile 3S",
-    versiune: "2026-10-01",
+    versiune: "2026-10-07",
     introducere: "",
     preambul: [
       { jurisdictie: null, paragrafe: ["3S Demerzel SRL este în curs de înregistrare. Până la înregistrare nu emitem oferte, nu încheiem contracte și nu deschidem conturi, deci asistentul descris în această pagină nu este încă oferit clienților. Pagina arată cum va funcționa."] },
-      { jurisdictie: null, paragrafe: ["Serviciile 3S, furnizate de 3S Demerzel SRL din Republica Moldova (datele ei sunt în [Informații legale](cale:informatii-legale)), folosesc un asistent de inteligență artificială (IA) care răspunde la întrebări despre documentele Clientului. Pagina spune ce face asistentul, ce limite are și ce se întâmplă cu documentele. Ea completează informarea din chat, fără s-o înlocuiască: asistentul vă spune că e un sistem de IA de la începutul fiecărei conversații (secțiunea 2). Informarea din chat și pagina aceasta au în vedere cerințele de transparență din art. 50 din Regulamentul (UE) 2024/1689 (Regulamentul privind inteligența artificială), în măsura în care se aplică. „Client” și „Utilizator” au sensul din [Termeni și condiții](cale:termeni).", "**Pe scurt** (rezumat fără valoare contractuală; contează textul de mai jos)"], lista: { elemente: ["Asistentul este un sistem de IA, nu un om. Vă spune asta de la începutul fiecărei conversații.", "Răspunsurile sunt generate automat și pot fi incomplete sau greșite. Verificați documentul citat înainte să vă bazați pe ele.", "Indicarea paginii exacte a sursei este în pilot și poate lipsi sau poate fi greșită.", "Documentele dumneavoastră se prelucrează numai ca să furnizăm serviciul, în condițiile acordului de prelucrare a datelor (DPA).", "Puteți oricând vorbi cu un om: " + c.contact.email + " sau " + c.contact.telefon + "."] } },
+      { jurisdictie: null, paragrafe: ["Serviciile 3S, furnizate de 3S Demerzel SRL din Republica Moldova (datele ei sunt în [Informații legale](cale:informatii-legale)), folosesc un asistent de inteligență artificială (IA) care răspunde la întrebări despre documentele Clientului. Pagina spune ce face asistentul, ce limite are și ce se întâmplă cu documentele. Ea completează informarea din chat, fără s-o înlocuiască: asistentul îți spune că e un sistem de IA de la începutul fiecărei conversații (secțiunea 2). Informarea din chat și pagina aceasta au în vedere cerințele de transparență din art. 50 din Regulamentul (UE) 2024/1689 (Regulamentul privind inteligența artificială), în măsura în care se aplică. „Client” și „Utilizator” au sensul din [Termeni și condiții](cale:termeni).", "**Pe scurt** (rezumat fără valoare contractuală; contează textul de mai jos)"], lista: { elemente: ["Asistentul este un sistem de IA, nu un om. Îți spune asta de la începutul fiecărei conversații.", "Răspunsurile sunt generate automat și pot fi incomplete sau greșite. Verifică documentul citat înainte să te bazezi pe ele.", "Indicarea paginii exacte a sursei este în pilot și poate lipsi sau poate fi greșită.", "Documentele tale se prelucrează numai ca să furnizăm serviciul, în condițiile acordului de prelucrare a datelor (DPA).", "Poți oricând vorbi cu un om: " + c.contact.email + " sau " + c.contact.telefon + "."] } },
     ],
     sectiuni: [
       {
         cheie: "s1", titlu: "1. Ce este asistentul și ce face",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Asistentul este un sistem de IA. Primește întrebarea unui Utilizator, caută în documentele Clientului și formulează un răspuns în text. Arată sursele pe care se sprijină răspunsul. Nu modifică documentele.", "Destinația lui este căutarea în documentele Clientului și răspunsul la întrebări despre ele. Nu este destinat să evalueze persoane, de pildă la selecția candidaților sau la aprecierea solvabilității, și nu ia decizii în locul dumneavoastră."] },
+          { jurisdictie: null, paragrafe: ["Asistentul este un sistem de IA. Primește întrebarea unui Utilizator, caută în documentele Clientului și formulează un răspuns în text. Arată sursele pe care se sprijină răspunsul. Nu modifică documentele.", "Destinația lui este căutarea în documentele Clientului și răspunsul la întrebări despre ele. Nu este destinat să evalueze persoane, de pildă la selecția candidaților sau la aprecierea solvabilității, și nu ia decizii în locul tău."] },
         ],
       },
       {
-        cheie: "s2", titlu: "2. Cum aflați că vorbiți cu un sistem de IA",
+        cheie: "s2", titlu: "2. Cum afli că vorbești cu un sistem de IA",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Asistentul vă spune de la început, clar, că este un sistem de IA și nu un om: în chatul din browser, printr-un mesaj la deschiderea conversației și printr-o insignă „IA” lângă câmpul de întrebare, vizibilă cât ține conversația.", "Această pagină completează informarea din chat; nu o înlocuiește (Regulamentul (UE) 2024/1689, art. 50 alin. (1) și (5))."] },
+          { jurisdictie: null, paragrafe: ["Asistentul îți spune de la început, clar, că este un sistem de IA și nu un om: în chatul din browser, printr-un mesaj la deschiderea conversației și printr-o insignă „IA” lângă câmpul de întrebare, vizibilă cât ține conversația.", "Această pagină completează informarea din chat; nu o înlocuiește (Regulamentul (UE) 2024/1689, art. 50 alin. (1) și (5))."] },
         ],
       },
       {
         cheie: "s3", titlu: "3. Ce este generat de IA",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Textul răspunsurilor este generat automat, pe baza întrebării și a documentelor Clientului. Documentele în sine nu sunt generate de asistent și nu sunt modificate de el. Un răspuns poate sintetiza sau reformula documentele fără să le reproducă; tratați-l ca pe un text generat."] },
+          { jurisdictie: null, paragrafe: ["Textul răspunsurilor este generat automat, pe baza întrebării și a documentelor Clientului. Documentele în sine nu sunt generate de asistent și nu sunt modificate de el. Un răspuns poate sintetiza sau reformula documentele fără să le reproducă; tratează-l ca pe un text generat."] },
         ],
       },
       {
@@ -46,7 +46,7 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
       {
         cheie: "s5", titlu: "5. Sursele și pagina exactă",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Asistentul indică documentele pe care își sprijină răspunsul. Indicarea paginii exacte din document este în pilot: o testăm împreună cu clienții, iar indicația poate lipsi sau poate fi greșită. Deschideți documentul și verificați înainte să vă bazați pe răspuns (Termeni, secțiunea 7.2)."] },
+          { jurisdictie: null, paragrafe: ["Asistentul indică documentele pe care își sprijină răspunsul. Indicarea paginii exacte din document este în pilot: o testăm împreună cu clienții, iar indicația poate lipsi sau poate fi greșită. Deschide documentul și verifică înainte să te bazezi pe răspuns (Termeni, secțiunea 7.2)."] },
         ],
       },
       {
@@ -62,21 +62,21 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
         ],
       },
       {
-        cheie: "s8", titlu: "8. Documentele dumneavoastră și modelele de IA",
+        cheie: "s8", titlu: "8. Documentele tale și modelele de IA",
         blocuri: [
           { jurisdictie: null, paragrafe: ["Modelele de IA primesc numai text: fragmentele din documente regăsite pentru întrebare sau extrase dintr-un document anume, titlurile, numele dosarelor, metadatele și istoricul conversației, iar la indexare textul documentelor, pe bucăți. Îl primesc numai ca să furnizeze serviciul, în condițiile [acordului de prelucrare a datelor](cale:dpa) (DPA). Modelele și recunoașterea textului rulează la un subîmputernicit din pagina [Subîmputerniciții platformei](cale:subimputerniciti); furnizorii modelelor nu primesc documentele. Acordul cuprinde și angajamentul 3S privind antrenarea modelelor de IA (art. 4.5). Cum se prelucrează datele personale din documente e descris în DPA și în [Politica de confidențialitate](cale:confidentialitate)."] },
         ],
       },
       {
-        cheie: "s9", titlu: "9. Cum ajungeți la un om",
+        cheie: "s9", titlu: "9. Cum ajungi la un om",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Ne puteți contacta oricând direct, fără să treceți prin asistent: la " + c.contact.email + " sau pe WhatsApp la " + c.contact.telefon + " (mesaje și apeluri). Răspunde un om, în română sau în engleză."] },
+          { jurisdictie: null, paragrafe: ["Ne poți contacta oricând direct, fără să treci prin asistent: la " + c.contact.email + " sau pe WhatsApp la " + c.contact.telefon + " (mesaje și apeluri). Răspunde un om, în română sau în engleză."] },
         ],
       },
       {
-        cheie: "s10", titlu: "10. Cum raportați o problemă",
+        cheie: "s10", titlu: "10. Cum raportezi o problemă",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Dacă asistentul a dat un răspuns greșit, înșelător sau nepotrivit, scrieți la " + c.contact.email + ", cu întrebarea, răspunsul și data și ora conversației; le analizăm. Dacă socotiți că un răspuns conține informații ilicite, folosiți procedura din pagina [Notificare și acțiune](cale:notificare-si-actiune)."] },
+          { jurisdictie: null, paragrafe: ["Dacă asistentul a dat un răspuns greșit, înșelător sau nepotrivit, scrie la " + c.contact.email + ", cu întrebarea, răspunsul și data și ora conversației; le analizăm. Dacă socotești că un răspuns conține informații ilicite, folosește procedura din pagina [Notificare și acțiune](cale:notificare-si-actiune)."] },
         ],
       },
       {

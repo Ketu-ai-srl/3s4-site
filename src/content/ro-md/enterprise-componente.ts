@@ -95,7 +95,7 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
         " la " +
         LIMITE_PLANURI.enterprise.conturi +
         cuDeRoMd(LIMITE_PLANURI.enterprise.conturi) +
-        " conturi de utilizator în pachetul de bază, cu contract anual și facturare lunară, de la 800 EUR pe lună, fără TVA. Limitele de bază, comune pentru întreaga organizație: " +
+        " conturi de utilizator în pachetul de bază, cu contract anual și facturare lunară, de la 800\u00a0EUR pe lună, fără TVA. Limitele de bază, comune pentru întreaga organizație: " +
         LIMITE_DE_BAZA_RO_MD +
         ". Conectare: " +
         CONECTARE_RO_MD +
@@ -108,6 +108,8 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
     {
       titlu: "Locul datelor",
       text: "Fișierele sunt găzduite în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul și efectul legii americane asupra datelor.",
+      // Tinta aprobata a paginii pentru gazduire (calea SURSA; adresa servita o scrie componenta).
+      legaturaInText: { text: "Pagina Despre 3S", href: "/ro/securitate#security" },
     },
     {
       titlu: "Răspunsuri cu sursa lor",

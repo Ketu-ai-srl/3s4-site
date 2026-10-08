@@ -35,6 +35,9 @@ import s from "./negasita.module.css";
 export const metadataRo: Metadata = {
   title: "Pagina nu există | " + BRAND.nume,
   robots: { index: false, follow: false },
+  // Ca pe restul paginilor editiilor (layout-urile `(en)` si `(romd)`): fara layout, pagina de negasit nu mostenea
+  // `<meta name="format-detection" content="telephone=no">`, deci pe iOS numarul din subsol devenea legatura de apel.
+  formatDetection: { telephone: false },
 };
 
 export async function generateMetadata(): Promise<Metadata> {

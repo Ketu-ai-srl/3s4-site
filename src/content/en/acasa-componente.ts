@@ -271,7 +271,11 @@ export const BANDA_PRET_EN: ContinutBandaPret = {
   legatura: { text: "See the plans", href: "/pricing", ruta: "/pricing" },
 };
 
-/** acasa.ts:718-767. Raspunsurile sunt text simplu: FAQPage din JSON-LD le oglindeste exact. */
+/**
+ * acasa.ts:718-767. Raspunsurile sunt text simplu: FAQPage din JSON-LD le oglindeste exact. Numele de pagina din
+ * raspunsuri devin legaturi la randare (`legaturaInText`, cu adresa servita pe domeniu); caile sunt cele SURSA, scrise
+ * literal fiindca modulul e numai date (proba le leaga de registrul juridic si de ruta paginii About).
+ */
 export const INTREBARI_EN: ContinutFaqAcasa = {
   titlu: "Common questions",
   intrebari: [
@@ -279,10 +283,12 @@ export const INTREBARI_EN: ContinutFaqAcasa = {
       intrebare: "Where are my documents stored?",
       raspuns:
         "Files you upload to 3S are stored in the EU, with Frankfurt as the primary region. The About page names the hosting provider, which is a US company, and explains what US law says about data in a US provider's care.",
+      legaturaInText: { text: "About page", href: "/about#security" },
     },
     {
       intrebare: "Who operates 3S?",
       raspuns: "3S is operated from Moldova. The operating company's details are on the Legal information page.",
+      legaturaInText: { text: "Legal information", href: "/legal/legal-information" },
     },
     {
       intrebare: "Can I ask in English about Romanian documents?",

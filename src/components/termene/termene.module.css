@@ -94,6 +94,16 @@
   color: var(--color-albastru);
 }
 
+/* Cu o singura tara pastila e eticheta (`span`, vezi SelectorTari): fara cursor de clic si fara raspuns la hover. */
+span.pastila {
+  cursor: default;
+}
+
+span.pastila:hover {
+  border-color: var(--color-linie-fina);
+  color: var(--color-ardezie-6);
+}
+
 .pastila[aria-pressed="true"] {
   border-color: var(--color-albastru);
   background: var(--color-albastru);

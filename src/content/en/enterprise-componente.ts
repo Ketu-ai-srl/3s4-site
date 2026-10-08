@@ -104,6 +104,8 @@ export const LIVRABILE_EN: ContinutListaLivrabile = {
     {
       titlu: "Data location",
       text: "Files are stored in the EU, with Frankfurt as the primary region. The About page names the provider and explains what US law says about it.",
+      // Tinta aprobata a paginii pentru gazduire (calea SURSA; adresa servita o scrie componenta).
+      legaturaInText: { text: "About page", href: "/about#security" },
     },
     {
       titlu: "Answers with their source",

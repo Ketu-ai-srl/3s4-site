@@ -98,7 +98,9 @@ const FORMA_EMAIL_EN = {
 const LEGAL_EN: ReadonlyArray<{ cheie: CheieMd; text: string }> = [
   { cheie: "informatii-legale", text: "Legal information" },
   { cheie: "confidentialitate", text: "Privacy notice" },
-  { cheie: "cookie-uri", text: "Cookies and measurement" },
+  // Una pentru ambele asezari: 3s.com.ro ruleaza fara masurare, deci eticheta nu promite masurarea. Pereche cu eticheta
+  // din subsolul romanesc, titlul documentului ("Politica de cookie-uri"), adevarat si el in ambele variante.
+  { cheie: "cookie-uri", text: "Cookie policy" },
   { cheie: "termeni", text: "Terms of service (B2B)" },
   { cheie: "dpa", text: "Data processing agreement" },
   { cheie: "subimputerniciti", text: "Subprocessors" },

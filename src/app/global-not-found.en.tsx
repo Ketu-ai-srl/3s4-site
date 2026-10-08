@@ -72,6 +72,8 @@ export async function editiaCererii(): Promise<EditieAsezata> {
 export const metadataEn: Metadata = {
   title: "Page not found | " + BRAND.nume,
   robots: { index: false, follow: false },
+  // Ca pe restul paginilor editiilor (layout-urile `(en)` si `(romd)`; geamana are aceeasi regula).
+  formatDetection: { telephone: false },
 };
 
 export async function generateMetadata(): Promise<Metadata> {

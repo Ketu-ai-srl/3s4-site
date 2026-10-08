@@ -48,7 +48,8 @@ test('/ro/preturi servit: limitele pe carduri, randurile tabelului si pliul supl
   expect(html.match(/data-pliu-suplimente/g) ?? []).toHaveLength(1)
   for (const t of [
     'Ai nevoie de mai mult? Suplimente și regulile limitelor',
-    '6 EUR la 1.000 de pagini importate, o singură dată',
+    // Felia 143: suma legata de moneda si "la" de numarul de pagini prin spatiu nedespartitor (HTML-ul il poarta ca atare).
+    '6\u00a0EUR la\u00a01.000 de pagini importate, o singură dată',
     'O singură dată, valabile 90 de zile',
     'Limitele se aplică pe utilizator sau pe firmă?',
   ]) {

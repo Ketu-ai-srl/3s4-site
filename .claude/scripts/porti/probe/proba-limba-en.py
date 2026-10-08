@@ -34,6 +34,9 @@ CURAT, PICAT, NEMASURAT = 0, 1, 3
 
 T = P = 0
 POARTA = os.path.join(PORTI, 'poarta-limba-en.py')
+# Bara inversa, asamblata: secventele de evadare din fixturi se scriu cu ea, direct in sursa TypeScript (nu prin
+# `json.dumps`, care ar dubla bara si ar face din secventa text obisnuit).
+BS = chr(92)
 
 
 def ok(mesaj):
@@ -213,6 +216,23 @@ def cazuri():
         {'src/content/en/g1.ts': '// ortografie-sursa:\n'
          + 'export const t = "Directive on the ' + 'harmon' + 'isation of invoicing";\n'},
         PICAT, ('ortografie britanica',))
+    # Exceptia numita a regulii ASCII: U+00A0 si U+2060, numai ca secventa de evadare de forma u + 4 cifre hexa.
+    caz('spatiul nedespartitor si unirea de cuvant ca secventa de evadare: cod 0 (exceptia numita)',
+        {'src/content/en/pricing.ts': 'export const a = "Starter EUR' + BS + 'u00a090, Pro EUR' + BS
+         + 'u00A0150, from RO' + BS + 'u00a0e-' + BS + 'u2060Factura.";' + chr(10)}, CURAT)
+    caz('cratima nedespartitoare ca secventa de evadare: cod 1 (in afara exceptiei)',
+        {'src/content/en/pricing.ts': 'export const a = "RO e-' + BS + 'u2011Factura";' + chr(10)}, PICAT, ('non-ASCII U+2011',))
+    caz('litera accentuata ca secventa de evadare: cod 1 (in afara exceptiei)',
+        {'src/content/en/pricing.ts': 'export const a = "Caf' + BS + 'u00e9 receipts";' + chr(10)}, PICAT, ('non-ASCII U+00E9',))
+    caz('spatiul nedespartitor scris direct in fisier: cod 1 (exceptia e numai pe secventa)',
+        {'src/content/en/pricing.ts': 'export const a = "EUR' + chr(0xA0) + '90";' + chr(10)},
+        PICAT, ('non-ASCII U+00A0',))
+    caz('spatiul nedespartitor in alta forma de evadare: cod 1',
+        {'src/content/en/pricing.ts': 'export const a = "EUR' + BS + 'xA090";' + chr(10)},
+        PICAT, ('non-ASCII U+00A0',))
+    caz('spatiul nedespartitor ca entitate HTML in textul JSX: cod 1',
+        {'src/app/(en)/page.en.tsx': 'export default () => <p>EUR&' + 'nbsp;90</p>;' + chr(10)},
+        PICAT, ('entitate HTML',))
     caz('momeli in afara cailor EN (romana, editia ro-MD): cod 0, zero fisiere vazute',
         {'src/content/preturi.ts': modul('Pick a ' + 'colo' + 'ur ' + chr(0x2014) + ' now' + chr(33)),
          'src/app/(romd)/ro/page.romd.tsx': 'export default () => <p>A ' + 'seam' + 'less archive</p>;\n',
@@ -235,6 +255,12 @@ def cazuri():
     mutant('exceptia scuteste si fara motiv: cod 3',
            r"ortografie-sursa:\s*(\S.{2,})", r"ortografie-sursa:\s*(.*)",
            NEMASURAT, ('CONTROL PICAT', 'FARA motiv'))
+    mutant('exceptia numita admite orice secventa de evadare: cod 3',
+           'if m.group(1) is not None and cod in EVADARI_ADMISE:', 'if m.group(1) is not None:',
+           NEMASURAT, ('CONTROL PICAT', 'secventa de evadare'))
+    mutant('exceptia numita scoasa: cod 3 (martorul negativ e acuzat)',
+           'if m.group(1) is not None and cod in EVADARI_ADMISE:', 'if False:',
+           NEMASURAT, ('CONTROL PICAT', 'martorul negativ'))
 
 
 def cazuri_registre():

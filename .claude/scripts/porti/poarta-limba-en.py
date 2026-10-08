@@ -18,6 +18,12 @@ Ce verifica, pe fiecare fisier:
      `u2014`, `u{...}` sau `xE9`) ori ca entitate HTML (`&mdash;`, `&#8212;`) ajunge pe pagina la
      fel, desi fisierul e ASCII (prins de proba la prima rulare: o fixtura scrisa cu `json.dumps`
      trecea verde).
+     EXCEPTIA NUMITA (`EVADARI_ADMISE`): exact doua caractere, numai ca secventa de evadare de
+     forma bara inversa + `u` + patru cifre hexa, in TEXT: U+00A0 (spatiul nedespartitor) si
+     U+2060 (unirea de cuvant). Tin legate pe ecran o suma de moneda ("EUR 90"), un numar de
+     telefon sau un nume ca "RO e-Factura", ceea ce un text ASCII nu poate cere. Caracterul scris
+     direct ramane prins (invizibil in sursa), la fel celelalte forme (`u{...}`, `x..`, entitatea
+     HTML) si orice alt cod, inclusiv cratima nedespartitoare U+2011 (tinta portii de liniute).
   2. ortografie americana: perechi britanic -> american, pe TEXT (sirurile si textul JSX; la
      fisierele de marcare, tot continutul), fara adresele web.
   3. expresiile de evitat din lista de continut, pe acelasi text.
@@ -150,6 +156,8 @@ EVITATE = [
 ]
 
 TIPAR_EXCLAMARE = re.compile(r'!(?![=\[])')
+# Exceptia numita a regulii 1 (vezi antetul): codul -> numele. Nimic altceva nu intra aici.
+EVADARI_ADMISE = {0x00A0: 'spatiul nedespartitor', 0x2060: 'unirea de cuvant'}
 TIPAR_EVADARE = re.compile(r'\\u([0-9a-fA-F]{4})|\\u\{([0-9a-fA-F]+)\}|\\x([0-9a-fA-F]{2})')
 TIPAR_ENTITATE = re.compile(r'&(?:#(\d+)|#[xX]([0-9a-fA-F]+)|([a-zA-Z]+));')
 ENTITATI_ASCII = {'amp', 'lt', 'gt', 'quot', 'apos'}
@@ -376,6 +384,8 @@ def analizeaza(cale, continut):
         curat = TIPAR_ADRESA.sub(lambda m: ' ' * len(m.group(0)), text)
         for m in TIPAR_EVADARE.finditer(curat):
             cod = int(m.group(1) or m.group(2) or m.group(3), 16)
+            if m.group(1) is not None and cod in EVADARI_ADMISE:
+                continue
             if cod > 126:
                 nume = NUME_CARACTERE.get(cod, 'caracter non-ASCII')
                 gasiri.append((rand_la(continut, pozitie + m.start()),
@@ -432,6 +442,12 @@ def controale():
         ('non-ASCII', 'export const a = "Caf' + chr(0xE9) + ' receipts";\n'),
         ('secventa de evadare', 'export const a = "Archive ' + BSLASH + 'u2014 search";\n'),
         ('secventa de evadare', 'export const a = "Caf' + BSLASH + 'xE9 receipts";\n'),
+        # Exceptia numita nu se intinde: cratima nedespartitoare, alte forme ale lui U+00A0, caracterul scris direct.
+        ('secventa de evadare', 'export const a = "RO e-' + BSLASH + 'u2011Factura";\n'),
+        ('secventa de evadare', 'export const a = "EUR' + BSLASH + 'xA090";\n'),
+        ('secventa de evadare', 'export const a = "EUR' + BSLASH + 'u{a0}90";\n'),
+        ('non-ASCII', 'export const a = "EUR' + chr(0xA0) + '90";\n'),
+        ('entitate HTML', 'export const a = "EUR&' + 'nbsp;90";\n'),
         ('entitate HTML', 'export const a = "Archive &' + 'mdash; search";\n'),
         ('entitate HTML', 'export const a = "Archive &#' + '8212; search";\n'),
         ('ortografie britanica', 'export const a = "Your ' + 'organis' + 'ation keeps every invoice.";\n'),
@@ -452,6 +468,9 @@ def controale():
         'export const c = "https://example.org/organisation-centre-colour";',
         'export const d = x !== y ? "Labeled, traveled and canceled rows stay in the catalog." : "";',
         'export const e = "Line one' + BSLASH + 'nLine two, Q&amp;A, ' + BSLASH + 'u0041 and &#65;.";',
+        # Exceptia numita: U+00A0 si U+2060 ca secventa de evadare, cu cifre mici sau mari.
+        'export const f = "EUR' + BSLASH + 'u00a090, EUR' + BSLASH + 'u00A0150 and RO' + BSLASH + 'u00a0e-'
+        + BSLASH + 'u2060Factura.";',
         '// a note may say organis' + 'ation in a comment; it is not page text',
     ]) + '\n'
     g = analizeaza('martor.ts', negativ)

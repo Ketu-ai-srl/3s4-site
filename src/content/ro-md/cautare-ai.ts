@@ -41,7 +41,7 @@ export const pagina: PaginaContinut = {
       cheie: "aceeasi-garantie",
       titlu: "Aceeași garanție, căutată de două ori",
       blocuri: [
-        { paragrafe: ["În stânga, dosarele deschise pe rând. În dreapta, răspunsul cu documentul-sursă, pe care îl poți verifica."] },
+        { paragrafe: ["Fără 3S, deschizi dosarele pe rând. Cu 3S, primești răspunsul cu documentul-sursă și îl poți verifica."] },
       ],
     },
     {

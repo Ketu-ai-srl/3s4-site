@@ -368,6 +368,115 @@ def cazuri_limba():
         CURAT)
     caz('poarta-limba.py', 'arbore fara src: cod 3, nu 0', gol, NEMASURAT, 'masuratoarea e invalida')
 
+    # Punctul 4 (decizia 77): adresarea formala SINGURA in modulele juridice romanesti publice. Martorii pornesc de la o
+    # COPIE a modulului real (Politica de confidentialitate, la "tu"), cu o fraza formala plantata la rulare; fraza se
+    # lipeste din bucati, ca fisierul asta sa nu poarte formele pe care le vaneaza poarta.
+    real = os.path.join(PORTI, '..', '..', '..', 'src', 'content', 'juridic', 'md', 'confidentialitate.ro.ts')
+    if not os.path.isfile(real):
+        nemasurat('lipseste modulul real ' + real + ' - martorii punctului 4 pornesc de la el')
+    modul_real = open(real, encoding='utf-8').read()
+    formal = 'Dacă ' + 'dumnea' + 'voastră ne scrieți, ' + 'v' + 'ă răspundem în aceeași zi.'
+    plantat = modul_real + chr(10) + 'export const PLANTAT = "' + formal + '";' + chr(10)
+    juridic_md = ('src', 'content', 'juridic', 'md')
+
+    def cu_modul(nume, continut):
+        return lambda d: scrie(os.path.join(d, *juridic_md, nume), continut)
+
+    caz('poarta-limba.py', 'modulul juridic RO real (copie, la "tu"): cod 0',
+        cu_modul('confidentialitate.ro.ts', modul_real), CURAT)
+    caz('poarta-limba.py', 'aceeasi copie cu o fraza formala plantata: cod 1, punctul 4 o numeste',
+        cu_modul('confidentialitate.ro.ts', plantat), PICAT, 'adresare formala intr-un document juridic romanesc')
+    # Fraza SINGURA in modul, fara nicio forma cu "tu": amestecul (punctul 2) nu are ce prinde, deci numai punctul 4 o vede.
+    caz('poarta-limba.py', 'modul juridic RO cu numai fraza formala (fara amestec): cod 1, punctul 4 o numeste',
+        cu_modul('cookie-uri.ro.ts', 'export const PLANTAT = "' + formal + '";' + chr(10)), PICAT,
+        'adresare formala intr-un document juridic romanesc')
+    # Modulul DPA primeste numai fraza: copia Politicii ar aduce si formele cu "tu", iar amestecul (punctul 2) ramane
+    # masurat si in modulele exceptate.
+    caz('poarta-limba.py', 'aceeasi fraza in modulul DPA (exceptia numita, felia 145): cod 0',
+        cu_modul('dpa.ro.ts', 'export const PLANTAT = "' + formal + '";' + chr(10)), CURAT)
+    caz('poarta-limba.py', 'aceeasi fraza in afara modulelor juridice (numai amestecul se masoara acolo): cod 0',
+        lambda d: scrie(os.path.join(d, 'src', 'content', 'ro-md', 'nota.ts'),
+                        'export const NOTA = "' + formal + '";' + chr(10)), CURAT)
+    # Controlul stricat pe o COPIE a portii: punctul 4 nu mai acuza nimic, deci martorul lui pozitiv pica si poarta iese
+    # 3, nu 0 (altfel o dezactivare tacuta ar trece drept "curat").
+    caz('poarta-limba.py', 'control picat (punctul 4 dezactivat pe copie): cod 3, nu 0',
+        cu_modul('confidentialitate.ro.ts', modul_real), NEMASURAT, 'CONTROL PICAT',
+        mutatie=('poarta-limba.py', '        if formal_singur:' + chr(10), '        if False:' + chr(10)))
+
+    # Punctul 4 pe META_DOCUMENTE_MD (runda 2 a feliei 144): meta-descrierile romanesti ale documentelor `md` ajung in
+    # <head>. Martorii pornesc de la o COPIE a fisierului real `pagini.ts`; forma formala se planteaza la rulare, in
+    # descrierea IA (document public) si in descrierea DPA (exceptia numita), din bucati.
+    real_meta = os.path.join(PORTI, '..', '..', '..', 'src', 'content', 'juridic', 'pagini.ts')
+    if not os.path.isfile(real_meta):
+        nemasurat('lipseste fisierul real ' + real_meta + ' - martorii meta ai punctului 4 pornesc de la el')
+    meta_real = open(real_meta, encoding='utf-8').read()
+    ancora_ia, ancora_dpa = 'cum vorbești oricând cu un om', 'ca persoană împuternicită de operator'
+    if meta_real.count(ancora_ia) != 1 or meta_real.count(ancora_dpa) != 1:
+        nemasurat('ancorele martorilor meta nu mai sunt, o data fiecare, in ' + real_meta)
+    pronume = 'dumnea' + 'voastră'
+    meta_ia = meta_real.replace(ancora_ia, 'cum ' + pronume + ' vorbiți oricând cu un om')
+    # Pe DPA se planteaza auxiliarul, nu pronumele: pronumele langa formele cu "tu" din restul fisierului ar fi AMESTEC
+    # (punctul 2, masurat pe fisier si in exceptii), deci cazul ar masura alt punct decat exceptia.
+    meta_dpa = meta_real.replace(ancora_dpa, ancora_dpa + ', care ' + 'v' + 'ă privesc')
+    juridic = ('src', 'content', 'juridic')
+    # Runda 3: si `publicare.ts` (DESCRIERE_MD) intra in punctul 4. Copia reala insoteste fiecare caz meta, ca sa
+    # masoare numai meta; cazurile descrierilor de mai jos variaza numai ea.
+    real_descriere = os.path.join(PORTI, '..', '..', '..', 'src', 'content', 'juridic', 'publicare.ts')
+    if not os.path.isfile(real_descriere):
+        nemasurat('lipseste fisierul real ' + real_descriere + ' - martorii descrierilor ai punctului 4 pornesc de la el')
+    descriere_real = open(real_descriere, encoding='utf-8').read()
+
+    def cu_meta(continut, registru=True, descriere=descriere_real):
+        def construieste(d):
+            if continut is not None:
+                scrie(os.path.join(d, *juridic, 'pagini.ts'), continut)
+            if descriere is not None:
+                scrie(os.path.join(d, *juridic, 'publicare.ts'), descriere)
+            if registru:
+                scrie(os.path.join(d, *juridic, 'md', 'registru.ts'), 'export const X = 1;' + chr(10))
+        return construieste
+
+    caz('poarta-limba.py', 'pagini.ts real (copie), meta romanesti la "tu": cod 0', cu_meta(meta_real), CURAT,
+        'META_DOCUMENTE_MD: 8 intrari ro citite')
+    caz('poarta-limba.py', 'aceeasi copie cu o forma formala in meta IA: cod 1, numeste documentul', cu_meta(meta_ia), PICAT,
+        'meta-descrierea romaneasca a documentului inteligenta-artificiala')
+    caz('poarta-limba.py', 'aceeasi forma in meta DPA (exceptia numita, felia 145): cod 0', cu_meta(meta_dpa), CURAT)
+    caz('poarta-limba.py', 'familia md in arbore fara pagini.ts: cod 3, nu 0 (meta nemasurat)', cu_meta(None), NEMASURAT,
+        'masuratoarea e invalida')
+    caz('poarta-limba.py', 'pagini.ts fara blocul META_DOCUMENTE_MD: cod 3, nu 0',
+        cu_meta(meta_real.replace('META_DOCUMENTE_MD', 'META_REDENUMIT')), NEMASURAT, 'masuratoarea e invalida')
+    # Controlul stricat pe o COPIE a portii: citirea meta nu mai vede siruri, deci martorul meta din `controale()` pica si
+    # poarta iese 3, nu 0, chiar pe copia cu forma formala plantata.
+    caz('poarta-limba.py', 'control meta picat (citirea sirurilor dezactivata pe copie): cod 3, nu 0', cu_meta(meta_ia),
+        NEMASURAT, 'CONTROL PICAT',
+        mutatie=('poarta-limba.py', '        for sir in siruri_din_cod(ro.group(1)):' + chr(10),
+                 '        for sir in []:' + chr(10)))
+
+    # Punctul 4 pe DESCRIERE_MD (runda 3 a feliei 144): descrierile romanesti din rute ajung in paleta, in /llms.txt si in
+    # pachetul de browser. Copia reala a `publicare.ts`, cu forma formala plantata la rulare in descrierea IA (document
+    # public) si in descrierea DPA (exceptia numita).
+    ancora_d_ia, ancora_d_dpa = 'al 3S și ce limite are', 'ca persoană împuternicită, datele personale'
+    if descriere_real.count(ancora_d_ia) != 1 or descriere_real.count(ancora_d_dpa) != 1:
+        nemasurat('ancorele martorilor descrierilor nu mai sunt, o data fiecare, in ' + real_descriere)
+    descriere_ia = descriere_real.replace(ancora_d_ia, 'al 3S și ce limite ' + 'v' + 'ă privesc')
+    descriere_dpa = descriere_real.replace(ancora_d_dpa, 'ca persoană împuternicită, datele ' + 'v' + 'ă privesc')
+    caz('poarta-limba.py', 'publicare.ts real (copie), descrierile romanesti la "tu": cod 0', cu_meta(meta_real), CURAT,
+        'DESCRIERE_MD: 8 intrari ro citite')
+    caz('poarta-limba.py', 'aceeasi copie cu o forma formala in descrierea IA: cod 1, numeste documentul',
+        cu_meta(meta_real, descriere=descriere_ia), PICAT, 'descrierea romaneasca din rute a documentului inteligenta-artificiala')
+    caz('poarta-limba.py', 'aceeasi forma in descrierea DPA (exceptia numita, felia 145): cod 0',
+        cu_meta(meta_real, descriere=descriere_dpa), CURAT)
+    caz('poarta-limba.py', 'familia md in arbore fara publicare.ts: cod 3, nu 0 (descrierile nemasurate)',
+        cu_meta(meta_real, descriere=None), NEMASURAT, 'DESCRIERE_MD nu a fost gasit')
+    caz('poarta-limba.py', 'publicare.ts fara blocul DESCRIERE_MD: cod 3, nu 0',
+        cu_meta(meta_real, descriere=descriere_real.replace('DESCRIERE_MD', 'DESCRIERE_REDENUMIT')), NEMASURAT,
+        'DESCRIERE_MD nu a fost gasit')
+    # Controlul stricat pe o COPIE a portii: citirea descrierilor nu mai gaseste blocul, deci martorul descrierilor din
+    # `controale()` pica si poarta iese 3, nu 0, chiar pe copia cu forma formala plantata.
+    caz('poarta-limba.py', 'control descrieri picat (tiparul blocului stricat pe copie): cod 3, nu 0',
+        cu_meta(meta_real, descriere=descriere_ia), NEMASURAT, 'CONTROL PICAT',
+        mutatie=('poarta-limba.py', "re.compile(r'export const DESCRIERE_MD", "re.compile(r'export const DESCRIERE_NIMIC"))
+
 
 def cazuri_rute():
     def manifest(rute, pagini):

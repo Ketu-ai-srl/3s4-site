@@ -258,16 +258,16 @@ export function linieVersiuneMd(iso: string, limba: LimbaJuridica): string {
 /** Titlul si descrierea paginii fiecarui document `md`, pe limba (pragurile portii SEO: 15-65, 50-160). */
 export const META_DOCUMENTE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, MetaPagina>>> = {
   "informatii-legale": {
-    ro: { titlu: "Informații legale | 3S", descriere: "Cine furnizează serviciul 3S, cum ne contactați și ce autorități supraveghează serviciul, după legea Republicii Moldova." },
+    ro: { titlu: "Informații legale | 3S", descriere: "Cine furnizează serviciul 3S, cum ne contactezi și ce autorități supraveghează serviciul, după legea Republicii Moldova." },
     en: { titlu: "Legal notice | 3S", descriere: "Who provides the 3S service, how to contact us and which authorities oversee the service under the law of the Republic of Moldova." },
   },
   confidentialitate: {
-    ro: { titlu: "Politica de confidențialitate | 3S", descriere: "Ce date personale prelucrează 3S, în ce scop, pe ce temei, cât timp, cui le transmite și cum vă exercitați drepturile." },
+    ro: { titlu: "Politica de confidențialitate | 3S", descriere: "Ce date personale prelucrează 3S, în ce scop, pe ce temei, cât timp, cui le transmite și cum îți exerciți drepturile." },
     en: { titlu: "Privacy policy | 3S", descriere: "What personal data 3S processes, for what purpose, on what legal basis, for how long, who receives it and how to exercise your rights." },
   },
   "cookie-uri": {
-    ro: { titlu: "Politica de cookie-uri | 3S", descriere: "Ce stochează sau citește site-ul 3S în browserul dumneavoastră, cum măsurăm vizitele și cum vă răzgândiți." },
-    en: { titlu: "Cookie policy | 3S", descriere: "What the 3S website stores or reads in your browser, how we measure visits and how you can change your mind." },
+    ro: { titlu: "Politica de cookie-uri | 3S", descriere: "Ce informații stochează sau citește site-ul 3S în browserul tău, pe ce temei și cine primește datele." },
+    en: { titlu: "Cookie policy | 3S", descriere: "What information the 3S website stores or reads in your browser, on what legal basis and who receives the data." },
   },
   termeni: {
     ro: { titlu: "Termeni și condiții pentru clienți profesioniști | 3S", descriere: "Condițiile în care 3S furnizează serviciul clienților profesioniști: contractul, prețul, datele, încetarea și legea aplicabilă." },
@@ -282,11 +282,11 @@ export const META_DOCUMENTE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, M
     en: { titlu: "Sub-processors of the platform | 3S", descriere: "The providers that process the content of 3S client documents, with the role and the country of each one." },
   },
   "notificare-si-actiune": {
-    ro: { titlu: "Notificare și acțiune | 3S", descriere: "Cum ne semnalați o informație ilicită din serviciile 3S, cum hotărâm, ce urmează și regulile de utilizare acceptabilă." },
+    ro: { titlu: "Notificare și acțiune | 3S", descriere: "Cum ne semnalezi o informație ilicită din serviciile 3S, cum hotărâm, ce urmează și regulile de utilizare acceptabilă." },
     en: { titlu: "Notice and action | 3S", descriere: "How to report unlawful information in the 3S services, how we decide, what follows and the acceptable use rules." },
   },
   "inteligenta-artificiala": {
-    ro: { titlu: "Inteligența artificială în serviciile 3S", descriere: "Cum funcționează asistentul de inteligență artificială al 3S, ce limite are și cum vorbiți oricând cu un om." },
+    ro: { titlu: "Inteligența artificială în serviciile 3S", descriere: "Cum funcționează asistentul de inteligență artificială al 3S, ce limite are și cum vorbești oricând cu un om." },
     en: { titlu: "Artificial intelligence in 3S services", descriere: "How the 3S artificial intelligence assistant works, what its limits are and how you can always speak to a person." },
   },
 };

@@ -13,8 +13,8 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
     cheie: "informatii-legale",
     limba: "ro",
     titlu: "Informații legale",
-    versiune: "2026-10-06",
-    introducere: "Pagina spune cine furnizează serviciul 3S și cum ne puteți contacta. Legea Republicii Moldova cere aceste informații pe site, în limba română, cu acces ușor, direct și permanent (Legea nr. 284/2004 privind serviciile societății informaționale, art. 12).",
+    versiune: "2026-10-07",
+    introducere: "Pagina spune cine furnizează serviciul 3S și cum ne poți contacta. Legea Republicii Moldova cere aceste informații pe site, în limba română, cu acces ușor, direct și permanent (Legea nr. 284/2004 privind serviciile societății informaționale, art. 12).",
     sectiuni: [
       {
         cheie: "s1", titlu: "1. Furnizorul serviciului",
@@ -23,9 +23,9 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
         ],
       },
       {
-        cheie: "s2", titlu: "2. Cum ne contactați",
+        cheie: "s2", titlu: "2. Cum ne contactezi",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Ne scrieți la " + c.contact.email + " sau ne sunați ori ne scrieți pe WhatsApp la " + c.contact.telefon + ". Răspunde un om, în română sau în engleză."] },
+          { jurisdictie: null, paragrafe: ["Ne scrii la " + c.contact.email + " sau ne suni ori ne scrii pe WhatsApp la " + c.contact.telefon + ". Răspunde un om, în română sau în engleză."] },
         ],
       },
       {
@@ -55,13 +55,13 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s7", titlu: "7. Conținut ilicit",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Dacă găsiți în serviciile 3S informații despre care credeți că sunt ilicite, ne puteți sesiza prin procedura din pagina [Notificare și acțiune](cale:notificare-si-actiune)."] },
+          { jurisdictie: null, paragrafe: ["Dacă găsești în serviciile 3S informații despre care crezi că sunt ilicite, ne poți sesiza prin procedura din pagina [Notificare și acțiune](cale:notificare-si-actiune)."] },
         ],
       },
       {
         cheie: "s8", titlu: "8. Protecția datelor personale",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Cum prelucrăm datele personale scrie în [Politica de confidențialitate](cale:confidentialitate), iar ce păstrăm în browserul dumneavoastră scrie în [Politica de cookie-uri](cale:cookie-uri). Autoritatea de supraveghere din Republica Moldova este Centrul Național pentru Protecția Datelor cu Caracter Personal (CNPDCP): [datepersonale.md](https://datepersonale.md), str. Serghei Lazo nr. 48, MD-2004, mun. Chișinău, tel. (022) 820 801 (din străinătate: +373 22 820 801), centru@datepersonale.md."] },
+          { jurisdictie: null, paragrafe: ["Cum prelucrăm datele personale scrie în [Politica de confidențialitate](cale:confidentialitate), iar ce păstrăm în browserul tău scrie în [Politica de cookie-uri](cale:cookie-uri). Autoritatea de supraveghere din Republica Moldova este Centrul Național pentru Protecția Datelor cu Caracter Personal (CNPDCP): [datepersonale.md](https://datepersonale.md), str. Serghei Lazo nr. 48, MD-2004, mun. Chișinău, tel. (022) 820 801 (din străinătate: +373 22 820 801), centru@datepersonale.md."] },
         ],
       },
       {

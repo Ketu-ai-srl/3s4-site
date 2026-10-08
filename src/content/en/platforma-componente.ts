@@ -228,6 +228,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
         intrebare: "Where does 3S run?",
         raspuns:
           "3S runs in the EU, with Frankfurt as the primary region. The About page names the hosting provider and explains what US law says about data held by a US company.",
+        legaturiInText: [{ text: "About page", href: "/about#security" }],
       },
       {
         intrebare: "How do I find something?",
@@ -236,8 +237,13 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
       },
       {
         intrebare: "Can I set how long documents are kept?",
+        // Site-ul nu are o pagina-index a ghidurilor, deci raspunsul numeste cele doua ghiduri si le leaga pe fiecare.
         raspuns:
-          "Yes. You can set a retention period for each folder, and it applies to the documents in it. Our guides cover Moldova and EU e-invoices, with sources.",
+          "Yes. You can set a retention period for each folder, and it applies to the documents in it. Our guides to records retention in Moldova and to e-invoice archiving in the EU cite their sources.",
+        legaturiInText: [
+          { text: "records retention in Moldova", href: "/guides/records-retention-moldova" },
+          { text: "e-invoice archiving in the EU", href: "/guides/e-invoice-archiving-eu" },
+        ],
       },
     ],
   },

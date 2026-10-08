@@ -11,7 +11,7 @@
     "inteligenta-artificiala": { "en": "/legal/ai-notice", "ro": "/ro/juridic/inteligenta-artificiala", "poarta": "B" }
   },
   "pagini_legate": {
-    "preturi": { "en": "/pricing", "ro": "/pricing", "publicata": false },
+    "preturi": { "en": "/pricing", "ro": "/ro/preturi", "publicata": true },
     "securitate-si-locul-datelor": { "en": "/about#security", "ro": "/ro/securitate#security", "publicata": true },
     "comutare-si-export": { "en": null, "ro": null, "publicata": false }
   }

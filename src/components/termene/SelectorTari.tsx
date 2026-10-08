@@ -9,6 +9,11 @@
 // In plus fata de referinta: tara aleasa intra in adresa (`?tara=md`), ca un rezultat sa poata fi
 // trimis cuiva, iar la incarcare adresa o alege. Fara parametru, prima tara (Romania) e aleasa,
 // oricare ar fi limba sau fusul orar al navigatorului.
+//
+// O SINGURA TARA (ghidul Moldovei pe 3s.md si pe 3s.com.ro, unde panoul Romaniei a iesit): nu e nimic de ales, deci
+// pastila nu e buton. Ramane ca eticheta (`span`, aceeasi clasa, deci aceeasi forma ca pe pagina RO), fara
+// `aria-pressed`, fara clic si fara parametrul din adresa; panoul se arata. Inainte era un buton apasat, cu cursor de
+// clic, al carui clic nu schimba nimic.
 
 import { Children, useEffect, useState, type ReactNode } from "react";
 import type { CodTara } from "@/content/termene/date";
@@ -41,6 +46,21 @@ export default function SelectorTari({ tari, eticheta, children }: SelectorTariP
     const adresa = new URL(window.location.href);
     adresa.searchParams.set(PARAMETRU_TARA, cod);
     window.history.replaceState(window.history.state, "", adresa.toString());
+  }
+
+  if (tari.length === 1) {
+    const t = tari[0];
+    return (
+      <>
+        <div className={s.selector}>
+          <span className={s.pastila}>
+            <Steag cod={t.cod} className={s.steag} />
+            <span>{t.nume}</span>
+          </span>
+        </div>
+        <div id={"panou-" + t.cod}>{panouri[0]}</div>
+      </>
+    );
   }
 
   return (

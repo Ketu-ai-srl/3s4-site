@@ -129,7 +129,8 @@ describe('/pricing: cardurile, tabelul si pliul suplimentelor', () => {
     expect(pretEn.miiEn(1000)).toBe('1,000')
     expect(pretEn.miiEn(20000)).toBe('20,000')
     expect(pretEn.miiEn(999)).toBe('999')
-    expect(pretEn.CONECTARE_EN).toBe('EUR 6 per 1,000 pages imported, once')
+    // Felia 143, runda 2: suma ramane lipita de EUR pe ecran (spatiu nedespartitor), ca pe editia ro-MD.
+    expect(pretEn.CONECTARE_EN).toBe('EUR\u00a06 per 1,000 pages imported, once')
   })
 
   it('fiecare card arata conturile si cele patru limite ale planului, cu unitatile decise, pe randurile 1-5', () => {
@@ -167,8 +168,9 @@ describe('/pricing: cardurile, tabelul si pliul suplimentelor', () => {
     expect(valori('AI answers a month')).toEqual(['80', '200', '400'])
     expect(valori('OCR pages a month')).toEqual(['1,000', '2,500', '5,000'])
     expect(valori('Downloads a month')).toEqual(['15 GB', '30 GB', '60 GB'])
-    expect(valori('One-time connection, per 1,000 pages')).toEqual(['EUR 6', 'EUR 6', 'EUR 6'])
-    for (const t of ['>100 GB<', '>2,500<', '>60 GB<', '>One-time connection, per 1,000 pages<', '>EUR 6<']) expect(tabel, t).toContain(t)
+    // Felia 143, runda 2: suma ramane lipita de EUR pe ecran (spatiu nedespartitor), ca pe editia ro-MD.
+    expect(valori('One-time connection, per 1,000 pages')).toEqual(['EUR\u00a06', 'EUR\u00a06', 'EUR\u00a06'])
+    for (const t of ['>100 GB<', '>2,500<', '>60 GB<', '>One-time connection, per 1,000 pages<', '>EUR\u00a06<']) expect(tabel, t).toContain(t)
   })
 
   it('randul pilotului ramane pe locul lui, intre conturi si taxa pe utilizator (felia pilotului il schimba pe loc)', () => {
@@ -198,7 +200,8 @@ describe('/pricing: cardurile, tabelul si pliul suplimentelor', () => {
     expect(pliu.match(/<th scope="row"/g) ?? []).toHaveLength(SUPLIMENTE.length)
     expect(pliu.match(/Once, valid 90 days/g) ?? []).toHaveLength(SUPLIMENTE.filter((s) => s.facturare === 'o-data').length)
     expect(pliu.match(/Every month/g) ?? []).toHaveLength(3)
-    for (const t of ['>EUR 22<', '>EUR 79<', '>EUR 139<', '>EUR 24<', '>EUR 12<', 'EUR 6 per 1,000 pages imported, once']) expect(pliu, t).toContain(t)
+    // Felia 143, runda 2: suma ramane lipita de EUR pe ecran (spatiu nedespartitor), ca pe editia ro-MD.
+    for (const t of ['>EUR\u00a022<', '>EUR\u00a079<', '>EUR\u00a0139<', '>EUR\u00a024<', '>EUR\u00a012<', 'EUR\u00a06 per 1,000 pages imported, once']) expect(pliu, t).toContain(t)
     expect(pliu.match(/<h3/g) ?? []).toHaveLength(4)
     expect(pliu).not.toContain('<a ')
   })
@@ -221,7 +224,8 @@ describe('/enterprise: limitele de baza', () => {
       '600 AI answers a month',
       '20,000 OCR pages a month',
       '200 GB of downloads a month',
-      'EUR 6 per 1,000 pages imported, once',
+      // Felia 143, runda 2: suma lipita de EUR (spatiu nedespartitor).
+      'EUR\u00a06 per 1,000 pages imported, once',
     ]) {
       expect(text, t).toContain(t)
     }

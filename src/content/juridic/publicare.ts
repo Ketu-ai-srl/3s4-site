@@ -178,19 +178,23 @@ export const SCURT_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, string>>> 
   "inteligenta-artificiala": { ro: "Inteligența artificială în serviciile 3S", en: "Artificial intelligence in 3S services" },
 };
 
-/** O propozitie despre fiecare document `md`, pe limba (`RUTE`, paleta, `/llms.txt`). */
+/**
+ * O propozitie despre fiecare document `md`, pe limba (`RUTE`, paleta, `/llms.txt`). Romana la "tu" (decizia 77).
+ * Descrierea Cookie-urilor e una pentru toate starile masurarii, deci nu pomeneste masurarea vizitelor: pe
+ * asezarea fara masurare (S0) ar fi falsa. Aceeasi regula ca meta-descrierea ei (`META_DOCUMENTE_MD`).
+ */
 export const DESCRIERE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, string>>> = {
   "informatii-legale": {
-    ro: "Cine furnizează serviciul 3S, cum ne contactați și ce autorități supraveghează serviciul.",
+    ro: "Cine furnizează serviciul 3S, cum ne contactezi și ce autorități supraveghează serviciul.",
     en: "Who provides the 3S service, how to contact us and which authorities oversee the service.",
   },
   confidentialitate: {
-    ro: "Ce date personale prelucrăm, în ce scop, pe ce temei, cui le transmitem și ce drepturi aveți.",
+    ro: "Ce date personale prelucrăm, în ce scop, pe ce temei, cui le transmitem și ce drepturi ai.",
     en: "What personal data we process, for what purpose, on what legal basis, who receives it and your rights.",
   },
   "cookie-uri": {
-    ro: "Ce stochează sau citește site-ul în browser, cum măsurăm vizitele și cum vă răzgândiți.",
-    en: "What the website stores or reads in your browser, how we measure visits and how to change your mind.",
+    ro: "Ce informații stochează sau citește site-ul în browserul tău, pe ce temei și cine primește datele.",
+    en: "What information the website stores or reads in your browser, on what legal basis and who receives the data.",
   },
   termeni: {
     ro: "Condițiile în care 3S furnizează serviciul clienților profesioniști.",
@@ -205,7 +209,7 @@ export const DESCRIERE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, string
     en: "The providers that process the content of client documents, with the role and country of each.",
   },
   "notificare-si-actiune": {
-    ro: "Cum ne semnalați o informație ilicită, cum hotărâm și regulile de utilizare acceptabilă.",
+    ro: "Cum ne semnalezi o informație ilicită, cum hotărâm și regulile de utilizare acceptabilă.",
     en: "How to report unlawful information, how we decide and the acceptable use rules.",
   },
   "inteligenta-artificiala": {

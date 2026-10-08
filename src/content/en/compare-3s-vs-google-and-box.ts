@@ -87,7 +87,9 @@ export const DIVIZAT_EN: CardDivizatProps = {
     titlu: "When does 3S fit?",
     elemente: [
       "You need to try 3S on your own documents first",
-      "Your e-invoices arrive as XML from RO e-Factura",
+      // Numele sistemului nu se rupe: spatiu nedespartitor dupa "RO" si unirea de cuvant U+2060 dupa cratima simpla,
+      // ca pe cardul /ro (la 390 si la 768 px se rupea in "RO e-" / "Factura").
+      "Your e-invoices arrive as XML from RO\u00a0e-\u2060Factura",
       "Every answer must point to its source",
       "You need help with the first documents",
     ],

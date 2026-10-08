@@ -5,6 +5,8 @@ import { expect, test } from './ajutor/baza'
 import { mediuProfil3sComRo, pornesteCopia3sComRo, type Copie3sComRo, type Mutatie } from './ajutor/copie-3s-com-ro'
 import { asteaptaHidratarea } from './ajutor/hidratare'
 import { RADACINA } from './ajutor/proiect'
+import { BAZA_RUNDA_3, ETICHETA_CU_MASURARE, MASURARE, ancore, faraEvadari, formePolitete, scripturi, texteCap } from './ajutor/juridic-servit'
+import { DESCRIERE_MD } from '../../src/content/juridic/publicare'
 import { ECHIVALENTE } from '../../src/content/echivalente'
 
 /**
@@ -331,6 +333,85 @@ test('pagina de negasit romaneasca: 404, lang="ro", titlul romanesc, drumurile e
   expect(drumuri.length).toBeGreaterThan(0)
   expect(caiSursa(drumuri)).toEqual([])
   for (const d of new Set(drumuri)) expect(await status(d.split('#')[0]), d).toBe(200)
+})
+
+// Felia 144, runda 2: documentele juridice in octetii serviti ai asezarii `ro` (pereche cu proba din tests/editii.test.ts,
+// care masoara 3s.md). Detectorii (`ajutor/juridic-servit.ts`) au martorii lor in proba-pereche; aici, controlul extragerii.
+test('juridic servit: <head> la "tu" pe cele 5 documente RO, Cookies fara masurare, „Informații legale” din /en/legal/legal-information cu lang ro si hrefLang ro-RO', async () => {
+  const text = async (cale: string) => {
+    const r = await fetch(copie.baza + cale, { redirect: 'manual' })
+    expect(r.status, cale).toBe(200)
+    return r.text()
+  }
+  const RUTE_JURIDICE = JSON.parse(readFileSync(join(RADACINA, 'config', 'juridic-rute.json'), 'utf8')) as { documente: Record<string, { en: string; ro: string }> }
+  const doc = (cheie: string) => RUTE_JURIDICE.documente[cheie]
+  for (const k of ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale']) {
+    const t = texteCap(await text(servitaRo(doc(k).ro)))
+    expect(t.descrieri, k).toHaveLength(3)
+    expect(formePolitete([t.titlu, ...t.titluri, ...t.descrieri].join(' ')), k).toEqual([])
+  }
+  for (const [limba, cale] of [['ro', servitaRo(doc('cookie-uri').ro)], ['en', servitaEn(doc('cookie-uri').en)]] as const) {
+    const t = texteCap(await text(cale))
+    expect(t.descrieri, cale).toHaveLength(3)
+    for (const d of t.descrieri) expect(d, cale).not.toMatch(MASURARE[limba])
+  }
+  const a = ancore(await text(servitaEn(doc('informatii-legale').en)))
+  const ro = a.filter((x) => x.text === 'Informații legale')
+  // Introducerea documentului si eticheta locala din subsol (martorul pozitiv, felia 141): aceleasi atribute.
+  expect(ro, JSON.stringify(ro)).toHaveLength(2)
+  for (const x of ro) {
+    expect(x.atribute.href).toBe(servitaRo(doc('informatii-legale').ro))
+    expect(x.atribute.lang).toBe('ro')
+    expect(x.atribute.hrefLang).toBe('ro-RO')
+  }
+  // Martorul negativ: legaturile obisnuite spre documentele EN raman fara atribute de limba.
+  const en = a.filter((x) => (x.atribute.href ?? '').startsWith(PREFIX_EN + '/legal/'))
+  expect(en.length).toBeGreaterThan(3)
+  for (const x of en) expect(x.atribute.lang === undefined && x.atribute.hrefLang === undefined, x.atribute.href).toBe(true)
+})
+
+// Felia 144, runda 3: descrierile documentelor din rute (paleta, /llms.txt, pachetul de browser) si eticheta EN de cookie-uri,
+// in octetii serviti ai asezarii `ro`, care ruleaza fara masurare (pereche cu proba din tests/editii.test.ts pe 3s.md).
+// Martorii pe baza ai detectorilor sunt in proba-pereche; aici, controlul extragerii (descrierile curente SUNT in pachet).
+test('juridic servit, runda 3: descrierile din rute la "tu" si fara masurare in pachet si in /llms.txt; eticheta EN „Cookie policy”, pereche cu „Politica de cookie-uri”', async () => {
+  test.setTimeout(120_000)
+  const text = async (cale: string) => {
+    const r = await fetch(new URL(cale, copie.baza), { redirect: 'manual' })
+    expect(r.status, cale).toBe(200)
+    return r.text()
+  }
+  const RUTE_JURIDICE = JSON.parse(readFileSync(join(RADACINA, 'config', 'juridic-rute.json'), 'utf8')) as { documente: Record<string, { en: string; ro: string }> }
+  const doc = (cheie: string) => RUTE_JURIDICE.documente[cheie]
+  const CINCI = ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale'] as const
+
+  // /llms.txt: linia documentului de cookie-uri (control: exista, cu descrierea curenta), fara masurare.
+  const llms = await text('/llms.txt')
+  const linie = llms.split(/\r?\n/).filter((l) => l.includes(servitaEn(doc('cookie-uri').en) + ')'))
+  expect(linie, llms.slice(0, 400)).toHaveLength(1)
+  expect(linie[0]).toContain(DESCRIERE_MD['cookie-uri'].en)
+  expect(linie[0]).not.toMatch(MASURARE.en)
+
+  // Pachetul de browser al paginii de start (paleta isi cauta rezultatele si in descrieri).
+  const acasa = await text('/')
+  const surse = scripturi(acasa)
+  expect(surse.length).toBeGreaterThan(0)
+  let js = ''
+  for (const s of surse) js += faraEvadari(await text(s)) + String.fromCharCode(10)
+  for (const k of CINCI) {
+    expect(js.includes(DESCRIERE_MD[k].ro), 'ro ' + k).toBe(true)
+    expect(js.includes(DESCRIERE_MD[k].en), 'en ' + k).toBe(true)
+    expect(formePolitete(DESCRIERE_MD[k].ro), k).toEqual([])
+  }
+  expect(DESCRIERE_MD['cookie-uri'].ro).not.toMatch(MASURARE.ro)
+  for (const vechi of [...BAZA_RUNDA_3.descrieriRo, BAZA_RUNDA_3.cookieEn]) expect(js.includes(vechi), vechi).toBe(false)
+
+  // Subsolul: EN pe /en, RO pe /; etichetele legaturii spre pagina de cookie-uri, adevarate fara masurare.
+  const en = ancore(await text(PREFIX_EN)).filter((x) => x.atribute.href === servitaEn(doc('cookie-uri').en))
+  expect(en.length, JSON.stringify(en)).toBeGreaterThan(0)
+  for (const x of en) expect(x.text).not.toMatch(ETICHETA_CU_MASURARE)
+  expect(en.map((x) => x.text)).toContain('Cookie policy')
+  const ro = ancore(acasa).filter((x) => x.atribute.href === servitaRo(doc('cookie-uri').ro))
+  expect(ro.map((x) => x.text), JSON.stringify(ro)).toContain('Politica de cookie-uri')
 })
 
 test('martor POZITIV: fiecare detector prinde defectul lui, pe date asamblate la rulare', () => {

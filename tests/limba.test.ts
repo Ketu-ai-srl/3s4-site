@@ -73,8 +73,10 @@ describe('ghilimelele romanesti in articole', () => {
   })
 })
 
-// Toate fisierele de continut si de componente, ca text; juridicul iese separat, fiindca acolo
-// adresarea de politete e regula (decizia D15, 26.09 seara).
+// Toate fisierele de continut si de componente, ca text; juridicul iese separat. Exceptia D15 (formalul
+// in documentele juridice) e anulata de decizia 77 (07.10): documentele juridice romanesti publice sunt la
+// "tu" si se masoara pe textul compus, in toate starile masurarii (`tests/juridic-md.test.ts`, felia 144),
+// si in sursa de `poarta-limba.py`; aici ar fi prinse si comentariile si familia SEE, care nu se publica.
 function fisiere(dir: string): string[] {
   return readdirSync(dir).flatMap((n) => {
     const c = join(dir, n)

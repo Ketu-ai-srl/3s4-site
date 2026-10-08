@@ -99,7 +99,8 @@ export function textTeaserEn(): { presupuneri: string; rezultat: string } {
   const m = IMPLICITE.minute;
   return {
     presupuneri: CALCULATOR_EN.teaser.presupuneri(p + (p === 1 ? " person" : " people"), m + (m === 1 ? " minute" : " minutes")),
-    rezultat: CALCULATOR_EN.teaser.rezultat(FORMAT_EN.ore(r.ore) + " h"),
+    // Cifra si "h" raman pe acelasi rand (spatiu nedespartitor), ca pe editia ro-MD.
+    rezultat: CALCULATOR_EN.teaser.rezultat(FORMAT_EN.ore(r.ore) + "\u00a0h"),
   };
 }
 

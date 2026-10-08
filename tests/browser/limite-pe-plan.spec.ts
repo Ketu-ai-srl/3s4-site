@@ -41,7 +41,8 @@ test('/pricing servit: limitele pe carduri, randurile tabelului si pliul suplime
     expect(html, rand).toContain('>' + rand + '</th>')
   }
   expect(html.match(/data-pliu-suplimente/g) ?? []).toHaveLength(1)
-  for (const t of ['Need more? Add-ons and how limits work', 'EUR 6 per 1,000 pages imported, once', 'Once, valid 90 days', 'Are the limits per user or per company?']) {
+  // Felia 143, runda 2: suma ramane lipita de EUR pe ecran (spatiu nedespartitor in HTML-ul servit).
+  for (const t of ['Need more? Add-ons and how limits work', 'EUR\u00a06 per 1,000 pages imported, once', 'Once, valid 90 days', 'Are the limits per user or per company?']) {
     expect(html, t).toContain(t)
   }
 })

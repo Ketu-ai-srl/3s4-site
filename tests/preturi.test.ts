@@ -331,8 +331,10 @@ describe('orele afisate pe editiile en si ro-MD: o zecimala sub 100, intregi de 
   })
 
   it('teaserul pe EN si pe ro-MD (valorile de pornire, 36,67 h): zecimala, cu numeralul acordat cu valoarea afisata', () => {
-    expect(textTeaserEn().rezultat).toBe('totals 36.7 h a month')
-    expect(textTeaserRoMd().rezultat).toBe('se adună 36,7 ore lunar')
+    // Felia 143: orele afisate sunt rotunjite (36,67 -> 36,7), deci fraza spune "about" / "circa" langa ele.
+    // Runda 2: "about" / "circa", cifra si unitatea raman pe acelasi rand (spatii nedespartitoare).
+    expect(textTeaserEn().rezultat).toBe('totals about\u00a036.7\u00a0h a month')
+    expect(textTeaserRoMd().rezultat).toBe('se adună circa\u00a036,7\u00a0ore lunar') // "circa" lipit de cifra (felia 143)
     // Martorul de editie: teaserul ro-RO ramane pe ora intreaga, cu "de" (cazul de mai sus, `textTeaser`).
     expect(textTeaser().rezultat).toBe('se adună 37 de ore lunar')
   })

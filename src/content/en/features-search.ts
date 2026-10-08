@@ -352,7 +352,9 @@ export const EXTRAGERE_POVESTE = {
 export const CONTRAST_POVESTE = {
   // cautare-ai.ts:185-222.
   titlu: "The same warranty, searched for twice",
-  paragraf: "On the left, folders opened one after another. On the right, the answer with its source, ready to check.",
+  // Fraza pune fata in fata cele doua feluri de lucru, nu asezarea cardurilor: sub 768 px grila trece pe o
+  // coloana si "on the left / on the right" ar fi fals. Nici "Now you get" nu merge: vizitatorul inca nu foloseste 3S.
+  paragraf: "Without 3S, you open folders one after another. With 3S, you get the answer with its source, ready to check.",
   inainte: {
     titlu: "Before",
     subtitlu: "folder by folder",

@@ -55,9 +55,18 @@ function decodeaza(t: string): string {
     .replace(/&amp;/g, '&')
 }
 
+/**
+ * Felia 147: titlul eroului leaga ultimele doua cuvinte ale fiecarei propozitii intr-un `<span data-lipit="">`, ca
+ * randul sa nu ramana cu un singur cuvant. Legatura nu e text nou (textContent-ul ramane sirul din continut), dar
+ * imparte sirul in doua noduri de text; aici se scoate eticheta ei, ca sirul sa se caute intreg, cum il vede omul.
+ */
+function faraLipire(html: string): string {
+  return html.replace(/<span data-lipit="">([^<]*)<\/span>/g, '$1')
+}
+
 /** Textele dintre etichete si valorile etichetelor accesibile, decodate, fara goluri. */
 function textSiEtichete(html: string): string[] {
-  const texte = [...html.matchAll(/>([^<]+)</g)].map((m) => decodeaza(m[1]).trim())
+  const texte = [...faraLipire(html).matchAll(/>([^<]+)</g)].map((m) => decodeaza(m[1]).trim())
   const atribute = [...html.matchAll(/\s(?:aria-label|title|alt)="([^"]*)"/g)].map((m) => decodeaza(m[1]).trim())
   return [...texte, ...atribute].filter((t) => t !== '')
 }

@@ -935,25 +935,135 @@ def pagini_juridice(radacina, construite):
             if nume.replace(os.sep, '/') in cai or nume.replace(os.sep, '/').startswith('.next/server/app/juridic/')]
 
 
-def verifica_marcaje(radacina, construite, sever_prezenta, mediu_proces=None):
-    g = []
+# Un marcaj = text intre paranteze drepte, cu macar o litera, care nu e textul unei legaturi in stil markdown
+# (`[text](adresa)`). Lungimea e plafonata la 300 de caractere, ca o paranteza ramasa deschisa sa nu inghita
+# restul paginii. O nota de lucru numerotata (paranteza care incepe cu N si un numar) se recunoaste insa la orice
+# lungime: felia 145 a gasit in DPA o nota de peste 300 de caractere, pe care plafonul o lasa sa treaca.
+TIPAR_MARCAJ = re.compile(r'\[([^\[\]]{1,300})\](?!\()')
+TIPAR_NOTA_NUMEROTATA = re.compile(r'\[(N\d+\b[^\[\]]*)\](?!\()')
+
+
+def marcaje_admise(radacina, mediu_proces=None):
+    """Registrul J-01 normalizat NFC: MARCAJE_ADMISE si, cu modelul aprins, marcajul D2 in ambele limbi."""
     _, _, rel, cfg = stare_operator(radacina, mediu_proces)
     model, _ = model_d2(radacina, cfg, rel)
     admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())
     if model is not None:
         for limba in ('ro', 'en'):
             admise[nfc(model['marcaj'][limba])] = 'modelul D2 (plan 3s-md §0, D2)'
-    for nume, text in pagini_juridice(radacina, construite):
+    return admise
+
+
+def marcaje_fara_decizie(text, admise):
+    """{marcaj: de cate ori} pentru marcajele din `text` care nu sunt in `admise`. Aceeasi regula pentru
+    textul vizibil al unei pagini construite si pentru sirurile unui modul nepublicat."""
+    gasite = {}
+    for tipar in (TIPAR_MARCAJ, TIPAR_NOTA_NUMEROTATA):
+        for m in tipar.finditer(text):
+            gasite[m.start()] = m.group(1)
+    vazute = {}
+    for _, interior in sorted(gasite.items()):
+        if not re.search(r'[^\W\d_]', interior):
+            continue
+        marcaj = '[' + re.sub(r'\s+', ' ', interior).strip() + ']'
+        if nfc(marcaj) not in admise:
+            vazute[marcaj] = vazute.get(marcaj, 0) + 1
+    return vazute
+
+
+# --- J-01 pe documentele NEPUBLICATE (felia 145) ---
+# DPA si pagina subimputernicitilor nu se construiesc pana la poarta lor (config/juridic-rute.json), deci
+# ramura de mai sus, care citeste HTML-ul construit, nu le vede niciodata. Ele insotesc insa oferta (Termeni
+# 4.2 si 4.5): ce scrie in ele ajunge la client ca text contractual, iar o nota de lucru e acolo la fel de
+# gresita ca pe o pagina publicata. Pentru fiecare document cu poarta DUPA cea curenta se citesc sirurile
+# modulului lui (src/content/juridic/md/<cheie>.<limba>.ts), cu aceeasi regula si acelasi registru.
+# Un arbore fara dosarul modulelor (arborii fabricati ai martorilor si ai probei) nu are ce citi; unul cu
+# dosarul, dar fara modulul unui document nepublicat, e o constatare: notele lui nu se pot verifica.
+CALE_MODULE_MD = ('src', 'content', 'juridic', 'md')
+# O legatura in stil markdown (`[text](adresa)`) iese din sir inainte de potrivire, oglinda lui `fara_legaturi`
+# de pe HTML-ul construit: pe pagina publicata, continutul elementului <a> iese, deci o nota care contine o
+# legatura ramane o nota prinsa. Fara asta, pe sirul modulului, TIPAR_MARCAJ o exclude prin (?!\() si
+# TIPAR_NOTA_NUMEROTATA nu trece de paranteza interioara: nota cu legatura scapa cu zero constatari.
+LEGATURA_MD = re.compile(r'\[[^\[\]]*\]\([^)]*\)')
+TEMEI_NEPUBLICAT = ('documentul nepublicat insoteste oferta (Termeni 4.2 si 4.5) si ajunge la client ca text '
+                    'contractual; un marcaj din el spune ca informatia lipseste, ca pe o pagina publicata')
+
+
+def siruri_ts(sursa):
+    """Literalii de sir dintr-un modul TypeScript de date (ghilimele duble, apostrof, accent grav), in ordine,
+    cu secventele de evadare rezolvate. Comentariile se sar. Limite declarate: o expresie regulata literala
+    care contine ghilimele ar deplasa citirea (modulele juridice nu au), iar un marcaj compus din doi literali
+    lipiti cu `+` nu e vazut ca un singur marcaj."""
+    siruri = []
+    i, n = 0, len(sursa)
+    while i < n:
+        if sursa.startswith('//', i):
+            j = sursa.find('\n', i)
+            i = n if j < 0 else j
+            continue
+        if sursa.startswith('/*', i):
+            j = sursa.find('*/', i + 2)
+            i = n if j < 0 else j + 2
+            continue
+        ghilimea = sursa[i]
+        if ghilimea not in '"\'`':
+            i += 1
+            continue
+        j = i + 1
+        while j < n and sursa[j] != ghilimea:
+            j += 2 if sursa[j] == '\\' else 1
+        brut = sursa[i + 1:j]
+        if ghilimea == '"':
+            try:
+                brut = json.loads('"' + brut + '"')
+            except ValueError:
+                pass
+        siruri.append(brut)
+        i = j + 1
+    return siruri
+
+
+def module_nepublicate(radacina):
+    """[(cheie, limba, cale relativa a modulului)] pentru documentele familiei `md` cu poarta dupa cea curenta,
+    sau [] cand configurarea nu se poate citi ori arborele nu are dosarul modulelor."""
+    rute, _ = rute_md(radacina)
+    if rute is None or not os.path.isdir(os.path.join(radacina, *CALE_MODULE_MD)):
+        return []
+    documente, poarta = rute
+    publicate = publicate_md(documente, poarta)
+    return [(cheie, limba, '/'.join(CALE_MODULE_MD + (cheie + '.' + limba + '.ts',)))
+            for cheie in sorted(documente) if cheie not in publicate for limba in ('ro', 'en')]
+
+
+def verifica_marcaje_nepublicate(radacina, sever_prezenta, admise):
+    g = []
+    for cheie, limba, rel in module_nepublicate(radacina):
+        cale = os.path.join(radacina, *rel.split('/'))
+        if not os.path.isfile(cale):
+            g.append((sever_prezenta, 'J-01', rel + ': lipseste modulul documentului nepublicat ' + cheie + ' (' + limba
+                      + '), deci marcajele lui nu se pot verifica | TEMEI: ' + TEMEI_NEPUBLICAT))
+            continue
         vazute = {}
-        for m in re.finditer(r'\[([^\[\]]{1,300})\](?!\()', text_vizibil(text, fara_legaturi=True)):
-            if not re.search(r'[^\W\d_]', m.group(1)):
-                continue
-            marcaj = '[' + re.sub(r'\s+', ' ', m.group(1)).strip() + ']'
-            if nfc(marcaj) not in admise:
-                vazute[marcaj] = vazute.get(marcaj, 0) + 1
+        for sir in siruri_ts(citeste(cale)):
+            sir = LEGATURA_MD.sub(' ', unicodedata.normalize('NFC', sir))
+            for marcaj, numar in marcaje_fara_decizie(sir, admise).items():
+                vazute[marcaj] = vazute.get(marcaj, 0) + numar
+        for marcaj, numar in sorted(vazute.items()):
+            g.append((sever_prezenta, 'J-01', rel + ': marcaj fara decizie in documentul nepublicat ' + cheie + ' ('
+                      + limba + ') ' + marcaj + (' (de ' + str(numar) + ' ori)' if numar > 1 else '')
+                      + ' | TEMEI: ' + TEMEI_NEPUBLICAT))
+    return g
+
+
+def verifica_marcaje(radacina, construite, sever_prezenta, mediu_proces=None):
+    g = []
+    admise = marcaje_admise(radacina, mediu_proces)
+    for nume, text in pagini_juridice(radacina, construite):
+        vazute = marcaje_fara_decizie(text_vizibil(text, fara_legaturi=True), admise)
         for marcaj, numar in sorted(vazute.items()):
             g.append((sever_prezenta, 'J-01', nume + ': marcaj fara decizie pe pagina juridica ' + marcaj
                       + (' (de ' + str(numar) + ' ori)' if numar > 1 else '') + ' | TEMEI: ' + TEMEI_MARCAJ))
+    g.extend(verifica_marcaje_nepublicate(radacina, sever_prezenta, admise))
     # Acoladele duble: oricand OPRESTE, pe orice pagina construita (absenta, gratuita de satisfacut).
     for nume, text in construite:
         if '{{' in html_fara_cod(text):
@@ -1311,6 +1421,42 @@ def controale():
         if not any(c == 'J-01' and sev == OPRESTE for sev, c, _ in ga):
             return 'martorul J-01: acoladele duble din HTML-ul construit nu au OPRIT pe staging'
 
+        # --- martorii J-01 pe documentele nepublicate (felia 145) ---
+        # Configurarea familiei md cu un document publicat la poarta curenta si unul cu poarta dupa ea, plus
+        # modulele celui din urma. POZITIV: o nota scurta si una de peste 300 de caractere, fiecare in sirul ei,
+        # ies cate o data pe modulul romanesc, AVERT pe staging si OPRESTE la productie. NEGATIV, in acelasi
+        # modul: parantezele din sintaxa (tablouri), dintr-un comentariu, o legatura markdown si o paranteza fara
+        # litere nu ies, iar modulul englez, fara note, nu iese deloc. Apoi modulul englez lipsa e o constatare.
+        # Operatorul e null, ca singurele constatari sa fie J-01. Notele se lipesc din bucati la rulare.
+        nepublicat = os.path.join(temp, 'nepublicat')
+        fabrica_arbore(nepublicat, defect=False, cu_operator=False, cu_rute=False)
+        scrie(os.path.join(nepublicat, *CALE_RUTE_MD), json.dumps({'poarta_curenta': 'B', 'documente': {
+            'informatii-legale': {'ro': '/ro/juridic/informatii-legale', 'en': '/legal/legal-information', 'poarta': 'B'},
+            'acord': {'ro': '/ro/juridic/acord', 'en': '/legal/agreement', 'poarta': 'C'}}}))
+        nota_scurta = '[N' + '7: exportul complet, ' + 'de confirmat]'
+        nota_lunga = '[N' + '12: ' + 'detaliu de lucru ' * 25 + ']'
+        corp_modul = ('// Comentariu cu [paranteze cu litere], in afara sirurilor\n'
+                      'export default function d(c) { return { tabel: [["Element", "Date"]], paragrafe: ['
+                      '"Text cu [o legatura](cale:termeni) si [12] " + c.x + " NOTA_SCURTA", "NOTA_LUNGA"] } }\n')
+        dosar_module = os.path.join(nepublicat, *CALE_MODULE_MD)
+        scrie(os.path.join(dosar_module, 'acord.ro.ts'),
+              corp_modul.replace('NOTA_SCURTA', nota_scurta).replace('NOTA_LUNGA', nota_lunga))
+        scrie(os.path.join(dosar_module, 'acord.en.ts'),
+              corp_modul.replace('NOTA_SCURTA', 'and plain text').replace('NOTA_LUNGA', 'More plain text'))
+        asteptate = ['[' + re.sub(r'\s+', ' ', n[1:-1]).strip() + ']' for n in (nota_scurta, nota_lunga)]
+        for mediu_martor, sev_ceruta in (('staging', AVERT), ('productie', OPRESTE)):
+            gn, _ = analizeaza(nepublicat, mediu_martor)
+            j01 = [(sev, m) for sev, c, m in gn if c == 'J-01']
+            prinse = all(any('acord.ro.ts' in m and nfc(marcaj) in m for _, m in j01) for marcaj in asteptate)
+            if len(gn) != len(j01) or len(j01) != 2 or not prinse or any(sev != sev_ceruta for sev, _ in j01):
+                return ('martorii J-01 pe documentele nepublicate (' + mediu_martor + '): nota scurta si cea lunga '
+                        'din modulul romanesc trebuie sa iasa cate o data, ' + sev_ceruta + ', si nimic altceva: '
+                        + '; '.join(c + ' ' + m[:120] for _, c, m in gn))
+        os.remove(os.path.join(dosar_module, 'acord.en.ts'))
+        gn, _ = analizeaza(nepublicat, 'staging')
+        if not any(c == 'J-01' and sev == AVERT and 'acord.en.ts' in m and 'lipseste modulul' in m for sev, c, m in gn):
+            return 'martorul J-01 pe documentele nepublicate: modulul englez lipsa nu a fost raportat'
+
         # al patrulea martor: prospetimea build-ului. Arborele curat de mai sus are
         # HTML-ul scris ULTIMUL, deci proaspat - nu trebuie raportat invechit. Acelasi
         # arbore cu HTML-ul imbatranit cu o ora trebuie raportat invechit.
@@ -1386,7 +1532,12 @@ def main():
     print('CONTROALE: martor pozitiv OK, martor negativ OK, martor de mediu OK, martor fara operator OK, '
           'martori L-15 dupa operator OK, martori L-15 politica de cookie-uri dupa banner OK, '
           'martori L-15 pe calea intreaga a paginii OK, martori exceptie C-01 OK, martor L-10 pe identificator OK, '
-          'martori C-01 dupa rel OK, martori OPERATOR_JSON OK, martori J-01 OK, martori asezare OK')
+          'martori C-01 dupa rel OK, martori OPERATOR_JSON OK, martori J-01 OK, martori J-01 pe documentele '
+          'nepublicate OK, martori asezare OK')
+    # Documentele nepublicate citite din module (J-01, felia 145): zero inseamna ca ramura n-a avut ce citi.
+    citite = [rel for _, _, rel in module_nepublicate(radacina) if os.path.isfile(os.path.join(radacina, *rel.split('/')))]
+    print('J-01 documente nepublicate: ' + str(len(citite)) + ' module citite'
+          + (' (' + ', '.join(c.rsplit('/', 1)[-1] for c in citite) + ')' if citite else ''))
     print('MEDIU: ' + a.mediu + ' (la productie, avertismentele de mai sus devin opriri)')
     # Linie separata la fiecare rulare: jobul CI al unui domeniu cu asezarea `ro` cere sa vada `asezare: ro`.
     print('asezare: ' + asezare + ' (' + ('din ' + '/'.join(CALE_PROFIL_BUILD) if os.path.isfile(

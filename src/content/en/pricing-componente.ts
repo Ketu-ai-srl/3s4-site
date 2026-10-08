@@ -52,7 +52,7 @@ export function miiEn(n: number): string {
 }
 
 /** Taxa de conectare, cuvant cu cuvant, cum o citesc pliul suplimentelor si /enterprise. */
-export const CONECTARE_EN = "EUR " + CONECTARE.eur + " per " + miiEn(CONECTARE.pagini) + " pages imported, once";
+export const CONECTARE_EN = "EUR\u00a0" + CONECTARE.eur + " per " + miiEn(CONECTARE.pagini) + " pages imported, once";
 
 /** Limitele unui plan (fara conturi), in unitatile editiei: cifra ingrosata si textul de dupa ea. */
 export function limiteEn(cheie: CheiePlanLimite): { cifra: string; text: string }[] {
@@ -84,9 +84,9 @@ export const ANTET_PRETURI_EN: { fir: NivelFir[]; titlu: string; subtitlu: strin
     { text: "Home", cale: "/" },
     { text: "Pricing", cale: CALE_PRETURI_EN },
   ],
-  titlu: "3S pricing: four plans, in euros",
+  titlu: "3S pricing: four plans, in\u00a0euros",
   subtitlu:
-    "3S has four plans, priced per company in euros, excluding VAT: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month, for 5, 10 and 20 user accounts; Enterprise from EUR 800 a month. Every start is a free 14-day pilot.",
+    "3S has four plans, priced per company in euros, excluding VAT: Starter EUR\u00a090, Pro EUR\u00a0150 and Business EUR\u00a0240 a month, for 5, 10 and 20 user accounts; Enterprise from EUR\u00a0800 a month. Every start is a free 14-day pilot.",
 };
 
 /** `preturi.ts:48-49`: numele accesibile ale poartei si ale pliurilor. */
@@ -104,7 +104,7 @@ export const POARTA_BAZA_EN: CardPoarta = {
 export const POARTA_ENTERPRISE_EN: CardPoarta & { tinta: Legatura } = {
   nume: "Enterprise",
   titlu: "For more than 20 user accounts",
-  text: "From EUR 800 a month, on an annual contract. We send you a written offer.",
+  text: "From EUR\u00a0800 a month, on an annual contract. We send you a written offer.",
   mergi: "Enterprise details",
   tinta: { text: "3S Enterprise", href: "/enterprise", ruta: "/enterprise" },
 };
@@ -215,23 +215,27 @@ export const CURSOARE_EN: Record<"persoane" | "minute" | "tarif", Cursor> = {
   },
 };
 
-/** Textele calculatorului (`preturi.ts:161-232`); moneda sta inaintea sumei ("EUR 1,833"). */
+/**
+ * Textele calculatorului (`preturi.ts:161-232`); moneda sta inaintea sumei ("EUR 1,833"). Orele afisate sunt
+ * rotunjite (o zecimala sub 100, intregi de la 100), iar calculul porneste de la estimari, deci fraza spune "about"
+ * langa ore.
+ */
 export const CALCULATOR_EN = {
   teaser: {
     presupuneri: (oameni: string, minute: string) => "With " + oameni + " searching for documents " + minute + " a day",
-    rezultat: (ore: string) => "totals " + ore + " a month",
+    rezultat: (ore: string) => "totals about\u00a0" + ore + " a month",
     cta: "Try it with your own figures",
   },
   eticheta: "Time lost searching for documents",
   zileLucratoare: 22,
-  timpAcum: { inainte: "Today you pay EUR ", dupaBani: " a month for the ", dupaOre: " h your team spends searching through folders." },
-  pretInOre: { inainte: "The plan that fits is ", dupaPlan: ": EUR ", dupaPret: " a month, the cost of ", dupaOre: " h of work at the chosen rate." },
+  timpAcum: { inainte: "Today you pay EUR\u00a0", dupaBani: " a month for about\u00a0", dupaOre: "\u00a0h your team spends searching through folders." },
+  pretInOre: { inainte: "The plan that fits is ", dupaPlan: ": EUR\u00a0", dupaPret: " a month, the cost of about\u00a0", dupaOre: "\u00a0h of work at the chosen rate." },
   // Cu comutatorul pe Annual, pretul planului e cel anual pe luna: fraza spune perioada.
   pretInOreAnual: {
     inainte: "The plan that fits is ",
-    dupaPlan: ": EUR ",
-    dupaPret: " a month billed annually, the cost of ",
-    dupaOre: " h of work at the chosen rate.",
+    dupaPlan: ": EUR\u00a0",
+    dupaPret: " a month billed annually, the cost of about\u00a0",
+    dupaOre: "\u00a0h of work at the chosen rate.",
   },
   pesteConturi: {
     inainte: (persoane: number) => "For " + persoane + " people, the plans are not enough: talk to the 3S team about ",
@@ -329,7 +333,7 @@ export const TABEL_EN: ContinutTabelPlanuri = {
         { functie: "Free 14-day pilot", celule: toate(DA) },
         { functie: "Per-user fee", celule: toate(valoare("None")) },
         // Celula ramane scurta (coloana planului are 7,5rem): unitatea si "o data" stau in eticheta randului.
-        { functie: "One-time connection, per " + miiEn(CONECTARE.pagini) + " pages", celule: toate(valoare("EUR " + CONECTARE.eur)) },
+        { functie: "One-time connection, per " + miiEn(CONECTARE.pagini) + " pages", celule: toate(valoare("EUR\u00a0" + CONECTARE.eur)) },
       ],
     },
     {
@@ -368,7 +372,7 @@ function grupuriSuplimenteEn(): { titlu: string; randuri: RandSupliment[] }[] {
     titlu: RESURSA_EN[r].grup,
     randuri: SUPLIMENTE.filter((x) => x.resursa === r).map((x) => ({
       supliment: RESURSA_EN[r].unitate(x.cantitate),
-      pret: "EUR " + miiEn(x.pretEur),
+      pret: "EUR\u00a0" + miiEn(x.pretEur),
       facturare: x.facturare === "lunar" ? "Every month" : VALABIL_EN,
     })),
   }));

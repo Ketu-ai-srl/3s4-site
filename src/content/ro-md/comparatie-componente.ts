@@ -68,7 +68,9 @@ export const DIVIZAT_COMPARATIE_RO_MD: CardDivizatProps = {
     titlu: "Când se potrivește 3S",
     elemente: [
       "Ai nevoie să testezi 3S pe documentele firmei",
-      "Descarci e-facturile ca XML din RO e-Factura",
+      // Numele sistemului nu se rupe: spatiu nedespartitor dupa "RO" si legatorul de cuvinte U+2060 dupa cratima (cratima
+      // ramane cea simpla; la 390 si la 768 px se rupea in "RO e-" / "Factura").
+      "Descarci e-facturile ca XML din RO\u00a0e-\u2060Factura",
       "Fiecare răspuns trebuie să indice sursa",
       "Ai nevoie de ajutor la primele documente",
     ],

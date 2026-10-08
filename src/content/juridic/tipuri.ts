@@ -41,6 +41,14 @@ export type LimbaJuridica = "ro" | "en";
 /** O legatura interna pe cheie, ca adresa in marcajul in linie: `cale:<cheie>` sau `cale-ro:<cheie>`. */
 export const TIPAR_LEGATURA_INTERNA = /^(cale|cale-ro):([a-z0-9-]+)$/;
 
+/**
+ * Prefixul adresei unei legaturi `cale-ro:` REZOLVATE (`./index.ts`, `rezolvaLegaturi`): tinta e pagina romaneasca,
+ * deschisa dintr-o pagina in alta limba, deci ancora poarta `lang="ro"` si `hrefLang` al editiei RO-MD, ca eticheta
+ * locala din subsolul EN. `fragmenteInLinie` il scoate din adresa si il trece in `limba`, deci cititorii fragmentelor
+ * vad calea curata; numai cine citeste sirul brut il vede.
+ */
+export const PREFIX_LEGATURA_RO = "lang-ro:";
+
 /** O celula de tabel: text, sau un nume in `strong` cu un rand de detaliu in `small` (sablon §6). */
 export type CelulaJuridica = string | { text: string; detaliu: string };
 
@@ -108,10 +116,17 @@ export type DocumentJuridic = {
 export type FragmentInLinie =
   | { fel: "text"; text: string }
   | { fel: "accent"; text: string; fragmente: readonly FragmentInLinie[] }
-  | { fel: "legatura"; text: string; adresa: string };
+  | { fel: "legatura"; text: string; adresa: string; limba?: "ro" };
 
 const TIPAR_IN_LINIE = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
 const TIPAR_LEGATURA = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+/** O legatura din marcaj; prefixul `PREFIX_LEGATURA_RO` trece din adresa in `limba` (cheia lipseste altfel). */
+function fragmentLegatura(text: string, adresa: string): FragmentInLinie {
+  return adresa.startsWith(PREFIX_LEGATURA_RO)
+    ? { fel: "legatura", text, adresa: adresa.slice(PREFIX_LEGATURA_RO.length), limba: "ro" }
+    : { fel: "legatura", text, adresa };
+}
 
 /** Interiorul unui accent: text si legaturi, in ordinea lor (fara accent in accent). */
 function fragmenteAccent(sir: string): FragmentInLinie[] {
@@ -120,7 +135,7 @@ function fragmenteAccent(sir: string): FragmentInLinie[] {
   for (const m of sir.matchAll(TIPAR_LEGATURA)) {
     const inceput = m.index ?? 0;
     if (inceput > pozitie) fragmente.push({ fel: "text", text: sir.slice(pozitie, inceput) });
-    fragmente.push({ fel: "legatura", text: m[1], adresa: m[2] });
+    fragmente.push(fragmentLegatura(m[1], m[2]));
     pozitie = inceput + m[0].length;
   }
   if (pozitie < sir.length) fragmente.push({ fel: "text", text: sir.slice(pozitie) });
@@ -137,7 +152,7 @@ export function fragmenteInLinie(sir: string): FragmentInLinie[] {
     if (m[1] !== undefined) {
       const interior = fragmenteAccent(m[1]);
       fragmente.push({ fel: "accent", text: interior.map((f) => f.text).join(""), fragmente: interior });
-    } else fragmente.push({ fel: "legatura", text: m[2], adresa: m[3] });
+    } else fragmente.push(fragmentLegatura(m[2], m[3]));
     pozitie = inceput + m[0].length;
   }
   if (pozitie < sir.length) fragmente.push({ fel: "text", text: sir.slice(pozitie) });

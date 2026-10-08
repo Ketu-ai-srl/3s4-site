@@ -28,6 +28,7 @@ import type { SlugJuridic } from "./publicare";
 import { reguliPublice } from "./reguli-publice";
 import { listaSubimputerniciti } from "./subimputerniciti";
 import { termeni } from "./termeni";
+import { PREFIX_LEGATURA_RO } from "./tipuri";
 import type { BlocJuridic, ConditieMasurare, DocumentJuridic, LimbaJuridica, ListaJuridica, SectiuneJuridica, TabelJuridic } from "./tipuri";
 
 /** Documentele construite: cheie (slugul, la SEE; cheia din registru, la `md`) -> document. */
@@ -91,13 +92,18 @@ function mapaSee(t: TexteJuridiceSee): TexteJuridice {
 const TIPAR_LEGATURA = /\[([^\]]+)\]\(([^)\s]+)\)/g;
 const TIPAR_CHEIE = /^(cale|cale-ro):([a-z0-9-]+)$/;
 
-/** Rezolva legaturile interne pe cheie dintr-un sir: adresa, sau textul legaturii fara legatura. */
+/**
+ * Rezolva legaturile interne pe cheie dintr-un sir: adresa, sau textul legaturii fara legatura. O legatura `cale-ro:`
+ * isi pastreaza forma in adresa rezolvata, prin `PREFIX_LEGATURA_RO`: tinta e in romana, deci pagina ii scrie `lang`
+ * si `hrefLang` (`TextInLinie`). Fara prefix, forma s-ar pierde aici si ancora ar iesi fara atributele de limba.
+ */
 export function rezolvaLegaturi(sir: string, limba: LimbaJuridica, poarta: PoartaPublicare = POARTA_CURENTA): string {
   return sir.replace(TIPAR_LEGATURA, (tot: string, text: string, adresa: string) => {
     const m = TIPAR_CHEIE.exec(adresa);
     if (m === null) return tot;
     const tinta = tintaLegatura(m[1] as "cale" | "cale-ro", m[2], limba, poarta);
-    return tinta.fel === "adresa" ? "[" + text + "](" + tinta.cale + ")" : text;
+    if (tinta.fel === "text") return text;
+    return "[" + text + "](" + (m[1] === "cale-ro" ? PREFIX_LEGATURA_RO : "") + tinta.cale + ")";
   });
 }
 

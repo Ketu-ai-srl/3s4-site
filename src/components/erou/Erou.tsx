@@ -114,6 +114,36 @@ export type ErouProps = {
   lansare?: boolean;
 };
 
+// TITLUL FARA CUVANT SINGUR PE UN RAND. Fiecare propozitie sta in blocul ei (`.propozitie`, cu `balance`), iar
+// ultimele doua cuvinte ale fiecarei propozitii stau intr-un `<span data-lipit>` care nu se rupe: textul ramane
+// cel aprobat, caracter cu caracter (si `textContent`), se schimba numai locul in care randul are voie sa se rupa.
+// Masurat pe startul EN la 390 (358 px): `balance` singur lasa "documents." pe randul al doilea; cu legatura iese
+// "Ask your" / "company's documents.".
+// O propozitie de cel mult trei cuvinte ("Intreaba documentele firmei.") nu se poate rupe fara un rand de un
+// cuvant; pe asezarea pe doua coloane (de la 1181 px) ea poate folosi si golul dintre coloane (`data-scurta`,
+// Erou.module.css), deci incape pe un rand la 1440. Cu marimea din `.t-h1-erou` ea nu
+// incapea sub 390 px si peste ~1520 px, iar `balance` lasa singur primul cuvant; de aceea marimea titlului
+// startului are plafon peste 1180 px si urmeaza fereastra sub 390 px (Erou.module.css).
+
+/** Numarul de cuvinte al unui sir (despartite de spatii). */
+function cuvinte(t: string): number {
+  return t.trim().split(/\s+/).length;
+}
+
+/** Sirul, cu ultimele doua cuvinte legate (nu se despart la rupere); sub doua cuvinte, sirul ca atare. */
+function Lipit({ text }: { text: string }) {
+  const t = text.trimEnd();
+  const ultim = t.lastIndexOf(" ");
+  const penultim = ultim < 0 ? -1 : t.lastIndexOf(" ", ultim - 1);
+  if (ultim < 0) return <>{text}</>;
+  return (
+    <>
+      {t.slice(0, penultim + 1)}
+      <span data-lipit="">{t.slice(penultim + 1)}</span>
+    </>
+  );
+}
+
 export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
   const e = continut;
   // Figura (decizia 61): doua inele, fiecare cu inelul interior al pistei, urma lunga si capul. Urmele
@@ -239,9 +269,17 @@ export default function Erou({ continut = EROU, butoane, lansare }: ErouProps) {
 
             <div className={s.titluBloc}>
               <h1 id="erou-titlu" className={"t-h1-erou " + s.titlu}>
-                {e.titlu.primaPropozitie}
-                <br />
-                {e.titlu.aDouaInainteDeAccent} <span className={s.accent}>{e.titlu.accent}</span>
+                <span className={s.propozitie} {...(cuvinte(e.titlu.primaPropozitie) <= 3 ? { "data-scurta": "" } : {})}>
+                  <Lipit text={e.titlu.primaPropozitie} />
+                </span>
+                <span className={s.propozitie}>
+                  {/* Un singur sir: cu `{x}{" "}` React emite un comentariu intre ele, iar numele accesibil al H1-ului
+                      lipea ultimul cuvant de accent. */}
+                  {e.titlu.aDouaInainteDeAccent + " "}
+                  <span className={s.accent}>
+                    <Lipit text={e.titlu.accent} />
+                  </span>
+                </span>
               </h1>
               <p className={s.subtitlu}>{e.subtitlu}</p>
             </div>

@@ -12,10 +12,17 @@
 // PE EDITIE: vederea nu importa niciun continut. Butonul, foaia (cu moneda din antetul coloanelor),
 // calea paginii si planurile vin de la invelitoarea editiei (`ListaPdf.tsx` pe RO); data zilei se scrie
 // cu `formatData`, tot al editiei, fiindca numele lunilor sunt text.
+//
+// ADRESA DE PE FOAIE: editia da calea SURSA a paginii de preturi (`/ro/preturi`, `/pricing`), ca toate datele; foaia
+// scrie calea SERVITA pe domeniul care tipareste, prin aceeasi traducere ca legaturile din pagina (`hrefTinta`). Pe
+// asezarea `md` (3s.md, site-ul RO) e identitatea; pe `ro` (3s.com.ro) `/ro/preturi` devine `/preturi`, iar `/pricing`
+// devine `/en/pricing`. Inainte foaia scria calea sursa, iar pe 3s.com.ro `/pricing` raspunde 404.
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { hrefTinta } from "@/components/primitive/Tinta";
 import type { Plan } from "@/content/preturi";
+import type { CodAsezare, RutaAsezabila } from "@/lib/asezare";
 import { ATRIBUT_FOAIE, CLASA_TIPAR } from "./constante";
 import IconitaPret from "./iconite";
 import s from "./pachete.module.css";
@@ -51,11 +58,19 @@ export type FoaieOfertaVedereProps = {
   data: string;
   continut: ContinutListaPdf;
   planuri: readonly Plan[];
-  /** Calea paginii de preturi, scrisa dupa gazda in ultima nota. */
+  /** Calea SURSA a paginii de preturi; ultima nota scrie, dupa gazda, calea ei servita (`adresaFoii`). */
   cale: string;
+  /** Manifestul rutelor si asezarea; implicit cele ale build-ului. Parametri numai pentru probe. */
+  rute?: readonly RutaAsezabila[];
+  asezare?: CodAsezare;
 };
 
-export function FoaieOfertaVedere({ gazda, data, continut, planuri, cale }: FoaieOfertaVedereProps) {
+/** Adresa scrisa pe foaie: gazda si calea SERVITA a paginii de preturi, tradusa ca `href`-ul unei legaturi. */
+export function adresaFoii(gazda: string, cale: string, rute?: readonly RutaAsezabila[], asezare?: CodAsezare): string {
+  return gazda + hrefTinta(cale, rute, asezare);
+}
+
+export function FoaieOfertaVedere({ gazda, data, continut, planuri, cale, rute, asezare }: FoaieOfertaVedereProps) {
   const f = continut.foaie;
   return (
     <div className={s.foaie} {...{ [ATRIBUT_FOAIE]: "" }} aria-hidden="true">
@@ -97,7 +112,7 @@ export function FoaieOfertaVedere({ gazda, data, continut, planuri, cale }: Foai
         ))}
         <p>
           {f.adresa}
-          <span className={s.foaieMono}>{gazda + cale}</span>
+          <span className={s.foaieMono}>{adresaFoii(gazda, cale, rute, asezare)}</span>
         </p>
       </div>
     </div>

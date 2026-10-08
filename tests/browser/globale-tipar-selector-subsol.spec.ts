@@ -37,12 +37,9 @@ import { RADACINA } from './ajutor/proiect'
  *  4. HTML-ul servit al starturilor (EN si RO, ambele copii) are `<meta name="format-detection" content="telephone=no">`;
  *  5. pe starturi (EN si RO), la 1440, 718 si 390: niciun titlu principal (H1-ul eroului si titlurile de sectiune,
  *     clasele `t-h1-erou` si `t-h2-sectiune`) nu are pe ultimul lui rand un singur cuvant, cand
- *     ultimul segment (de la ultimul `<br>` la capat) are cel putin trei cuvinte. LIMITA DECLARATA: un segment inchis
- *     de un `<br>` (prima propozitie a H1-ului eroului) nu e atins de nicio regula `text-wrap` - navigatorul nu
- *     echilibreaza un bloc cu rupere fortata -, deci acolo cuvantul singur se masoara si se scrie in jurnal, dar
- *     nici marcajul nu-l repara: masurat cu propozitia pusa in blocul ei, `pretty` lasa cuvantul singur pe loc, iar
- *     `balance` il muta pe primul rand (RO, trei cuvinte: orice impartire in doua randuri lasa unul singur) sau nu
- *     schimba nimic (EN). Se repara numai din text sau din latimea titlului;
+ *     ultimul segment (de la ultimul `<br>` la capat) are cel putin trei cuvinte. Prima propozitie a H1-ului eroului
+ *     (limita declarata aici pana la felia 147) are acum blocul ei si o proba proprie, cu fiecare propozitie masurata
+ *     separat: `titluri-tipar-404.spec.ts`. H1-ul nu mai are `<br>`, deci aici e un singur segment;
  *
  * MARTORII:
  *  - POZITIV, tiparirea: aceeasi masuratoare, dupa ce regulile de tiparire ale feliei se scot din foaia de stil a
@@ -51,7 +48,8 @@ import { RADACINA } from './ajutor/proiect'
  *  - POZITIV, selectorul: cu asezarea veche repusa pe panou (aliniat la dreapta, fara plafon), panoul iese din ecran;
  *  - POZITIV, subsolul: cu grila veche repusa si bucatile nerupte lasate sa se rupa, numarul, cuvantul si o legatura
  *    scurta se rup; cu coloane de legaturi mai late decat containerul, masuratoarea vede grila iesita;
- *  - POZITIV, titlurile: cu `text-wrap: wrap` pus inapoi pe H1-ul startului la 1440, cuvantul singur reapare;
+ *  - POZITIV, titlurile: cu `text-wrap: wrap` pus inapoi pe H1-ul startului la 1440 (si, de la felia 147, pe
+ *    propozitiile lui, cu ultimele doua cuvinte lasate sa se desparta), cuvantul singur reapare;
  *  - NEGATIV, foaia de tipar a listei de preturi: cu si fara regulile feliei, foaia e singura pe hartie si are exact
  *    aceeasi asezare (dreptunghiul fiecarui element), deci regulile noi nu o ating;
  *  - NEGATIV, selectorul din antet la 1440 ramane aliniat la dreapta butonului lui (regula subsolului nu se scurge);
@@ -699,8 +697,16 @@ test.describe('titlurile startului', () => {
   test('martor POZITIV: cu text-wrap: wrap pus inapoi pe H1-ul startului la 1440, cuvantul singur reapare', async ({ page }) => {
     test.setTimeout(60_000)
     await deschide(page, comro.baza + '/', 1440)
+    // De la felia 147 fiecare propozitie a H1-ului are blocul ei, cu `balance` si cu ultimele doua cuvinte legate
+    // (`[data-lipit]`): `wrap` pus numai pe H1 nu le mai atinge, deci martorul le scoate si pe ele.
     await page.evaluate(() => {
-      ;(document.querySelector('main h1') as HTMLElement).style.textWrap = 'wrap'
+      const h1 = document.querySelector('main h1') as HTMLElement
+      h1.style.textWrap = 'wrap'
+      for (const b of h1.querySelectorAll<HTMLElement>(':scope > span')) {
+        b.style.textWrap = 'wrap'
+        b.style.margin = '0'
+      }
+      for (const l of h1.querySelectorAll<HTMLElement>('[data-lipit]')) l.style.whiteSpace = 'normal'
     })
     const [h1] = await masoaraTitluri(page, 'main h1')
     console.log('[titluri martor+] ' + JSON.stringify(h1))

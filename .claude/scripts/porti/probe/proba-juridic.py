@@ -283,6 +283,31 @@ def arbore_md(operator=None, limbi=('ro', 'en'), lipsa=(), fara_legatura=(), in_
     return d
 
 
+# Documentele cu poarta DUPA cea curenta (azi DPA si subimputernicitii): nu se construiesc, iar J-01 le citeste
+# din module (felia 145). Lista vine din configurarea reala, nu e scrisa aici.
+NEPUBLICATE = [c for c in RUTE_MD['documente'] if c not in PUBLICATE_B]
+
+
+def module_nepublicate_reale(plantate=None):
+    """COPII ale modulelor reale ale documentelor nepublicate, ca `fisiere_in_plus` pentru arbore_md. `plantate` =
+    {nume fisier: (ancora, nota)}: nota se pune dupa ancora, in copie. O ancora care nu apare exact o data in
+    modulul viu opreste proba (cazul nu ar mai planta nimic si ar trece din motivul gresit)."""
+    fisiere = {}
+    for cheie in NEPUBLICATE:
+        for limba in ('ro', 'en'):
+            nume = cheie + '.' + limba + '.ts'
+            with open(os.path.join(RADACINA, 'src', 'content', 'juridic', 'md', nume), encoding='utf-8') as f:
+                text = f.read()
+            if plantate and nume in plantate:
+                ancora, nota = plantate[nume]
+                if text.count(ancora) != 1:
+                    raise SystemExit('proba-juridic: ancora "' + ancora + '" apare de ' + str(text.count(ancora))
+                                     + ' ori in ' + nume + ', nu o data')
+                text = text.replace(ancora, ancora + ' ' + nota)
+            fisiere['src/content/juridic/md/' + nume] = text
+    return fisiere
+
+
 def cazuri_felia72():
     """Cazurile noi, ca date (CAZURI), rulate de main() pe poarta vie si de mutanti pe copii."""
     curat = 'DEFECTE JURIDICE: 0 care opresc, 0 de avertisment'
@@ -375,6 +400,52 @@ def cazuri_felia72():
     acolade = '{' * 2 + 'cale:termeni' + '}' * 2
     defineste('j01-acolade', 'acolade duble in HTML-ul construit: OPRESTE si pe staging',
               lambda: arbore_md(in_plus={'/': '<p>Vezi ' + acolade + '</p>'}), 1, 'OPRESTE  J-01', env=env_operator())
+    # --- felia 145: J-01 pe documentele NEPUBLICATE (DPA si subimputernicitii insotesc oferta, deci nu se construiesc) ---
+    # Fixturile sunt COPII ale modulelor reale, citite la rulare, cu o nota plantata in copie; modulele vii nu se ating.
+    # Notele se lipesc din bucati: proba nu poarta intreg ce vaneaza poarta.
+    md = 'src/content/juridic/md/'
+    nota_dpa = '[N' + '99: nota plantata pe copia DPA]'
+    defineste('j01-dpa-copie-nota', 'nota plantata pe o COPIE a DPA (modul nepublicat): J-01 OPRESTE la productie',
+              lambda: arbore_md(fisiere_in_plus=module_nepublicate_reale({'dpa.ro.ts': ('**13.3 Ștergerea.**', nota_dpa)})),
+              1, 'OPRESTE  J-01  ' + md + 'dpa.ro.ts: marcaj fara decizie in documentul nepublicat dpa (ro) ' + nota_dpa,
+              mediu='productie', env=env_operator())
+    defineste('j01-dpa-copie-nota-staging', 'aceeasi nota pe copia DPA: J-01 AVERT pe staging',
+              lambda: arbore_md(fisiere_in_plus=module_nepublicate_reale({'dpa.ro.ts': ('**13.3 Ștergerea.**', nota_dpa)})),
+              0, 'AVERT    J-01  ' + md + 'dpa.ro.ts: marcaj fara decizie in documentul nepublicat dpa (ro) ' + nota_dpa,
+              env=env_operator())
+    nota_sub = '[N' + '98: nota plantata pe copia listei]'
+    defineste('j01-sub-copie-nota', 'nota plantata pe o COPIE a paginii subimputernicitilor (EN): J-01 OPRESTE la productie',
+              lambda: arbore_md(fisiere_in_plus=module_nepublicate_reale(
+                  {'subimputerniciti.en.ts': ('How to read the transfer columns.', nota_sub)})),
+              1, 'OPRESTE  J-01  ' + md + 'subimputerniciti.en.ts: marcaj fara decizie in documentul nepublicat '
+              'subimputerniciti (en) ' + nota_sub, mediu='productie', env=env_operator())
+    defineste('j01-dpa-copie-curata', 'control: copiile reale ale documentelor nepublicate, modelul aprins: zero J-01 la '
+              'productie (marcajul D2 admis, nicio nota de lucru)',
+              lambda: arbore_md(fisiere_in_plus=module_nepublicate_reale()), 0,
+              'J-01 documente nepublicate: ' + str(2 * len(NEPUBLICATE)) + ' module citite', mediu='productie',
+              env=env_operator(), absent='    J-01  ')
+    defineste('j01-dpa-modul-lipsa', 'modulul englez al DPA lipsa din dosarul modulelor: J-01 OPRESTE la productie',
+              lambda: arbore_md(fisiere_in_plus=dict((k, v) for k, v in module_nepublicate_reale().items()
+                                                     if not k.endswith('/dpa.en.ts'))),
+              1, 'OPRESTE  J-01  ' + md + 'dpa.en.ts: lipseste modulul documentului nepublicat dpa (en)',
+              mediu='productie', env=env_operator())
+    # O nota care contine o legatura markdown: pe pagina publicata continutul <a> iese si nota e prinsa; pe sirul
+    # modulului legatura iese la fel (LEGATURA_MD), altfel nota ar scapa cu zero constatari.
+    nota_leg = '[N' + '96: vezi ' + '[Termeni]' + '(cale:termeni) inainte]'
+    defineste('j01-dpa-copie-nota-legatura', 'nota cu o legatura markdown in ea, plantata pe o COPIE a DPA: J-01 OPRESTE '
+              'la productie, ca pe pagina publicata',
+              lambda: arbore_md(fisiere_in_plus=module_nepublicate_reale({'dpa.ro.ts': ('**13.4 Confirmarea.**', nota_leg)})),
+              1, 'OPRESTE  J-01  ' + md + 'dpa.ro.ts: marcaj fara decizie in documentul nepublicat dpa (ro) [N' + '96: vezi inainte]',
+              mediu='productie', env=env_operator())
+    nota_lunga = '[N' + '97: ' + 'detaliu de lucru ' * 25 + ']'
+    defineste('j01-nota-lunga', 'nota de peste 300 de caractere, pe o pagina publicata si pe copia DPA (EN): J-01 OPRESTE '
+              'pe amandoua la productie',
+              lambda: arbore_md(in_plus={pag_ro: '<p>Text ' + nota_lunga + '</p>'}, fisiere_in_plus=module_nepublicate_reale(
+                  {'dpa.en.ts': ('**13.4 Confirmation.**', nota_lunga)})),
+              1, ['OPRESTE  J-01  .next/server/app/' + html_pentru(pag_ro) + ': marcaj fara decizie pe pagina juridica '
+                  '[N97: detaliu de lucru',
+                  'OPRESTE  J-01  ' + md + 'dpa.en.ts: marcaj fara decizie in documentul nepublicat dpa (en) [N97: detaliu'],
+              mediu='productie', env=env_operator())
     # --- regula 4: familia md ---
     defineste('md-verde', 'familia md completa: date numai pe informatiile legale, legatura pe fiecare pagina: verde',
               arbore_md, 0, 'familie juridica: md', mediu='productie', env=env_operator(), absent=['OPRESTE', 'L-15  '])
@@ -499,8 +570,28 @@ MUTANTI = [
                                 "'[to be published ' + 'before the first client]': 'mutant'}\n")],
      ['j01-de-publicat', 'j01-de-publicat-staging']),
     ('3: acoladele duble nu mai opresc', [("if '" + '{' * 2 + "' in html_fara_cod(text):", 'if False:')], ['j01-acolade']),
-    ('3: legaturile in stil markdown luate drept marcaje', [(r"\](?!\()', text_vizibil", r"\]', text_vizibil")],
+    ('3: legaturile in stil markdown luate drept marcaje',
+     [(r"TIPAR_MARCAJ = re.compile(r'\[([^\[\]]{1,300})\](?!\()')", r"TIPAR_MARCAJ = re.compile(r'\[([^\[\]]{1,300})\]')")],
      ['j01-legaturi']),
+    # Felia 145: documentele nepublicate (DPA, subimputernicitii) citite din module, si nota numerotata de orice lungime.
+    ('3: documentele nepublicate necitite', [('    g.extend(verifica_marcaje_nepublicate(radacina, sever_prezenta, admise))\n',
+                                             '    pass\n')],
+     ['j01-dpa-copie-nota', 'j01-dpa-copie-nota-staging', 'j01-sub-copie-nota', 'j01-dpa-modul-lipsa']),
+    ('3: nota numerotata plafonata la 300 de caractere, ca marcajul obisnuit',
+     [(r"TIPAR_NOTA_NUMEROTATA = re.compile(r'\[(N\d+\b[^\[\]]*)\](?!\()')",
+       r"TIPAR_NOTA_NUMEROTATA = re.compile(r'\[(N\d+\b[^\[\]]{0,290})\](?!\()')")],
+     ['j01-nota-lunga']),
+    ('3: legaturile markdown lasate in sirul modulului (nota cu legatura scapa)',
+     [("            sir = LEGATURA_MD.sub(' ', unicodedata.normalize('NFC', sir))\n",
+       "            sir = unicodedata.normalize('NFC', sir)\n")],
+     ['j01-dpa-copie-nota-legatura']),
+    ('3: modulul lipsa al unui document nepublicat trecut sub tacere',
+     [("        if not os.path.isfile(cale):\n            g.append((sever_prezenta, 'J-01', rel + ': lipseste",
+       "        if not os.path.isfile(cale):\n            continue\n            g.append((sever_prezenta, 'J-01', rel + ': lipseste")],
+     ['j01-dpa-modul-lipsa']),
+    ('3: documentele publicate luate drept nepublicate (poarta curenta ignorata)',
+     [('    publicate = publicate_md(documente, poarta)\n', '    publicate = []\n')],
+     ['j01-dpa-copie-curata']),
     ('3: marcajul D2 admis si cu modelul stins',
      [('    admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())\n',
        '    admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())\n'

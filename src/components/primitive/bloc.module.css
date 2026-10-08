@@ -359,12 +359,18 @@ a.erouInapoi:hover {
   color: var(--color-ardezie-9);
 }
 
+/* Separatorul nu incepe niciodata un rand. Fiecare element isi poarta punctul inainte (punct 3 px + 13,6 px), iar
+   lista e trasa spre stanga cu exact atat si isi taie banda din stanga (`clip-path`): punctul primului element de
+   pe ORICE rand cade in banda taiata, cel dintre elementele aceluiasi rand ramane. Inainte, cand randul se rupea
+   (390 px pe /enterprise), "Peste 20 de conturi" incepea randul 2 cu punctul lui. Pe primul rand asezarea e cea de
+   dinainte. */
 .erouIncredere {
   display: flex;
   flex-wrap: wrap;
   gap: 6.4px 13.6px;
-  margin: 32px 0 0;
+  margin: 32px 0 0 -16.6px;
   padding: 0;
+  clip-path: inset(0 0 0 16.6px);
   list-style: none;
   color: var(--color-ardezie-5);
   font-size: 14px;
@@ -377,7 +383,8 @@ a.erouInapoi:hover {
   gap: 13.6px;
 }
 
-.erouIncredere li + li::before {
+.erouIncredere li::before {
+  flex-shrink: 0;
   content: "";
   width: 3px;
   height: 3px;

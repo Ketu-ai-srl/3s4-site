@@ -70,7 +70,9 @@ describe('/ro/preturi: cardurile, tabelul si pliul suplimentelor', () => {
     expect(pretRoMd.miiRoMd(1000)).toBe('1.000')
     expect(pretRoMd.miiRoMd(20000)).toBe('20.000')
     expect(pretRoMd.miiRoMd(999)).toBe('999')
-    expect(pretRoMd.CONECTARE_RO_MD).toBe('6 EUR la 1.000 de pagini importate, o singură dată')
+    // Felia 143: suma si moneda sunt legate prin spatiu nedespartitor (si "la" de numarul de pagini pe RO), ca taxa sa nu
+    // se rupa la capat de rand pe /enterprise; textul e acelasi.
+    expect(pretRoMd.CONECTARE_RO_MD).toBe('6\u00a0EUR la\u00a01.000 de pagini importate, o singură dată')
   })
 
   it('fiecare card arata conturile si cele patru limite ale planului, din modul, pe randurile 1-5; iconita ramane pe al saselea', () => {
@@ -114,9 +116,10 @@ describe('/ro/preturi: cardurile, tabelul si pliul suplimentelor', () => {
     expect(valori('Răspunsuri AI pe lună')).toEqual(['80', '200', '400'])
     expect(valori('Pagini OCR pe lună')).toEqual(['1.000', '2.500', '5.000'])
     expect(valori('Descărcări pe lună')).toEqual(['15 GB', '30 GB', '60 GB'])
-    expect(valori('Taxă de conectare, la 1.000 de pagini (o singură dată)')).toEqual(['6 EUR', '6 EUR', '6 EUR'])
+    // Felia 143: suma e legata de moneda prin spatiu nedespartitor (la 390 celula se rupea intre "6" si "EUR").
+    expect(valori('Taxă de conectare, la 1.000 de pagini (o singură dată)')).toEqual(['6\u00a0EUR', '6\u00a0EUR', '6\u00a0EUR'])
     const tabel = renderToStaticMarkup(createElement(TabelPlanuri, { continut: pretRoMd.TABEL_RO_MD, planuri: pretRoMd.PLANURI_RO_MD }))
-    for (const t of ['>100 GB<', '>2.500<', '>60 GB<', '>Taxă de conectare, la 1.000 de pagini (o singură dată)<', '>6 EUR<']) expect(tabel, t).toContain(t)
+    for (const t of ['>100 GB<', '>2.500<', '>60 GB<', '>Taxă de conectare, la 1.000 de pagini (o singură dată)<', '>6\u00a0EUR<']) expect(tabel, t).toContain(t)
   })
 
   it('randul pilotului sta intre conturi si costul pe persoana, ca pe EN, si numeste 14 zile', () => {
@@ -137,8 +140,8 @@ describe('/ro/preturi: cardurile, tabelul si pliul suplimentelor', () => {
     expect(pliu.match(/<th scope="row"/g) ?? []).toHaveLength(SUPLIMENTE.length)
     expect(pliu.match(/O singură dată, valabile 90 de zile/g) ?? []).toHaveLength(SUPLIMENTE.filter((s) => s.facturare === 'o-data').length)
     expect(pliu.match(/În fiecare lună/g) ?? []).toHaveLength(SUPLIMENTE.filter((s) => s.facturare === 'lunar').length)
-    for (const s of SUPLIMENTE) expect(pliu, s.resursa + ' ' + s.cantitate).toContain('>' + mii(s.pretEur) + ' EUR<')
-    expect(pliu).toContain('Conectare: 6 EUR la 1.000 de pagini importate, o singură dată')
+    for (const s of SUPLIMENTE) expect(pliu, s.resursa + ' ' + s.cantitate).toContain('>' + mii(s.pretEur) + '\u00a0EUR<') // felia 143: spatiu nedespartitor
+    expect(pliu).toContain('Conectare: 6\u00a0EUR la\u00a01.000 de pagini importate, o singură dată')
     expect(pliu.match(/<h3/g) ?? []).toHaveLength(4)
     expect(pliu).not.toContain('<a ')
   })
@@ -155,7 +158,7 @@ describe('/ro/enterprise: limitele de baza', () => {
       e.raspunsuriAiPeLuna + ' de răspunsuri AI pe lună',
       mii(e.paginiOcrPeLuna) + ' de pagini OCR pe lună',
       e.descarcariGbPeLuna + ' GB de descărcări pe lună',
-      CONECTARE.eur + ' EUR la ' + mii(CONECTARE.pagini) + ' de pagini importate, o singură dată',
+      CONECTARE.eur + '\u00a0EUR la\u00a0' + mii(CONECTARE.pagini) + ' de pagini importate, o singură dată',
     ]) {
       expect(text, t).toContain(t)
     }
