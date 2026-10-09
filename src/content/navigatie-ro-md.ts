@@ -95,7 +95,7 @@ export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
   {
     cale: "/ro/securitate",
     ref: "ro-md-securitate",
-    text: "Bună ziua, 3S. Am citit pagina Despre 3S [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
+    text: "Bună ziua, 3S. Am citit pagina Despre 3S și securitate [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
   },
   {
     cale: "/ro/ghiduri/arhivare-e-facturi-ue",
@@ -157,7 +157,7 @@ const COLOANE_OGLINDA: ColoanaSubsol[] = [
     titlu: "Companie",
     legaturi: [
       legatura("Despre 3S și securitate", "/ro/securitate"),
-      legatura("Securitatea și locul datelor", "/ro/securitate#security"),
+      legatura("Locul datelor", "/ro/securitate#security"),
       legatura("Prețuri", "/ro/preturi"),
       legatura("Contact", "/ro/contact"),
     ],

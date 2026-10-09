@@ -220,8 +220,9 @@ test.describe('la 390', () => {
     expect(m.indicatie).not.toBeNull()
   })
 
+  // Numele panoului e in limba editiei (corectura din 09.10): "Table: " pe pagina engleza, "Tabel: " pe /ro.
   for (const c of [
-    { cale: '/compare/3s-vs-google-and-box', nume: 'Tabel: ' },
+    { cale: '/compare/3s-vs-google-and-box', nume: 'Table: ' },
     { cale: '/ro/comparatie-drive', nume: 'Tabel: ' },
   ]) {
     test(c.cale + ': coloana 3S intreaga fara derulare', async ({ page }) => {

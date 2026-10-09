@@ -61,14 +61,14 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
     // securitate.ts:38-39.
     fir: [
       { text: "Acasă", cale: "/ro" },
-      { text: "Despre 3S", cale: "/ro/securitate" },
+      { text: "Despre 3S și securitate", cale: "/ro/securitate" },
     ],
     erou: {
       // securitate.ts:44, :47.
       titlu: titluSecuritateRoMd(operator),
       subtitlu: operator
-        ? "3S Scan Store Solve este o arhivă digitală cu căutare AI, operată din Republica Moldova. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services."
-        : "3S Scan Store Solve este o arhivă digitală cu căutare AI: fiecare răspuns indică documentul din care provine. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services.",
+        ? "3S Scan Store Solve este o arhivă digitală cu căutare AI, operată din Republica Moldova. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services."
+        : "3S Scan Store Solve este o arhivă digitală cu căutare AI: fiecare răspuns indică documentul din care provine. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services.",
     },
     piloni: {
       // securitate.ts:52-73. Iconitele nu sugereaza protectie (d31).
@@ -107,7 +107,7 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
       numar: "01",
       titlu: "Unde sunt păstrate documentele firmei?",
       subtitlu:
-        "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services (AWS). Tot acolo rulează platforma 3S, cu conturile utilizatorilor și arhiva digitală.",
+        "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services (AWS). Tot acolo rulează platforma 3S, cu conturile utilizatorilor și arhiva digitală.",
       harta: {
         descriere: "Harta Europei cu regiunea principală de găzduire, Frankfurt, în UE.",
         eticheta: "Frankfurt",
@@ -118,7 +118,7 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
       },
       specificatii: [
         { termen: "Furnizor de găzduire", valoare: "Amazon Web Services (SUA), cu o entitate europeană în Luxemburg.", mono: null },
-        { termen: "Locul datelor", valoare: "În Uniunea Europeană, regiunea principală Frankfurt.", mono: null },
+        { termen: "Locul datelor", valoare: "În Uniunea Europeană, cu regiunea principală la Frankfurt.", mono: null },
         { termen: "Cadrul UE (GDPR)", valoare: "AWS oferă clienților acordul de prelucrare a datelor (DPA).", mono: null },
         { termen: "Legea SUA (CLOUD Act)", valoare: "Poate obliga Amazon să predea datele aflate sub controlul său.", mono: null },
       ],
@@ -130,7 +130,7 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
       subtitlu: "Pentru fiecare dosar, firma ta stabilește cât timp se păstrează documentele. Știi oricând unde sunt păstrate și până când.",
       pasi: [
         { numar: "01", iconita: "incarcare", titlu: "Încărcare", text: "Fișierele se încarcă direct din browser, în arhiva firmei." },
-        { numar: "02", iconita: "cilindru", titlu: "Păstrare", text: "În UE, cu regiunea principală Frankfurt." },
+        { numar: "02", iconita: "cilindru", titlu: "Păstrare", text: "În UE, cu regiunea principală la Frankfurt." },
         { numar: "03", iconita: "arhiva", titlu: "Indexare", text: "Indexat automat, cu textul recunoscut și tipul identificat." },
         { numar: "04", iconita: "ceas", titlu: "Termen", text: "Păstrat până la termenul stabilit pentru dosarul lui." },
         { numar: "05", iconita: "iesire", titlu: "Decizia firmei", text: "Termenul potrivit fiecărui dosar îl alegi tu, cu consultantul firmei." },
@@ -154,7 +154,7 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
       carduri: [
         {
           titlu: "Locul datelor, cunoscut dinainte",
-          text: "Fișierele sunt păstrate în UE, cu regiunea principală Frankfurt, pe Amazon Web Services. Știi de la început unde se află documentele firmei și poți răspunde oricui întreabă.",
+          text: "Fișierele sunt păstrate în UE, cu regiunea principală la Frankfurt, pe Amazon Web Services. Știi de la început unde se află documentele firmei și poți răspunde oricui întreabă.",
         },
         {
           titlu: "Termenul, stabilit pe dosar",
@@ -178,7 +178,7 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
         {
           intrebare: "Unde și la ce furnizor sunt păstrate fișierele?",
           raspuns:
-            "În Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services: regiunea marcată pe harta de mai sus. Locul în care funcțiile AI prelucrează documentele nu este precizat pe acest site; întreabă-ne înainte de a trimite documente reale.",
+            "În Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services: regiunea marcată pe harta de mai sus. Locul în care funcțiile AI prelucrează documentele nu este precizat pe acest site; întreabă-ne înainte de a trimite documente reale.",
         },
         {
           intrebare: "Ce prevăd legea SUA și GDPR?",

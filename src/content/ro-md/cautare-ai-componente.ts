@@ -77,7 +77,7 @@ export const FRUSTRARE_CAUTARE_RO_MD = {
   colegi: { eticheta: "Colegi întrebați", sub: "doi erau în concediu" },
   rezultat: { eticheta: "Stare", sub: "garanția încă lipsește" },
   negasit: "Fără răspuns",
-  continua: "Încă un dosar...",
+  continua: "Încă un dosar",
   // Aceleasi valori ca scenariul RO si EN (exemplu, nu masuratoare).
   maxime: { fisiere: 29, minute: 85, colegi: 5 },
   citate: [

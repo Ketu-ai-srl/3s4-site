@@ -65,8 +65,8 @@ export const COMUN_EN: ComunConstructor = {
 
 export const NUME_CANAL_EN: NumeCanalConstructor = {
   email: {
-    fraza: "by e-mail",
-    insigna: "e-mail"
+    fraza: "by email",
+    insigna: "email"
   },
   mesaj: {
     fraza: "on WhatsApp",
@@ -86,7 +86,7 @@ export const CHESTIONAR_EN: ChestionarConstructor = {
     optiuni: [
       {
         cod: "email",
-        text: "E-mail"
+        text: "Email"
       },
       {
         cod: "mesaj",
@@ -142,7 +142,7 @@ export const CHESTIONAR_EN: ChestionarConstructor = {
 export const DUEL_EN: DuelConstructor = {
   eticheta: "Simulated day, step by step",
   reluare: "Replay",
-  firmaFara: "Files and e-mails",
+  firmaFara: "Files and emails",
   firmaCu: "Everything in 3S",
   nesortate: "untagged:",
   inOrdine: "tagged",
@@ -256,7 +256,7 @@ export const SCENARII_EN: ScenariiEditie = {
         "Invoice"
       ],
       stres: [
-        "The new revision is in an e-mail",
+        "The new revision is in an email",
         "No test report yet",
         "The designer has the drawing",
         "The supervisor arrives at 10"
@@ -495,7 +495,7 @@ export const SCENARII_EN: ScenariiEditie = {
     }
   },
   avocatura: {
-    fraza: "Procedural documents arrive by e-mail and by courier, and the date of receipt stays on an envelope. In 3S you search the text of each act, service date included.",
+    fraza: "Procedural documents arrive by email and by courier, and the date of receipt stays on an envelope. In 3S you search the text of each act, service date included.",
     durere: "The appeal deadline was counted from memory and lands two weeks after the real one.",
     concluzie: "Ask when the judgment was served, and the answer cites the date on the act.",
     obiect: {
@@ -865,7 +865,7 @@ export const SCENARII_EN: ScenariiEditie = {
       stres: [
         "Signature on a crooked photo",
         "The invoice has waited a week",
-        "The sign-off is in an old e-mail"
+        "The sign-off is in an old email"
       ],
       termeneRatate: [
         "Missed deadline: stage 2 delivery",

@@ -52,7 +52,7 @@ export const EROU_RO_MD: Omit<ContinutErou, "bucla"> = {
     // acasa.ts:119; numai randul gazduirii ramane (d42).
     randuri: [{ iconita: "globe", text: "În UE, cu regiunea principală la Frankfurt." }],
     // Fara rand in fisa (acasa.ts:123): tinta aprobata a paginii pentru gazduire, pe perechea /ro a paginii despre 3S.
-    legatura: { text: "Pagina Despre 3S", href: "/ro/securitate#security", ruta: "/ro/securitate" },
+    legatura: { text: "Pagina Despre 3S și securitate", href: "/ro/securitate#security", ruta: "/ro/securitate" },
   },
   // H1 aprobat, impartit ca pe RO: prima propozitie (A), apoi a doua cu accentul (acasa.ts:132, :134).
   titlu: {
@@ -94,7 +94,7 @@ export const PASI_RO_MD: { numar: "01" | "02" | "03"; eticheta: string; titlu: s
     numar: "02",
     // acasa.ts:458 (A, neschimbat), :460, :463.
     eticheta: "Store: păstrare în ordine",
-    titlu: "Fiecare document este păstrat în spațiul de lucru al firmei",
+    titlu: "Fiecare document este păstrat în spațiul de lucru al firmei.",
     paragraf:
       "Documentele încărcate sunt indexate automat pentru căutare. Toți colegii care au cont lucrează în aceeași arhivă, în structura de dosare stabilită de firmă, și găsesc aceleași documente.",
   },

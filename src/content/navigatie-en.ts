@@ -78,7 +78,7 @@ export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
   {
     cale: "/guides/records-retention-moldova",
     ref: "en-ret-md",
-    text: "Hello 3S, I read your page on record retention in Moldova [ref:en-ret-md]. I would like to ask about a pilot.",
+    text: "Hello 3S, I read your page on records retention in Moldova [ref:en-ret-md]. I would like to ask about a pilot.",
   },
   {
     cale: "/compare/3s-vs-google-and-box",
@@ -96,16 +96,16 @@ const FORMA_EMAIL_EN = {
 
 /** Etichetele coloanei Legal (§4.2), pe cheia documentului din registrul familiei `md`. */
 const LEGAL_EN: ReadonlyArray<{ cheie: CheieMd; text: string }> = [
-  { cheie: "informatii-legale", text: "Legal information" },
-  { cheie: "confidentialitate", text: "Privacy notice" },
+  { cheie: "informatii-legale", text: "Legal notice" },
+  { cheie: "confidentialitate", text: "Privacy policy" },
   // Una pentru ambele asezari: 3s.com.ro ruleaza fara masurare, deci eticheta nu promite masurarea. Pereche cu eticheta
   // din subsolul romanesc, titlul documentului ("Politica de cookie-uri"), adevarat si el in ambele variante.
   { cheie: "cookie-uri", text: "Cookie policy" },
-  { cheie: "termeni", text: "Terms of service (B2B)" },
-  { cheie: "dpa", text: "Data processing agreement" },
-  { cheie: "subimputerniciti", text: "Subprocessors" },
-  { cheie: "notificare-si-actiune", text: "Notice and action, acceptable use" },
-  { cheie: "inteligenta-artificiala", text: "AI notice" },
+  { cheie: "termeni", text: "Terms and conditions" },
+  { cheie: "dpa", text: "Data Processing Agreement (DPA)" },
+  { cheie: "subimputerniciti", text: "Platform sub-processors" },
+  { cheie: "notificare-si-actiune", text: "Notice and action" },
+  { cheie: "inteligenta-artificiala", text: "Artificial intelligence in 3S services" },
 ];
 
 function legatura(text: string, href: string, ruta: string = href.split("#")[0]): Legatura {

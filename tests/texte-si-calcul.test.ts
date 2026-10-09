@@ -17,8 +17,9 @@ import { afterAll, describe, expect, it, vi } from 'vitest'
  *
  * FIXTURILE (cuvintele vechi cautate) se asambleaza la rulare, din bucati.
  *
- * M9 (testul editiei 3s.com.ro din 06.10.2026, la final): calea afisata ca text pe cardurile de contact e calea SERVITA
- * a legaturii, pe fiecare asezare; martorul e o cale sursa plantata, prinsa de aceeasi masura.
+ * M9 (testul editiei 3s.com.ro din 06.10.2026, rescris dupa auditul functional din 09.10): cardurile de contact nu mai
+ * afiseaza calea ca text (o cale bruta nu spune nimic omului; cardul intreg e legatura), pe toate editiile, iar legatura
+ * ramane calea SERVITA pe fiecare asezare; martorii: o cale scrisa ca text e prinsa de masura, un text obisnuit ramane.
  */
 
 vi.hoisted(() => {
@@ -73,7 +74,9 @@ function legaturi(html: string, href: string): string[] {
 const CEAS = 'lucide-' + 'clock'
 const LEGAL_EN = caleMd('informatii-legale', 'en')
 const LEGAL_RO = caleMd('informatii-legale', 'ro')
-const NUME_LEGAL_EN = 'Legal ' + 'information'
+// Numele documentului e cel unic din subsol, din /legal si din titlul paginii (felia 150: "Legal notice", nu "Legal
+// information"), deci si trimiterile din text il folosesc pe acesta.
+const NUME_LEGAL_EN = 'Legal ' + 'notice'
 const NUME_LEGAL_RO = 'Informații ' + 'legale'
 
 describe('m1: randul WhatsApp de pe /contact si /ro/contact n-are stare si ceas', () => {
@@ -101,7 +104,7 @@ describe('m1: randul WhatsApp de pe /contact si /ro/contact n-are stare si ceas'
 })
 
 describe('m2: textul care trimite la pagina de informatii legale are legatura', () => {
-  it('/contact: blocul marcii leaga "Legal information" la ' + LEGAL_EN, () => {
+  it('/contact: blocul marcii leaga "Legal notice" la ' + LEGAL_EN, () => {
     const marca = sectiune(randeaza(ContactEn), 'contact-marca')
     expect(legaturi(marca, LEGAL_EN)).toEqual([NUME_LEGAL_EN])
   })
@@ -315,26 +318,25 @@ describe('m2 pe asezarea ro (3s.com.ro): legatura spre informatiile legale trece
 })
 
 /**
- * Cardurile din "Raspunsuri disponibile deja pe site": fiecare rand albastru care numeste o cale (incepe cu "/") trebuie
- * sa fie egal cu calea legaturii cardului, fara fragment si interogare. `comparate` numara cardurile cu legatura si cu
- * text-cale: un card inert (fara `href`) nu se compara, deci numarul asteptat se scrie in fiecare caz.
+ * Cardurile din "Raspunsuri disponibile deja pe site". Pentru fiecare card cu legatura: `hrefs` = calea legaturii, fara
+ * fragment si interogare; `frunze` = textele vizibile ale cardului (nodurile de text, fara ce sta sub `aria-hidden`);
+ * `caiVizibile` = frunzele care sunt o cale (incep cu "/"). Un card inert (fara `href`) nu se numara.
  */
-function abateriCaiCarduri(html: string): { comparate: number; texte: string[]; abateri: string[] } {
+function cardContact(html: string): { hrefs: string[]; frunze: string[]; caiVizibile: string[] } {
   const s = sectiune(html, 'contact-subiecte')
-  const texte: string[] = []
-  const abateri: string[] = []
+  const hrefs: string[] = []
+  const frunze: string[] = []
   for (const m of s.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)) {
     const href = /\shref="([^"]*)"/.exec(m[1])?.[1]
-    const text = /class="[^"]*cardAdresa[^"]*"[^>]*>([^<]*)</.exec(m[2])?.[1]
-    if (href === undefined || text === undefined || !text.startsWith('/')) continue
-    texte.push(text)
-    const cale = href.split(/[?#]/)[0]
-    if (text !== cale) abateri.push(text + ' (legatura ' + cale + ')')
+    if (href === undefined) continue
+    hrefs.push(href.split(/[?#]/)[0])
+    const vizibil = m[2].replace(/<(\w+)\b[^>]*aria-hidden="true"[^>]*>[\s\S]*?<\/\1>/g, '')
+    for (const t of vizibil.split(/<[^>]*>/)) if (t.trim() !== '') frunze.push(t.trim())
   }
-  return { comparate: texte.length, texte, abateri }
+  return { hrefs, frunze, caiVizibile: frunze.filter((t) => t.startsWith('/')) }
 }
 
-describe('M9: calea afisata pe cardurile de contact e calea servita, pe fiecare asezare', () => {
+describe('M9: cardurile de contact nu afiseaza cai brute; legatura ramane calea servita, pe fiecare asezare', () => {
   const text = (v: unknown) => (typeof v === 'string' ? v : JSON.stringify(v))
   const profil = (nume: string) => JSON.parse(readFileSync(join(__dirname, '..', 'config', 'profil-' + nume + '.json'), 'utf8')) as Record<string, unknown>
 
@@ -366,41 +368,44 @@ describe('M9: calea afisata pe cardurile de contact e calea servita, pe fiecare 
   const SERVITE_EN = SURSA_EN.map((c) => '/en' + c)
   const SERVITE_RO = ['/enterprise', '/preturi', '/securitate', '/platforma', '/ghiduri/termene-pastrare-moldova']
 
-  it('martorul masurii, pe HTML asamblat la rulare: o cale sursa plantata e prinsa, calea servita trece, un text care nu e cale nu se numara', () => {
-    const card = (href: string, t: string) =>
-      '<section aria-labelledby="contact-subiecte"><ul><li><a href="' + href + '" class="c_card"><span class="c_cardAdresa">' + t + '</span></a></li></ul></section>'
-    const plantata = '/r' + 'o/preturi'
-    expect(abateriCaiCarduri(card('/preturi', plantata))).toEqual({ comparate: 1, texte: [plantata], abateri: [plantata + ' (legatura /preturi)'] })
-    expect(abateriCaiCarduri(card('/preturi#pachete', '/preturi')).abateri).toEqual([])
-    expect(abateriCaiCarduri(card('/preturi', 'Pachete')).comparate).toBe(0)
+  it('martorul masurii, pe HTML asamblat la rulare: o cale scrisa ca text e prinsa, ce sta sub aria-hidden nu, un text obisnuit e frunza', () => {
+    const card = (href: string, interior: string) =>
+      '<section aria-labelledby="contact-subiecte"><ul><li><a href="' + href + '" class="c_card"><span class="c_cardTitlu">Titlu</span>' + interior + '</a></li></ul></section>'
+    const cale = '/r' + 'o/preturi'
+    expect(cardContact(card('/preturi#pachete', '<span class="c_cardAdresa">' + cale + '</span>'))).toEqual({ hrefs: ['/preturi'], frunze: ['Titlu', cale], caiVizibile: [cale] })
+    expect(cardContact(card('/preturi', '<span class="c_cardAdresa" aria-hidden="true"><svg><path d="M0"></path></svg></span>')).caiVizibile).toEqual([])
+    expect(cardContact(card('/preturi', '<span class="c_cardAdresa">Pachete</span>')).frunze).toEqual(['Titlu', 'Pachete'])
   })
 
-  it('martorul de editie: pe ro-RO (/contact) cele 7 carduri au textul egal cu legatura, ca inainte', () => {
-    const m = abateriCaiCarduri(randeaza(ContactRo))
-    expect(m.comparate).toBe(7)
-    expect(m.abateri).toEqual([])
+  it('ro-RO (/contact): cele 7 carduri au legatura si niciunul nu afiseaza o cale', () => {
+    const m = cardContact(randeaza(ContactRo))
+    expect(m.hrefs).toHaveLength(7)
+    expect(m.hrefs.every((h) => h.startsWith('/'))).toBe(true)
+    expect(m.frunze.length).toBeGreaterThan(7)
+    expect(m.caiVizibile).toEqual([])
   })
 
-  it('3s.md (asezarea md): pe /contact si /ro/contact textul ramane calea din date, egala cu legatura', async () => {
+  it('3s.md (asezarea md): pe /contact si /ro/contact legatura e calea din date, iar textul nu e o cale', async () => {
     const p = await cuProfil('3s-md')
-    const en = abateriCaiCarduri(randeaza(p.ContactEn))
-    const ro = abateriCaiCarduri(randeaza(p.ContactRoMd))
-    expect([en.texte, en.abateri]).toEqual([SURSA_EN, []])
-    expect([ro.texte, ro.abateri]).toEqual([SURSA_RO, []])
+    const en = cardContact(randeaza(p.ContactEn))
+    const ro = cardContact(randeaza(p.ContactRoMd))
+    expect([en.hrefs, en.caiVizibile]).toEqual([SURSA_EN, []])
+    expect([ro.hrefs, ro.caiVizibile]).toEqual([SURSA_RO, []])
   })
 
-  it('3s.com.ro (asezarea ro): pe /contact si /en/contact textul e calea servita, egala cu legatura', async () => {
+  it('3s.com.ro (asezarea ro): pe /contact si /en/contact legatura e calea servita, iar textul nu e o cale', async () => {
     const p = await cuProfil('3s-com-ro')
     expect(profil('3s-com-ro').SITE_ASEZARE).toBe('ro')
-    const ro = abateriCaiCarduri(randeaza(p.ContactRoMd))
-    const en = abateriCaiCarduri(randeaza(p.ContactEn))
-    expect([ro.texte, ro.abateri]).toEqual([SERVITE_RO, []])
-    expect([en.texte, en.abateri]).toEqual([SERVITE_EN, []])
-    // Martorul pe randarea reala: un card al carui text e o cale sursa care NU e tinta lui ramane neschimbat si e prins.
-    const plantata = '/r' + 'o/preturi'
-    const carduri = p.CONTACT_RO_MD.subiecte.carduri.map((c, i) => (i === 0 ? { ...c, legatura: { ...c.legatura, text: plantata } } : c))
+    const ro = cardContact(randeaza(p.ContactRoMd))
+    const en = cardContact(randeaza(p.ContactEn))
+    expect([ro.hrefs, ro.caiVizibile]).toEqual([SERVITE_RO, []])
+    expect([en.hrefs, en.caiVizibile]).toEqual([SERVITE_EN, []])
+    // Martorul pe randarea reala: un card al carui text NU e o cale il pastreaza vizibil, deci masura vede randul de jos.
+    const carduri = p.CONTACT_RO_MD.subiecte.carduri.map((c, i) => (i === 0 ? { ...c, legatura: { ...c.legatura, text: 'Pachete' + ' EUR' } } : c))
     const html = renderToStaticMarkup(createElement(p.PaginaContact, { continut: { ...p.CONTACT_RO_MD, subiecte: { ...p.CONTACT_RO_MD.subiecte, carduri } } }))
-    expect(abateriCaiCarduri(html).abateri).toEqual([plantata + ' (legatura /enterprise)'])
+    const m = cardContact(html)
+    expect(m.frunze).toContain('Pachete EUR')
+    expect(m.caiVizibile).toEqual([])
   })
 
   it('textCaleCard: identitatea pe md, traducerea pe ro numai cand textul numeste tinta cardului', async () => {

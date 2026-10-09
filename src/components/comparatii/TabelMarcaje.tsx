@@ -16,6 +16,7 @@
 import { ChevronDown, ExternalLink } from "lucide-react";
 import type { CSSProperties } from "react";
 import { LEGENDA_MARCAJE, type Marcaj, type SursaOficiala, type TabelComparatie } from "@/content/comparatii";
+import { FEREASTRA_NOUA as FEREASTRA_NOUA_EN } from "@/content/en/referinta-comun";
 import SemnMarcaj from "./SemnMarcaj";
 import s from "./comparatii.module.css";
 
@@ -37,6 +38,15 @@ export type TabelMarcajeProps = {
 };
 
 const FEREASTRA_NOUA_RO = " (se deschide într-o fereastră nouă)";
+
+/**
+ * Inceputul numelui accesibil al stratului cu derulare, in limba editiei. Editia se recunoaste dupa sufixul
+ * legaturilor spre surse, pe care pagina il paseaza deja in limba ei: cel englez da "Table: ", orice altceva
+ * (implicitul romanesc si /ro de pe 3s.md) ramane "Tabel: ", deci marcajul paginilor romanesti nu se schimba.
+ */
+export function prefixRegiune(fereastraNoua: string): string {
+  return fereastraNoua === FEREASTRA_NOUA_EN ? "Table: " : "Tabel: ";
+}
 
 const ORDINE_LEGENDA: Marcaj[] = ["da", "partial", "nu"];
 
@@ -66,7 +76,7 @@ export default function TabelMarcaje({
   return (
     <>
       <div className={s.panou}>
-        <div className={s.derulare} role="region" aria-label={"Tabel: " + tabel.titlu} tabIndex={0}>
+        <div className={s.derulare} role="region" aria-label={prefixRegiune(fereastraNoua) + tabel.titlu} tabIndex={0}>
           <table className={s.tabel} style={latimi}>
             <thead>
               <tr>

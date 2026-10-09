@@ -41,7 +41,7 @@ export const pagina: PaginaContinut = {
   },
   h1: "3S pricing: four plans, in euros",
   capsula:
-    "3S has four plans, priced per company in euros, excluding VAT: Starter at EUR 90, Pro at EUR 150 and Business at EUR 240 a month, for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month. The prices are indicative. Every start is a free 14-day assisted pilot on your own documents.",
+    "3S has four plans, priced per company in euros, excluding VAT: Starter at EUR 90, Pro at EUR 150 and Business at EUR 240 a month, for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month. The prices are indicative. Every customer starts with a free 14-day assisted pilot on your own documents.",
   sectiuni: [
     {
       cheie: "plans",

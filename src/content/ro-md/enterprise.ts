@@ -30,7 +30,7 @@ export const pagina: PaginaContinut = {
   meta: { titlu: TITLU, descriere: DESCRIERE, cale: "/ro/enterprise" },
   h1: "3S pentru organizațiile cu arhive mari și cerințe IT",
   capsula:
-    "3S Enterprise este pachetul pentru organizațiile cu peste 20 de conturi de utilizator, cu contract anual. 3S recunoaște textul documentelor scanate, identifică tipul lor și răspunde la întrebări cu sursa indicată. Fișierele sunt găzduite în Uniunea Europeană, cu regiunea principală Frankfurt.",
+    "3S Enterprise este pachetul pentru organizațiile cu peste 20 de conturi de utilizator, cu contract anual. 3S recunoaște textul documentelor scanate, identifică tipul lor și răspunde la întrebări cu sursa indicată. Fișierele sunt găzduite în Uniunea Europeană, cu regiunea principală la Frankfurt.",
   sectiuni: [
     {
       cheie: "it-si-achizitii",
@@ -43,9 +43,9 @@ export const pagina: PaginaContinut = {
             titlu: "Ce verifică întâi IT-ul și achizițiile",
             antet: ["Subiect", "Ce spune 3S"],
             randuri: [
-              ["Locul datelor", "În Uniunea Europeană, cu regiunea principală Frankfurt."],
-              ["Certificări", "Site-ul nu declară certificări. Spune-ne de ce ai nevoie."],
-              ["Niveluri de serviciu", "Site-ul nu declară niveluri de serviciu. Spune-ne de ce ai nevoie."],
+              ["Locul datelor", "În Uniunea Europeană, cu regiunea principală la Frankfurt."],
+              ["Certificări", "Nu declarăm certificări. Spune-ne de ce ai nevoie."],
+              ["Niveluri de serviciu", "Nu declarăm niveluri de serviciu garantate (SLA). Spune-ne de ce ai nevoie."],
             ],
           },
         },
@@ -74,7 +74,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Poți exporta documentele din 3S. Site-ul nu publică condiții pentru încheierea colaborării; dacă ai nevoie de o procedură anume, spune-ne înainte să decizi.",
+            "Poți exporta documentele din 3S. Site-ul nu publică condiții pentru încetarea colaborării; dacă ai nevoie de o procedură anume, spune-ne înainte să decizi.",
           ],
         },
       ],
@@ -85,7 +85,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Fișierele sunt găzduite în Uniunea Europeană, cu regiunea principală Frankfurt. Pagina [Despre 3S și securitate](/ro/securitate) numește furnizorul de găzduire și explică ce prevede legislația americană pentru datele aflate la o companie din Statele Unite.",
+            "Fișierele sunt găzduite în Uniunea Europeană, cu regiunea principală la Frankfurt. Pagina [Despre 3S și securitate](/ro/securitate) numește furnizorul de găzduire și explică ce prevede legislația americană pentru datele aflate la o companie din Statele Unite.",
           ],
         },
       ],

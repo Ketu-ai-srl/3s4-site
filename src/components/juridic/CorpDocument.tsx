@@ -67,15 +67,16 @@ function Element({ text, subelemente }: { text: string; subelemente: readonly st
   );
 }
 
+// In celule, o adresa de e-mail devine legatura numai cand celula e chiar adresa (`posta="celula"`, motivul in TextInLinie).
 function Celula({ celula }: { celula: CelulaComuna }) {
-  if (typeof celula === "string") return <TextInLinie text={celula} />;
+  if (typeof celula === "string") return <TextInLinie text={celula} posta="celula" />;
   return (
     <>
       <strong>
-        <TextInLinie text={celula.text} />
+        <TextInLinie text={celula.text} posta="celula" />
       </strong>
       <small>
-        <TextInLinie text={celula.detaliu} />
+        <TextInLinie text={celula.detaliu} posta="celula" />
       </small>
     </>
   );
@@ -113,7 +114,7 @@ function Bloc({ bloc }: { bloc: BlocDocument }) {
         <TabelDate
           forma={bloc.tabel.forma}
           titlu={bloc.tabel.titlu}
-          antet={bloc.tabel.antet?.map((a, i) => <TextInLinie key={i} text={a} />)}
+          antet={bloc.tabel.antet?.map((a, i) => <TextInLinie key={i} text={a} posta="celula" />)}
           randuri={bloc.tabel.randuri.map((rand) => rand.map((c, j) => <Celula key={j} celula={c} />))}
         />
       ) : null}

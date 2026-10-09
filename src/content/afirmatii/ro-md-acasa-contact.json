@@ -37,7 +37,7 @@
   },
   {
     "id": "ro-md-gazduire-ue-frankfurt",
-    "text": "Găzduirea fișierelor încărcate în 3S: Amazon Web Services, în Uniunea Europeană, cu regiunea principală Frankfurt",
+    "text": "Găzduirea fișierelor încărcate în 3S: Amazon Web Services, în Uniunea Europeană, cu regiunea principală la Frankfurt",
     "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/enterprise.ts, src/content/ro-md/platforma.ts, src/content/ro-md/securitate.ts, src/content/ro-md/preturi.ts, src/content/ro-md/ghid-e-facturare-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda RO-MD a intrarii en-gazduire-ue-frankfurt (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (decizia 42 a owner-ului, 2026-10-01, „3. ok”). Configurarea de productie o confirma furnizorul platformei.",

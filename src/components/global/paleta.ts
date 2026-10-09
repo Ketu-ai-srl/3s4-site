@@ -3,7 +3,9 @@
 // Fara interogare: grupurile din contractul de navigatie (`PALETA`: Pagini, Actiuni), filtrate pe
 // caile existente. Cu interogare: se cauta in TOATE rutele existente (`RUTE`: titlul scurt,
 // descrierea si calea), in actiuni si in articolele blogului; grupul de articole apare doar atunci.
-// Potrivirea e subsir, fara majuscule si FARA diacritice ("cautare" gaseste "Căutare").
+// Potrivirea e pe CUVINTE (`potrivesteInterogarea`): fiecare cuvant al interogarii, mai putin cuvintele de
+// legatura scurte, e subsir al unui camp, in orice ordine, fara majuscule si FARA diacritice ("cautare"
+// gaseste "Căutare", "termene pastrare" gaseste "Termene de păstrare").
 //
 // ASEZAREA (`src/lib/asezare.ts`): rezultatele poarta calea SURSA (`cale`), pe care se fac comparatiile cu rutele si
 // cu caile existente; adresa la care duce un rezultat e cea SERVITA, adaugata la sfarsit de `cuCaiServite` (campul
@@ -55,8 +57,42 @@ export function normalizeaza(text: string): string {
     .trim();
 }
 
+/**
+ * Cuvintele de legatura scurte, romanesti si englezesti, deja normalizate (fara diacritice). Nu poarta
+ * subiectul cautarii: "termene de pastrare" si "termene pastrare" cauta acelasi lucru. Lista e scurta
+ * deliberat - un cuvant scos din interogare nu mai filtreaza nimic, deci intra aici numai ce nu
+ * deosebeste o pagina de alta.
+ */
+export const CUVINTE_DE_LEGATURA: ReadonlySet<string> = new Set([
+  "a", "al", "ale", "ai", "cu", "de", "din", "la", "in", "pe", "si", "sau", "un", "o", "ce", "pentru",
+  "the", "of", "and", "or", "to", "for", "on", "an", "with", "by",
+]);
+
+/**
+ * Cuvintele unei interogari deja normalizate, fara cuvintele de legatura. Daca interogarea are NUMAI
+ * cuvinte de legatura ("de"), raman toate: altfel interogarea ar deveni goala si ar potrivi orice.
+ */
+export function cuvinteInterogare(interogareNormalizata: string): string[] {
+  const toate = interogareNormalizata.split(" ").filter((c) => c !== "");
+  const purtatoare = toate.filter((c) => !CUVINTE_DE_LEGATURA.has(c));
+  return purtatoare.length > 0 ? purtatoare : toate;
+}
+
+/**
+ * Potrivirea paletei. Interogarea (normalizata: litere mici, fara diacritice) se imparte pe cuvinte, iar
+ * un rezultat se potriveste daca fiecare cuvant ramas apare, ca subsir, in cel putin unul din campuri, in
+ * orice ordine: "termene pastrare", "pastrare termene" si "termene de păstrare" gasesc aceeasi pagina.
+ * Un cuvant fara pereche in niciun camp scoate rezultatul ("termene qzxv" nu gaseste nimic).
+ */
+export function potrivesteInterogarea(interogareNormalizata: string, ...campuri: string[]): boolean {
+  const cuvinte = cuvinteInterogare(interogareNormalizata);
+  if (cuvinte.length === 0) return true;
+  const text = campuri.map(normalizeaza);
+  return cuvinte.every((cuvant) => text.some((c) => c.includes(cuvant)));
+}
+
 function potriveste(interogare: string, ...campuri: string[]): boolean {
-  return campuri.some((c) => normalizeaza(c).includes(interogare));
+  return potrivesteInterogarea(interogare, ...campuri);
 }
 
 export function continutPaleta(

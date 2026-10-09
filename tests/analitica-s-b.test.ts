@@ -210,12 +210,22 @@ describe('textele bannerului si ale panoului (documentul 03, sectiunea 6)', () =
   it('titlul, descrierea si categoria "Statistica" sunt cele din sectiunea 6, pe fiecare set', () => {
     const t = (limba: LimbaBanner, ga4: boolean) => texteConsimtamant(limba, { ga4, umami: true })
     expect(t('ro', false).banner.titlu).toBe('Măsurarea vizitelor')
+    // A doua propozitie numeste acordul (corectura de limba din 09.10: pronumele singur trimitea la un complement din
+    // propozitia dinainte); sensul si informarea despre retragere raman aceleasi.
     expect(t('ro', false).banner.descriere).toBe(
-      'Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică, fără cookie-uri. Îl poți retrage oricând, din subsolul oricărei pagini.',
+      'Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică, fără cookie-uri. Acordul îl poți retrage oricând, din subsolul oricărei pagini.',
     )
     expect(t('ro', false).panou.statisticaText).toBe(
       'Aplicația noastră de statistică măsoară vizitele și paginile citite, fără cookie-uri. Se încarcă numai dacă permiți.',
     )
+    // Fara GA4 nicio categorie nu pune cookie-uri, deci introducerea panoului nu cere sa alegi "cookie-uri"
+    // (corectura de limba din 09.10). Setul romanesc cu GA4 pastreaza textul de baza: acolo GA4 pune cookie-uri.
+    expect(t('ro', false).panou.optiuniText).toBe(
+      'Alege ce permiți pe acest site. Alegerea se poate schimba oricând, din subsolul oricărei pagini.',
+    )
+    expect(t('ro', false).panou.optiuniText).not.toMatch(/cookie/i)
+    expect(t('ro', true).panou.optiuniText).toBe(TEXTE_PANOU.optiuniText)
+    expect(t('ro', true).panou.optiuniText).toContain('cookie-uri')
     expect(t('ro', true).banner.titlu).toBe('Statistică')
     expect(t('ro', true).banner.descriere).toContain('și cu Google Analytics, care pune cookie-uri')
     expect(t('ro', true).panou.statisticaText).toContain('Google Analytics 4 pune cookie-uri, iar datele pot ajunge în Statele Unite.')
@@ -224,6 +234,10 @@ describe('textele bannerului si ale panoului (documentul 03, sectiunea 6)', () =
       'With your consent, we measure visits with our own analytics tool, which uses no cookies. You can withdraw consent at any time from the footer of any page.',
     )
     expect(t('en', false).panou.statisticaText).toBe('Our own analytics tool measures visits and the pages read, without cookies. It loads only if you allow it.')
+    // Acelasi motiv pe engleza; legaturile poarta numele documentelor, ca in subsol si in titluri.
+    expect(t('en', false).panou.optiuniText).toBe('Choose what you allow on this site. You can change your mind later, from the footer of any page.')
+    expect(t('en', false).panou.optiuniText).not.toMatch(/cookie/i)
+    expect([t('en', false).panou.informatiiLegatura, t('en', false).panou.informatiiLegatura2]).toEqual(['Cookie policy', 'Privacy policy'])
     expect(t('en', true).banner.titlu).toBe('Statistics')
     expect(t('en', true).panou.statisticaText).toContain('Google Analytics 4 sets cookies, and data may reach the United States.')
   })

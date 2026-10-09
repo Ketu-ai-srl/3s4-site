@@ -64,7 +64,7 @@ export const DRUM_DOCUMENT_RO_MD: ContinutDrumDocument = {
   titlu: "De la fișier la răspuns",
   intrare: { eticheta: "Primire", elemente: ["Scanări existente", "Din browser"] },
   intelegere: { eticheta: "Citire", elemente: ["Recunoașterea textului", "Tipul documentului", "Căutare cu sursa citată"] },
-  stocare: { eticheta: "Păstrare", pastile: ["UE (Frankfurt)", "indexare"] },
+  stocare: { eticheta: "Păstrare", pastile: ["UE (Frankfurt)", "Indexare"] },
   iesire: { eticheta: "Livrare", elemente: ["Răspuns în browser", "Export"] },
   fapte: [
     { text: "factura_0147.pdf", mono: true },
@@ -74,18 +74,18 @@ export const DRUM_DOCUMENT_RO_MD: ContinutDrumDocument = {
   ],
   anStart: "2026",
   anFinal: "2036",
-  nota: "Exemplu fictiv. Firma stabilește termenul de păstrare pentru fiecare dosar.",
+  nota: "Exemplu cu date fictive. Firma stabilește termenul de păstrare pentru fiecare dosar.",
   etichetaExemplu: "exemplu",
 };
 
 /** `enterprise.ts:96-125`: lista ia rolul tabelului pentru IT si achizitii (specificatia, sectiunea 3). */
 export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
   titlu: "Ce verifică întâi IT-ul și achizițiile?",
-  text: "Mai jos sunt subiectele pe care IT-ul și achizițiile le verifică de obicei primele, cu ce declară site-ul astăzi despre fiecare.",
+  text: "Mai jos sunt subiectele pe care IT-ul și achizițiile le verifică de obicei primele, cu ce declarăm astăzi despre fiecare.",
   elemente: [
     {
       titlu: "Certificări și niveluri de serviciu",
-      text: "Site-ul nu le declară. Spune-ne ce cerințe ai, iar noi îți spunem deschis dacă le îndeplinim.",
+      text: "Nu declarăm certificări sau niveluri de serviciu garantate (SLA). Spune-ne ce cerințe ai, iar noi îți spunem deschis dacă le îndeplinim.",
     },
     {
       titlu: "Conturi, limite și contract",
@@ -107,9 +107,9 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
     },
     {
       titlu: "Locul datelor",
-      text: "Fișierele sunt găzduite în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul și explică efectul legii americane asupra datelor.",
+      text: "Fișierele sunt găzduite în UE, cu regiunea principală la Frankfurt. Pagina Despre 3S și securitate numește furnizorul și explică efectul legii americane asupra datelor.",
       // Tinta aprobata a paginii pentru gazduire (calea SURSA; adresa servita o scrie componenta).
-      legaturaInText: { text: "Pagina Despre 3S", href: "/ro/securitate#security" },
+      legaturaInText: { text: "Pagina Despre 3S și securitate", href: "/ro/securitate#security" },
     },
     {
       titlu: "Răspunsuri cu sursa lor",
@@ -117,7 +117,7 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
     },
     {
       titlu: "Documentele, prin export",
-      text: "Poți exporta documentele din 3S. Site-ul nu publică condiții pentru încheierea colaborării; dacă ai nevoie de o procedură anume, spune-ne înainte să decizi.",
+      text: "Poți exporta documentele din 3S. Site-ul nu publică condiții pentru încetarea colaborării; dacă ai nevoie de o procedură anume, spune-ne înainte să decizi.",
     },
   ],
 };

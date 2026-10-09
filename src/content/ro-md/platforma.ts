@@ -26,7 +26,7 @@ const ID = iduri(BAZA);
 
 const TITLU = "Platforma 3S: arhivă digitală care răspunde cu sursa";
 const DESCRIERE =
-  "Cum preia 3S documentele, cum stabilești termenul de păstrare pe dosar și cum primești răspunsuri cu sursa. Găzduire în UE, regiunea principală Frankfurt.";
+  "Cum preia 3S documentele, cum alegi termenul de păstrare pe dosar și cum primești răspunsuri cu sursa. Găzduire în UE, cu regiunea principală la Frankfurt.";
 
 export const pagina: PaginaContinut = {
   cheie: "platform",
@@ -89,7 +89,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "3S rulează în Uniunea Europeană, cu regiunea principală Frankfurt. Pagina [Despre 3S și securitate](/ro/securitate#security) numește furnizorul de găzduire și explică ce prevede legislația americană pentru datele administrate de o companie din SUA.",
+            "3S rulează în Uniunea Europeană, cu regiunea principală la Frankfurt. Pagina [Despre 3S și securitate](/ro/securitate#security) numește furnizorul de găzduire și explică ce prevede legislația americană pentru datele administrate de o companie din SUA.",
           ],
         },
       ],

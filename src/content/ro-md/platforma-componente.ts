@@ -52,7 +52,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
   macheta: {
     // platforma.ts:52-57.
     declaratie: "Exemplu cu date fictive: fișiere TIFF, PDF, PNG și JPG intră în 3S, care le citește textul și le marchează tipul.",
-    eticheta: "Exemplu, date fictive",
+    eticheta: "Exemplu cu date fictive",
     fisiere: ["TIFF", "PDF", "PNG", "JPG"],
     miez: "3S",
     campuri: ['"tip": "contract"', '"dosar": "Logistică"', '"text": "indexat"'],
@@ -158,11 +158,11 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
     subtitlu: "Fiecare fișier încărcat are un loc cunoscut, pe care îl poți indica oricui te întreabă.",
     proza: [
       "Fișierele încărcate în 3S sunt păstrate în UE, cu regiunea principală la Frankfurt. 3S citește o singură dată textul fiecărui fișier, îi marchează tipul și îl pregătește pentru căutare.",
-      "Furnizorul de găzduire are sediul în Statele Unite. În temeiul legii americane numite CLOUD Act, unui asemenea furnizor i se poate cere să păstreze și să divulge datele pe care le administrează, inclusiv atunci când serverele se află în afara SUA. Pagina Despre 3S îl numește.",
+      "Furnizorul de găzduire are sediul în Statele Unite. În temeiul legii americane numite CLOUD Act, unui asemenea furnizor i se poate cere să păstreze și să divulge datele pe care le administrează, inclusiv atunci când serverele se află în afara SUA.",
     ],
     evidentiat:
-      "Fiecare dosar are termenul său de păstrare, iar 3S consemnează cine deschide fiecare document. Oricine ți-ar cere locul unui document, fie un client, fie un auditor sau un inspector, primește mereu același răspuns: în UE, cu regiunea principală la Frankfurt.",
-    legatura: { text: "Citește pagina Despre 3S", href: "/ro/securitate#security", ruta: "/ro/securitate" },
+      "Fiecare dosar are termenul său de păstrare, iar 3S consemnează cine deschide fiecare document. Oricine ți-ar cere locul unui document, fie un client, fie un auditor, fie un inspector, primește mereu același răspuns: în UE, cu regiunea principală la Frankfurt.",
+    legatura: { text: "Citește pagina Despre 3S și securitate", href: "/ro/securitate#security", ruta: "/ro/securitate" },
     carduri: [
       {
         titlu: "Text citit o singură dată",
@@ -199,7 +199,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
   },
   conformitate: {
     // platforma.ts:355-357 si `PaginaPlatforma.tsx:402`.
-    titlu: "Ce cere un auditor, 3S îți arată pe loc",
+    titlu: "3S îți arată pe loc ce cere un auditor",
     text: "Termenele de păstrare și jurnalul deschiderilor se pot consulta oricând în 3S, fără pregătiri înaintea unui audit.",
     insigne: ["Export", "Termene", "UE", "Frankfurt", "AWS", "Jurnal"],
     etichetaInsigne: "Ce poate arăta 3S",
@@ -219,9 +219,9 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
       {
         intrebare: "Unde rulează 3S?",
         raspuns:
-          "3S rulează în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul de găzduire și explică ce prevede legea americană pentru datele unei companii din SUA.",
+          "3S rulează în UE, cu regiunea principală la Frankfurt. Pagina Despre 3S și securitate numește furnizorul de găzduire și explică ce prevede legea americană pentru datele unei companii din SUA.",
         // Tinta aprobata a paginii pentru gazduire, ca legatura "Citeste pagina Despre 3S" de mai sus (calea SURSA).
-        legaturiInText: [{ text: "Pagina Despre 3S", href: "/ro/securitate#security" }],
+        legaturiInText: [{ text: "Pagina Despre 3S și securitate", href: "/ro/securitate#security" }],
       },
       {
         intrebare: "Cum găsesc o informație?",

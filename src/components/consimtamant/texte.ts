@@ -92,8 +92,9 @@ export type UnelteBanner = { ga4: boolean; umami: boolean };
 const BANNER_RO_UMAMI: TexteBanner = {
   ...TEXTE_BANNER,
   titlu: "Măsurarea vizitelor",
+  // A doua propozitie numeste acordul: pronumele singur trimitea la un complement din propozitia dinainte.
   descriere:
-    "Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică, fără cookie-uri. Îl poți retrage oricând, din subsolul oricărei pagini.",
+    "Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică, fără cookie-uri. Acordul îl poți retrage oricând, din subsolul oricărei pagini.",
 };
 
 const BANNER_RO_UMAMI_GA4: TexteBanner = {
@@ -106,7 +107,11 @@ const BANNER_RO_UMAMI_GA4: TexteBanner = {
 const STATISTICA_RO_UMAMI =
   "Aplicația noastră de statistică măsoară vizitele și paginile citite, fără cookie-uri. Se încarcă numai dacă permiți.";
 
-const PANOU_RO_UMAMI: TextePanou = { ...TEXTE_PANOU, statisticaText: STATISTICA_RO_UMAMI };
+// Fara GA4 nicio categorie nu pune cookie-uri (alegerea sta in stocarea locala, statistica proprie e fara cookie-uri),
+// deci introducerea nu cere sa alegi "cookie-uri". Setul romanesc cu GA4 pastreaza textul de baza: acolo GA4 pune cookie-uri.
+const OPTIUNI_RO_FARA_COOKIEURI = "Alege ce permiți pe acest site. Alegerea se poate schimba oricând, din subsolul oricărei pagini.";
+
+const PANOU_RO_UMAMI: TextePanou = { ...TEXTE_PANOU, optiuniText: OPTIUNI_RO_FARA_COOKIEURI, statisticaText: STATISTICA_RO_UMAMI };
 
 const PANOU_RO_UMAMI_GA4: TextePanou = {
   ...TEXTE_PANOU,
@@ -137,7 +142,7 @@ const PANOU_EN_UMAMI: TextePanou = {
   titlu: "Cookie settings",
   inchide: "Close settings",
   optiuniTitlu: "Your options",
-  optiuniText: "Choose which cookies you allow on this site. You can change your mind later, from the footer of any page.",
+  optiuniText: "Choose what you allow on this site. You can change your mind later, from the footer of any page.",
   necesareTitlu: "Strictly necessary",
   necesareInsigna: "Always active",
   necesareText: "They remember the choice you make here. Without them, the banner would appear again on every page. They are not sent anywhere.",
@@ -147,10 +152,11 @@ const PANOU_EN_UMAMI: TextePanou = {
   coloanaDurata: "Duration",
   coloanaScop: "Purpose",
   informatiiTitlu: "More information",
-  informatiiText: "The providers, the country of each and your rights are described in the",
-  informatiiLegatura: "cookie policy",
+  // Numele documentelor, ca in subsol si in titluri: "Cookie policy", "Privacy policy".
+  informatiiText: "Each provider, its country and your rights are described in the",
+  informatiiLegatura: "Cookie policy",
   informatiiSi: "and in the",
-  informatiiLegatura2: "privacy policy",
+  informatiiLegatura2: "Privacy policy",
   salveaza: "Save settings",
 };
 

@@ -29,6 +29,8 @@ Ce masoara, cu martor pe fiecare clasa:
   (9) NUMARUL NEDESPARTIT (felia 148): numarul afisat cu U+00A0 intre grupe pe ambele domenii (langa forma cu spatii
       obisnuite, pe aceeasi pagina) e VERDE pe identitate; numarul lui A, nedespartit, ramas pe B e ROSU si numit ca
       valoare a lui A. Trei mutanti in (5): tiparul fara U+00A0, forma nepastrata la inlocuire, cautarea literala.
+  (10) CALEA AFISATA (regula 2c) fara aplicari: cardurile de contact fara cale ca text, pe ambele domenii, sunt VERZI pe
+      identitate (regula nu se mai cere aplicata); o cale afisata ramasa netradusa pe B e tot ROSIE.
   (9b) numarul lui A NUMAI nedespartit in celelalte trei locuri in care unealta il cauta: sectiunile unui document
       (amprenta scoasa, VERDE), un rand al destinatarilor care numeste si e-mailul (ramane comparat, ROSU pe B cu numarul
       lui A) si o pagina fara cifrele de WhatsApp (ramane pagina cu contact, numarul egal cu martorul). Trei mutanti in
@@ -734,6 +736,29 @@ def cazuri(unealta, d):
     bun = cod == 0 and comparate(out) == (n + 1, 0) and martor and pagini_cu_contact(out) == martor
     (ok if bun else nu)('(9b) pagina cu numarul numai nedespartit ramane cu contact: cod %s, %s, pagini cu contact %s, martorul %s' % (
         cod, comparate(out), pagini_cu_contact(out), martor))
+
+    # (10) Cardurile de contact fara cale afisata: niciun element nu mai are ca text intreg o cale, deci regula 2c
+    # nu are ce aplica. Fixtura se asambleaza aici, din fixtura de baza: cardul isi pierde calea pe ambele domenii.
+    tipar_afisata = '(?<=>)(/[A-Za-z0-9._~%' + BS + '-/]*)(?=<)'
+
+    def fara_cale_afisata(colectie, dx):
+        card = '<span data-cale-afisata="">%s</span>'
+        return cu_text(colectie, card % dx['servita']('/pricing'), card % 'planuri')
+    A_fc, B_fc = fara_cale_afisata(A, DA), fara_cale_afisata(B, DB)
+    ramase = sum(len(re.findall(tipar_afisata, c)) for X in (A_fc, B_fc) for (_s, _h, c) in X.values() if isinstance(c, str))
+    inainte_a = sum(len(re.findall(tipar_afisata, c)) for (_s, _h, c) in A.values() if isinstance(c, str))
+    (ok if ramase == 0 and inainte_a > 0 else nu)('(10) controlul fixturii: cai afisate ca text intreg %d (inainte, pe A: %d)' % (ramase, inainte_a))
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, scrie_colectie(os.path.join(d, 'A-fara-cale'), id_a, A_fc),
+                       scrie_colectie(os.path.join(d, 'B-fara-cale'), id_b, B_fc))
+    (ok if cod == 0 and comparate(out) == (n + 1, 0) else nu)(
+        '(10) cardurile fara cale afisata pe ambele domenii: cod %s, %s, asteptat 0 si (%d, 0); %r' % (cod, comparate(out), n + 1, difuri(out)[:3]))
+    # Martorul: o cale afisata ramasa NETRADUSA pe o singura pagina a lui B e rosie, numita pe acea pagina.
+    pag_b = DB['servita']('/contact')
+    card_b = '<span data-cale-afisata="">%s</span>'
+    B_nt, b_ok = schimba(B, pag_b, [(card_b % DB['servita']('/pricing'), card_b % '/pricing')])
+    cod, out = ruleaza(unealta, '--regula', 'identitate', '--perechi', pp, ca, scrie_colectie(os.path.join(d, 'B-cale-netradusa'), id_b, B_nt))
+    bun = b_ok and cod == 1 and any(x.startswith('DIF /contact -> ' + pag_b) for x in difuri(out))
+    (ok if bun else nu)('(10) calea afisata netradusa pe %s: cod %s, %r' % (pag_b, cod, difuri(out)[:3]))
     return P - inainte
 
 

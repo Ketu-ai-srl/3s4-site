@@ -19,12 +19,12 @@ export const pagina: PaginaContinut = {
   meta: {
     titlu: "AI Search in Company Documents, With the Source Cited | 3S",
     descriere:
-      "Ask a question about your documents and get the answer with its source shown, so you can check it. English questions over Romanian documents are in pilot.",
+      "Ask a question about your documents and get the answer with its source shown, so you can check it. English questions over Romanian documents are in beta.",
     cale: "/features/search",
   },
   h1: "Ask questions about your documents and check the source of each answer",
   capsula:
-    "Ask a question about your documents and 3S answers from their content, citing the source of each answer so you can check it. Questions in Romanian are supported. English questions over Romanian documents, and citation down to the page, are in pilot: we test them on a sample of your files before you decide.",
+    "Ask a question about your documents and 3S answers from their content, citing the source of each answer so you can check it. Questions in Romanian are supported. English questions over Romanian documents, and citation down to the page, are in beta: we test them on a sample of your files before you decide.",
   sectiuni: [
     {
       cheie: "how-it-answers",
@@ -62,7 +62,7 @@ export const pagina: PaginaContinut = {
         {
           paragrafe: [
             "Yes. 3S cites the source of each answer, and the answer comes with the document it is taken from. For anything that matters, such as a notice period or a payment term, read the source before you act on the answer.",
-            "Citation down to the exact page is in pilot.",
+            "Citation down to the exact page is in beta.",
           ],
         },
       ],
@@ -73,7 +73,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "English questions over Romanian documents are in pilot. Questions in Romanian are supported today. We test English questions on a sample of your own files first, so you see what the answers look like before you decide.",
+            "English questions over Romanian documents are in beta. Questions in Romanian are supported today. We test English questions on a sample of your own files first, so you see what the answers look like before you decide.",
           ],
         },
       ],
@@ -103,23 +103,23 @@ export const pagina: PaginaContinut = {
     },
     {
       cheie: "status",
-      titlu: "What is available today, and what is in pilot?",
+      titlu: "What is available today, and what is in beta?",
       ancoraInainte: "status",
       blocuri: [
         {
           paragrafe: [
-            'Available today: questions in Romanian, a cited source with each answer, and recognition of the text of scanned documents. In pilot: English questions over Romanian documents, and citation down to the exact page. "In pilot" means we test the feature on a sample of your own documents before you decide.',
+            'Available today: questions in Romanian, a cited source with each answer, and recognition of the text of scanned documents. In beta: English questions over Romanian documents, and citation down to the exact page. "In beta" means we test the feature on a sample of your own documents before you decide.',
           ],
           tabel: {
             forma: "cu-antet",
-            titlu: "What is available today and what is in pilot",
+            titlu: "What is available today and what is in beta",
             antet: ["Capability", "Status"],
             randuri: [
               ["Questions in Romanian", "Available"],
               ["A cited source with each answer", "Available"],
               ["Recognition of the text of scanned documents", "Available"],
-              ["English questions over Romanian documents", "In pilot"],
-              ["Citation down to the exact page", "In pilot"],
+              ["English questions over Romanian documents", "In beta"],
+              ["Citation down to the exact page", "In beta"],
             ],
           },
         },
@@ -138,7 +138,7 @@ export const pagina: PaginaContinut = {
               "The same contract, annex or procedure is asked for again and again.",
               "Only one colleague knows how the files are organized, and requests wait for that person.",
               "Documents sit in several places, under different names or versions.",
-              "The documents are in Romanian and the person asking does not read Romanian: English questions over Romanian documents are in pilot.",
+              "The documents are in Romanian and the person asking does not read Romanian: English questions over Romanian documents are in beta.",
             ],
           },
           dupa: [
@@ -182,7 +182,7 @@ export const pagina: PaginaContinut = {
       "@type": "WebPage",
       name: "AI Search in Company Documents, With the Source Cited",
       description:
-        "Ask a question about your documents and get the answer with its source shown, so you can check it. English questions over Romanian documents are in pilot.",
+        "Ask a question about your documents and get the answer with its source shown, so you can check it. English questions over Romanian documents are in beta.",
       inLanguage: "en",
     },
   ],
@@ -207,7 +207,7 @@ export const inJur = {
     { text: "Search with sources", cale: "/features/search" },
   ],
   etichetaFir: "Breadcrumb",
-  legaturaSecundara: "[What is available and what is in pilot](#status)",
+  legaturaSecundara: "[What is available and what is in beta](#status)",
   microtext: "A person replies, in English or Romanian. No form, no account.",
   inainteDeEmail: "Or write to",
   final: {
@@ -247,7 +247,7 @@ export const inJur = {
  * fiindca e aceeasi intrebare scrisa de doua ori. "Garantie" e "warranty".
  */
 const GLOSA_INTREBARE = {
-  text: "What warranty does the compressor in hall 2 have, and from what date is it calculated?",
+  text: "What warranty does the compressor in Building 2 have, and from what date is it calculated?",
   limba: "en",
 } as const;
 
@@ -265,9 +265,9 @@ export const EROU_POVESTE = {
 export const AVALANSA_POVESTE = {
   // cautare-ai.ts:62.
   declaratie:
-    "Example with fictional data: a compressor's folder with the quote, order, invoice, photos and e-mails, and the document you need last",
+    "Example with fictional data: a compressor's folder with the quote, order, invoice, photos and emails, and the document you need last",
   // cautare-ai.ts:64, :66.
-  cale: ["Shared documents", "Suppliers", "Beta Example", "Compressor hall 2", "2024", "misc"],
+  cale: ["Shared documents", "Suppliers", "Beta Example", "Compressor Building 2", "2024", "misc"],
   numar: "41 items",
   // cautare-ai.ts:71-83; datele ISO (fisa, nota 4). Randul 8 n-are cip: "WhatsApp" iese pe 3s.md (decizia 49).
   randuri: [
@@ -307,7 +307,7 @@ export const FRUSTRARE_POVESTE = {
   colegi: { eticheta: "People asked", sub: "two were on leave" },
   rezultat: { eticheta: "Status", sub: "warranty still missing" },
   negasit: "No answer",
-  continua: "One more folder...",
+  continua: "One more folder",
   // Aceleasi valori ca scenariul RO (exemplu, nu masuratoare).
   maxime: { fisiere: 29, minute: 85, colegi: 5 },
   citate: [
@@ -335,7 +335,7 @@ export const LUMINA_POVESTE = {
 } as const;
 
 export const EXTRAGERE_POVESTE = {
-  // cautare-ai.ts:166-176; fara pagina citata (citarea pana la pagina e in pilot).
+  // cautare-ai.ts:166-176; fara pagina citata (citarea pana la pagina e in beta).
   declaratie:
     "Example with fictional data: the archive's answer in Romanian, with the file the quoted sentence comes from",
   fisier: "commissioning_report.pdf",
@@ -370,7 +370,7 @@ export const CONTRAST_POVESTE = {
     titlu: "Now",
     subtitlu: "one question",
     // Eticheta accesibila a desenului, cu traducerea intrebarii scurte (fisa, nota 2); ghilimele drepte (ASCII).
-    declaratie: 'Example: "How long is the warranty?" asked in Romanian, and its answer',
+    declaratie: 'Example: "What warranty does the compressor have?" asked in Romanian, and its answer',
     sursa: "commissioning_report.pdf",
     // Decizia 75: textele romanesti ale desenului se vad, deci au glosa lor, randata ca text sub desen:
     // intrebarea scurta (`SCENA_CAUTARE_3S_MD.intrebareScurta`) si raspunsul (`raspunsInceput` + `raspunsAccent`,
@@ -381,7 +381,7 @@ export const CONTRAST_POVESTE = {
       limba: "en",
     },
     metrici: [
-      { valoare: "1", cheie: "Questions" },
+      { valoare: "1", cheie: "Question" },
       { valoare: "1 file", cheie: "Source cited" },
       { valoare: "0", cheie: "Colleagues" },
       { valoare: "checkable", cheie: "Status", calitativ: "bun" },

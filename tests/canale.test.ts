@@ -289,7 +289,8 @@ const RANDURI: Array<[string, string, string]> = [
   ['en-seg-acct', 'your page for accounting and law firms', 'I would like to ask about a pilot with one of our clients.'],
   ['en-seg-ro', 'your page for owners of Romanian companies', 'I would like to ask about a pilot.'],
   ['en-einv', 'your page on e-invoice archiving', 'I would like to ask about a pilot.'],
-  ['en-ret-md', 'your page on record retention in Moldova', 'I would like to ask about a pilot.'],
+  // Felia 150: numele ghidului e "Records retention in Moldova" peste tot, deci si in textul precompletat.
+  ['en-ret-md', 'your page on records retention in Moldova', 'I would like to ask about a pilot.'],
   // Felia 141 (M7): pagina compara numai Google Drive, deci si textul precompletat; codul `ref` ramane `en-vs`.
   ['en-vs', 'your comparison with Google Drive', 'I would like to ask whether 3S fits our case.'],
 ]

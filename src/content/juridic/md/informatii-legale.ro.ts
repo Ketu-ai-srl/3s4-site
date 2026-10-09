@@ -25,7 +25,7 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s2", titlu: "2. Cum ne contactezi",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Ne scrii la " + c.contact.email + " sau ne suni ori ne scrii pe WhatsApp la " + c.contact.telefon + ". Răspunde un om, în română sau în engleză."] },
+          { jurisdictie: null, paragrafe: ["Ne scrii la " + c.contact.email + " sau ne suni ori ne scrii pe WhatsApp la " + c.contact.telefon + ". Îți răspunde o persoană din echipa noastră, în română sau în engleză."] },
         ],
       },
       {

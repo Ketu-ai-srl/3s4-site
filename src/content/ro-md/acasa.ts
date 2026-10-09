@@ -85,7 +85,7 @@ const LEGAL = caleMd("informatii-legale", "ro");
 // Titlul neutru pe startul ambelor site-uri (decizia 58, I2): pagina e aceeasi pe 3s.md/ro si pe 3s.com.ro.
 const TITLU = "Arhivă digitală cu căutare AI pentru firme | 3S";
 const DESCRIERE =
-  "Arhivă digitală pentru firme: formulezi întrebări în română și primești răspunsul cu sursa lui. Fișierele sunt păstrate în UE, regiunea principală Frankfurt.";
+  "Arhivă digitală pentru firme: formulezi întrebări în română și primești răspunsul cu sursa lui. Fișierele se află în UE, cu regiunea principală la Frankfurt.";
 
 /** Corpul e-mailului precompletat, ca in fisa (randurile noi se scriu `\r\n`). */
 const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm citit site-ul 3S. Aș dori să întreb despre un pilot.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";
@@ -224,7 +224,7 @@ function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
       blocuri: [
         {
           paragrafe: [
-            "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services (AWS). Amazon are sediul în Statele Unite, iar legislația americană (CLOUD Act) poate obliga compania să păstreze și să predea datele aflate în posesia sau sub controlul său, indiferent unde se află serverele. Detaliile sunt prezentate pe [pagina despre 3S și securitate](/ro/securitate#security).",
+            "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services (AWS). Amazon are sediul în Statele Unite, iar legislația americană (CLOUD Act) poate obliga compania să păstreze și să predea datele aflate în posesia sau sub controlul său, indiferent unde se află serverele. Detaliile sunt prezentate pe [pagina despre 3S și securitate](/ro/securitate#security).",
           ],
         },
       ],
@@ -299,7 +299,7 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
     meta: { titlu: TITLU, descriere: DESCRIERE, cale: "/ro" },
     h1: "Întreabă documentele firmei. Primești răspunsul și sursa lui.",
     capsula:
-      "3S Scan Store Solve organizează documentele firmei tale într-o arhivă digitală și oferă răspunsuri la întrebările despre conținutul lor, indicând documentul-sursă al fiecărui răspuns. Întrebările se formulează în română, din browser. Fișierele sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt.",
+      "3S Scan Store Solve organizează documentele firmei tale într-o arhivă digitală și oferă răspunsuri la întrebările despre conținutul lor, indicând documentul-sursă al fiecărui răspuns. Întrebările se formulează în română, din browser. Fișierele sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt.",
     sectiuni: sectiuni(o),
     cta: {
       ref: "ro-md-acasa",

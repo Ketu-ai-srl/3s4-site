@@ -169,8 +169,9 @@ describe('/pricing: cardurile, tabelul si pliul suplimentelor', () => {
     expect(valori('OCR pages a month')).toEqual(['1,000', '2,500', '5,000'])
     expect(valori('Downloads a month')).toEqual(['15 GB', '30 GB', '60 GB'])
     // Felia 143, runda 2: suma ramane lipita de EUR pe ecran (spatiu nedespartitor), ca pe editia ro-MD.
-    expect(valori('One-time connection, per 1,000 pages')).toEqual(['EUR\u00a06', 'EUR\u00a06', 'EUR\u00a06'])
-    for (const t of ['>100 GB<', '>2,500<', '>60 GB<', '>One-time connection, per 1,000 pages<', '>EUR\u00a06<']) expect(tabel, t).toContain(t)
+    // Felia 150: "onboarding fee", nu "connection" (connection fee se citeste taxa de racordare).
+    expect(valori('One-time onboarding fee, per 1,000 pages')).toEqual(['EUR\u00a06', 'EUR\u00a06', 'EUR\u00a06'])
+    for (const t of ['>100 GB<', '>2,500<', '>60 GB<', '>One-time onboarding fee, per 1,000 pages<', '>EUR\u00a06<']) expect(tabel, t).toContain(t)
   })
 
   it('randul pilotului ramane pe locul lui, intre conturi si taxa pe utilizator (felia pilotului il schimba pe loc)', () => {

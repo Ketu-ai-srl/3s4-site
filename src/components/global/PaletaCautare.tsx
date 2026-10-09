@@ -25,7 +25,7 @@ import { PALETA, vizibile, type CaiExistente, type ContractPaleta } from "@/cont
 import { RUTE, editiaRutei, type Ruta } from "@/content/rute";
 import type { CodEditie } from "@/lib/editii";
 import Iconita from "@/components/primitive/Iconita";
-import { continutPaleta, cuCaiServite, normalizeaza, type GrupPaletaRezultat } from "./paleta";
+import { continutPaleta, cuCaiServite, normalizeaza, potrivesteInterogarea, type GrupPaletaRezultat } from "./paleta";
 import s from "./PaletaCautare.module.css";
 
 /**
@@ -55,7 +55,7 @@ export function continutPaletaContract(
     return continutPaleta(interogare, cai, rute, articole);
   }
   const q = normalizeaza(interogare);
-  const potriveste = (...campuri: string[]) => campuri.some((c) => normalizeaza(c).includes(q));
+  const potriveste = (...campuri: string[]) => potrivesteInterogarea(q, ...campuri);
   const [grupPagini, grupActiuni] = paleta.grupuri;
   const pagini = vizibile(grupPagini?.elemente ?? [], cai).map((l) => ({ titlu: l.text, cale: l.href ?? "/" }));
   const actiuni = vizibile(grupActiuni?.elemente ?? [], cai).map((l) => ({ titlu: l.text, cale: l.href ?? "/" }));

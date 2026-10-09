@@ -7,8 +7,9 @@
 //   - caseta principala nu arata o adresa de e-mail pana cand `config/brand.json` nu are una
 //     confirmata; pana atunci butonul duce la formularul de pe pagina;
 //   - cardurile nu sunt casute de posta pe departamente (3S nu are asemenea adrese): fiecare duce la
-//     pagina site-ului care raspunde subiectului, iar randul albastru e calea paginii, cea SERVITA pe
-//     domeniu (`textCaleCard`: pe 3s.com.ro `/preturi`, nu `/ro/preturi`);
+//     pagina site-ului care raspunde subiectului; legatura e calea SERVITA pe domeniu (pe 3s.com.ro
+//     `/preturi`, nu `/ro/preturi`), iar randul de jos nu mai scrie calea ca text (o cale bruta nu e un
+//     indiciu pentru om): cand textul e o cale, arata numai sageata, ascunsa tehnologiilor asistive;
 //   - panoul nu promite termene de raspuns (nicio tinta asumata in registrul de afirmatii): arata
 //     canalele si starea lor, citita din comutatorul operatorului si din adresa marcii;
 //   - cardurile de jos nu numesc o firma (decizia owner-ului din 24.09, doar brandul): arata marca si
@@ -24,7 +25,7 @@
 // (`numarNedespartit`), in text, nu prin CSS. Subtitlul RO nu are numar, deci sirul lui trece neatins (acelasi HTML).
 // Comparatia de identitate dintre build-uri (`compara-build.py`) trateaza U+00A0 ca spatiu numai in numarul afisat.
 
-import { CalendarClock, Clock, Building2, Compass, Layers, Plug, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowRight, CalendarClock, Clock, Building2, Compass, Layers, Plug, ShieldCheck, Wallet } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
 import Buton from "@/components/primitive/Buton";
 import CapBloc from "@/components/primitive/CapBloc";
@@ -191,7 +192,15 @@ export default function PaginaContact({
                     <Ic size={20} strokeWidth={1.5} className={s.cardIconita} aria-hidden />
                     <span className={s.cardTitlu}>{card.titlu}</span>
                     <span className={s.cardText}>{card.descriere}</span>
-                    <span className={s.cardAdresa}>{textCaleCard(card.legatura)}</span>
+                    {/* O cale ca text ("/ro/preturi") nu e un indiciu pentru om: cardul intreg e legatura, deci
+                        randul de jos arata numai sageata. Un text care nu e cale ramane scris. */}
+                    {textCaleCard(card.legatura).startsWith("/") ? (
+                      <span className={s.cardAdresa} aria-hidden="true">
+                        <ArrowRight size={16} strokeWidth={1.75} />
+                      </span>
+                    ) : (
+                      <span className={s.cardAdresa}>{textCaleCard(card.legatura)}</span>
+                    )}
                   </Tinta>
                 </li>
               );

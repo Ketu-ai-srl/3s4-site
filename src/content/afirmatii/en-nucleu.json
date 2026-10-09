@@ -109,7 +109,7 @@
   },
   {
     "id": "en-pret-orientativ-eur",
-    "text": "3S has four plans, priced per company in euros, excluding VAT, with the same features: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month (EUR 75, 125 and 200 a month billed annually; 900, 1,500 and 2,400 a year), for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month on an annual contract, for more than 20 accounts. Paying annually, the client pays for 10 months and gets 12. The prices are indicative; every start is a free 14-day assisted pilot.",
+    "text": "3S has four plans, priced per company in euros, excluding VAT, with the same features: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month (EUR 75, 125 and 200 a month billed annually; 900, 1,500 and 2,400 a year), for 5, 10 and 20 user accounts, and Enterprise from EUR 800 a month on an annual contract, for more than 20 accounts. Paying annually, the client pays for 10 months and gets 12. The prices are indicative; every customer starts with a free 14-day assisted pilot.",
     "unde": "src/content/en/home.ts, src/content/en/pricing.ts, src/content/en/enterprise.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pret-orientativ-eur; planul 3s.md (docs/audit/3s-md-plan-2026-09-30.md), §0.1, deciziile 10, 18 si 19 (documentul docs/audit/pret-eur-3s-md-2026-09-30.md, blocul DECIS); durata pilotului de 14 zile din decizia 65 (2026-10-05)",
@@ -136,7 +136,7 @@
   },
   {
     "id": "en-pagina-si-engleza-in-pilot",
-    "text": "English questions over Romanian documents, and citation down to the page, are in pilot; questions in Romanian are supported.",
+    "text": "English questions over Romanian documents, and citation down to the page, are in beta; questions in Romanian are supported.",
     "unde": "src/content/en/home.ts, src/content/en/platforma-componente.ts, src/content/en/despre-componente.ts",
     "stare": "confirmat",
     "sursa": "arhitectura continutului EN (docs/continut/en/00-arhitectura.md), Anexa A, intrarea en-pagina-si-engleza-in-pilot (brief 30.09; P-13)",

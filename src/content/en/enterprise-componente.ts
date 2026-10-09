@@ -93,13 +93,13 @@ export const LIVRABILE_EN: ContinutListaLivrabile = {
         LIMITE_PLANURI.enterprise.conturi +
         " user accounts on the base plan, on an annual contract billed monthly, from EUR 800 a month, excluding VAT. Base allowances, shared by the whole organization: " +
         LIMITE_DE_BAZA_EN +
-        ". Connection: " +
+        ". Onboarding fee: " +
         CONECTARE_EN +
         ".",
     },
     {
       titlu: "A pilot on your own documents",
-      text: "Every start is a free 14-day assisted pilot on your own documents. A written offer then confirms the plan and the price.",
+      text: "Every customer starts with a free 14-day assisted pilot on your own documents. A written offer then confirms the plan and the price.",
     },
     {
       titlu: "Data location",
@@ -113,7 +113,7 @@ export const LIVRABILE_EN: ContinutListaLivrabile = {
     },
     {
       titlu: "Your documents, by export",
-      text: "3S delivers documents by export. This site states no exit terms, so if you need a specific exit arrangement, tell us before you decide.",
+      text: "You get your documents out of 3S by export. This site states no exit terms, so if you need a specific exit arrangement, tell us before you decide.",
     },
   ],
 };

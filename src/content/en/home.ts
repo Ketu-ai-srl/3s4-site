@@ -44,12 +44,12 @@ const INTREBARI: readonly { cheie: string; intrebare: string; raspuns: string }[
     cheie: "english-questions",
     intrebare: "Can I ask questions in English about Romanian documents?",
     raspuns:
-      "That is in pilot: we test it on a sample of your files before you decide. Citation down to the page is in pilot too. Questions in Romanian are supported.",
+      "That is in beta: we test it on a sample of your files before you decide. Citation down to the page is in beta too. Questions in Romanian are supported.",
   },
   {
     cheie: "who-operates",
     intrebare: "Who operates 3S?",
-    raspuns: "3S is operated from Moldova. The operating company's details are on the [Legal information](" + LEGAL + ") page.",
+    raspuns: "3S is operated from Moldova. The operating company's details are in the [Legal notice](" + LEGAL + ").",
   },
   {
     cheie: "customer-names",
@@ -76,7 +76,7 @@ export const pagina: PaginaContinut = {
       titlu: "What is 3S Scan Store Solve?",
       blocuri: [
         {
-          paragrafe: ["3S is a digital archive for your company's documents that also answers questions about them. Its name gives the three steps."],
+          paragrafe: ["3S is a digital archive for your company's documents that also answers questions about them. Its name spells out the three steps."],
           lista: {
             elemente: [
               "**Scan.** Files you already have as scans go straight into the platform.",
@@ -110,7 +110,7 @@ export const pagina: PaginaContinut = {
             ],
           },
           dupa: [
-            "Example with fictional data: no real company or document is shown. The question and the answer are in Romanian; the English line is our translation of the question, not 3S output. Questions in Romanian are supported; English questions over Romanian documents are in pilot.",
+            "Example with fictional data: no real company or document is shown. The question and the answer are in Romanian; the English line is our translation of the question, not 3S output. Questions in Romanian are supported; English questions over Romanian documents are in beta.",
           ],
         },
       ],
@@ -168,7 +168,7 @@ export const pagina: PaginaContinut = {
       ancoraInainte: "how-do-i-start",
       blocuri: [
         {
-          paragrafe: ["Every start is an assisted pilot on a sample of your documents."],
+          paragrafe: ["Every customer starts with an assisted pilot on a sample of your documents."],
           lista: {
             numerotata: true,
             elemente: [
@@ -188,7 +188,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "3S has four plans, priced per company in euros, excluding VAT: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month, and Enterprise from EUR 800 a month. The prices are indicative, and paying annually, you pay for 10 months and get 12. Every start is a free 14-day assisted pilot on your own documents. [See the plans](/pricing).",
+            "3S has four plans, priced per company in euros, excluding VAT: Starter EUR 90, Pro EUR 150 and Business EUR 240 a month, and Enterprise from EUR 800 a month. The prices are indicative, and paying annually, you pay for 10 months and get 12. Every customer starts with a free 14-day assisted pilot on your own documents. [See the plans](/pricing).",
           ],
         },
       ],

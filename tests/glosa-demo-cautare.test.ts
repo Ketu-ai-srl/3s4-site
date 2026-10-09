@@ -186,7 +186,8 @@ const PERECHI: Pereche[] = [
 const GLOSAR: [string, string][] = [
   ['garanți', 'warranty'],
   ['compresor', 'compressor'],
-  ['hala', 'hall'],
+  // Felia 150: "hall" e forma britanica pentru cladirea industriala; engleza americana a site-ului spune "Building".
+  ['hala', 'building'],
   ['dată', 'date'],
   ['calculează', 'calculated'],
   ['perioada', 'period'],

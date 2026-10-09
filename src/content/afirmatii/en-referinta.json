@@ -145,7 +145,7 @@
   },
   {
     "id": "en-referinta-efacturare-be-calendar",
-    "text": "Belgium: structured e-invoices between Belgian VAT-registered businesses, over Peppol, are mandatory from January 1, 2026; a business that invoices only consumers must still be able to receive them; the general tolerance covered the first three months, and the self-billing tolerance ran to June 30, 2026",
+    "text": "Belgium: structured e-invoices between Belgian VAT-registered businesses, over Peppol, are mandatory from January 1, 2026; a business that invoices only consumers must still be able to receive them; the general tolerance period covered the first three months, and the self-billing tolerance ran to June 30, 2026",
     "unde": "src/content/en/guides-e-invoice-archiving-eu.ts",
     "stare": "confirmat",
     "sursa": "oglinda intrării efacturare-be-calendar (aceeași stare și aceeași sursă): BOSA, pagina de ansamblu și anunțul despre sfârșitul perioadei de toleranță (07.04.2026), recitite pe 30.09.2026",

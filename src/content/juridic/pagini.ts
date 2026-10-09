@@ -271,7 +271,7 @@ export const META_DOCUMENTE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, M
   },
   termeni: {
     ro: { titlu: "Termeni și condiții pentru clienți profesioniști | 3S", descriere: "Condițiile în care 3S furnizează serviciul clienților profesioniști: contractul, prețul, datele, încetarea și legea aplicabilă." },
-    en: { titlu: "Terms and conditions for professional clients | 3S", descriere: "The terms on which 3S provides the service to professional clients: the contract, the price, the data, termination and governing law." },
+    en: { titlu: "Terms and conditions | 3S", descriere: "The terms on which 3S provides the service to professional clients: the contract, the price, the data, termination and governing law." },
   },
   dpa: {
     ro: { titlu: "Acord de prelucrare a datelor (DPA) | 3S", descriere: "Cum prelucrează 3S, ca persoană împuternicită de operator, datele personale din documentele clienților săi." },
@@ -279,7 +279,7 @@ export const META_DOCUMENTE_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, M
   },
   subimputerniciti: {
     ro: { titlu: "Subîmputerniciții platformei | 3S", descriere: "Furnizorii care prelucrează conținutul documentelor clienților 3S, cu rolul și țara fiecăruia." },
-    en: { titlu: "Sub-processors of the platform | 3S", descriere: "The providers that process the content of 3S client documents, with the role and the country of each one." },
+    en: { titlu: "Platform sub-processors | 3S", descriere: "The providers that process the content of 3S client documents, with the role and the country of each one." },
   },
   "notificare-si-actiune": {
     ro: { titlu: "Notificare și acțiune | 3S", descriere: "Cum ne semnalezi o informație ilicită din serviciile 3S, cum hotărâm, ce urmează și regulile de utilizare acceptabilă." },

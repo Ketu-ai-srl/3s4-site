@@ -60,7 +60,7 @@ const INDEX_RO_MD = {
 /** Metadata indexului, pe modelul `META_INDEX_JURIDIC`. Text NOU, propus. */
 const META_INDEX_RO_MD = {
   titlu: "Documentele juridice ale platformei 3S",
-  descriere: "Informațiile legale, politica de confidențialitate, politica de cookie-uri, termenii, notificarea și acțiunea și inteligența artificială în 3S.",
+  descriere: "Informațiile legale, politica de confidențialitate, politica de cookie-uri, termenii, notificarea și acțiunea, precum și inteligența artificială în 3S.",
 };
 
 type Parametri = { params: Promise<{ document?: string[] }> };

@@ -25,7 +25,7 @@ import { afterAll, describe, expect, it, vi } from 'vitest'
  *  (9) cu o singura tara, pastila selectorului nu e buton;
  *  (10) langa orele rotunjite ale calculatorului fraza spune "circa" / "about".
  * RUNDA 2:
- *  (11) /platforma si /enterprise, RO si EN: "Pagina Despre 3S" / "About page" si ghidurile din raspunsuri sunt
+ *  (11) /platforma si /enterprise, RO si EN: "Pagina Despre 3S și securitate" / "About page" si ghidurile din raspunsuri sunt
  *       legaturi, cu adresa servita a fiecarui domeniu; FAQPage poarta raspunsul ca sir; implicitul RO fara legaturi;
  *  (12) numarul de pe /contact: NEFACUT in runda 2 (comparatia de identitate dintre build-uri cauta numarul cu
  *       spatii obisnuite); facut in felia 148, cu proba in `tests/numar-curatenie-limba.test.ts`;
@@ -174,11 +174,11 @@ describe('(2)(3) numele de pagina din raspunsurile startului sunt legaturi, cu a
   } as const
 
   for (const nume of ['3s-com-ro', '3s-md'] as const) {
-    it(nume + ': EN "Legal information" si "About page", RO "Termenii și condițiile" si pagina de contact', async () => {
+    it(nume + ': EN "Legal notice" si "About page", RO "Termenii și condițiile" si pagina de contact', async () => {
       const p = await cuProfil(nume)
       const a = asteptat[nume]
       const en = legaturi(sectiuneIntrebari(randeaza(p.StartEn)))
-      expect(en.filter((l) => l.text === 'Legal information').map((l) => l.href)).toEqual([a.legal])
+      expect(en.filter((l) => l.text === 'Legal notice').map((l) => l.href)).toEqual([a.legal])
       expect(en.filter((l) => l.text === 'About page').map((l) => l.href)).toEqual([a.about])
       const ro = legaturi(sectiuneIntrebari(randeaza(p.StartRoMd)))
       expect(ro.filter((l) => l.text === 'Termenii și condițiile').map((l) => l.href)).toEqual([a.termeni])
@@ -202,7 +202,7 @@ describe('(2)(3) numele de pagina din raspunsurile startului sunt legaturi, cu a
     const legEn = en.INTREBARI_EN.intrebari.map((i) => i.legaturaInText).filter((l) => l !== undefined)
     expect(legEn).toEqual([
       { text: 'About page', href: '/about#security' },
-      { text: 'Legal information', href: caleMd('informatii-legale', 'en') },
+      { text: 'Legal notice', href: caleMd('informatii-legale', 'en') },
     ])
     const legRo = ro.INTREBARI_RO_MD.intrebari.map((i) => i.legaturaInText).filter((l) => l !== undefined)
     expect(legRo).toEqual([{ text: 'Termenii și condițiile', href: caleMd('termeni', 'ro') }])
@@ -222,7 +222,7 @@ describe('(2)(3) numele de pagina din raspunsurile startului sunt legaturi, cu a
     expect(legaturi(raspunsuri(renderToStaticMarkup(createElement(FaqAcasa, { continut: fara }))))).toEqual([])
     expect(legaturi(raspunsuri(renderToStaticMarkup(createElement(FaqAcasa, { continut: en.INTREBARI_EN })))).map((l) => l.text)).toEqual([
       'About page',
-      'Legal information',
+      'Legal notice',
     ])
     // Pe RO (site-ul vechi) raspunsurile n-au legaturi, ca pe baza.
     expect(legaturi(raspunsuri(renderToStaticMarkup(createElement(FaqAcasa, { continut: INTREBARI }))))).toEqual([])
@@ -242,7 +242,7 @@ describe('(2)(3) numele de pagina din raspunsurile startului sunt legaturi, cu a
     const p = await cuProfil('3s-md')
     const html = randeaza(p.StartEn)
     const en = await import('../src/content/en/acasa-componente')
-    const intrebare = en.INTREBARI_EN.intrebari.find((i) => i.legaturaInText?.text === 'Legal information')
+    const intrebare = en.INTREBARI_EN.intrebari.find((i) => i.legaturaInText?.text === 'Legal notice')
     expect(intrebare).toBeDefined()
     expect(html).toContain(JSON.stringify(intrebare!.raspuns).slice(1, -1))
   })
@@ -539,7 +539,8 @@ describe('(10) langa orele rotunjite ale calculatorului fraza spune "circa" / "a
     // Runda 2: "about" lipit de cifra pe EN, ca "circa" pe RO, iar cifra lipita de unitate in teaser.
     for (const t of [CALCULATOR_EN.timpAcum.dupaBani, CALCULATOR_EN.pretInOre.dupaPret, CALCULATOR_EN.pretInOreAnual.dupaPret]) expect(t.endsWith(' about\u00a0')).toBe(true)
     expect(textTeaserRoMd().rezultat).toBe('se adună circa\u00a036,7\u00a0ore lunar')
-    expect(textTeaserEn().rezultat).toBe('totals about\u00a036.7\u00a0h a month')
+    // Felia 150: fraza teaserului are subiect ("4 people ... add up to about"), nu "With ... totals about".
+    expect(textTeaserEn().rezultat).toBe('add up to about\u00a036.7\u00a0h a month')
   })
 })
 
@@ -583,8 +584,9 @@ describe('(11) /platforma si /enterprise: numele paginilor din raspunsuri sunt l
       const EnterpriseRo = (await import('../src/app/(romd)/ro/enterprise/page.romd')).default
       const EnterpriseEn = (await import('../src/app/(en)/enterprise/page.en')).default
       const perechi = (html: string, id: string) => legaturi(sectiune(html, id)).map((l) => [l.text, l.href])
+      // Numele paginii e unificat pe forma din meniu si subsol, „Despre 3S și securitate” (audit de limba, 09.10).
       expect(perechi(randeaza(PlatformaRo), 'platforma-intrebari')).toEqual([
-        ['Pagina Despre 3S', a.despreRo],
+        ['Pagina Despre 3S și securitate', a.despreRo],
         ['termenele de păstrare în Moldova', a.moldovaRo],
         ['arhivarea e-facturilor în UE', a.efacturiRo],
       ])
@@ -593,7 +595,7 @@ describe('(11) /platforma si /enterprise: numele paginilor din raspunsuri sunt l
         ['records retention in Moldova', a.moldovaEn],
         ['e-invoice archiving in the EU', a.efacturiEn],
       ])
-      expect(perechi(randeaza(EnterpriseRo), 'livrabile-titlu')).toEqual([['Pagina Despre 3S', a.despreRo]])
+      expect(perechi(randeaza(EnterpriseRo), 'livrabile-titlu')).toEqual([['Pagina Despre 3S și securitate', a.despreRo]])
       expect(perechi(randeaza(EnterpriseEn), 'livrabile-titlu')).toEqual([['About page', a.aboutEn]])
       // Fiecare tinta e servita de o ruta a build-ului (fara fragment).
       for (const h of Object.values(a)) expect(p.servite.has(fara(h)), h).toBe(true)

@@ -70,9 +70,9 @@ const PRIMIRE = '(receives?|arrives?|takes? in|(send|upload|forward)\\w* (your |
 const ACEEASI_PROPOZITIE = '[^.?!\\n]{0,50}'
 const TIPAR_ASISTENT_WA = new RegExp(
   [
-    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b' + ACEEASI_PROPOZITIE + '\\b' + WA + '\\b',
-    '\\b' + WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b',
-    '\\b' + WA + ':? ?\\(?pilot',
+    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b' + ACEEASI_PROPOZITIE + '\\b' + WA + '\\b',
+    '\\b' + WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b',
+    '\\b' + WA + ':? ?\\(?(pilot|beta)',
     '\\b' + PRIMIRE + ACEEASI_PROPOZITIE + '\\bon ' + WA + '\\b',
   ].join('|'),
   'i',
@@ -225,6 +225,9 @@ describe('martorii tiparelor de continut', () => {
       'Documents arrive by upload from the browser and, in pilot, on ' + WA + '.',
       'You can forward your invoices on ' + WA + '.',
       'Upload from the browser, ' + WA + ' (pilot).',
+      // Eticheta casei pentru functiile neterminate e "beta" (felia 150), deci si forma ei lipita de nume.
+      'Upload from the browser, ' + WA + ' (be' + 'ta).',
+      WA + ': be' + 'ta',
       'The assistant may also be offered on ' + WA + ', if the offer includes that channel.',
       'On ' + WA + ', if the offer includes that channel, in the assistant first message.',
       'Search your archive straight from ' + WA + '.',
@@ -257,7 +260,8 @@ describe('modulele paginilor de produs', () => {
 
   it('titlul, meta, H1 si capsula sunt cele ale fiselor (lungimile masurate acolo)', () => {
     const c = modulCautare.pagina
-    expect([c.meta.titlu.length, c.meta.descriere.length, numarCuvinte(c.capsula)]).toEqual([58, 154, 54])
+    // Felia 150: meta descrierea spune "in beta" in loc de "in pilot" (alegerea 3 a deciziei 82), un caracter mai putin.
+    expect([c.meta.titlu.length, c.meta.descriere.length, numarCuvinte(c.capsula)]).toEqual([58, 153, 54])
   })
 
   it('CTA: ref-ul fisei si textul precompletat identic cu tabelul canalelor EN, pe calea paginii', () => {
@@ -280,12 +284,12 @@ describe('modulele paginilor de produs', () => {
     expect(gasite).toEqual([])
   })
 
-  it('pilotul: P03 tine citarea pana la pagina si engleza peste romana "in pilot"; intrebarile pe WhatsApp au iesit (decizia 49)', () => {
+  it('P03 tine citarea pana la pagina si engleza peste romana "in beta" (felia 150: pilot = numai proba de 14 zile); intrebarile pe WhatsApp au iesit (decizia 49)', () => {
     const capsula = modulCautare.pagina.capsula
-    expect(capsula).toMatch(/English questions over Romanian documents, and citation down to the page, are in pilot/)
+    expect(capsula).toMatch(/English questions over Romanian documents, and citation down to the page, are in beta/)
     const status = modulCautare.pagina.sectiuni.find((s) => s.cheie === 'status')
     const randuri = status?.blocuri[0].tabel?.randuri ?? []
-    expect(randuri.filter((r) => r[1] === 'In pilot').map((r) => r[0])).toEqual([
+    expect(randuri.filter((r) => r[1] === 'In beta').map((r) => r[0])).toEqual([
       'English questions over Romanian documents',
       'Citation down to the exact page',
     ])

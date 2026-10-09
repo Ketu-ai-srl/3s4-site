@@ -81,7 +81,7 @@ export const FUNCTIONALITATI_EN: ContinutFunctionalitatiAcasa = {
   // acasa.ts:435, :440.
   titlu: "What is 3S Scan Store Solve?",
   subtitlu:
-    "3S is a digital archive, operated from Moldova, that answers questions about your files. Its name gives the three steps.",
+    "3S is a digital archive, operated from Moldova, that answers questions about your files. Its name spells out the three steps.",
   final: {
     // acasa.ts:479; butonul: legatura aprobata spre comparatie (decizia 11). Pagina compara numai Google Drive (Box AI
     // a ramas in fisa), deci fraza si butonul numesc numai Google Drive; adresa paginii ramane aceeasi.
@@ -105,7 +105,7 @@ export const PASI_EN: { numar: "01" | "02" | "03"; eticheta: string; titlu: stri
     numar: "02",
     eticheta: "Store",
     // acasa.ts:460, :463.
-    titlu: "Each document sits in your organization's own space",
+    titlu: "Each document sits in your organization's own space.",
     paragraf:
       "Every upload is prepared for search automatically, and you can export the originals in a zip that keeps your folder structure.",
   },
@@ -287,18 +287,18 @@ export const INTREBARI_EN: ContinutFaqAcasa = {
     },
     {
       intrebare: "Who operates 3S?",
-      raspuns: "3S is operated from Moldova. The operating company's details are on the Legal information page.",
-      legaturaInText: { text: "Legal information", href: "/legal/legal-information" },
+      raspuns: "3S is operated from Moldova. The operating company's details are in the Legal notice.",
+      legaturaInText: { text: "Legal notice", href: "/legal/legal-information" },
     },
     {
       intrebare: "Can I ask in English about Romanian documents?",
       raspuns:
-        "That is in pilot: we test it on a sample of your files before you decide. Citation down to the page is in pilot too. Questions in Romanian are supported.",
+        "That is in beta: we test it on a sample of your files before you decide. Citation down to the page is in beta too. Questions in Romanian are supported.",
     },
     {
       intrebare: "How do I start?",
       raspuns:
-        "You begin with an assisted pilot on a sample of your documents. Message us on WhatsApp about your archive; send no documents or personal data yet. We agree on the sample and the questions, then check the answers and sources with you. During the pilot, accounts are invitation-only.",
+        "You begin with an assisted pilot on a sample of your documents. Message us on WhatsApp about your archive; do not send any documents or personal data yet. We agree on the sample and the questions, then check the answers and sources with you. During the pilot, accounts are invitation-only.",
     },
   ],
   // acasa.ts:767: fara adresa de posta pana la P-40, ca pe RO cand marca nu are adresa confirmata.

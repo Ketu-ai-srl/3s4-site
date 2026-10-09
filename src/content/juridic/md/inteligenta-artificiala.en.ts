@@ -15,8 +15,8 @@ export default function inteligentaArtificialaEn(c: ContextMd): DocumentJuridic 
     versiune: "2026-10-01",
     introducere: "",
     preambul: [
-      { jurisdictie: null, paragrafe: ["3S Demerzel SRL is in the process of registration. Until it is registered we issue no offers, enter into no contracts and open no accounts, so the assistant described on this page is not yet offered to clients. This page shows how it will work."] },
-      { jurisdictie: null, paragrafe: ["The 3S services, provided by 3S Demerzel SRL of the Republic of Moldova (its details are in the [Legal notice](cale:informatii-legale)), use an artificial intelligence (AI) assistant that answers questions about the Client's documents. This page says what the assistant does, what its limits are and what happens to the documents. It supplements the notice in the chat without replacing it: the assistant tells you that it is an AI system from the start of every conversation (section 2). The notice in the chat and this page take account of the transparency requirements of Article 50 of Regulation (EU) 2024/1689 (the Artificial Intelligence Act), to the extent that they apply. \"Client\" and \"User\" have the meaning given in the [Terms and conditions](cale:termeni).", "**In brief** (a summary with no contractual value; the text below governs)"], lista: { elemente: ["The assistant is an AI system, not a person. It tells you so from the start of every conversation.", "Answers are generated automatically and may be incomplete or wrong. Check the cited document before relying on them.", "Indicating the exact page of the source is in pilot and may be missing or wrong.", "Your documents are processed only to provide the service, under the data processing agreement (DPA).", "You can always speak to a person: " + c.contact.email + " or " + c.contact.telefon + "."] } },
+      { jurisdictie: null, paragrafe: ["3S Demerzel SRL is in the process of being registered. Until it is registered we issue no offers, enter into no contracts and open no accounts, so the assistant described on this page is not yet offered to clients. This page shows how it will work."] },
+      { jurisdictie: null, paragrafe: ["The 3S services, provided by 3S Demerzel SRL of the Republic of Moldova (its details are in the [Legal notice](cale:informatii-legale)), use an artificial intelligence (AI) assistant that answers questions about the Client's documents. This page says what the assistant does, what its limits are and what happens to the documents. It supplements the notice in the chat without replacing it: the assistant tells you that it is an AI system from the start of every conversation (section 2). The notice in the chat and this page take account of the transparency requirements of Article 50 of Regulation (EU) 2024/1689 (the Artificial Intelligence Act), to the extent that they apply. \"Client\" and \"User\" have the meaning given in the [Terms and conditions](cale:termeni).", "**In brief** (a summary with no contractual value; the text below governs)"], lista: { elemente: ["The assistant is an AI system, not a person. It tells you so from the start of every conversation.", "Answers are generated automatically and may be incomplete or wrong. Check the cited document before relying on them.", "Indicating the exact page of the source is in beta and may be missing or wrong.", "Your documents are processed only to provide the service, under the data processing agreement (DPA).", "You can always speak to a person: " + c.contact.email + " or " + c.contact.telefon + "."] } },
     ],
     sectiuni: [
       {
@@ -40,19 +40,19 @@ export default function inteligentaArtificialaEn(c: ContextMd): DocumentJuridic 
       {
         cheie: "s4", titlu: "4. The limits of the answers",
         blocuri: [
-          { jurisdictie: null, paragrafe: [], lista: { elemente: ["An answer may be incomplete, wrong or imprecisely worded. 3S does not guarantee that an answer is correct or complete (Terms, section 7.1).", "The risk is higher on poor scans, handwriting, stamps and tables, figures, dates and proper names.", "Text extracted from scans by optical character recognition may contain errors, and an extraction error reaches the answer.", "The assistant sees only the documents uploaded and indexed in the Account. It cannot find what is missing from the archive, and the absence of a document from an answer does not prove that the document does not exist.", "The same question, asked twice, may receive differently worded answers.", "The assistant does not give legal, accounting or tax advice."] } },
+          { jurisdictie: null, paragrafe: [], lista: { elemente: ["An answer may be incomplete, wrong or imprecisely worded. 3S does not guarantee that an answer is correct or complete (Terms, section 7.1).", "The risk is higher with poor scans, handwriting, stamps and tables, figures, dates and proper names.", "Text extracted from scans by optical character recognition may contain errors, and an extraction error can carry over into the answer.", "The assistant sees only the documents uploaded and indexed in the Account. It cannot find what is missing from the archive, and the absence of a document from an answer does not prove that the document does not exist.", "The same question, asked twice, may receive differently worded answers.", "The assistant does not give legal, accounting or tax advice."] } },
         ],
       },
       {
         cheie: "s5", titlu: "5. Sources and the exact page",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["The assistant indicates the documents on which it bases its answer. Indicating the exact page in the document is in pilot: we are testing it together with clients, and the indication may be missing or wrong. Open the document and check before you rely on the answer (Terms, section 7.2)."] },
+          { jurisdictie: null, paragrafe: ["The assistant indicates the documents on which it bases its answer. Indicating the exact page in the document is in beta: we are testing it together with clients, and the indication may be missing or wrong. Open the document and check before you rely on the answer (Terms, section 7.2)."] },
         ],
       },
       {
         cheie: "s6", titlu: "6. Language",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["The result depends on the language of the documents, the language of the question and the quality of the scan. Questions in English about documents in Romanian are in pilot."] },
+          { jurisdictie: null, paragrafe: ["The result depends on the language of the documents, the language of the question and the quality of the scan. Questions in English about documents in Romanian are in beta."] },
         ],
       },
       {
@@ -64,7 +64,7 @@ export default function inteligentaArtificialaEn(c: ContextMd): DocumentJuridic 
       {
         cheie: "s8", titlu: "8. Your documents and the AI models",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["AI models receive only text: the passages of the documents retrieved for the question or extracted from a specific document, the titles, the folder names, the metadata and the conversation history, and, at indexing, the text of the documents, in chunks. They receive it only to provide the service, under the [data processing agreement](cale:dpa) (DPA). The models and the text recognition run at a sub-processor listed on the page [Sub-processors of the platform](cale:subimputerniciti); the model providers do not receive the documents. The agreement also contains 3S's commitment on the training of AI models (Art. 4.5). How the personal data in the documents is processed is described in the DPA and in the [Privacy policy](cale:confidentialitate)."] },
+          { jurisdictie: null, paragrafe: ["AI models receive only text: the passages of the documents retrieved for the question or extracted from a specific document, the titles, the folder names, the metadata and the conversation history, and, during indexing, the text of the documents, in chunks. They receive it only to provide the service, under the [Data Processing Agreement](cale:dpa) (DPA). The models and the text recognition are run by a sub-processor listed on the [Platform sub-processors](cale:subimputerniciti) page; the model providers do not receive the documents. The agreement also contains 3S's commitment on the training of AI models (Art. 4.5). How the personal data in the documents is processed is described in the DPA and in the [Privacy policy](cale:confidentialitate)."] },
         ],
       },
       {
@@ -76,13 +76,13 @@ export default function inteligentaArtificialaEn(c: ContextMd): DocumentJuridic 
       {
         cheie: "s10", titlu: "10. How to report a problem",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["If the assistant gave an answer that is wrong, misleading or inappropriate, write to " + c.contact.email + ", with the question, the answer and the date and time of the conversation; we will look into it. If you think an answer contains unlawful information, use the procedure on the page [Notice and action](cale:notificare-si-actiune)."] },
+          { jurisdictie: null, paragrafe: ["If the assistant gave an answer that is wrong, misleading or inappropriate, write to " + c.contact.email + ", with the question, the answer and the date and time of the conversation; we will look into it. If you think an answer contains unlawful information, use the procedure on the [Notice and action](cale:notificare-si-actiune) page."] },
         ],
       },
       {
         cheie: "s11", titlu: "11. What we guarantee and what we do not",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Answers may be incomplete or wrong, the Client checks the cited document and is responsible for the decisions it takes on the basis of them. That is what the Terms say, in section 7, and the limits of liability are in section 13. This page adds no guarantees and adds no obligations for the Client."] },
+          { jurisdictie: null, paragrafe: ["Answers may be incomplete or wrong; the Client checks the cited document and is responsible for the decisions it takes on the basis of them. That is what the Terms say, in section 7, and the limits of liability are in section 13. This page adds no guarantees and adds no obligations for the Client."] },
         ],
       },
       {

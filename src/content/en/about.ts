@@ -1,6 +1,6 @@
 // Pagina "About & security" a editiei `en` (P11, `/about`), transcrisa din fisa ei de continut, pana la sectiunea
 // de resurse nepublicate. Furnizorul de gazduire si nota CLOUD Act sunt decizia 4; datele firmei stau numai pe
-// paginile juridice (decizia 5), deci aici e doar legatura spre "Legal information".
+// paginile juridice (decizia 5), deci aici e doar legatura spre "Legal notice".
 //
 // CE NU INTRA, cu motivul:
 //   - sectiunea "How is my data protected?": nu se publica pana la P-14 (fisa; criptarea, accesul si jurnalul nu
@@ -90,7 +90,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "3S is operated from Moldova. The operating company's details are on the [Legal information](" +
+            "3S is operated from Moldova. The operating company's details are in the [Legal notice](" +
               LEGAL +
               ") page. To talk to the team, see [Contact](/contact).",
           ],
@@ -145,19 +145,19 @@ export const pagina: PaginaContinut = {
     },
     {
       cheie: "limits",
-      titlu: "What does 3S not do, and what is still in pilot?",
+      titlu: "What does 3S not do, and what is still in beta?",
       ancoraInainte: "limits",
       blocuri: [
         {
           paragrafe: ["These are the limits today."],
           tabel: {
             forma: "cu-antet",
-            titlu: "What 3S does today, what is in pilot and what is not stated",
+            titlu: "What 3S does today, what is in beta and what is not stated",
             antet: ["Topic", "Status", "What it means for you"],
             randuri: [
               ["Search with the source shown", "In the product today", "Ask in Romanian and get the answer with the document it comes from."],
-              ["English questions over Romanian documents", "In pilot", "We test it on a sample of your files before you decide."],
-              ["Citation down to the page", "In pilot", "3S cites the source of each answer; page-level citation is tested on your sample."],
+              ["English questions over Romanian documents", "In beta", "We test it on a sample of your files before you decide."],
+              ["Citation down to the page", "In beta", "3S cites the source of each answer; page-level citation is tested on your sample."],
               ["Qualified electronic signature", "Not available today", "Integration with accredited providers is in progress."],
               [
                 "Where AI features process your documents",

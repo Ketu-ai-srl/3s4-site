@@ -43,7 +43,7 @@ const CARDURI_RO_MD: CardSubiect[] = [
   {
     iconita: "shield-check",
     titlu: "Operator și găzduire",
-    descriere: "Cine operează 3S și unde sunt stocate fișierele: în UE, cu regiunea principală Frankfurt.",
+    descriere: "Cine operează 3S și unde sunt stocate fișierele: în UE, cu regiunea principală la Frankfurt.",
     legatura: cale("/ro/securitate"),
   },
   {
@@ -97,12 +97,12 @@ export const CONTACT_RO_MD: ContinutPaginaContact = {
   },
   subiecte: {
     titlu: "Răspunsuri disponibile deja pe site",
-    text: "Unele întrebări au deja un răspuns publicat. Fiecare card deschide pagina dedicată subiectului.",
+    text: "Unele întrebări au un răspuns publicat. Fiecare legătură deschide pagina dedicată subiectului.",
     carduri: CARDURI_RO_MD,
   },
   canale: {
     titlu: "Prin ce canale pot contacta 3S?",
-    text: "Canalele prin care ne poți contacta astăzi. Nu publicăm un program și nu promitem un termen de răspuns.",
+    text: "Canalele prin care ne poți contacta astăzi. Nu publicăm un program de lucru și nu ne angajăm la un termen de răspuns.",
     notaEticheta: "De reținut:",
     // O singura fraza pentru ambele stari: pe 3s.md nu exista formular, deci nici comutatorul lui.
     notaInchis: "nu trimite documente sau date cu caracter personal în primul mesaj.",
@@ -124,7 +124,7 @@ export const CONTACT_RO_MD: ContinutPaginaContact = {
       {
         titlu: "Platforma 3S",
         rol: "Unde sunt stocate fișierele",
-        fapte: [{ eticheta: "Găzduire", valoare: "AWS, UE, regiunea principală Frankfurt", mono: false }],
+        fapte: [{ eticheta: "Găzduire", valoare: "AWS, UE, cu regiunea principală la Frankfurt", mono: false }],
       },
     ],
   },

@@ -382,6 +382,23 @@ describe('modulele convertite', () => {
 type Amprenta = { paragrafe: number; elemente: number; sub: number; randuri: number; dupa: number; cifre: string; legaturi: string; marcaje: number }
 
 const CIFRE = /\d+/g
+
+/**
+ * ACTUL, nu limba versiunii. Pe EUR-Lex fiecare document leaga versiunea in limba lui: RO spre
+ * `legal-content/RO/TXT/?uri=CELEX:...`, EN spre forma ELI (`/eli/reg/2016/679/oj`). Paritatea cere
+ * acelasi act in acelasi loc, deci adresa EUR-Lex se reduce la numarul CELEX; orice alta adresa ramane
+ * intreaga. Motivul: legaturile de pe paginile RO duc la versiunea romana a actului (audit de limba, 09.10).
+ */
+const TIP_ELI: Record<string, string> = { reg: 'R', dir: 'L', dec: 'D', dec_impl: 'D' }
+export function actEurLex(adresa: string): string {
+  if (!adresa.startsWith('https://eur-lex.europa.eu/')) return adresa
+  const celex = adresa.match(/CELEX:([0-9A-Z-]+)/)
+  if (celex) return 'eur-lex:' + celex[1]
+  const eli = adresa.match(/\/eli\/([a-z_]+)\/(\d{4})\/(\d+)\/oj$/)
+  if (eli && TIP_ELI[eli[1]]) return 'eur-lex:3' + eli[2] + TIP_ELI[eli[1]] + eli[3].padStart(4, '0')
+  return adresa
+}
+
 /** Marcajele: text intre paranteze drepte care nu e textul unei legaturi. */
 const MARCAJ = /\[[^\]]+\](?!\()/g
 
@@ -402,9 +419,11 @@ function amprentaBloc(b: BlocJuridic): Amprenta {
     randuri: b.tabel?.randuri.length ?? 0,
     dupa: b.dupa?.length ?? 0,
     // Cifrele fara ordine: engleza americana muta ziua dupa luna in date
-    cifre: (textSimplu(text).match(CIFRE) ?? []).sort().join(','),
+    // Adresele EUR-Lex se reduc la act (versiunea lingvistica difera pe drept), iar numele marcii (3S) nu e o cifra:
+    // trimiterea din Termeni 15.11 numeste pagina „Despre 3S și securitate” pe RO (audit de limba, 09.10).
+    cifre: (textSimplu(text.replace(/https:\/\/eur-lex\.europa\.eu\/[^)\s\]]+/g, actEurLex)).replace(/\b3S\b/g, '').match(CIFRE) ?? []).sort().join(','),
     // Tintele legaturilor: cheile interne si adresele externe; `cale-ro` e trimiterea EN spre originalul romanesc
-    legaturi: [...text.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]).filter((t) => !t.startsWith('cale-ro:')).join(','),
+    legaturi: [...text.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]).filter((t) => !t.startsWith('cale-ro:')).map(actEurLex).join(','),
     marcaje: (text.match(MARCAJ) ?? []).length,
   }
 }
@@ -433,6 +452,15 @@ describe('paritatea RO-EN', () => {
       CHEI_MD.flatMap((c) => siruri(documentMdBrut(c, operatorModel(), l, S0))).join('\n').split('](cale-ro:').length - 1
     expect(cuRo('en')).toBe(1)
     expect(cuRo('ro')).toBe(0)
+  })
+
+  it('actul EUR-Lex: aceeasi cheie pentru ELI si CELEX ale aceluiasi act, chei diferite pentru acte diferite', () => {
+    expect(actEurLex('https://eur-lex.europa.eu/eli/reg/2016/679/oj')).toBe(actEurLex('https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX:32016R0679'))
+    expect(actEurLex('https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj')).toBe('eur-lex:32021D0914')
+    expect(actEurLex('https://eur-lex.europa.eu/eli/dir/2011/93/oj')).toBe('eur-lex:32011L0093')
+    // Martor NEGATIV: alt act nu se confunda, iar o adresa din afara EUR-Lex ramane intreaga.
+    expect(actEurLex('https://eur-lex.europa.eu/eli/reg/2022/2065/oj')).not.toBe(actEurLex('https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX:32016R0679'))
+    expect(actEurLex('https://www.edpb.europa.eu/x')).toBe('https://www.edpb.europa.eu/x')
   })
 
   it('martor POZITIV: o cifra schimbata intr-o singura limba strica paritatea', () => {

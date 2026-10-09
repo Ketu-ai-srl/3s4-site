@@ -46,7 +46,8 @@ describe('TabelMarcaje: legenda, eticheta ei si sufixul ferestrei noi', () => {
       etichetaLegenda: comparatie.ETICHETA_LEGENDA_EN,
       fereastraNoua: comparatie.FEREASTRA_NOUA_EN,
     })
-    expect(en).toContain('aria-label="Key to the marks"')
+    // Felia 150: "ratings", nu "marks" (marks se citeste note scolare sau marci).
+    expect(en).toContain('aria-label="Key to the ratings"')
     expect(en).toContain('(opens in a new window)')
     expect(en).toContain('>Partial<')
     expect(en).toContain('Drive: yes.')

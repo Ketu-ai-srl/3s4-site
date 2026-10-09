@@ -10,7 +10,7 @@
   },
   {
     "id": "en-limite-conectare",
-    "text": "Connection: EUR 6 per 1,000 pages imported, once, for the archive the customer brings in at the start; pages imported during the free pilot are included in it at the move to a paid plan, and a customer who does not continue after the pilot pays nothing.",
+    "text": "Onboarding fee: EUR 6 per 1,000 pages imported, once, for the archive the customer brings in at the start; pages imported during the free pilot are included in it at the move to a paid plan, and a customer who does not continue after the pilot pays nothing.",
     "unde": "src/content/limite-planuri.ts, src/content/en/pricing-componente.ts, src/content/en/enterprise-componente.ts",
     "stare": "confirmat",
     "sursa": "decizia 68 a owner-ului (05.10.2026): taxa de conectare, 6 EUR la 1.000 de pagini importate, o singura data, paginile din pilot incluse la trecerea pe plata; decizia 69: publicare integrala",

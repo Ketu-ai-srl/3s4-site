@@ -61,8 +61,8 @@ const PRIMIRE = '(receives?|arrives?|takes? in|(send|upload|forward)\\w* (your |
 const ACEEASI_PROPOZITIE = '[^.?!\\n]{0,50}'
 const TIPAR_ASISTENT_WA = new RegExp(
   [
-    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b' + ACEEASI_PROPOZITIE + '\\b' + WA + '\\b',
-    '\\b' + WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b',
+    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b' + ACEEASI_PROPOZITIE + '\\b' + WA + '\\b',
+    '\\b' + WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b',
     '\\b' + WA + ':? ?\\(?pilot',
     '\\b' + PRIMIRE + ACEEASI_PROPOZITIE + '\\bon ' + WA + '\\b',
   ].join('|'),
@@ -231,9 +231,13 @@ describe('modulele si paginile EN de referinta', () => {
     }
   })
 
-  it('H1-ul paginii e titlul eroului; primul paragraf are numarul de cuvinte masurat pe fisa (59, 52, 28)', () => {
+  // Felia 150: capsula ghidului Moldova spune "are kept for 6 years, contracts for ..., income tax returns for 7" in loc
+  // de "take 6 years" (corectura de engleza), deci 52 -> 56 de cuvinte. Apoi "Registers: 6 years; annual statements: no
+  // term set." in locul lui "Registers are kept for 6 years" (randul din tabel spune ca situatiile anuale n-au termen
+  // confirmat; lead-ul nu-l mai contrazice), deci 56 -> 60.
+  it('H1-ul paginii e titlul eroului; primul paragraf are numarul de cuvinte masurat pe fisa (59, 60, 28)', () => {
     for (const p of PAGINI) expect(p.pagina.h1, p.cheie).toBe(p.titluErou)
-    expect(PAGINI.map((p) => numarCuvinte(p.primulParagraf))).toEqual([59, 52, 28])
+    expect(PAGINI.map((p) => numarCuvinte(p.primulParagraf))).toEqual([59, 60, 28])
   })
 })
 

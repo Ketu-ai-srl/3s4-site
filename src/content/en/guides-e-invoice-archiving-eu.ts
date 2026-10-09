@@ -277,7 +277,7 @@ const SURSE_TABEL: Record<string, Sursa> = {
     autoritate: "BOSA (efacture.belgium.be)",
     titlu: "End of the tolerance period for e-invoicing (April 7, 2026)",
     url: "https://efacture.belgium.be/fr/news/fin-de-la-periode-de-tolerance-pour-le-facturation",
-    ce: "The general tolerance of the first three months ended; the tolerance for self-billing runs until June 30, 2026.",
+    ce: "The general tolerance period of the first three months ended; the tolerance for self-billing ran until June 30, 2026.",
   },
 };
 
@@ -317,10 +317,10 @@ export const EFACTURARE_EN: ContinutEfacturare = {
   fraza:
     "RO e-Factura lets you download an invoice's XML for 60 days. Your own archive keeps it for as long as you decide.",
   mandate: {
-    titlu: "Six markets, six different calendars",
+    titlu: "Five countries and the EU, six calendars",
     text: "Each state chooses its own system, format and start dates. A company that sells in three countries follows three calendars, each with its own technical rules. The table below sets them side by side, with the official document behind each one.",
     batai: [
-      "Poland sends invoices through KSeF, Belgium over the Peppol network, Romania through RO e-Factura and France through platforms accredited by the tax authority. Germany has required businesses to be able to receive e-invoices since 2025, in XRechnung or ZUGFeRD. Directive (EU) 2025/516 adds common rules for supplies between Member States from July 1, 2030.",
+      "In Poland, invoices go through KSeF; in Belgium, over the Peppol network; in Romania, through RO e-Factura; and in France, through platforms accredited by the tax authority. Germany has required businesses to be able to receive e-invoices since 2025, in XRechnung or ZUGFeRD. Directive (EU) 2025/516 adds common rules for supplies between Member States from July 1, 2030.",
       "Whatever the channel, you can keep the invoices in one place: your company's archive. In 3S, an XML downloaded from RO e-Factura sits next to a scanned PDF invoice, in a folder with its retention period, and one question finds both, with the source of each answer.",
     ],
   },
@@ -342,7 +342,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
         ancora: "france",
         tara: "France",
         ce: "Every business concerned receives e-invoices. Issuing starts with large and mid-size companies.",
-        cand: "Large and mid-size companies issue from September 1, 2026, when all businesses concerned start receiving. SMEs and micro-enterprises issue from September 1, 2027.",
+        cand: "Large and mid-size companies must issue e-invoices from September 1, 2026, when all businesses concerned must start receiving them. SMEs and micro-enterprises must issue them from September 1, 2027.",
         format: "Through platforms accredited by the tax authority",
         surse: ["fr"],
       },
@@ -358,7 +358,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
         ancora: "belgium",
         tara: "Belgium",
         ce: "Structured e-invoices between Belgian VAT-registered businesses, sent over the Peppol network.",
-        cand: "From January 1, 2026. The general tolerance ended after the first three months; for self-billing it ran until June 30, 2026.",
+        cand: "From January 1, 2026. The general tolerance period ended after the first three months; for self-billing it ran until June 30, 2026.",
         format: "Peppol network",
         surse: ["be", "beToleranta"],
       },
@@ -367,7 +367,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
         tara: "Romania",
         ce: "Invoices between businesses established in Romania go through RO e-Factura.",
         cand: "Reporting of B2B invoices from January 1, 2024. Sending through RO e-Factura from July 1, 2024.",
-        format: "XML on EN 16931 and RO_CIUS",
+        format: "XML based on EN 16931 and RO_CIUS",
         surse: ["roGhid"],
       },
       {
@@ -391,16 +391,16 @@ export const EFACTURARE_EN: ContinutEfacturare = {
         text: "April 1, 2026, PL: the sales threshold ends, and KSeF covers all businesses.",
       },
       {
-        text: "April 1, 2026, BE: the general tolerance of the first three months is over.",
+        text: "April 1, 2026, BE: the general tolerance period of the first three months ended.",
       },
     ],
     // Calendarul .ics nu se monteaza: fisierul are termenele romanesti D406, iar ruta lui exista numai pe site-ul RO.
     verificare: "Checked at the official source on",
     dataVerificarii: "2026-09-30",
     dataVerificariiText: CITIT,
-    nota: "This guide is not legal advice. The table leaves out invoices to consumers. For company records in Moldova, see the",
+    nota: "This guide is not legal advice, and the table leaves out invoices to consumers. Company records in Moldova have their own guide:",
     notaLegatura: {
-      text: "Moldova guide",
+      text: "Records retention in Moldova",
       href: "/guides/records-retention-moldova",
       ruta: "/guides/records-retention-moldova",
     },
@@ -408,7 +408,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
   jurnal: {
     eticheta: "Verified changes",
     titlu: "2026, country by country",
-    text: "We read each change below in the document of the authority that published it. Each entry links to it, and its country tag leads to the row in the table.",
+    text: "We checked each change below against the document published by the relevant authority. Each entry links to it, and its country tag leads to the row in the table.",
     legatura: "Official document",
     prefixTara: "Country row in the table: ",
     intrari: [
@@ -417,7 +417,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
         dataText: "September 1, 2026",
         cod: "FR",
         ancora: "france",
-        text: "Large and mid-size companies issue e-invoices, and every business concerned must be able to receive them. SMEs and micro-enterprises follow in 2027.",
+        text: "Large and mid-size companies began issuing e-invoices, and every business concerned had to be able to receive them. SMEs and micro-enterprises follow in 2027.",
         sursa: "fr",
       },
       {
@@ -425,7 +425,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
         dataText: "April 1, 2026",
         cod: "BE",
         ancora: "belgium",
-        text: "The general tolerance of the first three months ends. A narrower tolerance for self-billing runs until June 30, 2026.",
+        text: "The general tolerance period of the first three months ended. A narrower tolerance for self-billing ran until June 30, 2026.",
         sursa: "beToleranta",
       },
       {
@@ -511,7 +511,7 @@ export const EFACTURARE_EN: ContinutEfacturare = {
     pasi: [
       {
         titlu: "Ask in your own words",
-        text: 'Type "energy invoices from March" and get the list, each result with the document it comes from. Questions in Romanian are supported; English questions are in pilot.',
+        text: 'Type "energy invoices from March" and get the list, each result with the document it comes from. Questions in Romanian are supported; English questions are in beta.',
       },
       {
         titlu: "Export when asked",

@@ -60,7 +60,7 @@ const INDEX_EN = {
 /** Metadata indexului, pe modelul `META_INDEX_JURIDIC`. Text NOU, propus. */
 const META_INDEX_EN = {
   titlu: "Legal documents of the 3S platform",
-  descriere: "The legal notice, privacy policy, cookie policy, terms and conditions, notice and action, and AI notice of the 3S platform.",
+  descriere: "The 3S legal documents: Legal notice, Privacy policy, Cookie policy, Terms and conditions, Notice and action, and Artificial intelligence in 3S services.",
 };
 const SIGILIU_EN: TexteSigiliu = {
   eticheta: "Text fingerprint (SHA-256)",

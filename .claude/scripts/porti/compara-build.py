@@ -128,7 +128,9 @@ CHEI_PERECHI = ('a', 'b', 'perechi', '_nota')
 # colectie (REGULI_COLECTIE). Zero aplicari = rosu.
 REGULI_CONTACT = ('origine', 'origine-in-id', 'radacina-site', 'adresa-paginii', 'cai', 'hreflang-neatins', 'hreflang-scos-pe-en',
                   'canonical-pe-en', 'social-pe-en', 'jsonld-pe-en', 'email', 'telefonAfisat', 'whatsapp', 'domeniu', 'inLanguage', 'ogLocale',
-                  'hrefLang-legatura', 'content-language', 'amprenta-juridica', 'cale-afisata')
+                  'hrefLang-legatura', 'content-language', 'amprenta-juridica')
+# `cale-afisata` (regula 2c) NU e in lista: cardurile de contact nu mai afiseaza calea ca text, deci pe un build
+# corect regula poate avea zero aplicari. Ramane activa: o cale afisata e tradusa, iar una netradusa iese diferenta.
 REGULI_COLECTIE = ('limba-radacinii', 'harta-fara-en', 'destinatari-confidentialitate')
 REGULI_TOATE = REGULI_CONTACT + REGULI_COLECTIE
 PREFIX_EN_B = '/en'

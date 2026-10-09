@@ -75,7 +75,7 @@ export const EROU_EN: ContinutEroulInstrument = {
   titlu: H1,
   // Rol: raspunsul paginii, primul paragraf din <main> (capsula aprobata, scurtata la cutia RO).
   subtitlu:
-    "In Moldova, invoices and other primary documents are kept for 6 years, counted from January 1 of the year after the file is closed. Registers take 6 years, contracts 6 years after they end, and income tax returns 7. A dispute extends the term for invoices and registers until the final judgment.",
+    "In Moldova, invoices and other primary documents are kept for 6 years, counted from January 1 of the year after the file is closed. Registers: 6 years; annual statements: no term set. Contracts are kept for 6 years after they end, and income tax returns for 7. A dispute extends the term for invoices and registers until the final judgment.",
 };
 
 export const INSTRUMENT_EN = {
@@ -158,9 +158,9 @@ export const MOLDOVA_EN: Tara = {
     },
     {
       tip: "personal",
-      valoare: "75 years minus age",
+      valoare: "75 years minus the employee's age",
       inceput:
-        'From the date the file is closed; for "75 years-V", the term depends on the person\'s age on that date (Instruction, point 2.11).',
+        'The date the file is closed; for "75 years-V", the term depends on the person\'s age on that date (Instruction, point 2.11).',
       temei:
         "Indicator, article 429(d): personnel files of workers and of technical or engineering staff (applications, individual employment contracts, hiring and termination orders, job descriptions) are kept for \"75 years-V\", that is, 75 years minus the person's age when the file is closed. For someone who left at 40, the file is kept for 35 years. The note to the article sets shorter terms for some documents in a personnel file, such as medical certificates and other secondary documents: 3 years after dismissal. It also sets terms for some pensioners' files. Read the note before you dispose of any personnel file.",
       surse: [INDICATOR_57_2016],
@@ -225,7 +225,7 @@ export const pagina: PaginaReferinta = {
   cta: {
     ref: "en-ret-md",
     textWhatsapp:
-      "Hello 3S, I read your page on record retention in Moldova [ref:en-ret-md]. I would like to ask about a pilot.",
+      "Hello 3S, I read your page on records retention in Moldova [ref:en-ret-md]. I would like to ask about a pilot.",
     subiectEmail: "3S inquiry [ref:en-ret-md]",
   },
   jsonLd: [

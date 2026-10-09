@@ -19,6 +19,15 @@
 // focusului din zona lor, la clicul in afara si la Escape. Escape intoarce focusul pe declansator
 // numai daca focusul era in zona, si o face fara sa redeschida (vezi `faraRedeschidere`).
 //
+// PALETA: la inchidere focusul revine pe elementul care a deschis-o. Deschisa din Ctrl K, focusul era pe
+// BODY (masurat: dupa Escape focusul ramanea pe BODY, 9 din 9), deci atunci revine pe butonul de cautare
+// vizibil la latimea curenta (cel din antet peste 1200 px, lupa sub 1200 px).
+//
+// SERTARUL traieste numai sub pragul antetului mobil (1200 px, aceeasi conditie ca in Antet.module.css). Daca
+// fereastra trece peste prag cu sertarul deschis (tableta rotita, fereastra marita), sertarul se inchide: altfel
+// ramaneau simultan meniul desktop si sertarul, iar derularea paginii ramanea blocata (masurat pe baza: la 1440
+// sertarul deschis si `body` cu `overflow: hidden`, pana la clicul pe X).
+//
 // PE EDITIE (felia navigatie-pe-editie): contractul de navigatie si multimea cailor vin ca proprietati,
 // cu IMPLICITUL de azi (`NAVIGATIE_RO`, `CAI_EXISTENTE`), deci layout-ul romanesc randeaza ca inainte.
 // Editiile `en` si `ro-MD` dau contractul lor, construit pe server cu canalele domeniului: CTA-ul e
@@ -72,6 +81,12 @@ import s from "./Antet.module.css";
 
 /** Pragul starii de pastila pe start: 20 = sus, 21 = pastila (masurat, fara histerezis). */
 export const PRAG_PASTILA = 20;
+
+/**
+ * Conditia antetului mobil (sigla, lupa, hamburgerul), aceeasi ca `@media (max-width: 1200px)` din
+ * Antet.module.css. Sertarul exista numai cat ea e adevarata.
+ */
+export const PRAG_ANTET_MOBIL = "(max-width: 1200px)";
 
 /** Cat asteapta panoul mare dupa iesirea mouse-ului (masurat: dispare intre 109 si 169 ms). */
 const INTARZIERE_INCHIDERE = 120;
@@ -145,6 +160,8 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
   const temporizator = useRef<ReturnType<typeof setTimeout> | null>(null);
   const deschizatorPaleta = useRef<HTMLElement | null>(null);
   const hamburger = useRef<HTMLButtonElement>(null);
+  const butonCautare = useRef<HTMLButtonElement>(null);
+  const lupaMobil = useRef<HTMLButtonElement>(null);
   const zonaNav = useRef<HTMLDivElement>(null);
   const zonaDescarca = useRef<HTMLDivElement>(null);
   /**
@@ -188,7 +205,8 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
   }, [cale]);
 
   const deschidePaleta = useCallback(() => {
-    deschizatorPaleta.current = document.activeElement as HTMLElement | null;
+    const activ = document.activeElement as HTMLElement | null;
+    deschizatorPaleta.current = activ && activ !== document.body ? activ : null;
     setFoaieActiva(null);
     setDescarca("inchis");
     setPaletaDeschisa(true);
@@ -196,14 +214,34 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
 
   const inchidePaleta = useCallback(() => {
     setPaletaDeschisa(false);
-    const inapoi = deschizatorPaleta.current;
-    requestAnimationFrame(() => inapoi?.focus());
+    const deschizator = deschizatorPaleta.current;
+    requestAnimationFrame(() => {
+      // Fara deschizator (Ctrl K de pe BODY) sau cu unul care nu mai e in pagina: butonul de cautare vizibil.
+      const inapoi =
+        deschizator && deschizator.isConnected
+          ? deschizator
+          : [butonCautare.current, lupaMobil.current].find((b) => b !== null && b.offsetParent !== null);
+      inapoi?.focus();
+    });
   }, []);
 
   const inchideSertar = useCallback(() => {
     setSertarDeschis(false);
     requestAnimationFrame(() => hamburger.current?.focus());
   }, []);
+
+  // Sertarul se inchide cand fereastra trece peste pragul antetului mobil. Focusul nu se muta pe hamburger
+  // (peste prag hamburgerul nu se vede); demontarea sertarului reda `overflow`-ul de dinainte al paginii.
+  useEffect(() => {
+    if (!sertarDeschis || typeof window.matchMedia !== "function") return;
+    const mobil = window.matchMedia(PRAG_ANTET_MOBIL);
+    const laSchimbare = () => {
+      if (!mobil.matches) setSertarDeschis(false);
+    };
+    laSchimbare();
+    mobil.addEventListener("change", laSchimbare);
+    return () => mobil.removeEventListener("change", laSchimbare);
+  }, [sertarDeschis]);
 
   // Ctrl K / Cmd K deschide paleta de oriunde.
   useEffect(() => {
@@ -389,7 +427,7 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
           </div>
 
           <div className={s.actiuni}>
-            <button type="button" className={s.cautare} aria-label={ANTET.cautare.eticheta} onClick={deschidePaleta}>
+            <button ref={butonCautare} type="button" className={s.cautare} aria-label={ANTET.cautare.eticheta} onClick={deschidePaleta}>
               <Iconita nume="search" marime={14} contur={1.5} className={s.cautareLupa} />
               <span className={s.tasta} aria-hidden="true">
                 {ANTET.cautare.tasta}
@@ -444,7 +482,7 @@ export default function Antet({ navigatie = NAVIGATIE_RO, cai = CAI_EXISTENTE }:
           </div>
 
           <div className={s.mobil}>
-            <button type="button" className={s.lupaMobil} aria-label={ANTET.cautare.eticheta} onClick={deschidePaleta}>
+            <button ref={lupaMobil} type="button" className={s.lupaMobil} aria-label={ANTET.cautare.eticheta} onClick={deschidePaleta}>
               <Iconita nume="search" marime={17} contur={1.75} />
             </button>
             <button

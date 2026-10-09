@@ -142,7 +142,7 @@ export const FEREASTRA_NOUA_RO_MD = " (se deschide într-o fereastră nouă)";
 /** Sursele afirmatiilor despre Google din cardul divizat (decizia 11: sursa si data pe fiecare afirmatie despre un tert). */
 export const SURSE_CARD_COMPARATIE_RO_MD: SurseSuplimentare[] = [
   {
-    titlu: "Cardul „Când 3S nu este prima alegere”: ce acoperă Google Drive",
+    titlu: "Caseta „Când 3S nu este prima alegere”: ce acoperă Google Drive",
     surse: [
       { eticheta: "Pagina produsului Google Drive, Google Workspace, citită pe " + CITIT_CARD, url: "https://workspace.google.com/products/drive/" },
       {

@@ -37,7 +37,7 @@ export const ETICHETA_VERIFICARE_EN = "Connection check in your browser";
 
 /**
  * Ancorele paginii, tinte ale legaturilor de pe alte pagini EN si /ro: `security` (locul datelor, blocul de
- * infrastructura) si `limits` (ce e in pilot sau inca indisponibil, in intrebari).
+ * infrastructura) si `limits` (ce e in beta sau inca indisponibil, in intrebari).
  */
 export const ANCORE_DESPRE = { securitate: "security", limite: "limits" } as const;
 
@@ -76,7 +76,7 @@ export const DESPRE_EN: ContinutPaginaSecuritate = {
       {
         iconita: "panou",
         titlu: "Operated from Moldova",
-        text: "3S is run from Moldova; the Legal information page names the operating company.",
+        text: "3S is run from Moldova; the Legal notice names the operating company.",
       },
       {
         iconita: "glob",
@@ -181,12 +181,12 @@ export const DESPRE_EN: ContinutPaginaSecuritate = {
       },
       {
         intrebare: "Who runs 3S?",
-        raspuns: "3S is operated from Moldova. The operating company's details are on the Legal information page.",
+        raspuns: "3S is operated from Moldova. The operating company's details are in the Legal notice.",
       },
       {
-        intrebare: "What is in pilot or not available yet?",
+        intrebare: "What is in beta or not available yet?",
         raspuns:
-          "English questions over Romanian documents, and citation down to the page, are in pilot; questions in Romanian are supported. Qualified electronic signature is not available today.",
+          "English questions over Romanian documents, and citation down to the page, are in beta; questions in Romanian are supported. Qualified electronic signatures are not available yet.",
       },
       {
         intrebare: "Why are there no customer names or reviews?",

@@ -42,12 +42,12 @@ function sectiuni(operator: boolean): SectiuneComuna[] {
       blocuri: [
         {
           paragrafe: [
-            "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services (AWS). Tot acolo rulează platforma 3S, cu conturile utilizatorilor și arhiva digitală.",
+            "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services (AWS). Tot acolo rulează platforma 3S, cu conturile utilizatorilor și arhiva digitală.",
           ],
           lista: {
             elemente: [
               "**Furnizor de găzduire:** Amazon Web Services (SUA), cu o entitate europeană în Luxemburg.",
-              "**Locul datelor:** În Uniunea Europeană, regiunea principală Frankfurt.",
+              "**Locul datelor:** În Uniunea Europeană, cu regiunea principală la Frankfurt.",
               "**Cadrul UE (GDPR):** AWS oferă clienților acordul de prelucrare a datelor (DPA).",
               "**Legea SUA (CLOUD Act):** Poate obliga Amazon să predea datele aflate sub controlul său.",
             ],
@@ -64,7 +64,7 @@ function sectiuni(operator: boolean): SectiuneComuna[] {
           lista: {
             elemente: [
               "**Încărcare.** Fișierele se încarcă direct din browser, în arhiva firmei.",
-              "**Păstrare.** În UE, cu regiunea principală Frankfurt.",
+              "**Păstrare.** În UE, cu regiunea principală la Frankfurt.",
               "**Indexare.** Indexat automat, cu textul recunoscut și tipul identificat.",
               "**Termen.** Păstrat până la termenul stabilit pentru dosarul lui.",
               "**Decizia firmei.** Termenul potrivit fiecărui dosar îl alegi tu, cu consultantul firmei.",
@@ -131,14 +131,14 @@ export function paginaSecuritate(operator: boolean = OPERATOR_SECURITATE_BUILD):
     // ajunga la 40-60 de cuvinte cerute de model; nu se randeaza (pagina compune componentele).
     capsula:
       (operator
-        ? "3S Scan Store Solve este o arhivă digitală cu căutare AI, operată din Republica Moldova. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services."
-        : "3S Scan Store Solve este o arhivă digitală cu căutare AI: fiecare răspuns indică documentul din care provine. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală Frankfurt, pe serverele Amazon Web Services.") +
+        ? "3S Scan Store Solve este o arhivă digitală cu căutare AI, operată din Republica Moldova. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services."
+        : "3S Scan Store Solve este o arhivă digitală cu căutare AI: fiecare răspuns indică documentul din care provine. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services.") +
       " AWS oferă clienților acordul de prelucrare a datelor (DPA). Legea SUA (CLOUD Act) poate obliga Amazon să predea datele aflate sub controlul său.",
     sectiuni: sectiuni(operator),
     cta: {
       ref: "ro-md-securitate",
       titluBloc: "Scrie-ne pe WhatsApp",
-      textWhatsapp: "Bună ziua, 3S. Am citit pagina Despre 3S [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
+      textWhatsapp: "Bună ziua, 3S. Am citit pagina Despre 3S și securitate [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
       subiectEmail: "Întrebare 3S [ref:ro-md-securitate]",
     },
     jsonLd: [
@@ -158,7 +158,7 @@ export function paginaSecuritate(operator: boolean = OPERATOR_SECURITATE_BUILD):
         "@id": BAZA + "/ro/securitate#breadcrumb",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Acasă", item: BAZA + "/ro" },
-          { "@type": "ListItem", position: 2, name: "Despre 3S", item: BAZA + "/ro/securitate" },
+          { "@type": "ListItem", position: 2, name: "Despre 3S și securitate", item: BAZA + "/ro/securitate" },
         ],
       },
     ],

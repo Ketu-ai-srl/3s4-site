@@ -45,9 +45,9 @@ const PRIMIRE = '(receives?|arrives?|takes? in|(send|upload|forward)\\w* (your |
 const ACEEASI_PROPOZITIE = '[^.?!\\n]{0,50}'
 const TIPAR_ASISTENT_WA = new RegExp(
   [
-    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b' + ACEEASI_PROPOZITIE + '\\b' + WA + '\\b',
-    '\\b' + WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b',
-    '\\b' + WA + ':? ?\\(?pilot',
+    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b' + ACEEASI_PROPOZITIE + '\\b' + WA + '\\b',
+    '\\b' + WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b',
+    '\\b' + WA + ':? ?\\(?(pilot|beta)',
     '\\b' + PRIMIRE + ACEEASI_PROPOZITIE + '\\bon ' + WA + '\\b',
   ].join('|'),
   'i',
@@ -225,6 +225,9 @@ describe('ce nu ajunge pe paginile EN nucleu', () => {
       ['The ' + WA + ' assistant for archives', 'asistentul pe WhatsApp (decizia 49)'],
       ['Documents arrive by upload from the browser and, in pilot, on ' + WA + '.', 'asistentul pe WhatsApp (decizia 49)'],
       ['Upload from the browser, ' + WA + ' (pilot).', 'asistentul pe WhatsApp (decizia 49)'],
+      // Eticheta casei pentru functiile neterminate e "beta" (felia 150): forma cu eticheta e cea mai probabila reintroducere.
+      ['Upload from the browser, ' + WA + ' (be' + 'ta).', 'asistentul pe WhatsApp (decizia 49)'],
+      [WA + ': be' + 'ta', 'asistentul pe WhatsApp (decizia 49)'],
       ['On ' + WA + ', if the offer includes that channel, in the assistant first message.', 'asistentul pe WhatsApp (decizia 49)'],
       // Formele cu cautare (mutantii criticului feliei 91, verzi pe vocabularul vechi).
       ['Search your archive straight from ' + WA + '.', 'asistentul pe WhatsApp (decizia 49)'],

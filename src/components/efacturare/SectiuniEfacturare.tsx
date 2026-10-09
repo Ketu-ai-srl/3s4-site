@@ -244,6 +244,16 @@ export const EFACTURARE_RO: ContinutEfacturare = {
 
 type CuContinut = { continut?: ContinutEfacturare };
 
+/**
+ * Punctul de dupa legatura din nota tabelului. Cand nota se termina in mijlocul propozitiei (ultimul caracter e
+ * litera sau cifra, ca in "consulta" + "ghidul pentru Moldova"), legatura e finalul frazei si fraza primeste
+ * punctul ei. Cand nota se termina deja cu semn de punctuatie (punct, doua puncte), legatura sta singura, ca un titlu, si
+ * nu primeste nimic: asa ramane neschimbat marcajul paginii RO (`/e-facturare`, nota terminata in punct).
+ */
+export function punctDupaLegatura(nota: string): "." | "" {
+  return /[\p{L}\p{N}]$/u.test(nota.trimEnd()) ? "." : "";
+}
+
 const ICONITE: Record<string, ReactNode> = {
   timer: <Timer width={20} height={20} strokeWidth={2} aria-hidden="true" />,
   "file-code": (
@@ -494,9 +504,16 @@ export function TabelPiete({ continut = EFACTURARE_RO }: CuContinut) {
             {t.verificare}{" "}
             <time dateTime={t.dataVerificarii}>{t.dataVerificariiText}</time>
           </p>
-          <p className={s.nota}>
-            {t.nota} <LegaturaInText legatura={t.notaLegatura} marime={14} />
-          </p>
+          {punctDupaLegatura(t.nota) === "" ? (
+            <p className={s.nota}>
+              {t.nota} <LegaturaInText legatura={t.notaLegatura} marime={14} />
+            </p>
+          ) : (
+            <p className={s.nota}>
+              {t.nota} <LegaturaInText legatura={t.notaLegatura} marime={14} />
+              {punctDupaLegatura(t.nota)}
+            </p>
+          )}
         </div>
       </div>
     </section>

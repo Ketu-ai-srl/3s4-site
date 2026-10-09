@@ -76,7 +76,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Ask a question in plain words. 3S searches the content of your documents with AI and cites the source of each answer, so you can check it. Questions in Romanian are supported; English questions over Romanian documents are in pilot. [Search with sources](/features/search) shows how it works.",
+            "Ask a question in plain words. 3S searches the content of your documents with AI and cites the source of each answer, so you can check it. Questions in Romanian are supported; English questions over Romanian documents are in beta. [Search with sources](/features/search) shows how it works.",
           ],
         },
       ],

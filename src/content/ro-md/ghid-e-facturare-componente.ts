@@ -48,7 +48,7 @@ export function ctaFinalReferintaRoMd(titlu: string, subtitlu: string): Continut
 
 /** Sursele primare ale ghidului (tabelul "De unde provin informațiile?" al fisei), citate in nodul Article. */
 const SURSE_ARTICOL: readonly { nume: string; url: string }[] = [
-  { nume: "Directiva TVA 2006/112/CE, versiunea consolidată din 14 aprilie 2025", url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02006L0112-20250414" },
+  { nume: "Directiva TVA 2006/112/CE, versiunea consolidată din 14 aprilie 2025", url: "https://eur-lex.europa.eu/legal-content/RO/TXT/HTML/?uri=CELEX:02006L0112-20250414" },
   { nume: "Directiva (UE) 2025/516", url: "https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX:32025L0516" },
   { nume: "UStG, § 14", url: "https://www.gesetze-im-internet.de/ustg_1980/__14.html" },
   { nume: "UStG, § 14b", url: "https://www.gesetze-im-internet.de/ustg_1980/__14b.html" },
@@ -225,9 +225,9 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
       {
         ancora: "franta",
         tara: "Franța",
-        ce: "Toate firmele vizate trebuie să poată primi e-facturi; emiterea începe cu firmele mari și cele intermediare.",
-        cand: "Din 1 septembrie 2026 emit firmele mari și cele intermediare; toate firmele vizate trebuie să poată primi. IMM-urile și microîntreprinderile emit de la 1 septembrie 2027.",
-        format: "Prin platforme autorizate de administrația fiscală",
+        ce: "Toate firmele vizate trebuie să poată primi e-facturi; emiterea începe cu firmele mari și întreprinderile de dimensiune intermediară (ETI).",
+        cand: "Din 1 septembrie 2026 emit firmele mari și întreprinderile de dimensiune intermediară (ETI); toate firmele vizate trebuie să poată primi. IMM-urile și microîntreprinderile emit de la 1 septembrie 2027.",
+        format: "Prin platforme acreditate de administrația fiscală",
         surse: ["fr"],
       },
       {
@@ -268,7 +268,7 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
     taraSursaExterna: true,
     titluModificari: "Schimbări recente",
     modificari: [
-      { text: "1 septembrie 2026, FR: încep să emită firmele mari și cele de talie intermediară." },
+      { text: "1 septembrie 2026, FR: încep să emită firmele mari și întreprinderile de dimensiune intermediară (ETI)." },
       { text: "1 aprilie 2026, PL: KSeF devine obligatoriu pentru toate firmele." },
       { text: "1 aprilie 2026, BE: se încheie perioada generală de toleranță din primele trei luni." },
     ],
@@ -296,7 +296,7 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
         dataText: "1 septembrie 2026",
         cod: "FR",
         ancora: "franta",
-        text: "Emit firmele mari și cele de talie intermediară, iar orice firmă vizată trebuie să poată primi e-facturi. IMM-urile și microîntreprinderile emit din 2027.",
+        text: "Emit firmele mari și întreprinderile de dimensiune intermediară (ETI), iar orice firmă vizată trebuie să poată primi e-facturi. IMM-urile și microîntreprinderile emit din 2027.",
         sursa: "fr",
       },
       {
@@ -320,7 +320,7 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
         dataText: "1 februarie 2026",
         cod: "PL",
         ancora: "polonia",
-        text: "KSeF devine obligatoriu pentru firmele cu vânzări în 2024 de peste 200 mil. PLN, cu TVA inclus, și intră în producție KSeF 2.0.",
+        text: "KSeF devine obligatoriu pentru firmele cu vânzări în 2024 de peste 200 mil. PLN, cu TVA inclus, și este pus în funcțiune KSeF 2.0.",
         sursa: "pl",
       },
       {
@@ -336,7 +336,7 @@ export const EFACTURARE_RO_MD: ContinutEfacturare = {
   treiReguli: {
     // pagina.ts:84-100, page.tsx:275.
     titlu: "Trei repere din regula românească",
-    text: "Ce spune ghidul ANAF din 2023 despre RO e-Factura, rezumat în trei carduri.",
+    text: "Ce spune ghidul ANAF din 2023 despre RO e-Factura, rezumat în trei puncte.",
     carduri: [
       {
         iconita: "timer",

@@ -159,7 +159,10 @@ describe('paleta de cautare', () => {
     const fara = continutPaleta('', cai, RUTE, [articol])
     expect(fara.map((g) => g.titlu)).toEqual(['Pagini', 'Acțiuni'])
     expect(fara[0].elemente).toHaveLength(PALETA.grupuri[0].elemente.length)
-    const cu = continutPaleta('arhiva unui', cai, RUTE, [articol])
+    // Potrivirea e pe CUVINTE, in orice ordine: "arhiva unui" ar gasi si ruta /flux-documente, a carei
+    // descriere contine ambele cuvinte ("Drumul unui act ... in arhiva"), deci rezultatul corect ar fi
+    // ['Pagini', grupArticole]. Interogarea poarta un al treilea cuvant pe care il are numai articolul.
+    const cu = continutPaleta('arhiva unui birou', cai, RUTE, [articol])
     expect(cu.map((g) => g.titlu)).toEqual([PALETA.grupArticole])
     expect(cu[0].elemente).toEqual([{ titlu: 'Arhiva unui birou', cale: '/blog/proba' }])
   })

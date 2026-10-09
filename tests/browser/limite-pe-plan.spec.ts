@@ -37,7 +37,8 @@ test('/pricing servit: limitele pe carduri, randurile tabelului si pliul suplime
     // React separa nodurile de text alaturate cu un comentariu gol in HTML-ul servit; il accepta, nu il cere.
     card.forEach((cifra, i) => expect(html, cifra + ' ' + UNITATI[i]).toMatch(new RegExp('<strong>' + cifra + '</strong> (<!-- -->)?' + UNITATI[i])))
   }
-  for (const rand of ['Storage', 'AI answers a month', 'OCR pages a month', 'Downloads a month', 'One-time connection, per 1,000 pages']) {
+  // Felia 150: "onboarding fee", nu "connection" (connection fee se citeste taxa de racordare).
+  for (const rand of ['Storage', 'AI answers a month', 'OCR pages a month', 'Downloads a month', 'One-time onboarding fee, per 1,000 pages']) {
     expect(html, rand).toContain('>' + rand + '</th>')
   }
   expect(html.match(/data-pliu-suplimente/g) ?? []).toHaveLength(1)

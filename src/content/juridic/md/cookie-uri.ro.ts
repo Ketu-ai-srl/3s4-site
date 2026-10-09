@@ -41,9 +41,9 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
         ],
       },
       {
-        cheie: "s2-t4", titlu: "Măsurarea vizitelor fără cookie (Umami)", nivel: 3, conditie: ["umami"],
+        cheie: "s2-t4", titlu: "Măsurarea vizitelor fără cookie-uri (Umami)", nivel: 3, conditie: ["umami"],
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Site-ul are o aplicație de statistică, Umami, instalată pe un server administrat de furnizorul nostru de servicii IT; nu folosim pentru asta un serviciu de statistică al altcuiva. Aplicația primește de la browser adresa paginii, cu parametrii din adresă (de pildă cei ai campaniilor), pagina de pe care ai venit, titlul paginii, limba și dimensiunea ecranului. Din datele browserului și din adresa IP, serverul deduce tipul de browser, de sistem și de dispozitiv și locul aproximativ (țara și, dacă poate, regiunea și orașul). Adresa IP nu se salvează în datele măsurării: intră doar în calculul unui cod al vizitei. Codul se calculează din adresa IP, din browser și din identificatorul site-ului, așa că rămâne un pseudonim, iar datele măsurării se tratează ca date personale.", "Pe lângă vizite, măsurăm trei acțiuni: un clic pe un canal de contact (e-mail sau WhatsApp), un clic pe un buton către contact și schimbarea limbii paginii. Nu primim numele, adresa de e-mail sau numărul de telefon al cuiva.", "Măsurarea nu scrie niciun cookie și nimic în stocarea locală a browserului. Din stocarea locală citește doar marcajul umami.disabled, prin care te poți exclude singur de la măsurare. Nu te urmărește de pe un site pe altul și nu pornește dacă browserul trimite semnalul „Do Not Track”. Datele nu se folosesc pentru publicitate și nu se combină cu alte surse. Le păstrăm 13 luni, apoi le ștergem."] },
+          { jurisdictie: null, paragrafe: ["Site-ul are o aplicație de statistică, Umami, instalată pe un server administrat de furnizorul nostru de servicii IT; nu folosim pentru asta un serviciu de statistică al altcuiva. Aplicația primește de la browser adresa paginii, cu parametrii din adresă (de pildă cei ai campaniilor), pagina de pe care ai venit, titlul paginii, limba și dimensiunea ecranului. Din datele browserului și din adresa IP, serverul deduce tipul de browser, de sistem și de dispozitiv și locul aproximativ (țara și, dacă este posibil, regiunea și orașul). Adresa IP nu se salvează în datele măsurării: intră doar în calculul unui cod al vizitei. Codul se calculează din adresa IP, din browser și din identificatorul site-ului, așa că rămâne un pseudonim, iar datele măsurării se tratează ca date personale.", "Pe lângă vizite, măsurăm trei acțiuni: un clic pe un canal de contact (e-mail sau WhatsApp), un clic pe un buton către contact și schimbarea limbii paginii. Nu primim numele, adresa de e-mail sau numărul de telefon al cuiva.", "Măsurarea nu scrie niciun cookie și nimic în stocarea locală a browserului. Din stocarea locală citește doar marcajul umami.disabled, prin care te poți exclude singur de la măsurare. Nu te urmărește de pe un site pe altul și nu pornește dacă browserul trimite semnalul „Do Not Track”. Datele nu se folosesc pentru publicitate și nu se combină cu alte surse. Le păstrăm 13 luni, apoi le ștergem."] },
           { jurisdictie: null, conditie: ["umami-b"], paragrafe: ["Măsurarea pornește numai după ce accepți statistica și se oprește pe loc când îți retragi acordul."] },
         ],
       },
@@ -77,7 +77,7 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
           { jurisdictie: null, conditie: ["banner"], paragrafe: ["La prima vizită, bannerul de cookie-uri spune ce folosim și te lasă să alegi între „Accept tot”, „Refuz tot” și „Setări cookie-uri”, trei butoane de aceeași mărime."] },
           { jurisdictie: null, conditie: ["ga4"], paragrafe: ["Până nu alegi, nu se încarcă niciun script de la Google și nu se scrie niciun cookie."] },
           { jurisdictie: null, conditie: ["umami-b"], paragrafe: ["Până nu alegi, nu se încarcă scriptul aplicației de statistică."] },
-          { jurisdictie: null, conditie: ["banner"], paragrafe: ["În setări, categoria „Statistică” pornește oprită; o pornești numai tu. Te întrebăm din nou după 6 luni sau când se schimbă textul acestei informări. Fiecare alegere lasă pe serverul nostru un rând de evidență, ca să putem dovedi ce ai ales; el este descris în politica de confidențialitate."] },
+          { jurisdictie: null, conditie: ["banner"], paragrafe: ["În setări, categoria „Statistică” este dezactivată implicit; numai tu o poți activa. Te întrebăm din nou după 6 luni sau când se schimbă textul acestei informări. Fiecare alegere lasă pe serverul nostru un rând de evidență, ca să putem dovedi ce ai ales; el este descris în politica de confidențialitate."] },
           { jurisdictie: null, conditie: ["s0"], paragrafe: ["Nu cerem consimțământ, fiindcă nu folosim nimic care să-l ceară; de aceea nu apare niciun banner de cookie-uri."] },
         ],
       },
@@ -100,14 +100,14 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s9", titlu: "9. Cum protejăm datele",
         blocuri: [
-          { jurisdictie: null, paragrafe: [], lista: { elemente: alese(["Site-ul se servește prin conexiune criptată (HTTPS).", "Înainte de orice alegere a ta, paginile site-ului nu trimit cereri către alte domenii decât al nostru.", daca(c, "banner", "Evidența alegerilor păstrează numai prefixul rețelei; adresa IP completă apare doar în jurnalele de acces ale serverului, descrise în politica de confidențialitate."), daca(c, "umami", "Adresa IP nu se salvează în datele măsurării fără cookie."), daca(c, "ga4", "Semnalele pentru publicitate rămân dezactivate în Google Analytics: nu facem publicitate.")]) } },
+          { jurisdictie: null, paragrafe: [], lista: { elemente: alese(["Site-ul se servește prin conexiune criptată (HTTPS).", (c.active.has("banner") ? "Înainte de orice alegere a ta, paginile site-ului nu trimit cereri către alte domenii decât al nostru." : "Paginile site-ului nu trimit cereri către alte domenii decât al nostru."), daca(c, "banner", "Evidența alegerilor păstrează numai prefixul rețelei; adresa IP completă apare doar în jurnalele de acces ale serverului, descrise în politica de confidențialitate."), daca(c, "umami", "Adresa IP nu se salvează în datele măsurării fără cookie-uri."), daca(c, "ga4", "Semnalele pentru publicitate rămân dezactivate în Google Analytics: nu facem publicitate.")]) } },
         ],
       },
       {
         cheie: "s10", titlu: "10. Legături către alte servicii",
         blocuri: [
           { jurisdictie: null, // LinkedIn apare ca exemplu numai cand exista pagina 3S de pe LinkedIn (indicatorul `linkedin`, implicit oprit).
-          paragrafe: ["Legăturile către alte servicii, de pildă " + (c.active.has("linkedin") ? "WhatsApp sau LinkedIn" : "WhatsApp") + ", te duc în afara site-ului. De la momentul în care le deschizi se aplică regulile acelor servicii, iar noi nu controlăm ce păstrează ele în browserul tău."] },
+          paragrafe: ["Legăturile către alte servicii, de pildă " + (c.active.has("linkedin") ? "WhatsApp sau LinkedIn" : "WhatsApp") + ", te duc în afara site-ului. Din momentul în care le deschizi se aplică regulile acelor servicii, iar noi nu controlăm ce păstrează ele în browserul tău."] },
         ],
       },
       {

@@ -181,7 +181,7 @@ export const SERVICII_STATISTICA_PANOU: Readonly<Record<Unealta, Readonly<Record
         {
           nume: "umami.disabled",
           durata: "We do not write it",
-          scop: "If you have put it in your browser yourself, the measurement excludes you.",
+          scop: "If you have set it in your browser yourself, you are excluded from measurement.",
           numaiCitit: true,
         },
       ],

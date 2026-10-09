@@ -158,9 +158,10 @@ describe('(3) observatiile criticului de limba', () => {
     for (const r of MACHETA_REGISTRU_EN.randuri) expect(r.fisier.toLowerCase(), r.fisier).toContain(r.tip.text.toLowerCase())
   })
 
-  it('(b) "Pagina Despre 3S" cu majuscula pe start, ca titlul paginii si ca pe /platforma si /enterprise', async () => {
+  it('(b) "Pagina Despre 3S și securitate" cu majuscula pe start, ca titlul paginii si ca pe /platforma si /enterprise', async () => {
     const { EROU_RO_MD } = await import('../src/content/ro-md/acasa-componente')
-    expect(EROU_RO_MD.popover.legatura?.text).toBe('Pagina Despre 3S')
+    // Numele paginii e unificat pe forma din meniu si subsol, „Despre 3S și securitate” (audit de limba, 09.10).
+    expect(EROU_RO_MD.popover.legatura?.text).toBe('Pagina Despre 3S și securitate')
     expect(JSON.stringify(EROU_RO_MD)).not.toContain('Pagina ' + 'despre 3S')
   })
 
@@ -179,8 +180,9 @@ describe('(3) observatiile criticului de limba', () => {
     aduna(carduri)
     expect(toate).toHaveLength(1)
     const c = toate[0]
-    expect(c.text).toBe('Fișierele sunt găzduite în UE, cu regiunea principală Frankfurt. Pagina Despre 3S numește furnizorul și explică efectul legii americane asupra datelor.')
-    expect(c.legaturaInText).toEqual({ text: 'Pagina Despre 3S', href: '/ro/securitate#security' })
+    // Forma unica „cu regiunea principală la Frankfurt” si numele unificat al paginii (audit de limba, 09.10).
+    expect(c.text).toBe('Fișierele sunt găzduite în UE, cu regiunea principală la Frankfurt. Pagina Despre 3S și securitate numește furnizorul și explică efectul legii americane asupra datelor.')
+    expect(c.legaturaInText).toEqual({ text: 'Pagina Despre 3S și securitate', href: '/ro/securitate#security' })
     expect(c.text).toContain(c.legaturaInText!.text)
   })
 

@@ -60,7 +60,7 @@ const CARDURI_EN: CardSubiect[] = [
   {
     iconita: "calendar-clock",
     titlu: "How long to keep records",
-    descriere: "Invoices, payroll and contracts: how long companies in Moldova keep them.",
+    descriere: "Invoices, payroll and contracts: how long companies in Moldova must keep them.",
     legatura: cale("/guides/records-retention-moldova"),
   },
 ];
@@ -69,7 +69,7 @@ const CARDURI_EN: CardSubiect[] = [
 export const SUBTITLU_EN = {
   inainte: "You can reach 3S on WhatsApp at ",
   dupaNumar: ", for messages and calls",
-  inainteDeEmail: ", or by e-mail at ",
+  inainteDeEmail: ", or by email at ",
   final: ". We reply in English or Romanian.",
 };
 
@@ -85,11 +85,11 @@ export function subtitluContactEn(numar: string, email: string): string {
  */
 export const CANALE_EN = {
   whatsapp: "WhatsApp, for messages and calls",
-  email: "E-mail",
+  email: "Email",
 };
 
 /** Numele paginii din textul blocului marcii, legat la pagina de informatii legale a editiei. */
-export const LEGATURA_INFORMATII_LEGALE_EN = { text: "Legal information", href: caleMd("informatii-legale", "en") };
+export const LEGATURA_INFORMATII_LEGALE_EN = { text: "Legal notice", href: caleMd("informatii-legale", "en") };
 
 /** Continutul paginii (`conversie.ts:52-170`); subtitlul eroului se completeaza cu `subtitluContactEn`. */
 export const CONTACT_EN: ContinutPaginaContact = {
@@ -108,7 +108,7 @@ export const CONTACT_EN: ContinutPaginaContact = {
   },
   canale: {
     titlu: "How can I reach 3S?",
-    text: "Where you can reach 3S today. We publish no hours and promise no response time.",
+    text: "Where you can reach 3S today. We do not publish office hours or guarantee a response time.",
     notaEticheta: "Please note:",
     // O singura fraza pentru ambele stari: pe 3s.md nu exista formular, deci nici comutatorul lui.
     notaInchis: "do not send documents or personal data in your first message.",
@@ -116,7 +116,7 @@ export const CONTACT_EN: ContinutPaginaContact = {
   },
   marca: {
     titlu: "What is behind the 3S name",
-    text: "3S is operated from Moldova. The operating company's details are on the Legal information page.",
+    text: "3S is operated from Moldova. The operating company's details are in the Legal notice.",
     carduri: [
       {
         titlu: "3S brand",

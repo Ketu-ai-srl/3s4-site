@@ -47,7 +47,7 @@ export const DATA_CITIRII_MARCAJE = "September 25, 2026";
 const CITIT_CARD = "September 30, 2026";
 
 const META = {
-  titlu: "3S and Google Drive, compared feature by feature",
+  titlu: "3S and Google Drive, Compared Feature by Feature",
   descriere:
     "AI search with cited sources and a log of who opens files in 3S, next to Google Drive, with Google's own documentation for each Google mark.",
   cale: CALE,
@@ -70,14 +70,14 @@ export const EROU_EN: {
   titlu: H1,
   // Rol: ce face fiecare instrument si cand alegi 3S; primul paragraf din <main>.
   subtitlu:
-    "If your files already sit in Google Drive, try Gemini there first. Choose 3S for an assisted pilot on your own documents. Need named certifications? Ask us first.",
+    "If your files already sit in Google Drive, try Gemini there first. Choose 3S for an assisted pilot on your own documents. Need specific certifications? Ask us first.",
 };
 
 export const DIVIZAT_EN: CardDivizatProps = {
   stanga: {
     titlu: "When should you not choose 3S?",
     elemente: [
-      "You need named certifications today",
+      "You need specific certifications today",
       "You need many ready-made integrations",
       "You need e-signatures inside the archive",
     ],
@@ -119,9 +119,9 @@ export const TABEL_EN: TabelComparatie = {
   latimeMinima: 420,
   latimeColoana: 136,
   latimeColoanaMica: 88,
-  titluSurse: "Where the Google Drive marks come from",
+  titluSurse: "Where the Google Drive ratings come from",
   notaSurse:
-    "The marks follow Google's public documentation, read on " +
+    "The ratings follow Google's public documentation, read on " +
     DATA_CITIRII_MARCAJE +
     ". Several features depend on the Google Workspace plan you choose.",
   randuri: [
@@ -156,7 +156,7 @@ export const LEGENDA_EN: Record<Marcaj, string> = {
   nu: "No",
 };
 
-export const ETICHETA_LEGENDA_EN = "Key to the marks";
+export const ETICHETA_LEGENDA_EN = "Key to the ratings";
 
 export const FEREASTRA_NOUA_EN = FEREASTRA_NOUA;
 

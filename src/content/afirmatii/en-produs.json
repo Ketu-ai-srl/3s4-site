@@ -55,7 +55,7 @@
   },
   {
     "id": "en-produs-pagina-si-engleza-in-pilot",
-    "text": "English questions over Romanian documents, and citation down to the page, are in pilot",
+    "text": "English questions over Romanian documents, and citation down to the page, are in beta",
     "unde": "src/content/en/features-search.ts",
     "stare": "confirmat",
     "sursa": "propunerea en-pagina-si-engleza-in-pilot din arhitectura conținutului EN, Anexa A: decizia owner-ului din 30.09.2026; se schimbă după testul P-13 (prag 90%)",

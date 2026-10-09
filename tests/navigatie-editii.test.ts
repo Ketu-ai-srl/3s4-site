@@ -341,7 +341,10 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
       '3S și Google Drive',
       // coloana Companie
       'Despre 3S și securitate',
-      'Securitatea și locul datelor',
+      // Legatura spre sectiunea #security: fosta „Securitatea și locul datelor” (al doilea nume al aceleiasi pagini),
+      // redenumita dupa eticheta existenta a sectiunii de pe /ro/platforma si a cardului de pe /ro/enterprise
+      // (decizia 82, audit de limba 09.10: un singur nume al paginii in meniu, subsol si Termeni 15.11).
+      'Locul datelor',
       'Prețuri',
       'Contact',
       // paleta (in plus fata de subsol)

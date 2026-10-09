@@ -42,9 +42,9 @@ export const CANALE_PAGINA = {
     text: "WhatsApp is our main channel, for messages and calls. On this number you talk to people from our team.",
   },
   email: {
-    titlu: "E-mail",
-    text: "For longer questions, or if you prefer e-mail.",
-    buton: "E-mail us",
+    titlu: "Email",
+    text: "For longer questions, or if you prefer email.",
+    buton: "Email us",
     copiaza: "Copy address",
     copiat: "Address copied",
   },

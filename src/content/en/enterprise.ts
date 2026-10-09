@@ -63,7 +63,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "3S delivers documents by export. This site states no exit terms, so if you need a specific exit arrangement, tell us before you decide.",
+            "You get your documents out of 3S by export. This site states no exit terms, so if you need a specific exit arrangement, tell us before you decide.",
           ],
         },
       ],

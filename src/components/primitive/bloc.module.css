@@ -234,11 +234,14 @@
 
   /* Semnul ca tabelul continua: umbra la marginea dreapta din doua fundaluri ale invelisului (unul se
      misca odata cu continutul, unul sta pe loc), deci apare numai cat mai e ceva de derulat. Numai pe
-     invelisul care chiar se deruleaza: dupa hidratare ZonaDerulabila lasa `tabindex` doar acolo. */
+     invelisul care chiar se deruleaza: dupa hidratare ZonaDerulabila lasa `tabindex` doar acolo.
+     Umbra are 28 px si 0,3 la margine (inainte 14 px si 0,2): masurat la 390 pe paginile de confidentialitate,
+     cea veche nu se vedea pe captura langa coloana taiata, iar doua audituri n-au gasit niciun indiciu.
+     Capacul (`local`) e la fel de lat cat umbra, ca la capatul derularii s-o acopere intreaga. */
   :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabelInvelis[tabindex] {
     background:
-      linear-gradient(to left, var(--color-alb) 45%, rgb(255 255 255 / 0)) right center / 32px 100% no-repeat local,
-      linear-gradient(to left, rgb(15 23 42 / 0.2), rgb(15 23 42 / 0)) right center / 14px 100% no-repeat scroll;
+      linear-gradient(to left, var(--color-alb) 55%, rgb(255 255 255 / 0)) right center / 56px 100% no-repeat local,
+      linear-gradient(to left, rgb(15 23 42 / 0.3), rgb(15 23 42 / 0)) right center / 28px 100% no-repeat scroll;
   }
 
   :is(section[data-sectiune], section[data-art13], section[data-l284], [data-preambul]) .tabel:has(thead th:nth-child(3)) {

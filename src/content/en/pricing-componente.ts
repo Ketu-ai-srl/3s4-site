@@ -86,7 +86,7 @@ export const ANTET_PRETURI_EN: { fir: NivelFir[]; titlu: string; subtitlu: strin
   ],
   titlu: "3S pricing: four plans, in\u00a0euros",
   subtitlu:
-    "3S has four plans, priced per company in euros, excluding VAT: Starter EUR\u00a090, Pro EUR\u00a0150 and Business EUR\u00a0240 a month, for 5, 10 and 20 user accounts; Enterprise from EUR\u00a0800 a month. Every start is a free 14-day pilot.",
+    "3S has four plans, priced per company in euros, excluding VAT: Starter EUR\u00a090, Pro EUR\u00a0150 and Business EUR\u00a0240 a month, for 5, 10 and 20 user accounts; Enterprise from EUR\u00a0800 a month. Every customer starts with a free 14-day pilot.",
 };
 
 /** `preturi.ts:48-49`: numele accesibile ale poartei si ale pliurilor. */
@@ -222,8 +222,8 @@ export const CURSOARE_EN: Record<"persoane" | "minute" | "tarif", Cursor> = {
  */
 export const CALCULATOR_EN = {
   teaser: {
-    presupuneri: (oameni: string, minute: string) => "With " + oameni + " searching for documents " + minute + " a day",
-    rezultat: (ore: string) => "totals about\u00a0" + ore + " a month",
+    presupuneri: (oameni: string, minute: string) => oameni + " searching for documents " + minute + " a day",
+    rezultat: (ore: string) => "add up to about\u00a0" + ore + " a month",
     cta: "Try it with your own figures",
   },
   eticheta: "Time lost searching for documents",
@@ -254,7 +254,7 @@ export const COMUTATOR_EN: ContinutComutator = {
   eticheta: "Billing period",
   lunar: "Monthly",
   anual: "Annual",
-  insigna: "Pay 10 months, get 12",
+  insigna: "Pay for 10 months, get 12",
   nota: "Prices exclude VAT; where VAT applies, it is added to the invoice.",
 };
 
@@ -267,12 +267,12 @@ export function dataEn(d: Date): string {
 
 /** `preturi.ts:372-385`: "price list", nu "offer" (oferta scrisa e alt document, valabil 30 de zile). */
 export const LISTA_PDF_EN: ContinutListaPdf = {
-  buton: "Print the price list or save it as PDF",
+  buton: "Print the price list or save it as a PDF",
   foaie: {
     marca: "3S Scan Store Solve",
     titlu: "3S prices",
     coloane: { plan: "Plan", lunar: "Monthly, EUR", anual: "Annual, per month, EUR" },
-    note: ["Indicative prices, excluding VAT.", "Every start is a free 14-day pilot.", "Prices as shown on the website on the date above."],
+    note: ["Indicative prices, excluding VAT.", "Every customer starts with a free 14-day pilot.", "Prices as shown on the website on the date above."],
     adresa: "Pricing page: ",
   },
 };
@@ -333,7 +333,7 @@ export const TABEL_EN: ContinutTabelPlanuri = {
         { functie: "Free 14-day pilot", celule: toate(DA) },
         { functie: "Per-user fee", celule: toate(valoare("None")) },
         // Celula ramane scurta (coloana planului are 7,5rem): unitatea si "o data" stau in eticheta randului.
-        { functie: "One-time connection, per " + miiEn(CONECTARE.pagini) + " pages", celule: toate(valoare("EUR\u00a0" + CONECTARE.eur)) },
+        { functie: "One-time onboarding fee, per " + miiEn(CONECTARE.pagini) + " pages", celule: toate(valoare("EUR\u00a0" + CONECTARE.eur)) },
       ],
     },
     {
@@ -387,8 +387,8 @@ function grupuriSuplimenteEn(): { titlu: string; randuri: RandSupliment[] }[] {
 export const SUPLIMENTE_EN: ContinutSuplimente = {
   titlu: "Need more? Add-ons and how limits work",
   paragrafe: [
-    "When an allowance runs out before the end of the month, you can add more without changing plan. To order an add-on, message us.",
-    "Connection: " +
+    "When an allowance runs out before the end of the month, you can add more without changing plans. To order an add-on, message us.",
+    "Onboarding fee: " +
       CONECTARE_EN +
       ". It covers the archive you bring in when you start; pages you import during the free 14-day pilot are included in it when you move to a paid plan.",
   ],
@@ -411,10 +411,10 @@ export const SUPLIMENTE_EN: ContinutSuplimente = {
       raspuns:
         "3S shows a warning in the app when you reach " +
         PRAG_AVERTIZARE_PROCENT +
-        "% of a limit. At the limit, AI answers stop until the next month or until you add an add-on, and your documents stay accessible. When storage is full, new uploads stop until you free up space or add storage; the documents already stored stay as they are. Downloads stop until the next month or until you add an add-on. Scans above the OCR allowance are not lost: they are stored, and their text is recognized at the start of the next month. We never delete data when a limit is reached.",
+        "% of a limit. At the limit, AI answers stop until the next month or until you buy an add-on, and your documents stay accessible. When storage is full, new uploads stop until you free up space or add storage; the documents already stored stay as they are. Downloads stop until the next month or until you buy an add-on. Scans beyond the OCR allowance are not lost: they are stored, and their text is recognized at the start of the next month. We never delete data when a limit is reached.",
     },
     {
-      intrebare: "What is the connection fee?",
+      intrebare: "What is the onboarding fee?",
       raspuns:
         "A one-time fee for the archive you bring into 3S when you start: " +
         CONECTARE_EN +
@@ -449,7 +449,7 @@ export const INTREBARI_EN: ContinutFaqPreturi = {
     {
       intrebare: "What is an assisted pilot?",
       raspuns:
-        "A free 14-day pilot on your own documents, with 5 user accounts, as on Starter. We agree on the volume in writing, and it starts once you accept our Terms and the DPA. You choose the questions; we check the answers and sources with you.",
+        "A free 14-day pilot on your own documents, with 5 user accounts, as on Starter. We agree on the volume in writing, and it starts once you accept our Terms and the Data Processing Agreement (DPA). You choose the questions; we check the answers and sources with you.",
     },
     {
       intrebare: "Can I try 3S before deciding?",
@@ -458,7 +458,7 @@ export const INTREBARI_EN: ContinutFaqPreturi = {
     {
       intrebare: "How do I get a quote?",
       raspuns:
-        "Message us on WhatsApp. A few lines are enough: what you keep (paper, scans, files or a mix), where the archive is and in which country, the language of the documents, roughly how much there is and how many people will use 3S. Please send no documents or personal data yet.",
+        "Message us on WhatsApp. A few lines are enough: what you keep (paper, scans, files or a mix), where the archive is and in which country, the language of the documents, roughly how much there is and how many people will use 3S. Please do not send any documents or personal data yet.",
     },
   ],
 };

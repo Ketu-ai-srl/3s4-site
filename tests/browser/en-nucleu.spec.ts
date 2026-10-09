@@ -53,9 +53,9 @@ const PRIMIRE = '(receives?|arrives?|takes? in|(send|upload|forward)\\w* (your |
 const ACEEASI_PROPOZITIE = '[^.?!\\n]{0,50}'
 const ASISTENT_WA = new RegExp(
   [
-    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b' + ACEEASI_PROPOZITIE + '\\b' + NUME_WA + '\\b',
-    '\\b' + NUME_WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot)\\b',
-    '\\b' + NUME_WA + ':? ?\\(?pilot',
+    '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b' + ACEEASI_PROPOZITIE + '\\b' + NUME_WA + '\\b',
+    '\\b' + NUME_WA + '\\b' + ACEEASI_PROPOZITIE + '\\b(' + ASISTENT.slice(1, -1) + '|in pilot|in beta)\\b',
+    '\\b' + NUME_WA + ':? ?\\(?(pilot|beta)',
     '\\b' + PRIMIRE + ACEEASI_PROPOZITIE + '\\bon ' + NUME_WA + '\\b',
   ].join('|'),
   'gi',
@@ -179,9 +179,11 @@ test('martorii deciziei 49 pe HTML asamblat la rulare: asistentul e prins, conta
   const rau =
     '<html><head><meta name="description" content="Ask your archive on ' + NUME_WA + '."></head><body><main>' +
     '<p>It works in the browser; ' + NUME_WA + ' is available in pilot.</p><p>Search your archive straight from ' + NUME_WA + '.</p>' +
-    '<a href="' + CALE_P04 + '">' + NUME_WA + ' (pilot)</a><script>self.x="Can I ask on ' + NUME_WA + '?"</script></main></body></html>'
-  // Patru fraze vazute (meta, doua paragrafe, legatura); cea din script nu se numara.
-  expect(frazeAsistent(rau)).toHaveLength(4)
+    '<a href="' + CALE_P04 + '">' + NUME_WA + ' (pilot)</a><p>Upload from the browser. ' + NUME_WA + ' (be' + 'ta).</p>' +
+    '<script>self.x="Can I ask on ' + NUME_WA + '?"</script></main></body></html>'
+  // Cinci fraze vazute (meta, trei paragrafe, legatura); cea din script nu se numara. Eticheta "beta" lipita de nume
+  // e prinsa ca si "pilot" (felia 150: "beta" e eticheta casei pentru functiile neterminate).
+  expect(frazeAsistent(rau)).toHaveLength(5)
   expect(hrefuri(rau).filter((h) => h.endsWith(CALE_P04))).toHaveLength(1)
   const bun =
     '<main><a href="' + WA + 'x">Message us on ' + NUME_WA + '</a><p>Message 3S on ' + NUME_WA + ' or call +373 60 055 599. ' +

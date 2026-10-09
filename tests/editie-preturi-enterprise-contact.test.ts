@@ -143,7 +143,8 @@ describe('preturile EN (deciziile 18, 24, 54, 59)', () => {
     expect(pretEn.valoareSpusaEn(pretEn.CURSOARE_EN.persoane, 1)).toBe('1 person')
     expect(pretEn.valoareSpusaEn(pretEn.CURSOARE_EN.persoane, 4)).toBe('4 people')
     expect(pretEn.dataEn(new Date(2026, 8, 25))).toBe('September 25, 2026')
-    expect(textTeaserEn().presupuneri).toBe('With 4 people searching for documents 25 minutes a day')
+    // Felia 150: subiectul frazei e "4 people" ("... add up to about"), fara "With" in fata.
+    expect(textTeaserEn().presupuneri).toBe('4 people searching for documents 25 minutes a day')
   })
 
   it('cursorul tarifului: pornirea si capatul sunt pe grila lui', () => {
@@ -217,7 +218,8 @@ describe('enterprise si contact pe editie', () => {
     const numar = '+373 60 055 599'
     const adresa = 'contact' + '@3s.md'
     expect(contactEn.subtitluContactEn(numar, '')).toBe('You can reach 3S on WhatsApp at ' + numar + ', for messages and calls. We reply in English or Romanian.')
-    expect(contactEn.subtitluContactEn(numar, adresa)).toContain(', or by e-mail at ' + adresa + '.')
+    // Felia 150: engleza americana scrie "email" (AP, Chicago), nu forma cu cratima.
+    expect(contactEn.subtitluContactEn(numar, adresa)).toContain(', or by email at ' + adresa + '.')
     expect(contactRoMd.subtitluContactRoMd(numar, '')).not.toContain('e-mail')
     expect(contactRoMd.subtitluContactRoMd(numar, adresa)).toContain(', ori prin e-mail, la ' + adresa + '.')
   })

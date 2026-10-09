@@ -175,7 +175,7 @@ export const SCURT_MD: Readonly<Record<CheieMd, Record<LimbaJuridica, string>>> 
   "cookie-uri": { ro: "Politica de cookie-uri", en: "Cookie policy" },
   termeni: { ro: "Termeni și condiții", en: "Terms and conditions" },
   dpa: { ro: "Acord de prelucrare a datelor (DPA)", en: "Data Processing Agreement (DPA)" },
-  subimputerniciti: { ro: "Subîmputerniciții platformei", en: "Sub-processors of the platform" },
+  subimputerniciti: { ro: "Subîmputerniciții platformei", en: "Platform sub-processors" },
   "notificare-si-actiune": { ro: "Notificare și acțiune", en: "Notice and action" },
   "inteligenta-artificiala": { ro: "Inteligența artificială în serviciile 3S", en: "Artificial intelligence in 3S services" },
 };

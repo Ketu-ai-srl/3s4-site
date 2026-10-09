@@ -16,7 +16,7 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
     introducere: "",
     preambul: [
       { jurisdictie: null, paragrafe: ["3S Demerzel SRL este în curs de înregistrare. Până la înregistrare nu emitem oferte, nu încheiem contracte și nu deschidem conturi, deci asistentul descris în această pagină nu este încă oferit clienților. Pagina arată cum va funcționa."] },
-      { jurisdictie: null, paragrafe: ["Serviciile 3S, furnizate de 3S Demerzel SRL din Republica Moldova (datele ei sunt în [Informații legale](cale:informatii-legale)), folosesc un asistent de inteligență artificială (IA) care răspunde la întrebări despre documentele Clientului. Pagina spune ce face asistentul, ce limite are și ce se întâmplă cu documentele. Ea completează informarea din chat, fără s-o înlocuiască: asistentul îți spune că e un sistem de IA de la începutul fiecărei conversații (secțiunea 2). Informarea din chat și pagina aceasta au în vedere cerințele de transparență din art. 50 din Regulamentul (UE) 2024/1689 (Regulamentul privind inteligența artificială), în măsura în care se aplică. „Client” și „Utilizator” au sensul din [Termeni și condiții](cale:termeni).", "**Pe scurt** (rezumat fără valoare contractuală; contează textul de mai jos)"], lista: { elemente: ["Asistentul este un sistem de IA, nu un om. Îți spune asta de la începutul fiecărei conversații.", "Răspunsurile sunt generate automat și pot fi incomplete sau greșite. Verifică documentul citat înainte să te bazezi pe ele.", "Indicarea paginii exacte a sursei este în pilot și poate lipsi sau poate fi greșită.", "Documentele tale se prelucrează numai ca să furnizăm serviciul, în condițiile acordului de prelucrare a datelor (DPA).", "Poți oricând vorbi cu un om: " + c.contact.email + " sau " + c.contact.telefon + "."] } },
+      { jurisdictie: null, paragrafe: ["Serviciile 3S, furnizate de 3S Demerzel SRL din Republica Moldova (datele ei sunt în [Informații legale](cale:informatii-legale)), folosesc un asistent de inteligență artificială (IA) care răspunde la întrebări despre documentele Clientului. Pagina spune ce face asistentul, ce limite are și ce se întâmplă cu documentele. Ea completează informarea din chat, fără s-o înlocuiască: asistentul îți spune că e un sistem de IA de la începutul fiecărei conversații (secțiunea 2). Informarea din chat și pagina aceasta au în vedere cerințele de transparență din art. 50 din Regulamentul (UE) 2024/1689 (Regulamentul privind inteligența artificială), în măsura în care se aplică. „Client” și „Utilizator” au sensul din [Termeni și condiții](cale:termeni).", "**Pe scurt** (rezumat fără valoare contractuală; prevalează textul de mai jos)"], lista: { elemente: ["Asistentul este un sistem de IA, nu un om. Îți spune asta de la începutul fiecărei conversații.", "Răspunsurile sunt generate automat și pot fi incomplete sau greșite. Verifică documentul citat înainte să te bazezi pe ele.", "Indicarea paginii exacte a sursei este în testare și poate lipsi sau poate fi greșită.", "Documentele tale se prelucrează numai ca să furnizăm serviciul, în condițiile acordului de prelucrare a datelor (DPA).", "Poți vorbi oricând cu o persoană din echipă: " + c.contact.email + " sau " + c.contact.telefon + "."] } },
     ],
     sectiuni: [
       {
@@ -40,19 +40,19 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
       {
         cheie: "s4", titlu: "4. Limitele răspunsurilor",
         blocuri: [
-          { jurisdictie: null, paragrafe: [], lista: { elemente: ["Un răspuns poate fi incomplet, greșit sau formulat imprecis. 3S nu garantează că un răspuns este corect sau complet (Termeni, secțiunea 7.1).", "Riscul e mai mare pe scanări slabe, pe scris de mână, pe ștampile și tabele, pe cifre, date și nume proprii.", "Textul extras din scanări prin recunoaștere optică poate conține erori, iar o eroare de extragere ajunge în răspuns.", "Asistentul vede numai documentele încărcate și indexate în Cont. Nu poate găsi ce lipsește din arhivă, iar lipsa unui document din răspuns nu dovedește că documentul nu există.", "Aceeași întrebare, pusă de două ori, poate primi răspunsuri formulate diferit.", "Asistentul nu dă consultanță juridică, contabilă sau fiscală."] } },
+          { jurisdictie: null, paragrafe: [], lista: { elemente: ["Un răspuns poate fi incomplet, greșit sau formulat imprecis. 3S nu garantează că un răspuns este corect sau complet (Termeni, secțiunea 7.1).", "Riscul e mai mare în cazul scanărilor de calitate slabă, al textului scris de mână, al ștampilelor și tabelelor, al cifrelor, datelor și numelor proprii.", "Textul extras din scanări prin recunoaștere optică poate conține erori, iar o eroare de extragere ajunge în răspuns.", "Asistentul vede numai documentele încărcate și indexate în Cont. Nu poate găsi ce lipsește din arhivă, iar lipsa unui document din răspuns nu dovedește că documentul nu există.", "Aceeași întrebare, pusă de două ori, poate primi răspunsuri formulate diferit.", "Asistentul nu dă consultanță juridică, contabilă sau fiscală."] } },
         ],
       },
       {
         cheie: "s5", titlu: "5. Sursele și pagina exactă",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Asistentul indică documentele pe care își sprijină răspunsul. Indicarea paginii exacte din document este în pilot: o testăm împreună cu clienții, iar indicația poate lipsi sau poate fi greșită. Deschide documentul și verifică înainte să te bazezi pe răspuns (Termeni, secțiunea 7.2)."] },
+          { jurisdictie: null, paragrafe: ["Asistentul indică documentele pe care își sprijină răspunsul. Indicarea paginii exacte din document este în testare: o încercăm împreună cu clienții, iar indicația poate lipsi sau poate fi greșită. Deschide documentul și verifică înainte să te bazezi pe răspuns (Termeni, secțiunea 7.2)."] },
         ],
       },
       {
         cheie: "s6", titlu: "6. Limba",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Rezultatul depinde de limba documentelor, de limba întrebării și de calitatea scanării. Întrebările în engleză peste documente în română sunt în pilot."] },
+          { jurisdictie: null, paragrafe: ["Rezultatul depinde de limba documentelor, de limba întrebării și de calitatea scanării. Întrebările în engleză despre documente redactate în română sunt în testare."] },
         ],
       },
       {
@@ -64,13 +64,13 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
       {
         cheie: "s8", titlu: "8. Documentele tale și modelele de IA",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Modelele de IA primesc numai text: fragmentele din documente regăsite pentru întrebare sau extrase dintr-un document anume, titlurile, numele dosarelor, metadatele și istoricul conversației, iar la indexare textul documentelor, pe bucăți. Îl primesc numai ca să furnizeze serviciul, în condițiile [acordului de prelucrare a datelor](cale:dpa) (DPA). Modelele și recunoașterea textului rulează la un subîmputernicit din pagina [Subîmputerniciții platformei](cale:subimputerniciti); furnizorii modelelor nu primesc documentele. Acordul cuprinde și angajamentul 3S privind antrenarea modelelor de IA (art. 4.5). Cum se prelucrează datele personale din documente e descris în DPA și în [Politica de confidențialitate](cale:confidentialitate)."] },
+          { jurisdictie: null, paragrafe: ["Modelele de IA primesc numai text: fragmentele din documente regăsite pentru întrebare sau extrase dintr-un document anume, titlurile, numele dosarelor, metadatele și istoricul conversației, iar la indexare textul documentelor, împărțit în fragmente. Îl primesc numai ca să furnizeze serviciul, în condițiile [acordului de prelucrare a datelor](cale:dpa) (DPA). Modelele și recunoașterea textului rulează la un subîmputernicit din pagina [Subîmputerniciții platformei](cale:subimputerniciti); furnizorii modelelor nu primesc documentele. Acordul cuprinde și angajamentul 3S privind antrenarea modelelor de IA (art. 4.5). Cum se prelucrează datele personale din documente e descris în DPA și în [Politica de confidențialitate](cale:confidentialitate)."] },
         ],
       },
       {
         cheie: "s9", titlu: "9. Cum ajungi la un om",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Ne poți contacta oricând direct, fără să treci prin asistent: la " + c.contact.email + " sau pe WhatsApp la " + c.contact.telefon + " (mesaje și apeluri). Răspunde un om, în română sau în engleză."] },
+          { jurisdictie: null, paragrafe: ["Ne poți contacta oricând direct, fără să treci prin asistent: la " + c.contact.email + " sau pe WhatsApp la " + c.contact.telefon + " (mesaje și apeluri). Îți răspunde o persoană din echipa noastră, în română sau în engleză."] },
         ],
       },
       {
@@ -82,7 +82,7 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
       {
         cheie: "s11", titlu: "11. Ce garantăm și ce nu",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Răspunsurile pot fi incomplete sau greșite, Clientul verifică documentul citat și răspunde pentru deciziile pe care le ia pe baza lor. Așa spun Termenii, în secțiunea 7, iar limitele răspunderii sunt în secțiunea 13. Pagina aceasta nu adaugă garanții și nu adaugă obligații pentru Client."] },
+          { jurisdictie: null, paragrafe: ["Răspunsurile pot fi incomplete sau greșite; Clientul verifică documentul citat și răspunde pentru deciziile pe care le ia pe baza lor. Așa spun Termenii, în secțiunea 7, iar limitele răspunderii sunt în secțiunea 13. Pagina aceasta nu adaugă garanții și nu adaugă obligații pentru Client."] },
         ],
       },
       {
@@ -94,7 +94,7 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
       {
         cheie: "t13", titlu: "Actele citate",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Textele au fost citite pe 30 septembrie 2026."], lista: { elemente: ["[Regulamentul (UE) 2024/1689 (Regulamentul privind inteligența artificială)](https://eur-lex.europa.eu/eli/reg/2024/1689/oj)", "[Regulamentul (UE) 2016/679 (GDPR)](https://eur-lex.europa.eu/eli/reg/2016/679/oj)"] } },
+          { jurisdictie: null, paragrafe: ["Textele au fost citite pe 30 septembrie 2026."], lista: { elemente: ["[Regulamentul (UE) 2024/1689 (Regulamentul privind inteligența artificială)](https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX:32024R1689)", "[Regulamentul (UE) 2016/679 (GDPR)](https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX:32016R0679)"] } },
         ],
       },
     ],

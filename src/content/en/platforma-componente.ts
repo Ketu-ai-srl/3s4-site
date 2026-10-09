@@ -58,7 +58,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
     // platforma.ts:52-57.
     declaratie:
       "Example with fictional data: TIFF scans, PDF documents, PNG and JPG photos go into 3S, which reads the text and tags each one by type.",
-    eticheta: "Example, fictional data",
+    eticheta: "Example with fictional data",
     fisiere: ["TIFF", "PDF", "PNG", "JPG"],
     miez: "3S",
     campuri: ['"type": "contract"', '"folder": "Logistics"', '"text": "searchable"'],
@@ -97,7 +97,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
     noduri: [
       { eticheta: "Your team", descriere: "Colleagues and your accountant, in the browser." },
       { eticheta: "3S archive", descriere: "Every document read, stored in the EU, ready for questions." },
-      { eticheta: "Your documents", descriere: "Shared folders, e-mail attachments, scans and photos." },
+      { eticheta: "Your documents", descriere: "Shared folders, email attachments, scans and photos." },
     ],
     conectori: ["Questions and searches", "Documents by upload"],
   },
@@ -127,7 +127,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
       {
         iconita: "lupa",
         titlu: "Questions in Romanian",
-        text: "Questions in Romanian are supported. English questions over Romanian documents are in pilot.",
+        text: "Questions in Romanian are supported. English questions over Romanian documents are in beta.",
       },
       {
         // Iconita ceasului in locul clopotului: alertele nu sunt in cod (d43).
@@ -165,7 +165,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
     subtitlu: "Every file you upload has a known location, and you can name it to anyone who asks.",
     proza: [
       "Files you upload to 3S are stored in the EU, with Frankfurt as the primary region. 3S reads the text of each file once, tags it by type and keeps it ready for search.",
-      "The hosting provider is a US company. US law known as the CLOUD Act can require a provider like that to preserve and disclose data in its care, even when its servers are outside the US. The About page names the provider.",
+      "The hosting provider is a US company. A US law known as the CLOUD Act can require such a provider to preserve and disclose data in its care, even when its servers are outside the US. The About page names the provider.",
     ],
     evidentiat:
       "Each folder carries its retention period, and 3S logs who opens each document. If a client, an auditor or an inspector asks where a document is, the answer is the same every time: in the EU, with Frankfurt as the primary region.",
@@ -200,7 +200,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
       },
       {
         titlu: "Accounting",
-        text: "Each client's documents sit in their own folders, by month, and a question finds an invoice without another e-mail asking the client to resend it.",
+        text: "Each client's documents sit in their own folders, by month, and a question finds an invoice without another email asking the client to resend it.",
       },
     ],
   },
@@ -233,7 +233,7 @@ export const PLATFORMA_EN: ContinutPaginaPlatforma = {
       {
         intrebare: "How do I find something?",
         raspuns:
-          "Ask in plain words: 3S cites the source of each answer, so you can check it. English questions over Romanian documents are in pilot.",
+          "Ask in plain words: 3S cites the source of each answer, so you can check it. English questions over Romanian documents are in beta.",
       },
       {
         intrebare: "Can I set how long documents are kept?",

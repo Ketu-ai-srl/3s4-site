@@ -532,6 +532,21 @@ a.legaturaText:hover {
     padding: 0.9em;
   }
 
+  /* Tabelul cookie-urilor din detaliile unei categorii incape in panou. Masurat pe baza la 390: tabelul avea
+     352 px (RO) si 370 px (EN) intr-un loc de circa 300, deci corpul panoului se derula orizontal (27 si 44 px),
+     coloana "Scop" iesea taiata, iar cardurile se taiau la stanga. Doua cauze: retragerea de 50 px a detaliilor
+     (aliniata la titlul de langa chevron, care sub 640 px nu mai are insigne langa el) si numele cookie-ului
+     care nu se rupea (`nowrap`, cu tot cu "(numai citit)"). Aici detaliile pierd retragerea, iar numele se
+     rupe numai la spatiu sau la cratima, niciodata in mijlocul cuvantului (cu `overflow-wrap: anywhere` coloana
+     se strangea si "3s-consimtamant" iesea "3s-consimt" / "amant"); peste 640 px nimic nu se schimba. */
+  .categorieDetalii {
+    padding-left: 16px;
+  }
+
+  .numeCookie {
+    white-space: normal;
+  }
+
   .insignaText,
   .insignaPastila {
     position: absolute;
