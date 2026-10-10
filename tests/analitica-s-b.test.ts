@@ -242,6 +242,33 @@ describe('textele bannerului si ale panoului (documentul 03, sectiunea 6)', () =
     expect(t('en', true).panou.statisticaText).toContain('Google Analytics 4 sets cookies, and data may reach the United States.')
   })
 
+  it('introducerea panoului cere sa alegi cookie-uri NUMAI cand GA4 ruleaza, pe ambele limbi; acordul numit pe fiecare set romanesc', () => {
+    // GA4 pune cookie-uri, deci cu GA4 introducerea le numeste; fara GA4 nicio categorie nu pune cookie-uri, deci nu
+    // le numeste. Ambele directii, pe toate combinatiile cu set (si engleza cu GA4, neservita azi: decizia 26).
+    const cuSet = COMBINATII.filter(({ limba, ga4, umami }) => !(limba === 'en' && ga4 && !umami))
+    // Controlul multimii: ambele directii au cazuri pe ambele limbi, altfel bucla de mai jos ar trece goala.
+    for (const limba of ['ro', 'en'] as const) {
+      expect(cuSet.filter((c) => c.limba === limba && c.ga4).length, limba + ' cu GA4').toBeGreaterThan(0)
+      expect(cuSet.filter((c) => c.limba === limba && !c.ga4).length, limba + ' fara GA4').toBeGreaterThan(0)
+    }
+    for (const { limba, ga4, umami } of cuSet) {
+      const optiuni = texteConsimtamant(limba, { ga4, umami }).panou.optiuniText
+      const eticheta = limba + (ga4 ? ' cu GA4' : ' fara GA4') + (umami ? ' cu Umami' : '')
+      if (ga4) expect(optiuni, eticheta).toMatch(/cookie/i)
+      else expect(optiuni, eticheta).not.toMatch(/cookie/i)
+    }
+    expect(texteConsimtamant('en', { ga4: true, umami: true }).panou.optiuniText).toBe(
+      'Choose which cookies you allow on this site. You can change your mind later, from the footer of any page.',
+    )
+    // A doua propozitie a descrierii numeste acordul pe fiecare set romanesc (forma aleasa pe 09.10), nu un pronume
+    // care trimite la un complement din propozitia dinainte.
+    for (const { limba, ga4, umami } of cuSet.filter((c) => c.limba === 'ro')) {
+      const descriere = texteConsimtamant(limba, { ga4, umami }).banner.descriere
+      expect(descriere, 'ro ga4=' + ga4 + ' umami=' + umami).toContain('. Acordul îl poți retrage oricând, din subsolul oricărei pagini.')
+      expect(descriere).not.toMatch(/\. Îl poți retrage/)
+    }
+  })
+
   it('etichetele butoanelor raman: aceleasi in toate seturile unei limbi', () => {
     for (const { limba, ga4, umami } of COMBINATII) {
       const b = texteConsimtamant(limba, { ga4, umami }).banner

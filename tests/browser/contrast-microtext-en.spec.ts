@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from './ajutor/baza'
 import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
-import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-and-box'
+import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-drive'
 import { pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
 import { pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
 import { inJur as inJurCautare, pagina as cautare } from '../../src/content/en/features-search'

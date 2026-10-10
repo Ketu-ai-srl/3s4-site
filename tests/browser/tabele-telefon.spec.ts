@@ -3,7 +3,7 @@ import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 
 /**
  * Tabelele pe telefon (felia 133): tabelul pachetelor si al suplimentelor (/pricing, /ro/preturi pe copia 3s.md,
- * /preturi pe build-ul RO al probelor), tabelul comparativ (/compare/3s-vs-google-and-box, /ro/comparatie-drive) si
+ * /preturi pe build-ul RO al probelor), tabelul comparativ (/compare/3s-vs-google-drive, /ro/comparatie-drive) si
  * tabelele cu antet din documentele juridice (confidentialitatea si cookie-urile, /legal si /ro/juridic). Defectele
  * masurate in browserul real la 390:
  *  - prima coloana a tabelului pachetelor lua 288-377 din cei 356 px ai panoului, iar la suplimente 320: nicio valoare
@@ -222,7 +222,7 @@ test.describe('la 390', () => {
 
   // Numele panoului e in limba editiei (corectura din 09.10): "Table: " pe pagina engleza, "Tabel: " pe /ro.
   for (const c of [
-    { cale: '/compare/3s-vs-google-and-box', nume: 'Table: ' },
+    { cale: '/compare/3s-vs-google-drive', nume: 'Table: ' },
     { cale: '/ro/comparatie-drive', nume: 'Tabel: ' },
   ]) {
     test(c.cale + ': coloana 3S intreaga fara derulare', async ({ page }) => {

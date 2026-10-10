@@ -130,7 +130,7 @@ export const RUTE_RO_MD: RutaEditie<"ro-MD">[] = [
     descriere: "Comparația cu Google Drive, cu situațiile în care 3S nu este prima alegere.",
     inHarta: true,
     editie: "ro-MD",
-    cheie: "compare-3s-vs-google-and-box",
+    cheie: "compare-3s-vs-google-drive",
   },
   // <<felie:ro-md-acasa-contact>>
   {

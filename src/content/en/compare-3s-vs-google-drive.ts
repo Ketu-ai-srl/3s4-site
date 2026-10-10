@@ -38,7 +38,7 @@ import {
   type PaginaReferinta,
 } from "./referinta-comun";
 
-const CALE = "/compare/3s-vs-google-and-box";
+const CALE = "/compare/3s-vs-google-drive";
 
 /** Ziua in care s-au citit marcajele Google (citirea paginii RO, aceeasi documentatie). */
 export const DATA_CITIRII_MARCAJE = "September 25, 2026";
@@ -197,7 +197,7 @@ export const CUTIE_CTA_EN = {
 };
 
 export const pagina: PaginaReferinta = {
-  cheie: "compare-3s-vs-google-and-box",
+  cheie: "compare-3s-vs-google-drive",
   meta: META,
   h1: H1,
   cta: CTA,

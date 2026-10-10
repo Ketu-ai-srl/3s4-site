@@ -1,5 +1,5 @@
 // Pagina G3 a editiei `ro-MD`: comparatia 3S cu Google Drive (`/ro/comparatie-drive` pe 3s.md), perechea paginii RO
-// `/comparatie-drive` si a paginii EN `/compare/3s-vs-google-and-box`. Calea repeta calea paginii RO (slug-ul fisei),
+// `/comparatie-drive` si a paginii EN `/compare/3s-vs-google-drive`. Calea repeta calea paginii RO (slug-ul fisei),
 // ca adresa sa ramana aceeasi pe 3s.com.ro, unde romana sta la radacina (decizia 55).
 //
 // FORMA (decizia 53): pagina compune componentele perechii RO, in aceeasi ordine (EroulInterior, CardDivizat,
@@ -165,7 +165,7 @@ export const CUTIE_CTA_COMPARATIE_RO_MD = {
 };
 
 export const PAGINA_COMPARATIE_RO_MD: PaginaReferinta = {
-  cheie: "compare-3s-vs-google-and-box",
+  cheie: "compare-3s-vs-google-drive",
   meta: META,
   h1: H1,
   cta: {

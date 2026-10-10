@@ -19,7 +19,7 @@ Fixturile se asambleaza la rulare, niciodata scrise pe litere in corpul fisierul
 altfel poarta care scaneaza depozitul se declanseaza pe propria proba.
 
 EXCEPTIA PE PERECHE (fisier, tipar), una singura: pagina de comparatie EN a lui 3s.md
-(`src/content/en/compare-3s-vs-google-and-box.ts`) si tiparul certificarilor. Pe 3s.md owner-ul a
+(`src/content/en/compare-3s-vs-google-drive.ts`) si tiparul certificarilor. Pe 3s.md owner-ul a
 decis (decizia 11 din 30.09.2026) ca pagina numeste produsele Google si Box, cu sursa si data pe
 fiecare celula; randul "Certifications the vendor names" spune ce certificari declara FURNIZORII,
 cu sursa lor, adica exact forma ATRIBUITA pe care poarta o permite. Implementarea nu stie sa
@@ -126,7 +126,7 @@ FEREASTRA = 90
 # Exceptia pe pereche (cale relativa cu `/`, numele tiparului). Motivul e in antet: decizia 11 pe 3s.md,
 # certificarile FURNIZORILOR, atribuite lor, cu sursa si data. O pereche, nu un fisier si nu un tipar.
 TIPAR_CERTIFICARI = 'certificare pe care nu o detinem'
-FISIER_COMPARATIE = 'src/content/en/compare-3s-vs-google-and-box.ts'
+FISIER_COMPARATIE = 'src/content/en/compare-3s-vs-google-drive.ts'
 EXCEPTII = {
     (FISIER_COMPARATIE, TIPAR_CERTIFICARI),
 }

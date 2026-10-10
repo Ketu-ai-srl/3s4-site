@@ -67,7 +67,7 @@ const ASTEPTAT_RO: Readonly<Record<string, string>> = {
   '/ro/ghiduri/arhivare-e-facturi-ue': '/ghiduri/arhivare-e-facturi-ue',
   '/guides/records-retention-moldova': '/en/guides/records-retention-moldova',
   '/ro/ghiduri/termene-pastrare-moldova': '/ghiduri/termene-pastrare-moldova',
-  '/compare/3s-vs-google-and-box': '/en/compare/3s-vs-google-and-box',
+  '/compare/3s-vs-google-drive': '/en/compare/3s-vs-google-drive',
   '/ro/comparatie-drive': '/comparatie-drive',
   '/legal/legal-information': '/en/legal/legal-information',
   '/ro/juridic/informatii-legale': '/juridic/informatii-legale',
@@ -131,12 +131,29 @@ describe('catalogul asezarii', () => {
     expect(problemeAsezare('md', ['en', 'ro-MD'])).toEqual([])
   })
 
-  it('redirectarile: pe ro vechile adrese /ro duc la radacina, permanent; pe md niciuna', () => {
-    expect(redirectariAsezare('ro')).toEqual([
+  // Adresa comparatiei EN s-a mutat (pagina compara numai Google Drive): vechea adresa duce permanent la cea noua, pe
+  // ambele asezari, la prefixul servit al englezei. Pe site-ul romanesc vechi (`ro-RO`) nu exista engleza, deci nimic.
+  const VECHE = '/compare/3s-vs-google-and-box'
+  const NOUA = '/compare/3s-vs-google-drive'
+  it('redirectarile: pe ro vechile adrese /ro duc la radacina si adresa mutata a englezei sub /en, permanent', () => {
+    expect(redirectariAsezare('ro', ['en', 'ro-MD'])).toEqual([
       { source: '/ro', destination: '/', permanent: true },
       { source: '/ro/:cale*', destination: '/:cale*', permanent: true },
+      { source: '/en' + VECHE, destination: '/en' + NOUA, permanent: true },
     ])
-    expect(redirectariAsezare('md')).toEqual([])
+  })
+
+  it('redirectarile: pe md (3s.md) numai adresa mutata, la radacina; pe ro-RO niciuna', () => {
+    expect(redirectariAsezare('md', ['en', 'ro-MD'])).toEqual([{ source: VECHE, destination: NOUA, permanent: true }])
+    expect(redirectariAsezare('md', ['ro-RO'])).toEqual([])
+  })
+
+  it('adresa mutata: tinta e ruta a englezei (si pereche in echivalente), sursa nu mai e ruta nicaieri', () => {
+    const cai = new Set(RUTE_3S_MD.map((r) => r.cale))
+    expect(cai.has(NOUA)).toBe(true)
+    expect(cai.has(VECHE)).toBe(false)
+    expect(Object.values(ECHIVALENTE).some((e) => e.en === NOUA)).toBe(true)
+    expect(Object.values(ECHIVALENTE).some((e) => e.en === VECHE)).toBe(false)
   })
 })
 
@@ -284,14 +301,22 @@ describe('next.config.ts cu SITE_ASEZARE', () => {
     SITE_ALTERNATE: textProfil(PROFIL_3S_MD, 'SITE_ALTERNATE'),
   }
 
-  it('pe md (implicit sau scris) si pe ro-RO: obiectul de configurare are exact cheile de fara asezare, fara redirects si fara cheie publica', async () => {
+  // Pe ro-RO (site-ul romanesc vechi) cheia `redirects` nu exista; pe profilul 3s.md exista numai pentru adresa mutata a
+  // englezei (aceeasi pe md implicit si scris), fara cheie publica.
+  it('pe md (implicit sau scris) si pe ro-RO: obiectul de configurare are exact cheile de fara asezare si fara cheie publica', async () => {
     for (const baza of [{}, PROFIL_MD]) {
       const fara = await configurare(baza)
       const scris = await configurare({ ...baza, SITE_ASEZARE: 'md' })
       expect(Object.keys(scris)).toEqual(Object.keys(fara))
       expect(scris.env).toEqual(fara.env)
-      expect('redirects' in scris).toBe(false)
       expect(scris.env !== undefined && 'NEXT_PUBLIC_SITE_ASEZARE' in scris.env).toBe(false)
+      if (baza === PROFIL_MD) {
+        expect(await scris.redirects?.()).toEqual(redirectariAsezare('md', ['en', 'ro-MD']))
+        expect(await fara.redirects?.()).toEqual(redirectariAsezare('md', ['en', 'ro-MD']))
+      } else {
+        expect('redirects' in scris).toBe(false)
+        expect('redirects' in fara).toBe(false)
+      }
     }
   })
 
@@ -301,7 +326,7 @@ describe('next.config.ts cu SITE_ASEZARE', () => {
     // Pe ro arborele construit e NUMAI cel geaman (comro): daca ar ramane en.tsx sau romd.tsx, `/` ar exista de doua
     // ori, din (en)/page.en.tsx si din (comro)/page.comro.tsx. Deci lista e exact asta, nu cea a profilului en,ro-MD.
     expect(c.pageExtensions).toEqual(['comro.tsx', 'ts', 'md', 'mdx'])
-    expect(await c.redirects?.()).toEqual(redirectariAsezare('ro'))
+    expect(await c.redirects?.()).toEqual(redirectariAsezare('ro', ['en', 'ro-MD']))
   })
 
   it('martor POZITIV: profil gresit (ro cu ro-RO, ro fara SITE_EDITII), valoare necunoscuta si valoare publica pusa de mana opresc construirea', async () => {

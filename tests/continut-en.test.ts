@@ -143,7 +143,7 @@ describe('modelul paginilor de continut', () => {
   // contractele componentelor, iar `pagina` lor are numai metadata, CTA-ul, datele structurate si registrul (fara
   // `sectiuni`: nu se randeaza prin CorpPagina); `referinta-comun.ts` tine piesele lor comune si nu exporta `pagina`.
   // Se numara separat, pe nume, ca un modul de pagina CorpPagina sa nu se poata ascunde sub forma lor.
-  const MODULE_REFERINTA = ['compare-3s-vs-google-and-box.ts', 'guides-e-invoice-archiving-eu.ts', 'guides-records-retention-moldova.ts']
+  const MODULE_REFERINTA = ['compare-3s-vs-google-drive.ts', 'guides-e-invoice-archiving-eu.ts', 'guides-records-retention-moldova.ts']
   const COMUN_REFERINTA = 'referinta-comun.ts'
 
   it('fiecare modul din src/content/en exporta `pagina` valida, cu cheia egala cu numele fisierului', async () => {

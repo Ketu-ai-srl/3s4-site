@@ -37,7 +37,7 @@ export const ECHIVALENTE: Readonly<Record<string, CaiPeEditie>> = {
   about: { en: "/about", "ro-MD": "/ro/securitate" },
   "guides-e-invoice-archiving-eu": { en: "/guides/e-invoice-archiving-eu", "ro-MD": "/ro/ghiduri/arhivare-e-facturi-ue" },
   "guides-records-retention-moldova": { en: "/guides/records-retention-moldova", "ro-MD": "/ro/ghiduri/termene-pastrare-moldova" },
-  "compare-3s-vs-google-and-box": { en: "/compare/3s-vs-google-and-box", "ro-MD": "/ro/comparatie-drive" },
+  "compare-3s-vs-google-drive": { en: "/compare/3s-vs-google-drive", "ro-MD": "/ro/comparatie-drive" },
   "informatii-legale": { en: "/legal/legal-information", "ro-MD": "/ro/juridic/informatii-legale" },
   confidentialitate: { en: "/legal/privacy", "ro-MD": "/ro/juridic/confidentialitate" },
   "cookie-uri": { en: "/legal/cookies", "ro-MD": "/ro/juridic/cookies" },

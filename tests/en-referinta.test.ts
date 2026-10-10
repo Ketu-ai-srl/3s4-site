@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import ButonCanal from '../src/app/(en)/guides/_referinta/ButonCanal'
 import { grafReferinta } from '../src/app/(en)/guides/_referinta/date-structurate'
-import PaginaG3 from '../src/app/(en)/compare/3s-vs-google-and-box/page.en'
+import PaginaG3 from '../src/app/(en)/compare/3s-vs-google-drive/page.en'
 import PaginaG1 from '../src/app/(en)/guides/e-invoice-archiving-eu/page.en'
 import PaginaG2 from '../src/app/(en)/guides/records-retention-moldova/page.en'
 import { EFACTURARE_RO, grafIntrebari, type ContinutEfacturare } from '../src/components/efacturare/SectiuniEfacturare'
@@ -21,13 +21,13 @@ import { RUTE_EN_NUCLEU } from '../src/content/rute-en-nucleu'
 import { RUTE_EN_PRODUS } from '../src/content/rute-en-produs'
 import { RUTE_EN_REFERINTA } from '../src/content/rute-en-referinta'
 import { configurareCanale, type Canale } from '../src/lib/canale-mediu'
-import * as comparatie from '../src/content/en/compare-3s-vs-google-and-box'
+import * as comparatie from '../src/content/en/compare-3s-vs-google-drive'
 import * as efacturi from '../src/content/en/guides-e-invoice-archiving-eu'
 import * as moldova from '../src/content/en/guides-records-retention-moldova'
 
 /**
  * Paginile EN de referinta dupa felia editie-referinta (decizia 53): G1 `/guides/e-invoice-archiving-eu`, G2
- * `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-and-box` compun componentele perechilor RO
+ * `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-drive` compun componentele perechilor RO
  * (`/e-facturare`, `/instrumente/termene-pastrare`, `/comparatie-drive`), cu textul din modulele EN. Proba masoara pe
  * sursa si pe paginile randate pe server: forma modulelor si legatura lor cu manifestul de rute, cu tabelul textelor
  * WhatsApp al navigatiei si cu registrul de afirmatii; ce nu are voie sa ajunga pe aceste pagini (asistentul pe
@@ -73,7 +73,7 @@ type Modul = { pagina: PaginaReferinta }
 const MODULE: Record<string, Modul & Record<string, unknown>> = {
   'guides-e-invoice-archiving-eu': efacturi,
   'guides-records-retention-moldova': moldova,
-  'compare-3s-vs-google-and-box': comparatie,
+  'compare-3s-vs-google-drive': comparatie,
 }
 
 const RADACINA = join(__dirname, '..')
@@ -92,7 +92,7 @@ for (const f of readdirSync(DOSAR_REGISTRU).filter((x) => x.endsWith('.json'))) 
 const PAGINI: { cheie: string; pagina: PaginaReferinta; Componenta: ComponentType; titluErou: string; primulParagraf: string }[] = [
   { cheie: 'guides-e-invoice-archiving-eu', pagina: efacturi.pagina, Componenta: PaginaG1, titluErou: efacturi.EFACTURARE_EN.erou.titlu, primulParagraf: efacturi.EFACTURARE_EN.erou.subtitlu },
   { cheie: 'guides-records-retention-moldova', pagina: moldova.pagina, Componenta: PaginaG2, titluErou: moldova.EROU_EN.titlu, primulParagraf: moldova.EROU_EN.subtitlu },
-  { cheie: 'compare-3s-vs-google-and-box', pagina: comparatie.pagina, Componenta: PaginaG3, titluErou: comparatie.EROU_EN.titlu, primulParagraf: comparatie.EROU_EN.subtitlu },
+  { cheie: 'compare-3s-vs-google-drive', pagina: comparatie.pagina, Componenta: PaginaG3, titluErou: comparatie.EROU_EN.titlu, primulParagraf: comparatie.EROU_EN.subtitlu },
 ]
 
 const randeaza = (C: ComponentType): string => renderToStaticMarkup(createElement(C))
@@ -197,7 +197,7 @@ describe('modulele si paginile EN de referinta', () => {
   it('preconditia: trei module, cu cheile manifestului, in ordinea lui', () => {
     expect(Object.keys(MODULE)).toEqual(RUTE_EN_REFERINTA.map((r) => r.cheie))
     expect(PAGINI.map((p) => p.cheie)).toEqual(RUTE_EN_REFERINTA.map((r) => r.cheie))
-    expect(RUTE_EN_REFERINTA.map((r) => r.cale)).toEqual(['/guides/e-invoice-archiving-eu', '/guides/records-retention-moldova', '/compare/3s-vs-google-and-box'])
+    expect(RUTE_EN_REFERINTA.map((r) => r.cale)).toEqual(['/guides/e-invoice-archiving-eu', '/guides/records-retention-moldova', '/compare/3s-vs-google-drive'])
   })
 
   it('manifestul: editia en, in harta, cheia = cheia modulului, calea = calea modulului; metadata in pragurile portii de SEO', () => {

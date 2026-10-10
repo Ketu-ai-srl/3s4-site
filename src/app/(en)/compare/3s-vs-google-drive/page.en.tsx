@@ -1,6 +1,6 @@
-// Pagina G3 a editiei `en`: `/compare/3s-vs-google-and-box` (grupul referinta). Aceleasi componente si aceeasi
+// Pagina G3 a editiei `en`: `/compare/3s-vs-google-drive` (grupul referinta). Aceleasi componente si aceeasi
 // compunere ca pagina RO `/comparatie-drive` (decizia 53), cu textul in engleza din modulul
-// `src/content/en/compare-3s-vs-google-and-box.ts`, importat DIRECT (conditia portii de registru: afirmatiile paginii
+// `src/content/en/compare-3s-vs-google-drive.ts`, importat DIRECT (conditia portii de registru: afirmatiile paginii
 // numesc modulul).
 //
 // Ordinea RO, cu ce lipseste si de ce (lista declarata a perechii: `config/congruenta/g3.json`):
@@ -35,7 +35,7 @@ import {
   SURSE_CARD_EN,
   TABEL_EN,
   pagina,
-} from "@/content/en/compare-3s-vs-google-and-box";
+} from "@/content/en/compare-3s-vs-google-drive";
 import { grafReferinta } from "../../guides/_referinta/date-structurate";
 
 export const metadata: Metadata = metadataPagina({

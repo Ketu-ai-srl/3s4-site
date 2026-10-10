@@ -7,7 +7,7 @@ import Subsol from '../src/components/global/Subsol'
 import FirPagina, { dateFirServite } from '../src/components/primitive/FirPagina'
 import { adreseServite, origineaEnglezei } from '../src/components/seo/JsonLd'
 import type { GrafJsonLd } from '../src/components/seo/date-structurate'
-import { pagina as comparatie } from '../src/content/en/compare-3s-vs-google-and-box'
+import { pagina as comparatie } from '../src/content/en/compare-3s-vs-google-drive'
 import { pagina as startEn } from '../src/content/en/home'
 import { caleMd } from '../src/content/juridic/md/registru'
 import { NAVIGATIE_RO, multimeaCailor } from '../src/content/navigatie'
@@ -17,7 +17,7 @@ import { RUTE_EN_REFERINTA } from '../src/content/rute-en-referinta'
 import { configurareCanale } from '../src/lib/canale-mediu'
 
 // Felia 141 `subsol-en-si-comparatia`. Patru lucruri, fiecare cu martorul lui:
-//   M7 ramas  - tot ce duce la /compare/3s-vs-google-and-box spune ce compara pagina: Google Drive, fara Box AI;
+//   M7 ramas  - tot ce duce la /compare/3s-vs-google-drive spune ce compara pagina: Google Drive, fara Box AI;
 //   m18       - "Informații legale" ramane in romana in subsolul EN (lang ro, hrefLang), cu glosa engleza langa ea;
 //   JSON-LD   - pe asezarea `ro`, adresele paginilor engleze (WebPage.url, firul) urmeaza canonical-ul (3s.md);
 //   firul     - JSON-LD-ul firului trece prin `serializeaza` (evadarea `<`), ca JsonLd.tsx.
@@ -26,7 +26,7 @@ import { configurareCanale } from '../src/lib/canale-mediu'
 const RADACINA = join(__dirname, '..')
 const PROFIL = JSON.parse(readFileSync(join(RADACINA, 'config', 'profil-3s-md.json'), 'utf8')) as Record<string, unknown>
 const CANALE = configurareCanale(JSON.stringify(PROFIL.CANALE_JSON), '')
-const CALE_COMPARATIE = '/compare/3s-vs-google-and-box'
+const CALE_COMPARATIE = '/compare/3s-vs-google-drive'
 const BOX = 'Bo' + 'x'
 
 /** Textul unui element de lista markdown `[eticheta](cale)` care duce la `cale`. */
@@ -81,7 +81,7 @@ describe('M7 ramas: etichetele si textele care duc la comparatie numesc numai Go
     type Intrare = { id: string; text: string; unde: string; stare: string; sursa: string; data: string }
     const citeste = (f: string) => JSON.parse(readFileSync(join(RADACINA, 'src', 'content', 'afirmatii', f), 'utf8')) as Intrare[]
     const aleComparatiei = [
-      ...citeste('en-referinta.json').filter((i) => i.unde.includes('compare-3s-vs-google-and-box.ts')),
+      ...citeste('en-referinta.json').filter((i) => i.unde.includes('compare-3s-vs-google-drive.ts')),
       ...citeste('ro-md-oglinda.json').filter((i) => i.unde.includes('ro-md/comparatie-componente.ts')),
     ]
     const active = aleComparatiei.filter((i) => i.stare !== 'retras')
@@ -94,9 +94,14 @@ describe('M7 ramas: etichetele si textele care duc la comparatie numesc numai Go
     expect(box?.data).toBe('2026-10-07')
   })
 
-  it('adresa paginii ramane cea cu "and-box" (fara redirectari): ruta, meniul si legatura de pe start', () => {
+  // Adresa paginii spune ce compara: Google Drive. Vechea adresa (cu Box in ea) nu mai e ruta; o duce la cea noua
+  // redirectarea permanenta din `src/lib/asezare.ts`, fixata in `tests/asezare.test.ts`.
+  it('adresa paginii e cea cu "google-drive": ruta, meniul si legatura de pe start; vechea adresa nu mai e ruta', () => {
     expect(RUTE_EN_REFERINTA.map((r) => r.cale)).toContain(CALE_COMPARATIE)
     expect(etichetaLegaturii(siruri(startEn), CALE_COMPARATIE)).toHaveLength(1)
+    const veche = '/compare/3s-vs-google-and-' + BOX.toLowerCase()
+    expect(RUTE_EN_REFERINTA.map((r) => r.cale)).not.toContain(veche)
+    expect(etichetaLegaturii(siruri(startEn), veche)).toHaveLength(0)
   })
 })
 

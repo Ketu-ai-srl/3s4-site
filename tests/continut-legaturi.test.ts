@@ -271,7 +271,7 @@ describe('(4) textul vizibil al startului /ro numeste ce compara pagina: Google 
 
   it('reziduul nerandat din about.ts numeste comparatia ca meniul: "3S vs Google Drive"', () => {
     const sursa = readFileSync(join(__dirname, '..', 'src', 'content', 'en', 'about.ts'), 'utf8')
-    expect(sursa).toContain('[3S vs Google Drive](/compare/3s-vs-google-and-box)')
+    expect(sursa).toContain('[3S vs Google Drive](/compare/3s-vs-google-drive)')
     expect(sursa).not.toContain('Google and ' + 'Box AI')
   })
 })
@@ -664,7 +664,7 @@ describe('(13)(15) editia EN: sumele lipite de EUR, "in euros" si orele nedespar
 
     it(nume + ': /en/compare, "RO e-Factura" cu spatiu nedespartitor si legatorul dupa cratima simpla', async () => {
       await cuProfil(nume)
-      const Compara = (await import('../src/app/(en)/compare/3s-vs-google-and-box/page.en')).default
+      const Compara = (await import('../src/app/(en)/compare/3s-vs-google-drive/page.en')).default
       const t = vizibil(randeaza(Compara))
       expect(t).toContain('RO\u00a0e-\u2060Factura')
       expect(t).not.toContain('RO e-Factura')

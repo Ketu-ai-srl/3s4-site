@@ -153,7 +153,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Other tools answer questions over documents too. If you already use one, compare before you choose: [how 3S compares with other tools](/compare/3s-vs-google-and-box).",
+            "Other tools answer questions over documents too. If you already use one, compare before you choose: [how 3S compares with other tools](/compare/3s-vs-google-drive).",
           ],
         },
       ],

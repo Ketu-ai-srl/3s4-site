@@ -34,13 +34,13 @@ const { default: ContactRo } = await import('../src/app/contact/page')
 const { default: DespreEn } = await import('../src/app/(en)/about/page.en')
 const { default: SecuritateRoMd } = await import('../src/app/(romd)/ro/securitate/page.romd')
 const { default: SecuritateRo } = await import('../src/app/securitate/page')
-const { default: ComparatieEn } = await import('../src/app/(en)/compare/3s-vs-google-and-box/page.en')
+const { default: ComparatieEn } = await import('../src/app/(en)/compare/3s-vs-google-drive/page.en')
 const { default: ComparatieRoMd } = await import('../src/app/(romd)/ro/comparatie-drive/page.romd')
 const { default: ComparatieRo } = await import('../src/app/comparatie-drive/page')
 const { PacheteEn } = await import('../src/components/preturi/PreturiEn')
 const { PacheteRoMd } = await import('../src/app/(romd)/ro/_editie/PreturiRoMd')
 const { FUNCTIONALITATI_EN } = await import('../src/content/en/acasa-componente')
-const comparatie = await import('../src/content/en/compare-3s-vs-google-and-box')
+const comparatie = await import('../src/content/en/compare-3s-vs-google-drive')
 const pretEn = await import('../src/content/en/pricing-componente')
 const pretRoMd = await import('../src/content/ro-md/preturi-componente')
 const despreEn = await import('../src/content/en/despre-componente')
@@ -182,7 +182,7 @@ describe('m10: iconitele cardului divizat de pe comparatie', () => {
     expect(m.dreapta[1]).toBeGreaterThan(0)
   })
 
-  it('/compare/3s-vs-google-and-box: avertizari pe "When should you not choose 3S?" (3), bife pe "When does 3S fit?" (4)', () => {
+  it('/compare/3s-vs-google-drive: avertizari pe "When should you not choose 3S?" (3), bife pe "When does 3S fit?" (4)', () => {
     const html = randeaza(ComparatieEn)
     expect(html.indexOf('When should you not choose 3S?')).toBeLessThan(html.indexOf('divizatDreapta'))
     expect(iconiteDivizat(html)).toEqual({ stanga: [0, 3], dreapta: [4, 0] })
@@ -223,7 +223,7 @@ describe('M7: comparatia spune ce compara (Google), fara Box AI', () => {
     expect(f.fraza).not.toContain(BOX)
     expect(f.buton.text).not.toContain(BOX)
     expect(f.buton.text).toContain('Google Drive')
-    expect(f.buton.href).toBe('/compare/3s-vs-google-and-box')
+    expect(f.buton.href).toBe('/compare/3s-vs-google-drive')
   })
 })
 

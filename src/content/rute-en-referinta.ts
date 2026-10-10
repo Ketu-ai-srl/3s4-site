@@ -30,11 +30,11 @@ export const RUTE_EN_REFERINTA: RutaEditie<"en">[] = [
     cheie: "guides-records-retention-moldova",
   },
   {
-    cale: "/compare/3s-vs-google-and-box",
+    cale: "/compare/3s-vs-google-drive",
     scurt: "3S vs Google Drive",
     descriere: "A comparison with a section on when not to choose 3S.",
     inHarta: true,
     editie: "en",
-    cheie: "compare-3s-vs-google-and-box",
+    cheie: "compare-3s-vs-google-drive",
   },
 ];

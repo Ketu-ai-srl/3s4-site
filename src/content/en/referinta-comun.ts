@@ -1,5 +1,5 @@
 // Piesele comune ale paginilor EN de referinta (G1 `/guides/e-invoice-archiving-eu`, G2
-// `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-and-box`) dupa decizia 53: paginile compun
+// `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-drive`) dupa decizia 53: paginile compun
 // componentele perechilor RO, cu textul in engleza. Aici stau numai textele pe care le folosesc la fel toate trei
 // (fisele de continut, sectiunea "Component copy (decision 53)", le propun identice cu cele ale paginii de start).
 //

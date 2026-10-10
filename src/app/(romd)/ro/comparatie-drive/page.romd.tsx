@@ -1,5 +1,5 @@
 // Pagina G3 a editiei `ro-MD`: `/ro/comparatie-drive` pe 3s.md. Aceleasi componente si aceeasi compunere ca pagina RO
-// `/comparatie-drive` si ca perechea EN `/compare/3s-vs-google-and-box` (decizia 53), cu textul editiei din
+// `/comparatie-drive` si ca perechea EN `/compare/3s-vs-google-drive` (decizia 53), cu textul editiei din
 // `src/content/ro-md/comparatie-componente.ts`.
 //
 // Ordinea RO (lista declarata a perechii: `config/congruenta/g3.json`): EroulInterior, CardDivizat, [DiagramaConectori:

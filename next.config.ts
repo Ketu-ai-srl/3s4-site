@@ -127,7 +127,7 @@ if (ASEZARE_PUSA_DIN_AFARA !== '' && ASEZARE_PUSA_DIN_AFARA !== ASEZARE_BUILD) {
       '". Variabila nu se seteaza de mana: o calculeaza next.config.ts. Se sterge din mediu.',
   )
 }
-const REDIRECTARI_ASEZARE = redirectariAsezare(ASEZARE_BUILD)
+const REDIRECTARI_ASEZARE = redirectariAsezare(ASEZARE_BUILD, EDITII_BUILD)
 
 const nextConfig: NextConfig = {
   output: standalone ? 'standalone' : undefined,
@@ -160,7 +160,8 @@ const nextConfig: NextConfig = {
     ...(EDITII_PUBLICE === 'ro-RO' ? {} : { [VARIABILA_EDITII_PUBLICA]: EDITII_PUBLICE }),
     ...(ASEZARE_BUILD === 'md' ? {} : { [VARIABILA_ASEZARE_PUBLICA]: ASEZARE_BUILD }),
   },
-  // Redirectarile asezarii (numai pe `ro`; pe `md` cheia nu exista deloc).
+  // Redirectarile asezarii (pe `ro` vechile adrese `/ro`) si ale adreselor mutate ale editiilor construite; fara
+  // niciuna (site-ul romanesc vechi), cheia nu exista deloc.
   ...(REDIRECTARI_ASEZARE.length === 0 ? {} : { redirects: async () => REDIRECTARI_ASEZARE }),
   // ANALITICA PROPRIE PE CALE PROPRIE (felia multi-domeniu): cu `UMAMI_URL` si `UMAMI_WEBSITE_ID` in
   // mediu SI cu un operator numit si complet (planul §9: analitica prelucreaza date personale, deci cere

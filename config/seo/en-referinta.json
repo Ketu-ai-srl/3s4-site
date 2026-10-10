@@ -23,7 +23,7 @@
         "Law 287/2017"
       ]
     },
-    "/compare/3s-vs-google-and-box": {
+    "/compare/3s-vs-google-drive": {
       "intrebare": "Should I choose 3S or Google Drive with Gemini?",
       "fara_regula_paragrafului": "G3 are forma eroului perechii RO /comparatie-drive (decizia 53): sub titlu sta un subtitlu scurt (28 de cuvinte), nu un paragraf de raspuns de 30-80, ca pe perechea RO (config/seo/comparatii-termene.json). Raspunsul paginii e titlul impreuna cu subtitlul si cu cardul divizat de dedesubt; entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",
       "entitati": ["3S", "Google Drive", "Gemini"]

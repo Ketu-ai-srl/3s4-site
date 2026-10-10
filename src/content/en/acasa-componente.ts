@@ -86,7 +86,7 @@ export const FUNCTIONALITATI_EN: ContinutFunctionalitatiAcasa = {
     // acasa.ts:479; butonul: legatura aprobata spre comparatie (decizia 11). Pagina compara numai Google Drive (Box AI
     // a ramas in fisa), deci fraza si butonul numesc numai Google Drive; adresa paginii ramane aceeasi.
     fraza: "For a few dozen files, Google Drive may be enough.",
-    buton: { text: "3S vs Google Drive", href: "/compare/3s-vs-google-and-box", ruta: "/compare/3s-vs-google-and-box" },
+    buton: { text: "3S vs Google Drive", href: "/compare/3s-vs-google-drive", ruta: "/compare/3s-vs-google-drive" },
   },
 };
 

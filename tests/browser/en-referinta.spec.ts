@@ -3,14 +3,14 @@ import { join } from 'node:path'
 import { expect, test } from './ajutor/baza'
 import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
-import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-and-box'
+import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-drive'
 import { pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
 import { pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
 import type { PaginaReferinta } from '../../src/content/en/referinta-comun'
 
 /**
  * Paginile EN de referinta ale lui 3s.md (felia en-referinta: G1 `/guides/e-invoice-archiving-eu`, G2
- * `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-and-box`), pe COPIA construita si servita cu
+ * `/guides/records-retention-moldova`, G3 `/compare/3s-vs-google-drive`), pe COPIA construita si servita cu
  * variabilele aplicatiei 3s.md (`ajutor/copie-3s-md.ts`, profilul `config/profil-3s-md.json`): build-ul real al
  * probelor e cel romanesc, unde paginile EN nu exista.
  *
@@ -131,7 +131,7 @@ test.afterAll(async () => {
 })
 
 test('preconditia: trei pagini in grup, cu declaratiile lor G-AI-02', () => {
-  expect(CAI).toEqual(['/guides/e-invoice-archiving-eu', '/guides/records-retention-moldova', '/compare/3s-vs-google-and-box'])
+  expect(CAI).toEqual(['/guides/e-invoice-archiving-eu', '/guides/records-retention-moldova', '/compare/3s-vs-google-drive'])
   expect(Object.keys(DECLARATII).sort()).toEqual([...CAI].sort())
 })
 
@@ -179,6 +179,30 @@ test('harta de site: 10 pagini EN de marketing, cu cele trei; llms.txt are cele 
   expect(llms.status).toBe(200)
   // Legatura Markdown spre fiecare pagina: adresa se termina cu calea paginii.
   for (const c of CAI) expect(llms.html, c).toContain(c + ')')
+})
+
+// Adresa comparatiei s-a mutat: pagina compara numai Google Drive, deci adresa nu mai numeste Box. Vechea adresa
+// (asamblata la rulare) duce PERMANENT la cea noua (`src/lib/asezare.ts`, ADRESE_MUTATE), nu mai e in harta, iar
+// perechea RO o numeste pe cea noua in grupul hreflang. Controlul: o adresa inexistenta da 404, nu redirectare.
+test('adresa mutata a comparatiei: 308 spre cea noua, harta numai cu cea noua, hreflang-ul perechii RO pe cea noua', async () => {
+  const noua = comparatie.meta.cale
+  const veche = '/compare/3s-vs-google-and-' + 'b' + 'ox'
+  const r = await fetch(copie.baza + veche, { redirect: 'manual' })
+  expect(r.status).toBe(308)
+  expect(new URL(r.headers.get('location') ?? '', copie.baza).pathname).toBe(noua)
+  const control = await fetch(copie.baza + veche + '-x', { redirect: 'manual' })
+  expect(control.status).toBe(404)
+  expect((await servit(noua)).status).toBe(200)
+  const cai = caiDinHarta((await servit('/sitemap.xml')).html)
+  expect(cai).toContain(noua)
+  expect(cai).not.toContain(veche)
+  const ro = await servit('/ro/comparatie-drive')
+  expect(ro.status).toBe(200)
+  const alternate = [...ro.html.matchAll(/<link\b[^>]*rel="alternate"[^>]*>/g)].map((m) => m[0])
+  const en = alternate.filter((l) => /hreflang="en"/i.test(l))
+  expect(en, 'controlul: perechea RO are varianta en').toHaveLength(1)
+  expect(new URL(/href="([^"]+)"/.exec(en[0])![1]).pathname).toBe(noua)
+  expect(alternate.some((l) => l.includes(veche))).toBe(false)
 })
 
 test('nicio pagina EN din harta nu mai are o legatura inerta spre /guides sau /compare; legaturile reale exista', async () => {

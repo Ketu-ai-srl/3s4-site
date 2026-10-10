@@ -81,7 +81,7 @@ export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
     text: "Hello 3S, I read your page on records retention in Moldova [ref:en-ret-md]. I would like to ask about a pilot.",
   },
   {
-    cale: "/compare/3s-vs-google-and-box",
+    cale: "/compare/3s-vs-google-drive",
     ref: "en-vs",
     text: "Hello 3S, I read your comparison with Google Drive [ref:en-vs]. I would like to ask whether 3S fits our case.",
   },
@@ -139,7 +139,7 @@ const FOAIE_PRODUS = foaie("3S product", [
 const FOAIE_GHIDURI = foaie("Guides", [
   element("E-invoice archiving in the EU", "/guides/e-invoice-archiving-eu", "file-text"),
   element("Records retention in Moldova", "/guides/records-retention-moldova", "archive"),
-  element("3S vs Google Drive", "/compare/3s-vs-google-and-box", "chart-column"),
+  element("3S vs Google Drive", "/compare/3s-vs-google-drive", "chart-column"),
 ]);
 
 /** Selectorul de limba al domeniului: engleza la radacina, romana pentru Republica Moldova sub `/ro`. */

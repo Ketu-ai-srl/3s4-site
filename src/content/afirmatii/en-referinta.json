@@ -173,7 +173,7 @@
   {
     "id": "en-referinta-efacturare-canale-3s",
     "text": "You can download invoices as XML files from RO e-Factura and upload them to the 3S archive",
-    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts, src/content/en/compare-3s-vs-google-and-box.ts",
+    "unde": "src/content/en/guides-e-invoice-archiving-eu.ts, src/content/en/compare-3s-vs-google-drive.ts",
     "stare": "confirmat",
     "sursa": "oglinda intrării efacturare-canale-3s, NUMAI încărcarea manuală a fișierelor XML (încărcarea de fișiere e funcție de bază, confirmată prin decizia D4b din planul valului S4). Decizia 43 (owner-ul, 2026-10-01) a scos Peppol și Storecove, decizia 49 (owner-ul, 2026-10-02, planul 3s.md §0.1, rândul 49) a scos WhatsApp; primirea pe e-mail a scos-o dispecerul pe aceeași regulă. Nu se afirmă nicio integrare directă cu ANAF sau KSeF",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24 (decizia D4b); îngustată prin deciziile 43 și 49",
@@ -317,7 +317,7 @@
   {
     "id": "en-referinta-comparatii-publicitate-comparativa",
     "text": "The comparison page names Google Drive with its Gemini features, without logos, with an official source and a read date on every vendor cell",
-    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "unde": "src/content/en/compare-3s-vs-google-drive.ts",
     "stare": "confirmat",
     "sursa": "decizia 11 a owner-ului (30.09.2026; planul 3s.md §0.1): 3S numește Google și Box, cu sursă și dată pe fiecare celulă. Din decizia 59 (întrebarea 7 a specificației de congruență) pagina compară numai Google Drive cu funcțiile Gemini; Gemini Notebook și Box AI au rămas în fișa paginii, deci textul intrării numește ce compară pagina. Oglinda EN a intrării comparatii-publicitate-comparativa (neconfirmată pe site-ul RO, unde privea alte produse). Regimul juridic al publicității comparative în Republica Moldova n-a fost evaluat",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30 (decizia 11)",
@@ -326,7 +326,7 @@
   {
     "id": "en-referinta-comparatii-marcaje-gemini-notebook",
     "text": "Gemini Notebook (formerly NotebookLM, renamed July 16, 2026): sources of up to 500,000 words or 200 MB, in-line citations, 50 to 600 sources per notebook by tier (subject to change), free standard access with a Google account, data location not stated on its pages; Google's compliance pages list NotebookLM among the Workspace services in scope",
-    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "unde": "src/content/en/compare-3s-vs-google-drive.ts",
     "stare": "neconfirmat",
     "sursa": "paginile oficiale Google S1, S4-S8, S9, S11 și S12 din tabelul surselor paginii G3, citite pe 30.09.2026. Fiecare celulă se recitește la sursă înainte de poarta B",
     "confirmat_de": "",
@@ -335,7 +335,7 @@
   {
     "id": "en-referinta-comparatii-marcaje-gemini-drive",
     "text": "Gemini in Google Drive: cited and grounded answers over Drive content, on Workspace Standard, Plus and Enterprise but not Starter, per-user pricing, data regions by the file creator's policy on supported editions, client-side encryption and e-signatures on some plans, a marketplace of apps; Google's compliance pages list Drive and Gemini in Workspace among the services in scope",
-    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "unde": "src/content/en/compare-3s-vs-google-drive.ts",
     "stare": "neconfirmat",
     "sursa": "paginile oficiale Google S2, S3, S9, S10, S11 și S12 din tabelul surselor paginii G3, citite pe 30.09.2026. Extinde intrarea comparatii-marcaje-google a site-ului RO; fiecare celulă se recitește la sursă înainte de poarta B",
     "confirmat_de": "",
@@ -344,7 +344,7 @@
   {
     "id": "en-referinta-comparatii-marcaje-box-ai",
     "text": "Box AI: questions on one file from the Business plan and on up to 10 files from Enterprise Plus, hubs of up to 20,000 files, text processed up to 2 MB per file, citations on hover and through the API, per-user pricing with a minimum of 3 users, Box Zones across 10 regions, KeySafe, 1,500+ integrations, e-sign requests, and the standards Box names on its security and pricing pages",
-    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "unde": "src/content/en/compare-3s-vs-google-drive.ts",
     "stare": "retras",
     "sursa": "retrasă de felia 141: din decizia 59 (întrebarea 7 a specificației de congruență) pagina G3 compară numai Google Drive cu funcțiile Gemini, iar Box AI a rămas numai în fișa paginii, deci afirmația nu mai apare pe site. Sursele de atunci: paginile oficiale Box S13-S19 din tabelul surselor paginii G3, citite pe 30.09.2026; se recitesc la sursă dacă Box AI revine pe o pagină",
     "confirmat_de": "",
@@ -353,7 +353,7 @@
   {
     "id": "en-referinta-comparatii-nespuse-pe-site",
     "text": "This site states no certification, no volume limit, no own-storage option, no client portal, no integration list, no service levels and no customer references for 3S, and does not say where the AI features process documents; the 3S cells say so and ask the reader to ask us",
-    "unde": "src/content/en/compare-3s-vs-google-and-box.ts",
+    "unde": "src/content/en/compare-3s-vs-google-drive.ts",
     "stare": "confirmat",
     "sursa": "decizia 43 a owner-ului (01.10.2026; planul 3s.md §0.1, rândul 43): funcțiile negăsite în codul platformei ies de pe paginile de lansare, iar celulele 3S pentru portal și stocare proprie spun „Not stated on this site. Ask us.”; decizia D5 (fără recenzii și referințe publicate); fișa paginii G3",
     "confirmat_de": "owner-ul proiectului 3S, 2026-10-01 (decizia 43)",

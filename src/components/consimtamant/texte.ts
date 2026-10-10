@@ -21,8 +21,10 @@ export const TEXTE_BANNER = {
   // Rol: descrierea (14,4/400, doua randuri la 1440). Lungime la sursa: 79. A noastra e mai lunga cu
   // fraza despre retragere, ceruta de lege in primul strat: la 1440 ramane pe doua randuri, la 390
   // trece pe trei (sursa: doua), deci bannerul de telefon e cu un rand mai inalt (masurat 25.09.2026).
+  // A doua propozitie numeste acordul, ca in celelalte seturi romanesti: pronumele singur trimitea la un
+  // complement din propozitia dinainte.
   descriere:
-    "Cu acordul tău, măsurăm vizitele cu Google Analytics. Îl poți retrage oricând, din subsolul oricărei pagini.",
+    "Cu acordul tău, măsurăm vizitele cu Google Analytics. Acordul îl poți retrage oricând, din subsolul oricărei pagini.",
   accept: "Accept tot",
   refuz: "Refuz tot",
   setari: "Setări cookie-uri",
@@ -101,7 +103,7 @@ const BANNER_RO_UMAMI_GA4: TexteBanner = {
   ...TEXTE_BANNER,
   titlu: "Statistică",
   descriere:
-    "Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică și cu Google Analytics, care pune cookie-uri. Îl poți retrage oricând, din subsolul oricărei pagini.",
+    "Cu acordul tău, măsurăm vizitele cu o aplicație proprie de statistică și cu Google Analytics, care pune cookie-uri. Acordul îl poți retrage oricând, din subsolul oricărei pagini.",
 };
 
 const STATISTICA_RO_UMAMI =
@@ -160,8 +162,10 @@ const PANOU_EN_UMAMI: TextePanou = {
   salveaza: "Save settings",
 };
 
+// Cu GA4 o categorie pune cookie-uri, deci introducerea cere din nou sa alegi "cookies", ca setul romanesc cu GA4.
 const PANOU_EN_UMAMI_GA4: TextePanou = {
   ...PANOU_EN_UMAMI,
+  optiuniText: "Choose which cookies you allow on this site. You can change your mind later, from the footer of any page.",
   statisticaText: STATISTICA_EN_UMAMI + " Google Analytics 4 sets cookies, and data may reach the United States.",
 };
 

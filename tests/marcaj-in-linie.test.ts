@@ -119,7 +119,7 @@ async function componenteDin(dosar: string): Promise<{ fisier: string; texte: st
  * perechilor RO, nu o `pagina` randata prin CorpPagina. Se numara separat, iar sirurile lor trec prin acelasi detector
  * de reziduuri, ca nimic sa nu iasa din proba.
  */
-const MODULE_REFERINTA = new Set(['compare-3s-vs-google-and-box.ts', 'guides-e-invoice-archiving-eu.ts', 'guides-records-retention-moldova.ts', 'referinta-comun.ts'])
+const MODULE_REFERINTA = new Set(['compare-3s-vs-google-drive.ts', 'guides-e-invoice-archiving-eu.ts', 'guides-records-retention-moldova.ts', 'referinta-comun.ts'])
 
 /** Toate sirurile dintr-o valoare (frunzele de tip sir, recursiv). */
 function siruriReferinta(valoare: unknown, acc: string[] = []): string[] {

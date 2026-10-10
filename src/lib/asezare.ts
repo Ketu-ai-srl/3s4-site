@@ -151,15 +151,34 @@ export const VARIANTE_SERVITE: Readonly<Record<string, VariantaServita>> = {
 };
 
 /**
- * Redirectarile permanente ale asezarii, in forma cheii `redirects` din `next.config.ts`. Pe `ro`, vechile adrese ale
- * romanei (`/ro`, `/ro/...`) duc la adresele de la radacina. Pe `md` nu exista niciuna (cheia nici nu se scrie).
+ * ADRESELE MUTATE: pagini ale editiilor asezate care si-au schimbat calea SURSA. Vechea adresa ramane in favoritele si
+ * in istoricul cuiva, deci duce permanent la cea noua, pe fiecare asezare, la prefixul servit al editiei. Pagina
+ * comparatiei EN compara numai Google Drive, deci adresa ei nu mai numeste Box. O intrare se scrie numai daca editia ei
+ * e construita: pe site-ul romanesc vechi (`ro-RO`) nu exista nicio pagina engleza spre care sa duca.
  */
-export function redirectariAsezare(asezare: CodAsezare): { source: string; destination: string; permanent: true }[] {
-  if (asezare === "md") return [];
+export const ADRESE_MUTATE: readonly { readonly editie: EditieAsezata; readonly vechi: string; readonly noua: string }[] = [
+  { editie: "en", vechi: "/compare/3s-vs-google-and-box", noua: "/compare/3s-vs-google-drive" },
+];
+
+/**
+ * Redirectarile permanente ale asezarii, in forma cheii `redirects` din `next.config.ts`. Pe `ro`, vechile adrese ale
+ * romanei (`/ro`, `/ro/...`) duc la adresele de la radacina. Pe orice asezare, adresele mutate ale editiilor construite
+ * duc la cele noi (`ADRESE_MUTATE`). Lista goala = cheia nici nu se scrie.
+ */
+export function redirectariAsezare(
+  asezare: CodAsezare,
+  editii: readonly CodEditie[],
+): { source: string; destination: string; permanent: true }[] {
+  const mutate = ADRESE_MUTATE.filter((m) => editii.includes(m.editie)).map((m) => {
+    const prefix = prefixServit(m.editie, asezare);
+    return { source: prefix + m.vechi, destination: prefix + m.noua, permanent: true as const };
+  });
+  if (asezare === "md") return mutate;
   const vechi = EDITII["ro-MD"].prefix;
   return [
     { source: vechi, destination: "/", permanent: true },
     { source: vechi + "/:cale*", destination: "/:cale*", permanent: true },
+    ...mutate,
   ];
 }
 

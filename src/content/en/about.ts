@@ -187,7 +187,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Guides cite primary sources with links and the date they were checked. They are not legal advice: check with your own adviser. Read [Records retention in Moldova](/guides/records-retention-moldova), [E-invoice archiving in the EU](/guides/e-invoice-archiving-eu) or [3S vs Google Drive](/compare/3s-vs-google-and-box).",
+            "Guides cite primary sources with links and the date they were checked. They are not legal advice: check with your own adviser. Read [Records retention in Moldova](/guides/records-retention-moldova), [E-invoice archiving in the EU](/guides/e-invoice-archiving-eu) or [3S vs Google Drive](/compare/3s-vs-google-drive).",
           ],
         },
       ],
