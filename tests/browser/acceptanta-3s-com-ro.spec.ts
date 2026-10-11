@@ -484,6 +484,28 @@ test('felia 148: numarul din fraza de sub H1 de pe paginile de contact RO si EN 
   expect(rupte.length, JSON.stringify(rupte)).toBeGreaterThan(0)
 })
 
+// Adresa comparatiei EN s-a mutat (pagina compara numai Google Drive; `ADRESE_MUTATE` din `src/lib/asezare.ts`). Pe
+// 3s.com.ro engleza e sub `/en`, deci vechea adresa servita e `/en` + vechea cale sursa si duce PERMANENT la noua, cu
+// interogarea pastrata. Noua adresa vine din oracol (perechea RO `/ro/comparatie-drive` din echivalente, servita sub
+// `/en`), vechiul slug se asambleaza la rulare. Controlul: o adresa vecina inexistenta da 404, nu redirectare.
+test('adresa mutata a comparatiei sub /en: 308 cu Location spre adresa noua (interogarea pastrata), adresa noua 200', async () => {
+  const pereche = PERECHI.find((p) => p.sursaRo === PREFIX_RO_SURSA + '/comparatie-drive')
+  expect(pereche, 'controlul: perechea comparatiei e in echivalente').toBeTruthy()
+  const noua = pereche!.en
+  expect(noua.startsWith(PREFIX_EN + '/compare/'), noua).toBe(true)
+  const veche = PREFIX_EN + '/compare/3s-vs-google-and-' + 'b' + 'ox'
+  const interogare = '?ref=proba'
+  const r = await fetch(copie.baza + veche + interogare, { redirect: 'manual' })
+  const location = r.headers.get('location') ?? ''
+  console.log('[acceptanta-3s-com-ro] ' + veche + interogare + ' -> ' + r.status + ' Location ' + location)
+  expect(r.status, veche).toBe(308)
+  const tinta = new URL(location, copie.baza)
+  expect(tinta.pathname).toBe(noua)
+  expect(tinta.search).toBe(interogare)
+  expect(await status(noua)).toBe(200)
+  expect(await status(veche + '-x'), 'controlul: adresa vecina inexistenta').toBe(404)
+})
+
 test('martor POZITIV: fiecare detector prinde defectul lui, pe date asamblate la rulare', () => {
   const p: Pereche = { ro: '/a', en: PREFIX_EN + '/a', sursaRo: PREFIX_RO_SURSA + '/a', sursaEn: '/a' }
   // Selectorul: o optiune spre adresa sursa, una lipsa, activa gresita.

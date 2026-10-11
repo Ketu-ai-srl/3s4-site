@@ -91,8 +91,10 @@ export function amprenta(text: string): string {
  * O schimbare de text, o unealta adaugata sau scoasa, sau alta limba dau o versiune noua, iar bannerul intreaba
  * din nou - fara pas manual. Prefixul e limba (`ro-`, `en-`), forma pe care o accepta evidenta (`evidenta.ts`).
  *
- * Romana cu GA4 singur (S-GA4) pastreaza EXACT intrarea de dinaintea masurarii S-B, deci aceeasi versiune: un
- * vizitator care a ales deja nu e intrebat din nou fara motiv. Ce se adauga pentru Umami sau pentru engleza
+ * Romana cu GA4 singur (S-GA4) pastreaza FORMA intrarii de dinaintea masurarii S-B (aceleasi chei, nimic adaugat),
+ * deci versiunea ei se schimba numai cand i se schimba textul. Textul s-a schimbat (descrierea bannerului numeste
+ * acordul in a doua propozitie), deci si versiunea; setul nu e servit azi (GA4 nu ruleaza, decizia 26), asa ca
+ * nimeni nu e intrebat din nou din cauza asta. Ce se adauga pentru Umami sau pentru engleza
  * (serviciile panoului, randul alegerii in limba lui, eticheta "numai citit") intra numai in starile acelea.
  */
 export function versiuneInformare(limba: LimbaBanner, unelte: UnelteActive): string {

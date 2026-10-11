@@ -20,7 +20,9 @@ import { nemasurat } from './ajutor/proiect'
  *   - derapajul orizontal la 390;
  *   - martorul negativ: la miscare redusa aceeasi sectiune de sub fereastra ramane vizibila;
  *   - bugetele de la 390 cu procesorul incetinit de 4 ori: LCP <= 2500 ms si CLS <= 0,1 (mediana a 3
- *     incarcari), cu martor pozitiv pe CLS.
+ *     incarcari), cu martor pozitiv pe CLS. Langa maximul CLS, jurnalul tipareste sursele FIECAREI deplasari
+ *     (intrarile `layout-shift` cu `sources`: nodul si dreptunghiurile inainte/dupa), ca o cadere rara din CI sa
+ *     poata fi atribuita din jurnal; tiparirea nu schimba nici pragurile, nici asteptarile.
  */
 
 const PAGINI = ['/promo', '/promo/scanare-cu-telefonul'] as const
@@ -240,15 +242,43 @@ const INCETINIRE_CPU = 4
 const PRAG_LCP_MS = 2500
 const PRAG_CLS = 0.1
 
-type Incarcare = { lcp: number; element: string; cls: number; latime: number }
+/** O sursa a unei deplasari: nodul (descris in momentul deplasarii) si dreptunghiurile lui inainte si dupa. */
+type SursaDeplasare = { nod: string; inainte: number[]; dupa: number[] }
+/** O deplasare (intrare `layout-shift` fara interactiune recenta): momentul, valoarea si sursele ei. */
+type Deplasare = { t: number; valoare: number; surse: SursaDeplasare[] }
+type Incarcare = { lcp: number; element: string; cls: number; latime: number; deplasari: Deplasare[] }
+
+/** Deplasarile unei incarcari, pe un rand: momentul, valoarea, apoi fiecare sursa cu nodul si [x,y,l,h] inainte -> dupa. */
+function descrieDeplasari(deplasari: Deplasare[]): string {
+  if (deplasari.length === 0) return 'nicio deplasare'
+  return deplasari
+    .map(
+      (d) =>
+        Math.round(d.t) + ' ms ' + d.valoare.toFixed(4) + ' [' +
+        (d.surse.length === 0 ? 'fara surse' : d.surse.map((s) => s.nod + ' ' + JSON.stringify(s.inainte) + ' -> ' + JSON.stringify(s.dupa)).join('; ')) +
+        ']',
+    )
+    .join(' | ')
+}
 
 async function incarcare(browser: Browser, baza: string, cale: string, deplasareTarzie = false): Promise<Incarcare> {
   const context = await browser.newContext({ baseURL: baza, viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' })
   try {
     await context.addInitScript((deplasare: boolean) => {
-      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number }
+      type Sursa = { nod: string; inainte: number[]; dupa: number[] }
+      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number; __deplasari: { t: number; valoare: number; surse: Sursa[] }[] }
       w.__lcp = []
       w.__cls = 0
+      w.__deplasari = []
+      // Nodul se descrie IN MOMENTUL deplasarii (mai tarziu poate fi scos din document).
+      const descrie = (n: Node | null): string => {
+        if (!n) return '(nod disparut)'
+        if (!(n instanceof Element)) return '#text "' + (n.textContent ?? '').trim().slice(0, 30) + '"'
+        const atr = [...n.attributes].filter((a) => a.name === 'id' || a.name.startsWith('data-')).map((a) => '[' + a.name + (a.value ? '=' + a.value : '') + ']')
+        const clasa = typeof n.className === 'string' && n.className ? '.' + n.className.trim().split(/\s+/).slice(0, 3).join('.') : ''
+        return n.tagName.toLowerCase() + atr.join('') + clasa + ' "' + (n.textContent ?? '').trim().slice(0, 30) + '"'
+      }
+      const drept = (r: DOMRectReadOnly): number[] => [r.x, r.y, r.width, r.height].map((v) => Math.round(v))
       new PerformanceObserver((lista) => {
         for (const e of lista.getEntries() as (PerformanceEntry & { element?: Element | null })[]) {
           const el = e.element
@@ -256,8 +286,19 @@ async function incarcare(browser: Browser, baza: string, cale: string, deplasare
         }
       }).observe({ type: 'largest-contentful-paint', buffered: true })
       new PerformanceObserver((lista) => {
-        for (const e of lista.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
-          if (!e.hadRecentInput) w.__cls += e.value
+        type Intrare = PerformanceEntry & {
+          value: number
+          hadRecentInput: boolean
+          sources?: { node: Node | null; previousRect: DOMRectReadOnly; currentRect: DOMRectReadOnly }[]
+        }
+        for (const e of lista.getEntries() as Intrare[]) {
+          if (e.hadRecentInput) continue
+          w.__cls += e.value
+          w.__deplasari.push({
+            t: e.startTime,
+            valoare: e.value,
+            surse: (e.sources ?? []).map((s) => ({ nod: descrie(s.node), inainte: drept(s.previousRect), dupa: drept(s.currentRect) })),
+          })
         }
       }).observe({ type: 'layout-shift', buffered: true })
       if (deplasare) {
@@ -277,9 +318,9 @@ async function incarcare(browser: Browser, baza: string, cale: string, deplasare
     await page.waitForTimeout(5000)
     const latime = await page.evaluate(() => window.innerWidth)
     const r = await page.evaluate(() => {
-      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number }
+      const w = window as unknown as { __lcp: { t: number; el: string }[]; __cls: number; __deplasari: Deplasare[] }
       const ultim = w.__lcp[w.__lcp.length - 1]
-      return { lcp: ultim ? ultim.t : -1, element: ultim ? ultim.el : '(niciun LCP)', cls: w.__cls }
+      return { lcp: ultim ? ultim.t : -1, element: ultim ? ultim.el : '(niciun LCP)', cls: w.__cls, deplasari: w.__deplasari }
     })
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
     return { ...r, latime }
@@ -297,6 +338,7 @@ test.describe('bugetele de la 390, procesor incetinit de 4 ori', () => {
       const lcp = r.map((x) => x.lcp).sort((a, b) => a - b)[1]
       const cls = Math.max(...r.map((x) => x.cls))
       console.log('[bugete ' + cale + '] innerWidth CITIT: ' + r.map((x) => x.latime).join('/') + ' | LCP ' + r.map((x) => Math.round(x.lcp) + ' (' + x.element + ')').join(' / ') + ' | mediana ' + Math.round(lcp) + ' ms | CLS max ' + cls.toFixed(4))
+      r.forEach((x, i) => console.log('[bugete ' + cale + ' deplasari ' + (i + 1) + '/' + r.length + '] CLS ' + x.cls.toFixed(4) + ' | ' + descrieDeplasari(x.deplasari)))
       for (const x of r) expect(x.latime).toBe(390)
       if (lcp <= 0) nemasurat(cale + ': niciun LCP inregistrat')
       expect(lcp).toBeLessThanOrEqual(PRAG_LCP_MS)
@@ -308,6 +350,7 @@ test.describe('bugetele de la 390, procesor incetinit de 4 ori', () => {
     test.setTimeout(60_000)
     const r = await incarcare(browser, baseURL ?? '', PAGINI[0], true)
     console.log('[bugete martor pozitiv CLS] ' + r.cls.toFixed(4))
+    console.log('[bugete martor pozitiv deplasari] ' + descrieDeplasari(r.deplasari))
     expect(r.cls).toBeGreaterThan(PRAG_CLS)
   })
 })
