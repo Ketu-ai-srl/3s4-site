@@ -12,8 +12,8 @@ export default function subimputernicitiEn(c: ContextMd): DocumentJuridic {
     cheie: "subimputerniciti",
     limba: "en",
     titlu: "Platform sub-processors",
-    versiune: "2026-10-07",
-    introducere: "For the Documents you upload to the 3S Service, your company is, as a rule, the controller of the data, and 3S Demerzel SRL processes them on its behalf, under the [Data Processing Agreement](cale:dpa) (the \"DPA\"). This page shows which other providers take part in the processing, what each does and where the data is. Table A is the Agreed List in Article 7.1 of the DPA. Table B shows the providers that serve the website and our contact channels and that do not receive the Documents uploaded to the Service.",
+    versiune: "2026-10-22",
+    introducere: "For the Documents you upload to the 3S Service, your company is, as a rule, the controller of the data, and “Demerzel” S.R.L., a limited liability company registered in the Republic of Moldova, processes them on its behalf, under the [Data Processing Agreement](cale:dpa) (the \"DPA\"). This page shows which other providers take part in the processing, what each does and where the data is. Table A is the Agreed List in Article 7.1 of the DPA. Table B shows the providers that serve the website and our contact channels and that do not receive the Documents uploaded to the Service.",
     sectiuni: [
       {
         cheie: "a", titlu: "A. Sub-processors that receive the Client Documents (the Agreed List)",

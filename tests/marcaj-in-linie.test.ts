@@ -147,16 +147,16 @@ async function paginiDin(dosar: string): Promise<{ fisier: string; pagina: Pagin
   return iesire
 }
 
-/** Operatorul-model al familiei md, asamblat la rulare (aceeasi forma ca in tests/juridic-md.test.ts). */
+/** Operatorul familiei md, asamblat la rulare (aceeasi forma ca in tests/juridic-md.test.ts). */
 function operatorMd(): Operator {
-  const d2 = 'D2'
+  const idno = ['1026', '0231', '58396'].join('')
   return {
-    denumire: ['3S', 'Demerzel', 'SRL'].join(' '),
-    sediu: d2,
+    denumire: ['„Demerzel”', 'S.R.L.'].join(' '),
+    sediu: ['mun. Chișinău', 'Republica Moldova'].join(', '),
     email: ['contact', ['3s', 'md'].join('.')].join('@'),
     telefon: ['+373', '68', '055', '599'].join(' '),
-    numar_orc: d2,
-    cod_fiscal: d2,
+    numar_orc: idno,
+    cod_fiscal: idno,
     tara: ['Republica', 'Moldova'].join(' '),
     dpo: '',
   }

@@ -22,7 +22,7 @@ import { caleMd, cheiPublicate, slugMd, type CheieMd } from '../src/content/juri
  *      HTML de pazit; paginile exista numai cu un operator SEE, pe care niciun profil nu-l are azi.
  *
  *   B. EDITIA: paginile `/legal/<document>` (EN) si `/ro/juridic/<document>` (RO-MD) ale lui 3s.md, randate cu
- *      variabilele profilului `config/profil-3s-md.json` (operatorul-model D2), au SCHELETUL paginii RO
+ *      variabilele profilului `config/profil-3s-md.json` (operatorul din extras), au SCHELETUL paginii RO
  *      `/juridic/termeni`: aceleasi elemente, cu aceleasi clase, in aceeasi ordine, de la `<main>` pana la
  *      articol, plus sigiliul. Textul documentului (corpul articolului) nu intra in schelet: el difera prin
  *      constructie. Listele (bara si firul) intra ca multime de forme de element, iar numarul de elemente se

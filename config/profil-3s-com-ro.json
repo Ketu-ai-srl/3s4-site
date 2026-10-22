@@ -6,14 +6,13 @@
   "SITE_ASEZARE": "ro",
   "SITE_ALTERNATE": "en=https://3s.md,ro-MD=https://3s.md/ro,ro-RO=https://3s.com.ro,x-default=https://3s.md",
   "OPERATOR_JSON": {
-    "model": "D2",
     "operator": {
-      "denumire": "3S Demerzel SRL",
-      "sediu": "[în curs de înregistrare]",
+      "denumire": "„Demerzel” S.R.L.",
+      "sediu": "mun. Chișinău, Republica Moldova",
       "email": "contact@3s.md",
       "telefon": "+40 743 130 567",
-      "numar_orc": "[în curs de înregistrare]",
-      "cod_fiscal": "[în curs de înregistrare]",
+      "numar_orc": "1026023158396",
+      "cod_fiscal": "1026023158396",
       "tara": "Republica Moldova",
       "dpo": ""
     }

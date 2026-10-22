@@ -12,8 +12,8 @@ export default function subimputernicitiRo(c: ContextMd): DocumentJuridic {
     cheie: "subimputerniciti",
     limba: "ro",
     titlu: "Subîmputerniciții platformei",
-    versiune: "2026-10-07",
-    introducere: "Pentru Documentele pe care le încărcați în Serviciul 3S, firma dumneavoastră este, de regulă, operatorul datelor, iar 3S Demerzel SRL le prelucrează în numele ei, după [Acordul de prelucrare a datelor](cale:dpa) („DPA”). Pagina arată ce alți furnizori participă la prelucrare, ce face fiecare și unde stau datele. Tabelul A este Lista agreată din Articolul 7.1 al DPA. Tabelul B arată furnizorii care deservesc site-ul și canalele noastre de contact și care nu primesc Documentele încărcate în Serviciu.",
+    versiune: "2026-10-22",
+    introducere: "Pentru Documentele pe care le încărcați în Serviciul 3S, firma dumneavoastră este, de regulă, operatorul datelor, iar Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.) le prelucrează în numele ei, după [Acordul de prelucrare a datelor](cale:dpa) („DPA”). Pagina arată ce alți furnizori participă la prelucrare, ce face fiecare și unde stau datele. Tabelul A este Lista agreată din Articolul 7.1 al DPA. Tabelul B arată furnizorii care deservesc site-ul și canalele noastre de contact și care nu primesc Documentele încărcate în Serviciu.",
     sectiuni: [
       {
         cheie: "a", titlu: "A. Subîmputerniciții care primesc Documentele Clientului (Lista agreată)",

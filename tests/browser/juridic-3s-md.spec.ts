@@ -11,13 +11,14 @@ import { INDEX_JURIDIC } from '../../src/content/juridic/publicare'
 
 /**
  * Paginile juridice ale lui 3s.md (felia juridic-pagini-3s-md), pe COPIA construita si servita cu variabilele
- * aplicatiei 3s.md (`ajutor/copie-3s-md.ts`, profilul `config/profil-3s-md.json`, operatorul-model D2): build-ul
+ * aplicatiei 3s.md (`ajutor/copie-3s-md.ts`, profilul `config/profil-3s-md.json`, operatorul din extras): build-ul
  * real al probelor e cel romanesc, unde paginile EN si RO-MD nu exista.
  *
  * Ce se cere, pe HTML-ul servit (fara JavaScript):
  *   - cele 6 + 6 pagini cu poarta B din `config/juridic-rute.json`: 200, `<html lang>` al editiei, un singur H1;
  *   - hreflang reciproc pe fiecare pereche, cu adresele de pe domeniul profilului si `x-default` = pagina EN;
- *   - marcajul modelului D2 (`config/model-d2.json`) pe informatiile legale, in limba paginii;
+ *   - datele firmei din extras pe informatiile legale, in limba paginii (echivalentele din
+ *     `src/content/juridic/md/echivalente.json`), fara marcajul modelului D2 de dinainte;
  *   - nicio legatura spre documentele cu poarta C, iar adresele lor raspund 404, cu pagina de negasit EN;
  *   - indexurile `/legal` si `/ro/juridic` (felia editie-juridic, ca `/juridic` pe site-ul romanesc): 200, `lang`
  *     al editiei, un H1, cardurile celor 6 documente B ale limbii, firul pe doua niveluri, nicio legatura spre C.
@@ -29,7 +30,14 @@ import { INDEX_JURIDIC } from '../../src/content/juridic/publicare'
 
 type Document = { en: string; ro: string; poarta: string }
 const CONFIG = JSON.parse(readFileSync(join(RADACINA, 'config', 'juridic-rute.json'), 'utf8')) as { documente: Record<string, Document> }
-const D2 = JSON.parse(readFileSync(join(RADACINA, 'config', 'model-d2.json'), 'utf8')) as { marcaj: { ro: string; en: string } }
+const PROFIL = JSON.parse(readFileSync(join(RADACINA, 'config', 'profil-3s-md.json'), 'utf8')) as {
+  OPERATOR_JSON: { operator: { denumire: string; sediu: string; numar_orc: string } }
+}
+const ECHIV = JSON.parse(readFileSync(join(RADACINA, 'src', 'content', 'juridic', 'md', 'echivalente.json'), 'utf8')) as {
+  en: Record<string, Record<string, string>>
+}
+/** Marcajele modelului D2 de dinainte de extras, lipite la rulare. */
+const MARCAJE_VECHI = ['[' + ['în', 'curs', 'de', 'înregistrare'].join(' ') + ']', '[' + ['pending', 'registration'].join(' ') + ']']
 const ORIGINE = mediuProfil3sMd().SITE_URL.replace(/\/+$/, '')
 
 /**
@@ -134,15 +142,24 @@ for (const [cheie, d] of B) {
   })
 }
 
-test('marcajul modelului D2 pe informatiile legale, in limba paginii', async () => {
+test('datele firmei din extras pe informatiile legale, in limba paginii, fara marcajul D2', async () => {
   const d = CONFIG.documente['informatii-legale']
   const en = (await servit(d.en)).html
   const ro = (await servit(d.ro)).html
-  expect(en).toContain(D2.marcaj.en)
-  expect(ro).toContain(D2.marcaj.ro)
-  // Controlul: marcajul unei limbi nu apare pe pagina celeilalte (proba deosebeste paginile).
-  expect(en).not.toContain(D2.marcaj.ro)
-  expect(ro).not.toContain(D2.marcaj.en)
+  const o = PROFIL.OPERATOR_JSON.operator
+  const sediuEn = ECHIV.en.sediu?.[o.sediu]
+  const denumireEn = ECHIV.en.denumire?.[o.denumire]
+  expect(sediuEn, 'controlul: sediul din profil are echivalent EN').toBeTruthy()
+  expect(denumireEn, 'controlul: denumirea din profil are echivalent EN').toBeTruthy()
+  for (const html of [en, ro]) expect(html).toContain(o.numar_orc)
+  expect(ro).toContain(o.sediu)
+  expect(ro).toContain(o.denumire)
+  expect(en).toContain(sediuEn as string)
+  expect(en).toContain(denumireEn as string)
+  // Controlul: forma unei limbi nu apare pe pagina celeilalte (proba deosebeste paginile).
+  expect(en).not.toContain(o.sediu)
+  expect(ro).not.toContain(sediuEn as string)
+  for (const m of MARCAJE_VECHI) for (const html of [en, ro]) expect(html).not.toContain(m)
 })
 
 for (const { cale, lang } of CAI_C_EDITIE) {

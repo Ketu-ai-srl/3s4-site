@@ -318,9 +318,9 @@ describe('profilul aplicatiei 3s.md (config/profil-3s-md.json)', () => {
     expect(textProfil('SITE_ENV')).toBe('staging')
   })
 
-  it('OPERATOR_JSON: "model":"D2" la radacina, langa operator; operatorul se citeste, e complet si e din familia md', () => {
+  it('OPERATOR_JSON: fara cheia "model" (modelul D2 a iesit la extras); operatorul se citeste, e complet si e din familia md', () => {
     const brut = JSON.parse(textProfil('OPERATOR_JSON')) as Record<string, unknown>
-    expect(brut.model).toBe('D2')
+    expect(Object.keys(brut)).toEqual(['operator'])
     expect(Object.keys(brut.operator as object)).not.toContain('model')
     const operator = citesteOperator(brut, 'OPERATOR_JSON')
     expect(operatorComplet(operator)).toBe(true)

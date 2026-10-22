@@ -1,11 +1,11 @@
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { createElement, type ComponentType } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import modelD2 from '../config/model-d2.json'
+import echivalente from '../src/content/juridic/md/echivalente.json'
 import rute from '../config/juridic-rute.json'
 import { CHEI_ART13, verificaOperatorPentruTexte } from '../src/content/juridic/confidentialitate'
 import { familiePublicata, verificaComutator } from '../src/content/juridic/comutator'
@@ -14,7 +14,7 @@ import { familieDinTara, familieJuridica } from '../src/content/juridic/familie'
 import { grupaPentruCale } from '../src/content/juridic/harta'
 import { contextMd, documentMdBrut, documentPentruSlug, rezolvaLegaturi, texteJuridice } from '../src/content/juridic/index'
 import { MESAJ_S_C, conditiiActive, intrariMasurare, masurareDin, type Masurare } from '../src/content/juridic/masurare'
-import { valoareCamp } from '../src/content/juridic/md/context'
+import { echivalent, valoareCamp } from '../src/content/juridic/md/context'
 import { CHEI_MD, MARCAJ_SECTIUNI_MD, REGISTRU_MD, cheiPublicate, tintaLegatura, type CheieMd } from '../src/content/juridic/md/registru'
 import { META_DOCUMENTE_MD, linieVersiuneMd } from '../src/content/juridic/pagini'
 import { ruteJuridice, ruteJuridiceMd } from '../src/content/juridic/publicare'
@@ -31,7 +31,7 @@ import {
 import TextInLinie from '../src/components/juridic/TextInLinie'
 import CorpDocument, { type CorpDocumentIntrare } from '../src/components/juridic/CorpDocument'
 import type { PaginaContinut } from '../src/content/model/tipuri'
-import type { Operator } from '../src/lib/operator'
+import { citesteOperator, type Operator } from '../src/lib/operator'
 import { caSursa, caleServitaEditiei } from '../src/lib/asezare'
 
 /**
@@ -41,7 +41,7 @@ import { caSursa, caleServitaEditiei } from '../src/lib/asezare'
  * pachetului rezolvate fara oprire. G-MD-02 (cazul pozitiv) sta in `tests/seo-geo-gdpr.test.ts`.
  *
  * FIXTURILE se asambleaza la RULARE: operatorul de proba e modelul `OPERATOR_JSON` al pachetului
- * juridic (3S Demerzel SRL, cu marcajul D2 pe cele trei campuri ale extrasului), compus aici din bucati;
+ * juridic, cu datele din extrasul din Registrul de stat (decizia 84), compus aici din bucati;
  * tiparele pe care le vaneaza probele (acoladele duble, marcajele de data) se lipesc tot din bucati.
  */
 
@@ -61,17 +61,25 @@ const DOSAR_MD = join(RADACINA, 'src', 'content', 'juridic', 'md')
 const MODULE_MD = readdirSync(DOSAR_MD).filter((f) => /\.(ro|en)\.ts$/.test(f))
 const sursa = (f: string) => readFileSync(join(DOSAR_MD, f), 'utf8')
 
-const D2 = modelD2.marcaj.ro
+const IDNO = ['1026', '0231', '58396'].join('')
+const SEDIU_RO = ['mun. Chișinău', 'Republica Moldova'].join(', ')
+/** Denumirea scurta a firmei, cu ghilimelele limbii (decizia 84). */
+const SCURT: Record<LimbaJuridica, string> = { ro: '„Demerzel” S.R.L.', en: '“Demerzel” S.R.L.' }
+/** Prima mentiune din fiecare document: forma completa (RO) sau forma cu explicatia (EN). */
+const LUNG: Record<LimbaJuridica, string> = {
+  ro: 'Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.)',
+  en: '“Demerzel” S.R.L., a limited liability company registered in the Republic of Moldova',
+}
 
 /** Operatorul-model al pachetului juridic, asamblat la rulare. */
 function operatorModel(extra: Partial<Operator> = {}): Operator {
   return {
-    denumire: ['3S', 'Demerzel', 'SRL'].join(' '),
-    sediu: D2,
+    denumire: ['„Demerzel”', 'S.R.L.'].join(' '),
+    sediu: SEDIU_RO,
     email: ['contact', ['3s', 'md'].join('.')].join('@'),
     telefon: ['+373', '68', '055', '599'].join(' '),
-    numar_orc: D2,
-    cod_fiscal: D2,
+    numar_orc: IDNO,
+    cod_fiscal: IDNO,
     tara: ['Republica', 'Moldova'].join(' '),
     dpo: '',
     ...extra,
@@ -102,7 +110,7 @@ function siruri(d: DocumentJuridic): string[] {
 }
 
 // ---------------------------------------------------------------------------------------------
-// A. Familia si modelul D2
+// A. Familia si valorile operatorului pe limba
 // ---------------------------------------------------------------------------------------------
 
 describe('familia textelor dupa tara operatorului', () => {
@@ -121,16 +129,18 @@ describe('familia textelor dupa tara operatorului', () => {
     expect(() => verificaOperatorPentruTexte(operatorModel({ email: '' }), sursaMediu)).toThrow(new RegExp('email din ' + sursaMediu))
   })
 
-  it('D2: valoareCamp da marcajul limbii numai pe campurile admise si numai pe marcajul exact (NFC)', () => {
-    expect(valoareCamp(operatorModel(), 'sediu', 'en')).toBe(modelD2.marcaj.en)
-    expect(valoareCamp(operatorModel(), 'numar_orc', 'ro')).toBe(D2)
-    expect(valoareCamp(operatorModel({ cod_fiscal: D2.normalize('NFD') }), 'cod_fiscal', 'en')).toBe(modelD2.marcaj.en)
-    // Martori negativi: camp neadmis, marcaj fara diacritice, valoare reala
-    expect(valoareCamp(operatorModel({ denumire: D2 }), 'denumire', 'en')).toBe(D2)
-    const faraDiacritice = D2.normalize('NFD').replace(/[̀-ͯ]/g, '')
+  it('valoareCamp: echivalentul limbii din echivalente.json, pe camp si pe valoarea exacta (NFC); romana ramane valoarea din extras', () => {
+    const sediuEn = echivalente.en.sediu[SEDIU_RO as keyof typeof echivalente.en.sediu]
+    expect(sediuEn).toBe(['Chișinău', 'Republic of Moldova'].join(', '))
+    expect(valoareCamp(operatorModel(), 'sediu', 'en')).toBe(sediuEn)
+    expect(valoareCamp(operatorModel(), 'sediu', 'ro')).toBe(SEDIU_RO)
+    expect(valoareCamp(operatorModel({ sediu: SEDIU_RO.normalize('NFD') }), 'sediu', 'en')).toBe(sediuEn)
+    expect(valoareCamp(operatorModel(), 'numar_orc', 'en')).toBe(IDNO)
+    // Martori negativi: alt camp cu aceeasi valoare, valoare fara diacritice, valoare fara echivalent
+    expect(echivalent('tara', SEDIU_RO, 'en')).toBeNull()
+    const faraDiacritice = SEDIU_RO.normalize('NFD').replace(/[̀-ͯ]/g, '')
     expect(valoareCamp(operatorModel({ sediu: faraDiacritice }), 'sediu', 'en')).toBe(faraDiacritice)
-    const idno = ['100', '360', '000', '0000'].join('')
-    expect(valoareCamp(operatorModel({ numar_orc: idno }), 'numar_orc', 'en')).toBe(idno)
+    expect(valoareCamp(operatorModel({ sediu: 'Bălți' }), 'sediu', 'en')).toBe('Bălți')
   })
 
   it('01, sectiunea 1: eticheta registrului e IDNO, iar celula lui vine din operator', () => {
@@ -138,7 +148,7 @@ describe('familia textelor dupa tara operatorului', () => {
       const tabel = documentMdBrut('informatii-legale', operatorModel(), limba, S0).sectiuni[0].blocuri.find((b) => b.tabel)?.tabel
       if (!tabel) throw new Error('01 fara tabelul din sectiunea 1')
       const rand = tabel.randuri.find((r) => typeof r[0] === 'string' && r[0].includes('(IDNO)'))
-      expect(rand?.[1], limba).toBe(modelD2.marcaj[limba])
+      expect(rand?.[1], limba).toBe(IDNO)
       const idno = ['100', '360', '000', '0000'].join('')
       const cuIdno = documentMdBrut('informatii-legale', operatorModel({ numar_orc: idno }), limba, S0).sectiuni[0].blocuri.find((b) => b.tabel)?.tabel
       expect(cuIdno?.randuri.find((r) => r[0] === rand?.[0])?.[1], limba).toBe(idno)
@@ -720,7 +730,7 @@ describe('Politica: datele verificarii (s. 6) si jurnalul dupa incetare (s. 3, 4
     if (!randuri('s7').some((r) => JURNAL[limba].test(r[0] ?? ''))) lipsuri.push('s7')
     if (!randuri('s3').some((r) => JURNAL[limba].test(r[1] ?? '') && INTERES[limba].test(r[3] ?? ''))) lipsuri.push('s3')
     if (!elemente('s4').some((e) => JURNAL[limba].test(e) && NOTIFICARI[limba].test(e))) lipsuri.push('s4')
-    if (!elemente('s15').some((e) => JURNAL[limba].test(e) && e.includes('3S Demerzel SRL') && INTERES[limba].test(e))) lipsuri.push('s15')
+    if (!elemente('s15').some((e) => JURNAL[limba].test(e) && e.includes(SCURT[limba]) && INTERES[limba].test(e))) lipsuri.push('s15')
     return lipsuri
   }
 
@@ -865,15 +875,10 @@ describe('felia 144: adresarea "tu" in documentele juridice romanesti publice (d
   })
 
   it('campul versiune al documentelor schimbate de felie e data commitului; afirmatiile datate din Politica s. 6 raman', () => {
-    // Romana: cele cinci documente trecute la "tu", plus Termenii (pasajul catre cititor, legatura, indicele). Engleza:
-    // numai documentele atinse de itemii 2 b-d; IA si Informatii legale in engleza nu se schimba, deci data lor ramane.
-    const SCHIMBATE: Record<LimbaJuridica, CheieMd[]> = {
-      ro: ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'inteligenta-artificiala', 'informatii-legale', 'termeni'],
-      en: ['confidentialitate', 'cookie-uri', 'notificare-si-actiune', 'termeni'],
-    }
+    // Felia 156 (decizia 84, datele din extras) schimba toate cele 16 documente, deci toate poarta data ei. Publicatele se
+    // citesc din texte, nepublicatele (DPA, subimputernicitii) din modul.
     for (const limba of ['ro', 'en'] as const) {
-      const texte = texteJuridice(operatorModel(), { limba, masurare: S0 })
-      for (const k of SCHIMBATE[limba]) expect(texte?.get(k)?.versiune, limba + ' ' + k).toBe('2026-10-07')
+      for (const k of CHEI_MD) expect(documentMdBrut(k, operatorModel(), limba, S0).versiune, limba + ' ' + k).toBe('2026-10-22')
     }
     const conf = texteJuridice(operatorModel(), { limba: 'ro', masurare: S0 })?.get('confidentialitate') as DocumentJuridic
     const s6 = conf.sectiuni.filter((s) => s.cheie === 's6')
@@ -972,5 +977,112 @@ describe('felia 144: itemii juridici din testul 3s.com.ro (pct. 97)', () => {
     const extern = html('[Informații legale](' + PREFIX_LEGATURA_RO + 'https://exemplu.test/ro) si [Legal](https://exemplu.test/en)')
     expect(extern).toContain('<a href="https://exemplu.test/ro" lang="ro" hrefLang="ro-MD">Informații legale</a>')
     expect(extern).toContain('<a href="https://exemplu.test/en">Legal</a>')
+  })
+})
+
+// ---------------------------------------------------------------------------------------------
+// Felia 156: operatorul inregistrat (decizia 84). Marcajul modelului D2 si vechea denumire nu mai apar nicaieri in
+// src si config; fiecare document numeste firma intai in forma completa, apoi in cea scurta, cu ghilimelele limbii.
+// ---------------------------------------------------------------------------------------------
+
+/** Acele, lipite la rulare: proba nu poarta intreg ce vaneaza. */
+const ACE_VECHI = [
+  '[' + ['în', 'curs', 'de', 'înregistrare'].join(' ') + ']',
+  ['în', 'curs', 'de', 'înregistrare'].join(' '),
+  ['pending', 'registration'].join(' '),
+  ['3S', 'Demerzel'].join(' '),
+]
+
+/** Fisierele text din `dosare` (relative la `radacina`) care contin un ac vechi: [{fisier, ac}], fara diacritice ignorate. */
+export function aparitiiVechi(radacina: string, dosare: readonly string[] = ['src', 'config']): { fisier: string; ac: string }[] {
+  const gasite: { fisier: string; ac: string }[] = []
+  const umbla = (rel: string) => {
+    const abs = join(radacina, rel)
+    if (statSync(abs).isDirectory()) {
+      for (const f of readdirSync(abs)) umbla(rel + '/' + f)
+      return
+    }
+    if (!/\.(ts|tsx|js|mjs|json|md|css|txt)$/.test(rel)) return
+    const text = readFileSync(abs, 'utf8').normalize('NFC').toLowerCase()
+    for (const ac of ACE_VECHI) if (text.includes(ac.normalize('NFC').toLowerCase())) gasite.push({ fisier: rel, ac })
+  }
+  for (const d of dosare) umbla(d)
+  return gasite
+}
+
+describe('felia 156: operatorul inregistrat (decizia 84)', () => {
+  // PROBA_156_RADACINA: radacina scanata, implicit depozitul. Mutantul se planteaza pe o COPIE si se scaneaza copia.
+  const RADACINA_SCAN = process.env.PROBA_156_RADACINA || RADACINA
+
+  it('zero marcaje D2 si zero denumirea veche in src si config', () => {
+    expect(aparitiiVechi(RADACINA_SCAN)).toEqual([])
+  })
+
+  it('controlul: acelasi scaner prinde fiecare ac plantat pe o COPIE a modulelor si a configurarii', () => {
+    const copie = mkdtempSync(join(tmpdir(), 'felia-156-'))
+    try {
+      cpSync(join(RADACINA, 'src', 'content', 'juridic', 'md'), join(copie, 'src', 'content', 'juridic', 'md'), { recursive: true })
+      cpSync(join(RADACINA, 'config'), join(copie, 'config'), { recursive: true })
+      expect(aparitiiVechi(copie)).toEqual([])
+      ACE_VECHI.forEach((ac, i) => {
+        const fisier = i % 2 === 0 ? 'src/content/juridic/md/termeni.ro.ts' : 'config/profil-3s-md.json'
+        const cale = join(copie, fisier)
+        const inainte = readFileSync(cale, 'utf8')
+        writeFileSync(cale, inainte + '\n// ' + ac + '\n')
+        expect(aparitiiVechi(copie), ac).toContainEqual({ fisier, ac })
+        writeFileSync(cale, inainte)
+      })
+      // Ac scris descompus (NFD) si cu majuscule: tot prins.
+      const cale = join(copie, 'config', 'profil-3s-com-ro.json')
+      writeFileSync(cale, readFileSync(cale, 'utf8') + ACE_VECHI[0].normalize('NFD').toUpperCase())
+      expect(aparitiiVechi(copie).map((g) => g.fisier)).toContain('config/profil-3s-com-ro.json')
+    } finally {
+      rmSync(copie, { recursive: true, force: true })
+    }
+  })
+
+  it('fiecare document, in fiecare limba: prima mentiune e forma completa, apoi numai forma scurta, cu ghilimelele limbii', () => {
+    for (const cheie of CHEI_MD) {
+      for (const limba of ['ro', 'en'] as const) {
+        const text = siruri(documentMdBrut(cheie, operatorModel(), limba, S0)).join('\n')
+        const eticheta = cheie + ' / ' + limba
+        const prima = text.indexOf('Demerzel')
+        expect(prima, eticheta).toBeGreaterThanOrEqual(0)
+        expect(text.indexOf(LUNG[limba]), eticheta).toBe(prima - LUNG[limba].indexOf('Demerzel'))
+        // Orice mentiune e una din cele doua forme: scoase formele, nu mai ramane niciun Demerzel.
+        expect(text.split(LUNG[limba]).join('').split(SCURT[limba]).join(''), eticheta).not.toContain('Demerzel')
+        const alta: LimbaJuridica = limba === 'ro' ? 'en' : 'ro'
+        expect(text, eticheta).not.toContain(SCURT[alta])
+      }
+    }
+  })
+
+  it('informatii legale RO si EN: IDNO pe IDNO si pe codul fiscal, data inregistrarii, sediul numai ca oras, in limba paginii', () => {
+    const asteptat = {
+      ro: { data: '19 octombrie 2026', sediu: SEDIU_RO },
+      en: { data: 'October 19, 2026', sediu: ['Chișinău', 'Republic of Moldova'].join(', ') },
+    }
+    for (const limba of ['ro', 'en'] as const) {
+      const text = siruri(documentMdBrut('informatii-legale', operatorModel(), limba, S0)).join('\n')
+      expect(text.split(IDNO).length - 1, limba).toBe(2)
+      expect(text, limba).toContain(asteptat[limba].data)
+      expect(text, limba).toContain(asteptat[limba].sediu)
+      expect(text, limba).toContain(LUNG[limba])
+    }
+  })
+
+  it('ambele profiluri (3s.md si 3s.com.ro): operatorul din OPERATOR_JSON da pe informatiile legale RO si EN IDNO-ul si denumirea', () => {
+    for (const nume of ['profil-3s-md.json', 'profil-3s-com-ro.json']) {
+      const profil = JSON.parse(readFileSync(join(RADACINA, 'config', nume), 'utf8')) as { OPERATOR_JSON: unknown }
+      expect(Object.keys(profil.OPERATOR_JSON as object), nume).toEqual(['operator'])
+      const operator = citesteOperator(profil.OPERATOR_JSON, nume)
+      if (!operator) throw new Error(nume + ': fara operator')
+      expect([operator.numar_orc, operator.cod_fiscal, operator.sediu, operator.denumire], nume).toEqual([IDNO, IDNO, SEDIU_RO, SCURT.ro])
+      for (const limba of ['ro', 'en'] as const) {
+        const text = siruri(documentMdBrut('informatii-legale', operator, limba, S0)).join(' ')
+        expect(text.split(IDNO).length - 1, nume + ' / ' + limba).toBe(2)
+        expect(text, nume + ' / ' + limba).toContain(SCURT[limba])
+      }
+    }
   })
 })

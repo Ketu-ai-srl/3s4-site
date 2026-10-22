@@ -184,11 +184,11 @@ describe('variantele se aleg din cod', () => {
     expect(acasa.paginaAcasa({ ...baza, operator: true }).sectiuni.map((s) => s.cheie)).toContain('cine-opereaza')
     expect(contact.paginaContact(baza).sectiuni.map((s) => s.cheie)).not.toContain('datele-firmei')
     expect(contact.paginaContact({ ...baza, operator: true }).sectiuni.map((s) => s.cheie)).toContain('datele-firmei')
-    // Decizia din OPERATOR_JSON: profilul 3s.md de azi poarta modelul D2, deci nu.
-    expect(PROFIL.OPERATOR_JSON.model).toBe('D2')
-    expect(acasa.operatorInregistrat(JSON.stringify(PROFIL.OPERATOR_JSON))).toBe(false)
-    const faraModel = Object.fromEntries(Object.entries(PROFIL.OPERATOR_JSON).filter(([k]) => k !== 'model'))
-    expect(acasa.operatorInregistrat(JSON.stringify(faraModel))).toBe(true)
+    // Decizia din OPERATOR_JSON: profilul 3s.md poarta datele din extras, fara modelul D2 (decizia 84), deci da.
+    expect('model' in PROFIL.OPERATOR_JSON).toBe(false)
+    expect(acasa.operatorInregistrat(JSON.stringify(PROFIL.OPERATOR_JSON))).toBe(true)
+    // Controlul: aceeasi configurare cu cheia `model` la radacina (forma de dinaintea extrasului) nu e inregistrata.
+    expect(acasa.operatorInregistrat(JSON.stringify({ ...PROFIL.OPERATOR_JSON, model: 'D2' }))).toBe(false)
     expect(acasa.operatorInregistrat(JSON.stringify({ operator: null }))).toBe(false)
     expect(acasa.operatorInregistrat(undefined)).toBe(false)
     expect(acasa.operatorInregistrat('')).toBe(false)

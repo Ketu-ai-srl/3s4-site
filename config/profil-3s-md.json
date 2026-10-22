@@ -1,18 +1,17 @@
 {
-  "_nota": "Variabilele de construire ale aplicatiei 3s.md (site-ul international: engleza la radacina, romana pentru Republica Moldova sub /ro), folosite de jobul CI \"Profil 3s.md\" si de copia din tests/browser/ajutor/copie-3s-md.ts. Cheile care incep cu _ nu sunt variabile; o valoare obiect se scrie in mediu ca JSON. OPERATOR_JSON e modelul pachetului juridic: 3S Demerzel SRL, in curs de inregistrare, cu campurile D2 purtand marcajul din config/model-d2.json; \"model\": \"D2\" sta la radacina JSON-ului, langa \"operator\", fiindca src/lib/operator.ts refuza orice cheie necunoscuta in obiectul operatorului. SITE_ENV ramane staging pana la decizia de indexare a domeniului. SITE_ALTERNATE e lista comuna cu config/profil-3s-com-ro.json (varianta ro-RO e romana de la radacina lui 3s.com.ro): asa o construiesc CI-ul si probele. In mediul aplicatiei 3s.md (cea care serveste domeniul) lista ramane FARA ro-RO pana cand https://3s.com.ro raspunde 200; altfel paginile 3s.md ar trimite hreflang spre un domeniu care nu raspunde. Perechea ro-RO se adauga acolo numai dupa ce domeniul raspunde, la legarea lui. CANALE_JSON are valoarea pusa pe aplicatia 3s.md in Coolify: formulare oprite, WhatsApp si telefon, e-mailul gol pana cand adresa domeniului poate raspunde.",
+  "_nota": "Variabilele de construire ale aplicatiei 3s.md (site-ul international: engleza la radacina, romana pentru Republica Moldova sub /ro), folosite de jobul CI \"Profil 3s.md\" si de copia din tests/browser/ajutor/copie-3s-md.ts. Cheile care incep cu _ nu sunt variabile; o valoare obiect se scrie in mediu ca JSON. OPERATOR_JSON are datele firmei din extrasul din Registrul de stat (decizia 84): denumirea scurta, sediul publicat numai ca localitate, IDNO pe numar_orc si pe cod_fiscal (in Republica Moldova IDNO tine loc de amandoua). Fara cheia \"model\": modelul D2 a iesit odata cu extrasul, iar poarta juridica opreste orice \"model\" la radacina. Paginile EN arata echivalentele din src/content/juridic/md/echivalente.json. SITE_ENV ramane staging pana la decizia de indexare a domeniului. SITE_ALTERNATE e lista comuna cu config/profil-3s-com-ro.json (varianta ro-RO e romana de la radacina lui 3s.com.ro): asa o construiesc CI-ul si probele. In mediul aplicatiei 3s.md (cea care serveste domeniul) lista ramane FARA ro-RO pana cand https://3s.com.ro raspunde 200; altfel paginile 3s.md ar trimite hreflang spre un domeniu care nu raspunde. Perechea ro-RO se adauga acolo numai dupa ce domeniul raspunde, la legarea lui. CANALE_JSON are valoarea pusa pe aplicatia 3s.md in Coolify: formulare oprite, WhatsApp si telefon, e-mailul gol pana cand adresa domeniului poate raspunde.",
   "SITE_URL": "https://3s.md",
   "SITE_ENV": "staging",
   "SITE_EDITII": "en,ro-MD",
   "SITE_ALTERNATE": "en=https://3s.md,ro-MD=https://3s.md/ro,ro-RO=https://3s.com.ro,x-default=https://3s.md",
   "OPERATOR_JSON": {
-    "model": "D2",
     "operator": {
-      "denumire": "3S Demerzel SRL",
-      "sediu": "[în curs de înregistrare]",
+      "denumire": "„Demerzel” S.R.L.",
+      "sediu": "mun. Chișinău, Republica Moldova",
       "email": "contact@3s.md",
       "telefon": "+373 60 055 599",
-      "numar_orc": "[în curs de înregistrare]",
-      "cod_fiscal": "[în curs de înregistrare]",
+      "numar_orc": "1026023158396",
+      "cod_fiscal": "1026023158396",
       "tara": "Republica Moldova",
       "dpo": ""
     }

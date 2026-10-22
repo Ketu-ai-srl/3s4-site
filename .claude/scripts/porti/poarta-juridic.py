@@ -12,8 +12,10 @@ CE VERIFICA, cu codurile stabile din documentul de porti:
         HTML-ul livrat. Familia SEE: pe FIECARE pagina publica. Familia `md` (tara Republica
         Moldova, lista TARI_MD): pe pagina de informatii legale din fiecare limba publicata, iar pe
         fiecare pagina o legatura spre informatiile legale in romana (Legea 284/2004 art. 12).
-        Modelul D2 (`"model": "D2"` la radacina configurarii): campurile din config/model-d2.json
-        care poarta EXACT marcajul decis ies AVERT pe orice mediu. Cu `"operator": null` regula nu
+        Pe pagina in alta limba decat romana un camp se cauta ca ECHIVALENTUL lui din
+        src/content/juridic/md/echivalente.json, cand exista pentru valoarea exacta (acelasi fisier
+        din care il scrie site-ul). Modelul D2 a iesit la extras (decizia 84, 22.10.2026): o cheie
+        `"model"` la radacina configurarii OPRESTE pe orice mediu. Cu `"operator": null` regula nu
         cere nimic (vezi mai jos)
   J-01  marcajele `[...]` vizibile pe paginile juridice construite, in afara legaturilor si a
         registrului MARCAJE_ADMISE (AVERT pe staging, OPRESTE la productie); acoladele duble in
@@ -144,8 +146,8 @@ LA ROSU: CE AI VOIE SA EDITEZI
       care arata ca fisierul exceptat nu contacteaza tertul inainte de accept.
       MARCAJE_ADMISE prin ADAUGARE, numai cu decizia citata pe rand (marcajul reprezentantului
       in UE: numai cu confirmarea scrisa a juristului). Scoaterea unei intrari strange regula.
-      `"model"` iese din configurare in ziua extrasului; marcajele din config/model-d2.json nu
-      se schimba din configurarea unui domeniu.
+      Echivalentele din src/content/juridic/md/echivalente.json, prin ADAUGARE, numai pentru
+      valori din extras; scoaterea cheii `"model"` nu se negociaza (modelul D2 a iesit, decizia 84).
   NU  RUTE_JURIDICE, RUTA_COOKIE, MARCAJ_BANNER, CAMPURI_IDENTITATE, TIPAR_SUBSTITUENT, temeiurile
       citate, gradarea pe mediu, stergerea unui nume din NUME_TERTI, REL_FARA_INCARCARE prin
       adaugare, TARI_MD (o urmeaza pe cea din familie.ts), controale().
@@ -330,12 +332,13 @@ TEMEI_IDENTITATE_MD = 'Legea 284/2004 a Republicii Moldova, art. 12 alin. (1) li
 TEMEI_LEGATURA_MD = ('Legea 284/2004 art. 12: datele prestatorului accesibile direct si permanent; pe 3s.md '
                      'datele stau numai pe pagina de informatii legale (decizia 5 a owner-ului, 30.09.2026), '
                      'deci fiecare pagina publica trimite la ea, in romana')
-MESAJ_D2 = ('poarta marcajul decis; riscul Legii 284/2004 art. 12 e acceptat de owner (plan 3s-md §0, D2)')
+TEMEI_MODEL_RETRAS = ('modelul D2 (marcajul pe campurile inca inexistente) a iesit odata cu extrasul din Registrul '
+                      'de stat (decizia 84 a owner-ului, 22.10.2026); datele vin din extras, ' + TEMEI_IDENTITATE_MD)
 
 # Variabila de mediu cu operatorul domeniului, aceeasi schema ca fisierul (src/lib/operator-mediu.ts).
 VARIABILA_OPERATOR = 'OPERATOR_JSON'
-# Modelul D2: campurile care pot purta marcajul si marcajele pe limba (citit si de site).
-CALE_MODEL_D2 = ('config', 'model-d2.json')
+# Echivalentele pe limba ale valorilor operatorului (citit si de site, src/content/juridic/md/context.ts).
+CALE_ECHIVALENTE = ('src', 'content', 'juridic', 'md', 'echivalente.json')
 # Adresele documentelor familiei `md`, pe limba, si poarta la care se publica fiecare.
 CALE_RUTE_MD = ('config', 'juridic-rute.json')
 ORDINE_PORTI = ('B', 'C')
@@ -761,33 +764,43 @@ def stare_operator(radacina, mediu_proces=None):
     return 'numit', cfg['operator'], sursa, cfg
 
 
-def model_d2(radacina, cfg, sursa):
-    """Modelul D2 din configurare: ("model" la RADACINA, langa "operator"; nu in obiectul firmei, unde
-    src/lib/operator.ts il refuza drept camp necunoscut). Intoarce (date_model | None, constatari)."""
-    if not isinstance(cfg, dict) or 'model' not in cfg:
-        return None, []
-    if cfg['model'] != 'D2':
-        return None, [(OPRESTE, 'L-01', sursa + ': model necunoscut ' + json.dumps(cfg['model'], ensure_ascii=False)
-                       + ' (singura valoare admisa: "D2"; configurarea poate doar aprinde modelul, nu il poate '
-                       'schimba) | TEMEI: ' + TEMEI_IDENTITATE_MD)]
-    model, motiv = incarca_json(radacina, CALE_MODEL_D2)
-    ok_forma = (isinstance(model, dict) and isinstance(model.get('campuri'), list)
-                and isinstance(model.get('marcaj'), dict)
-                and all(isinstance(model['marcaj'].get(l), str) and model['marcaj'][l].strip() for l in ('ro', 'en')))
-    if not ok_forma:
-        return None, [(OPRESTE, 'L-01', sursa + ': "model": "D2", dar ' + (motiv or '/'.join(CALE_MODEL_D2)
-                       + ' nu are forma asteptata (campuri, marcaj.ro, marcaj.en)') + ' | TEMEI: ' + TEMEI_IDENTITATE_MD)]
-    return model, []
+def model_retras(cfg, sursa):
+    """Cheia "model" la RADACINA configurarii (acolo statea modelul D2) OPRESTE pe orice mediu, oricare ar fi
+    valoarea ei: modelul a iesit la extras, iar o configurare care il mai poarta e una veche."""
+    if isinstance(cfg, dict) and 'model' in cfg:
+        return [(OPRESTE, 'L-01', sursa + ': cheia "model" (' + json.dumps(cfg['model'], ensure_ascii=False)
+                 + ') nu mai e admisa; se scoate din configurare | TEMEI: ' + TEMEI_MODEL_RETRAS)]
+    return []
+
+
+def echivalente_md(radacina):
+    """src/content/juridic/md/echivalente.json, validat: ({limba: {camp: {valoare ro: echivalent}}}, None) sau
+    (None, motiv). Cheile care incep cu _ sunt note."""
+    date, motiv = incarca_json(radacina, CALE_ECHIVALENTE)
+    if date is None:
+        return None, motiv
+    if not isinstance(date, dict):
+        return None, '/'.join(CALE_ECHIVALENTE) + ' nu e un obiect'
+    rezultat = {}
+    for limba, campuri in date.items():
+        if limba.startswith('_'):
+            continue
+        if not isinstance(campuri, dict) or not all(
+                isinstance(v, dict) and all(isinstance(a, str) and isinstance(b, str) and b.strip() for a, b in v.items())
+                for v in campuri.values()):
+            return None, '/'.join(CALE_ECHIVALENTE) + ': limba ' + limba + ' nu are forma {camp: {valoare: echivalent}}'
+        rezultat[limba] = dict((camp, dict((nfc(a), b) for a, b in v.items())) for camp, v in campuri.items())
+    return rezultat, None
 
 
 def nfc(text):
     return unicodedata.normalize('NFC', str(text)).strip()
 
 
-def este_marcaj_d2(model, camp, valoare):
-    """Campul e unul admis de model si valoarea, NFC si fara spatii la capete, e EXACT marcajul romanesc."""
-    return model is not None and camp in model['campuri'] and isinstance(valoare, str) \
-        and nfc(valoare) == nfc(model['marcaj']['ro'])
+def valoare_pe_limba(echivalente, limba, camp, valoare):
+    """Ce trebuie sa apara pe pagina limbii: echivalentul valorii EXACTE (NFC, fara spatii la capete), daca
+    exista; altfel valoarea din configurare."""
+    return echivalente.get(limba, {}).get(camp, {}).get(nfc(valoare), valoare)
 
 
 def are_legatura(text, cale):
@@ -810,8 +823,7 @@ def verifica_identitate(radacina, construite, sever_prezenta, mediu_proces=None)
     exista. Cu operator null nu se cere nimic (decizia owner-ului, TEMEI_FARA_OPERATOR)."""
     g = []
     stare, date, rel, cfg = stare_operator(radacina, mediu_proces)
-    model, gm = model_d2(radacina, cfg, rel)
-    g.extend(gm)
+    g.extend(model_retras(cfg, rel))
     if stare == 'null':
         return g
     if stare == 'lipsa':
@@ -826,12 +838,6 @@ def verifica_identitate(radacina, construite, sever_prezenta, mediu_proces=None)
     md = familie_din_tara(date.get('tara')) == 'md'
     temei = TEMEI_IDENTITATE_MD if md else TEMEI_IDENTITATE
     goale = [camp for camp in CAMPURI_IDENTITATE if loc_gol(date.get(camp))]
-    # Exceptia D2: campul admis care poarta EXACT marcajul decis e AVERT pe orice mediu. Orice alt loc
-    # gol (alt text intre paranteze, marcajul pe alt camp, fara diacritice, fara "model") ramane gradat.
-    cu_marcaj = [camp for camp in goale if este_marcaj_d2(model, camp, date.get(camp))]
-    for camp in cu_marcaj:
-        g.append((AVERT, 'L-01', 'model D2: ' + camp + ' ' + MESAJ_D2))
-    goale = [camp for camp in goale if camp not in cu_marcaj]
     if goale:
         g.append((sever_prezenta, 'L-01', rel + ': operatorul e numit, dar are loc gol la ' + ', '.join(goale)
                   + ' | TEMEI: ' + temei))
@@ -844,7 +850,7 @@ def verifica_identitate(radacina, construite, sever_prezenta, mediu_proces=None)
                   'in care sa verific ca apar pe fiecare pagina. Ruleaza pnpm build'))
         return g
     if md:
-        g.extend(verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, model))
+        g.extend(verifica_identitate_md(radacina, construite, sever_prezenta, date, rel))
         return g
     for nume, text in construite:
         n = normalizeaza(text)
@@ -856,12 +862,15 @@ def verifica_identitate(radacina, construite, sever_prezenta, mediu_proces=None)
     return g
 
 
-def verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, model):
+def verifica_identitate_md(radacina, construite, sever_prezenta, date, rel):
     """L-01 in familia `md`: datele pe pagina de informatii legale din FIECARE limba publicata (campul
-    cu marcajul D2 se cauta ca marcajul limbii paginii), iar pe fiecare pagina publica o legatura spre
-    informatiile legale in romana. Cererea "pe fiecare pagina" ramane numai familiei SEE."""
+    cu echivalent in limba paginii se cauta ca echivalentul lui), iar pe fiecare pagina publica o legatura
+    spre informatiile legale in romana. Cererea "pe fiecare pagina" ramane numai familiei SEE."""
     rute, motiv = rute_md(radacina)
     if rute is None:
+        return [(OPRESTE, 'L-01', 'familia md: ' + motiv + ' | TEMEI: ' + TEMEI_IDENTITATE_MD)]
+    echivalente, motiv = echivalente_md(radacina)
+    if echivalente is None:
         return [(OPRESTE, 'L-01', 'familia md: ' + motiv + ' | TEMEI: ' + TEMEI_IDENTITATE_MD)]
     documente, _ = rute
     g = []
@@ -875,7 +884,7 @@ def verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, mode
             continue
         n = normalizeaza(text)
         for camp in CAMPURI_IDENTITATE:
-            valoare = model['marcaj'][limba] if este_marcaj_d2(model, camp, date.get(camp)) else date[camp]
+            valoare = valoare_pe_limba(echivalente, limba, camp, date[camp])
             if normalizeaza(str(valoare)) not in n:
                 g.append((OPRESTE, 'L-01', html_pentru_cale(cale) + ': campul ' + camp + ' din ' + rel
                           + ' nu apare pe pagina de informatii legale (' + limba + ') | TEMEI: ' + TEMEI_IDENTITATE_MD))
@@ -890,17 +899,17 @@ def verifica_identitate_md(radacina, construite, sever_prezenta, date, rel, mode
 # --- J-01: marcajele din corpul paginilor juridice ----------------------------------------------
 # Un text intre paranteze drepte pe o pagina juridica publicata e o informatie lipsa scrisa ca text
 # (README-ul pachetului juridic, sectiunea 5). Se publica numai marcajele din registrul de mai jos,
-# fiecare cu decizia lui pe rand; marcajul D2 (din config/model-d2.json) numai cu "model": "D2".
+# fiecare cu decizia lui pe rand. Marcajul D2 nu mai e admis: modelul a iesit la extras (decizia 84).
 # NU intra: N23 (tara gazdei, conditie de fapt a portii B), marcajul reprezentantului in UE (P-22 tine
 # de poarta B; intra numai cu confirmarea scrisa a juristului), data publicarii (se inlocuieste la
 # publicare). Adaugarea se face numai cu decizia citata pe rand; scoaterea unei intrari doar strange regula.
 # Forma "de publicat inainte de primul client" (si perechea ei engleza) a fost admisa pana la felia 132,
 # cand cele trei aparitii din termeni au devenit text contractual (decizia 74 a owner-ului: fara note de
 # lucru pe paginile juridice publice). De atunci e un marcaj fara decizie ca oricare altul: martorii din
-# controale() si proba portii o cer prinsa, pe ambele limbi. Registrul e gol, iar D2 ramane admis prin model.
+# controale() si proba portii o cer prinsa, pe ambele limbi. Registrul e gol.
 MARCAJE_ADMISE = {}
 TEMEI_MARCAJ = ('un marcaj pe o pagina juridica publicata spune ca informatia lipseste; se publica numai '
-                'marcajele cu decizie (MARCAJE_ADMISE si marcajul D2 cu modelul aprins)')
+                'marcajele cu decizie (MARCAJE_ADMISE)')
 TEMEI_ACOLADE = 'un token de compunere nerezolvat in pagina livrata (acolade duble) e text stricat, nu informare'
 
 
@@ -944,13 +953,8 @@ TIPAR_NOTA_NUMEROTATA = re.compile(r'\[(N\d+\b[^\[\]]*)\](?!\()')
 
 
 def marcaje_admise(radacina, mediu_proces=None):
-    """Registrul J-01 normalizat NFC: MARCAJE_ADMISE si, cu modelul aprins, marcajul D2 in ambele limbi."""
-    _, _, rel, cfg = stare_operator(radacina, mediu_proces)
-    model, _ = model_d2(radacina, cfg, rel)
+    """Registrul J-01 normalizat NFC: numai MARCAJE_ADMISE (modelul D2 a iesit la extras, decizia 84)."""
     admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())
-    if model is not None:
-        for limba in ('ro', 'en'):
-            admise[nfc(model['marcaj'][limba])] = 'modelul D2 (plan 3s-md §0, D2)'
     return admise
 
 
@@ -1563,10 +1567,13 @@ def main():
         else:
             print('familie juridica: SEE sau nedeclarata (tara ' + json.dumps(date.get('tara'), ensure_ascii=False)
                   + '); datele se cer pe fiecare pagina | TEMEI: ' + TEMEI_IDENTITATE)
-    if isinstance(cfg, dict) and cfg.get('model') == 'D2':
-        # Linie separata la fiecare rulare: verdele nu inseamna "firma e identificata".
-        print('model D2: aprins din ' + sursa + '; campurile cu marcajul decis ies AVERT pe orice mediu, '
-              'firma NU e identificata din extras; modelul iese din configurare in ziua extrasului')
+    if stare == 'numit' and familie_din_tara(date.get('tara')) == 'md':
+        # Linie separata la fiecare rulare: ce valori cauta L-01 pe paginile in alta limba decat romana.
+        echiv, _ = echivalente_md(radacina)
+        print('echivalente: ' + ('; '.join(limba + ' ' + ', '.join(sorted(c for c in campuri if
+              nfc(str(date.get(c, ''))) in campuri[c])) for limba, campuri in sorted(echiv.items()))
+              if echiv is not None else 'NECITITE') + ' (campurile operatorului cu echivalent, din '
+              + '/'.join(CALE_ECHIVALENTE) + ')')
     cu_banner = pagini_cu_banner([(c, citeste(c)) for c in fisiere_construite(radacina)])
     if cu_banner:
         print('L-15 /' + RUTA_COOKIE + ': se aplica - bannerul de consimtamant e in ' + str(len(cu_banner))

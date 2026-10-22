@@ -13,7 +13,7 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
     cheie: "cookie-uri",
     limba: "ro",
     titlu: "Politica de cookie-uri",
-    versiune: "2026-10-07",
+    versiune: "2026-10-22",
     // Fara masurare (s0), introducerea nu promite masurarea vizitelor si nici retragerea unui acord pe care pagina nu-l cere.
     introducere: "Aici afli ce informații stochează sau citește site-ul " + c.domeniu + " în browserul tău (cookie-uri și stocare locală)" + (c.active.has("s0") ? " și cine primește datele" : ", cum măsurăm vizitele, cine primește datele și cum te poți răzgândi") + ". Datele operatorului sunt în [Informații legale](cale:informatii-legale), iar modul în care prelucrăm datele personale, cu drepturile tale complete, în [Politica de confidențialitate](cale:confidentialitate).",
     sectiuni: [
@@ -68,7 +68,7 @@ export default function cookieUriRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s5", titlu: "5. Punctul de contact",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Pentru orice întrebare despre cookie-uri scrie la " + c.contact.email + ", adresa operatorului 3S Demerzel SRL."] },
+          { jurisdictie: null, paragrafe: ["Pentru orice întrebare despre cookie-uri scrie la " + c.contact.email + ", adresa operatorului, Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.)."] },
         ],
       },
       {

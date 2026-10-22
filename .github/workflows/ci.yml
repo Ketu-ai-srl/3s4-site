@@ -126,11 +126,13 @@ jobs:
           node -e "const p=require('./config/profil-3s-md.json');const fs=require('fs');for(const [k,v] of Object.entries(p)){if(k.startsWith('_'))continue;fs.appendFileSync(process.env.GITHUB_ENV,k+'='+(typeof v==='string'?v:JSON.stringify(v))+'\n')}"
       - run: pnpm build
       # Poarta juridica pe build-ul 3s.md, cu paginile juridice EN si RO-MD construite. Pe staging e blocanta, iar
-      # iesirea trebuie sa poarte linia modelului D2 (operatorul-model din profil a fost citit, nu sarit).
+      # iesirea trebuie sa poarte operatorul din OPERATOR_JSON si linia echivalentelor (operatorul din profil a fost citit,
+      # nu sarit, iar paginile EN se masoara pe denumirea si sediul in engleza).
       - name: Poarta juridica 3s.md (staging, blocant)
         run: |
           python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-staging.log"
-          grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-staging.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
+          grep -q '^operator: numit, din OPERATOR_JSON' "$RUNNER_TEMP/poarta-juridic-staging.log" || { echo "lipseste linia 'operator' din iesirea portii juridice"; exit 1; }
+          grep -q '^echivalente: en denumire, sediu ' "$RUNNER_TEMP/poarta-juridic-staging.log" || { echo "lipseste linia 'echivalente' din iesirea portii juridice"; exit 1; }
       # Pe productie, INFORMATIV pana la poarta B: raman intentionat marcajele reprezentantului UE (asteapta juristul),
       # cum le raporteaza poarta pe productie. Ce alte marcaje mai admite J-01 (forma "[de publicat ...]" si perechea ei
       # engleza) se citeste in registrul MARCAJE_ADMISE din poarta, iar ce note mai raman in textele juridice (N20, N26)
@@ -206,11 +208,12 @@ jobs:
       - run: pnpm build
       # Poarta juridica pe build-ul 3s.com.ro: citeste asezarea din build (.next/required-server-files.json) si cauta
       # documentele familiei md la adresele servite (/juridic/..., /en/legal/...). Iesirea trebuie sa poarte linia
-      # modelului D2 si linia asezarii `ro` (altfel poarta ar masura caile 3s.md pe un arbore care nu le are).
+      # operatorului din OPERATOR_JSON, linia echivalentelor si linia asezarii `ro` (altfel poarta ar masura caile 3s.md pe un arbore care nu le are).
       - name: Poarta juridica 3s.com.ro (staging, blocant)
         run: |
           python .claude/scripts/porti/poarta-juridic.py --mediu staging | tee "$RUNNER_TEMP/poarta-juridic-com-ro.log"
-          grep -q '^model D2: aprins' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'model D2' din iesirea portii juridice"; exit 1; }
+          grep -q '^operator: numit, din OPERATOR_JSON' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'operator' din iesirea portii juridice"; exit 1; }
+          grep -q '^echivalente: en denumire, sediu ' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'echivalente' din iesirea portii juridice"; exit 1; }
           grep -q '^asezare: ro ' "$RUNNER_TEMP/poarta-juridic-com-ro.log" || { echo "lipseste linia 'asezare: ro' din iesirea portii juridice"; exit 1; }
       - run: python .claude/scripts/porti/poarta-seo.py
       # Colectia (ce serveste `next start`, cale cu cale) si perechile 3s.md -> 3s.com.ro (rutele 3s.md trecute prin

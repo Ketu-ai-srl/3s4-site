@@ -1,10 +1,12 @@
 // Contextul din care se compune un document `md` (felia 73): operatorul, limba si starea masurarii, plus
 // ajutoarele folosite de modulele convertite pentru elementele de lista si randurile de tabel conditionate
-// (`daca`, `alese`) si pentru campurile firmei care inca nu exista (`campFirma`, `valoareCamp`, modelul D2).
+// (`daca`, `alese`) si pentru campurile firmei, in limba paginii (`campFirma`, `valoareCamp`).
 //
-// MODELUL D2 (decizia din 30.09.2026): firma are o singura valoare pe camp, in romana, iar pagina EN arata
-// marcajul englezesc. Pana la extrasul din Registrul de stat, campurile admise poarta marcajul D2; lista lor
-// si marcajele stau in `config/model-d2.json`, citit si de poarta juridica.
+// O SINGURA VALOARE PE CAMP, IN ROMANA (din extrasul din Registrul de stat, decizia 84 din 22.10.2026): pagina
+// in alta limba arata echivalentul din `./echivalente.json`, pe camp si pe valoarea exacta (de pilda sediul,
+// scris in romana cu forma municipiului, apare pe paginile EN in forma engleza). Acelasi fisier il citeste
+// poarta juridica (L-01) cand cauta datele pe pagina de informatii legale a limbii. Modelul D2 de dinainte
+// (marcajul pe campurile inca inexistente ale firmei) a iesit odata cu extrasul.
 //
 // Modulele convertite cer campurile prin `campFirma(c, camp)`, nu direct din context: poarta juridica
 // (L-10) cauta un numar urmat de cuvantul care numeste firma la mai putin de 120 de caractere, iar
@@ -16,7 +18,7 @@
 // Raman literale numerele autoritatilor si tabelele de destinatari (furnizorii DNS si ai postei unui domeniu
 // anume), care asteapta juristul.
 
-import modelD2 from "../../../../config/model-d2.json";
+import echivalente from "./echivalente.json";
 import type { CampOperator, Operator } from "@/lib/operator";
 import type { Masurare } from "../masurare";
 import type { ConditieMasurare, LimbaJuridica } from "../tipuri";
@@ -51,24 +53,31 @@ export function alese<T>(elemente: readonly (T | null)[]): T[] {
   return elemente.filter((e): e is T => e !== null);
 }
 
-/** Marcajul D2 al limbii, din `config/model-d2.json`. */
-export function marcajD2(limba: LimbaJuridica): string {
-  return modelD2.marcaj[limba];
-}
-
-/** Campurile carora modelul D2 le admite marcajul. */
-export const CAMPURI_D2: readonly string[] = modelD2.campuri;
+/** Forma de comparatie a unei valori: NFC, fara spatii la capete. */
+const forma = (text: string): string => text.normalize("NFC").trim();
 
 /**
- * Valoarea unui camp al operatorului, in limba paginii: cand valoarea (NFC, fara spatii la capete) e
- * EXACT marcajul D2 romanesc si campul e unul admis, marcajul limbii; altfel valoarea, neschimbata.
+ * Echivalentul valorii romanesti a unui camp in `limba`, din `./echivalente.json`, sau `null` cand nu exista
+ * (romana nu are echivalente: valoarea ei e chiar cea din extras).
+ */
+export function echivalent(camp: CampOperator, valoare: string, limba: LimbaJuridica): string | null {
+  if (limba === "ro") return null;
+  const peLimba = (echivalente as Record<string, unknown>)[limba];
+  const peCamp = typeof peLimba === "object" && peLimba !== null ? (peLimba as Record<string, unknown>)[camp] : undefined;
+  if (typeof peCamp !== "object" || peCamp === null) return null;
+  for (const [ro, tradus] of Object.entries(peCamp as Record<string, unknown>)) {
+    if (typeof tradus === "string" && forma(ro) === forma(valoare)) return tradus;
+  }
+  return null;
+}
+
+/**
+ * Valoarea unui camp al operatorului, in limba paginii: echivalentul din `./echivalente.json` cand exista
+ * pentru valoarea EXACTA (NFC, fara spatii la capete); altfel valoarea, neschimbata.
  */
 export function valoareCamp(operator: Operator, camp: CampOperator, limba: LimbaJuridica): string {
   const valoare = operator[camp];
-  if (CAMPURI_D2.includes(camp) && valoare.normalize("NFC").trim() === marcajD2("ro").normalize("NFC")) {
-    return marcajD2(limba);
-  }
-  return valoare;
+  return echivalent(camp, valoare, limba) ?? valoare;
 }
 
 /** Campul firmei din context, in limba paginii (vezi `valoareCamp`). */

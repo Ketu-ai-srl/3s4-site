@@ -1,0 +1,7 @@
+{
+  "_nota": "Echivalentele in alte limbi ale valorilor din obiectul operatorului (OPERATOR_JSON). Firma are o singura valoare pe camp, in romana, ca in extrasul din Registrul de stat; pagina in alta limba arata echivalentul de aici, pe camp si pe valoarea EXACTA (NFC, fara spatii la capete). O valoare fara echivalent se arata asa cum e. Citit de src/content/juridic/md/context.ts (campFirma) si de poarta juridica (L-01, care cauta pe pagina de informatii legale din limba aceea tocmai echivalentul). Cheile care incep cu _ nu sunt limbi.",
+  "en": {
+    "denumire": { "„Demerzel” S.R.L.": "“Demerzel” S.R.L." },
+    "sediu": { "mun. Chișinău, Republica Moldova": "Chișinău, Republic of Moldova" }
+  }
+}

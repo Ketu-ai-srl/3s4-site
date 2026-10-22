@@ -12,7 +12,7 @@ Trei lucruri se probeaza aici, si ultimele doua sunt cele usor de uitat:
      medii (decizia owner-ului din 24.09.2026, planul valului S4, sectiunea 7).
   4. politica de cookie-uri (L-15) se cere din clipa in care HTML-ul construit
      poarta bannerul de consimtamant, oricare ar fi operatorul; fara banner, nu.
-  5. (felia 72) operatorul din `OPERATOR_JSON`, modelul D2, familia `md` (datele pe pagina de
+  5. (felia 72) operatorul din `OPERATOR_JSON`, cheia `model` retrasa (felia 156), familia `md` (datele pe pagina de
      informatii legale din fiecare limba, legatura spre ea in romana pe fiecare pagina, paginile
      juridice la adresele din `config/juridic-rute.json`), marcajele din paginile juridice (J-01; din
      felia 132 si forma "de publicat", RO si EN, care nu mai e admisa),
@@ -167,7 +167,7 @@ def ruleaza_caz(cheie, poarta=None):
 
 
 # ---------------------------------------------------------------------------------- felia 72
-# Configurarile reale din depozit (modelul D2 si adresele familiei md), citite la RULARE: proba
+# Configurarile reale din depozit (echivalentele pe limba si adresele familiei md), citite la RULARE: proba
 # urmeaza fisierele pe care le citesc si site-ul si poarta, nu o copie scrisa aici.
 
 def config_real(nume):
@@ -175,10 +175,14 @@ def config_real(nume):
         return f.read()
 
 
-MODEL_D2 = json.loads(config_real('model-d2.json'))
 RUTE_MD = json.loads(config_real('juridic-rute.json'))
-D2_RO = MODEL_D2['marcaj']['ro']
-D2_EN = MODEL_D2['marcaj']['en']
+CALE_ECHIV = ('src', 'content', 'juridic', 'md', 'echivalente.json')
+with open(os.path.join(RADACINA, *CALE_ECHIV), encoding='utf-8') as _f:
+    ECHIV_TEXT = _f.read()
+ECHIV = json.loads(ECHIV_TEXT)
+# Marcajul modelului D2 de dinainte de extras, lipit din bucati: proba nu poarta intreg ce vaneaza.
+MARCAJ_VECHI_RO = '[' + ' '.join(['în', 'curs', 'de', 'înregistrare']) + ']'
+MARCAJ_VECHI_EN = '[' + ' '.join(['pending', 'registration']) + ']'
 ORDINE = ('B', 'C')
 PUBLICATE_B = [c for c, d in RUTE_MD['documente'].items()
                if ORDINE.index(d['poarta']) <= ORDINE.index(RUTE_MD['poarta_curenta'])]
@@ -188,14 +192,14 @@ CAMPURI_ID = ('denumire', 'sediu', 'email', 'telefon', 'numar_orc', 'cod_fiscal'
 
 
 def operator_md(**schimbari):
-    """Operatorul-model al domeniului 3s.md, asamblat din bucati, cu marcajul D2 pe cele trei campuri."""
+    """Operatorul domeniului 3s.md dupa extras (decizia 84), asamblat din bucati."""
     o = {
-        'denumire': ' '.join(['3S', 'Demerzel', 'SRL']),
-        'sediu': D2_RO,
+        'denumire': '„' + 'Demerzel' + '” ' + 'S.R.L.',
+        'sediu': ', '.join(['mun. Chișinău', 'Republica Moldova']),
         'email': '@'.join(['contact', '.'.join(['3s', 'md'])]),
         'telefon': ' '.join(['+373', '68', '055', '599']),
-        'numar_orc': D2_RO,
-        'cod_fiscal': D2_RO,
+        'numar_orc': ''.join(['1026', '0231', '58396']),
+        'cod_fiscal': ''.join(['1026', '0231', '58396']),
         'tara': ' '.join(['Republica', 'Moldova']),
         'dpo': '',
     }
@@ -203,7 +207,7 @@ def operator_md(**schimbari):
     return o
 
 
-def env_operator(operator=None, model='D2', brut=None):
+def env_operator(operator=None, model=None, brut=None):
     """`OPERATOR_JSON` pentru caz: `brut` exact asa, altfel JSON-ul cu `model` la radacina (None = fara)."""
     if brut is not None:
         return {'OPERATOR_JSON': brut}
@@ -232,23 +236,29 @@ def servita_ro(cale, limba):
     return '/en' + ('' if cale == '/' else cale)
 
 
-def arbore_md(operator=None, limbi=('ro', 'en'), lipsa=(), fara_legatura=(), in_plus=None, marcaj_en=True,
-              fisiere_in_plus=None, asezare=None, env_build=None, legatura=None):
+def arbore_md(operator=None, limbi=('ro', 'en'), lipsa=(), fara_legatura=(), in_plus=None, echiv_en=True,
+              fisiere_in_plus=None, asezare=None, env_build=None, legatura=None, cu_echiv=True):
     """Un build al domeniului 3s.md: startul, documentele publicate la poarta curenta in fiecare limba si
     datele firmei NUMAI pe pagina de informatii legale; pe fiecare pagina legatura spre informatiile
     legale in romana. `config/operator.json` ramane pe null: operatorul vine din mediu (env_operator).
     `lipsa` = adrese nescrise; `fara_legatura` = adrese fara legatura; `in_plus` = {adresa: html in plus};
-    `marcaj_en` False = pagina EN poarta marcajul romanesc (greseala de compunere).
+    `echiv_en` False = pagina EN poarta valorile romanesti in loc de echivalente (greseala de compunere);
+    `cu_echiv` False = fara src/content/juridic/md/echivalente.json in arbore.
     `asezare` None = fara `.next/required-server-files.json` (arborii de dinainte); `md` sau `ro` = fisierul scris
     ca de next.config.ts, iar pe `ro` paginile stau la adresele SERVITE (3s.com.ro), cu care se numesc si in
     `lipsa`, `fara_legatura`, `in_plus`. `env_build` = cheile `config.env` scrise exact asa (martorii fisierului
     stricat). `legatura` = adresa legaturii din subsol, implicit informatiile legale in romana la adresa servita."""
     operator = operator or operator_md()
+    # Echivalentele stau in dosarul modulelor md, iar un dosar de module fara documentele nepublicate e J-01 (lipsa
+    # modulului). Arborele primeste deci si copiile reale ale acestora, ca depozitul, cand cazul nu da alte module.
+    if cu_echiv and not any(k.startswith('src/content/juridic/md/') for k in (fisiere_in_plus or {})):
+        fisiere_in_plus = dict(module_nepublicate_reale(), **(fisiere_in_plus or {}))
     d = tempfile.mkdtemp(prefix='proba-juridic-md-')
     for rel, continut in (fisiere_in_plus or {}).items():
         scrie(os.path.join(d, *rel.split('/')), continut)
     scrie(os.path.join(d, 'config', 'operator.json'), json.dumps({'operator': None}) + '\n')
-    scrie(os.path.join(d, 'config', 'model-d2.json'), config_real('model-d2.json'))
+    if cu_echiv:
+        scrie(os.path.join(d, *CALE_ECHIV), ECHIV_TEXT)
     scrie(os.path.join(d, 'config', 'juridic-rute.json'), config_real('juridic-rute.json'))
     if env_build is None and asezare is not None:
         env_build = {VAR_FAMILIE: 'md'}
@@ -274,8 +284,8 @@ def arbore_md(operator=None, limbi=('ro', 'en'), lipsa=(), fara_legatura=(), in_
         if cale in (il_ro, il_en):
             for camp in CAMPURI_ID:
                 valoare = operator.get(camp, '')
-                if limba == 'en' and marcaj_en and valoare == D2_RO and camp in MODEL_D2['campuri']:
-                    valoare = D2_EN
+                if limba == 'en' and echiv_en:
+                    valoare = ECHIV['en'].get(camp, {}).get(valoare, valoare)
                 corp.append('<p>' + valoare + '</p>')
         corp.append((in_plus or {}).get(cale, ''))
         corp.append('</body></html>')
@@ -332,33 +342,28 @@ def cazuri_felia72():
     defineste('env-site-env', 'SITE_ENV=productie fara --mediu: locul gol din OPERATOR_JSON OPRESTE',
               lambda: arbore(date_firma=None), 1, ['OPRESTE  ' + gol_env, 'MEDIU: productie'], mediu=None,
               env=dict(env_operator(incomplet, model=None), SITE_ENV='productie'))
-    # --- regula 2: exceptia D2 ---
-    avert_d2 = ['AVERT    L-01  model D2: ' + c + ' poarta marcajul decis' for c in MODEL_D2['campuri']]
-    defineste('d2-staging', 'model D2 cu marcajul pe cele trei campuri: AVERT pe staging si linia "model D2"',
-              arbore_md, 0, avert_d2 + ['model D2: aprins din OPERATOR_JSON', 'familie juridica: md'], env=env_operator())
-    defineste('d2-productie', 'model D2 cu marcajul decis: tot AVERT la productie (riscul acceptat de owner)',
-              arbore_md, 0, avert_d2 + ['DEFECTE JURIDICE: 0 care opresc, 3 de avertisment'], mediu='productie',
+    # --- regula 2: modelul D2 a iesit la extras (felia 156, decizia 84) ---
+    retras = 'OPRESTE  L-01  OPERATOR_JSON: cheia "model" '
+    defineste('model-retras-staging', 'cheia "model": "D2" la radacina, cu datele reale: OPRESTE si pe staging',
+              arbore_md, 1, retras + '("D2") nu mai e admisa', env=env_operator(model='D2'))
+    defineste('model-retras-orice', 'orice valoare a cheii "model" OPRESTE (nu numai "D2")',
+              arbore_md, 1, retras + '("D3")', env=env_operator(model='D3'))
+    gol_md = 'L-01  OPERATOR_JSON: operatorul e numit, dar are loc gol la '
+    marcat = operator_md(sediu=MARCAJ_VECHI_RO, numar_orc=MARCAJ_VECHI_RO, cod_fiscal=MARCAJ_VECHI_RO)
+    defineste('marcaj-vechi-productie', 'marcajul vechi pe campurile firmei, fara model: OPRESTE la productie (loc gol)',
+              arbore_md, 1, ['OPRESTE  ' + gol_md + 'sediu, numar_orc, cod_fiscal | TEMEI: Legea 284/2004'],
+              mediu='productie', env=env_operator(marcat))
+    defineste('marcaj-vechi-staging', 'marcajul vechi pe campurile firmei: AVERT pe staging, fara nicio exceptie',
+              arbore_md, 0, 'AVERT    ' + gol_md + 'sediu, numar_orc, cod_fiscal', env=env_operator(marcat))
+    defineste('md-staging-verde', 'operatorul din extras, staging: liniile pe care le cere CI (operator si echivalente)',
+              arbore_md, 0, ['operator: numit, din OPERATOR_JSON', 'echivalente: en denumire, sediu ', 'familie juridica: md'],
+              env=env_operator(), absent=['OPRESTE', '    L-01  '])
+    defineste('echivalente-lipsa', 'fara fisierul de echivalente: L-01 OPRESTE pe familia md',
+              lambda: arbore_md(cu_echiv=False), 1, 'OPRESTE  L-01  familia md: lipseste ' + '/'.join(CALE_ECHIV),
               env=env_operator())
-    defineste('d2-nfd', 'marcajul D2 scris descompus (NFD) e acelasi marcaj: AVERT la productie',
-              arbore_md, 0, avert_d2[0], mediu='productie',
-              env=env_operator(operator_md(sediu=unicodedata.normalize('NFD', D2_RO))))
-    gol_md = 'OPRESTE  L-01  OPERATOR_JSON: operatorul e numit, dar are loc gol la '
-    defineste('d2-fara-model', 'marcajul fara "model": OPRESTE la productie, cu temeiul Legii 284/2004',
-              arbore_md, 1, [gol_md + 'sediu, numar_orc, cod_fiscal | TEMEI: Legea 284/2004'], mediu='productie',
-              env=env_operator(model=None), absent='model D2: aprins')
-    defineste('d2-model-in-obiect', '"model" pus in obiectul firmei nu aprinde modelul: OPRESTE la productie',
-              arbore_md, 1, gol_md + 'sediu, numar_orc, cod_fiscal', mediu='productie',
-              env=env_operator(operator_md(model='D2'), model=None))
-    defineste('d2-pe-denumire', 'marcajul D2 pe denumire (camp neadmis): OPRESTE la productie',
-              arbore_md, 1, gol_md + 'denumire |', mediu='productie', env=env_operator(operator_md(denumire=D2_RO)))
-    defineste('d2-fara-diacritice', 'marcajul D2 fara diacritice: OPRESTE la productie',
-              arbore_md, 1, gol_md + 'sediu |', mediu='productie',
-              env=env_operator(operator_md(sediu=''.join(ch for ch in unicodedata.normalize('NFD', D2_RO)
-                                                         if unicodedata.category(ch) != 'Mn'))))
-    defineste('d2-alt-text', 'alt text intre paranteze pe un camp admis: OPRESTE la productie',
-              arbore_md, 1, gol_md + 'sediu |', mediu='productie', env=env_operator(operator_md(sediu='[in ' + 'lucru]')))
-    defineste('d2-model-necunoscut', 'alta valoare a lui "model": OPRESTE si pe staging',
-              arbore_md, 1, 'OPRESTE  L-01  OPERATOR_JSON: model necunoscut "D3"', env=env_operator(model='D3'))
+    defineste('echivalent-necunoscut', 'o valoare fara echivalent se cere asa cum e si pe pagina EN: verde',
+              lambda: arbore_md(operator_md(sediu='Bălți, Republica Moldova')), 0, 'familie juridica: md',
+              mediu='productie', env=env_operator(operator_md(sediu='Bălți, Republica Moldova')), absent='OPRESTE')
     # --- regula 3: marcajele din paginile juridice (J-01) si acoladele duble ---
     pag_ro = RUTE_MD['documente']['confidentialitate']['ro']
     n23 = '[N23: ' + 'țara gazdei]'
@@ -390,12 +395,15 @@ def cazuri_felia72():
                         '<script>self.__next_f.push([1,"[N23: ' + 'x]"])</script>'}
     defineste('j01-legaturi', 'legaturile si payload-ul din <script> nu sunt marcaje: nicio constatare J-01',
               lambda: arbore_md(in_plus=legaturi), 0, None, mediu='productie', env=env_operator(), absent='    J-01  ')
-    # Marcajul D2 e admis in J-01 NUMAI cu modelul aprins: stins, cel ramas pe pagina juridica e J-01.
+    # Marcajul vechi al modelului D2 nu mai e admis in J-01: ramas pe o pagina juridica, in oricare limba, e prins.
     il_ro_html = '.next/server/app/' + html_pentru(CALE_IL_RO)
-    defineste('j01-d2-fara-model', 'marcajul D2 pe pagina juridica, modelul stins: J-01 OPRESTE la productie',
-              arbore_md, 1, 'OPRESTE  J-01  ' + il_ro_html + ': marcaj fara decizie pe pagina juridica ' + D2_RO,
-              mediu='productie', env=env_operator(model=None))
-    defineste('j01-d2-cu-model', 'control: acelasi build cu modelul aprins nu are J-01 pe marcajul D2',
+    il_en_html = '.next/server/app/' + html_pentru(CALE_IL_EN)
+    defineste('j01-marcaj-vechi', 'marcajul vechi pe informatiile legale RO si EN: J-01 OPRESTE la productie, pe amandoua',
+              lambda: arbore_md(in_plus={CALE_IL_RO: '<p>' + MARCAJ_VECHI_RO + '</p>', CALE_IL_EN: '<p>' + MARCAJ_VECHI_EN + '</p>'}),
+              1, ['OPRESTE  J-01  ' + il_ro_html + ': marcaj fara decizie pe pagina juridica ' + MARCAJ_VECHI_RO,
+                  'OPRESTE  J-01  ' + il_en_html + ': marcaj fara decizie pe pagina juridica ' + MARCAJ_VECHI_EN],
+              mediu='productie', env=env_operator())
+    defineste('j01-curat', 'control: acelasi build fara marcaj nu are J-01',
               arbore_md, 0, None, mediu='productie', env=env_operator(), absent='    J-01  ')
     acolade = '{' * 2 + 'cale:termeni' + '}' * 2
     defineste('j01-acolade', 'acolade duble in HTML-ul construit: OPRESTE si pe staging',
@@ -420,7 +428,7 @@ def cazuri_felia72():
               1, 'OPRESTE  J-01  ' + md + 'subimputerniciti.en.ts: marcaj fara decizie in documentul nepublicat '
               'subimputerniciti (en) ' + nota_sub, mediu='productie', env=env_operator())
     defineste('j01-dpa-copie-curata', 'control: copiile reale ale documentelor nepublicate, modelul aprins: zero J-01 la '
-              'productie (marcajul D2 admis, nicio nota de lucru)',
+              'productie (nicio nota de lucru, niciun marcaj)',
               lambda: arbore_md(fisiere_in_plus=module_nepublicate_reale()), 0,
               'J-01 documente nepublicate: ' + str(2 * len(NEPUBLICATE)) + ' module citite', mediu='productie',
               env=env_operator(), absent='    J-01  ')
@@ -467,8 +475,8 @@ def cazuri_felia72():
     defineste('md-fara-il-en', 'editia EN fara pagina de informatii legale EN: OPRESTE la productie',
               lambda: arbore_md(lipsa={CALE_IL_EN}), 1, 'lipseste pagina de informatii legale in limba en',
               mediu='productie', env=env_operator())
-    defineste('md-marcaj-ro-pe-en', 'pagina EN cu marcajul romanesc in loc de cel englezesc: OPRESTE',
-              lambda: arbore_md(marcaj_en=False), 1, 'campul sediu din OPERATOR_JSON nu apare pe pagina de informatii '
+    defineste('md-ro-pe-en', 'pagina EN cu sediul romanesc in loc de echivalentul englezesc: OPRESTE',
+              lambda: arbore_md(echiv_en=False), 1, 'campul sediu din OPERATOR_JSON nu apare pe pagina de informatii '
               'legale (en)', mediu='productie', env=env_operator())
     priv_en = RUTE_MD['documente']['confidentialitate']['en']
     defineste('md-fara-pagina-b', 'un document de la poarta B lipsa in EN: OPRESTE L-15 la productie',
@@ -549,20 +557,24 @@ MUTANTI = [
     ('1: variabila goala luata drept setata', [("if brut is not None and brut.strip() != '':", 'if brut is not None:')],
      ['env-gol']),
     ('1: mediul citit din os.environ in analizeaza (martori contaminati)',
-     [('    mediu_proces = mediu_proces or {}\n', '    mediu_proces = dict(os.environ)\n')], ['d2-staging', 'md-verde']),
+     [('    mediu_proces = mediu_proces or {}\n', '    mediu_proces = dict(os.environ)\n')], ['md-staging-verde', 'md-verde']),
     ('1: main() nu transmite mediul', [('analizeaza(radacina, a.mediu, mediu_proces)', 'analizeaza(radacina, a.mediu)')],
      ['env-staging', 'env-site-env']),
-    ('2: exceptia D2 scoasa', [('cu_marcaj = [camp for camp in goale if este_marcaj_d2(model, camp, date.get(camp))]',
-                                'cu_marcaj = []')], ['d2-productie']),
-    ('2: marcajul admis pe orice camp', [("camp in model['campuri'] and isinstance(valoare, str)", 'isinstance(valoare, str)')],
-     ['d2-pe-denumire']),
-    ('2: marcajul comparat fara diacritice',
-     [("nfc(valoare) == nfc(model['marcaj']['ro'])",
-       "fara_diacritice(nfc(valoare)) == fara_diacritice(nfc(model['marcaj']['ro']))")], ['d2-fara-diacritice']),
-    ('2: modelul aprins si fara "model"',
-     [("if not isinstance(cfg, dict) or 'model' not in cfg:", 'if not isinstance(cfg, dict):'),
-      ("if cfg['model'] != 'D2':", "if cfg.get('model', 'D2') != 'D2':")], ['d2-fara-model']),
-    ('2: orice valoare a lui "model" acceptata', [("if cfg['model'] != 'D2':", 'if False:')], ['d2-model-necunoscut']),
+    ('2: cheia "model" tolerata', [("if isinstance(cfg, dict) and 'model' in cfg:", 'if False:')],
+     ['model-retras-staging', 'model-retras-orice']),
+    ('2: numai "D2" refuzat', [("if isinstance(cfg, dict) and 'model' in cfg:", "if isinstance(cfg, dict) and cfg.get('model') == 'D2':")],
+     ['model-retras-orice']),
+    ('2: echivalentele ignorate (pagina EN cautata cu valoarea romaneasca)',
+     [("    return echivalente.get(limba, {}).get(camp, {}).get(nfc(valoare), valoare)\n", '    return valoare\n')],
+     ['md-verde', 'md-staging-verde']),
+    ('2: echivalentele englezesti cerute si pe pagina romaneasca',
+     [("    return echivalente.get(limba, {}).get(camp, {}).get(nfc(valoare), valoare)\n",
+       "    return echivalente.get('en', {}).get(camp, {}).get(nfc(valoare), valoare)\n")],
+     ['md-verde']),
+    ('2: fisierul de echivalente lipsa trecut sub tacere',
+     [("    if echivalente is None:\n        return [(OPRESTE, 'L-01', 'familia md: ' + motiv",
+       "    if echivalente is None:\n        echivalente = {}\n    if False:\n        return [(OPRESTE, 'L-01', 'familia md: ' + motiv")],
+     ['echivalente-lipsa']),
     ('3: registrul de marcaje admite tot', [('if nfc(marcaj) not in admise:', 'if False:')],
      ['j01-staging', 'j01-productie', 'j01-reprezentant', 'j01-de-publicat']),
     ('3: forma "de publicat" readmisa in registru (starea de dinainte de felia 132)',
@@ -592,11 +604,9 @@ MUTANTI = [
     ('3: documentele publicate luate drept nepublicate (poarta curenta ignorata)',
      [('    publicate = publicate_md(documente, poarta)\n', '    publicate = []\n')],
      ['j01-dpa-copie-curata']),
-    ('3: marcajul D2 admis si cu modelul stins',
-     [('    admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())\n',
-       '    admise = dict((nfc(k), v) for k, v in MARCAJE_ADMISE.items())\n'
-       '    model = model or incarca_json(radacina, CALE_MODEL_D2)[0]\n')],
-     ['j01-d2-fara-model']),
+    ('3: marcajul vechi readmis in registru (starea modelului D2)',
+     [('MARCAJE_ADMISE = {}\n', "MARCAJE_ADMISE = {'[în curs de ' + 'înregistrare]': 'mutant', '[pending ' + 'registration]': 'mutant'}\n")],
+     ['j01-marcaj-vechi']),
     ('4: familia md nerecunoscuta', [("return 'md' if n in TARI_MD else None", 'return None')], ['md-verde']),
     ('4: legatura spre informatiile legale necontrolata', [('if not are_legatura(text, cale_ro):', 'if False:')],
      ['md-fara-legatura-staging', 'md-fara-legatura']),
@@ -604,8 +614,6 @@ MUTANTI = [
      [('    for nume, text in construite:\n        if not are_legatura(text, cale_ro):',
        '    for nume, text in construite[:1]:\n        if not are_legatura(text, cale_ro):')],
      ['md-fara-legatura-alta-pagina']),
-    ('4: pagina EN cautata cu marcajul romanesc', [("valoare = model['marcaj'][limba] if", "valoare = model['marcaj']['ro'] if")],
-     ['md-verde']),
     ('4: L-15 md pe tiparele fixe SEE', [('        return verifica_rute_md(radacina, construite, sever_prezenta, cu_banner)\n',
                                           '        pass\n')], ['md-verde', 'md-fara-pagina-b']),
     ('4: page.<sufix>.tsx nerecunoscut', [(r"page(?:\.[a-z0-9-]+)?\.tsx|page", r"page\.tsx|page")], ['md-pagina-in-sursa']),
@@ -896,7 +904,7 @@ def main():
         shutil.rmtree(mutant_dir, ignore_errors=True)
 
     # --- felia 72: aceleasi cazuri pe poarta vie, apoi mutantii pe copii ---
-    print('\nfelia 72: OPERATOR_JSON, modelul D2, familia md, J-01, C-01 dupa rel, gazdele proprii, L-10')
+    print('\nfelia 72: OPERATOR_JSON, cheia model retrasa, echivalentele, familia md, J-01, C-01 dupa rel, gazdele proprii, L-10')
     cazuri_felia72()
     for cheie, c in CAZURI.items():
         motiv, iesire = ruleaza_caz(cheie)

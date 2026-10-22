@@ -13,7 +13,7 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
     cheie: "cookie-uri",
     limba: "en",
     titlu: "Cookie policy",
-    versiune: "2026-10-07",
+    versiune: "2026-10-22",
     introducere: "Here you can find out what information the website " + c.domeniu + " stores or reads in your browser (cookies and local storage)" + (c.active.has("s0") ? " and who receives the data" : ", how we measure visits, who receives the data and how you can change your mind") + ". The operator's details are in the [Legal notice](cale:informatii-legale), and how we process personal data, with your full rights, in the [Privacy policy](cale:confidentialitate).",
     sectiuni: [
       {
@@ -67,7 +67,7 @@ export default function cookieUriEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s5", titlu: "5. Contact point",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["For any question about cookies, write to " + c.contact.email + ", the address of the operator 3S Demerzel SRL."] },
+          { jurisdictie: null, paragrafe: ["For any question about cookies, write to " + c.contact.email + ", the address of the operator, “Demerzel” S.R.L., a limited liability company registered in the Republic of Moldova."] },
         ],
       },
       {
