@@ -19,7 +19,7 @@ export default function informatiiLegaleRo(c: ContextMd): DocumentJuridic {
       {
         cheie: "s1", titlu: "1. Furnizorul serviciului",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Serviciul 3S este furnizat de Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.) din Republica Moldova."], tabel: { forma: "cu-antet", titlu: "1. Furnizorul serviciului", antet: ["Element", "Date"], randuri: [["Denumirea completă, cu forma juridică", "Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.)"], ["Numărul de identificare de stat (IDNO)", campFirma(c, "numar_orc")], ["Codul fiscal", campFirma(c, "cod_fiscal")], ["Data înregistrării", "19 octombrie 2026"], ["Adresa juridică (adresa poștală)", campFirma(c, "sediu")], ["Adresa de poștă electronică", campFirma(c, "email")], ["WhatsApp (mesaje și apeluri)", campFirma(c, "telefon")], ["Țara", "Republica Moldova"]] } },
+          { jurisdictie: null, paragrafe: ["Serviciul 3S este furnizat de Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.) din Republica Moldova."], tabel: { forma: "cu-antet", titlu: "1. Furnizorul serviciului", antet: ["Element", "Date"], randuri: [["Denumirea completă, cu forma juridică", "Societatea cu Răspundere Limitată „Demerzel” („Demerzel” S.R.L.)"], ["Numărul de identificare de stat (IDNO)", campFirma(c, "numar_orc")], ["Codul fiscal", campFirma(c, "cod_fiscal")], ["Data înregistrării", "19 octombrie 2026"], ["Adresa juridică", campFirma(c, "sediu")], ["Adresa de poștă electronică", campFirma(c, "email")], ["WhatsApp (mesaje și apeluri)", campFirma(c, "telefon")], ["Țara", "Republica Moldova"]] } },
         ],
       },
       {

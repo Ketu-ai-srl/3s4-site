@@ -19,7 +19,7 @@ export default function informatiiLegaleEn(c: ContextMd): DocumentJuridic {
       {
         cheie: "s1", titlu: "1. The service provider",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["The 3S service is provided by “Demerzel” S.R.L., a limited liability company registered in the Republic of Moldova."], tabel: { forma: "cu-antet", titlu: "1. The service provider", antet: ["Item", "Details"], randuri: [["Full name, with legal form", "“Demerzel” S.R.L. (limited liability company)"], ["State identification number (IDNO)", campFirma(c, "numar_orc")], ["Tax code", campFirma(c, "cod_fiscal")], ["Registration date", "October 19, 2026"], ["Registered address (postal address)", campFirma(c, "sediu")], ["Email address", campFirma(c, "email")], ["WhatsApp (messages and calls)", campFirma(c, "telefon")], ["Country", "Republic of Moldova"]] } },
+          { jurisdictie: null, paragrafe: ["The 3S service is provided by “Demerzel” S.R.L., a limited liability company registered in the Republic of Moldova."], tabel: { forma: "cu-antet", titlu: "1. The service provider", antet: ["Item", "Details"], randuri: [["Full name, with legal form", "“Demerzel” S.R.L. (limited liability company)"], ["State identification number (IDNO)", campFirma(c, "numar_orc")], ["Tax code", campFirma(c, "cod_fiscal")], ["Registration date", "October 19, 2026"], ["Registered address", campFirma(c, "sediu")], ["Email address", campFirma(c, "email")], ["WhatsApp (messages and calls)", campFirma(c, "telefon")], ["Country", "Republic of Moldova"]] } },
         ],
       },
       {
