@@ -12,7 +12,8 @@ import { RADACINA, nemasurat } from './ajutor/proiect'
 /**
  * Felia de securitate, pe build-ul REAL (auditul ISO 27001 al site-ului, 27.09):
  *   - 3S4-F-007: cele sase antete pe /, pe o pagina interioara, pe /api/sanatate si pe un 404;
- *     HSTS numai daca build-ul a fost facut cu SITE_ENV=productie (se citeste din manifestul
+ *     HSTS numai daca build-ul a fost facut cu SITE_ENV=productie sau pe un domeniu definitiv (felia 159;
+ *     se citeste din manifestul
  *     build-ului, fiindca antetele intra acolo la construire); consola fara erori CSP pe 5 rute;
  *   - 3S4-F-026: /.well-known/security.txt si butonul blocului de raportare;
  *   - 3S4-F-008: campul-capcana din formular nu se vede si nu se atinge cu tastatura.
@@ -50,28 +51,31 @@ const eCsp = (mesaj: string) => /Content Security Policy|frame-ancestors|object-
 
 test.describe('antetele de securitate (3S4-F-007)', () => {
   const manifest = anteteDinManifest()
-  const productie = manifest.some((a) => a.key === 'Strict-Transport-Security')
-  const asteptate = anteteSecuritate(productie ? 'productie' : undefined)
+  const manifestCuHsts = manifest.some((a) => a.key === 'Strict-Transport-Security')
+  // Lista asteptata vine din ACELASI mediu ca build-ul (SITE_ENV si SITE_URL): pe un domeniu definitiv HSTS
+  // apare si pe staging, fara includeSubDomains (felia 159).
+  const asteptate = anteteSecuritate(process.env.SITE_ENV, process.env.SITE_URL)
+  const cuHsts = asteptate.some((a) => a.key === 'Strict-Transport-Security')
 
   for (const cale of RUTE_ANTETE) {
-    test('fiecare antet pe ' + cale + ', HSTS numai pe productie', async ({ request }) => {
+    test('fiecare antet pe ' + cale + ', HSTS numai pe productie sau pe un domeniu definitiv', async ({ request }) => {
       const r = await request.get(cale, { failOnStatusCode: false, maxRedirects: 0 })
       const primite = r.headers()
       console.log('[antete] ' + cale + ' -> ' + r.status() + ' | HSTS: ' + (primite['strict-transport-security'] ?? 'ABSENT'))
       for (const { key, value } of asteptate) {
         expect(primite[key.toLowerCase()], key + ' pe ' + cale).toBe(value)
       }
-      if (!productie) expect(primite['strict-transport-security'], 'HSTS in afara productiei pe ' + cale).toBeUndefined()
+      if (!cuHsts) expect(primite['strict-transport-security'], 'HSTS in afara productiei pe ' + cale).toBeUndefined()
     })
   }
 
-  test('manifestul build-ului e cel al mediului rularii (SITE_ENV=productie <=> HSTS)', () => {
-    expect(productie).toBe(process.env.SITE_ENV === 'productie')
+  test('manifestul build-ului e cel al mediului rularii (HSTS <=> productie sau domeniu definitiv)', () => {
+    expect(manifestCuHsts).toBe(cuHsts)
   })
 
   test('martor NEGATIV: fara SITE_ENV=productie, lista de antete nu are HSTS', () => {
-    expect(anteteSecuritate('local').map((a) => a.key)).not.toContain('Strict-Transport-Security')
-    expect(anteteSecuritate('productie').map((a) => a.key)).toContain('Strict-Transport-Security')
+    expect(anteteSecuritate('local', undefined).map((a) => a.key)).not.toContain('Strict-Transport-Security')
+    expect(anteteSecuritate('productie', undefined).map((a) => a.key)).toContain('Strict-Transport-Security')
   })
 
   for (const cale of RUTE_CONSOLA) {

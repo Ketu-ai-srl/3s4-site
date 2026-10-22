@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
-import nextConfig, { CSP, HSTS, anteteSecuritate } from '../next.config'
+import nextConfig, { CSP, HSTS, HSTS_DOMENIU, anteteSecuritate } from '../next.config'
 import { CALE_SECURITY_TXT, ZILE_VALABILITATE, textSecurity } from '../src/app/.well-known/security.txt/continut'
 import { GET as getSecurity } from '../src/app/.well-known/security.txt/route'
 import {
@@ -145,13 +145,35 @@ describe('antetele de securitate (3S4-F-007)', () => {
 
   it('cele sase antete, fara HSTS in afara productiei (martor negativ: local, staging, nesetat)', () => {
     for (const mediu of ['local', 'staging', undefined]) {
-      const antete = Object.fromEntries(anteteSecuritate(mediu).map((a) => [a.key, a.value]))
+      const antete = Object.fromEntries(anteteSecuritate(mediu, undefined).map((a) => [a.key, a.value]))
       expect(antete).toEqual(asteptate)
     }
   })
 
+  it('HSTS fara includeSubDomains pe domeniile definitive, si pe staging (felia 159)', () => {
+    for (const url of ['https://3s.md', 'https://3s.com.ro', 'https://3s.com.ro/']) {
+      for (const mediu of ['staging', undefined]) {
+        const antete = Object.fromEntries(anteteSecuritate(mediu, url).map((a) => [a.key, a.value]))
+        expect(antete, url + ' ' + mediu).toEqual({ ...asteptate, 'Strict-Transport-Security': HSTS_DOMENIU })
+      }
+    }
+    expect(HSTS_DOMENIU).toBe('max-age=31536000')
+  })
+
+  it('martor negativ: fara HSTS pe gazdele de proba, pe http si pe un subdomeniu', () => {
+    for (const url of ['https://3s4.ke2.in', 'http://3s.md', 'https://app.3s.com.ro', 'https://3s.md.exemplu-rau.test', 'nu-e-url', '']) {
+      const chei = anteteSecuritate('staging', url).map((a) => a.key)
+      expect(chei, url).not.toContain('Strict-Transport-Security')
+    }
+  })
+
+  it('productia pastreaza HSTS-ul cu includeSubDomains si pe un domeniu definitiv', () => {
+    const antete = Object.fromEntries(anteteSecuritate('productie', 'https://3s.md').map((a) => [a.key, a.value]))
+    expect(antete['Strict-Transport-Security']).toBe(HSTS)
+  })
+
   it('martor pozitiv: HSTS apare numai cu SITE_ENV=productie', () => {
-    const antete = Object.fromEntries(anteteSecuritate('productie').map((a) => [a.key, a.value]))
+    const antete = Object.fromEntries(anteteSecuritate('productie', undefined).map((a) => [a.key, a.value]))
     expect(antete).toEqual({ ...asteptate, 'Strict-Transport-Security': HSTS })
     expect(HSTS).toBe('max-age=31536000; includeSubDomains')
   })
@@ -163,7 +185,9 @@ describe('antetele de securitate (3S4-F-007)', () => {
 
   it('configurarea Next le pune pe toate caile, din mediul construirii', async () => {
     const vechi = process.env.SITE_ENV
+    const vechiUrl = process.env.SITE_URL
     try {
+      delete process.env.SITE_URL
       process.env.SITE_ENV = 'productie'
       const cuHsts = await nextConfig.headers!()
       process.env.SITE_ENV = 'local'
@@ -175,6 +199,8 @@ describe('antetele de securitate (3S4-F-007)', () => {
     } finally {
       if (vechi === undefined) delete process.env.SITE_ENV
       else process.env.SITE_ENV = vechi
+      if (vechiUrl === undefined) delete process.env.SITE_URL
+      else process.env.SITE_URL = vechiUrl
     }
   })
 })

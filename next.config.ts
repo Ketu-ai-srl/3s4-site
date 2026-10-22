@@ -24,10 +24,30 @@ const standalone = process.env.BUILD_STANDALONE === '1'
 // HSTS numai pe productie: pe mediul de proba domeniul se poate muta, iar un navigator care a
 // primit HSTS pe o gazda refuza apoi http pe ea un an. `SITE_ENV` se citeste la CONSTRUIRE (antetele
 // intra in manifestul build-ului), la fel ca pentru indexare (`src/content/rute.ts`).
+//
+// HSTS si pe DOMENIILE DEFINITIVE, oricare ar fi `SITE_ENV` (felia 159, 22.10.2026): 3s.md si 3s.com.ro
+// sunt live din 30.09 si 07.10, dar raman pe `staging` pana la decizia de indexare, deci legarea de
+// `productie` le lasa fara HSTS (masurat live 22.10: antetul lipsea pe ambele). Indexarea si mutarea
+// domeniului sunt intrebari diferite. Aici fara `includeSubDomains`: subdomeniile (de exemplu
+// app.3s.com.ro) sunt ale altor servicii si nu raspundem noi pentru https-ul lor.
 export const CSP = ["frame-ancestors 'none'", "object-src 'none'", "base-uri 'self'", "form-action 'self'"].join('; ')
 export const HSTS = 'max-age=31536000; includeSubDomains'
+export const HSTS_DOMENIU = 'max-age=31536000'
+export const DOMENII_DEFINITIVE: readonly string[] = ['3s.md', '3s.com.ro']
 
-export function anteteSecuritate(mediu: string | undefined = process.env.SITE_ENV): { key: string; value: string }[] {
+function domeniuDefinitiv(url: string | undefined): boolean {
+  try {
+    const u = new URL((url ?? '').trim())
+    return u.protocol === 'https:' && DOMENII_DEFINITIVE.includes(u.hostname)
+  } catch {
+    return false
+  }
+}
+
+export function anteteSecuritate(
+  mediu: string | undefined = process.env.SITE_ENV,
+  url: string | undefined = process.env.SITE_URL,
+): { key: string; value: string }[] {
   const antete = [
     { key: 'X-Content-Type-Options', value: 'nosniff' },
     { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
@@ -37,6 +57,7 @@ export function anteteSecuritate(mediu: string | undefined = process.env.SITE_EN
     { key: 'Content-Security-Policy', value: CSP },
   ]
   if (mediu === 'productie') antete.push({ key: 'Strict-Transport-Security', value: HSTS })
+  else if (domeniuDefinitiv(url)) antete.push({ key: 'Strict-Transport-Security', value: HSTS_DOMENIU })
   return antete
 }
 
