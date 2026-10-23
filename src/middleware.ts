@@ -98,11 +98,24 @@ function cuCale(request: NextRequest): NextResponse {
   return NextResponse.next({ request: { headers: antete } })
 }
 
+// GAZDA STRAINA PE PRODUCTIE (23.10, lansarea indexarii). Aplicatia lui 3s.com.ro serveste si gazda de proba
+// `3s4.ke2.in` (plus gazda sslip a lui Coolify), cu acelasi build. Cu `SITE_ENV=productie`, fara garda asta, ele
+// ar fi indexabile cu continutul domeniului. Canonical-ul arata deja spre `SITE_URL`; antetul scoate din index
+// orice gazda care nu e a lui `SITE_URL`. Fara antetul `Host` nu se presupune nimic: raspunsul ramane neschimbat,
+// fiindca greseala in directia cealalta (domeniul lansat scos din index) e cea scumpa.
+export function gazdaStraina(gazda: string | null, site: string = adresaSite()): boolean {
+  const nume = (gazda ?? '').trim().toLowerCase().replace(/:\d+$/, '')
+  if (nume === '') return false
+  return nume !== new URL(site).hostname.toLowerCase()
+}
+
 export async function middleware(request: NextRequest) {
   const evidenta = request.nextUrl.pathname === CALE_EVIDENTA && stareAnalitica().activa
 
   if (process.env.SITE_ENV === 'productie') {
-    return evidenta ? evidentaConsimtamant(request) : cuCale(request)
+    const raspuns = evidenta ? await evidentaConsimtamant(request) : cuCale(request)
+    if (gazdaStraina(request.headers.get('host'))) raspuns.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return raspuns
   }
 
   // Autentificarea de baza ramane optionala si separata: e o poarta de ACCES, nu de

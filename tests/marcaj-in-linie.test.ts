@@ -332,7 +332,7 @@ describe('proba 1: zero reziduuri de marcaj in textul randat', () => {
     console.log(
       '[marcaj-in-linie] randate: EN ' + en.length + ', ro-md ' + roMd.length + ', md ' + md.length + ' (' + moduleMd.length + ' module x ' + STARI.length + ' stari), SEE ' + see.length,
     )
-  })
+  }, 60_000)
 
   it('pagina de start EN: "Search with sources" e in strong, ca legatura sau tinta, fara marcaj', async () => {
     const home = (await import('../src/content/en/home')).pagina
@@ -377,7 +377,7 @@ describe('proba 3: controalele pozitive, asamblate la rulare, si mutantul', () =
     expect(reziduuriMutant.sintetic.length).toBeGreaterThan(0)
     // Dupa mutant, modulul real e la loc.
     expect(textSimplu(accentCuLegatura('a', '/b'))).toBe('a. Rest.')
-  })
+  }, 60_000)
 })
 
 // ---------------------------------------------------------------------------------------------
@@ -418,7 +418,7 @@ describe('proba 4: invarianta lui textSimplu fata de parserul vechi', () => {
     expect(fragmenteInLinie(diferite[0]).some((f) => f.fel === 'accent' && f.fragmente.some((g) => g.fel === 'legatura'))).toBe(true)
     // farMarcaj (model/tipuri.ts) urmeaza aceeasi regula: numarul de cuvinte e cel al textului simplu.
     expect(numarCuvinte(diferite[0])).toBe(textSimplu(diferite[0]).trim().split(/\s+/).length)
-  })
+  }, 60_000)
 })
 
 // ---------------------------------------------------------------------------------------------

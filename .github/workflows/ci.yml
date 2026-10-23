@@ -56,7 +56,9 @@ jobs:
     # Masurat 26.09 pe windows-latest, lotul de proba S4-3 (39 de pagini statice, 582 unit + 753 browser):
     # 41,3 min in total, din care `pnpm verifica` 37,6 min. S4-4a aduce inca ~13 rute, deci ~55 min, prea
     # aproape de 60: limita 120. Impartirea portilor de browser pe joburi ramane alternativa de mai sus.
-    timeout-minutes: 120
+    # Masurat 22-23.10 (feliile 157-160): `pnpm verifica` 99-114 min, adica 83-95% din 120; o rulare lenta
+    # pica ROSU fals, iar fiecare rerulare costa inca ~2 h. Limita 180 pana la impartirea pe joburi.
+    timeout-minutes: 180
     env:
       BUILD_STANDALONE: '1'
     steps:

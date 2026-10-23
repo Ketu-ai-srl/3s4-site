@@ -38,7 +38,7 @@ vi.mock('../src/lib/analitica', async (original) => {
   return { ...real, stareAnalitica: () => ({ activa: true, idGa4: ['G', 'PROBA' + String(66)].join('-') }) }
 })
 
-const { middleware } = await import('../src/middleware')
+const { middleware, gazdaStraina } = await import('../src/middleware')
 
 /**
  * Felia de securitate (auditul ISO 27001 al site-ului, 27.09): antetele (3S4-F-007), garda punctelor
@@ -565,5 +565,36 @@ describe('evidenta consimtamantului: garda din middleware (3S4-F-008)', () => {
     const r = await post({ origin: SITE, 'content-type': 'application/json', 'x-forwarded-for': ipNou() }, corp)
     expect(r.status).toBe(413)
     expect(jurnal).not.toHaveBeenCalled()
+  })
+})
+
+// Lansarea indexarii (23.10): pe productie, o gazda care nu e a lui SITE_URL (alias-ul de proba al aplicatiei) primeste
+// noindex; gazda lansata nu. Martorul pozitiv si cel negativ ruleaza pe ACEEASI cale, prin middleware-ul real.
+describe('productie: gazda straina primeste noindex, gazda lansata nu', () => {
+  // In probe SITE_URL lipseste, deci SITE e chiar gazda de proba (ADRESA_BAZA); straina e alta.
+  const PROBA = new URL(STRAIN).host
+  const LANSAT = new URL(SITE).host
+
+  afterEach(() => vi.unstubAllEnvs())
+
+  it('gazdaStraina: alta gazda da, aceeasi gazda (cu port sau majuscule) nu, fara antet nu', () => {
+    expect(gazdaStraina(PROBA, SITE)).toBe(true)
+    expect(gazdaStraina(LANSAT, SITE)).toBe(false)
+    expect(gazdaStraina(LANSAT.toUpperCase() + ':443', SITE)).toBe(false)
+    expect(gazdaStraina(null, SITE)).toBe(false)
+    expect(gazdaStraina('', SITE)).toBe(false)
+  })
+
+  it('middleware pe productie: X-Robots-Tag numai pe gazda straina', async () => {
+    vi.stubEnv('SITE_ENV', 'productie')
+    const cere = (gazda: string) => middleware(new NextRequest('http://127.0.0.1:4660/', { headers: { host: gazda } }))
+    expect((await cere(PROBA)).headers.get('x-robots-tag')).toBe('noindex, nofollow')
+    expect((await cere(LANSAT)).headers.get('x-robots-tag')).toBeNull()
+  })
+
+  it('martor de mediu: in afara productiei, noindex si pe gazda lansata', async () => {
+    vi.stubEnv('SITE_ENV', 'staging')
+    const r = await middleware(new NextRequest('http://127.0.0.1:4660/', { headers: { host: LANSAT } }))
+    expect(r.headers.get('x-robots-tag')).toBe('noindex, nofollow')
   })
 })
