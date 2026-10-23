@@ -27,7 +27,7 @@ export default function inteligentaArtificialaEn(c: ContextMd): DocumentJuridic 
       {
         cheie: "s2", titlu: "2. How you know you are talking to an AI system",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["The assistant tells you clearly, from the start, that it is an AI system and not a person: in the browser chat, through a message when the conversation opens and an \"AI\" badge next to the question field, visible for as long as the conversation lasts.", "This page supplements the notice in the chat; it does not replace it (Regulation (EU) 2024/1689, Art. 50(1) and (5))."] },
+          { jurisdictie: null, paragrafe: ["The assistant tells you clearly, from the start, that it is an AI system and not a person: in the browser chat, through a message when the conversation opens.", "This page supplements the notice in the chat; it does not replace it (Regulation (EU) 2024/1689, Art. 50(1) and (5))."] },
         ],
       },
       {

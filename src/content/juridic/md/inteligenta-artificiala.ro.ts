@@ -27,7 +27,7 @@ export default function inteligentaArtificialaRo(c: ContextMd): DocumentJuridic 
       {
         cheie: "s2", titlu: "2. Cum afli că vorbești cu un sistem de AI",
         blocuri: [
-          { jurisdictie: null, paragrafe: ["Asistentul îți spune de la început, clar, că este un sistem de AI și nu un om: în chatul din browser, printr-un mesaj la deschiderea conversației și printr-o insignă „AI” lângă câmpul de întrebare, vizibilă cât ține conversația.", "Această pagină completează informarea din chat; nu o înlocuiește (Regulamentul (UE) 2024/1689, art. 50 alin. (1) și (5))."] },
+          { jurisdictie: null, paragrafe: ["Asistentul îți spune de la început, clar, că este un sistem de AI și nu un om: în chatul din browser, printr-un mesaj la deschiderea conversației.", "Această pagină completează informarea din chat; nu o înlocuiește (Regulamentul (UE) 2024/1689, art. 50 alin. (1) și (5))."] },
         ],
       },
       {
