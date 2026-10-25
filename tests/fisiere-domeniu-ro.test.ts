@@ -228,13 +228,15 @@ describe("asezarea md (3s.md): fisierele domeniului, neschimbate", () => {
     expect(JSON.stringify(noduri).split('"ro-MD"').length - 1).toBe(2);
   });
 
-  it("martorul JSON-LD-ului servit: pe 3s.md fiecare pagina ro-MD poarta `ro-MD` ca inainte (17 pe 10 pagini)", async () => {
+  it("martorul JSON-LD-ului servit: pe 3s.md fiecare pagina ro-MD poarta `ro-MD` ca inainte (19 pe 11 pagini)", async () => {
     const pe = await jsonLdPaginiRoMd("md");
     // Numaratoarea de dinainte, scrisa de mana (masurata pe arborele de baza): limba editiei ramane `ro-MD` pe 3s.md.
     const asteptat: Record<string, number> = {
       "/ro": 2,
       "/ro/comparatie-drive": 2,
       "/ro/contact": 1,
+      // Felia ro-md-e-factura: nodul WebPage si FAQPage-ul paginii noi.
+      "/ro/e-factura": 2,
       "/ro/enterprise": 1,
       "/ro/functionalitati/cautare-ai": 0,
       "/ro/ghiduri/arhivare-e-facturi-ue": 3,
@@ -381,7 +383,8 @@ describe("asezarea ro (3s.com.ro): fisierele domeniului", () => {
     const peRo = await jsonLdPaginiRoMd("ro");
     M = await incarca("ro");
     expect(Object.keys(peRo)).toEqual(Object.keys(peMd));
-    expect(Object.keys(peRo).length).toBe(10);
+    // 11 = cele 10 pagini de dinainte plus /ro/e-factura (felia ro-md-e-factura).
+    expect(Object.keys(peRo).length).toBe(11);
     for (const cale of Object.keys(peRo)) {
       expect([cale, aparitii(peRo[cale], COD_ROMD)]).toEqual([cale, 0]);
       // Aceleasi blocuri, iar fiecare `ro-MD` de pe 3s.md e un `ro-RO` pe 3s.com.ro (nimic scos, nimic adaugat).

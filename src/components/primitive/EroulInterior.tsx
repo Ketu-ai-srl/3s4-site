@@ -36,6 +36,11 @@ export type EroulInteriorProps = {
   idTitlu?: string;
   /** Eticheta accesibila a firului, in limba editiei; lipsa = implicitul din `FirPagina`. */
   etichetaFir?: string;
+  /**
+   * O pastila deasupra titlului (de pilda "Acces timpuriu" pe `/ro/e-factura`), intr-un `div`, ca primul paragraf al
+   * paginii sa ramana subtitlul. Lipsa = marcajul de dinainte, neschimbat, pe toate paginile care nu o dau.
+   */
+  eticheta?: ReactNode;
 };
 
 export default function EroulInterior({
@@ -50,6 +55,7 @@ export default function EroulInterior({
   incredere,
   idTitlu,
   etichetaFir,
+  eticheta,
 }: EroulInteriorProps) {
   const clasaSectiune =
     varianta === "sector" ? s.erouSector : varianta === "cu-intoarcere" ? s.erouFaraJos : s.erou;
@@ -84,6 +90,7 @@ export default function EroulInterior({
               <span>{inapoi.text}</span>
             </Tinta>
           ) : null}
+          {eticheta ? <div style={{ marginBottom: 16 }}>{eticheta}</div> : null}
           <h1 id={idTitlu} className={clasaTitlu}>
             {titlu}
           </h1>

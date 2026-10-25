@@ -69,6 +69,8 @@ const ASTEPTAT_RO: Readonly<Record<string, string>> = {
   '/ro/ghiduri/termene-pastrare-moldova': '/ghiduri/termene-pastrare-moldova',
   '/compare/3s-vs-google-drive': '/en/compare/3s-vs-google-drive',
   '/ro/comparatie-drive': '/comparatie-drive',
+  // Felia ro-md-e-factura: pagina numai pe editia ro-MD, cheia `e-factura` cu o singura cale in echivalente.
+  '/ro/e-factura': '/e-factura',
   '/legal/legal-information': '/en/legal/legal-information',
   '/ro/juridic/informatii-legale': '/juridic/informatii-legale',
   '/legal/privacy': '/en/legal/privacy',

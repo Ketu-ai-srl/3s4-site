@@ -1,0 +1,9 @@
+{
+  "_nota": "Declaratia de raspuns (poarta G-AI-02) a rutei RO-MD a feliei ro-md-e-factura (src/content/rute-ro-md.ts): pagina Arhiva e-Factura, numai pe 3s.md (si geamana ei pe 3s.com.ro). Primul paragraf din <main> e subtitlul eroului (44 de cuvinte). Entitatile sunt cuvinte intregi din primele 400 de cuvinte ale paginii. Ruta e a editiei ro-MD, deci pe build-ul romanesc declaratia se verifica numai ca forma (tests/browser/ajutor/raspunsuri.ts).",
+  "raspuns_autonom": {
+    "/ro/e-factura": {
+      "intrebare": "Cum păstrez automat facturile din SPV după cele 60 de zile?",
+      "entitati": ["SPV", "60 de zile", "XML-ul", "Ministerului Finanțelor", "3S"]
+    }
+  }
+}

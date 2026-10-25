@@ -295,7 +295,10 @@ describe('alternatePagina: legaturile scrise pe server, din echivalente', () => 
     expect(doarEn).toEqual({ en: INT + '/legal/privacy', 'ro-RO': RO + '/juridic/confidentialitate', 'x-default': INT + '/legal/privacy' })
   })
 
-  it('o varianta fara baza in lista nu intra; o pagina ro-MD fara EN in lista isi ia x-default pe ea insasi', () => {
+  // Felia 163: inainte, o pagina fara EN isi lua x-default pe ea insasi, deci 3s.md si 3s.com.ro numeau fiecare alta
+  // adresa si CI-ul a oprit grupul pe R-06 (poarta-reciprocitate --intre-domenii, rularea 40169718423). Acum x-default
+  // e varianta de pe originea pe care lista o da ca x-default: aceeasi adresa, oricare ar fi domeniul care scrie.
+  it('o varianta fara baza in lista nu intra; o pagina ro-MD fara EN in lista ia x-default de pe originea x-default a listei', () => {
     const faraEn: Alternata[] = [
       { hreflang: 'ro-MD', adresa: INT + '/ro' },
       { hreflang: 'ro-RO', adresa: RO },
@@ -305,8 +308,12 @@ describe('alternatePagina: legaturile scrise pe server, din echivalente', () => 
     expect(md).toEqual({
       'ro-MD': INT + '/ro/juridic/confidentialitate',
       'ro-RO': RO + '/juridic/confidentialitate',
-      'x-default': INT + '/ro/juridic/confidentialitate',
+      'x-default': RO + '/juridic/confidentialitate',
     })
+    // Martor: cu x-default pe originea 3s.md, aceeasi pagina numeste varianta de pe 3s.md (regula urmeaza lista, nu domeniul).
+    const peMd: Alternata[] = [faraEn[0], faraEn[1], { hreflang: X_DEFAULT, adresa: INT }]
+    const md2 = limbi(alternatePagina({ cale: '/ro/juridic/confidentialitate', editie: 'ro-MD', cheie: 'confidentialitate' }, ctx3sMd({ alternate: peMd })))
+    expect(md2['x-default']).toBe(INT + '/ro/juridic/confidentialitate')
   })
 
   it('martor POZITIV: un tabel care contrazice pagina, sau o cale care nu sta sub prefixul editiei ori al bazei ei, opresc construirea', () => {

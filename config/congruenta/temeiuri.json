@@ -57,6 +57,10 @@
     "canal-fara-program": {
       "fel": "regula",
       "rezumat": "Pe 3s.md un rand de canal nu poarta stare si nici ceas: pagina nu publica un program si nu promite un termen de raspuns, iar 'Open' / 'Deschis' cu ceas se citea ca ora de lucru (constatarea m1 a testului in browser din 06.10.2026)."
+    },
+    "efactura-ro": {
+      "fel": "regula",
+      "rezumat": "Arhiva e-Factura (serviciu in pregatire, text si capturi aprobate de owner pe 25.10.2026) exista numai pe editia romana a lui 3s.md si pe 3s.com.ro: pagina /ro/e-factura si blocul ei de pe /ro/preturi, fara pereche pe site-ul RO vechi si pe EN. Se inlocuieste cu numarul deciziei cand il primeste."
     }
   }
 }

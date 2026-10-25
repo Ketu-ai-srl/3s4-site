@@ -1098,3 +1098,18 @@
   line-height: 14px;
   pointer-events: none;
 }
+
+/* Pagina /ro/e-factura: butonul eroului are o eticheta lunga ("Scrie-ne pe WhatsApp - te inscriem la acces timpuriu").
+   Pe telefon, cu `white-space: nowrap` al butonului, textul iesea din pastila (masurat pe captura de 390 px); aici se
+   rupe pe doua randuri, centrat, iar pastila ramane pe latimea coloanei. */
+.erouButonLung {
+  display: contents;
+}
+
+@media (max-width: 767px) {
+  .erouButonLung > a {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}

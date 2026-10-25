@@ -343,7 +343,14 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     // Controlul: EN are foi cu elemente, deci egalitatea de mai jos nu e intre doua liste goale.
     expect(foiEn.length).toBeGreaterThan(0)
     expect(foiEn.every((f) => f.length > 0)).toBe(true)
-    expect(foiRo).toEqual(foiEn.map((f) => f.map(pereche)))
+    // EXCEPTIE NUMITA (felia ro-md-e-factura, 163; aceeasi ca in `tests/navigatie-editii.test.ts`): foaia Produs /ro are
+    // in plus, la urma, `/ro/e-factura`, pagina numai ro-MD. Se scoate doar acea instanta, si numai daca e ultima.
+    // Dispare cand pagina primeste pereche EN. Martorul: instanta chiar e in foi (altfel exceptia ar fi ramas in urma).
+    const NUMAI_RO_MD = '/ro/e-factura'
+    expect(ECHIVALENTE['e-factura']?.en).toBeUndefined()
+    expect(foiRo.flat()).toContain(NUMAI_RO_MD)
+    const foiRoComparate = foiRo.map((f) => (f[f.length - 1] === NUMAI_RO_MD ? f.slice(0, -1) : f))
+    expect(foiRoComparate).toEqual(foiEn.map((f) => f.map(pereche)))
     for (const t of foiRo.flat()) expect((await servit(t)).status, 'foaie /ro -> ' + t).toBe(200)
 
     // Sertarul ia meniul din acelasi contract: pe 390 contine fiecare tinta a meniului si a foilor.

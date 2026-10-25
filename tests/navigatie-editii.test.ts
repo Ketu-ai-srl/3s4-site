@@ -308,7 +308,20 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     // Perechea asteptata vine din tabelul de echivalente (cheia paginii EN), nu din contractul RO-MD.
     const peRo = new Map(Object.values(ECHIVALENTE).flatMap((p) => (p.en && p['ro-MD'] ? [[p.en, p['ro-MD']] as const] : [])))
     const en = navigatieEn(CANALE_3S_MD).antet.legaturi
-    const md = navigatieRoMd(CANALE_3S_MD, null).antet.legaturi
+    // EXCEPTIE NUMITA (felia ro-md-e-factura, brieful feliei 163 din 25.10.2026: pagina intra in meniul Produs): foaia
+    // Produs /ro are in plus, la urma, `/ro/e-factura`, pagina care exista NUMAI pe editia ro-MD (cheia `e-factura` n-are
+    // cale EN in echivalente). Se scoate doar acea instanta, si numai daca e ultima; restul foii se compara cu EN ca
+    // inainte. Dispare cand pagina primeste pereche EN (atunci intra in foaia EN si in comparatie).
+    const NUMAI_RO_MD = '/ro/e-factura'
+    expect(Object.values(ECHIVALENTE).some((p) => p['ro-MD'] === NUMAI_RO_MD && p.en === undefined)).toBe(true)
+    const md = navigatieRoMd(CANALE_3S_MD, null).antet.legaturi.map((l) => {
+      if (!l.foaie) return l
+      const ultim = l.foaie.elemente[l.foaie.elemente.length - 1]
+      if (ultim?.href !== NUMAI_RO_MD) return l
+      return { ...l, foaie: { ...l.foaie, elemente: l.foaie.elemente.slice(0, -1) } }
+    })
+    // Martorul exceptiei: instanta chiar e in foaia Produs (altfel exceptia ar fi ramas in urma).
+    expect(navigatieRoMd(CANALE_3S_MD, null).antet.legaturi[0].foaie!.elemente.map((e) => e.href)).toContain(NUMAI_RO_MD)
     // Controlul: EN are meniu (nu comparam doua liste goale), iar tabelul cunoaste macar startul.
     expect(en.length).toBeGreaterThan(1)
     expect(peRo.get('/')).toBe('/ro')
@@ -349,10 +362,15 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
       'Contact',
       // paleta (in plus fata de subsol)
       'Acasă',
+      // Felia ro-md-e-factura (brieful feliei 163, 25.10.2026: pagina in meniul Produs): eticheta paginii, titlul ei scurt
+      // din `rute-ro-md.ts`, in foaia Produs si in coloana Produs a subsolului.
+      'Arhiva e-Factura',
     ])
-    const etichete = md.flatMap((l) => [l.text, ...(l.foaie ? [l.foaie.eticheta, ...l.foaie.elemente.map((e) => e.text)] : [])])
-    // Controlul: meniul are etichete (nu filtram o lista goala): 4 intrari + 2 foi x (eticheta + 3 elemente).
-    expect(etichete).toHaveLength(12)
+    const intreg = navigatieRoMd(CANALE_3S_MD, null).antet.legaturi
+    const etichete = intreg.flatMap((l) => [l.text, ...(l.foaie ? [l.foaie.eticheta, ...l.foaie.elemente.map((e) => e.text)] : [])])
+    // Controlul: meniul are etichete (nu filtram o lista goala): 4 intrari + 2 foi x (eticheta + 3 elemente), plus
+    // Arhiva e-Factura in foaia Produs (felia ro-md-e-factura).
+    expect(etichete).toHaveLength(13)
     expect(etichete.filter((t) => !existente.has(t))).toEqual([])
     // Lista fixa nu a ramas in urma contractului: fiecare eticheta de subsol si paleta de azi e tot in ea
     // (coloana Juridic are titlurile documentelor, verificate in alta parte, deci se exclude).

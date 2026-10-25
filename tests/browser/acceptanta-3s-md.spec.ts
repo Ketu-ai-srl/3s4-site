@@ -315,6 +315,12 @@ test('fiecare cale din harta de site: lang, Content-Language, fara formulare, fa
 
 test('paginile cu pereche hreflang = echivalentele cu doua editii ale profilului', async () => {
   const asteptate = paginiCuPerecheAsteptate()
+  // EXCEPTIE NUMITA (felia ro-md-e-factura, 163): `/ro/e-factura` are o singura editie in echivalente (ro-MD), dar are
+  // pereche hreflang spre aceeasi editie de pe 3s.com.ro (`ro-RO` -> /e-factura, decizia 55). Dispare cand pagina
+  // primeste pereche EN (atunci intra in `asteptate` din regula). Martorul: randul chiar e numai ro-MD.
+  const NUMAI_RO_MD = '/ro/e-factura'
+  expect(Object.values(ECHIVALENTE).some((p) => p['ro-MD'] === NUMAI_RO_MD && p.en === undefined)).toBe(true)
+  asteptate.add(NUMAI_RO_MD)
   const cuPereche: string[] = []
   for (const cale of cai) {
     if (alternateStraine((await servit(cale)).html, cale).length > 0) cuPereche.push(cale)

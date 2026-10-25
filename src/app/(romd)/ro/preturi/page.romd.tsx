@@ -5,17 +5,23 @@
 // Ordinea RO: EroulInterior, LumeaPreturi (LiniaDeBaza, Pachete, Pliuri, FaqPreturi). Insulele client primesc
 // invelitoarea ro-MD (`../_editie/PreturiRoMd.tsx`); butoanele grilei duc la WhatsApp, cu textul precompletat al
 // paginii (`[ref:ro-md-preturi]`). Nodul FAQPage se construieste aici, din intrebarile VIZIBILE. Fara `Offer`.
+//
+// BLOCUL ARHIVA E-FACTURA (felia ro-md-e-factura, cererea owner-ului din 25.10.2026): dupa grila pachetelor, in aceeasi
+// lume, cele sase pachete ale serviciului nou (`BLOC_PRETURI_EFACTURA_RO_MD`), cu legatura spre `/ro/e-factura`. Numai
+// pe editia romana; perechea EN `/pricing` nu il are (lista de congruenta `config/congruenta/p08-ro.json`).
 
 import type { Metadata } from "next";
 import FaqPreturi from "@/components/preturi/FaqPreturi";
 import LiniaDeBaza from "@/components/preturi/LiniaDeBaza";
 import TabelPlanuri from "@/components/preturi/TabelPlanuri";
+import { BlocPreturiEfactura } from "@/components/efacturare/SectiuniArhivaEfactura";
 import EroulInterior from "@/components/primitive/EroulInterior";
 import type { NodJsonLd } from "@/components/seo/date-structurate";
 import JsonLd from "@/components/seo/JsonLd";
 import { metadataPagina } from "@/components/seo/metadata";
 import { legaturaWhatsApp } from "@/content/canale";
 import { pagina } from "@/content/ro-md/preturi";
+import { BLOC_PRETURI_EFACTURA_RO_MD } from "@/content/ro-md/e-factura-componente";
 import {
   ANCORE_PRETURI_RO_MD,
   ANTET_PRETURI_RO_MD,
@@ -70,6 +76,7 @@ export default function PaginaPreturiRoMd() {
           <>
             <LiniaDeBaza continut={LINIA_DE_BAZA_RO_MD} inapoi={<ButonInapoiRoMd />} />
             <PacheteRoMd gazda={gazda} analitica={analitica} whatsapp={whatsapp} />
+            <BlocPreturiEfactura continut={BLOC_PRETURI_EFACTURA_RO_MD} />
             <PliuriRoMd tabel={<TabelPlanuri continut={TABEL_RO_MD} planuri={PLANURI_RO_MD} />} />
             <FaqPreturi continut={INTREBARI_RO_MD} ancora={ANCORE_PRETURI_RO_MD.intrebari} />
           </>

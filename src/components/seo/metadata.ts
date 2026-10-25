@@ -152,7 +152,8 @@ export function adresaPagina(origine: string, cale: string): string {
  *   - P-17, ingustata: paginile site-ului romanesc vechi (editia `ro-RO`, 3s4.ke2.in) se listeaza numai pe ele;
  *   - pe asezarea `ro`, paginile engleze (`/en/...`) nu au legaturi hreflang si au canonical-ul spre aceeasi pagina de
  *     pe domeniul englezei din lista (`canonicalEnglezei`): nu sunt varianta canonica a englezei, deci nu intra in grup;
- *   - `x-default` = varianta `en`, cand intra; altfel pagina insasi.
+ *   - `x-default` = varianta `en`, cand intra; altfel varianta de pe originea `x-default` din lista (aceeasi pe orice
+ *     domeniu); altfel pagina insasi.
  * Reciprocitatea iese din constructie: paginile unui grup citesc acelasi rand din tabel si aceeasi lista, pe orice
  * domeniu, deci emit aceeasi multime. Adresa altei variante se traduce dupa EDITIA ei (`caleServitaEditiei`), nu dupa
  * manifestul acestui build: pe 3s.md, pagina `/ro/contact` scrie `ro-RO` -> `https://3s.com.ro/contact`. Arunca pe un
@@ -206,7 +207,12 @@ export function alternatePagina(
     limbi.push([cod, adresaPagina(url.origin, servitaVariantei)]);
   }
   const en = limbi.find(([cod]) => cod === EDITII.en.inLanguage);
-  limbi.push([X_DEFAULT, (en ?? limbi[0])[1]]);
+  // Fara pereche EN (pagina numai romana, felia 163), `x-default` e varianta de pe originea pe care lista o da ca
+  // `x-default`, nu pagina insasi: altfel fiecare domeniu isi numea propria adresa si grupul nu mai era reciproc (R-06).
+  const bazaImplicita = context.alternate.find((a) => a.hreflang === X_DEFAULT);
+  const peBazaImplicita =
+    bazaImplicita === undefined ? undefined : limbi.find(([, adresa]) => new URL(adresa).origin === new URL(bazaImplicita.adresa).origin);
+  limbi.push([X_DEFAULT, (en ?? peBazaImplicita ?? limbi[0])[1]]);
   return { ...canonical, languages: Object.fromEntries(limbi) };
 }
 

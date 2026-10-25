@@ -15,6 +15,9 @@
 // respectiv `/contact`). Titlul scurt e eticheta din meniu, descrierea e randul paginii din harta, cu Contact pe
 // varianta de dinainte de P-40 (fara e-mail), ca la grupul nucleu EN.
 //
+// PAGINA ARHIVA E-FACTURA (felia ro-md-e-factura): `/ro/e-factura`, serviciul de arhivare a facturilor din RO e-Factura,
+// numai pe editia ro-MD (fara pereche EN); cheia `e-factura` are in `echivalente.ts` doar calea /ro.
+//
 // GRUPUL OGLINDA (felia ro-md-oglinda, decizia 59: /ro oglindeste toate paginile EN): perechile /ro ale paginilor EN
 // P02, P03, P08, P09, P11, G1, G2 si G3, cu `cheie` = cheia paginii EN pereche (`echivalente.ts`). Caile sunt slug-urile
 // fiselor ro-md; pagina despre 3S e `/ro/securitate`, iar comparatia `/ro/comparatie-drive` (caile paginilor RO, ca
@@ -131,6 +134,16 @@ export const RUTE_RO_MD: RutaEditie<"ro-MD">[] = [
     inHarta: true,
     editie: "ro-MD",
     cheie: "compare-3s-vs-google-drive",
+  },
+  // Pagina feliei ro-md-e-factura sta tot INAINTEA marcajului ro-md-acasa-contact, din acelasi motiv ca blocul de mai sus.
+  // <<felie:ro-md-e-factura>>
+  {
+    cale: "/ro/e-factura",
+    scurt: "Arhiva e-Factura",
+    descriere: "Facturile din RO e-Factura, descărcate zilnic și păstrate cu XML-ul original; serviciu în pregătire, cu acces timpuriu.",
+    inHarta: true,
+    editie: "ro-MD",
+    cheie: "e-factura",
   },
   // <<felie:ro-md-acasa-contact>>
   {

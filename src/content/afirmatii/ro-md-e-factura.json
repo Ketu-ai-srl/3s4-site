@@ -1,0 +1,146 @@
+[
+  {
+    "id": "ro-md-ef-fereastra-60-zile",
+    "text": "În RO e-Factura, fișierul unei facturi se poate descărca direct 60 de zile de la publicarea lui în sistem; după aceea ANAF îl arhivează și îl eliberează doar la cerere (facturile nu dispar)",
+    "unde": "src/content/ro-md/e-factura-componente.ts, src/content/ro-md/e-factura.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: OMF 1365/2021, art. 8 alin. (2) (MO nr. 1065/08.11.2021) - XML-ul facturii și mesajele de eroare rămân descărcabile 60 de zile după publicare, apoi sunt arhivate de stat și se obțin pe bază de cerere. Textul: https://mfinante.gov.ro/static/10/eFactura/1065%20Modif.%20L_7_1996%20cadastru,%20O%201365%20mf%20RO%20e-factura.pdf (legat de pe https://mfinante.gov.ro/ro/web/efactura/legislatie), citit 24.10.2026 și 25.10.2026. Prezentarea API MF confirmă fereastra (interogarea listei acceptă între 1 și 60 de zile): https://mfinante.gov.ro/static/10/eFactura/prezentare%20api%20efactura.pdf. Forma consolidată a ordinului nu s-a putut citi (portalul legislativ inaccesibil); de reverificat de jurist",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-pastrare-5-ani",
+    "text": "Facturile se păstrează 5 ani, socotiți de la 1 iulie a anului care urmează încheierii exercițiului financiar",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: Legea contabilității 82/1991, art. 25, în forma dată de Legea 36/2023 - registrele obligatorii și documentele justificative se țin cinci ani, termen care începe la 1 iulie din anul de după închiderea exercițiului în care au fost emise. Forma consolidată valabilă la 29.04.2026, copie publicată de Primăria Deva: https://www.primariadeva.ro/images/uploads/documente/LEGEA_82.pdf (citit 25.10.2026); Legea 36/2023, copia ANAF: https://static.anaf.ro/static/10/Anaf/legislatie/L_36_2023.pdf. Modificări după 29.04.2026 neverificate la sursă",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-termene-mai-lungi",
+    "text": "Pentru bunurile cu durată de folosință mai lungă și pentru situațiile financiare anuale (10 ani), termenul de păstrare e mai lung",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: OMFP 2634/2015, anexa 1 pct. 40 - actele care dovedesc de unde provin bunurile folosite mai mult de cinci ani se țin cât durează utilizarea lor (text inițial, copia ANAF https://static.anaf.ro/static/10/Anaf/legislatie/OMFP_2634_2015.pdf; OMF 1447/2023, MO 453/24.05.2023, lasă punctul neschimbat: https://mfinante.gov.ro/static/10/Mfp/acte-normative-aprobate/OMF1447_MO453_24052023.pdf); Legea 82/1991, art. 35 alin. (3) - situațiile financiare anuale se țin zece ani (aceeași formă consolidată, la 29.04.2026). Citite 25.10.2026",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-original-xml-sigiliu",
+    "text": "Exemplarul original al e-facturii e XML-ul însoțit de sigiliul electronic al Ministerului Finanțelor, cum îl livrează ANAF; PDF-ul e doar copia pentru citit",
+    "unde": "src/content/ro-md/e-factura-componente.ts, src/content/ro-md/e-factura.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: OUG 120/2021, art. 4 alin. (6), în forma dată de legea de aprobare (Legea 139/2022) - originalul e-facturii este fișierul XML împreună cu sigiliul electronic aplicat de Ministerul Finanțelor. Textul adoptat, publicat de Senat: https://www.senat.ro/legis/PDF/2021/21L425LP.pdf (citit 25.10.2026). HG 1/2016, normele Codului fiscal, pct. 98 alin. (6) - cerința de lizibilitate poate fi îndeplinită printr-o conversie într-un format citibil. Forma consolidată a OUG nu s-a putut citi",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-stocare-fara-acreditare",
+    "text": "Pentru facturi nu e nevoie de o arhivă electronică acreditată: Codul fiscal permite stocarea electronică fără acreditare, cu condiția ca facturile să rămână autentice, întregi și lizibile",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: Codul fiscal (Legea 227/2015), art. 319 alin. (35) - la păstrarea electronică a facturilor, regimul Legii 135/2007 nu e obligatoriu; alin. (25) - originea, integritatea și lizibilitatea facturii trebuie garantate pe toată perioada de păstrare. Textul consolidat ANAF, ultima actualizare Legea 170/2026: https://static.anaf.ro/static/10/Anaf/legislatie/Cod_fiscal_norme_2023.htm (citit în browser 25.10.2026)",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-autorizare-anaf",
+    "text": "Autorizarea se face pe pagina oficială ANAF, cu certificatul digital calificat al tău, al reprezentantului legal sau al împuternicitului; parola și PIN-ul certificatului nu ajung la 3S, iar certificatul rămâne la client",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: procedura ANAF de înregistrare a aplicațiilor OAuth, versiunea din 17.10.2024 (https://static.anaf.ro/static/10/Anaf/Informatii_R/API/Oauth_procedura_inregistrare_aplicatii_portal_ANAF.pdf, citită 24.10.2026 și 25.10.2026) - autentificarea pe logincert.anaf.ro se face cu certificat digital calificat; autorizează un utilizator al portalului cu drept SPV de persoană juridică (reprezentant legal, reprezentant desemnat sau împuternicit); aplicația primește un cod OAuth, nu certificatul. Faptul că PIN-ul nu ajunge la 3S e o deducție din flux (PIN-ul se introduce local, în driverul certificatului), de confirmat pe implementare",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-autorizare-reinnoita",
+    "text": "Autorizarea ANAF se reînnoiește periodic, iar 3S anunță din timp când e cazul",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: aceeași procedură OAuth ANAF - tokenul de acces e valabil 90 de zile, cel de reîmprospătare 365 de zile. Valabilitatea tokenului de reîmprospătare nou și efectul schimbării certificatului nu sunt descrise oficial; de măsurat pe un cont ANAF real. Anunțul din timp e o funcție a serviciului în pregătire",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-contabil-imputernicit",
+    "text": "Ca împuternicit în SPV, contabilul poate autoriza 3S o dată, cu certificatul lui, pentru toate firmele pe care le reprezintă; clientul care își păstrează certificatul autorizează singur, pe site-ul ANAF, dintr-un link primit de la contabil",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Parafrază, nu citat: procedura OAuth ANAF - răspunsul API ține cont de drepturile certificatului și de CUI-urile pentru care acesta are reprezentare; FAQ MF RO e-Factura din 18.11.2021 (https://mfinante.gov.ro/documents/4398723/5002737/E-facturaFAQ.pdf/62a8d46b-82f5-9954-22aa-29b7ad32fe14?t=1637238487343) - împuternicitul este o persoană fizică. Formula „un token pentru toți clienții” nu apare ca atare în textul oficial (mecanismul reiese din el); verificarea din 25.10.2026 a cercetării juridice și tehnice a feliei. Linkul de autorizare e fluxul OAuth standard (authorize pe logincert.anaf.ro), de confirmat pe implementare",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-functii-serviciu",
+    "text": "Serviciul (în pregătire) va descărca zilnic facturile emise, cele primite și mesajele de eroare ANAF, le va păstra în arhiva firmei cu o copie PDF, va permite căutarea în cuvintele tale cu documentul-sursă, exportul CSV și pachetul lunar ZIP, facturile separate pe CUI în contul contabilului, încărcarea facturilor mai vechi de 60 de zile din calculator și păstrarea lor lângă restul documentelor firmei",
+    "unde": "src/content/ro-md/e-factura-componente.ts, src/content/ro-md/e-factura.ts",
+    "stare": "neconfirmat",
+    "sursa": "Textul paginii v1 din 25.10.2026, aprobat ca direcție de owner; funcțiile serviciului nou se confirmă la pornirea lui, pe implementare. Căutarea cu documentul-sursă e funcția existentă a platformei (intrarea ro-md-arhiva-cu-sursa)",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-cheie-criptata",
+    "text": "Cheia de acces primită de la ANAF se păstrează criptat",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Textul paginii v1 din 25.10.2026, §5 rândul 2, în varianta redusă: forma completă (folosirea cheii doar la descărcare și jurnalul descărcărilor) era marcată DE CONFIRMAT TEHNIC, fiindcă procedura OAuth ANAF nu permite restrângerea tokenului la citire (câmpul scope rămâne gol). Păstrarea criptată se confirmă pe implementare",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-retragere-si-export",
+    "text": "Autorizarea se poate retrage oricând, din 3S sau din ANAF; arhiva se exportă oricând, inclusiv după încheierea abonamentului",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Textul paginii v1 din 25.10.2026, §5. Retragerea din partea ANAF: procedura OAuth ANAF prevede că tokenurile compromise se trimit ANAF, care le blochează (parafrază); forma exactă a retragerii pentru utilizator și exportul după abonament se confirmă pe implementare",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-gazduire-ue-frankfurt",
+    "text": "Arhiva e găzduită în Uniunea Europeană, cu regiunea principală la Frankfurt",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării ro-md-gazduire-ue-frankfurt (src/content/afirmatii/ro-md-acasa-contact.json): moștenește starea și sursa (decizia 42 a owner-ului, 2026-10-01, „3. ok”), în forma ei, citată de textul paginii ca „afirmația existentă a site-ului”",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-01",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-preturi",
+    "text": "Prețuri pe firmă (CUI), în euro, fără TVA, pe an: Gratuit 0 EUR (o firmă, până la 100 de facturi pe an), Firmă 8,49 EUR (până la 100 de facturi pe lună), Firmă plus 17,76 EUR (până la 1.000), Firmă max 34,75 EUR (până la 10.000), Cabinet 61,69 EUR (firme nelimitate, până la 3.000 pe lună în total), Cabinet max 181,33 EUR (firme nelimitate, până la 30.000 pe lună în total)",
+    "unde": "src/content/ro-md/e-factura-componente.ts, src/app/(romd)/ro/preturi/page.romd.tsx",
+    "stare": "neconfirmat",
+    "sursa": "Grila de preț din textul paginii v1, 25.10.2026, după regula owner-ului din aceeași zi („egal cu cel mai ieftin din piață”, „în euro”): prețul ofertei publice cea mai ieftine pe fiecare treaptă, fără TVA (21%), la cursul BCE din 23.10.2026 (1 EUR = 5,3492 lei), rotunjit în jos. Prețurile pieței se schimbă: grila se reverifică înainte de publicare și apoi lunar",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-pret-lansare-24-luni",
+    "text": "Clienții înscriși la acces timpuriu își păstrează locul și prețul de lansare 24 de luni",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Textul paginii v1 din 25.10.2026: promisiune comercială marcată „confirmă owner-ul” în riscurile deschise ale grilei",
+    "confirmat_de": "",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-acces-timpuriu",
+    "text": "Serviciul e în pregătire; acum se înscriu clienții pentru acces timpuriu, iar certificatul digital nu se cere până la pornire",
+    "unde": "src/content/ro-md/e-factura-componente.ts, src/content/ro-md/e-factura.ts, src/app/(romd)/ro/preturi/page.romd.tsx",
+    "stare": "confirmat",
+    "sursa": "decizia owner-ului din 24.10.2026, citată în textul paginii v1: „Punem clienții în rand. Mai târziu în platforma.”",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-10-24",
+    "data": "2026-10-25"
+  },
+  {
+    "id": "ro-md-ef-raspunde-o-persoana",
+    "text": "Îți răspunde o persoană din echipa 3S (microtextul blocului de final, comun paginilor /ro de referință)",
+    "unde": "src/content/ro-md/e-factura-componente.ts",
+    "stare": "confirmat",
+    "sursa": "oglinda intrării ro-md-raspunde-o-persoana (src/content/afirmatii/ro-md-acasa-contact.json): moștenește starea și sursa (decizia 3 a owner-ului)",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
+    "data": "2026-10-25"
+  }
+]

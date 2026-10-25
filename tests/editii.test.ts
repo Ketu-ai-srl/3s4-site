@@ -236,7 +236,15 @@ describe('manifestul de rute pe editie', () => {
       'x: ro-MD /ro/nu-exista',
       'y: o singura editie',
     ])
-    expect(orfane(ECHIVALENTE)).toEqual([])
+    // EXCEPTIE NUMITA (felia ro-md-e-factura, brieful feliei 163 din 25.10.2026): `/ro/e-factura` exista numai pe editia
+    // ro-MD, iar randul ei are o singura editie ca pagina sa aiba cheie in tabel (`tests/asezare.test.ts`: fiecare ruta
+    // 3s.md are randul ei) si ca `alternatePagina` sa lege cele doua domenii ale aceleiasi editii (3s.md `/ro/e-factura`
+    // si 3s.com.ro `/e-factura`, decizia 55). Se scuteste numai mesajul "o singura editie" al acestei chei; calea ei se
+    // verifica in continuare. Dispare cand pagina primeste pereche EN.
+    const scutite = new Set(['e-factura: o singura editie'])
+    expect(orfane(ECHIVALENTE).filter((o) => !scutite.has(o))).toEqual([])
+    // Martorul scutirii: ea chiar e folosita (altfel ar fi ramas in urma si s-ar sterge).
+    expect(orfane(ECHIVALENTE)).toEqual(['e-factura: o singura editie'])
     const marcaj = (felie: string) => '// <<' + 'felie:' + felie + '>>'
     const grupuri: Record<string, string> = { nucleu: 'en-nucleu', produs: 'en-produs', segmente: 'en-segmente', referinta: 'en-referinta', juridic: 'juridic-pagini-3s-md' }
     for (const [grup, felie] of Object.entries(grupuri)) {

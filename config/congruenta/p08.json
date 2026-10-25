@@ -1,10 +1,9 @@
 {
-  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici. Perechea /ro/preturi sta in p08-ro.json (felia ro-md-e-factura): pagina romana are in plus blocul Arhiva e-Factura, pe care /pricing nu-l are, iar o lista se aplica la fel pe toate paginile ei.",
   "pereche": "P08",
   "ro": "/preturi",
   "pagini_3s_md": [
-    "/pricing",
-    "/ro/preturi"
+    "/pricing"
   ],
   "randuri": [
     {

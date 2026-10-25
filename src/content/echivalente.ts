@@ -27,6 +27,9 @@ export type CaiPeEditie = {
 //
 // Perechile oglinzii (felia ro-md-oglinda, decizia 59: /ro oglindeste toate paginile EN): platforma, cautarea, preturile,
 // Enterprise, pagina despre 3S, cele doua ghiduri si comparatia. Cheia e cea a paginii EN (`rute-en-*.ts`).
+//
+// Pagina Arhiva e-Factura (felia ro-md-e-factura) exista numai pe editia ro-MD: randul ei are o singura cale, ca orice
+// ruta 3s.md sa aiba cheia in tabel (`tests/asezare.test.ts`); fara pereche EN nu produce alternate spre engleza.
 export const ECHIVALENTE: Readonly<Record<string, CaiPeEditie>> = {
   home: { en: "/", "ro-MD": "/ro" },
   contact: { en: "/contact", "ro-MD": "/ro/contact" },
@@ -38,6 +41,7 @@ export const ECHIVALENTE: Readonly<Record<string, CaiPeEditie>> = {
   "guides-e-invoice-archiving-eu": { en: "/guides/e-invoice-archiving-eu", "ro-MD": "/ro/ghiduri/arhivare-e-facturi-ue" },
   "guides-records-retention-moldova": { en: "/guides/records-retention-moldova", "ro-MD": "/ro/ghiduri/termene-pastrare-moldova" },
   "compare-3s-vs-google-drive": { en: "/compare/3s-vs-google-drive", "ro-MD": "/ro/comparatie-drive" },
+  "e-factura": { "ro-MD": "/ro/e-factura" },
   "informatii-legale": { en: "/legal/legal-information", "ro-MD": "/ro/juridic/informatii-legale" },
   confidentialitate: { en: "/legal/privacy", "ro-MD": "/ro/juridic/confidentialitate" },
   "cookie-uri": { en: "/legal/cookies", "ro-MD": "/ro/juridic/cookies" },

@@ -53,6 +53,9 @@ const SALUT = "Bună ziua, 3S. ";
 /** Codul `ref` al paginii de cautare, ca in modulul ei; codurile nu stau in proza (poarta de limba citeste proza). */
 const REF_CAUTARE = "ro-md-cautare-ai";
 
+/** Codul `ref` al paginii Arhiva e-Factura, ca in modulul ei (`src/content/ro-md/e-factura-componente.ts`). */
+const REF_EFACTURA = "ro-md-e-factura";
+
 /** Textele precompletate ale paginilor RO-MD (planul valului §11 pct. 2b). */
 export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
   {
@@ -112,6 +115,12 @@ export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
     ref: "ro-md-comparatie",
     text: "Bună ziua, 3S. Am citit comparația dintre 3S și Google Drive [ref:ro-md-comparatie]. Aș dori să aflu dacă 3S se potrivește firmei noastre.",
   },
+  // Felia ro-md-e-factura: textul precompletat din sectiunea Final a textului paginii, acelasi ca butoanele paginii.
+  {
+    cale: "/ro/e-factura",
+    ref: REF_EFACTURA,
+    text: "Bună ziua, 3S. Vreau acces timpuriu la arhiva e-Factura [ref:" + REF_EFACTURA + "]. Firma: ... Facturi pe lună: ... Sunt contabil: da / nu.",
+  },
 ];
 
 function legatura(text: string, href: string, ruta: string = href.split("#")[0]): Legatura {
@@ -138,6 +147,8 @@ const FOAIE_PRODUS = foaie("Produs", [
   element("Platforma", "/ro/platforma", "box"),
   element("Căutare cu sursa citată", "/ro/functionalitati/cautare-ai", "search"),
   element("Enterprise", "/ro/enterprise", "building-2"),
+  // Felia ro-md-e-factura: pagina serviciului de arhivare a facturilor din RO e-Factura, numai pe /ro (fara pereche EN).
+  element("Arhiva e-Factura", "/ro/e-factura", "file-badge"),
 ]);
 
 /** Foaia Ghiduri, pereche a foii EN "Guides", cu iconitele ei. */
