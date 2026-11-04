@@ -77,7 +77,7 @@ const ID = iduri(BAZA);
 const LEGAL = caleMd("informatii-legale", "ro");
 
 /** Corpul e-mailului precompletat, ca in fisa (randurile noi se scriu `\r\n`). */
-const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm citit pagina de contact. Aș dori să întreb despre un pilot.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";
+const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm o întrebare despre 3S.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";
 
 function titlu(o: OptiuniContact): string {
   return o.email === "" ? "Contact 3S: WhatsApp, mesaje și apeluri" : "Contact 3S: WhatsApp și e-mail";
@@ -166,7 +166,7 @@ export function paginaContact(o: OptiuniContact = OPTIUNI_CONTACT_BUILD): Pagina
     cta: {
       ref: "ro-md-contact",
       titluBloc: "Contactează echipa 3S",
-      textWhatsapp: "Bună ziua, 3S. Am citit pagina de contact [ref:ro-md-contact]. Aș dori să întreb despre un pilot.",
+      textWhatsapp: "Bună ziua! Am o întrebare despre 3S. [ref:ro-md-contact]",
       subiectEmail: "Întrebare 3S [ref:ro-md-contact]",
     },
     jsonLd: [
@@ -191,7 +191,7 @@ export function paginaContact(o: OptiuniContact = OPTIUNI_CONTACT_BUILD): Pagina
         ],
       },
     ],
-    afirmatii: ["ro-md-canale-de-contact", "ro-md-raspunde-o-persoana", "ro-md-arhiva-cu-sursa", "ro-md-pilot-asistat", "ro-md-functii-in-productie"],
+    afirmatii: ["ro-md-canale-de-contact", "ro-md-raspunde-o-persoana", "ro-md-arhiva-cu-sursa", "ro-md-pilot-asistat", "ro-md-functii-in-productie", "ro-md-partener-adria"],
   };
 }
 

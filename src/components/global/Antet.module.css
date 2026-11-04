@@ -216,7 +216,9 @@
   white-space: nowrap;
 }
 
-@media (hover: none) {
+/* Eticheta de tastatura nu are sens pe telefon. `hover: none` prinde ecranele tactile; latimea de telefon
+   (pragul de 767px al antetului) o prinde si cand browserul raporteaza hover, ca un telefon emulat doar pe latime. */
+@media (hover: none), (max-width: 767px) {
   .tasta {
     display: none;
   }

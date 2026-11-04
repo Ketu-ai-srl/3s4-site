@@ -6,6 +6,7 @@ import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { masoaraRaspunsul, type DeclaratieRaspuns } from './ajutor/geo'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsAppRo, legaturaProba, MARCAJ, texteRoMd } from './ajutor/whatsapp-ro'
 
 /**
  * Oglinzile /ro ale paginilor EN (felia ro-md-oglinda, decizia 59) pe COPIA 3s.md (`ajutor/copie-3s-md.ts`): build-ul
@@ -13,7 +14,8 @@ import { RADACINA } from './ajutor/proiect'
  *
  * Ce se cere, pe HTML-ul servit (fara JavaScript), pe fiecare pagina a feliei: 200, `<html lang="ro">`,
  * `Content-Language` al editiei ro-MD, un singur H1, noindex pe staging, zero `<form`, zero RON; legaturile WhatsApp
- * din `<main>` poarta `[ref:<ref>]` al paginii; nicio eticheta "(în engleză)" (tintele /ro exista acum); fiecare
+ * din antet si din `<main>` poarta textul paginii FARA marcajul ref si se atribuie paginii prin evenimentul Umami
+ * `contact` (felia 164, contractul din `ajutor/whatsapp-ro.ts`); nicio eticheta "(în engleză)" (tintele /ro exista acum); fiecare
  * legatura interna din `<main>` ramane in editia /ro si raspunde 200. Apoi hreflang reciproc intre pagina EN si
  * oglinda ei, selectorul EN | RO pe ambele, declaratiile G-AI-02 masurate, harta de site cu cele opt pagini, si
  * FAQPage din JSON-LD egal cu intrebarile si raspunsurile vizibile (sau absent, pe paginile fara intrebari).
@@ -156,6 +158,29 @@ test('martor POZITIV al detectorilor: legatura spre EN, eticheta engleza si RON 
   expect(RON.test('Pret: 15 ' + 'R' + 'ON')).toBe(true)
 })
 
+// Martorii detectorului WhatsApp al paginilor in romana (felia 164), pe legaturi asamblate la rulare din tabelul real.
+test('martor POZITIV al detectorului WhatsApp: marcajul repus, textul altei pagini, alt numar si o legatura care nu e wa.me sunt prinse', () => {
+  const texte = texteRoMd()
+  const text = texte.get('ro-md-platforma') ?? ''
+  const alt = texte.get('ro-md-preturi') ?? ''
+  expect(text, 'controlul: tabelul are textul paginii').not.toBe('')
+  expect(alt).not.toBe(text)
+  const o = { numar: CANALE.whatsapp, ref: 'ro-md-platforma', adresaPaginii: 'http://127.0.0.1:1/ro/platforma' }
+  // Cine repune marcajul (forma de dinainte de felia 164) inroseste proba.
+  expect(abateriWhatsAppRo([legaturaProba(CANALE.whatsapp, text + ' ' + MARCAJ + 'ro-md-platforma]')], o).join(' | ')).toContain('marcajul')
+  expect(abateriWhatsAppRo([legaturaProba(CANALE.whatsapp, alt)], o).join(' | ')).toContain('alt text')
+  expect(abateriWhatsAppRo([legaturaProba('1' + CANALE.whatsapp, text)], o).join(' | ')).toContain('alt numar')
+  expect(abateriWhatsAppRo(['https://example.org/?text=' + encodeURIComponent(text)], o).join(' | ')).toContain('atribuirea Umami')
+  expect(abateriWhatsAppRo([], o)).toEqual(['nicio legatura WhatsApp'])
+})
+
+test('martor NEGATIV al detectorului WhatsApp: textul paginii, fara marcaj, pe numarul domeniului, nu e acuzat', () => {
+  const text = texteRoMd().get('ro-md-platforma') ?? ''
+  expect(text).not.toContain(MARCAJ)
+  const o = { numar: CANALE.whatsapp, ref: 'ro-md-platforma', adresaPaginii: 'http://127.0.0.1:1/ro/platforma' }
+  expect(abateriWhatsAppRo([legaturaProba(CANALE.whatsapp, text)], o)).toEqual([])
+})
+
 test('martor NEGATIV al detectorilor: legaturile /ro si externe nu sunt acuzate, un cuvant care doar contine literele nu e RON', () => {
   expect(iesiriDinEditie('<a href="/ro/preturi">a</a><a href="/ro#faq">b</a><a href="https://x.y/z">c</a>')).toEqual([])
   expect(RON.test('ac' + 'RON' + 'ym')).toBe(false)
@@ -175,19 +200,21 @@ for (const r of ruteFelie()) {
     expect(bucata(html, /<main\b/, '</main>')).not.toContain(ETICHETA_EN)
   })
 
-  test(r.cale + ': WhatsApp cu ref-ul paginii in antet si in <main>, legaturile interne raman in /ro si raspund 200', async () => {
+  test(r.cale + ': WhatsApp cu textul paginii, fara marcaj, atribuit paginii in Umami, in antet si in <main>; legaturile interne raman in /ro si raspund 200', async () => {
     const { html } = await servit(r.cale)
-    const ref = '[ref:' + REF.get(r.cale) + ']'
+    // Felia 164 (GO Marian 04.11.2026, documentul lui Adrian Mihai din 04.11): mesajul pleaca fara [ref:...], deci proba
+    // nu mai cere marcajul in text (regula deciziei 35 iese de pe paginile in romana). Cere in schimb absenta lui, textul
+    // exact al paginii si atribuirea pe noul canal, evenimentul Umami `contact` cu `pagina` (`ajutor/whatsapp-ro.ts`).
+    const asteptare = { numar: CANALE.whatsapp, ref: REF.get(r.cale) ?? '(fara ref)', adresaPaginii: copie.baza + r.cale }
     const main = bucata(html, /<main\b/, '</main>')
     expect(main).not.toBe('')
     const cta = hrefuri(bucata(html, /<header\b/, '</header>')).filter((h) => h.startsWith(WA))
     expect(cta).toHaveLength(1)
-    expect(decodeURIComponent(cta[0].slice(WA.length))).toContain(ref)
+    expect(abateriWhatsAppRo(cta, asteptare)).toEqual([])
     const wa = hrefuri(main).filter((h) => h.startsWith(WA))
     // Pagina despre 3S n-are bloc de final, ca perechile ei RO si EN: canalul ei e numai in antet.
     if (r.cale === '/ro/securitate') expect(wa, 'legaturi WhatsApp in <main>').toEqual([])
-    else expect(wa.length, 'legaturi WhatsApp in <main>').toBeGreaterThan(0)
-    for (const h of wa) expect(decodeURIComponent(h.slice(WA.length))).toContain(ref)
+    else expect(abateriWhatsAppRo(wa, asteptare)).toEqual([])
     expect(iesiriDinEditie(main)).toEqual([])
     const tinte = [...new Set(interne(main))]
     for (const t of tinte) expect((await servit(t)).status, r.cale + ' -> ' + t).toBe(200)

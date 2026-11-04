@@ -150,7 +150,7 @@ export const pagina: PaginaContinut = {
   cta: {
     ref: "ro-md-preturi",
     titluBloc: "Solicită o ofertă",
-    textWhatsapp: "Bună ziua, 3S. Am citit pagina de prețuri [ref:ro-md-preturi]. Aș dori o ofertă.",
+    textWhatsapp: "Bună ziua! Am văzut prețurile 3S și aș vrea o ofertă pentru compania noastră. [ref:ro-md-preturi]",
     subiectEmail: "Întrebare 3S [ref:ro-md-preturi]",
   },
   jsonLd: [

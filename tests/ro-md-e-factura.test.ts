@@ -98,27 +98,29 @@ describe('textul paginii v1 (25.10.2026)', () => {
   })
 
   it('eroul, butonul si textul precompletat, cuvant cu cuvant', () => {
-    expect(C.erou.eticheta).toBe('Acces timpuriu')
+    // Felia 164 (documentul lui Adrian Mihai, 03.11.2026, GO owner 04.11): textul paginii s-a rescris; proba il urmeaza.
+    expect(C.erou.eticheta).toBe('În pregătire')
     expect(C.erou.titlu).toBe('Facturile din SPV, păstrate automat cât cere legea')
-    expect(C.erou.buton).toBe('Scrie-ne pe WhatsApp - te înscriem la acces timpuriu')
+    expect(C.erou.buton).toBe('Scrie-ne pe WhatsApp și te contactăm rapid')
     expect(C.erou.subtitlu.startsWith('Din SPV poți descărca o e-factură doar 60 de zile de la publicare.')).toBe(true)
     expect(pagina.cta.textWhatsapp).toBe(
-      'Bună ziua, 3S. Vreau acces timpuriu la arhiva e-Factura [ref:ro-md-e-factura]. Firma: ... Facturi pe lună: ... Sunt contabil: da / nu.',
+      'Bună ziua! Vreau să fiu printre primii care folosesc arhiva e-Factura. Compania: ... Facturi pe lună: ... Sunt contabil: da / nu. [ref:ro-md-e-factura]',
     )
-    expect(comp.CTA_FINAL_EFACTURA_RO_MD.titlu).toBe('Intră printre primii')
+    expect(comp.CTA_FINAL_EFACTURA_RO_MD.titlu).toBe('Fii printre primii')
   })
 
   it('§2 si §3 randate: fiecare pas si fiecare element e fraza intreaga a textului', () => {
     const pasi = text(renderToStaticMarkup(createElement(PasiEfactura, { continut: C })))
     expect(pasi).toContain('Autorizezi 3S pe site-ul ANAF.')
-    expect(pasi).toContain('Autorizarea ANAF se reînnoiește periodic; 3S îți spune din timp când e cazul.')
+    // Felia 164 (documentul lui Adrian Mihai, 03.11.2026, GO owner 04.11): textul paginii s-a rescris; proba il urmeaza.
+    expect(pasi).toContain('Autorizarea ANAF se reînnoiește periodic; 3S îți spune din timp când este cazul.')
     const primesti = text(renderToStaticMarkup(createElement(PrimestiEfactura, { continut: C })))
     for (const fraza of [
-      'XML-ul original și sigiliul electronic al Ministerului Finanțelor, exact cum le-a livrat ANAF. Acesta e documentul; PDF-ul e doar copia pentru citit.',
+      'XML-ul original și sigiliul electronic al Ministerului Finanțelor, exact cum le-a livrat ANAF. Acesta este documentul cu valoare legală; PDF-ul este doar copia pentru citit.',
       'Facturile emise, cele primite și erorile ANAF, din fiecare zi.',
-      'Căutare în cuvintele tale: scrii „facturile de energie din martie” și primești lista, fiecare cu documentul-sursă.',
+      'Cauți cu cuvintele tale: scrii „facturile de energie din martie” și primești lista, fiecare factură cu documentul ei.',
       'Export CSV și pachetul lunar ZIP pentru contabil.',
-      'Facturile lângă restul documentelor firmei: contracte, procese-verbale, actele scanate de pe hârtie, toate în aceeași arhivă.',
+      'Facturile stau lângă restul documentelor companiei: contracte, procese-verbale, documentele scanate de pe hârtie, toate în aceeași arhivă.',
     ]) {
       expect(primesti, fraza).toContain(fraza)
     }
@@ -129,7 +131,8 @@ describe('textul paginii v1 (25.10.2026)', () => {
     expect(loc).toContain('Cheia de acces primită de la ANAF se păstrează criptat.')
     expect(loc).not.toMatch(/numai pentru descărcarea/)
     expect(loc).not.toMatch(/jurnal/)
-    expect(loc).toContain('Arhiva e găzduită în Uniunea Europeană, cu regiunea principală la Frankfurt.')
+    // Felia 164 (documentul lui Adrian Mihai, 03.11.2026, GO owner 04.11): textul paginii s-a rescris; proba il urmeaza.
+    expect(loc).toContain('Arhiva este păstrată în Uniunea Europeană, cu regiunea principală la Frankfurt.')
     expect(C.siguranta.elemente).toHaveLength(4)
   })
 

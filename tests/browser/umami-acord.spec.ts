@@ -357,7 +357,8 @@ test('martor POZITIV: dupa accept scriptul si vizita pleaca; dupa retragere, zer
     .poll(() => POST_PRIMITE().slice(inainteDeContact).filter((p) => JSON.parse(p.corp).payload.name === 'contact').length, { timeout: 10_000 })
     .toBe(1)
   const contact = POST_PRIMITE().slice(inainteDeContact).map((p) => JSON.parse(p.corp).payload).find((p) => p.name === 'contact')
-  expect(contact.data).toEqual({ canal: 'whatsapp', lang: 'en' })
+  // Felia 164: evenimentul poarta si calea servita a paginii (`pagina`), in locul codului [ref:...] scos din mesaj.
+  expect(contact.data).toEqual({ canal: 'whatsapp', lang: 'en', pagina: expect.stringMatching(/^\//) })
 
   // Retragerea: legatura din subsol, statistica oprita, salvare. Fara reincarcare.
   await pagina.evaluate(() => {

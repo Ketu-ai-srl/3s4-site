@@ -88,7 +88,7 @@ const DESCRIERE =
   "Arhivă digitală pentru firme: formulezi întrebări în română și primești răspunsul cu sursa lui. Fișierele se află în UE, cu regiunea principală la Frankfurt.";
 
 /** Corpul e-mailului precompletat, ca in fisa (randurile noi se scriu `\r\n`). */
-const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm citit site-ul 3S. Aș dori să întreb despre un pilot.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";
+const CORP_EMAIL = "Bună ziua, 3S,\r\n\r\nAm citit site-ul 3S și aș vrea să aflu cum pot testa 3S pe documentele noastre.\r\n\r\nArhiva mea (hârtie, scanări sau fișiere) și țara:\r\n";
 
 function sectiuni(o: OptiuniPagina): SectiuneComuna[] {
   const intrebari: SectiuneComuna[] = [
@@ -304,7 +304,7 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
     cta: {
       ref: "ro-md-acasa",
       titluBloc: "Vrei să vezi cum funcționează 3S pe documentele tale?",
-      textWhatsapp: "Bună ziua, 3S. Am citit site-ul 3S [ref:ro-md-acasa]. Aș dori să întreb despre un pilot.",
+      textWhatsapp: "Bună ziua! Am citit site-ul 3S și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-acasa]",
       subiectEmail: "Întrebare 3S [ref:ro-md-acasa]",
     },
     jsonLd: [
@@ -335,6 +335,7 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
       "ro-md-fraza-tva",
       "ro-md-engleza-si-pagina-in-testare",
       "ro-md-raspunde-o-persoana",
+      "ro-md-partener-adria-hartie",
       ...(o.ghiduri ? ["ro-md-ghiduri-cu-surse"] : []),
       ...(o.operator ? ["ro-md-operator-din-moldova"] : []),
     ],
@@ -342,7 +343,7 @@ export function paginaAcasa(o: OptiuniPagina = OPTIUNI_BUILD): PaginaContinut {
 }
 
 /** Legatura secundara a eroului: spre sectiunea "Cum incep sa folosesc 3S?". */
-export const eroSecundar = { text: "Cum începe un pilot", href: "#cum-pornesc" } as const;
+export const eroSecundar = { text: "Cum funcționează testul gratuit", href: "#cum-pornesc" } as const;
 
 /** Blocul de final, cu fraza despre pagina de contact in varianta potrivita (convorbirea numai pe WhatsApp, decizia 56). */
 export function finalAcasa(o: OptiuniPagina = OPTIUNI_BUILD): FinalPagina {

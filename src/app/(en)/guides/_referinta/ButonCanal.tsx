@@ -4,8 +4,9 @@
 // ei. Fara sigla canalului: pe perechile RO butoanele n-au iconita inainte, iar clasa ei ar fi o clasa de modul pe
 // care pagina RO n-o are (proba de congruenta o numara).
 //
-// Tinta e conversatia WhatsApp cu textul precompletat al paginii (`[ref:<ref>]`), rezolvata pe server din
-// `CANALE_JSON`; fara WhatsApp pe domeniu nu se randeaza nimic (`legaturaWhatsApp` intoarce null).
+// Tinta e conversatia WhatsApp cu textul precompletat al paginii, rezolvata pe server din `CANALE_JSON`. Textul sursa
+// poarta `[ref:<ref>]`, dar mesajul pleaca fara el pe toate editiile (felia 164: paginile ro-MD, apoi si cele EN,
+// decizia Marian 04.11.2026; `legaturaWhatsApp`, antetul din `src/content/canale.ts`); fara WhatsApp pe domeniu nu se randeaza nimic (`legaturaWhatsApp` intoarce null).
 //
 // Dosarul `_referinta` e privat (prefixul `_`): Next nu face rute din el.
 

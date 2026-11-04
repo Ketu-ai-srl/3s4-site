@@ -40,7 +40,7 @@ export const ANCORA_FINAL_RO_MD = "contact";
  * Butonul secundar al eroului: eticheta aprobata a paginii (`ro-md/acasa.ts`, `eroSecundar`); tinta e blocul de
  * final, al carui titlu e invitatia la pilot, ca pe EN.
  */
-export const EROU_SECUNDAR_RO_MD = { text: "Cum începe un pilot", href: "#" + ANCORA_FINAL_RO_MD } as const;
+export const EROU_SECUNDAR_RO_MD = { text: "Cum funcționează testul gratuit", href: "#" + ANCORA_FINAL_RO_MD } as const;
 
 /** Eroul fara bucla (o pune pagina, din editia RO). */
 export const EROU_RO_MD: Omit<ContinutErou, "bucla"> = {
@@ -50,28 +50,31 @@ export const EROU_RO_MD: Omit<ContinutErou, "bucla"> = {
   },
   popover: {
     // acasa.ts:119; numai randul gazduirii ramane (d42).
-    randuri: [{ iconita: "globe", text: "În UE, cu regiunea principală la Frankfurt." }],
+    randuri: [{ iconita: "globe", text: "Pe servere din Uniunea Europeană." }],
     // Fara rand in fisa (acasa.ts:123): tinta aprobata a paginii pentru gazduire, pe perechea /ro a paginii despre 3S.
     legatura: { text: "Pagina Despre 3S și securitate", href: "/ro/securitate#security", ruta: "/ro/securitate" },
   },
   // H1 aprobat, impartit ca pe RO: prima propozitie (A), apoi a doua cu accentul (acasa.ts:132, :134).
   titlu: {
-    primaPropozitie: "Întreabă documentele firmei.",
+    primaPropozitie: "Întreabă documentele companiei tale.",
     aDouaInainteDeAccent: "Primești",
-    accent: "răspunsul și sursa lui.",
+    accent: "răspunsul și documentul din care provine.",
   },
   // acasa.ts:138.
-  subtitlu: "3S organizează documentele firmei tale într-o arhivă digitală și oferă răspunsuri cu documentul-sursă.",
+  subtitlu: "3S pune documentele companiei tale într-o arhivă digitală și îți răspunde la întrebări, arătându-ți de fiecare dată documentul din care vine răspunsul.",
   // acasa.ts:151.
-  nota: "Îți răspunde o persoană",
+  nota: "Îți răspunde un consultant din echipa 3S, nu un robot.",
 };
 
 export const FUNCTIONALITATI_RO_MD: ContinutFunctionalitatiAcasa = {
   // acasa.ts:435, :440. Subtitlul fisei incepe cu numele pasilor ("Scan. Store. Solve."); aici le spune ca nume al
   // marcii, "3S Scan Store Solve:", ca entitatea declarata a paginii (G-AI-02, `config/seo/ro-md-acasa-contact.json`)
   // sa stea in primele 400 de cuvinte, ca pe startul EN ("What is 3S Scan Store Solve?"). Aceleasi cuvinte, plus "3S".
-  titlu: "Arhiva firmei, organizată și pregătită pentru întrebările tale.",
-  subtitlu: "3S Scan Store Solve: în trei pași ajungi de la fișierele încărcate la răspunsul cu documentul-sursă.",
+  titlu: "Documentele companiei, puse în ordine și gata să-ți răspundă la întrebări.",
+  // Pasul zero (decizia Marian 04.11.2026, „baga adria”, documentul lui Adrian Mihai din 04.11): hartia o preia si o
+  // scaneaza partenerul, grupul Adria Arhivare din Romania, nu platforma (afirmatia ro-md-partener-adria-hartie).
+  subtitlu:
+    "3S Scan Store Solve: în trei pași ajungi de la fișierele încărcate la răspuns și la documentul din care provine. Ai arhiva pe hârtie? O preia și o scanează partenerul nostru, grupul Adria Arhivare din România.",
   final: {
     // acasa.ts:479, :481; tinta e ghidul G3, pe perechea lui /ro. Fraza numeste ce compara pagina: numai Google Drive
     // (Box AI a ramas in fisa, nu pe pagina).
@@ -85,26 +88,26 @@ export const PASI_RO_MD: { numar: "01" | "02" | "03"; eticheta: string; titlu: s
   {
     numar: "01",
     // acasa.ts:448, :450, :453.
-    eticheta: "Scan: încărcare și OCR",
-    titlu: "Fișierele pe care le ai deja în format electronic se încarcă direct în arhiva digitală.",
+    eticheta: "Scan: încarci, iar 3S citește textul (OCR)",
+    titlu: "Fișierele pe care le ai deja pe calculator le încarci direct în 3S.",
     paragraf:
-      "Încarci fișierele din browser: PDF-uri, documente Office sau imagini. Pe paginile scanate, fără text selectabil, 3S citește textul prin OCR, iar fiecare document primește automat o etichetă de tip, de pildă contract, factură sau chitanță. Apoi cauți direct în conținutul documentelor.",
+      "Încarci fișierele din browser: PDF-uri, documente Word sau Excel, poze. Dacă o pagină este scanată și textul nu se poate selecta, 3S îl citește singur (OCR). Fiecare document este recunoscut automat drept contract, factură sau chitanță. Apoi cauți direct în conținutul lor.",
   },
   {
     numar: "02",
     // acasa.ts:458 (A, neschimbat), :460, :463.
     eticheta: "Store: păstrare în ordine",
-    titlu: "Fiecare document este păstrat în spațiul de lucru al firmei.",
+    titlu: "Toate documentele stau într-un singur loc, al companiei tale.",
     paragraf:
-      "Documentele încărcate sunt indexate automat pentru căutare. Toți colegii care au cont lucrează în aceeași arhivă, în structura de dosare stabilită de firmă, și găsesc aceleași documente.",
+      "Tot ce încarci devine automat căutabil. Toate conturile lucrează în aceeași arhivă, în dosarele stabilite de companie, și găsesc aceleași documente.",
   },
   {
     numar: "03",
     // acasa.ts:468 (A, neschimbat), :470, :473.
     eticheta: "Solve: răspuns cu sursa",
-    titlu: "Formulezi întrebarea în română și primești răspunsul cu sursa lui.",
+    titlu: "Pui întrebarea în română, ca unui coleg, și primești răspunsul împreună cu documentul din care provine.",
     paragraf:
-      "Scrii întrebarea liber, fără cuvinte-cheie sau operatori de căutare. Pentru fiecare dosar poți stabili termenul de păstrare, iar deschiderile și descărcările documentelor sunt consemnate în jurnal.",
+      "Scrii întrebarea așa cum îți vine, fără cuvinte-cheie. Pentru fiecare dosar stabilești cât timp se păstrează, iar 3S înregistrează cine a deschis și cine a descărcat fiecare document.",
   },
 ];
 
@@ -117,7 +120,7 @@ export const MACHETA_CAUTARE_RO_MD: Omit<ContinutMachetaCautare, "exemplu" | "bi
   declaratie: "Exemplu cu date fictive: trei dintre documentele găsite printr-o întrebare",
   eticheta: "Căutare în arhivă",
   intrebare: "Documentele despre depozit din 2025",
-  gasite: "9 documente găsite, cu sursa",
+  gasite: "9 documente găsite, fiecare cu sursa lui",
   insigne: { etichetat: "Etichetă automată" },
   randuri: [
     {
@@ -162,7 +165,7 @@ export const MACHETA_REGISTRU_RO_MD: Omit<ContinutMachetaRegistru, "exemplu"> = 
   // din vocabularul platformei (decizia 43): "Chitanta" (RECEIPT), ca in constructorul aceleiasi pagini; numele fisierului
   // fictiv de pe randul 2 numeste o chitanta, coerent cu tipul; scurt, ca sa incapa in coloana la 1440 px (masurat:
   // "Chitanta_chirie_martie.pdf" o depasea cu 1 px langa eticheta "Chitanta", mai lata decat "Bon").
-  declaratie: "Exemplu cu date fictive: documentele unui dosar, cu termenul de păstrare stabilit pentru dosar",
+  declaratie: "Exemplu cu date fictive: documentele unui dosar, cu termenul de păstrare stabilit o singură dată, pentru tot dosarul",
   eticheta: "Dosarul Depozit",
   insigna: "Același termen",
   coloane: ["Nr.", "Document", "Tip", "Termen", "Stare"],
@@ -173,10 +176,10 @@ export const MACHETA_REGISTRU_RO_MD: Omit<ContinutMachetaRegistru, "exemplu"> = 
     { nr: "003", fisier: "Contract_paza.pdf", tip: { cod: "albastru", text: "Contract" }, termen: "2035" },
   ],
   verificari: [
-    { iconita: "tag", text: "Tip de document recunoscut" },
-    { iconita: "clock", text: "Termenul dosarului aplicat" },
-    { iconita: "book-open", text: "Text indexat pentru căutare" },
-    { iconita: "shield", text: "Deschiderile consemnate în jurnal" },
+    { iconita: "tag", text: "Tipul documentului, recunoscut automat" },
+    { iconita: "clock", text: "Termenul de păstrare, moștenit de la dosar" },
+    { iconita: "book-open", text: "Textul, gata de căutare" },
+    { iconita: "shield", text: "Fiecare deschidere, înregistrată în jurnal" },
   ],
 };
 
@@ -193,43 +196,43 @@ export const PUNCTE_PISTA_RO_MD = {
  * la fisa, numita in raportul feliei, de decis la poarta 2.
  */
 export const CIFRE_RO_MD: ContinutCifra[] = [
-  { cifra: "14 zile", eticheta: "de pilot gratuit" },
+  { cifra: "14 zile", eticheta: "de test gratuit" },
   { cifra: "Frankfurt", eticheta: "regiunea principală, în UE" },
 ];
 
 /** Situatiile de lucru (decizia 59; acasa.ts:530-588): fara legaturi spre segmente (d38). */
 export const INDUSTRII_RO_MD: ContinutGrilaIndustrii = {
-  titlu: "Pentru cine este potrivit 3S?",
+  titlu: "Cui îi folosește 3S?",
   carduri: [
     {
-      text: "Documente solicitate repetat",
-      descriere: "Le regăsești printr-o întrebare, iar răspunsul indică documentul din care provine.",
+      text: "Ți se cer mereu aceleași documente",
+      descriere: "Le găsești cu o întrebare, iar răspunsul îți arată și documentul din care vine.",
       iconita: "file-text",
     },
-    { text: "Documente dispersate", descriere: "După încărcare, sunt reunite într-o singură arhivă.", iconita: "archive" },
+    { text: "Documente împrăștiate în mai multe locuri", descriere: "Odată încărcate, ajung toate într-o singură arhivă.", iconita: "archive" },
     {
-      text: "Un singur coleg știe cum este organizată arhiva",
-      descriere: "Toți colegii care au cont lucrează în aceeași arhivă și găsesc aceleași documente.",
+      text: "Un singur angajat știe unde este fiecare document",
+      descriere: "În 3S, toți angajații care au cont văd aceeași arhivă și găsesc aceleași documente.",
       iconita: "users",
     },
     {
-      text: "Colegi noi sau un birou nou",
-      descriere: "Un coleg nou se autentifică și lucrează în aceeași arhivă, din browser.",
+      text: "Vin angajați noi sau deschizi un birou nou",
+      descriere: "Un angajat nou intră în cont și lucrează din prima zi în aceeași arhivă, din browser.",
       iconita: "building",
     },
     {
-      text: "Scanări fără text selectabil",
-      descriere: "3S recunoaște textul documentelor scanate, astfel încât le poți căuta și pe ele.",
+      text: "Ai scanări în care nu poți căuta",
+      descriere: "3S le citește textul, ca să poți căuta și în ele.",
       iconita: "scan-line",
     },
     {
-      text: "Documente cu termen de păstrare",
-      descriere: "Termenul de păstrare îl stabilești pe dosar, pentru toate documentele din el.",
+      text: "Ai documente care trebuie păstrate un anumit număr de ani",
+      descriere: "Stabilești termenul o singură dată, pe dosar, și se aplică tuturor documentelor din el.",
       iconita: "file-check",
     },
     {
-      text: "Cerințe stricte de acces sau export",
-      descriere: "Comunică-ni-le de la început, iar noi verificăm dacă 3S le poate respecta.",
+      text: "Ai reguli stricte despre cine vede ce sau despre descărcare",
+      descriere: "Spune-ni-le de la început și îți spunem deschis dacă 3S le poate respecta.",
       iconita: "shield-check",
     },
   ],
@@ -243,26 +246,26 @@ function testimonial(continuare: string): ContinutTestimonial {
     fraza: "Documentele care îți răspund.",
     continuare,
     // Rolul: acasa.ts:618. Firma: marca, ca pe EN (fara rand in fisa).
-    atribuire: { rol: "Cum poți evalua 3S", firma: "3S Scan Store Solve" },
+    atribuire: { rol: "Cum poți verifica 3S", firma: "3S" },
   };
 }
 
 /** acasa.ts:615, forma cu ghidurile publicate. */
 export const TESTIMONIAL_RO_MD: ContinutTestimonial = testimonial(
-  "Nu publicăm numele clienților, rezultate cifrate sau recenzii. De aceea îți propunem să verifici singur, prin ghidurile cu surse și printr-un pilot pe documentele firmei.",
+  "Nu publicăm nume de clienți, cifre sau recenzii. Îți propunem în schimb să verifici singur, prin ghidurile cu surse și printr-un test gratuit pe documentele companiei tale.",
 );
 
 /** acasa.ts:615, varianta fisei de dinainte de ghiduri (fara trimiterea la ele). */
 export const TESTIMONIAL_RO_MD_FARA_GHIDURI: ContinutTestimonial = testimonial(
-  "Nu publicăm numele clienților, rezultate cifrate sau recenzii. De aceea îți propunem să verifici singur, printr-un pilot pe documentele firmei.",
+  "Nu publicăm nume de clienți, cifre sau recenzii. Îți propunem în schimb să verifici singur: testezi 3S gratuit pe documentele companiei tale.",
 );
 
 /** acasa.ts:647-655. */
 export const CARD_SECURITATE_RO_MD: ContinutCardSecuritate = {
-  titlu: "Unde sunt găzduite fișierele firmei?",
-  text: "Găzduirea este pe AWS, în Uniunea Europeană, cu regiunea principală la Frankfurt.",
+  titlu: "Unde sunt păstrate documentele?",
+  text: "Pe serverele Amazon Web Services (AWS), în Uniunea Europeană, cu regiunea principală la Frankfurt.",
   // Fara rand in fisa (acasa.ts:655): tinta aprobata a paginii pentru gazduire, pe perechea /ro a paginii despre 3S.
-  legatura: { text: "Detalii despre găzduire", href: "/ro/securitate#security", ruta: "/ro/securitate" },
+  legatura: { text: "Mai multe despre găzduire", href: "/ro/securitate#security", ruta: "/ro/securitate" },
 };
 
 /** acasa.ts:663-671 (decizia 59): pachetul Enterprise, spre /ro/enterprise. */
@@ -270,14 +273,14 @@ export const CARD_ENTERPRISE_RO_MD: ContinutCardEnterprise = {
   titlu: "Peste 20 de conturi?",
   pastila: "Enterprise",
   descriere:
-    "Enterprise este pachetul pentru firmele cu peste 20 de conturi, cu contract anual. 3S recunoaște textul documentelor scanate, identifică tipul documentului și indică sursa fiecărui răspuns.",
+    "Enterprise este pachetul pentru companiile cu peste 20 de conturi, cu contract anual. Spune-ne ce cerințe are departamentul IT și îți răspundem punct cu punct.",
   tinta: { text: "Detalii despre Enterprise", href: "/ro/enterprise", ruta: "/ro/enterprise" },
 };
 
 /** acasa.ts:689-693. */
 export const BANDA_PRET_RO_MD: ContinutBandaPret = {
   titlu: "Cât costă 3S?",
-  fraza: "3S are patru pachete, de la 75\u00a0EUR pe lună la plata anuală, pentru întreaga firmă, fără TVA.",
+  fraza: "3S are patru pachete, de la 75\u00a0EUR pe lună la plata anuală, cu un singur preț pentru toată compania, fără TVA.",
   // Fara rand in fisa (acasa.ts:693): eticheta aprobata a paginii ("Vezi pachetele"), spre /ro/preturi.
   legatura: { text: "Vezi pachetele", href: "/ro/preturi", ruta: "/ro/preturi" },
 };
@@ -293,7 +296,7 @@ export const SUBSOL_FAQ_FARA_EMAIL = "Ai altă întrebare?";
 
 /** Legatura frazei de sub intrebari: pagina de contact a editiei (calea SURSA, servita de `Tinta`). */
 export const LEGATURA_CONTACT_FAQ_RO_MD = {
-  text: "Vezi canalele prin care ne poți scrie",
+  text: "Scrie-ne",
   href: "/ro/contact",
   ruta: "/ro/contact",
 };
@@ -314,24 +317,19 @@ export const INTREBARI_RO_MD: ContinutFaqAcasa = {
   titlu: "Înainte să ne scrii",
   intrebari: [
     {
-      intrebare: "Unde sunt păstrate documentele?",
-      raspuns:
-        "În Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services (AWS). Amazon are sediul în Statele Unite, iar legislația americană (CLOUD Act) poate obliga compania să păstreze și să predea datele aflate în posesia sau sub controlul ei, indiferent unde se află serverele.",
-    },
-    {
       intrebare: "Pot pune întrebările în engleză?",
       raspuns:
-        "Deocamdată, numai în regim de testare. Putem verifica funcția pe documentele tale înainte să iei o decizie. Tot în testare se află indicarea paginii exacte din document.",
+        "Deocamdată testăm această funcție. Dacă ai nevoie de ea, o verificăm împreună pe documentele tale înainte să decizi. Tot în teste este și afișarea paginii exacte din document.",
     },
     {
       intrebare: "Cum găsește 3S documentul de care ai nevoie?",
       raspuns:
-        "3S citește textul fiecărui document încărcat, inclusiv prin OCR pe paginile scanate, și îl indexează pentru căutare. Scrii apoi întrebarea în română, ca unui coleg, iar răspunsul vine cu documentul-sursă, ca să verifici informația.",
+        "3S citește textul fiecărui document încărcat, inclusiv al paginilor scanate, și îl păstrează gata de căutare. Tu scrii întrebarea în română, ca unui coleg, iar răspunsul vine împreună cu documentul din care provine, ca să-l poți verifica.",
     },
     {
       intrebare: "Cum încep să folosesc 3S?",
       raspuns:
-        "Ne scrii pe WhatsApp și descrii pe scurt arhiva firmei. Stabilim apoi în scris documentele și întrebările de testat. Pilotul gratuit de 14 zile începe după ce accepți Termenii și condițiile, precum și Acordul de prelucrare a datelor, pe care ți-l trimitem odată cu oferta. La final, decizi dacă alegi un pachet.",
+        "Ne scrii pe WhatsApp și ne spui în câteva rânduri ce documente ai. Stabilim împreună, în scris, ce documente și ce întrebări testăm. Testul gratuit de 14 zile începe după ce accepți Termenii și condițiile și Acordul de prelucrare a datelor, pe care ți le trimitem împreună cu oferta. La final decizi dacă alegi un pachet.",
       legaturaInText: { text: "Termenii și condițiile", href: "/ro/juridic/termeni" },
     },
   ],
@@ -346,19 +344,19 @@ export const CTA_FINAL_RO_MD: ContinutCtaFinal = {
   // Fara rand in fisa (acasa.ts:800): titlul aprobat al blocului de final al paginii.
   titlu: "Vrei să vezi cum funcționează 3S pe documentele tale?",
   // acasa.ts:804.
-  subtitlu: "Descrie-ne pe scurt arhiva firmei și țara în care se află documentele.",
+  subtitlu: "Spune-ne în câteva rânduri ce documente ai și în ce țară se află.",
   // Folosit numai daca pagina nu da `butoane`; pagina pune butonul WhatsApp (eticheta deciziei 35).
   butonPrincipal: { text: "Scrie-ne pe WhatsApp", href: null, ruta: null },
   // acasa.ts:815.
-  microtext: "Îți răspunde o persoană din echipa 3S.",
+  microtext: "Îți răspunde un consultant din echipa 3S.",
   vizual: {
     declaratie: "Exemplu cu date fictive",
     pasi: [
       // acasa.ts:820 (iconita se schimba odata cu textul: incarcarea din browser), :822.
-      { iconita: "laptop", text: "Încărcat pe web", ora: "09:41" },
-      { iconita: "tag", text: "Etichetat ca factură", ora: "09:41" },
+      { iconita: "laptop", text: "Încărcat", ora: "09:41" },
+      { iconita: "tag", text: "Recunoscut ca factură", ora: "09:41" },
     ],
     // acasa.ts:826, :828.
-    rezultat: { fisier: "Factura_0415_exemplu.pdf", stare: "Indexat pentru căutare", ora: "09:42" },
+    rezultat: { fisier: "Factura_0415_exemplu.pdf", stare: "Gata de căutare", ora: "09:42" },
   },
 };

@@ -4,6 +4,7 @@ import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/cop
 import { masoaraAccesibilitatea } from './ajutor/detectori'
 import * as despre from '../../src/content/en/despre-componente'
 import * as platforma from '../../src/content/en/platforma-componente'
+import { abateriWhatsApp, legaturaProba, MARCAJ, texteEn } from './ajutor/whatsapp-ro'
 
 /**
  * Felia 103 (`editie-platforma-despre-en`), pe COPIA 3s.md (`ajutor/copie-3s-md.ts`): P02 `/platform` si P11 `/about`
@@ -11,8 +12,9 @@ import * as platforma from '../../src/content/en/platforma-componente'
  * `src/content/en/{platforma,despre}-componente.ts`. Forma (radacinile, clasele, numaratorile, stilurile) o masoara
  * `congruenta.spec.ts` contra listelor `config/congruenta/p02.json` si `p11.json`; aici, criteriul de gata al feliei:
  *  1. HTML-ul servit: un singur H1, zero `<form`, zero RON, zero diacritice in `<main>`, firul cu eticheta EN si un
- *     singur BreadcrumbList; pe /platform, WhatsApp cu `[ref:en-platform]` o data in erou si o data in blocul de
- *     final; pe /about, ca pe perechea RO, fara bloc de final: WhatsApp-ul paginii (`[ref:en-about]`) e in antet;
+ *     singur BreadcrumbList; pe /platform, WhatsApp o data in erou si o data in blocul de final; pe /about, ca pe
+ *     perechea RO, fara bloc de final: WhatsApp-ul paginii e in antet. Din felia 164 (decizia Marian 04.11.2026, „1 da”)
+ *     mesajul e textul paginii FARA marcajul ref, atribuit paginii in Umami (`ajutor/whatsapp-ro.ts`);
  *  2. FAQPage din JSON-LD = intrebarile si raspunsurile vizibile ale acordeonului, in ordine, pe ambele pagini;
  *  3. `textContent`-ul lui `<main>` contine fiecare sir randat al modulelor EN (numarat, raportat);
  *  4. ancorele `/about#security` si `/about#limits` stau imediat inaintea blocului cu locul datelor si a intrebarilor,
@@ -22,8 +24,8 @@ import * as platforma from '../../src/content/en/platforma-componente'
  *  6. fara defilare orizontala la 1440 si 390; axe fara incalcari grave pe care perechea RO nu le are.
  *
  * MARTORII: detectorul de siruri lipsa prinde un sir fabricat la rulare (POZITIV) si nu acuza H1-ul paginii (NEGATIV);
- * comparatia FAQPage prinde o intrebare scoasa dintr-o copie a nodului; extragerea WhatsApp gaseste legatura cu ref
- * intr-un HTML asamblat la rulare.
+ * comparatia FAQPage prinde o intrebare scoasa dintr-o copie a nodului; extragerea WhatsApp gaseste legatura intr-un
+ * HTML asamblat la rulare, iar detectorul fara marcaj prinde marcajul repus (POZITIV) si trece textul curat (NEGATIV).
  */
 
 const PROFIL = mediuProfil3sMd()
@@ -54,7 +56,7 @@ function frunze(valoare: unknown, acc: string[] = []): string[] {
  */
 const PAGINI = {
   '/platform': {
-    ref: '[ref:en-platform]',
+    ref: 'en-platform',
     asteptate: (): string[] => {
       const { butonPrincipal: _b, vizual, ...cta } = platforma.CTA_FINAL_PLATFORMA_EN
       void _b
@@ -87,7 +89,7 @@ const PAGINI = {
     fir: ['Home', 'Platform'],
   },
   '/about': {
-    ref: '[ref:en-about]',
+    ref: 'en-about',
     asteptate: (): string[] => {
       const d = despre.DESPRE_EN
       const v = despre.VERIFICARE_EN
@@ -157,9 +159,26 @@ function noduri(html: string): Record<string, unknown>[] {
   })
 }
 
-test('martor POZITIV: extragerea WhatsApp gaseste legatura cu ref intr-un HTML asamblat la rulare', () => {
-  const href = WA + encodeURIComponent('Hello 3S, I read x [ref:' + 'en-proba]. Hi.')
+test('martor POZITIV: extragerea WhatsApp gaseste legatura intr-un HTML asamblat la rulare', () => {
+  const href = WA + encodeURIComponent('Hello 3S, I read x. Hi.')
   expect(whatsapp('<main><a class="b" href="' + href + '">Message us</a></main>')).toHaveLength(1)
+})
+
+// Felia 164 (decizia Marian 04.11.2026, „1 da”): pe EN mesajul pleaca fara [ref:...]; martorii detectorului, pe textul
+// real al paginii din tabelul de canale EN.
+test('martor POZITIV: detectorul fara marcaj prinde marcajul repus pe textul /about', () => {
+  const text = texteEn().get('en-about') ?? ''
+  expect(text, 'controlul: tabelul EN are textul paginii').not.toBe('')
+  const o = { numar: CANALE.whatsapp, ref: 'en-about', adresaPaginii: 'http://127.0.0.1:1/about', limba: 'en' as const }
+  const repus = text.replace('data location.', 'data location ' + MARCAJ + 'en-about].')
+  expect(repus, 'controlul fixturii').toContain(MARCAJ)
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, repus)], o).join(' | ')).toContain('marcajul')
+})
+
+test('martor NEGATIV: detectorul fara marcaj trece textul curat al paginii /about', () => {
+  const text = texteEn().get('en-about') ?? ''
+  const o = { numar: CANALE.whatsapp, ref: 'en-about', adresaPaginii: 'http://127.0.0.1:1/about', limba: 'en' as const }
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, text)], o)).toEqual([])
 })
 
 for (const cale of CAI) {
@@ -182,7 +201,7 @@ for (const cale of CAI) {
   })
 }
 
-test('/platform: WhatsApp cu [ref:en-platform] o data in erou si o data in blocul de final; butonul secundar duce la /contact', async () => {
+test('/platform: WhatsApp cu textul paginii, fara marcaj, o data in erou si o data in blocul de final; butonul secundar duce la /contact', async () => {
   const html = await servit('/platform')
   const erou = bucata(html, /<section\b[^>]*aria-labelledby="platforma-titlu"/, '</section>')
   const final = bucata(html, /<section\b[^>]*aria-labelledby="cta-final-titlu"/, '</section>')
@@ -191,13 +210,13 @@ test('/platform: WhatsApp cu [ref:en-platform] o data in erou si o data in blocu
   for (const [nume, bloc] of [['erou', erou], ['final', final]] as const) {
     const wa = whatsapp(bloc)
     expect(wa, nume).toHaveLength(1)
-    expect(decodeURIComponent(wa[0].slice(WA.length)), nume).toContain(PAGINI['/platform'].ref)
+    expect(abateriWhatsApp(wa, { numar: CANALE.whatsapp, ref: PAGINI['/platform'].ref, adresaPaginii: copie.baza + '/platform', limba: 'en' }), nume).toEqual([])
   }
   expect(whatsapp(bucata(html, /<main\b/, '</main>'))).toHaveLength(2)
   expect(erou).toContain('href="/contact"')
 })
 
-test('/about: fara bloc de final, ca perechea RO; WhatsApp-ul paginii, cu [ref:en-about], e in antet', async () => {
+test('/about: fara bloc de final, ca perechea RO; WhatsApp-ul paginii, fara marcaj, e in antet', async () => {
   const html = await servit('/about')
   const main = bucata(html, /<main\b/, '</main>')
   const antet = bucata(html, /<header\b/, '</header>')
@@ -205,7 +224,7 @@ test('/about: fara bloc de final, ca perechea RO; WhatsApp-ul paginii, cu [ref:e
   expect(whatsapp(main)).toHaveLength(0)
   const wa = whatsapp(antet)
   expect(wa.length).toBeGreaterThan(0)
-  for (const h of wa) expect(decodeURIComponent(h.slice(WA.length))).toContain(PAGINI['/about'].ref)
+  expect(abateriWhatsApp(wa, { numar: CANALE.whatsapp, ref: PAGINI['/about'].ref, adresaPaginii: copie.baza + '/about', limba: 'en' })).toEqual([])
   expect(main).not.toContain('cta-final-titlu')
 })
 
@@ -293,6 +312,8 @@ test('/about#security: navigarea aduce titlul blocului cu locul datelor in ferea
 })
 
 test('/about: verificarea masoara pe copie (timpul in milisecunde, textul EN); eticheta hartii e Frankfurt', async ({ page }) => {
+  // Felia 164: verificarea ramane pe /about (decizia Marian 04.11.2026, „4 repune”); iese numai de pe pagina in romana
+  // (`config/congruenta/p11-ro.json`), deci proba ii cere in continuare prezenta si masuratoarea.
   await page.goto(copie.baza + '/about')
   const sectiune = page.locator('section[aria-label="' + despre.ETICHETA_VERIFICARE_EN + '"]')
   await expect(sectiune).toHaveCount(1)

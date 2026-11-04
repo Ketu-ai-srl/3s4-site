@@ -304,25 +304,26 @@ const corp = (citit: string, vrea: string) =>
 describe('legaturile: codificarea contra formei de referinta', () => {
   const md: Canale = configurareCanale(json3sMd({ email: ADRESA_CONTACT }))
 
-  // Cele trei exemple complete ale documentului de continut, cu numarul si adresa puse la rulare.
+  // Cele trei exemple complete ale documentului de continut, cu numarul si adresa puse la rulare. Felia 164 (decizia
+  // Marian 04.11.2026, „1 da, 2 da”): mesajul si subiectul pleaca FARA codul [ref:...]; textul sursa il poarta mai departe.
   const EXEMPLE: Array<[string, string, string, string]> = [
     [
       'en-home',
       'your website',
-      'Hello%203S%2C%20I%20read%20your%20website%20%5Bref%3Aen-home%5D.%20I%20would%20like%20to%20ask%20about%20a%20pilot.',
-      'subject=3S%20inquiry%20%5Bref%3Aen-home%5D&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20website.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
+      'Hello%203S%2C%20I%20read%20your%20website.%20I%20would%20like%20to%20ask%20about%20a%20pilot.',
+      'subject=3S%20inquiry&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20website.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
     ],
     [
       'en-einv',
       'your page on e-invoice archiving',
-      'Hello%203S%2C%20I%20read%20your%20page%20on%20e-invoice%20archiving%20%5Bref%3Aen-einv%5D.%20I%20would%20like%20to%20ask%20about%20a%20pilot.',
-      'subject=3S%20inquiry%20%5Bref%3Aen-einv%5D&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20page%20on%20e-invoice%20archiving.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
+      'Hello%203S%2C%20I%20read%20your%20page%20on%20e-invoice%20archiving.%20I%20would%20like%20to%20ask%20about%20a%20pilot.',
+      'subject=3S%20inquiry&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20page%20on%20e-invoice%20archiving.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
     ],
     [
       'en-contact',
       'your contact page',
-      'Hello%203S%2C%20I%20read%20your%20contact%20page%20%5Bref%3Aen-contact%5D.%20I%20would%20like%20to%20ask%20about%20a%20pilot.',
-      'subject=3S%20inquiry%20%5Bref%3Aen-contact%5D&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20contact%20page.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
+      'Hello%203S%2C%20I%20read%20your%20contact%20page.%20I%20would%20like%20to%20ask%20about%20a%20pilot.',
+      'subject=3S%20inquiry&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20contact%20page.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
     ],
   ]
 
@@ -338,13 +339,17 @@ describe('legaturile: codificarea contra formei de referinta', () => {
     let verificate = 0
     for (const [ref, citit, vrea] of RANDURI) {
       const text = textWhatsApp(ref, citit, vrea)
+      // Felia 164: legatura poarta textul sursa fara marcaj (cu spatiul dinaintea lui), iar marcajul nu mai apare in ea.
+      const fara = (t: string) => t.split(' ' + marcajRef(ref)).join('')
       const wa = legaturaWhatsApp(ref, text, md)
-      expect(wa).toBe('https://wa.me/' + NUMAR + '?text=' + codificaReferinta(text))
-      expect(decodeURIComponent((wa ?? '').split('?text=')[1])).toBe(text)
+      expect(wa).toBe('https://wa.me/' + NUMAR + '?text=' + codificaReferinta(fara(text)))
+      expect(decodeURIComponent((wa ?? '').split('?text=')[1])).toBe(fara(text))
+      expect(decodeURIComponent(wa ?? '')).not.toContain('[ref:')
       const mail = legaturaEmail(ref, subiect(ref), corp(citit, vrea), md)
       expect(mail).toBe(
-        'mailto:' + ADRESA_CONTACT + '?subject=' + codificaReferinta(subiect(ref)) + '&body=' + codificaReferinta(corp(citit, vrea)),
+        'mailto:' + ADRESA_CONTACT + '?subject=' + codificaReferinta(fara(subiect(ref))) + '&body=' + codificaReferinta(corp(citit, vrea)),
       )
+      expect(decodeURIComponent(mail ?? '')).not.toContain('[ref:')
       verificate += 1
     }
     expect(verificate).toBe(18)

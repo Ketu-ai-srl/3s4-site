@@ -87,7 +87,7 @@ export const TEXTE_WHATSAPP_EN: readonly TextPePagina[] = [
   },
 ];
 
-/** E-mailul unei pagini (§4.5): subiectul cu `ref`, corpul cu salutul, propozitia paginii si randul despre arhiva. */
+/** E-mailul unei pagini (§4.5): subiectul sursa cu `ref` (trimis fara marcaj, felia 164, `legaturaEmail`), corpul cu salutul, propozitia paginii si randul despre arhiva. */
 const FORMA_EMAIL_EN = {
   subiect: (ref: string) => "3S inquiry [ref:" + ref + "]",
   corp: (t: TextPePagina) =>

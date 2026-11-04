@@ -38,9 +38,9 @@ export const pagina: PaginaContinut = {
   ],
   cta: {
     ref: REF,
-    titluBloc: "Intră printre primii",
+    titluBloc: "Fii printre primii",
     textWhatsapp:
-      "Bună ziua, 3S. Vreau acces timpuriu la arhiva e-Factura [ref:" + REF + "]. Firma: ... Facturi pe lună: ... Sunt contabil: da / nu.",
+      "Bună ziua! Vreau să fiu printre primii care folosesc arhiva e-Factura. Compania: ... Facturi pe lună: ... Sunt contabil: da / nu. [ref:" + REF + "]",
     subiectEmail: "Întrebare 3S [ref:" + REF + "]",
   },
   jsonLd: [

@@ -16,7 +16,7 @@
 import { createContext, useContext, type ReactNode } from "react";
 import BirouInteractivVedere from "@/components/preturi/BirouInteractivVedere";
 import ButonInapoiVedere from "@/components/preturi/ButonInapoiVedere";
-import { calculeaza, FORMAT_ROMANESC, formatOreZecimal, oreAfisate, type FormatCifre } from "@/components/preturi/calcul";
+import { calculeaza, FORMAT_ROMANESC, formatOreZecimal, type FormatCifre } from "@/components/preturi/calcul";
 import CalculatorVedere, { type ContinutCalculator } from "@/components/preturi/CalculatorVedere";
 import ComutatorPerioadaVedere from "@/components/preturi/ComutatorPerioadaVedere";
 import GrilaPlanuriVedere from "@/components/preturi/GrilaPlanuriVedere";
@@ -83,17 +83,18 @@ const IMPLICITE = {
 };
 
 /**
- * Textul teaserului, din valorile de pornire: "Cu 4 colegi care cauta acte cate 25 de minute zilnic", "se aduna 36,7 ore
- * lunar". Numeralul se acorda cu valoarea AFISATA: cu zecimala fara "de" ("36,7 ore"), intreaga dupa regula ("22 de ore").
+ * Textul teaserului, din valorile de pornire: "Cu 4 angajati care cauta documente cate 25 de minute pe zi", "se aduna cam
+ * 37 de ore pe luna". Corectura obligatorie din documentul lui Adrian Mihai (03.11.2026, felia 164): "circa" langa o cifra
+ * cu zecimala ("circa 36,7") se bate cap in cap, deci teaserul spune ora intreaga, cu "cam" si numeralul acordat.
  */
 export function textTeaserRoMd(): { presupuneri: string; rezultat: string } {
   const r = calculeaza(IMPLICITE, "anual", PLANURI, CALCULATOR_RO_MD.zileLucratoare);
   const p = IMPLICITE.persoane;
   const m = IMPLICITE.minute;
   return {
-    presupuneri: CALCULATOR_RO_MD.teaser.presupuneri(p + cuDeRoMd(p) + (p === 1 ? " coleg" : " colegi"), m + cuDeRoMd(m) + " minute"),
-    // Cifra, "de" si "ore" raman pe acelasi rand: spatii nedespartitoare ("36,7 ore" se rupea la capat de rand).
-    rezultat: CALCULATOR_RO_MD.teaser.rezultat((FORMAT_RO_MD.ore(r.ore) + cuDeRoMd(oreAfisate(r.ore)) + " ore").replace(/ /g, "\u00a0")),
+    presupuneri: CALCULATOR_RO_MD.teaser.presupuneri(p + cuDeRoMd(p) + (p === 1 ? " angajat" : " angajați"), m + cuDeRoMd(m) + " minute"),
+    // Cifra, "de" si "ore" raman pe acelasi rand: spatii nedespartitoare ("37 de ore" nu se rupe la capat de rand).
+    rezultat: CALCULATOR_RO_MD.teaser.rezultat((Math.round(r.ore) + cuDeRoMd(Math.round(r.ore)) + " ore").replace(/ /g, "\u00a0")),
   };
 }
 

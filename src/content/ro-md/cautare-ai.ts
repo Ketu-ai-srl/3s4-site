@@ -56,7 +56,7 @@ export const pagina: PaginaContinut = {
     ref: REF,
     titluBloc: "Citește doar sursa",
     textWhatsapp:
-      "Bună ziua, 3S. Am citit pagina despre căutarea cu sursa citată [ref:" + REF + "]. Aș dori să văd cum funcționează pe documentele firmei.",
+      "Bună ziua! Aș vrea să văd căutarea AI din 3S pe documentele companiei noastre. [ref:" + REF + "]",
     subiectEmail: "Întrebare 3S [ref:" + REF + "]",
   },
   jsonLd: [

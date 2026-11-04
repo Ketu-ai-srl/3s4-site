@@ -2,8 +2,9 @@ import { readFileSync } from 'node:fs'
 import type { Page } from '@playwright/test'
 import { join } from 'node:path'
 import { expect, test } from './ajutor/baza'
-import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
+import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsApp } from './ajutor/whatsapp-ro'
 import { CTA_POVESTE, EROU_POVESTE, pagina as cautare } from '../../src/content/en/features-search'
 import { SCENA_CAUTARE_3S_MD, SEMNE_3S_MD } from '../../src/content/functionalitati/cautare-ai-3s-md'
 import type { PaginaContinut } from '../../src/content/model/tipuri'
@@ -16,8 +17,8 @@ import type { PaginaContinut } from '../../src/content/model/tipuri'
  * Ce se cere, pe fiecare pagina:
  *   - pe HTML-ul SERVIT (fara JavaScript): 200, `<html lang="en">`, un singur H1, egal cu eticheta eroului cinema,
  *     noindex pe staging, zero `<form`, zero `RON` ca cuvant;
- *   - CTA-ul WhatsApp duce la `wa.me` cu textul precompletat al paginii, care poarta `[ref:<ref>]` al ei (decodat
- *     inapoi si comparat cu modulul);
+ *   - CTA-ul WhatsApp duce la `wa.me` cu textul precompletat al paginii (decodat inapoi si comparat cu modulul), din
+ *     felia 164 FARA marcajul `[ref:<ref>]` (decizia Marian 04.11.2026, „1 da”; `ajutor/whatsapp-ro.ts`);
  *   - pe DOM-ul din browser: entitatile declaratiei G-AI-02 (`config/seo/en-produs.json`) si H1-ul in primele 400 de
  *     cuvinte din `<main>`.
  * Plus: paginile P05-P07, scoase de la lansare (decizia 43), si P04 `/features/whatsapp` (decizia 49: asistentul pe
@@ -73,6 +74,9 @@ function textDinWa(href: string): string {
 
 let copie: Copie3sMd
 
+/** Numarul de WhatsApp al domeniului 3s.md, din profil (contractul fara marcaj, felia 164). */
+const NUMAR_WA = (JSON.parse(mediuProfil3sMd().CANALE_JSON) as { whatsapp: string }).whatsapp
+
 async function servit(cale: string): Promise<{ status: number; html: string; robots: string }> {
   const r = await fetch(copie.baza + cale, { redirect: 'manual' })
   return {
@@ -123,14 +127,15 @@ for (const p of PAGINI) {
     expect(MONEDA.test(html)).toBe(false)
   })
 
-  test(p.meta.cale + ': CTA-urile WhatsApp poarta textul paginii, cu [ref:' + p.cta.ref + ']', async () => {
+  test(p.meta.cale + ': CTA-urile WhatsApp poarta textul paginii, fara marcaj, atribuit paginii in Umami', async () => {
     const { html } = await servit(p.meta.cale)
     const corp = html.slice(html.indexOf('<main'), html.indexOf('</main>'))
     const texte = hrefuriWhatsApp(corp).map(textDinWa)
     // Povestea cinema: un singur buton de canal, in CTA (eroul cinema n-are buton), cu textul paginii.
     expect(texte).toHaveLength(1)
-    for (const t of texte) expect(t).toBe(p.cta.textWhatsapp)
+    // Felia 164 (decizia Marian 04.11.2026, „1 da”): sursa poarta marcajul o data, legatura il scoate.
     expect(p.cta.textWhatsapp).toContain('[ref:' + p.cta.ref + ']')
+    expect(abateriWhatsApp(hrefuriWhatsApp(corp), { numar: NUMAR_WA, ref: p.cta.ref, adresaPaginii: copie.baza + p.meta.cale, limba: 'en', textSursa: p.cta.textWhatsapp })).toEqual([])
   })
 
   test(p.meta.cale + ': entitatile G-AI-02 si H1-ul in primele 400 de cuvinte din <main>', async ({ page }) => {

@@ -33,7 +33,10 @@ function intrareImplicita(tabel: readonly TextPePagina[], caleImplicita: string)
   return intrare;
 }
 
-/** Tintele WhatsApp pe pagina, sau `null` cand domeniul nu are WhatsApp. */
+/**
+ * Tintele WhatsApp pe pagina, sau `null` cand domeniul nu are WhatsApp. Mesajul pleaca fara codul `ref`, pe toate
+ * editiile (felia 164, `legaturaWhatsApp`).
+ */
 export function whatsappPePagina(tabel: readonly TextPePagina[], caleImplicita: string, canale: Canale): LegaturaPeCale | null {
   const implicita = intrareImplicita(tabel, caleImplicita);
   const legatura = (t: TextPePagina) => legaturaWhatsApp(t.ref, t.text, canale);

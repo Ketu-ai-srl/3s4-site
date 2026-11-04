@@ -94,36 +94,36 @@ export const ANTET_PRETURI_RO_MD: { fir: NivelFir[]; titlu: string; subtitlu: st
   titlu: "Prețurile 3S: patru pachete, în euro",
   // Suma si moneda nu se despart la capat de rand: spatiu nedespartitor intre cifra si "EUR".
   subtitlu:
-    "3S are patru pachete, cu prețuri pentru întreaga firmă, în euro, fără TVA: Starter 90\u00a0EUR, Pro 150\u00a0EUR și Business 240\u00a0EUR pe lună, pentru 5, 10 și 20 de conturi; Enterprise de la 800\u00a0EUR pe lună. Orice colaborare începe cu un pilot gratuit.",
+    "3S are patru pachete, cu un singur preț pentru toată compania, în euro, fără TVA: Starter 90\u00a0EUR, Pro 150\u00a0EUR și Business 240\u00a0EUR pe lună, pentru 5, 10 și 20 de conturi; Enterprise de la 800\u00a0EUR pe lună. Orice colaborare începe cu un test gratuit de 14 zile.",
 };
 
 /** `preturi.ts:48-49`: numele accesibile ale poartei si ale pliurilor. */
-export const ETICHETE_PRETURI_RO_MD = { poarta: "Cele două variante 3S", pliuri: "Conturile și funcțiile pachetelor" };
+export const ETICHETE_PRETURI_RO_MD = { poarta: "Cele două feluri de pachete", pliuri: "Conturile și funcțiile pachetelor" };
 
 /** `preturi.ts:98-105`. */
 export const POARTA_BAZA_RO_MD: CardPoarta = {
   nume: "Starter, Pro, Business",
   titlu: "Toate funcțiile incluse",
-  text: "Alegi 5, 10 sau 20 de conturi, la un preț pe firmă, fără TVA. Pachetele diferă prin numărul de conturi și prin limitele lunare.",
-  mergi: "Alege un pachet",
+  text: "Alegi 5, 10 sau 20 de conturi, la un singur preț pentru toată compania, fără TVA. Pachetele diferă prin numărul de conturi și prin limitele lunare.",
+  mergi: "Vezi pachetele",
 };
 
 /** `preturi.ts:110-118`: linia Enterprise, cu tinta pagina ei /ro. */
 export const POARTA_ENTERPRISE_RO_MD: CardPoarta & { tinta: Legatura } = {
   nume: "Enterprise",
   titlu: "Pentru peste 20 de conturi",
-  text: "De la 800\u00a0EUR pe lună, cu contract anual. Îți transmitem o ofertă scrisă.",
+  text: "De la 800\u00a0EUR pe lună, cu contract anual. Îți trimitem o ofertă scrisă.",
   mergi: "Detalii Enterprise",
   tinta: { text: "3S Enterprise", href: "/ro/enterprise", ruta: "/ro/enterprise" },
 };
 
 /** `preturi.ts:127-134`; `inapoi` = textul butonului din linia de baza. */
 export const LINIA_DE_BAZA_RO_MD: ContinutLiniaDeBaza & { inapoi: string } = {
-  inapoi: "Cele două variante 3S",
+  inapoi: "Cele două feluri de pachete",
   titlu: "Starter, Pro, Business",
-  promisiune: "Documentele firmei, ușor de regăsit.",
+  promisiune: "Documentele companiei, ușor de găsit.",
   paragraf:
-    "Prețurile sunt în euro, fără TVA, și se calculează pentru întreaga firmă, nu pentru fiecare utilizator. Starter, Pro și Business au aceleași funcții și diferă prin numărul de conturi de utilizator și prin limitele lunare.",
+    "Prețurile sunt în euro, fără TVA, și sunt pentru toată compania, nu pe utilizator. Starter, Pro și Business au aceleași funcții; diferă numărul de conturi și limitele lunare.",
 };
 
 /**
@@ -134,7 +134,7 @@ export const PLANURI_RO_MD: Plan[] = [
   {
     cheie: "starter",
     nume: "Starter",
-    descriere: "Pentru un birou mic, în care cel mult cinci colegi caută și descarcă documente zilnic, Starter este suficient.",
+    descriere: "Pentru o companie mică, în care cel mult cinci angajați caută și descarcă documente zilnic.",
     pret: { lunar: 90, anual: 75 },
     conturi: 5,
     recomandat: true,
@@ -143,7 +143,7 @@ export const PLANURI_RO_MD: Plan[] = [
     cheie: "pro",
     nume: "Pro",
     descriere:
-      "Când același act trece prin mai multe mâini, de la contabilitate la vânzări și la conducere, zece conturi țin toată echipa în același loc.",
+      "Când același document trece prin mai multe mâini, de la contabilitate la vânzări și la conducere, zece conturi țin toată echipa în același loc.",
     pret: { lunar: 150, anual: 125 },
     conturi: 10,
     recomandat: false,
@@ -151,7 +151,7 @@ export const PLANURI_RO_MD: Plan[] = [
   {
     cheie: "business",
     nume: "Business",
-    descriere: "Pentru o firmă cu mai multe departamente, fiecare cu dosarele lui, cele douăzeci de conturi acoperă întreaga organizare.",
+    descriere: "Pentru o companie cu mai multe departamente, fiecare cu dosarele lui: douăzeci de conturi acoperă toată organizația.",
     pret: { lunar: 240, anual: 200 },
     conturi: 20,
     recomandat: false,
@@ -185,7 +185,7 @@ export function randuriPlanRoMd(plan: Plan): RandPlan[] {
     },
     { cifra: null, text: "Căutare cu sursa citată", explicatie: null },
     { cifra: null, text: "Găzduire în UE, Frankfurt", explicatie: null },
-    { cifra: null, text: "Preț pe firmă", explicatie: null },
+    { cifra: null, text: "Un preț pentru toată compania", explicatie: null },
   ];
 }
 
@@ -195,7 +195,7 @@ export function randuriPlanRoMd(plan: Plan): RandPlan[] {
  */
 export const CURSOARE_RO_MD: Record<"persoane" | "minute" | "tarif", Cursor> = {
   persoane: {
-    eticheta: "Câți colegi au nevoie zilnic de acte",
+    eticheta: "Câți angajați au nevoie zilnic de documente",
     unitate: "",
     unitateSpusa: { unu: "persoană", multe: "persoane" },
     min: 1,
@@ -213,7 +213,7 @@ export const CURSOARE_RO_MD: Record<"persoane" | "minute" | "tarif", Cursor> = {
     implicit: 25,
   },
   tarif: {
-    eticheta: "Tariful orar mediu al unui coleg",
+    eticheta: "Tariful orar mediu al unui angajat",
     unitate: "EUR",
     unitateSpusa: { unu: "euro pe oră", multe: "euro pe oră" },
     min: 5,
@@ -231,13 +231,13 @@ export const CURSOARE_RO_MD: Record<"persoane" | "minute" | "tarif", Cursor> = {
  */
 export const CALCULATOR_RO_MD = {
   teaser: {
-    presupuneri: (oameni: string, minute: string) => "Cu " + oameni + " care caută acte câte " + minute + " zilnic",
-    rezultat: (ore: string) => "se adună circa\u00a0" + ore + " lunar",
-    cta: "Încearcă cu cifrele firmei",
+    presupuneri: (oameni: string, minute: string) => "Cu " + oameni + " care caută documente câte " + minute + " pe zi",
+    rezultat: (ore: string) => "se adună cam\u00a0" + ore + " pe lună",
+    cta: "Calculează cu cifrele companiei tale",
   },
-  eticheta: "Calculul timpului pierdut căutând acte",
+  eticheta: "Calculul timpului pierdut căutând documente",
   zileLucratoare: 22,
-  timpAcum: { inainte: "Acum plătești ", dupaBani: " EUR lunar pentru cele circa ", dupaOre: " h în care echipa caută acte prin dosare." },
+  timpAcum: { inainte: "Acum plătești ", dupaBani: " EUR lunar pentru cele circa ", dupaOre: " h în care echipa caută documente prin dosare." },
   pretInOre: { inainte: "Se potrivește pachetul ", dupaPlan: ": ", dupaPret: " EUR pe lună, adică circa ", dupaOre: " h plătite la tariful ales." },
   // Cu comutatorul pe Anual, pretul pachetului e cel anual pe luna: fraza spune perioada.
   pretInOreAnual: {
@@ -281,7 +281,7 @@ export const LISTA_PDF_RO_MD: ContinutListaPdf = {
     marca: "3S Scan Store Solve",
     titlu: "Prețuri 3S",
     coloane: { plan: "Pachet", lunar: "Lunar (EUR)", anual: "Anual, pe lună (EUR)" },
-    note: ["Prețuri orientative, fără TVA.", "Începi cu un pilot gratuit de 14 zile.", "Prețurile sunt cele afișate pe site la data de mai sus."],
+    note: ["Prețuri orientative, fără TVA.", "Începi cu un test gratuit de 14 zile.", "Prețurile sunt cele afișate pe site la data de mai sus."],
     adresa: "Pagina prețurilor: ",
   },
 };
@@ -292,7 +292,7 @@ export const PLIURI_RO_MD: ContinutPliuri = {
   birou: {
     titlu: "Pachetul stabilește numărul de conturi",
     paragraf:
-      "Starter, Pro și Business includ 5, 10 sau 20 de conturi de utilizator, iar limitele lunare cresc de la un pachet la următorul. Prețul se calculează pentru întreaga firmă, nu pentru fiecare utilizator.",
+      "Cu cât pachetul este mai mare, cu atât ai mai multe conturi și limite mai largi.",
   },
   comparatie: { titlu: "Pachetele, față în față", paragraf: "Ce primești în fiecare pachet, rând cu rând" },
 };
@@ -301,7 +301,7 @@ export const PLIURI_RO_MD: ContinutPliuri = {
 export const BIROU_RO_MD: ContinutBirouConturi = {
   initial: 5,
   conturi: "Conturi în pachet",
-  locuri: (n: number) => n + cuDeRoMd(n) + " conturi, câte unul pentru fiecare coleg",
+  locuri: (n: number) => n + cuDeRoMd(n) + " conturi, câte unul pentru fiecare angajat",
 };
 
 const DA: CelulaTabel = { fel: "da" };
@@ -394,9 +394,9 @@ function grupuriSuplimenteRoMd(): { titlu: string; randuri: RandSupliment[] }[] 
  * supliment trece prin butoanele de canal ale paginii.
  */
 export const SUPLIMENTE_RO_MD: ContinutSuplimente = {
-  titlu: "Ai nevoie de mai mult? Suplimente și regulile limitelor",
+  titlu: "Ai nevoie de mai mult? Suplimente și cum funcționează limitele",
   paragrafe: [
-    "Dacă o limită lunară se epuizează înainte de sfârșitul lunii, poți adăuga un supliment fără să schimbi pachetul. Ca să comanzi un supliment, scrie-ne.",
+    "Dacă termini o limită înainte de sfârșitul lunii, cumperi un supliment, fără să schimbi pachetul. Scrie-ne și îl activăm.",
     "Conectare: " +
       CONECTARE_RO_MD +
       ". Taxa acoperă arhiva pe care o aduci la pornire; paginile importate în pilotul gratuit de 14 zile intră în ea la trecerea pe un pachet plătit.",
@@ -407,19 +407,19 @@ export const SUPLIMENTE_RO_MD: ContinutSuplimente = {
   nota: "Prețurile nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.",
   intrebari: [
     {
-      intrebare: "Limitele se aplică pe utilizator sau pe firmă?",
+      intrebare: "Limitele se aplică pe utilizator sau pe companie?",
       raspuns:
-        "Pe firmă. Fiecare limită este comună tuturor conturilor de utilizator ale organizației și nu se calculează separat pentru fiecare persoană.",
+        "Pe companie. Limita este comună pentru toate conturile, nu se împarte pe persoane.",
     },
     {
-      intrebare: "Când se reiau limitele lunare?",
+      intrebare: "Când se resetează limitele lunare?",
       raspuns:
-        "În prima zi a fiecărei luni calendaristice. Ce nu folosești într-o lună nu se reportează în luna următoare. Stocarea nu este o limită lunară: reprezintă spațiul ocupat de documente, iar documentele șterse sunt incluse în ea cât timp stau în coșul de gunoi, cel mult 30 de zile.",
+        "Pe 1 ale fiecărei luni. Ce nu folosești într-o lună se pierde, nu se adună. Spațiul de stocare nu este o limită lunară: este locul ocupat de documentele tale, inclusiv de cele șterse, cât timp stau în coș (cel mult 30 de zile).",
     },
     {
       intrebare: "Ce se întâmplă când ajungi la o limită?",
       raspuns:
-        "3S îți afișează un avertisment în aplicație când ajungi la " +
+        "3S te anunță în aplicație când ai folosit " +
         PRAG_AVERTIZARE_PROCENT +
         "% dintr-o limită. La limită, răspunsurile AI se opresc până în luna următoare sau până adaugi un supliment, iar documentele rămân accesibile. Când stocarea este plină, încărcările noi se opresc până eliberezi spațiu sau adaugi stocare; documentele deja păstrate rămân neschimbate. Descărcările se opresc până în luna următoare sau până adaugi un supliment. Scanările peste limita de pagini OCR nu se pierd: sunt păstrate, iar textul lor este recunoscut la începutul lunii următoare. Nu ștergem niciodată date când se atinge o limită.",
     },
@@ -440,35 +440,35 @@ export const INTREBARI_RO_MD: ContinutFaqPreturi = {
   intrebari: [
     {
       intrebare: "Prețurile includ TVA?",
-      raspuns: "Nu. Prețurile sunt exprimate în euro și nu includ TVA; acolo unde se aplică TVA, aceasta se adaugă pe factură.",
+      raspuns: "Nu. Prețurile sunt în euro, fără TVA. Unde se aplică, TVA-ul se adaugă pe factură.",
     },
     {
       intrebare: "Există reduceri?",
       raspuns:
-        "Da. La plata anuală, pentru Starter, Pro și Business plătești 10 luni din 12, adică cu 16,7% mai puțin. Prima lună după pilot se facturează la prețul din grilă.",
+        "Da. La plata anuală, pentru Starter, Pro și Business plătești 10 luni din 12, adică cu 16,7% mai puțin. Prima lună după testul gratuit se facturează la prețul din grilă.",
     },
     {
       intrebare: "De ce prețul este orientativ?",
       raspuns:
-        "Pachetul potrivit depinde de numărul de persoane care vor folosi 3S. După pilot, confirmăm pachetul și prețul într-o ofertă scrisă, valabilă 30 de zile.",
+        "Pachetul depinde de câți angajați vor folosi 3S. După test, confirmăm pachetul și prețul într-o ofertă scrisă, valabilă 30 de zile.",
     },
     {
       intrebare: "Când se face plata și cât este valabilă o ofertă?",
-      raspuns: "Factura se achită în 14 zile de la emitere, iar abonamentele se facturează în avans. Oferta scrisă și prețul din ea sunt valabile 30 de zile.",
+      raspuns: "Plătești factura în 14 zile de la emitere; abonamentul se facturează în avans. Oferta și prețul din ea sunt valabile 30 de zile.",
     },
     {
-      intrebare: "Ce este un pilot asistat?",
+      intrebare: "Cum decurge testul gratuit?",
       raspuns:
-        "Pilotul durează 14 zile, este gratuit și se desfășoară pe documentele firmei, cu 5 conturi, ca în Starter. Stabilim volumul în scris, pornim după ce accepți Termenii și Acordul de prelucrare a datelor, apoi verificăm împreună răspunsurile.",
+        "Testul durează 14 zile, este gratuit și se face pe documentele companiei tale, cu 5 conturi, ca în Starter. Stabilim în scris ce încărcăm, pornim după ce accepți Termenii și Acordul de prelucrare a datelor, apoi verificăm împreună răspunsurile.",
     },
     {
-      intrebare: "Pot încerca 3S înainte să decid?",
-      raspuns: "Da. Pilotul asistat este gratuit timp de 14 zile și se desfășoară pe documentele firmei. Scrie-ne ca să stabilim documentele și întrebările.",
+      intrebare: "Pot testa 3S înainte să decid?",
+      raspuns: "Da. Testul este gratuit 14 zile și se face pe documentele companiei tale. Scrie-ne și stabilim împreună documentele și întrebările.",
     },
     {
       intrebare: "Cum obțin o ofertă?",
       raspuns:
-        "Scrie-ne pe WhatsApp. Sunt suficiente câteva rânduri: ce păstrezi (hârtie, scanări, fișiere sau o combinație), unde se află arhiva și în ce țară, limba documentelor, volumul aproximativ și câte persoane vor folosi 3S. Nu trimite încă documente sau date personale.",
+        "Scrie-ne pe WhatsApp, în câteva rânduri: ce documente ai (pe hârtie, scanate, fișiere), unde sunt și în ce țară, în ce limbă, cam câte și câți angajați vor folosi 3S. Documente și date personale nu trimiți încă.",
     },
   ],
 };

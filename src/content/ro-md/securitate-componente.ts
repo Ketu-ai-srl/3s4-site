@@ -28,7 +28,8 @@ export const SECTIUNI_SECURITATE_RO_MD: readonly SectiuneSecuritate[] = [
   "erou",
   "piloni",
   "infrastructura",
-  "verificare",
+  // `verificare` (conexiunea la acest site, masurata din browser) a iesit: felia 164, documentul lui Adrian Mihai din
+  // 04.11.2026 („masoara site-ul de prezentare, nu platforma”), GO owner 04.11; randul de congruenta e in p11-ro.json (pe /about EN verificarea ramane, decizia Marian 04.11).
   "ciclu",
   "reglementare",
   "intrebari",
@@ -46,13 +47,13 @@ export const ANCORE_SECURITATE_RO_MD = { securitate: "security", limite: "limits
 /** Sectiunile, impartite la ancore, ca pe EN; reuniunea bucatilor, in ordine, e `SECTIUNI_SECURITATE_RO_MD`. */
 export const BUCATI_SECURITATE_RO_MD: { ancora: string | null; sectiuni: readonly SectiuneSecuritate[] }[] = [
   { ancora: null, sectiuni: ["erou", "piloni"] },
-  { ancora: ANCORE_SECURITATE_RO_MD.securitate, sectiuni: ["infrastructura", "verificare", "ciclu", "reglementare"] },
+  { ancora: ANCORE_SECURITATE_RO_MD.securitate, sectiuni: ["infrastructura", "ciclu", "reglementare"] },
   { ancora: ANCORE_SECURITATE_RO_MD.limite, sectiuni: ["intrebari"] },
 ];
 
 /** Titlul (H1, titlul paginii): cu operatorul numai dupa inregistrarea firmei (variantele conditionate ale fisei). */
 export function titluSecuritateRoMd(operator: boolean): string {
-  return operator ? "Despre 3S: ce este, cine îl operează și unde sunt datele" : "Despre 3S: ce este și unde sunt păstrate datele";
+  return operator ? "Despre 3S: ce este, cine este în spatele lui și unde sunt datele" : "Despre 3S: ce este și unde sunt păstrate datele";
 }
 
 /** Continutul componentelor, cu variantele alese dupa starea firmei operatoare. */
@@ -67,73 +68,73 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
       // securitate.ts:44, :47.
       titlu: titluSecuritateRoMd(operator),
       subtitlu: operator
-        ? "3S Scan Store Solve este o arhivă digitală cu căutare AI, operată din Republica Moldova. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services."
-        : "3S Scan Store Solve este o arhivă digitală cu căutare AI: fiecare răspuns indică documentul din care provine. Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services.",
+        ? "3S este o arhivă digitală cu căutare AI, dezvoltată în parteneriat cu grupul Adria Arhivare din România și administrată de o companie din Republica Moldova. Fișierele încărcate stau pe serverele Amazon Web Services, în Uniunea Europeană."
+        : "3S este o arhivă digitală cu căutare AI, dezvoltată în parteneriat cu grupul Adria Arhivare din România: fiecare răspuns vine cu documentul din care provine. Fișierele încărcate stau pe serverele Amazon Web Services, în Uniunea Europeană.",
     },
     piloni: {
       // securitate.ts:52-73. Iconitele nu sugereaza protectie (d31).
-      titlu: "3S, în câteva fapte",
+      titlu: "3S, pe scurt",
       elemente: [
         {
           iconita: "arhiva",
           titlu: "O arhivă care răspunde",
-          text: "Documentele firmei stau în arhiva digitală 3S, iar fiecare răspuns indică documentul din care provine.",
+          text: "Documentele companiei stau în 3S, iar fiecare răspuns vine cu documentul din care provine.",
         },
         operator
           ? {
               iconita: "panou",
-              titlu: "Operat din Moldova",
-              text: "Serviciul este operat din Republica Moldova, iar firma operatoare este prezentată pe pagina Informații legale.",
+              titlu: "Cine este în spatele lui",
+              text: "3S este dezvoltat în parteneriat cu grupul Adria Arhivare din România și administrat de o companie din Republica Moldova. Datele complete sunt pe pagina Informații legale.",
             }
           : {
               iconita: "panou",
               titlu: "Întrebări în română",
-              text: "Formulezi întrebările în română, direct din browser, fără cuvinte-cheie sau operatori de căutare.",
+              text: "Pui întrebările în română, direct din browser, fără cuvinte-cheie.",
             },
         {
           iconita: "glob",
-          titlu: "Frankfurt, în UE",
-          text: "Regiunea principală de găzduire este Frankfurt, în Uniunea Europeană.",
+          titlu: "Servere în UE",
+          text: "Fișierele stau pe servere din Uniunea Europeană.",
         },
         {
           iconita: "server",
           titlu: "Găzduit de Amazon",
-          text: "Amazon oferă un acord de prelucrare a datelor conform GDPR, iar legea SUA (CLOUD Act) îl poate obliga să predea datele aflate sub controlul său.",
+          text: "Amazon semnează cu clienții un acord de prelucrare a datelor conform GDPR. Legea americană CLOUD Act îi poate cere însă datele pe care le administrează.",
         },
       ],
     },
     infrastructura: {
       // securitate.ts:80-111.
       numar: "01",
-      titlu: "Unde sunt păstrate documentele firmei?",
+      titlu: "Unde sunt păstrate documentele companiei?",
       subtitlu:
-        "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services (AWS). Tot acolo rulează platforma 3S, cu conturile utilizatorilor și arhiva digitală.",
+        "Fișierele încărcate în 3S sunt păstrate în Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services (AWS). Tot acolo rulează și platforma 3S, cu conturile și arhiva.",
       harta: {
         descriere: "Harta Europei cu regiunea principală de găzduire, Frankfurt, în UE.",
         eticheta: "Frankfurt",
         // Acelasi reper ca pe EN (Frankfurt in proiectia hartii); calculul e in `en/despre-componente.ts`.
         reper: { x: 43.017, y: 50.58 },
         legenda: "Frankfurt (UE)",
-        nota: "Regiunea principală: aici sunt păstrate fișierele încărcate.",
+        nota: "Frankfurt (UE): aici sunt păstrate fișierele.",
       },
       specificatii: [
-        { termen: "Furnizor de găzduire", valoare: "Amazon Web Services (SUA), cu o entitate europeană în Luxemburg.", mono: null },
-        { termen: "Locul datelor", valoare: "În Uniunea Europeană, cu regiunea principală la Frankfurt.", mono: null },
-        { termen: "Cadrul UE (GDPR)", valoare: "AWS oferă clienților acordul de prelucrare a datelor (DPA).", mono: null },
-        { termen: "Legea SUA (CLOUD Act)", valoare: "Poate obliga Amazon să predea datele aflate sub controlul său.", mono: null },
+        { termen: "Furnizor de găzduire", valoare: "Amazon Web Services, companie americană, cu sediu european în Luxemburg.", mono: null },
+        { termen: "Unde sunt datele", valoare: "În Uniunea Europeană.", mono: null },
+        { termen: "Protecția datelor (GDPR)", valoare: "Amazon semnează cu clienții un acord de prelucrare a datelor.", mono: null },
+        { termen: "Legea SUA (CLOUD Act)", valoare: "Poate cere Amazon datele pe care le administrează.", mono: null },
       ],
     },
     ciclu: {
       // securitate.ts:249-258; renumerotat (blocurile 02-04 ale RO nu se monteaza).
       numar: "02",
       titlu: "Drumul unui document în 3S, de la încărcare la termenul de păstrare",
-      subtitlu: "Pentru fiecare dosar, firma ta stabilește cât timp se păstrează documentele. Știi oricând unde sunt păstrate și până când.",
+      subtitlu: "Pentru fiecare dosar, compania ta stabilește cât timp se păstrează documentele. Știi oricând unde sunt și până când.",
       pasi: [
-        { numar: "01", iconita: "incarcare", titlu: "Încărcare", text: "Fișierele se încarcă direct din browser, în arhiva firmei." },
-        { numar: "02", iconita: "cilindru", titlu: "Păstrare", text: "În UE, cu regiunea principală la Frankfurt." },
-        { numar: "03", iconita: "arhiva", titlu: "Indexare", text: "Indexat automat, cu textul recunoscut și tipul identificat." },
+        { numar: "01", iconita: "incarcare", titlu: "Încărcare", text: "Le încarci direct din browser, în arhiva companiei tale." },
+        { numar: "02", iconita: "cilindru", titlu: "Păstrare", text: "Pe servere din UE." },
+        { numar: "03", iconita: "arhiva", titlu: "Citire", text: "3S citește textul și recunoaște ce fel de document este." },
         { numar: "04", iconita: "ceas", titlu: "Termen", text: "Păstrat până la termenul stabilit pentru dosarul lui." },
-        { numar: "05", iconita: "iesire", titlu: "Decizia firmei", text: "Termenul potrivit fiecărui dosar îl alegi tu, cu consultantul firmei." },
+        { numar: "05", iconita: "iesire", titlu: "Decizia este a ta", text: "Termenul fiecărui dosar îl stabilești tu, cu consultantul dedicat companiei." },
       ],
     },
     reglementare: {
@@ -145,16 +146,16 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
         { marca: "UE", nume: "Frankfurt", nota: "regiunea principală" },
         { marca: "Export", nume: "Documente", nota: "la nevoie" },
         operator
-          ? { marca: "MD", nume: "Operator", nota: "din Republica Moldova" }
+          ? { marca: "MD", nume: "Companie", nota: "din Republica Moldova" }
           : { marca: "RO", nume: "Întrebări", nota: "în limba română" },
         { marca: "Amazon", nume: "SUA și UE", nota: "CLOUD Act și GDPR" },
-        { marca: "AI", nume: "Răspunsuri", nota: "cu sursa indicată" },
-        { marca: "Dosar", nume: "Termen de păstrare", nota: "stabilit de firmă" },
+        { marca: "AI", nume: "Răspunsuri", nota: "cu documentul-sursă" },
+        { marca: "Dosar", nume: "Termen de păstrare", nota: "stabilit pe dosar" },
       ],
       carduri: [
         {
-          titlu: "Locul datelor, cunoscut dinainte",
-          text: "Fișierele sunt păstrate în UE, cu regiunea principală la Frankfurt, pe Amazon Web Services. Știi de la început unde se află documentele firmei și poți răspunde oricui întreabă.",
+          titlu: "Știi dinainte unde sunt datele",
+          text: "Fișierele stau pe serverele Amazon, în UE. Știi de la început unde sunt documentele companiei și poți răspunde oricui întreabă.",
         },
         {
           titlu: "Termenul, stabilit pe dosar",
@@ -162,51 +163,48 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
         },
         {
           titlu: "Răspunsurile, cu sursa lor",
-          text: "Fiecare răspuns din 3S indică documentul din care provine. Când un client sau un auditor întreabă de unde vine o informație, îi arăți documentul.",
+          text: "Fiecare răspuns din 3S vine cu documentul din care provine. Când un client sau un auditor întreabă de unde știi ceva, îi arăți documentul.",
         },
         {
-          titlu: "Documentele, prin export",
-          text: "Documentele din arhivă se pot livra prin export atunci când ai nevoie de ele în afara platformei, de pildă pentru un auditor.",
+          titlu: "Documentele, oricând la îndemână",
+          text: "Le descarci oricând ai nevoie de ele în afara platformei, de exemplu pentru un eventual control.",
         },
       ],
     },
     intrebari: {
       // securitate.ts:349-380; renumerotat. "Cine opereaza 3S?" numai dupa inregistrarea firmei.
       numar: "04",
-      titlu: "Întrebări despre 3S și datele firmei",
+      titlu: "Întrebări despre 3S și datele companiei",
       intrebari: [
         {
           intrebare: "Unde și la ce furnizor sunt păstrate fișierele?",
           raspuns:
-            "În Uniunea Europeană, cu regiunea principală la Frankfurt, pe serverele Amazon Web Services: regiunea marcată pe harta de mai sus. Locul în care funcțiile AI prelucrează documentele nu este precizat pe acest site; întreabă-ne înainte de a trimite documente reale.",
+            "Pe serverele Amazon Web Services, în Uniunea Europeană (locul marcat pe hartă). Unde anume prelucrează documentele funcțiile AI îți spunem la cerere, înainte să ne trimiți documente reale.",
         },
-        {
-          intrebare: "Ce prevăd legea SUA și GDPR?",
-          raspuns:
-            "CLOUD Act, o lege a SUA, poate obliga Amazon să păstreze și să predea datele aflate sub controlul său, indiferent unde se află serverele. Amazon are și entități în Europa, iar AWS oferă clienților un acord de prelucrare a datelor (DPA), conform GDPR. Echipa 3S, moldo-româno-americană, se aliniază la legislația din Republica Moldova, din UE și din SUA. Informația nu înlocuiește consultanța juridică.",
-        },
+        // Intrebarea „Ce prevad legea SUA si GDPR?” a iesit (felia 164, decizia lui Adrian Mihai din 03.11.2026, GO owner
+        // 04.11): prea multa informatie juridica pentru un client; CLOUD Act ramane numai in forma scurta, mai sus.
         ...(operator
           ? [
               {
-                intrebare: "Cine operează 3S?",
-                raspuns: "3S este operat din Republica Moldova. Datele firmei operatoare sunt publicate pe pagina Informații legale.",
+                intrebare: "Cine este în spatele 3S?",
+                raspuns: "3S este dezvoltat în parteneriat cu grupul Adria Arhivare din România și administrat de o companie din Republica Moldova. Datele complete sunt pe pagina Informații legale.",
               },
             ]
           : []),
         {
-          intrebare: "Ce este încă în testare sau indisponibil?",
+          intrebare: "Ce este încă în teste și ce nu avem?",
           raspuns:
-            "Întrebările în engleză despre documente redactate în română și indicarea paginii exacte sunt deocamdată în testare. Semnătura electronică calificată nu este disponibilă astăzi.",
+            "Întrebările în engleză pe documente în română și afișarea paginii exacte sunt în teste. Semnătura electronică calificată nu există încă în 3S.",
         },
         {
-          intrebare: "De ce lipsesc referințele de la clienți?",
+          intrebare: "De ce nu avem recenzii de la clienți?",
           raspuns:
-            "Nu publicăm numele clienților, rezultate cifrate sau recenzii. Poți evalua 3S, în schimb, pe baza ghidurilor cu surse și a unui pilot pe documentele firmei.",
+            "Nu publicăm nume de clienți, cifre sau recenzii. Poți verifica 3S, în schimb, prin ghidurile cu surse și printr-un test gratuit pe documentele companiei tale.",
         },
         {
           intrebare: "Cine stabilește cât timp se păstrează un document?",
           raspuns:
-            "Firma ta. Termenul se stabilește pe fiecare dosar și este valabil pentru toate documentele din el; alegerea lui rămâne decizia ta și a consultantului firmei.",
+            "Compania ta. Termenul se stabilește pe dosar și este valabil pentru toate documentele din el. Decizia este a ta.",
         },
       ],
     },

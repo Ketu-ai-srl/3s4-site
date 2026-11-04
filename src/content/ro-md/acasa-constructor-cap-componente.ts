@@ -8,7 +8,7 @@ import type { CapConstructor } from "@/content/acasa";
 
 export const CAP_CONSTRUCTOR_RO_MD: CapConstructor = {
   titlu: "Cum ar arăta arhiva ta în 3S",
-  subtitlu: "Alege un domeniu, ca exemplu, și vezi cum ar fi păstrate și găsite actele lui în 3S.",
+  subtitlu: "Alege domeniul tău și vezi cum ar arăta documentele lui în 3S și cum le-ai găsi.",
   intrebare: "În ce domeniu activezi?",
   industrii: [
     {

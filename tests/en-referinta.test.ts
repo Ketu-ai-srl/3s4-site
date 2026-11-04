@@ -280,7 +280,10 @@ describe('paginile randate pe server', () => {
     )
     const href = /href="([^"]+)"/.exec(html)?.[1] ?? ''
     expect(href.startsWith('https://wa.me/37300000001?text=')).toBe(true)
-    expect(new URL(href.split('&amp;').join('&')).searchParams.get('text')).toBe(efacturi.pagina.cta.textWhatsapp)
+    // Felia 164 (decizia Marian 04.11.2026, „1 da, 2 da”): mesajul si subiectul pleaca FARA codul [ref:...] si pe EN;
+    // textul sursa il poarta mai departe, legatura il scoate.
+    expect(new URL(href.split('&amp;').join('&')).searchParams.get('text')).toBe(efacturi.pagina.cta.textWhatsapp.split(' [ref:' + efacturi.pagina.cta.ref + ']').join(''))
+    expect(decodeURIComponent(href)).not.toContain('[ref:')
     expect(html).toContain('data-canal="whatsapp"')
     // Aceleasi clase ca butonul RO inlocuit (plin, plat, cu sageata); vitest numeste clasele de modul `_nume_hash`.
     expect(html).toMatch(/<a [^>]*class="_buton_\w+ _plin_\w+ _plat_\w+"/)

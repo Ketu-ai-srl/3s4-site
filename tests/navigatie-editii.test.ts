@@ -160,13 +160,18 @@ describe('contractul EN (navigatie-en.ts)', () => {
     const text = (href: string) => decodeURIComponent(new URL(href).searchParams.get('text') ?? '')
     expect(en.antet.cta.text).toBe(ETICHETA_WHATSAPP_EN)
     expect(peCale('/')).toMatch(new RegExp('^https://wa\\.me/' + CANALE_3S_MD.whatsapp + '\\?text='))
-    expect(text(peCale('/'))).toContain('[ref:en-home]')
-    expect(text(peCale('/pricing'))).toContain('[ref:en-price]')
-    expect(text(peCale('/legal/privacy'))).toContain('[ref:en-home]')
-    expect(text(peCale('/o-adresa-necunoscuta'))).toContain('[ref:en-home]')
-    // Fiecare pagina din tabel are textul ei, cu marcajul ei, o singura data.
+    // Felia 164 (decizia Marian 04.11.2026, „1 da”): pe EN mesajul pleaca FARA codul [ref:...], ca pe RO-MD; textul sursa
+    // il poarta mai departe, legatura il scoate. Pagina se recunoaste dupa textul ei.
+    const fara = (t: { ref: string; text: string }) => t.text.split(' [ref:' + t.ref + ']').join('')
+    const pe = (ref: string) => TEXTE_WHATSAPP_EN.find((t) => t.ref === ref)!
+    expect(text(peCale('/'))).toBe(fara(pe('en-home')))
+    expect(text(peCale('/pricing'))).toBe(fara(pe('en-price')))
+    expect(text(peCale('/legal/privacy'))).toBe(fara(pe('en-home')))
+    expect(text(peCale('/o-adresa-necunoscuta'))).toBe(fara(pe('en-home')))
+    // Fiecare pagina din tabel are textul ei, fara marcaj.
     for (const t of TEXTE_WHATSAPP_EN) {
-      expect(text(peCale(t.cale)), t.cale).toBe(t.text)
+      expect(text(peCale(t.cale)), t.cale).toBe(fara(t))
+      expect(text(peCale(t.cale)), t.cale).not.toContain('[ref:')
     }
   })
 
@@ -174,7 +179,7 @@ describe('contractul EN (navigatie-en.ts)', () => {
     const asteptat =
       'https://wa.me/' +
       CANALE_3S_MD.whatsapp +
-      '?text=Hello%203S%2C%20I%20read%20your%20website%20%5Bref%3Aen-home%5D.%20I%20would%20like%20to%20ask%20about%20a%20pilot.'
+      '?text=Hello%203S%2C%20I%20read%20your%20website.%20I%20would%20like%20to%20ask%20about%20a%20pilot.'
     expect(ctaPeCale(en.antet.cta, '/').href).toBe(asteptat)
   })
 
@@ -185,9 +190,11 @@ describe('contractul EN (navigatie-en.ts)', () => {
     expect(mailto).toBe(
       'mailto:' +
         POSTA_SINTETICA +
-        '?subject=3S%20inquiry%20%5Bref%3Aen-home%5D&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20website.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
+        '?subject=3S%20inquiry&body=Hello%203S%2C%0D%0A%0D%0AI%20read%20your%20website.%20I%20would%20like%20to%20ask%20about%20a%20pilot.%0D%0A%0D%0AMy%20archive%20%28paper%2C%20scans%20or%20files%29%20and%20country%3A%0D%0A',
     )
-    expect(alegePeCale(cu.subsol.contact!.email!.legatura, '/contact')).toContain(codifica('[ref:en-contact]'))
+    // Felia 164 (decizia Marian 04.11.2026, „2 da”): subiectul pleaca fara [ref:...]; pagina se recunoaste dupa corp.
+    expect(alegePeCale(cu.subsol.contact!.email!.legatura, '/contact')).not.toContain(codifica('[ref:'))
+    expect(alegePeCale(cu.subsol.contact!.email!.legatura, '/contact')).toContain(codifica('I read your contact page.'))
   })
 
   it('fara formular, cont, descarcare sau "0 RON"; meniurile au toate paginile', () => {
@@ -298,10 +305,15 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     ])
     expect(md.antet.cta.text).toBe('Scrie-ne pe WhatsApp')
     const text = (cale: string) => decodeURIComponent(new URL(ctaPeCale(md.antet.cta, cale).href ?? '').searchParams.get('text') ?? '')
-    expect(text('/ro')).toBe(TEXTE_WHATSAPP_RO_MD[0].text)
-    expect(text('/ro/contact')).toContain('[ref:ro-md-contact]')
-    expect(text('/ro/juridic/termeni')).toContain('[ref:ro-md-juridic]')
-    expect(text('/ro/o-pagina-fara-intrare')).toContain('[ref:ro-md-acasa]')
+    // Felia 164 (GO owner 04.11.2026 pe documentul lui Adrian Mihai): mesajul pleaca FARA codul [ref:...]; textul sursa
+    // il poarta mai departe, iar legatura il scoate. Pagina se recunoaste dupa textul ei.
+    const fara = (t: { ref: string; text: string }) => t.text.split(' [ref:' + t.ref + ']').join('')
+    const pe = (ref: string) => TEXTE_WHATSAPP_RO_MD.find((t) => t.ref === ref)!
+    expect(text('/ro')).toBe(fara(TEXTE_WHATSAPP_RO_MD[0]))
+    expect(text('/ro/contact')).toBe(fara(pe('ro-md-contact')))
+    expect(text('/ro/juridic/termeni')).toBe(fara(pe('ro-md-juridic')))
+    expect(text('/ro/o-pagina-fara-intrare')).toBe(fara(pe('ro-md-acasa')))
+    for (const c of ['/ro', '/ro/contact', '/ro/juridic/termeni']) expect(text(c)).not.toContain('[ref:')
   })
 
   it('meniul antetului /ro: acelasi numar de intrari si aceeasi ordine ca EN, fiecare tinta e perechea /ro a tintei EN', () => {

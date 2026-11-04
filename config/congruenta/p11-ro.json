@@ -1,0 +1,100 @@
+{
+  "_nota": "Lista declarata a perechii P11 pe pagina romana a lui 3s.md (/ro/securitate), desprinsa din p11.json de felia 164 (decizia Marian 04.11.2026, „4 repune”): aceleasi randuri ca P11, plus verificarea din browser, scoasa numai de pe pagina in romana. EXCEPTIE NUMITA: cand verificarea revine sau iese si pe /about, lista se pliaza inapoi in p11.json. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts.",
+  "pereche": "P11-RO",
+  "ro": "/securitate",
+  "pagini_3s_md": [
+    "/ro/securitate"
+  ],
+  "randuri": [
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "securitate_verificare"
+      },
+      "cod": "go-curatenie-04-11",
+      "motiv": "Verificarea conexiunii din browser: masura site-ul de prezentare, nu platforma, si deruta clientul (documentul lui Adrian Mihai, 04.11.2026); iese de pe pagina in romana (/ro/securitate pe 3s.md, /securitate pe 3s.com.ro). Pe /about EN ramane (decizia Marian 04.11.2026, „4 repune”, lista p11.json)."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-02"
+      },
+      "cod": "d43",
+      "motiv": "StocareProprie: stocarea proprie nu se gaseste in codul platformei."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-03"
+      },
+      "cod": "d31",
+      "motiv": "Criptare: AES-256 si TLS raman in afara lansarii."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-04"
+      },
+      "cod": [
+        "d43",
+        "d31"
+      ],
+      "motiv": "Acces: accesul pe persoana si dosar."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-07"
+      },
+      "cod": "poarta-juridica-40-41",
+      "motiv": "Originale: originalele pe hartie, predate spre arhivare."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "sectiune-standard",
+        "eticheta": "securitate-bloc-08"
+      },
+      "cod": "d31",
+      "motiv": "Raportare: procesul de raportare a vulnerabilitatilor nu e confirmat, iar securitatea platformei ramane in afara lansarii."
+    },
+    {
+      "tip": "componenta",
+      "radacina": {
+        "clasa": "Seif_seif",
+        "eticheta": "seif-titlu"
+      },
+      "cod": [
+        "poarta-juridica-40-41",
+        "d31"
+      ],
+      "motiv": "Seif: actele sub cheie si legatura spre inregistrare."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "securitate_mono",
+      "cod": "d31",
+      "motiv": "Clasa valorilor AES-256 si TLS 1.2 din specificatiile infrastructurii; pe 3s.md randurile lor poarta alte fapte, fara valoare monospatiata."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "produs_nerupt",
+      "cod": [
+        "d31",
+        "d42"
+      ],
+      "motiv": "Clasa grupurilor de text nerupte (nerupt.tsx); in sectiunile ramase, pe RO o poarta numai termenii scosi de pe 3s.md: 'AES-256' si 'TLS 1.2' (d31) si 'intr-o singura regiune' (d42). Textul EN al acelorasi sectiuni nu are niciun grup de felul asta."
+    }
+  ],
+  "_nedeclarate": [
+    "AES/TLS/Jurnal (d31), Germania -> Frankfurt (d42), hartia (poarta-juridica-40-41): text in elemente care raman (piloni 4, specificatii 4, ciclu 5, insigne 6, carduri 4, intrebari 6); nu sunt randuri de forma.",
+    "Reglementare: insignele raman 6 si cardurile 4, ca pe RO. Legatura de partajare cu termen si exportul zip al originalelor n-au intrare confirmata in registrul de afirmatii EN, deci sloturile lor (insignele 2 si 5, cardurile 3-4) iau fapte confirmate: raspunsul cu sursa citata si legea americana (CLOUD Act); text in elemente care raman, nu rand de forma.",
+    "Verificarea din browser a iesit de pe /ro/securitate (felia 164, codul go-curatenie-04-11, randul de componenta de mai sus); pe /about ramane (p11.json).",
+    "Ancorele `security` si `limits`: doua marcaje goale, fara clasa, in afara radacinilor de sectiune (componenta nu are proprietate de ancora); nu schimba nici radacinile, nici clasele.",
+    "Pagina nu are bloc de final, ca pagina RO (seiful ii tine locul acolo, iar seiful iese)."
+  ]
+}

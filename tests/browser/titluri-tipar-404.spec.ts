@@ -243,31 +243,62 @@ test.describe('titlul startului', () => {
 
   test('martor POZITIV al plafonului: cu marimea din .t-h1-erou repusa, la 1920 si la 360 "Intreaba" ramane singur pe RO', async ({ page }) => {
     test.setTimeout(60_000)
+    // FIXTURA (felia 164): plafonul s-a facut pentru propozitia scurta de trei cuvinte "Întreabă documentele firmei."
+    // (Erou.tsx, Erou.module.css). Textul lui Adrian Mihai (03.11.2026, GO Marian 04.11) are patru cuvinte
+    // ("Întreabă documentele companiei tale."), nu mai e propozitie scurta, iar cu marimea veche nu lasa cuvant singur
+    // (CI 41802934979: la 1920, doua randuri de cate doua cuvinte). Martorul pune deci in pagina, la rulare, propozitia
+    // de trei cuvinte in forma pe care o randeaza componenta (`data-scurta`, ultimele doua cuvinte in `data-lipit`), ca
+    // sa arate in continuare ca plafonul e cel care o tine fara cuvant singur. Textul real il masoara proba de mai sus.
+    const scurta = ['Între' + 'abă', 'documentele', 'fir' + 'mei.']
     for (const latime of [1920, 360]) {
       await deschide(page, comro.baza + '/', latime)
-      await page.evaluate(() => {
+      await page.evaluate((cuvinte) => {
         const h = document.querySelector<HTMLElement>('h1#erou-titlu')
         if (!h) throw new Error('H1-ul eroului lipseste')
+        const prima = h.querySelector<HTMLElement>(':scope > span')
+        if (!prima) throw new Error('prima propozitie a H1-ului lipseste')
+        prima.setAttribute('data-scurta', '')
+        prima.textContent = cuvinte[0] + ' '
+        const lipit = document.createElement('span')
+        lipit.setAttribute('data-lipit', '')
+        lipit.textContent = cuvinte.slice(1).join(' ')
+        prima.append(lipit)
         // Valorile din globals.css (.t-h1-erou), fara plafonul din Erou.module.css.
         h.style.setProperty('font-size', innerWidth > 1180 ? 'clamp(2rem, 3.1vw, 3.3rem)' : 'clamp(1.7rem, 6vw, 2.2rem)', 'important')
-      })
+      }, scurta)
       const p = await masoaraH1(page)
       console.log('[h1 martor plafon] ' + latime + ' ' + JSON.stringify(p))
+      // Controlul fixturii: prima propozitie masurata e chiar cea pusa in pagina, marcata scurta.
+      expect(p[0]?.randuri.flat(), 'controlul fixturii').toEqual(scurta)
+      expect(p[0]?.scurta, 'controlul fixturii: data-scurta').toBe(true)
       expect(randuriSingure(p).length, String(latime)).toBeGreaterThan(0)
     }
   })
 
-  test('martor NEGATIV: la 1024 si 768, unde titlul n-avea cuvant singur, randurile sunt aceleasi cu si fara regulile feliei', async ({ page }) => {
+  test('martor NEGATIV: la 1024 si 768, unde titlul n-are cuvant singur nici fara reguli, randurile sunt aceleasi cu si fara regulile feliei', async ({ page }) => {
     test.setTimeout(120_000)
+    // Felia 164: cu titlul RO nou (documentul lui Adrian Mihai, GO Marian 04.11.2026) premisa "la 768 titlul n-are cuvant
+    // singur" nu mai tine pe RO: fara reguli, "provine." ramane singur (CI 41802934979, 3s.com.ro `/` la 768). Martorul
+    // nu mai fixeaza latimile pe un text anume: unde titlul fara reguli n-are cuvant singur, regulile nu au voie sa schimbe
+    // nimic (negativul); unde are, regulile trebuie sa-l scoata (proba principala, aici doar consemnat). Controlul ca
+    // negativul chiar ruleaza: cel putin jumatate din cele 8 asezari (la baza: EN pe ambele latimi si RO la 1024) cad pe el.
+    let negative = 0
     for (const cale of [comro.baza + '/', comro.baza + '/en', md.baza + '/', md.baza + '/ro']) {
       for (const latime of [1024, 768]) {
         await deschide(page, cale, latime)
         const cu = await masoaraH1(page)
         await faraReguliTitlu(page)
         const fara = await masoaraH1(page)
-        expect(cu.map((x) => x.randuri), cale + ' ' + latime).toEqual(fara.map((x) => x.randuri))
+        if (randuriSingure(fara).length === 0) {
+          negative++
+          expect(cu.map((x) => x.randuri), cale + ' ' + latime).toEqual(fara.map((x) => x.randuri))
+        } else {
+          console.log('[h1 martor-] ' + cale + ' ' + latime + ': fara reguli are cuvant singur, regulile il scot')
+          expect(randuriSingure(cu), cale + ' ' + latime).toEqual([])
+        }
       }
     }
+    expect(negative, 'asezari pe care negativul a rulat').toBeGreaterThanOrEqual(4)
   })
 })
 

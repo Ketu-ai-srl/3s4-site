@@ -56,31 +56,31 @@ export const EFACTURA_RO_MD: ContinutArhivaEfactura = {
       { text: "Acasă", cale: "/ro" },
       { text: "Arhiva e-Factura", cale: CALE_EFACTURA_RO_MD },
     ],
-    eticheta: "Acces timpuriu",
+    eticheta: "În pregătire",
     titlu: "Facturile din SPV, păstrate automat cât cere legea",
     subtitlu:
-      "Din SPV poți descărca o e-factură doar 60 de zile de la publicare. 3S le va descărca în fiecare zi pe toate, emise și primite, și le va păstra în arhiva firmei, cu XML-ul original, sigiliul Ministerului Finanțelor și o copie PDF pentru citit.",
-    buton: "Scrie-ne pe WhatsApp - te înscriem la acces timpuriu",
-    subButon: "Serviciul e în pregătire. Îți păstrăm locul și prețul de lansare; nu îți cerem certificatul digital până la pornire.",
+      "Din SPV poți descărca o e-factură doar 60 de zile de la publicare. 3S le va descărca în fiecare zi pe toate, emise și primite, și le va păstra în arhiva companiei, cu XML-ul original, sigiliul Ministerului Finanțelor și o copie PDF pentru citit.",
+    buton: "Scrie-ne pe WhatsApp și te contactăm rapid",
+    subButon: "Serviciul este în pregătire. Îți păstrăm locul și prețul de lansare și nu îți cerem certificatul digital până la pornire.",
   },
   fereastra: {
-    titlu: "SPV-ul e o fereastră de 60 de zile, nu o arhivă",
+    titlu: "SPV-ul este o fereastră de 60 de zile, nu o arhivă",
     paragrafe: [
-      "În RO e-Factura, fișierul unei facturi se poate descărca direct 60 de zile de la publicarea lui în sistem. După aceea, ANAF îl arhivează și îl eliberează doar la cerere. Legea îți cere însă să păstrezi facturile 5 ani, socotiți de la 1 iulie a anului care urmează încheierii exercițiului financiar.",
-      "Până atunci, facturile ajung descărcate de mână, pe calculatoarele cui are timp, în foldere cu nume diferite. Una lipsește exact când o cere un control, un auditor sau banca.",
+      "Din RO e-Factura poți descărca o factură doar 60 de zile de la publicare. După aceea, ANAF o arhivează și o eliberează doar la cerere. Legea îți cere însă să păstrezi facturile 5 ani, de la 1 iulie a anului următor celui în care s-a încheiat exercițiul financiar.",
+      "Astăzi, facturile se descarcă de mână, pe calculatorul cui are timp, în foldere cu nume diferite. Și una lipsește exact când o cere un control, un auditor sau banca.",
     ],
   },
   pasi: {
     titlu: "Trei pași, o singură dată",
     pasi: [
-      { accent: "Îți faci contul 3S.", rest: "Adaugi firma după CUI." },
+      { accent: "Îți faci cont în 3S.", rest: "Adaugi compania, după CUI." },
       {
         accent: "Autorizezi 3S pe site-ul ANAF.",
-        rest: "Te autentifici cu certificatul tău digital calificat pe pagina oficială ANAF; parola și PIN-ul certificatului nu ajung la noi.",
+        rest: "Intri pe site-ul ANAF cu certificatul tău digital calificat și autorizezi 3S. Parola și PIN-ul certificatului nu ajung niciodată la noi.",
       },
       { accent: "Facturile vin singure.", rest: "În fiecare zi, 3S descarcă facturile emise, cele primite și mesajele de eroare ANAF." },
     ],
-    nota: "Autorizarea ANAF se reînnoiește periodic; 3S îți spune din timp când e cazul.",
+    nota: "Autorizarea ANAF se reînnoiește periodic; 3S îți spune din timp când este cazul.",
   },
   primesti: {
     titlu: "Fiecare factură, în forma care contează legal",
@@ -88,33 +88,33 @@ export const EFACTURA_RO_MD: ContinutArhivaEfactura = {
       {
         iconita: "file-badge",
         accent: "XML-ul original și sigiliul electronic al Ministerului Finanțelor",
-        rest: ", exact cum le-a livrat ANAF. Acesta e documentul; PDF-ul e doar copia pentru citit.",
+        rest: ", exact cum le-a livrat ANAF. Acesta este documentul cu valoare legală; PDF-ul este doar copia pentru citit.",
       },
       { iconita: "refresh-cw", accent: "Facturile emise, cele primite și erorile ANAF", rest: ", din fiecare zi." },
       {
         iconita: "search",
-        accent: "Căutare în cuvintele tale:",
-        rest: " scrii „facturile de energie din martie” și primești lista, fiecare cu documentul-sursă.",
+        accent: "Cauți cu cuvintele tale:",
+        rest: " scrii „facturile de energie din martie” și primești lista, fiecare factură cu documentul ei.",
       },
       { iconita: "download", accent: "Export CSV și pachetul lunar ZIP", rest: " pentru contabil." },
       {
         iconita: "archive",
-        accent: "Facturile lângă restul documentelor firmei:",
-        rest: " contracte, procese-verbale, actele scanate de pe hârtie, toate în aceeași arhivă.",
+        accent: "Facturile stau lângă restul documentelor companiei:",
+        rest: " contracte, procese-verbale, documentele scanate de pe hârtie, toate în aceeași arhivă.",
       },
     ],
   },
   contabili: {
     titlu: "Toți clienții tăi, într-un singur cont",
-    text: "Ca împuternicit în SPV, poți autoriza 3S o dată cu certificatul tău pentru toate firmele pe care le reprezinți. Clientul care preferă să-și păstreze certificatul primește de la tine un link și autorizează singur, pe site-ul ANAF. Facturile fiecărui client apar zilnic în contul tău, separate pe CUI, cu pachetul lunar gata de descărcat.",
+    text: "Ca împuternicit în SPV, poți autoriza 3S o dată cu certificatul tău pentru toate companiile pe care le reprezinți. Clientul care preferă să-și păstreze certificatul primește de la tine un link și autorizează singur, pe site-ul ANAF. Facturile fiecărui client apar zilnic în contul tău, separate pe CUI, cu pachetul lunar gata de descărcat.",
   },
   siguranta: {
     titlu: "Unde stau facturile și cine le vede",
     elemente: [
-      "Arhiva e găzduită în Uniunea Europeană, cu regiunea principală la Frankfurt.",
+      "Arhiva este păstrată în Uniunea Europeană, cu regiunea principală la Frankfurt.",
       "Cheia de acces primită de la ANAF se păstrează criptat.",
       "Poți retrage oricând autorizarea, din 3S sau din ANAF.",
-      "Arhiva e a ta: o exporți oricând, inclusiv după încheierea abonamentului.",
+      "Arhiva este a ta: o descarci oricând, inclusiv după încheierea abonamentului.",
     ],
   },
   preturi: {
@@ -135,22 +135,22 @@ export const EFACTURA_RO_MD: ContinutArhivaEfactura = {
     intrebari: [
       {
         intrebare: "Facturile dispar din SPV după 60 de zile?",
-        raspuns: "Nu dispar: după 60 de zile nu le mai poți descărca direct, iar ANAF le eliberează la cerere. 3S le descarcă înainte, zilnic.",
+        raspuns: "Nu dispar, dar după 60 de zile nu le mai poți descărca direct; ANAF le eliberează doar la cerere. 3S le descarcă zilnic, înainte să expire cele 60 de zile.",
       },
       {
         intrebare: "Cât trebuie păstrate facturile?",
         raspuns:
-          "5 ani, de la 1 iulie a anului care urmează încheierii exercițiului financiar. Pentru bunurile cu durată de folosință mai lungă și pentru situațiile financiare anuale (10 ani), termenul e mai lung.",
+          "5 ani, de la 1 iulie a anului care urmează încheierii exercițiului financiar. Pentru bunurile cu durată de folosință mai lungă și pentru situațiile financiare anuale (10 ani), termenul este mai lung.",
       },
       {
-        intrebare: "E nevoie de o arhivă electronică acreditată?",
+        intrebare: "Este nevoie de o arhivă electronică acreditată?",
         raspuns:
           "Pentru facturi, nu: Codul fiscal permite stocarea electronică fără acreditare, cu condiția ca facturile să rămână autentice, întregi și lizibile.",
       },
       {
         intrebare: "Ce se întâmplă cu facturile mai vechi de 60 de zile?",
         raspuns:
-          "La pornire, 3S le preia pe cele aflate încă în fereastră. Pe cele mai vechi le poți încărca din calculator, iar 3S le pune în aceeași arhivă.",
+          "La pornire, 3S le preia pe cele care încă se pot descărca din SPV. Pe cele mai vechi le încarci tu din calculator, iar 3S le pune în aceeași arhivă.",
       },
       {
         intrebare: "Am nevoie de certificat digital?",
@@ -166,8 +166,8 @@ export const EFACTURA_RO_MD: ContinutArhivaEfactura = {
  * vizualul cu date fictive declarate, `ctaFinalReferintaRoMd`). Butonul il pune pagina: canalul WhatsApp, cu `ref`-ul paginii.
  */
 export const CTA_FINAL_EFACTURA_RO_MD: ContinutCtaFinal = ctaFinalReferintaRoMd(
-  "Intră printre primii",
-  "Scrie-ne pe WhatsApp numele firmei și câte facturi ai pe lună. Te anunțăm la pornire și îți păstrăm prețul de lansare.",
+  "Fii printre primii",
+  "Scrie-ne pe WhatsApp numele companiei și câte facturi ai pe lună. Te anunțăm când pornim și îți păstrăm prețul de lansare.",
 );
 
 /** Eticheta butonului din blocul de final (aceeasi ca pe celelalte pagini /ro, decizia 35). */

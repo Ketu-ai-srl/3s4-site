@@ -7,14 +7,15 @@ import {
 } from "./ajutor/copie-3s-md";
 import { IMPACTURI_BLOCANTE, masoaraAccesibilitatea } from "./ajutor/detectori";
 import * as en from "../../src/content/en/acasa-componente";
+import { abateriWhatsApp } from "./ajutor/whatsapp-ro";
 
 /**
  * Felia 99 (`editie-start-en`), pe COPIA 3s.md (`ajutor/copie-3s-md.ts`): pagina de start EN compune componentele
  * startului RO (decizia 53), cu textul din `src/content/en/acasa-componente.ts`. Forma (radacinile, clasele,
  * numaratorile, stilurile) o masoara `congruenta.spec.ts` contra listei `config/congruenta/p01.json`; aici, criteriul
  * de gata al feliei:
- *  1. HTML-ul servit: un singur H1, zero `<form`, zero RON; legatura WhatsApp cu `[ref:en-home]` o data in erou si o
- *     data in blocul de final; butonul secundar al eroului duce la blocul de final, iar ancora exista;
+ *  1. HTML-ul servit: un singur H1, zero `<form`, zero RON; legatura WhatsApp o data in erou si o data in blocul de
+ *     final, cu textul paginii FARA marcajul ref (felia 164, decizia Marian 04.11.2026, `ajutor/whatsapp-ro.ts`); butonul secundar al eroului duce la blocul de final, iar ancora exista;
  *  2. scena eroului, dupa hidratare, cu si fara miscare redusa: zero `<button>`, 6 noduri cu etichetele modulului (decizia 61),
  *     fara pastila centrului; un clic pe centru nu deschide macheta (decizia 43 si 49 pe 3s.md); la 320, 360, 390 si
  *     1440, nicio eticheta a figurii (textele EN sunt mai lungi decat cele RO) peste alta, peste un disc sau sub centru;
@@ -44,7 +45,8 @@ const PROFIL = mediuProfil3sMd();
 const CANALE = JSON.parse(PROFIL.CANALE_JSON) as { whatsapp: string };
 const WA = "https://wa.me/" + CANALE.whatsapp + "?text=";
 const RON = new RegExp("\\b" + "R" + "ON\\b");
-const REF = "[ref:en-home]";
+// Felia 164 (decizia Marian 04.11.2026, „1 da”): ref-ul alege numai randul tabelului de canale EN; mesajul pleaca fara el.
+const REF = "en-home";
 
 /**
  * Cheile care nu poarta text vizibil (iconite, coduri, pozitii, tinte). `etichetaFigura` e eticheta accesibila a
@@ -136,7 +138,7 @@ function whatsapp(html: string): string[] {
     .filter((h) => h.startsWith(WA));
 }
 
-test("HTML-ul servit: un H1, zero <form, zero RON; WhatsApp cu ref-ul paginii in erou si in final; butonul secundar duce la final", async () => {
+test("HTML-ul servit: un H1, zero <form, zero RON; WhatsApp cu textul paginii, fara marcaj, in erou si in final; butonul secundar duce la final", async () => {
   const html = await servit();
   expect(html.match(/<h1\b/g) ?? []).toHaveLength(1);
   expect(html).not.toContain("<form");
@@ -160,7 +162,7 @@ test("HTML-ul servit: un H1, zero <form, zero RON; WhatsApp cu ref-ul paginii in
   ] as const) {
     const wa = whatsapp(bloc);
     expect(wa, nume).toHaveLength(1);
-    expect(decodeURIComponent(wa[0].slice(WA.length)), nume).toContain(REF);
+    expect(abateriWhatsApp(wa, { numar: CANALE.whatsapp, ref: REF, adresaPaginii: copie.baza + "/", limba: "en" }), nume).toEqual([]);
   }
   expect(erou).toContain('href="' + en.EROU_SECUNDAR.href + '"');
 });

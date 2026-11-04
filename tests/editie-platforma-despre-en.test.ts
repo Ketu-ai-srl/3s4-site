@@ -143,6 +143,8 @@ describe('compunerea: aceleasi componente, in ordinea RO, minus sectiunile scoas
   })
 
   it('/about: fara StocareProprie, Criptare, Acces, Originale, Raportare si Seif; bucatile paginii refac exact lista', () => {
+    // Felia 164: verificarea conexiunii din browser ramane pe /about (decizia Marian 04.11.2026, „4 repune”) si iese numai
+    // de pe pagina in romana (config/congruenta/p11-ro.json).
     const scoase = ['stocareProprie', 'criptare', 'acces', 'originale', 'raportare', 'seif']
     expect([...despre.SECTIUNI_DESPRE_EN]).toEqual(SECTIUNI_SECURITATE.filter((s) => !scoase.includes(s)))
     expect(despre.BUCATI_DESPRE_EN.flatMap((b) => [...b.sectiuni])).toEqual([...despre.SECTIUNI_DESPRE_EN])

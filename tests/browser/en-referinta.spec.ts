@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect, test } from './ajutor/baza'
-import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
+import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsApp } from './ajutor/whatsapp-ro'
 import { pagina as comparatie } from '../../src/content/en/compare-3s-vs-google-drive'
 import { pagina as efacturi } from '../../src/content/en/guides-e-invoice-archiving-eu'
 import { pagina as moldova } from '../../src/content/en/guides-records-retention-moldova'
@@ -17,8 +18,8 @@ import type { PaginaReferinta } from '../../src/content/en/referinta-comun'
  * Ce se cere, pe fiecare pagina:
  *   - pe HTML-ul SERVIT (fara JavaScript): 200, `<html lang="en">`, un singur H1, egal cu cel din modul, noindex pe
  *     staging, zero `<form`, zero `RON` ca cuvant;
- *   - legaturile WhatsApp din `<main>` duc la `wa.me` si poarta `[ref:<ref>]` al paginii, cu textul ei (decodate si
- *     comparate cu modulul), in locurile butoanelor perechii RO (felia editie-referinta, decizia 53): pe G1 eroul si
+ *   - legaturile WhatsApp din `<main>` duc la `wa.me` cu textul paginii (decodate si comparate cu modulul), din felia
+ *     164 FARA marcajul `[ref:<ref>]` (decizia Marian 04.11.2026, „1 da”; `ajutor/whatsapp-ro.ts`), in locurile butoanelor perechii RO (felia editie-referinta, decizia 53): pe G1 eroul si
  *     blocul de final, pe G2 blocul de final, pe G3 cutia de final;
  *   - pe DOM-ul din browser: entitatile declaratiei G-AI-02 (`config/seo/en-referinta.json`) si H1-ul in primele 400
  *     de cuvinte din `<main>`.
@@ -85,6 +86,9 @@ function deMarketing(cai: string[]): string[] {
 
 let copie: Copie3sMd
 
+/** Numarul de WhatsApp al domeniului 3s.md, din profil (contractul fara marcaj, felia 164). */
+const NUMAR_WA = (JSON.parse(mediuProfil3sMd().CANALE_JSON) as { whatsapp: string }).whatsapp
+
 async function servit(cale: string): Promise<{ status: number; html: string; robots: string }> {
   const r = await fetch(copie.baza + cale, { redirect: 'manual' })
   return {
@@ -147,12 +151,14 @@ for (const { pagina: p, legaturiWa } of PAGINI) {
     expect(MONEDA.test(html)).toBe(false)
   })
 
-  test(p.meta.cale + ': legaturile WhatsApp din <main> poarta [ref:' + p.cta.ref + '] si textul paginii (' + legaturiWa + ')', async () => {
+  test(p.meta.cale + ': legaturile WhatsApp din <main> poarta textul paginii, fara marcaj, atribuit in Umami (' + legaturiWa + ')', async () => {
     const { html } = await servit(p.meta.cale)
     const corp = html.slice(html.indexOf('<main'), html.indexOf('</main>'))
     const texte = hrefuriWhatsApp(corp).map(textDinWa)
-    expect(texte).toEqual(Array(legaturiWa).fill(p.cta.textWhatsapp))
-    for (const t of texte) expect(t).toContain('[ref:' + p.cta.ref + ']')
+    // Felia 164 (decizia Marian 04.11.2026, „1 da”): sursa poarta marcajul o data, legatura il scoate.
+    expect(texte).toHaveLength(legaturiWa)
+    expect(p.cta.textWhatsapp).toContain('[ref:' + p.cta.ref + ']')
+    expect(abateriWhatsApp(hrefuriWhatsApp(corp), { numar: NUMAR_WA, ref: p.cta.ref, adresaPaginii: copie.baza + p.meta.cale, limba: 'en', textSursa: p.cta.textWhatsapp })).toEqual([])
   })
 
   test(p.meta.cale + ': entitatile G-AI-02 si H1-ul in primele 400 de cuvinte din <main>', async ({ page }) => {

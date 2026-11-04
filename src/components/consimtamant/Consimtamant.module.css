@@ -8,7 +8,15 @@
    ABATERE DE LA SURSA: toate cele trei butoane poarta `.butonPlin` (albastru, 5,17:1 fata de banner),
    in banner si in panou: acceptul, refuzul si "Setari cookie-uri" / "Salveaza setarile" (masurarea S-B,
    varianta (ii): acelasi nivel vizual pentru fiecare cale). Stilul deschis al sursei (ceata-albastra,
-   1,10:1 fata de alb) nu mai e folosit. Motivul, in Consimtamant.tsx. */
+   1,10:1 fata de alb) nu mai e folosit. Motivul, in Consimtamant.tsx.
+   BARA COMPACTA (decizia Marian 04.11.2026: bannerul devine bara compacta, aceeasi logica de consimtamant; felia 164,
+   documentul lui Adrian Mihai: pe telefon bannerul acoperea jumatate din primul ecran, pe desktop butoanele eroului).
+   Bannerul e o bara lipita jos, pe toata latimea: pe desktop textul si cele trei butoane stau pe un rand, legaturile
+   dedesubt; sub 640 px butoanele stau tot pe un rand, in trei coloane egale, iar textul e mai mic, ca bara sa ramana
+   in jur de 20% din inaltimea unui ecran de 390 x 844 (tinta: cel mult 25%). Textul NU se schimba: a doua propozitie
+   (retragerea acordului) e ceruta de lege in primul strat (texte.ts). Culorile si contrastele raman cele de mai sus;
+   butoanele au cel putin 40 px inaltime (tinta de atingere minima: 24 px); jos se adauga zona sigura a ecranului
+   (`env(safe-area-inset-bottom)`). Logica (acceptul, refuzul, setarile, retragerea) e neatinsa: numai forma. */
 
 .banner,
 .panou {
@@ -31,13 +39,15 @@
   z-index: 2000;
   left: 0;
   right: 0;
-  bottom: 16px;
-  margin: 0 auto;
-  width: calc(100% - 32px);
-  max-width: 54em;
+  bottom: 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--color-alb);
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  border-radius: 0;
+  border-top: 1px solid var(--c-chenar);
+  box-shadow: 0 -6px 20px rgba(0, 0, 2, 0.18);
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
@@ -70,44 +80,51 @@
 
 .corp {
   display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 24px 6px;
 }
 
 .texte {
   flex: 1;
-  align-self: center;
-  /* Jos fara spatiu: il da descrierea (1em = 14,4), ca la sursa; 16 aici facea blocul cu 1,6 mai inalt. */
-  padding: 16px 1.3em 0;
+  min-width: 0;
 }
 
 .titlu {
   margin: 0;
-  font-size: 1.05em;
+  font-size: 0.9em;
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.2;
   color: var(--c-text);
 }
 
 .descriere {
-  margin: 1.1em 0 0;
-  padding-bottom: 1em;
-  font-size: 0.9em;
-  line-height: 1.5;
+  margin: 2px 0 0;
+  padding: 0;
+  font-size: 0.82em;
+  line-height: 1.4;
   color: var(--c-desc);
 }
 
+/* Trei coloane EGALE si pe desktop, nu numai sub 640 px: cu `flex` fiecare buton lua latimea textului lui, iar
+   "Setari cookie-uri" iesea mai lat decat acceptul (134,8 fata de 124,6 px la 1280, CI 41802934979), adica setarile nu
+   mai erau la nivelul acceptului (masurarea S-B, varianta (ii), decizia 13). Grila cu `1fr` da fiecarei coloane latimea
+   celui mai lat buton, deci acceptul, refuzul si setarile au aceeasi cutie, oricare ar fi textul editiei. Sub 640 px
+   aceeasi grila intinsa pe toata latimea da cele trei coloane egale. */
 .butoane {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
-  max-width: 23em;
-  padding: 16px 1.3em;
-  border-left: 1px solid var(--c-linie);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .buton {
-  min-width: 19em;
-  min-height: 42px;
+  min-width: 9.5em;
+  min-height: 40px;
   padding: 0.5em 1em;
   border: 1px solid transparent;
   border-radius: 6.4px;
@@ -144,16 +161,20 @@
 .picior {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 1.3em;
-  padding: 6.4px 1.3em 8px;
-  background: var(--color-ceata-albastra);
-  border-top: 1px solid var(--c-linie-2);
+  gap: 2px 1.3em;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 8px;
 }
 
 /* `line-height: normal`, ca la sursa: randul legaturilor are 16 px si piciorul 31,4, deci bannerul
    201,4 la 1440. Cu 1,6 piciorul crestea la 35,9 si bannerul la 205,9 (masurat pe copia cu operator,
    25.09.2026). */
 .legatura {
+  /* Tinta de atingere de cel putin 24 px (bara compacta, felia 164). */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   font-size: 0.8em;
   font-weight: 600;
   line-height: normal;
@@ -168,33 +189,34 @@ a.legatura:hover {
 }
 
 @media (max-width: 640px) {
-  .banner {
-    bottom: 8px;
-    width: calc(100% - 16px);
-  }
-
   .corp {
     flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 12px 6px;
   }
 
-  .texte {
-    padding: 16px 1.1em 0;
+  .titlu {
+    font-size: 0.84em;
   }
 
-  .butoane {
-    max-width: none;
-    padding: 16px 1.1em;
-    border-left: 0;
-    border-top: 1px solid var(--c-linie);
+  .descriere {
+    font-size: 0.76em;
+    line-height: 1.35;
   }
 
+  /* Cele trei cai, pe un rand, in coloane egale: acelasi loc si aceeasi greutate pentru accept, refuz si setari. */
   .butoane .buton {
+    flex: 1 1 0;
     min-width: 0;
-    width: 100%;
+    min-height: 40px;
+    padding: 0.4em 0.5em;
+    font-size: 0.76em;
   }
 
   .picior {
     justify-content: center;
+    padding: 0 12px 6px;
   }
 }
 

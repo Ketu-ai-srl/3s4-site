@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsApp, legaturaProba, MARCAJ, texteEn } from './ajutor/whatsapp-ro'
 
 /**
  * Paginile EN nucleu (felia en-nucleu) pe COPIA 3s.md (`ajutor/copie-3s-md.ts`, profilul `config/profil-3s-md.json`):
@@ -10,7 +11,8 @@ import { RADACINA } from './ajutor/proiect'
  *
  * Ce se cere, pe HTML-ul servit (fara JavaScript), pe fiecare din cele 6 pagini ale manifestului
  * `src/content/rute-en-nucleu.ts`: 200, `<html lang="en">`, un singur H1, in `<main>` legatura WhatsApp spre numarul
- * domeniului cu textul precompletat care poarta `[ref:<ref>]` al paginii, zero `<form`, zero RON; antetul si subsolul
+ * domeniului cu textul precompletat al paginii, FARA marcajul `[ref:<ref>]` din felia 164 (decizia Marian 04.11.2026,
+ * „1 da”; atribuirea in evenimentul Umami `contact`, `ajutor/whatsapp-ro.ts`), zero `<form`, zero RON; antetul si subsolul
  * fara "Solutions" si fara functiile scoase. Plus: o adresa EN necunoscuta raspunde 404 cu pagina de negasit EN
  * (segmentul `[negasit]` al fundatiei a fost scos), iar jurnalul serverului nu mai are `NoFallbackError`.
  *
@@ -101,11 +103,6 @@ function hrefuri(html: string): string[] {
   return [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"/g)].map((m) => m[1].split('&amp;').join('&'))
 }
 
-/** Textul precompletat al unei legaturi wa.me, decodat. */
-function textWa(href: string): string {
-  return decodeURIComponent(href.slice(WA.length))
-}
-
 test.beforeAll(async () => {
   test.setTimeout(600_000)
   copie = await pornesteCopia3sMd()
@@ -122,7 +119,7 @@ test('preconditia: 6 rute in manifest, fiecare cu ref in tabelul navigatiei, si 
 })
 
 for (const r of ruteNucleu()) {
-  test(r.cale + ': 200, <html lang="en">, un H1, WhatsApp cu ref-ul paginii, zero <form, zero RON', async () => {
+  test(r.cale + ': 200, <html lang="en">, un H1, WhatsApp cu textul paginii, fara marcaj, zero <form, zero RON', async () => {
     const { status, html } = await servit(r.cale)
     expect(status).toBe(200)
     expect(html).toMatch(/<html[^>]*\blang="en"/)
@@ -142,10 +139,8 @@ for (const r of ruteNucleu()) {
     const asteptat = faraFinal ? 1 : r.cale === '/pricing' || r.cale === '/contact' ? 3 : 2
     expect(wa.length, faraFinal ? 'legaturi WhatsApp in antet' : 'legaturi WhatsApp in <main>').toBe(asteptat)
     if (faraFinal) expect(hrefuri(main).filter((h) => h.startsWith(WA)), 'legaturi WhatsApp in <main>').toEqual([])
-    for (const h of wa) {
-      expect(textWa(h)).toContain('[ref:' + REF.get(r.cale) + ']')
-      expect(textWa(h).split('[ref:').length - 1).toBe(1)
-    }
+    // Felia 164 (decizia Marian 04.11.2026, „1 da”): mesajul pleaca fara [ref:...]; ref-ul alege randul tabelului EN.
+    expect(abateriWhatsApp(wa, { numar: CANALE.whatsapp, ref: REF.get(r.cale) ?? '(fara ref)', adresaPaginii: copie.baza + r.cale, limba: 'en' })).toEqual([])
     expect(html).not.toContain('<form')
     expect(RON.test(html)).toBe(false)
     // Antetul si subsolul: fara grupul de segmente si fara functiile scoase; controlul: antetul are meniul principal.
@@ -221,22 +216,26 @@ test('o adresa EN necunoscuta: 404 cu pagina de negasit EN; jurnalul serverului 
   expect(copie.jurnal()).not.toContain('NoFallbackError')
 })
 
-test('martor POZITIV: extragerea legaturilor WhatsApp prinde ref-ul intr-un HTML asamblat la rulare', () => {
-  const href = WA + encodeURIComponent('Hello 3S, I read x [ref:' + 'en-proba]. Hi.')
-  const html = '<main><a class="b" href="' + href + '">Message us</a></main>'
+test('martor POZITIV: extragerea legaturilor WhatsApp gaseste legatura, iar detectorul prinde marcajul repus', () => {
+  const text = texteEn().get('en-price') ?? ''
+  expect(text, 'controlul: tabelul EN are textul paginii').not.toBe('')
+  const repus = text.replace('pricing page.', 'pricing page ' + MARCAJ + 'en-price].')
+  expect(repus, 'controlul fixturii').toContain(MARCAJ)
+  const html = '<main><a class="b" href="' + legaturaProba(CANALE.whatsapp, repus) + '">Message us</a></main>'
   const wa = hrefuri(bucata(html, /<main\b/, '</main>')).filter((h) => h.startsWith(WA))
   expect(wa).toHaveLength(1)
-  expect(textWa(wa[0])).toContain('[ref:en-proba]')
+  const o = { numar: CANALE.whatsapp, ref: 'en-price', adresaPaginii: 'http://127.0.0.1:1/pricing', limba: 'en' as const }
+  expect(abateriWhatsApp(wa, o).join(' | ')).toContain('marcajul')
   expect(RON.test('pret 0 ' + 'R' + 'ON')).toBe(true)
   expect(RON.test('ENVIRONMENT, Romanian')).toBe(false)
 })
 
-test('martor NEGATIV: un HTML curat (ref-ul paginii, fara formular, fara RON) nu e acuzat de aceleasi verificari', () => {
-  const href = WA + encodeURIComponent('Hello 3S, I read your pricing page [ref:' + 'en-price]. I would like to ask for a quote.')
+test('martor NEGATIV: un HTML curat (textul paginii fara marcaj, fara formular, fara RON) nu e acuzat de aceleasi verificari', () => {
+  const href = legaturaProba(CANALE.whatsapp, texteEn().get('en-price') ?? '')
   const html = '<html lang="en"><header aria-label="Main menu"></header><main><h1>Pricing</h1><a href="' + href + '">Message us</a></main><footer>Product</footer></html>'
   const wa = hrefuri(bucata(html, /<main\b/, '</main>')).filter((h) => h.startsWith(WA))
   expect(wa).toHaveLength(1)
-  expect(wa.map(textWa).every((t) => t.split('[ref:').length - 1 === 1 && t.includes('[ref:en-price]'))).toBe(true)
+  expect(abateriWhatsApp(wa, { numar: CANALE.whatsapp, ref: 'en-price', adresaPaginii: 'http://127.0.0.1:1/pricing', limba: 'en' })).toEqual([])
   expect(html).not.toContain('<form')
   expect(RON.test(html)).toBe(false)
   expect(bucata(html, /<header\b/, '</header>')).not.toContain('Solutions')

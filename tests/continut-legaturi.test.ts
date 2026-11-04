@@ -183,13 +183,15 @@ describe('(2)(3) numele de pagina din raspunsurile startului sunt legaturi, cu a
       const ro = legaturi(sectiuneIntrebari(randeaza(p.StartRoMd)))
       expect(ro.filter((l) => l.text === 'Termenii și condițiile').map((l) => l.href)).toEqual([a.termeni])
       // Runda 2: textul legaturii e numai numele tintei, punctul final sta dupa ea (`dupaSubsol`).
-      expect(ro.filter((l) => l.text === 'Vezi canalele prin care ne poți scrie').map((l) => l.href)).toEqual([a.contact])
+      // Felia 164: legatura spune doar "Scrie-ne" (documentul lui Adrian Mihai, 03.11.2026).
+      expect(ro.filter((l) => l.text === 'Scrie-ne').map((l) => l.href)).toEqual([a.contact])
       // Fraza de sub intrebari e o propozitie incheiata: textul ei vizibil se termina cu punct.
       expect(subsolIntrebari(randeaza(p.StartRoMd))).toMatch(/^Ai altă întrebare\? .+\.$/)
       // Nicio legatura spre Acordul de prelucrare a datelor (nepublic pana la poarta C).
       expect(ro.filter((l) => /dpa/.test(l.href) || l.text.includes('Acordul'))).toEqual([])
-      // Titlul "Termenii și condițiile" are deja un "și": al doilea document vine dupa "precum și" (critica de limba).
-      expect(sectiuneIntrebari(randeaza(p.StartRoMd))).toContain('</a>, precum și Acordul de prelucrare a datelor, pe care ți-l trimitem odată cu oferta.')
+      // Felia 164: corectura obligatorie "odata cu" -> "impreuna cu" si "precum si" scos (documentul lui Adrian Mihai,
+      // 03.11.2026); cele doua documente se trimit impreuna, deci "ti le".
+      expect(sectiuneIntrebari(randeaza(p.StartRoMd))).toContain('</a> și Acordul de prelucrare a datelor, pe care ți le trimitem împreună cu oferta.')
       // Fiecare tinta e servita de o ruta a build-ului (fara fragment).
       for (const h of [a.legal, a.about, a.termeni, a.contact]) expect(p.servite.has(fara(h)), h).toBe(true)
     })
@@ -538,7 +540,9 @@ describe('(10) langa orele rotunjite ale calculatorului fraza spune "circa" / "a
     for (const t of [CALCULATOR_RO_MD.timpAcum.dupaBani, CALCULATOR_RO_MD.pretInOre.dupaPret, CALCULATOR_RO_MD.pretInOreAnual.dupaPret]) expect(t.endsWith(' circa\u00a0')).toBe(true)
     // Runda 2: "about" lipit de cifra pe EN, ca "circa" pe RO, iar cifra lipita de unitate in teaser.
     for (const t of [CALCULATOR_EN.timpAcum.dupaBani, CALCULATOR_EN.pretInOre.dupaPret, CALCULATOR_EN.pretInOreAnual.dupaPret]) expect(t.endsWith(' about\u00a0')).toBe(true)
-    expect(textTeaserRoMd().rezultat).toBe('se adună circa\u00a036,7\u00a0ore lunar')
+    // Felia 164: corectura obligatorie din documentul lui Adrian Mihai (03.11.2026): "circa 36,7" se bate cap in cap, deci
+    // teaserul RO-MD spune ora intreaga, cu "cam"; frazele cu "circa" de mai sus raman (orele lor nu sunt in teaser).
+    expect(textTeaserRoMd().rezultat).toBe('se adună cam\u00a037\u00a0de\u00a0ore pe lună')
     // Felia 150: fraza teaserului are subiect ("4 people ... add up to about"), nu "With ... totals about".
     expect(textTeaserEn().rezultat).toBe('add up to about\u00a036.7\u00a0h a month')
   })
@@ -699,8 +703,9 @@ describe('(16) fraza de sub intrebarile startului /ro: punctul final dupa legatu
       const p = await cuProfil(nume)
       const fara = sectiuneIntrebari(randeaza(p.StartRoMd))
       const legFara = legaturi(fara).filter((l) => l.href.endsWith('/contact'))
-      expect(legFara.map((l) => l.text)).toEqual(['Vezi canalele prin care ne poți scrie'])
-      expect(paragrafLipit(randeaza(p.StartRoMd))).toBe('Ai altă întrebare? Vezi canalele prin care ne poți scrie.')
+      // Felia 164: legatura spune doar "Scrie-ne" (documentul lui Adrian Mihai, 03.11.2026).
+      expect(legFara.map((l) => l.text)).toEqual(['Scrie-ne'])
+      expect(paragrafLipit(randeaza(p.StartRoMd))).toBe('Ai altă întrebare? Scrie-ne.')
       // Dupa P-40: domeniul are adresa de posta (CANALE_JSON cu e-mail), pagina inlocuieste `subsol`.
       const canale = JSON.parse(text(profil(nume).CANALE_JSON)) as Record<string, unknown>
       vi.stubEnv('CANALE_JSON', JSON.stringify({ ...canale, email: 'contact@3s.com.ro' }))

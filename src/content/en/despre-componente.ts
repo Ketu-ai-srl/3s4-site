@@ -23,6 +23,8 @@ export const SECTIUNI_DESPRE_EN: readonly SectiuneSecuritate[] = [
   "erou",
   "piloni",
   "infrastructura",
+  // `verificare` ramane pe /about (decizia Marian 04.11.2026, "4 repune"): iese numai de pe pagina in romana
+  // (/ro/securitate pe 3s.md, /securitate pe 3s.com.ro), cu lista ei de congruenta, `config/congruenta/p11-ro.json`.
   "verificare",
   "ciclu",
   "reglementare",

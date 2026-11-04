@@ -59,7 +59,7 @@ export const COMUN_RO_MD: ComunConstructor = {
   reluare: "Reconstruiește arhiva",
   final: {
     titlu: "Vrei să vezi asta pe documentele tale?",
-    subRand: "Pilot gratuit de 14 zile, asistat.",
+    subRand: "Test gratuit de 14 zile, asistat.",
     buton: "Scrie-ne pe WhatsApp"
   },
   anuntGata: "Arhiva de exemplu pentru domeniul „{industrie}” e gata."
@@ -190,7 +190,7 @@ export const ESTIMARE_RO_MD: EstimareConstructor = {
     nimeni: "La un control, un act negăsit te costă mai mult decât timpul."
   },
   buton: "Scrie-ne pe WhatsApp",
-  nota: "Răspunde o persoană, în română sau engleză."
+  nota: "Îți răspunde un consultant din echipa 3S, în română sau engleză."
 };
 
 export const SCENARII_RO_MD: ScenariiEditie = {

@@ -409,7 +409,11 @@ describe('pagina randata si datele ei structurate', () => {
       const wa = [...html.matchAll(/href="(https:\/\/wa\.me\/[^"]*)"/g)].map((x) =>
         new URL(x[1].split('&amp;').join('&')).searchParams.get('text'),
       )
-      expect(wa).toEqual([m.pagina.cta.textWhatsapp, m.pagina.cta.textWhatsapp])
+      // Felia 164 (decizia Marian 04.11.2026, „1 da, 2 da”): mesajul si subiectul pleaca FARA codul [ref:...] si pe EN;
+      // textul sursa il poarta mai departe, legatura il scoate.
+      const curat = m.pagina.cta.textWhatsapp.split(' [ref:' + m.pagina.cta.ref + ']').join('')
+      expect(curat).not.toContain('[ref:')
+      expect(wa).toEqual([curat, curat])
       expect(html).not.toMatch(new RegExp('<' + 'form\\b'))
       expect(html).not.toContain('mailto:')
     }
@@ -424,7 +428,9 @@ describe('pagina randata si datele ei structurate', () => {
         canale: { ...CANALE_PROBA, email: 'contact@example.test' },
       }),
     )
-    expect(cu).toContain('mailto:contact@example.test?subject=' + encodeURIComponent('3S inquiry [ref:en-search]'))
+    // Felia 164 (decizia Marian 04.11.2026, „2 da”): subiectul pleaca fara [ref:...]; pagina o atribuie evenimentul Umami.
+    expect(cu).toContain('mailto:contact@example.test?subject=' + encodeURIComponent('3S inquiry') + '&')
+    expect(cu).not.toContain(encodeURIComponent('[ref:'))
     const fara = renderToStaticMarkup(
       createElement(PaginaProdus, {
         pagina: m.pagina,

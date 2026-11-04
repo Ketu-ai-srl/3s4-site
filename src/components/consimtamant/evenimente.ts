@@ -109,7 +109,9 @@ export function urmaresteCta(): () => void {
 //
 // Trei actiuni, cum le descrie politica de cookie-uri a lui 3s.md (sectiunea despre masurarea fara cookie:
 // "un clic pe un canal de contact, un clic pe un buton care duce la contact si schimbarea limbii paginii"):
-//   - `contact`, cu `canal` (whatsapp, email) si `lang` (limba paginii): legaturile `wa.me` si `mailto:`, oriunde
+//   - `contact`, cu `canal` (whatsapp, email), `lang` (limba paginii) si `pagina` (calea servita a paginii din care
+//     s-a apasat, felia 164: codul `[ref:...]` a iesit din mesajele WhatsApp si din subiectele de e-mail, pe toate
+//     editiile, iar atribuirea pe pagina se pastreaza aici, ca proprietate a evenimentului): legaturile `wa.me` si `mailto:`, oriunde
 //     in pagina; un singur eveniment, fiindca un obiectiv Umami urmareste un singur eveniment. Urmarirea legaturilor
 //     de apel a iesit odata cu ele (decizia 56: fara apeluri GSM, apelurile se primesc numai pe WhatsApp);
 //   - `cta_contact`, cu `lang`: o legatura interna spre pagina de contact a editiei (`/contact`, `/ro/contact`);
@@ -126,6 +128,12 @@ export function urmaresteCta(): () => void {
 /** Canalele de contact ale evenimentului `contact`. */
 export const CANALE_CONTACT = ["whatsapp", "email"] as const;
 export type CanalContact = (typeof CANALE_CONTACT)[number];
+
+/**
+ * Forma caii paginii din evenimentul `contact`: calea servita (`location.pathname`), fara interogare si fragment.
+ * Litere mici, cifre si `/ . _ -`, cel mult 120 de caractere: o cale a site-ului, nu un text liber.
+ */
+export const FORMA_PAGINA_EVENIMENT = /^\/[a-z0-9/._-]{0,119}$/;
 
 /** Limbile paginilor si ale tintelor. */
 export const LIMBI_EVENIMENT = ["en", "ro"] as const;
@@ -157,7 +165,7 @@ export function caiContactServite(asezare: CodAsezare = asezareEveniment()): rea
 }
 
 export type ParametriEvenimentUmami = {
-  contact: { canal: CanalContact; lang: LimbaEveniment };
+  contact: { canal: CanalContact; lang: LimbaEveniment; pagina: string };
   cta_contact: { lang: LimbaEveniment };
   lang_switch: { lang: LimbaEveniment };
 };
@@ -166,7 +174,7 @@ export type NumeEvenimentUmami = keyof ParametriEvenimentUmami;
 
 /** Numele evenimentelor Umami si cheile de parametri permise: lista inchisa, la rulare. */
 export const EVENIMENTE_UMAMI: Record<NumeEvenimentUmami, readonly string[]> = {
-  contact: ["canal", "lang"],
+  contact: ["canal", "lang", "pagina"],
   cta_contact: ["lang"],
   lang_switch: ["lang"],
 };
@@ -182,6 +190,7 @@ export function evenimentUmamiValid(nume: string, parametri: Record<string, unkn
     if (typeof v !== "string") return false;
     if (k === "canal" && !(CANALE_CONTACT as readonly string[]).includes(v)) return false;
     if (k === "lang" && !(LIMBI_EVENIMENT as readonly string[]).includes(v)) return false;
+    if (k === "pagina" && !FORMA_PAGINA_EVENIMENT.test(v)) return false;
   }
   return true;
 }
@@ -215,9 +224,11 @@ export function evenimentDinLegatura(
   } catch {
     return null;
   }
-  if (adresa.protocol === "mailto:") return ["contact", { canal: "email", lang }];
+  // Pagina din care s-a apasat: calea servita; o cale in afara formei (litere mari, alte semne) iese `/`, nu text liber.
+  const caleaPaginii = FORMA_PAGINA_EVENIMENT.test(origine.pathname) ? origine.pathname : "/";
+  if (adresa.protocol === "mailto:") return ["contact", { canal: "email", lang, pagina: caleaPaginii }];
   if (adresa.protocol === "https:" && (adresa.hostname === "wa.me" || adresa.hostname === "api.whatsapp.com")) {
-    return ["contact", { canal: "whatsapp", lang }];
+    return ["contact", { canal: "whatsapp", lang, pagina: caleaPaginii }];
   }
   if (adresa.origin !== origine.origin) return null;
   const tinta = limbaDin(legatura.lang);

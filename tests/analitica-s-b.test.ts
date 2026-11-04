@@ -501,8 +501,12 @@ describe('evenimentele Umami', () => {
 
   it('canalele de contact, legatura spre contact si schimbarea limbii, cu limba paginii', () => {
     const ev = (href: string, pagina = PAGINA_EN, lang: string | null = null, limbaPagina = 'en') => evenimentDinLegatura({ href, lang }, pagina, limbaPagina)
-    expect(ev('mailto:contact@exemplu.test')).toEqual(['contact', { canal: 'email', lang: 'en' }])
-    expect(ev('https://wa.me/37360055599?text=x')).toEqual(['contact', { canal: 'whatsapp', lang: 'en' }])
+    // Felia 164: `contact` poarta si `pagina` (calea servita a paginii din care s-a apasat), fiindca codul [ref:...] a
+    // iesit din mesajele WhatsApp si din subiectele de e-mail, pe toate editiile (decizia Marian 04.11.2026, „1 da, 2 da”);
+    // atribuirea pe pagina se pastreaza in eveniment, pe clicul wa.me si pe clicul mailto.
+    expect(ev('mailto:contact@exemplu.test')).toEqual(['contact', { canal: 'email', lang: 'en', pagina: '/pricing' }])
+    expect(ev('https://wa.me/37360055599?text=x')).toEqual(['contact', { canal: 'whatsapp', lang: 'en', pagina: '/pricing' }])
+    expect(ev('https://wa.me/37360055599?text=x', PAGINA_RO, null, 'ro')).toEqual(['contact', { canal: 'whatsapp', lang: 'ro', pagina: '/ro' }])
     expect(ev('/contact')).toEqual(['cta_contact', { lang: 'en' }])
     expect(ev('/ro/contact', PAGINA_RO, null, 'ro')).toEqual(['cta_contact', { lang: 'ro' }])
     expect(ev('/ro', PAGINA_EN, 'ro')).toEqual(['lang_switch', { lang: 'ro' }])
@@ -542,8 +546,13 @@ describe('evenimentele Umami', () => {
   })
 
   it('martor POZITIV: parametru in plus, canal sau limba necunoscute, nume din afara listei sunt respinse', () => {
-    expect(evenimentUmamiValid('contact', { canal: 'whatsapp', lang: 'en' })).toBe(true)
-    expect(evenimentUmamiValid('contact', { canal: 'whatsapp', lang: 'en', email: 'x' })).toBe(false)
+    // Felia 164: `contact` poarta si `pagina` (calea servita a paginii din care s-a apasat), fiindca codul [ref:...] a
+    // iesit din mesajele WhatsApp si din subiectele de e-mail, pe toate editiile (decizia Marian 04.11.2026, „1 da, 2 da”);
+    // atribuirea pe pagina se pastreaza in eveniment, pe clicul wa.me si pe clicul mailto.
+    expect(evenimentUmamiValid('contact', { canal: 'whatsapp', lang: 'en', pagina: '/preturi' })).toBe(true)
+    expect(evenimentUmamiValid('contact', { canal: 'whatsapp', lang: 'en' })).toBe(false)
+    expect(evenimentUmamiValid('contact', { canal: 'whatsapp', lang: 'en', pagina: 'text liber' })).toBe(false)
+    expect(evenimentUmamiValid('contact', { canal: 'whatsapp', lang: 'en', pagina: '/preturi', email: 'x' })).toBe(false)
     expect(evenimentUmamiValid('contact', { canal: 'fax', lang: 'en' })).toBe(false)
     expect(evenimentUmamiValid('lang_switch', { lang: 'Ion Popescu' })).toBe(false)
     expect(evenimentUmamiValid('clic_cta', { tinta: '/contact' })).toBe(false)
@@ -591,7 +600,8 @@ describe('evenimentele Umami', () => {
     const apasa = (a: AncoraFalsa) => (ascultator as unknown as (e: unknown) => void)({ target: a, preventDefault })
     apasa(new AncoraFalsa('https://wa.me/37360055599', null))
     apasa(new AncoraFalsa('https://3s.md/pricing', null))
-    expect(trimise).toEqual([['contact', { canal: 'whatsapp', lang: 'en' }]])
+    // Felia 164: `pagina` = calea servita a paginii (aici /pricing, din `location.href`).
+    expect(trimise).toEqual([['contact', { canal: 'whatsapp', lang: 'en', pagina: '/pricing' }]])
     expect(preventDefault).not.toHaveBeenCalled()
     opreste()
     expect(ascultator).toBeNull()

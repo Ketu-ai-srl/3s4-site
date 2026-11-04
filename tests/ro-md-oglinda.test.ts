@@ -172,7 +172,8 @@ describe('manifestul, echivalentele si navigatia', () => {
       expect(cta[r.cale].ref, r.cale).toBe(rand!.ref)
       expect(cta[r.cale].textWhatsapp, r.cale).toBe(rand!.text)
       expect(rand!.text.split('[ref:' + rand!.ref + ']').length - 1, r.cale).toBe(1)
-      expect(rand!.text.startsWith('Bună ziua, 3S. '), r.cale).toBe(true)
+      // Felia 164 (documentul lui Adrian Mihai, 03.11.2026): salutul e "Bună ziua!", fara salutul adresat marcii.
+      expect(rand!.text.startsWith('Bună ziua! '), r.cale).toBe(true)
     }
     expect(new Set(TEXTE_WHATSAPP_RO_MD.map((t) => t.ref)).size).toBe(TEXTE_WHATSAPP_RO_MD.length)
   })
@@ -227,16 +228,19 @@ describe('forma paginilor si variantele conditionate', () => {
   it('pagina despre 3S: "operat din Moldova" si intrebarea operatorului numai dupa inregistrarea firmei', () => {
     const inainte = securitateComp.securitateRoMd(false)
     const dupa = securitateComp.securitateRoMd(true)
-    expect(JSON.stringify(inainte)).not.toMatch(/operat\w* din Republica Moldova|Operat din Moldova/)
-    expect(JSON.stringify(dupa)).toMatch(/operat\w* din Republica Moldova/)
+    // Felia 164 (documentul lui Adrian Mihai, 03.11.2026): "operat din" (calc) devine "administrat de o companie din";
+    // regula variantei conditionate ramane: fraza despre operator apare numai dupa inregistrarea firmei.
+    expect(JSON.stringify(inainte)).not.toMatch(/operat\w* din Republica Moldova|Operat din Moldova|administrat\w* de o companie din Republica Moldova/)
+    expect(JSON.stringify(dupa)).toMatch(/administrat\w* de o companie din Republica Moldova/)
     expect(dupa.intrebari!.intrebari.length - inainte.intrebari!.intrebari.length).toBe(1)
     // Congruenta (lista declarata p11): insignele raman 6 si cardurile 4, ca pe RO si pe EN, in ambele variante.
     for (const c of [inainte, dupa]) {
       expect(c.reglementare!.insigne).toHaveLength(6)
       expect(c.reglementare!.carduri).toHaveLength(4)
     }
-    expect(securitate.paginaSecuritate(false).meta.titlu).not.toContain('operează')
-    expect(securitate.paginaSecuritate(true).meta.titlu).toContain('operează')
+    // Felia 164: "cine îl operează" -> "cine este în spatele lui" (documentul lui Adrian Mihai, 03.11.2026).
+    expect(securitate.paginaSecuritate(false).meta.titlu).not.toContain('în spatele')
+    expect(securitate.paginaSecuritate(true).meta.titlu).toContain('în spatele')
   })
 
   it('preturile: sumele grilei deciziei 18, insigna pe Starter, propozitia TVA, formatul romanesc', () => {
@@ -381,7 +385,8 @@ describe('decizia 63: pe paginile /ro, legea SUA se spune impreuna cu cadrul UE'
     'securitate(true).sectiuni[0].blocuri[0].lista.elemente': ['[3]'],
     'securitateComp(false).infrastructura.specificatii': ['[3].termen'],
     'securitateComp(true).infrastructura.specificatii': ['[3].termen'],
-    'platformaComp.PLATFORMA_RO_MD.suveranitate': ['.proza[1]'],
+    // Felia 164: `suveranitate.proza[1]` nu mai e exceptie: forma scurta a frazei despre CLOUD Act (documentul lui Adrian
+    // Mihai, 03.11.2026) spune in acelasi sir si acordul GDPR al Amazon, deci regula deciziei 63 o acopera direct.
   }
 
   function frunze(v: unknown, cale: string, acc: [string, string][] = []): [string, string][] {

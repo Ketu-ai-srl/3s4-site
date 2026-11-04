@@ -4,9 +4,13 @@
 // `config/brand.json` ca implicit pentru `email`. Variabila nesetata = comportamentul de dinainte:
 // formulare pornite, fara WhatsApp si fara telefon. Nicio valoare de canal nu e scrisa in cod.
 //
-// ATRIBUIREA se face numai prin codul `ref` din textul mesajului si din subiectul e-mailului, fara
-// parametri de urmarire pe legatura. Marcajul are forma `[ref:<cod>]`; legaturile verifica sa fie
-// prezent o singura data, ca un text copiat de pe alta pagina sa nu raporteze pagina gresita.
+// ATRIBUIREA. Codul `ref` (`[ref:<cod>]`) sta in textul SURSA al mesajului si al subiectului e-mailului: legaturile
+// verifica sa fie prezent o singura data, ca un text copiat de pe alta pagina sa nu ramana neobservat. Din felia 164 el
+// NU mai pleaca in mesajul pe care il trimite clientul, pe nicio editie si pe niciun canal: GO owner 04.11.2026 pe
+// documentul lui Adrian Mihai (codul „arata a mesaj automat”), intai pe paginile in romana, apoi decizia Marian
+// 04.11.2026 („1 da, 2 da”) si pe paginile EN si in subiectele de e-mail. `legaturaWhatsApp` si `legaturaEmail` il scot
+// la construirea legaturii; atribuirea paginii o poarta statistica: evenimentul Umami `contact` are calea servita a
+// paginii (`pagina`, `src/components/consimtamant/evenimente.ts`), pe clicul wa.me si pe clicul mailto.
 //
 // CODIFICAREA textelor e aceeasi cu cea a legaturilor din documentul de continut: toate caracterele,
 // in afara de litere ASCII, cifre si `_ . - ~`, devin `%XX` din octetii UTF-8. `encodeURIComponent`
@@ -48,29 +52,36 @@ export function codifica(text: string): string {
   return encodeURIComponent(text).replace(/[!'()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase());
 }
 
+/** Textul fara marcajul `[ref:<ref>]` (si fara spatiul dinaintea lui); marcajul trebuie sa apara o singura data. */
+export function textFaraMarcaj(ref: string, text: string, unde: string = "Textul WhatsApp"): string {
+  cerePrezentaUnica(ref, text, unde);
+  const marcaj = marcajRef(ref);
+  return text.split(" " + marcaj).join("").split(marcaj).join("").trim();
+}
+
 /**
- * Legatura wa.me cu textul precompletat, sau `null` cand domeniul nu are WhatsApp. Textul trebuie sa
- * contina marcajul `[ref:<ref>]` o singura data.
+ * Legatura wa.me cu textul precompletat, sau `null` cand domeniul nu are WhatsApp. Textul sursa trebuie sa contina
+ * marcajul `[ref:<ref>]` o singura data; mesajul pleaca FARA el (vezi antetul, felia 164).
  */
 export function legaturaWhatsApp(ref: string, text: string, canale: Canale = CANALE): string | null {
-  cerePrezentaUnica(ref, text, "Textul WhatsApp");
+  const curat = textFaraMarcaj(ref, text);
   if (canale.whatsapp === "") {
     return null;
   }
-  return "https://wa.me/" + canale.whatsapp + "?text=" + codifica(text);
+  return "https://wa.me/" + canale.whatsapp + "?text=" + codifica(curat);
 }
 
 /**
  * Legatura `mailto:` cu subiectul si corpul precompletate, sau `null` cand domeniul nu are adresa.
- * Subiectul trebuie sa contina marcajul `[ref:<ref>]` o singura data; corpul e liber (randurile noi
- * se scriu `\r\n`, ca in forma de referinta).
+ * Subiectul sursa trebuie sa contina marcajul `[ref:<ref>]` o singura data; subiectul trimis e FARA el (vezi antetul,
+ * felia 164). Corpul e liber (randurile noi se scriu `\r\n`, ca in forma de referinta).
  */
 export function legaturaEmail(ref: string, subiect: string, corp: string, canale: Canale = CANALE): string | null {
-  cerePrezentaUnica(ref, subiect, "Subiectul e-mailului");
+  const curat = textFaraMarcaj(ref, subiect, "Subiectul e-mailului");
   if (canale.email === "") {
     return null;
   }
-  return "mailto:" + canale.email + "?subject=" + codifica(subiect) + "&body=" + codifica(corp);
+  return "mailto:" + canale.email + "?subject=" + codifica(curat) + "&body=" + codifica(corp);
 }
 
 /** Grupele de cifre de dupa prefix, pe prefixele de tara pe care le afisam. */

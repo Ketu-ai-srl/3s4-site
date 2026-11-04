@@ -24,9 +24,9 @@ export const SCENA_CAUTARE_RO_MD = {
 
 /** Eroul: eticheta-titlu (h1) in doua bucati, legate de pagina cu punctul de mijloc (`cautare-ai.ts:40-49`). */
 export const EROU_CAUTARE_RO_MD = {
-  etichetaNumar: "Funcționalitate 01",
-  etichetaNume: "Căutare AI cu sursa citată",
-  rand1: "Actul a fost semnat la montaj.",
+  etichetaNumar: "Căutarea AI cu sursa citată",
+  etichetaNume: "întrebi, primești răspunsul și documentul",
+  rand1: "Procesul-verbal a fost semnat la montaj.",
   rand2: "...acum peste doi ani.",
   indiciu: "derulează",
 } as const;
@@ -40,7 +40,7 @@ export const AVALANSA_CAUTARE_RO_MD = {
     "Exemplu cu date fictive: dosarul unui compresor, de la ofertă și comandă la factură, fotografii și e-mailuri; documentul căutat este ultimul",
   // cautare-ai.ts:64, :66.
   cale: ["Documente comune", "Furnizori", "Beta Exemplu", "Compresor hala 2", "2024", "diverse"],
-  numar: "41 de elemente",
+  numar: "41 de fișiere",
   // cautare-ai.ts:71-83. Randul 8 n-are cip: "WhatsApp" iese pe 3s.md (decizia 49).
   randuri: [
     { tip: "document", nume: "oferta_compresor_beta.docx", cip: { text: "Ofertă", ton: "neutru" }, ora: "04.03.2024" },
@@ -64,19 +64,19 @@ export const AVALANSA_CAUTARE_RO_MD = {
 export const RECUNOASTERE_CAUTARE_RO_MD = {
   // cautare-ai.ts:93, :96.
   titlu: "Doi ani, un dosar",
-  paragraf: "Timp de doi ani, fiecare coleg care a lucrat cu utilajul a adăugat câte un fișier, fără să șteargă vreunul.",
+  paragraf: "Timp de doi ani, fiecare angajat care a lucrat cu utilajul a adăugat câte un fișier, fără să șteargă vreunul.",
 } as const;
 
 export const FRUSTRARE_CAUTARE_RO_MD = {
   // cautare-ai.ts:107-130.
-  declaratie: "Exemplu cu date fictive: căutarea manuală a unui document, cu fișierele deschise, durata ei și colegii întrebați",
+  declaratie: "Exemplu cu date fictive: căutarea manuală a unui document, cu fișierele deschise, durata ei și angajații întrebați",
   inCurs: "În curs",
   sesiune: "Căutare manuală",
   fisiere: { eticheta: "Deschideri", sub: "unele de două ori" },
   timp: { eticheta: "Durată", sub: "de la prima deschidere" },
-  colegi: { eticheta: "Colegi întrebați", sub: "doi erau în concediu" },
-  rezultat: { eticheta: "Stare", sub: "garanția încă lipsește" },
-  negasit: "Fără răspuns",
+  colegi: { eticheta: "Angajați întrebați", sub: "doi erau în concediu" },
+  rezultat: { eticheta: "Rezultat", sub: "garanția încă lipsește" },
+  negasit: "Încă fără răspuns",
   continua: "Încă un dosar",
   // Aceleasi valori ca scenariul RO si EN (exemplu, nu masuratoare).
   maxime: { fisiere: 29, minute: 85, colegi: 5 },
@@ -93,12 +93,12 @@ export const SOAPTA_CAUTARE_RO_MD = {
   // cautare-ai.ts:141, :143, :145.
   intrebare: "Și dacă arhiva ți-ar răspunde ca un coleg?",
   emfaza: "Un coleg care a citit tot dosarul.",
-  linie: "Iată căutarea AI.",
+  linie: "Așa funcționează căutarea AI din 3S.",
 } as const;
 
 export const LUMINA_CAUTARE_RO_MD = {
   // cautare-ai.ts:153, :155.
-  declaratie: "Exemplu: bara de căutare, cu întrebarea de la începutul paginii, formulată liber",
+  declaratie: "Exemplu: bara de căutare, cu întrebarea de la începutul paginii, scrisă liber",
   indicatie: "trimite cu Enter",
 } as const;
 
@@ -108,7 +108,7 @@ export const EXTRAGERE_CAUTARE_RO_MD = {
   fisier: "pv_punere_functiune.pdf",
   pagina: "Fragment",
   meta: "Răspuns cu sursa citată",
-  legenda: "Fragmentul are alături fișierul-sursă.",
+  legenda: "Lângă răspuns este documentul din care provine.",
 } as const;
 
 export const CONTRAST_CAUTARE_RO_MD = {
@@ -124,8 +124,8 @@ export const CONTRAST_CAUTARE_RO_MD = {
     metrici: [
       { valoare: "29", cheie: "Deschideri" },
       { valoare: "1 h 25 min", cheie: "Durată" },
-      { valoare: "5", cheie: "Colegi" },
-      { valoare: "fără sursă", cheie: "Stare", calitativ: "rau" },
+      { valoare: "5", cheie: "Angajați deranjați" },
+      { valoare: "fără sursă", cheie: "Rezultat", calitativ: "rau" },
     ],
   },
   acum: {
@@ -134,23 +134,21 @@ export const CONTRAST_CAUTARE_RO_MD = {
     declaratie: "Exemplu cu date fictive: o întrebare scurtă și răspunsul ei, cu sursa citată",
     sursa: "pv_punere_functiune.pdf",
     metrici: [
-      { valoare: "1", cheie: "Întrebări" },
+      { valoare: "1", cheie: "întrebare" },
       { valoare: "1 document", cheie: "Sursă citată" },
-      { valoare: "0", cheie: "Colegi" },
-      { valoare: "verificabil", cheie: "Stare", calitativ: "bun" },
+      { valoare: "0", cheie: "Angajați deranjați" },
+      { valoare: "verificabil", cheie: "Rezultat", calitativ: "bun" },
     ],
   },
-  // Puntea, in doua bucati; pagina le leaga cu sageata, ca pe RO.
-  punteDe: "manual",
-  punteLa: "citat",
+  // Puntea nu mai poarta eticheta (felia 164): pagina o lasa goala.
 } as const;
 
 export const CTA_CAUTARE_RO_MD = {
   // cautare-ai.ts:231-237; butonul duce la WhatsApp, cu textul precompletat si `ref`-ul din `pagina.cta`.
-  titlu: "Citește doar sursa",
-  paragraf: "3S răspunde la întrebările tale din conținutul documentelor firmei și indică sursa fiecărui răspuns.",
+  titlu: "Citești doar documentul care contează",
+  paragraf: "3S îți răspunde din documentele companiei tale și îți arată, la fiecare răspuns, documentul din care provine.",
   buton: "Scrie-ne pe WhatsApp",
-  nota: "Îți răspunde o persoană din echipa 3S, în română sau în engleză.",
+  nota: "Îți răspunde un consultant din echipa 3S, în română sau în engleză.",
 } as const;
 
 /** Firul paginii (BreadcrumbList), ca pe RO: startul si pagina (`cautare-ai.ts:242-243`). */

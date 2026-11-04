@@ -99,7 +99,7 @@ export const pagina: PaginaContinut = {
     ref: "ro-md-platforma",
     titluBloc: "Cum ar funcționa 3S pe documentele firmei tale?",
     textWhatsapp:
-      "Bună ziua, 3S. Am citit pagina despre platforma 3S [ref:ro-md-platforma]. Aș dori să aflu cum ar funcționa pe documentele firmei noastre.",
+      "Bună ziua! Aș vrea să văd cum funcționează 3S pe documentele companiei noastre. [ref:ro-md-platforma]",
     subiectEmail: "Întrebare 3S [ref:ro-md-platforma]",
   },
   jsonLd: [
@@ -134,5 +134,6 @@ export const pagina: PaginaContinut = {
     "ro-md-amazon-sediu-sua",
     "ro-md-pilot-asistat",
     "ro-md-raspunde-o-persoana",
+    "ro-md-partener-adria-hartie",
   ],
 };

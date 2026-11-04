@@ -48,7 +48,7 @@ import { emailPePagina, propozitieFaraMarcaj, whatsappPePagina, type TextPePagin
 /** Eticheta butonului de canal in romana. */
 export const ETICHETA_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
 
-const SALUT = "Bună ziua, 3S. ";
+const SALUT = "Bună ziua! ";
 
 /** Codul `ref` al paginii de cautare, ca in modulul ei; codurile nu stau in proza (poarta de limba citeste proza). */
 const REF_CAUTARE = "ro-md-cautare-ai";
@@ -61,65 +61,65 @@ export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
   {
     cale: "/ro",
     ref: "ro-md-acasa",
-    text: "Bună ziua, 3S. Am citit site-ul 3S [ref:ro-md-acasa]. Aș dori să întreb despre un pilot.",
+    text: "Bună ziua! Am citit site-ul 3S și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-acasa]",
   },
   {
     cale: "/ro/contact",
     ref: "ro-md-contact",
-    text: "Bună ziua, 3S. Am citit pagina de contact [ref:ro-md-contact]. Aș dori să întreb despre un pilot.",
+    text: "Bună ziua! Am o întrebare despre 3S. [ref:ro-md-contact]",
   },
   {
     cale: "/ro/juridic",
     prefix: true,
     ref: "ro-md-juridic",
-    text: "Bună ziua, 3S. Am citit informațiile legale [ref:ro-md-juridic]. Am o întrebare.",
+    text: "Bună ziua! Am o întrebare despre informațiile legale de pe site. [ref:ro-md-juridic]",
   },
   // <<felie:ro-md-oglinda>>: textele din front matter-ul fiselor ro-md, cuvant cu cuvant.
   {
     cale: "/ro/platforma",
     ref: "ro-md-platforma",
-    text: "Bună ziua, 3S. Am citit pagina despre platforma 3S [ref:ro-md-platforma]. Aș dori să aflu cum ar funcționa pe documentele firmei noastre.",
+    text: "Bună ziua! Aș vrea să văd cum funcționează 3S pe documentele companiei noastre. [ref:ro-md-platforma]",
   },
   {
     cale: "/ro/functionalitati/cautare-ai",
     ref: REF_CAUTARE,
-    text: "Bună ziua, 3S. Am citit pagina despre căutarea cu sursa citată [ref:" + REF_CAUTARE + "]. Aș dori să văd cum funcționează pe documentele firmei.",
+    text: "Bună ziua! Aș vrea să văd căutarea AI din 3S pe documentele companiei noastre. [ref:" + REF_CAUTARE + "]",
   },
   {
     cale: "/ro/preturi",
     ref: "ro-md-preturi",
-    text: "Bună ziua, 3S. Am citit pagina de prețuri [ref:ro-md-preturi]. Aș dori o ofertă.",
+    text: "Bună ziua! Am văzut prețurile 3S și aș vrea o ofertă pentru compania noastră. [ref:ro-md-preturi]",
   },
   {
     cale: "/ro/enterprise",
     ref: "ro-md-enterprise",
-    text: "Bună ziua, 3S. Am citit pagina despre 3S Enterprise [ref:ro-md-enterprise]. Aș dori să discutăm cerințele organizației noastre.",
+    text: "Bună ziua! Ne interesează 3S Enterprise. Aș vrea să discutăm cerințele organizației noastre. [ref:ro-md-enterprise]",
   },
   {
     cale: "/ro/securitate",
     ref: "ro-md-securitate",
-    text: "Bună ziua, 3S. Am citit pagina Despre 3S și securitate [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
+    text: "Bună ziua! Am o întrebare despre unde sunt păstrate datele în 3S. [ref:ro-md-securitate]",
   },
   {
     cale: "/ro/ghiduri/arhivare-e-facturi-ue",
     ref: "ro-md-einv",
-    text: "Bună ziua, 3S. Am citit ghidul despre arhivarea e-facturilor [ref:ro-md-einv]. Aș dori să întreb despre un pilot.",
+    text: "Bună ziua! Am citit ghidul despre arhivarea e-facturilor și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-einv]",
   },
   {
     cale: "/ro/ghiduri/termene-pastrare-moldova",
     ref: "ro-md-termene-moldova",
-    text: "Bună ziua, 3S. Am citit ghidul despre termenele de păstrare în Moldova [ref:ro-md-termene-moldova]. Aș dori să întreb despre un pilot.",
+    text: "Bună ziua! Am citit ghidul despre termenele de păstrare în Moldova și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-termene-moldova]",
   },
   {
     cale: "/ro/comparatie-drive",
     ref: "ro-md-comparatie",
-    text: "Bună ziua, 3S. Am citit comparația dintre 3S și Google Drive [ref:ro-md-comparatie]. Aș dori să aflu dacă 3S se potrivește firmei noastre.",
+    text: "Bună ziua! Am citit comparația cu Google Drive și aș vrea să aflu dacă 3S se potrivește companiei noastre. [ref:ro-md-comparatie]",
   },
   // Felia ro-md-e-factura: textul precompletat din sectiunea Final a textului paginii, acelasi ca butoanele paginii.
   {
     cale: "/ro/e-factura",
     ref: REF_EFACTURA,
-    text: "Bună ziua, 3S. Vreau acces timpuriu la arhiva e-Factura [ref:" + REF_EFACTURA + "]. Firma: ... Facturi pe lună: ... Sunt contabil: da / nu.",
+    text: "Bună ziua! Vreau să fiu printre primii care folosesc arhiva e-Factura. Compania: ... Facturi pe lună: ... Sunt contabil: da / nu. [ref:" + REF_EFACTURA + "]",
   },
 ];
 
@@ -175,10 +175,10 @@ const COLOANE_OGLINDA: ColoanaSubsol[] = [
   },
 ];
 
-/** E-mailul unei pagini: subiectul cu `ref`, corpul cu salutul si propozitia paginii, fara marcaj. */
+/** E-mailul unei pagini: subiectul sursa cu `ref` (trimis fara marcaj, felia 164, `legaturaEmail`), corpul cu salutul si propozitia paginii, fara marcaj. */
 const FORMA_EMAIL_RO_MD = {
   subiect: (ref: string) => "Întrebare 3S [ref:" + ref + "]",
-  corp: (t: TextPePagina) => "Bună ziua, 3S.\r\n\r\n" + propozitieFaraMarcaj(t, SALUT) + "\r\n",
+  corp: (t: TextPePagina) => "Bună ziua!\r\n\r\n" + propozitieFaraMarcaj(t, SALUT) + "\r\n",
 };
 
 /**
@@ -208,6 +208,7 @@ export function navigatieRoMd(
   cai: CaiExistente = CAI_EXISTENTE,
 ): ContractNavigatie {
   const juridic = coloanaJuridic(operator);
+  // Mesajul si subiectul pleaca fara codul `ref` (felia 164); atribuirea paginii o pastreaza evenimentul Umami `contact`.
   const whatsapp = whatsappPePagina(TEXTE_WHATSAPP_RO_MD, "/ro", canale);
   const email = emailPePagina(TEXTE_WHATSAPP_RO_MD, "/ro", FORMA_EMAIL_RO_MD, canale);
   const numar = randNumarWhatsApp(canale);

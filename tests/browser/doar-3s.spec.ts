@@ -18,14 +18,23 @@ import { RUTE } from '../../src/content/rute'
  *
  * Ce NU masoara: literele desenate ca trasee in imagini (sigla). Pe acelea le apara
  * `tests/fundatie-brand.test.ts`, care cere ca fisierul servit al siglei sa aiba numai iconita.
+ *
+ * EXCEPTIA NUMITA (decizia Marian 04.11.2026: «baga adria», inlocuieste D10; felia 164): textul paginilor numeste acum
+ * partenerul, NUMAI in forma de brand „grupul <nume> Arhivare din Romania” (documentul lui Adrian Mihai, 04.11.2026).
+ * Proba scoate din text forma aceea, scrisa exact (majuscula, al doilea cuvant), si cauta numele in rest: denumirea
+ * firmei, lockup-ul vechi al siglei sau numele singur raman prinse. Martorul exceptiei, mai jos: forma permisa nu e
+ * prinsa, iar numele langa alt cuvant este.
  */
 
 const NUME = ['ad', 'ria'].join('')
 
-/** Aparitiile numelui intr-un text, fara majuscule; pozitia si un fragment, pentru raport. */
+/** Forma de brand permisa (exceptia numita din antet), scrisa exact. */
+const FORMA_PERMISA = ['Ad', 'ria'].join('') + ' Arhivare'
+
+/** Aparitiile numelui intr-un text, fara majuscule, in afara formei permise; pozitia si un fragment, pentru raport. */
 function aparitii(text: string): string[] {
   const iesire: string[] = []
-  const mic = text.toLowerCase()
+  const mic = text.split(FORMA_PERMISA).join('#'.repeat(FORMA_PERMISA.length)).toLowerCase()
   let i = mic.indexOf(NUME)
   while (i >= 0 && iesire.length < 5) {
     iesire.push(i + ': ' + text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' '))
@@ -94,6 +103,12 @@ test.describe('doar marca 3S pe fiecare ruta din RUTE', () => {
     const randat = await textRandat(page)
     console.log('[doar-3s martor pozitiv] innerWidth CITIT: ' + latime)
     expect(aparitii(randat).length).toBeGreaterThanOrEqual(1)
+  })
+
+  test('martorul exceptiei: forma de brand permisa nu e prinsa, numele langa alt cuvant este', () => {
+    expect(aparitii('dezvoltată în parteneriat cu grupul ' + FORMA_PERMISA + ' din România')).toEqual([])
+    expect(aparitii('grupul ' + NUME.toUpperCase() + ' SERVICII ARHIVARE').length).toBe(1)
+    expect(aparitii(FORMA_PERMISA + ' și ' + NUME + ' singur').length).toBe(1)
   })
 
   test('martor NEGATIV: un fragment fara nume, injectat la fel, nu e prins', async ({ page, request }) => {

@@ -150,7 +150,9 @@ describe('/ro/preturi: cardurile, tabelul si pliul suplimentelor', () => {
 describe('/ro/enterprise: limitele de baza', () => {
   it('lista pentru IT si achizitii numeste conturile 21-60, cele patru limite si conectarea, din modul', () => {
     const text = enterpriseRoMd.LIVRABILE_RO_MD.elemente.map((e) => e.text).join('\n')
-    expect(enterpriseRoMd.LIVRABILE_RO_MD.elemente).toHaveLength(6)
+    // Felia 164: caseta „Certificari si niveluri de serviciu” a iesit (decizia lui Adrian Mihai din 03.11.2026, GO owner
+    // 04.11), deci lista are 5 elemente; conturile, limitele si conectarea raman, masurate mai jos.
+    expect(enterpriseRoMd.LIVRABILE_RO_MD.elemente).toHaveLength(5)
     const e = LIMITE_PLANURI.enterprise
     for (const t of [
       'De la 21 la ' + e.conturi + ' de conturi de utilizator',

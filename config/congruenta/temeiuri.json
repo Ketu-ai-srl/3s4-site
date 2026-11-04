@@ -61,6 +61,10 @@
     "efactura-ro": {
       "fel": "regula",
       "rezumat": "Arhiva e-Factura (serviciu in pregatire, text si capturi aprobate de owner pe 25.10.2026) exista numai pe editia romana a lui 3s.md si pe 3s.com.ro: pagina /ro/e-factura si blocul ei de pe /ro/preturi, fara pereche pe site-ul RO vechi si pe EN. Se inlocuieste cu numarul deciziei cand il primeste."
+    },
+    "go-curatenie-04-11": {
+      "fel": "regula",
+      "rezumat": "GO owner 04.11.2026 („go pe curatenie si corecturi”) pe documentele lui Adrian Mihai din 03-04.11.2026: curatenia paginilor 3s.md (felia 164), intre care iesirea verificarii conexiunii din browser de pe paginile despre 3S. Se inlocuieste cu numarul deciziei cand il primeste."
     }
   }
 }

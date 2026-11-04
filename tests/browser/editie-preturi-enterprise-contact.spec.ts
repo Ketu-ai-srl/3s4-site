@@ -1,6 +1,7 @@
 import type { Browser, Page } from '@playwright/test'
 import { expect, test } from './ajutor/baza'
-import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
+import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
+import { abateriWhatsApp, legaturaProba, MARCAJ, texteEn } from './ajutor/whatsapp-ro'
 
 /**
  * Paginile P08 `/pricing`, P09 `/enterprise`, P10 `/contact` si `/ro/contact` pe COPIA 3s.md (felia 104): aceleasi
@@ -13,13 +14,16 @@ import { pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
  *   2. sumele in EUR in carduri, pe ambele perioade, si fraza calculatorului cu moneda inaintea sumei si virgula la mii;
  *   3. insigna "Recommended" pe Starter (decizia 59); JSON-LD fara `Offer` si fara `priceCurrency`, cu FAQPage egal cu
  *      intrebarile vizibile;
- *   4. pe toate patru paginile: zero `<form`, fiecare legatura WhatsApp din `<main>` cu ref-ul paginii.
+ *   4. pe toate patru paginile: zero `<form`, fiecare legatura WhatsApp din `<main>` cu textul paginii, din felia 164
+ *      FARA marcajul ref si atribuit paginii in Umami (`ajutor/whatsapp-ro.ts`).
  * MARTORUL interactiunilor: pe build-ul RO, aceleasi interactiuni pe `/preturi` cer bucati cu RON in plus fata de
  * incarcarea simpla (insulele pretului RO), deci un "zero" pe /pricing nu vine dintr-o interactiune care n-a incarcat
  * nimic.
  */
 
 const RON = new RegExp('\\b' + 'R' + 'ON\\b')
+/** Numarul de WhatsApp al domeniului 3s.md, din profil (paginile in romana, felia 164). */
+const NUMAR_WA = (JSON.parse(mediuProfil3sMd().CANALE_JSON) as { whatsapp: string }).whatsapp
 
 let copie: Copie3sMd
 
@@ -75,7 +79,15 @@ async function interactioneaza(page: Page, n: { teaser: RegExp; calculator: stri
 }
 
 const NUME_EN = { teaser: /Try it with your own figures/, calculator: 'Time lost searching for documents', lunar: 'Monthly', anual: /Annual/, perioada: 'Billing period' }
+// Numele accesibile ale BUILD-ULUI RO (`src/content/preturi.ts`, editia RO de la `baseURL`), pe care ruleaza martorul de
+// mai jos. Felia 164 a rescris numai textele editiei ro-MD (`src/content/ro-md/preturi-componente.ts`): o prima varianta
+// a feliei pusese aici numele ro-MD ("Calculează cu cifrele companiei tale"), care nu exista pe build-ul RO, iar martorul
+// astepta butonul pana la termenul de 180 s (CI 41802934979). Editia RO nu e in mandatul feliei, deci numele ei raman.
 const NUME_RO = { teaser: /Încearcă cu cifrele firmei/, calculator: 'Calculul timpului pierdut căutând acte', lunar: 'Lunar', anual: /Anual/, perioada: 'Perioada de plată' }
+// Numele accesibile ale EDITIEI ro-MD (`/ro/preturi` pe copia 3s.md, `src/content/ro-md/preturi-componente.ts:236-238`).
+// Sunt alt obiect decat NUME_RO fiindca proba de mai jos ruleaza pe alt build: cu un singur obiect, repararea martorului
+// RO a mutat numele si pe /ro/preturi, care a asteptat apoi butonul RO pana la 60 s (CI 41822856990).
+const NUME_RO_MD = { teaser: /Calculează cu cifrele companiei tale/, calculator: 'Calculul timpului pierdut căutând documente', lunar: 'Lunar', anual: /Anual/, perioada: 'Perioada de plată' }
 
 test('/pricing: interactiunile nu cer nicio bucata JS noua cu RON (in afara celor ale incarcarii simple)', async ({ browser }) => {
   test.setTimeout(180_000)
@@ -97,17 +109,22 @@ test('martor POZITIV: pe build-ul RO, aceleasi interactiuni pe /preturi cer buca
   expect(noiRo.length).toBeGreaterThan(0)
 })
 
-/** Legaturile WhatsApp din `<main>` si cate dintre ele NU poarta ref-ul paginii exact o data. */
-function refuriGresite(html: string, ref: string): { wa: string[]; gresite: string[] } {
+/** Legaturile WhatsApp din `<main>`, brute (cum stau in atribut). */
+function waDinMain(html: string): string[] {
   const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'))
-  const wa = [...main.matchAll(/<a\b[^>]*\shref="(https:\/\/wa\.me\/[^"]*)"/g)].map((m) => decodeURIComponent(m[1].split('&amp;').join('&')))
-  return { wa, gresite: wa.filter((h) => h.split('[ref:' + ref + ']').length - 1 !== 1) }
+  return [...main.matchAll(/<a\b[^>]*\shref="(https:\/\/wa\.me\/[^"]*)"/g)].map((m) => m[1].split('&amp;').join('&'))
 }
 
-test('martor NEGATIV si POZITIV al verificarii ref-ului, pe HTML asamblat la rulare: ref-ul paginii trece, un ref strain pica', () => {
-  const leg = (r: string) => '<main><a href="https://wa.me/1?text=' + encodeURIComponent('Hello [ref:' + r + ']') + '">x</a></main>'
-  expect(refuriGresite(leg('en-' + 'price'), 'en-price')).toEqual({ wa: ['https://wa.me/1?text=Hello [ref:en-price]'], gresite: [] })
-  expect(refuriGresite(leg('en-' + 'home'), 'en-price').gresite).toHaveLength(1)
+// Felia 164 (decizia Marian 04.11.2026, „1 da”): mesajul pleaca fara [ref:...] pe EN ca pe RO-MD; martorii detectorului
+// (`ajutor/whatsapp-ro.ts`), pe textul real al paginii din tabelul de canale EN.
+test('martor NEGATIV si POZITIV al verificarii mesajului, pe HTML asamblat la rulare: textul curat trece, marcajul repus si textul strain pica', () => {
+  const text = texteEn().get('en-price') ?? ''
+  expect(text, 'controlul: tabelul EN are textul paginii').not.toBe('')
+  const leg = (t: string) => '<main><a href="' + legaturaProba(NUMAR_WA, t) + '">x</a></main>'
+  const o = { numar: NUMAR_WA, ref: 'en-price', adresaPaginii: 'http://127.0.0.1:1/pricing', limba: 'en' as const }
+  expect(abateriWhatsApp(waDinMain(leg(text)), o)).toEqual([])
+  expect(abateriWhatsApp(waDinMain(leg(text.replace('pricing page.', 'pricing page ' + MARCAJ + 'en-price].'))), o).join(' | ')).toContain('marcajul')
+  expect(abateriWhatsApp(waDinMain(leg(texteEn().get('en-home') ?? '')), o).join(' | ')).toContain('alt text')
 })
 
 test('/pricing: sumele in EUR pe ambele perioade, fraza calculatorului cu "EUR" inaintea sumei si virgula la mii', async ({ page }) => {
@@ -143,7 +160,7 @@ test('/pricing: sumele in EUR pe ambele perioade, fraza calculatorului cu "EUR" 
  */
 for (const e of [
   { cale: '/pricing', nume: NUME_EN, anual: 'EUR / month, billed annually', lunar: 'EUR / month', planAnual: 'The plan that fits is Starter: EUR 75 a month billed annually', planLunar: 'The plan that fits is Starter: EUR 90 a month, the cost of', ore: 'for about 2,200 h', oreMici: 'EUR 18 a month for about 3.7 h', marcaAnual: 'billed annually' },
-  { cale: '/ro/preturi', nume: NUME_RO, anual: 'EUR / lună, la plata anuală', lunar: 'EUR / lună', planAnual: 'Se potrivește pachetul Starter: 75 EUR pe lună, la plata anuală', planLunar: 'Se potrivește pachetul Starter: 90 EUR pe lună, adică', ore: 'pentru cele circa 2.200 h', oreMici: '18 EUR lunar pentru cele circa 3,7 h', marcaAnual: 'la plata anuală' },
+  { cale: '/ro/preturi', nume: NUME_RO_MD, anual: 'EUR / lună, la plata anuală', lunar: 'EUR / lună', planAnual: 'Se potrivește pachetul Starter: 75 EUR pe lună, la plata anuală', planLunar: 'Se potrivește pachetul Starter: 90 EUR pe lună, adică', ore: 'pentru cele circa 2.200 h', oreMici: '18 EUR lunar pentru cele circa 3,7 h', marcaAnual: 'la plata anuală' },
 ]) {
   test(e.cale + ': perioada langa pretul anual (carduri si calculator), separatorul de mii la ore si zecimala sub 100 de ore', async ({ page }) => {
     await page.goto(copie.baza + e.cale + '#pachete')
@@ -198,12 +215,16 @@ for (const [cale, ref] of [
   ['/contact', 'en-contact'],
   ['/ro/contact', 'ro-md-contact'],
 ] as const) {
-  test(cale + ': zero <form, legaturile WhatsApp din <main> poarta ref-ul paginii, o singura data', async () => {
+  // Felia 164 (GO Marian 04.11.2026 pe documentul lui Adrian Mihai, apoi decizia Marian 04.11.2026, „1 da”, si pe EN):
+  // mesajul pleaca fara [ref:...]; ref-ul alege doar randul tabelului de canale, iar atribuirea o poarta evenimentul
+  // Umami `contact` cu `pagina`.
+  const limba = cale.startsWith('/ro/') ? ('ro' as const) : ('en' as const)
+  test(cale + ': zero <form, legaturile WhatsApp din <main> poarta textul paginii, fara marcaj, atribuit paginii in Umami', async () => {
     const html = await (await fetch(copie.baza + cale)).text()
     expect(html).not.toContain('<form')
-    const { wa, gresite } = refuriGresite(html, ref)
+    const wa = waDinMain(html)
     // Controlul extragerii: fiecare pagina are cel putin o legatura WhatsApp in <main>.
     expect(wa.length, cale).toBeGreaterThan(0)
-    expect(gresite).toEqual([])
+    expect(abateriWhatsApp(wa, { numar: NUMAR_WA, ref, adresaPaginii: copie.baza + cale, limba })).toEqual([])
   })
 }

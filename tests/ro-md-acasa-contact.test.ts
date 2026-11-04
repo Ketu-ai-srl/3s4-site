@@ -291,22 +291,25 @@ describe('legaturile paginilor cu restul site-ului', () => {
   })
 
   it('legaturile wa.me si mailto sunt identice, caracter cu caracter, cu forma de referinta a fisei', () => {
+    // Felia 164 (GO owner 04.11.2026 pe documentul lui Adrian Mihai): textele WhatsApp s-au rescris si legatura pleaca FARA
+    // codul [ref:...] (`legaturaWhatsApp`). Decizia Marian 04.11.2026 („2 da”): si subiectul e-mailului pleaca fara el.
+    // Forma de referinta e cea noua.
     const wa = (pg: PaginaContinut) => legaturaWhatsApp(pg.cta.ref, pg.cta.textWhatsapp, CANALE_3S_MD)
     expect(wa(acasa.paginaAcasa())).toBe(
-      'https://wa.me/37360055599?text=Bun%C4%83%20ziua%2C%203S.%20Am%20citit%20site-ul%203S%20%5Bref%3Aro-md-acasa%5D.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.',
+      'https://wa.me/37360055599?text=Bun%C4%83%20ziua%21%20Am%20citit%20site-ul%203S%20%C8%99i%20a%C8%99%20vrea%20s%C4%83%20aflu%20cum%20pot%20testa%203S%20pe%20documentele%20noastre.',
     )
     expect(wa(contact.paginaContact())).toBe(
-      'https://wa.me/37360055599?text=Bun%C4%83%20ziua%2C%203S.%20Am%20citit%20pagina%20de%20contact%20%5Bref%3Aro-md-contact%5D.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.',
+      'https://wa.me/37360055599?text=Bun%C4%83%20ziua%21%20Am%20o%20%C3%AEntrebare%20despre%203S.',
     )
     expect(acasa.emailAcasa(ADRESA_EMAIL)).toBe(
       'mailto:' +
         ADRESA_EMAIL +
-        '?subject=%C3%8Entrebare%203S%20%5Bref%3Aro-md-acasa%5D&body=Bun%C4%83%20ziua%2C%203S%2C%0D%0A%0D%0AAm%20citit%20site-ul%203S.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.%0D%0A%0D%0AArhiva%20mea%20%28h%C3%A2rtie%2C%20scan%C4%83ri%20sau%20fi%C8%99iere%29%20%C8%99i%20%C8%9Bara%3A%0D%0A',
+        '?subject=%C3%8Entrebare%203S&body=Bun%C4%83%20ziua%2C%203S%2C%0D%0A%0D%0AAm%20citit%20site-ul%203S%20%C8%99i%20a%C8%99%20vrea%20s%C4%83%20aflu%20cum%20pot%20testa%203S%20pe%20documentele%20noastre.%0D%0A%0D%0AArhiva%20mea%20%28h%C3%A2rtie%2C%20scan%C4%83ri%20sau%20fi%C8%99iere%29%20%C8%99i%20%C8%9Bara%3A%0D%0A',
     )
     expect(contact.emailContact(ADRESA_EMAIL)).toBe(
       'mailto:' +
         ADRESA_EMAIL +
-        '?subject=%C3%8Entrebare%203S%20%5Bref%3Aro-md-contact%5D&body=Bun%C4%83%20ziua%2C%203S%2C%0D%0A%0D%0AAm%20citit%20pagina%20de%20contact.%20A%C8%99%20dori%20s%C4%83%20%C3%AEntreb%20despre%20un%20pilot.%0D%0A%0D%0AArhiva%20mea%20%28h%C3%A2rtie%2C%20scan%C4%83ri%20sau%20fi%C8%99iere%29%20%C8%99i%20%C8%9Bara%3A%0D%0A',
+        '?subject=%C3%8Entrebare%203S&body=Bun%C4%83%20ziua%2C%203S%2C%0D%0A%0D%0AAm%20o%20%C3%AEntrebare%20despre%203S.%0D%0A%0D%0AArhiva%20mea%20%28h%C3%A2rtie%2C%20scan%C4%83ri%20sau%20fi%C8%99iere%29%20%C8%99i%20%C8%9Bara%3A%0D%0A',
     )
   })
 

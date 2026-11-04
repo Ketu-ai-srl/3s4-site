@@ -6,6 +6,7 @@ import { EDITII } from '../../src/lib/editii'
 import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd, pornesteCopia3sMd, type Copie3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsApp, abateriWhatsAppRo } from './ajutor/whatsapp-ro'
 
 /**
  * ADRESELE INEXISTENTE DE SUB `/ro` pe COPIA 3s.md (felia 140; `ajutor/copie-3s-md.ts`, profilul
@@ -19,8 +20,8 @@ import { RADACINA } from './ajutor/proiect'
  * aceeasi pagina), neindexare; nicio legatura interna din pagina in afara editiei ro-MD, in afara celei marcate spre
  * engleza (`hreflang="en"`); drumurile din corp sunt exact paginile `/ro` din harta de site a copiei, plus pagina de
  * start; subsolul are legaturile si butonul de setari ale subsolului de pe `/ro/contact`; fiecare legatura wa.me poarta
- * ref-ul pe care tabelul de canale ro-MD il da caii (pagina de start, sau informatiile legale sub `/ro/juridic`), niciuna
- * pe cel englezesc. In browser, la 390 si la 1440: aspectul paginii de negasit englezesti (titlul sub antetul fix, corpul
+ * mesajul pe care tabelul de canale ro-MD il da caii (pagina de start, sau informatiile legale sub `/ro/juridic`), din
+ * felia 164 fara marcajul ref (`ajutor/whatsapp-ro.ts`), niciuna ref-ul englezesc. In browser, la 390 si la 1440: aspectul paginii de negasit englezesti (titlul sub antetul fix, corpul
  * titlurilor interioare, acelasi spatiu de sus, blocul centrat), iar butonul de setari din subsol deschide panoul de
  * consimtamant.
  *
@@ -127,14 +128,18 @@ const inEditiaRo = (h: string) => h === PREFIX_RO || h.startsWith(PREFIX_RO + '/
 /** Legaturile interne fara marcaj de alta limba: pe o pagina a editiei ro-MD toate trebuie sa ramana in editie. */
 const interneFaraLimba = (html: string) => legaturi(html).filter((l) => interna(l.href) && l.hreflang === null).map((l) => l.href)
 
-/** Codurile `ref` din toate legaturile wa.me ale paginii, si cate legaturi wa.me are. */
-function refuriWa(html: string): { legaturi: number; refuri: string[] } {
+/** Codurile `ref` din toate legaturile wa.me ale paginii, cate legaturi wa.me are si adresele lor (brute). */
+function refuriWa(html: string): { legaturi: number; refuri: string[]; hrefuri: string[] } {
   const wa = legaturi(html)
     .map((l) => l.href)
     .filter((h) => h.startsWith('https://wa.me/'))
   const refuri = wa.flatMap((h) => [...decodeURIComponent(h.split('?text=')[1] ?? '').matchAll(/\[ref:([^\]]+)\]/g)].map((m) => m[1]))
-  return { legaturi: wa.length, refuri: [...new Set(refuri)].sort() }
+  return { legaturi: wa.length, refuri: [...new Set(refuri)].sort(), hrefuri: wa }
 }
+
+/** Numerele de WhatsApp ale domeniilor 3s.md si 3s.com.ro, din profiluri (contractul fara marcaj, felia 164). */
+const NUMAR_WA = (JSON.parse(mediuProfil3sMd().CANALE_JSON) as { whatsapp: string }).whatsapp
+const NUMAR_WA_COMRO = (JSON.parse(mediuProfil3sMd(join(RADACINA, 'config', 'profil-3s-com-ro.json')).CANALE_JSON) as { whatsapp: string }).whatsapp
 
 type Masura = {
   status: number
@@ -144,7 +149,7 @@ type Masura = {
   h1: string
   robots: string[]
   straine: string[]
-  wa: { legaturi: number; refuri: string[] }
+  wa: { legaturi: number; refuri: string[]; hrefuri: string[] }
   corp: Legatura[]
   subsol: string[]
   setari: string
@@ -224,9 +229,14 @@ test.describe('M2 ramas: orice cale inexistenta de sub /ro primeste pagina de ne
       expect(m.subsol).toEqual(contact.subsol)
       expect(m.setari, 'butonul de setari din subsol').not.toBe('')
       expect(m.setari).toBe(contact.setari)
-      // WhatsApp: legaturi exista (controlul), toate cu ref-ul pe care tabelul ro-MD il da caii.
+      // WhatsApp: legaturi exista (controlul), toate cu MESAJUL pe care tabelul ro-MD il da caii. Felia 164 (GO Marian
+      // 04.11.2026, documentul lui Adrian Mihai din 04.11): pe paginile in romana mesajul pleaca fara [ref:...], deci
+      // ref-ul alege doar randul tabelului; textul lui, fara marcaj, deosebeste pagina de cea englezeasca (care din decizia
+      // Marian 04.11.2026, „1 da”, pleaca si ea fara marcaj, cu textul EN: martorul POZITIV de mai jos), iar atribuirea o
+      // poarta evenimentul Umami `contact` (`ajutor/whatsapp-ro.ts`).
       expect(m.wa.legaturi).toBeGreaterThan(0)
-      expect(m.wa.refuri).toEqual([refPentru(TABEL_RO, PREFIX_RO, cale)])
+      expect(m.wa.refuri).toEqual([])
+      expect(abateriWhatsAppRo(m.wa.hrefuri, { numar: NUMAR_WA, ref: refPentru(TABEL_RO, PREFIX_RO, cale), adresaPaginii: copie.baza + cale })).toEqual([])
     })
   }
 
@@ -241,10 +251,14 @@ test.describe('M2 ramas: orice cale inexistenta de sub /ro primeste pagina de ne
       expect(m.h1).toBe(EN.h1)
       expect(m.h1).not.toBe(RO.h1)
       expect(m.titlu).toBe(EN.titlu)
-      // Regula legaturilor si cea a ref-ului chiar deosebesc paginile: pe 404-ul englezesc dau abateri.
+      // Regula legaturilor si cea a mesajului chiar deosebesc paginile: pe 404-ul englezesc dau abateri. Felia 164 (decizia
+      // Marian 04.11.2026, „1 da”): mesajul EN pleaca fara [ref:...]; il deosebeste textul randului EN, pe care detectorul
+      // romanesc il acuza.
       expect(m.straine.length).toBeGreaterThan(0)
       expect(m.wa.legaturi).toBeGreaterThan(0)
-      expect(m.wa.refuri).toEqual([REF_EN])
+      expect(m.wa.refuri).toEqual([])
+      expect(abateriWhatsApp(m.wa.hrefuri, { numar: NUMAR_WA, ref: REF_EN, adresaPaginii: copie.baza + cale, limba: 'en' })).toEqual([])
+      expect(abateriWhatsAppRo(m.wa.hrefuri, { numar: NUMAR_WA, ref: REF_RO, adresaPaginii: copie.baza + cale }).join(' | ')).toContain('alt text')
     })
   }
 
@@ -325,11 +339,13 @@ test.describe('simetricul pe 3s.com.ro: orice cale inexistenta de sub /en primes
       expect(drumuri.filter((h) => !subEn(h))).toEqual([])
       // Spre romana o singura legatura, marcata cu limba servita a radacinii.
       expect(m.corp.filter((l) => l.hreflang !== null)).toEqual([{ href: '/', hreflang: COMRO['ro-MD'].inLanguage }])
-      // Pe toata pagina (antet, corp, subsol), legaturile interne nemarcate raman sub /en; wa.me poarta ref-ul EN.
+      // Pe toata pagina (antet, corp, subsol), legaturile interne nemarcate raman sub /en; wa.me poarta mesajul EN, din
+      // felia 164 fara marcaj (decizia Marian 04.11.2026, „1 da”), cu numarul domeniului 3s.com.ro.
       expect(m.straine.length, 'controlul: pagina are legaturi interne').toBeGreaterThan(0)
       expect(m.straine.filter((h) => !subEn(h))).toEqual([])
       expect(m.wa.legaturi).toBeGreaterThan(0)
-      expect(m.wa.refuri).toEqual([REF_EN])
+      expect(m.wa.refuri).toEqual([])
+      expect(abateriWhatsApp(m.wa.hrefuri, { numar: NUMAR_WA_COMRO, ref: REF_EN, adresaPaginii: comro.baza + cale, limba: 'en' })).toEqual([])
     })
   }
 

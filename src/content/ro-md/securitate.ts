@@ -29,7 +29,7 @@ export const OPERATOR_SECURITATE_BUILD: boolean = operatorInregistrat();
 
 function descriere(operator: boolean): string {
   return operator
-    ? "3S Scan Store Solve este o arhivă digitală cu căutare AI, operată din Republica Moldova. Fișierele sunt păstrate în UE (Frankfurt), pe Amazon Web Services."
+    ? "3S este o arhivă digitală cu căutare AI, dezvoltată în parteneriat cu grupul Adria Arhivare din România. Fișierele sunt păstrate în UE (Frankfurt), pe AWS."
     : "3S Scan Store Solve este o arhivă digitală cu căutare AI, iar fiecare răspuns indică documentul-sursă. Fișierele sunt păstrate în UE (Frankfurt), pe AWS.";
 }
 
@@ -138,7 +138,7 @@ export function paginaSecuritate(operator: boolean = OPERATOR_SECURITATE_BUILD):
     cta: {
       ref: "ro-md-securitate",
       titluBloc: "Scrie-ne pe WhatsApp",
-      textWhatsapp: "Bună ziua, 3S. Am citit pagina Despre 3S și securitate [ref:ro-md-securitate]. Am o întrebare despre locul în care sunt păstrate datele.",
+      textWhatsapp: "Bună ziua! Am o întrebare despre unde sunt păstrate datele în 3S. [ref:ro-md-securitate]",
       subiectEmail: "Întrebare 3S [ref:ro-md-securitate]",
     },
     jsonLd: [
@@ -177,6 +177,7 @@ export function paginaSecuritate(operator: boolean = OPERATOR_SECURITATE_BUILD):
       "ro-md-semnatura-in-curs",
       "ro-md-ghiduri-cu-surse",
       "ro-md-pilot-asistat",
+      "ro-md-partener-adria",
       ...(operator ? ["ro-md-operator-din-moldova"] : []),
     ],
   };

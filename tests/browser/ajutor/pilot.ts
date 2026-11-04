@@ -33,7 +33,9 @@ const NUMAR_30 = '(?:' + '3' + '0|' + 'thir' + 'ty|' + 'trei' + 'zeci)'
 /** 14, scris ca cifra sau ca numeral (engleza, romana). */
 const NUMAR_14 = '(?:' + '1' + '4|' + 'four' + 'teen|' + 'pai' + 'sprezece)'
 
-const PILOT = /\bpilot/i
+// Felia 164 (documentul lui Adrian Mihai, 03.11.2026, GO owner 04.11): pe paginile in romana "pilotul" se numeste
+// "test gratuit". Detectorul il recunoaste sub ambele nume, deci un test gratuit de 30 de zile e prins la fel.
+const PILOT = /\b(?:pilot|test(?:ul)? gratuit|testezi 3S gratuit)/i
 /** Valabilitatea ofertei: durata vine imediat dupa "valid (for)" sau "valabil(a/e)". */
 const VALABILITATE = /(?:\bvalid(?:\s+for)?|\bvalabil[aăe]?)\s+$/i
 /** Oferta scrisa, in engleza sau in romana ("offer", "oferta", "ofertei"; nu verbul "ofera"). */

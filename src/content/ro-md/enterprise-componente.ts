@@ -44,17 +44,20 @@ export const EROU_ENTERPRISE_RO_MD: ContinutEroulEnterprise = {
   ],
   inapoi: { text: "Înapoi la pachete", href: "/ro/preturi", ruta: "/ro/preturi" },
   titlu: "3S pentru organizațiile cu arhive mari și cerințe IT",
+  // Felia 164: a doua propozitie e cea propusa in documentul lui Adrian Mihai (03.11.2026, „Enterprise, caseta”). Forma
+  // de o singura propozitie avea 26 de cuvinte, sub paragraful de raspuns de 30-80 (G-AI-02, CI 41802934979), iar
+  // „cerintele voastre” iesea din adresarea cu „tu” (decizia 35).
   subtitlu:
-    "3S Enterprise este pachetul pentru organizațiile cu peste 20 de conturi de utilizator, cu contract anual. 3S recunoaște textul documentelor scanate, identifică tipul lor și răspunde la întrebări cu sursa indicată.",
-  secundara: { text: "Cum lucrează platforma", href: "/ro/platforma", ruta: "/ro/platforma" },
-  incredere: ["Găzduire în UE", "Principală: Frankfurt", "Peste 20 de conturi", "Contract anual"],
+    "3S Enterprise este pachetul pentru organizațiile cu peste 20 de conturi de utilizator, cu contract anual, limite mai mari și o ofertă scrisă. Spune-ne ce cerințe are departamentul IT și îți răspundem punct cu punct.",
+  secundara: { text: "Cum funcționează platforma", href: "/ro/platforma", ruta: "/ro/platforma" },
+  incredere: ["Găzduire în UE", "Regiunea principală: Frankfurt", "Peste 20 de conturi", "Contract anual"],
 };
 
 /** Butonul de canal al eroului si al blocului de canal: eticheta deciziei 35 (front matter `cta.button`). */
 export const BUTON_WHATSAPP_ENTERPRISE_RO_MD = "Scrie-ne pe WhatsApp";
 
 /** Microtextul de sub butonul blocului de canal (front matter `cta.microtext`). */
-export const MICROTEXT_ENTERPRISE_RO_MD = "Îți răspunde un membru al echipei 3S, în română sau în engleză. Nu este nevoie de formular sau de cont.";
+export const MICROTEXT_ENTERPRISE_RO_MD = "Îți răspunde un consultant din echipa 3S, în română sau în engleză. Fără formular, fără cont.";
 
 /**
  * `enterprise.ts:49-89`: banda cu drumul unui document. Listele sunt mai scurte decat pe RO (elementele scoase de
@@ -64,8 +67,8 @@ export const DRUM_DOCUMENT_RO_MD: ContinutDrumDocument = {
   titlu: "De la fișier la răspuns",
   intrare: { eticheta: "Primire", elemente: ["Scanări existente", "Din browser"] },
   intelegere: { eticheta: "Citire", elemente: ["Recunoașterea textului", "Tipul documentului", "Căutare cu sursa citată"] },
-  stocare: { eticheta: "Păstrare", pastile: ["UE (Frankfurt)", "Indexare"] },
-  iesire: { eticheta: "Livrare", elemente: ["Răspuns în browser", "Export"] },
+  stocare: { eticheta: "Păstrare", pastile: ["UE (Frankfurt)", "Gata de căutare"] },
+  iesire: { eticheta: "Răspuns", elemente: ["Răspuns în browser", "Export"] },
   fapte: [
     { text: "factura_0147.pdf", mono: true },
     { text: "Factură", mono: false },
@@ -74,19 +77,17 @@ export const DRUM_DOCUMENT_RO_MD: ContinutDrumDocument = {
   ],
   anStart: "2026",
   anFinal: "2036",
-  nota: "Exemplu cu date fictive. Firma stabilește termenul de păstrare pentru fiecare dosar.",
+  nota: "Exemplu cu date fictive. Compania stabilește termenul de păstrare pentru fiecare dosar.",
   etichetaExemplu: "exemplu",
 };
 
 /** `enterprise.ts:96-125`: lista ia rolul tabelului pentru IT si achizitii (specificatia, sectiunea 3). */
 export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
   titlu: "Ce verifică întâi IT-ul și achizițiile?",
-  text: "Mai jos sunt subiectele pe care IT-ul și achizițiile le verifică de obicei primele, cu ce declarăm astăzi despre fiecare.",
+  text: "Iată ce verifică de obicei IT-ul și achizițiile și ce putem spune astăzi despre fiecare punct.",
+  // Caseta „Certificari si niveluri de serviciu” a iesit (felia 164, decizia lui Adrian Mihai din 03.11.2026, GO owner
+  // 04.11): la cerintele unui departament IT se raspunde la cerere, nu printr-o declaratie pe site.
   elemente: [
-    {
-      titlu: "Certificări și niveluri de serviciu",
-      text: "Nu declarăm certificări sau niveluri de serviciu garantate (SLA). Spune-ne ce cerințe ai, iar noi îți spunem deschis dacă le îndeplinim.",
-    },
     {
       titlu: "Conturi, limite și contract",
       text:
@@ -102,12 +103,12 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
         ".",
     },
     {
-      titlu: "Pilot pe documentele firmei",
-      text: "Începi cu un pilot gratuit de 14 zile, la nivelul pachetului Starter. Pachetul și prețul se confirmă apoi printr-o ofertă scrisă.",
+      titlu: "Test gratuit pe documentele companiei",
+      text: "Începi cu un test gratuit de 14 zile, cu limitele pachetului Starter. Pachetul și prețul le confirmăm apoi într-o ofertă scrisă.",
     },
     {
-      titlu: "Locul datelor",
-      text: "Fișierele sunt găzduite în UE, cu regiunea principală la Frankfurt. Pagina Despre 3S și securitate numește furnizorul și explică efectul legii americane asupra datelor.",
+      titlu: "Unde sunt datele",
+      text: "Fișierele stau pe servere din UE. Pagina Despre 3S și securitate spune cine este furnizorul și ce înseamnă legea americană pentru date.",
       // Tinta aprobata a paginii pentru gazduire (calea SURSA; adresa servita o scrie componenta).
       legaturaInText: { text: "Pagina Despre 3S și securitate", href: "/ro/securitate#security" },
     },
@@ -116,8 +117,8 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
       text: "Pui întrebarea în browser, iar răspunsul vine cu documentul din care provine, ca să îl poți verifica înainte să te bazezi pe el.",
     },
     {
-      titlu: "Documentele, prin export",
-      text: "Poți exporta documentele din 3S. Site-ul nu publică condiții pentru încetarea colaborării; dacă ai nevoie de o procedură anume, spune-ne înainte să decizi.",
+      titlu: "Documentele rămân ale tale",
+      text: "Le poți descărca oricând din 3S. Dacă ai nevoie de o procedură anume de predare a datelor la încheierea contractului, spune-ne înainte să decizi.",
     },
   ],
 };
@@ -125,6 +126,6 @@ export const LIVRABILE_RO_MD: ContinutListaLivrabile = {
 /** `enterprise.ts:132-136`: capul blocului de canal care tine locul formularului (d3). */
 export const CANAL_ENTERPRISE_RO_MD = {
   eticheta: "Enterprise",
-  titlu: "Discută cu noi cerințele organizației",
+  titlu: "Spune-ne ce cerințe are compania ta",
   subtitlu: "Spune-ne ce conține arhiva și unde se află acum.",
 };

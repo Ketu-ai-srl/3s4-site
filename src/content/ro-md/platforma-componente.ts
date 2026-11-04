@@ -35,7 +35,7 @@ export const SECTIUNI_PLATFORMA_RO_MD: readonly SectiunePlatforma[] = [
 export const ETICHETA_BUTON_CANAL_PLATFORMA_RO_MD = "Scrie-ne pe WhatsApp";
 
 /** Butonul secundar al eroului (`platforma.ts:42`): pagina de contact exista pe 3s.md; nu se promite o demonstratie. */
-export const EROU_SECUNDAR_PLATFORMA_RO_MD = { text: "Contactează-ne", href: "/ro/contact", ruta: "/ro/contact" } as const;
+export const EROU_SECUNDAR_PLATFORMA_RO_MD = { text: "Scrie-ne", href: "/ro/contact", ruta: "/ro/contact" } as const;
 
 export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
   // platforma.ts:28-29.
@@ -45,17 +45,19 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
   ],
   erou: {
     // platforma.ts:36, :40.
-    titlu: "Platforma 3S: documente încărcate, răspunsuri cu sursa",
+    titlu: "Platforma 3S: încarci documentele, primești răspunsuri cu sursa lor",
+    // Pasul zero (decizia Marian 04.11.2026, „baga adria”; documentul lui Adrian Mihai, 04.11): hartia o preia si o
+    // scaneaza partenerul, grupul Adria Arhivare din Romania, nu platforma (`ro-md-partener-adria-hartie`).
     subtitlu:
-      "3S preia documentele pe care le încarci din browser, inclusiv fișierele pe care le ai deja scanate. Recunoaște fiecare document și consemnează cine îl deschide. Termenul de păstrare îl alegi pe dosar. Apoi pui întrebări, iar fiecare răspuns indică documentul din care provine.",
+      "Încarci documentele din browser, inclusiv scanările pe care le ai deja. Arhiva pe hârtie o preia și o scanează partenerul nostru, grupul Adria Arhivare din România. 3S recunoaște ce fel de document este fiecare și înregistrează cine îl deschide. Termenul de păstrare îl alegi o singură dată, pe dosar. Apoi pui întrebări, iar fiecare răspuns vine cu documentul din care provine.",
   },
   macheta: {
     // platforma.ts:52-57.
-    declaratie: "Exemplu cu date fictive: fișiere TIFF, PDF, PNG și JPG intră în 3S, care le citește textul și le marchează tipul.",
+    declaratie: "Exemplu cu date fictive: scanări și poze (TIFF, PDF, PNG, JPG) intră în 3S, care le citește textul și recunoaște ce fel de document este fiecare.",
     eticheta: "Exemplu cu date fictive",
     fisiere: ["TIFF", "PDF", "PNG", "JPG"],
     miez: "3S",
-    campuri: ['"tip": "contract"', '"dosar": "Logistică"', '"text": "indexat"'],
+    campuri: ["Tip: contract", "Dosar: Logistică", "Text: citit"],
     insigne: ["Frankfurt", "Termene", "Jurnal", "Export"],
   },
   piloni: {
@@ -66,30 +68,30 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
         numar: "01",
         iconita: "straturi",
         titlu: "Toate fișierele, într-o arhivă",
-        text: "PDF-urile, scanările și fotografiile încărcate de echipă ajung în aceeași arhivă, unde 3S le citește textul și le marchează tipul.",
+        text: "PDF-urile, scanările și pozele încărcate de echipă ajung în aceeași arhivă, unde 3S le citește textul și recunoaște ce fel de documente sunt.",
       },
       {
         numar: "02",
         iconita: "scut-bifa",
         titlu: "Păstrate în UE",
-        text: "Fișierele încărcate sunt păstrate în UE, cu regiunea principală la Frankfurt, și le poți exporta oricând ai nevoie de ele.",
+        text: "Fișierele încărcate sunt păstrate în UE și le poți descărca oricând.",
       },
       {
         numar: "03",
         iconita: "scantei",
-        titlu: "Răspuns cu sursa indicată",
-        text: "Întrebarea pusă în browser primește un răspuns din documentele firmei, împreună cu documentul din care provine, ca să-l poți verifica.",
+        titlu: "Răspuns cu sursa la vedere",
+        text: "Pui întrebarea în browser și primești răspunsul din documentele companiei, împreună cu documentul din care provine, ca să-l poți verifica.",
       },
     ],
   },
   model: {
     // platforma.ts:104-115.
     titlu: "Cum ajunge întrebarea echipei la documentul potrivit",
-    metafora: "Un singur punct de acces la documentele firmei.",
-    subtitlu: "Echipa pune întrebările din browser. Documentele intră în 3S prin încărcare, iar răspunsurile se întorc împreună cu sursa lor.",
+    metafora: "Un singur loc pentru toate documentele companiei.",
+    subtitlu: "Angajații pun întrebări din browser. Documentele intră în 3S prin încărcare, iar răspunsurile vin împreună cu documentul-sursă.",
     noduri: [
-      { eticheta: "Echipa firmei", descriere: "Colegii și contabilul, care lucrează din browser." },
-      { eticheta: "Arhiva 3S", descriere: "Fiecare document citit, păstrat în UE, gata de întrebări." },
+      { eticheta: "Echipa companiei", descriere: "Angajații și contabilul, care lucrează din browser." },
+      { eticheta: "Arhiva 3S", descriere: "Fiecare document este citit, păstrat în UE și gata să răspundă." },
       { eticheta: "Documentele", descriere: "Foldere comune, atașamente de e-mail, scanări, fotografii." },
     ],
     conectori: ["Întrebări și căutări", "Documente încărcate"],
@@ -98,70 +100,70 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
     // platforma.ts:146-174; randurile despre originalul pe hartie ies (poarta juridica 40-41).
     numar: "01",
     titlu: "Unde stă fiecare document, cât timp și cine l-a deschis",
-    subtitlu: "Pentru orice fișier din 3S, fie că a pornit ca scanare, fie ca document electronic, știi trei lucruri.",
+    subtitlu: "Despre orice fișier din 3S, scanat sau primit direct electronic, știi trei lucruri.",
     randuri: [
-      { eticheta: "Fișierele", valoare: "Se află în UE, cu regiunea principală la Frankfurt." },
+      { eticheta: "Unde sunt", valoare: "În Uniunea Europeană." },
       { eticheta: "Termen de păstrare", valoare: "Îl stabilești pe fiecare dosar, iar termenul ales acoperă toate documentele din acel dosar." },
-      { eticheta: "Jurnal de acces", valoare: "3S consemnează cine deschide fiecare document." },
+      { eticheta: "Cine le-a deschis", valoare: "3S înregistrează cine deschide fiecare document." },
     ],
     legatura: { text: "Unde sunt păstrate documentele", href: "/ro/securitate#security", ruta: "/ro/securitate" },
   },
   blocIntrebari: {
     // platforma.ts:178-201.
     numar: "02",
-    titlu: "O singură întrebare, iar răspunsul vine din documentele tale",
-    subtitlu: "Formulezi întrebarea în cuvintele tale, iar 3S îți arată răspunsul împreună cu documentul din care provine.",
+    titlu: "Pui o întrebare, iar răspunsul vine din documentele tale",
+    subtitlu: "Pui întrebarea cu cuvintele tale, iar 3S îți arată răspunsul și documentul din care provine.",
     carduri: [
       {
         iconita: "balon",
         titlu: "Sursa răspunsului, la vedere",
-        text: "Formulezi întrebarea ca pentru un coleg, de exemplu „Până când e valabil contractul de închiriere al depozitului?”, și verifici răspunsul pe loc, în documentul-sursă.",
+        text: "Întrebi ca pe un coleg, de exemplu „Până când este valabil contractul de închiriere al depozitului?”, și verifici răspunsul pe loc, în document.",
       },
       {
         iconita: "lupa",
         titlu: "Întrebări în română",
-        text: "Poți întreba în română. Pentru documentele în română, întrebările formulate în engleză sunt deocamdată în regim de testare.",
+        text: "Întrebi în română. Întrebările în engleză pe documente în română sunt deocamdată în teste.",
       },
       {
         // Iconita ceasului in locul clopotului: alertele nu sunt in cod (d43), ca pe EN.
         iconita: "ceas",
         titlu: "Termen pe dosar",
-        text: "Alegi o singură dată termenul de păstrare al dosarului, iar el acoperă fiecare document adăugat, fără să depindă de memoria cuiva.",
+        text: "Alegi o singură dată cât timp se păstrează dosarul, iar regula se aplică fiecărui document pe care îl adaugi. Nu mai depinde de memoria nimănui.",
       },
       {
         iconita: "randuri",
         titlu: "Tipul documentului",
-        text: "3S marchează tipul fiecărui document, de exemplu contract sau factură, ca să știi ce este înainte de a-l deschide.",
+        text: "3S recunoaște ce fel de document este fiecare, contract sau factură, ca să știi ce este înainte să-l deschizi.",
       },
     ],
   },
   comparatie: {
     // platforma.ts:211-223 si `PaginaPlatforma.tsx:260`.
-    titlu: "Câteva foldere cu PDF-uri scanate nu formează o arhivă",
-    subtitlu: "Cinci nevoi zilnice ale unei firme, comparate: ce obții dintr-o scanare simplă și ce face 3S.",
+    titlu: "Câteva foldere cu PDF-uri scanate nu sunt o arhivă",
+    subtitlu: "Cinci lucruri de care o companie are nevoie zilnic: ce îți dă o simplă scanare și ce îți dă 3S.",
     coloane: ["Doar scanare", "Arhiva 3S"],
     randuri: [
-      { dimensiune: "Textul din scanări", alternativa: "Blocat în imagine", noi: "Citit și indexat" },
-      { dimensiune: "Tipul documentelor", alternativa: "Sortat manual", noi: "Marcat automat" },
-      { dimensiune: "Locul fișierelor", alternativa: "Pe un calculator din birou", noi: "În UE, la Frankfurt" },
+      { dimensiune: "Textul din scanări", alternativa: "Blocat în imagine", noi: "Citit, gata de căutare" },
+      { dimensiune: "Tipul documentelor", alternativa: "Sortat manual", noi: "Recunoscut automat" },
+      { dimensiune: "Locul fișierelor", alternativa: "Pe un calculator din birou", noi: "În UE" },
       { dimensiune: "Găsirea unei informații", alternativa: "Fișier după fișier", noi: "O întrebare, cu sursa" },
       { dimensiune: "Termenul de păstrare", alternativa: "Ținut minte de cineva", noi: "Stabilit pe dosar" },
     ],
-    nota: "Regulile de păstrare a facturilor electronice diferă de la o țară la alta; ghidul nostru indică sursa primară și data verificării.",
+    nota: "Regulile de păstrare a facturilor electronice diferă de la o țară la alta; ghidul nostru arată sursa oficială și data verificării.",
     legatura: { text: "E-facturare", href: "/ro/ghiduri/arhivare-e-facturi-ue", ruta: "/ro/ghiduri/arhivare-e-facturi-ue" },
     etichetaCriteriu: "Criteriu",
   },
   suveranitate: {
     // platforma.ts:229-250.
-    eticheta: "Locul datelor",
-    titlu: "Fișierele tale, în UE. Regiunea principală: Frankfurt.",
-    subtitlu: "Fiecare fișier încărcat are un loc cunoscut, pe care îl poți indica oricui te întreabă.",
+    eticheta: "Unde sunt datele",
+    titlu: "Fișierele tale, în Uniunea Europeană",
+    subtitlu: "Știi exact unde este fiecare fișier și poți spune oricui te întreabă.",
     proza: [
-      "Fișierele încărcate în 3S sunt păstrate în UE, cu regiunea principală la Frankfurt. 3S citește o singură dată textul fiecărui fișier, îi marchează tipul și îl pregătește pentru căutare.",
-      "Furnizorul de găzduire are sediul în Statele Unite. În temeiul legii americane numite CLOUD Act, unui asemenea furnizor i se poate cere să păstreze și să divulge datele pe care le administrează, inclusiv atunci când serverele se află în afara SUA.",
+      "Fișierele încărcate în 3S sunt păstrate în UE, cu regiunea principală la Frankfurt. 3S le citește textul o singură dată, recunoaște ce fel de document este fiecare și îl ține gata de căutare.",
+      "Serverele sunt ale Amazon, companie americană, care semnează cu clienții un acord de prelucrare a datelor conform GDPR. O lege americană, CLOUD Act, îi poate cere însă Amazon datele pe care le administrează, chiar dacă serverele sunt în Europa.",
     ],
     evidentiat:
-      "Fiecare dosar are termenul său de păstrare, iar 3S consemnează cine deschide fiecare document. Oricine ți-ar cere locul unui document, fie un client, fie un auditor, fie un inspector, primește mereu același răspuns: în UE, cu regiunea principală la Frankfurt.",
+      "Fiecare dosar are termenul lui de păstrare, iar 3S înregistrează cine deschide fiecare document. Când un client, un auditor sau un inspector te întreabă unde sunt documentele, răspunsul este același de fiecare dată: în Uniunea Europeană.",
     legatura: { text: "Citește pagina Despre 3S și securitate", href: "/ro/securitate#security", ruta: "/ro/securitate" },
     carduri: [
       {
@@ -170,18 +172,18 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
       },
       {
         titlu: "Jurnalul deschiderilor",
-        text: "3S consemnează cine deschide fiecare document. Dacă ai reguli despre cine din firmă vede anumite documente, spune-ne de ce ai nevoie.",
+        text: "3S înregistrează cine deschide fiecare document. Dacă în compania ta anumite documente trebuie văzute doar de anumiți oameni, spune-ne ce îți trebuie.",
       },
       {
         titlu: "Termenul, pe dosar",
-        text: "Termenul de păstrare îl alegi pe dosar și se aplică documentelor din el. Ghidurile citează surse primare pentru Moldova și facturile electronice din UE.",
+        text: "Termenul de păstrare îl alegi pe dosar și se aplică tuturor documentelor din el. Ghidurile arată sursele oficiale pentru Moldova și pentru facturile electronice din UE.",
       },
     ],
   },
   cazuri: {
     // platforma.ts:324-338; fara legatura spre paginile de segment (d38).
-    titlu: "Exemple din activitatea zilnică",
-    subtitlu: "Domenii date ca exemplu, în care o zi de lucru aduce multe documente și multe întrebări despre ele.",
+    titlu: "Exemple din viața de zi cu zi",
+    subtitlu: "Trei domenii în care o zi de lucru aduce multe documente și la fel de multe întrebări despre ele.",
     cazuri: [
       {
         titlu: "Logistică",
@@ -189,7 +191,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
       },
       {
         titlu: "Construcții",
-        text: "Dosarul unui șantier reunește autorizația de construire, actele de recepție și situațiile de lucrări, iar o căutare după adresa obiectivului le găsește.",
+        text: "Dosarul unui șantier reunește autorizația de construire, procesele-verbale de recepție și situațiile de lucrări, iar o căutare după adresa obiectivului le găsește.",
       },
       {
         titlu: "Contabilitate",
@@ -200,7 +202,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
   conformitate: {
     // platforma.ts:355-357 si `PaginaPlatforma.tsx:402`.
     titlu: "3S îți arată pe loc ce cere un auditor",
-    text: "Termenele de păstrare și jurnalul deschiderilor se pot consulta oricând în 3S, fără pregătiri înaintea unui audit.",
+    text: "Termenele de păstrare și jurnalul deschiderilor sunt oricând la vedere în 3S, așa că nu mai pregătești nimic înainte de un audit.",
     insigne: ["Export", "Termene", "UE", "Frankfurt", "AWS", "Jurnal"],
     etichetaInsigne: "Ce poate arăta 3S",
   },
@@ -210,29 +212,29 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
     intrebari: [
       {
         intrebare: "Cum ajung documentele în 3S?",
-        raspuns: "Documentele se încarcă din browser. Fișierele pe care le ai deja scanate intră direct în platformă.",
+        raspuns: "Le încarci din browser. Scanările pe care le ai deja intră direct.",
       },
       {
         intrebare: "Cine are acces la documente?",
-        raspuns: "Dacă ai reguli despre cine din firmă vede anumite documente, spune-ne de ce ai nevoie, iar noi îți spunem ce face 3S astăzi.",
+        raspuns: "Dacă ai reguli despre cine din companie vede anumite documente, spune-ne ce îți trebuie și îți spunem exact ce poate 3S astăzi.",
       },
       {
         intrebare: "Unde rulează 3S?",
         raspuns:
-          "3S rulează în UE, cu regiunea principală la Frankfurt. Pagina Despre 3S și securitate numește furnizorul de găzduire și explică ce prevede legea americană pentru datele unei companii din SUA.",
+          "În Uniunea Europeană. Pagina Despre 3S și securitate spune cine este furnizorul și ce înseamnă legea americană pentru date.",
         // Tinta aprobata a paginii pentru gazduire, ca legatura "Citeste pagina Despre 3S" de mai sus (calea SURSA).
         legaturiInText: [{ text: "Pagina Despre 3S și securitate", href: "/ro/securitate#security" }],
       },
       {
         intrebare: "Cum găsesc o informație?",
         raspuns:
-          "Formulezi întrebarea liber, iar 3S indică sursa fiecărui răspuns. Întrebările în engleză despre documente în română sunt în regim de testare.",
+          "Scrii întrebarea cu cuvintele tale, iar 3S îți dă răspunsul și documentul din care provine. Întrebările în engleză pe documente în română sunt deocamdată în teste.",
       },
       {
         intrebare: "Pot stabili cât timp se păstrează documentele?",
         // Site-ul nu are o pagina-index a ghidurilor, deci fraza numeste cele doua ghiduri si le leaga pe fiecare.
         raspuns:
-          "Da. Pentru fiecare dosar alegi un termen de păstrare, valabil pentru toate documentele din el. Ghidurile noastre citează sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.",
+          "Da. Pentru fiecare dosar alegi cât timp se păstrează, iar termenul este valabil pentru toate documentele din el. Ghidurile noastre arată sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.",
         legaturiInText: [
           { text: "termenele de păstrare în Moldova", href: "/ro/ghiduri/termene-pastrare-moldova" },
           { text: "arhivarea e-facturilor în UE", href: "/ro/ghiduri/arhivare-e-facturi-ue" },
@@ -244,17 +246,17 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
 
 /** Blocul de final (`acasa.ts:800-828`): textul fisei paginii, macheta ca pe /ro. */
 export const CTA_FINAL_PLATFORMA_RO_MD: ContinutCtaFinal = {
-  titlu: "Cum ar funcționa 3S pe documentele firmei tale?",
-  subtitlu: "Îți arătăm cum răspunde 3S la o întrebare, pe câteva documente ale firmei tale.",
+  titlu: "Cum ar funcționa 3S pe documentele companiei tale?",
+  subtitlu: "Îți arătăm cum răspunde 3S la o întrebare, pe câteva documente ale companiei tale.",
   // Folosit numai daca pagina nu da `butoane`; pagina pune butonul WhatsApp.
   butonPrincipal: { text: ETICHETA_BUTON_CANAL_PLATFORMA_RO_MD, href: null, ruta: null },
-  microtext: "Îți răspunde o persoană din echipa 3S.",
+  microtext: "Îți răspunde un consultant din echipa 3S.",
   vizual: {
     declaratie: "Exemplu cu date fictive",
     pasi: [
-      { iconita: "laptop", text: "Încărcat pe web", ora: "09:41" },
-      { iconita: "tag", text: "Etichetat ca factură", ora: "09:41" },
+      { iconita: "laptop", text: "Încărcat", ora: "09:41" },
+      { iconita: "tag", text: "Recunoscut ca factură", ora: "09:41" },
     ],
-    rezultat: { fisier: "Factura_0415_exemplu.pdf", stare: "Indexat pentru căutare", ora: "09:42" },
+    rezultat: { fisier: "Factura_0415_exemplu.pdf", stare: "Gata de căutare", ora: "09:42" },
   },
 };

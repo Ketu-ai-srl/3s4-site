@@ -1,10 +1,9 @@
 {
-  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici.",
+  "_nota": "Lista declarata a perechii: diferentele de forma permise intre pagina RO si paginile 3s.md ale perechii. Tipurile de rand si regula de masurare: tests/browser/congruenta.spec.ts; validarea: tests/congruenta.test.ts. Starea perechii (nemigrata cat timp radacina paginii 3s.md e CorpPagina sau CorpDocument) se masoara, nu se scrie aici. Perechea /ro/securitate sta in p11-ro.json (felia 164, decizia Marian 04.11.2026, „4 repune”): verificarea din browser revine pe /about si ramane scoasa de pe pagina in romana, iar o lista se aplica la fel pe toate paginile ei.",
   "pereche": "P11",
   "ro": "/securitate",
   "pagini_3s_md": [
-    "/about",
-    "/ro/securitate"
+    "/about"
   ],
   "randuri": [
     {
@@ -86,7 +85,7 @@
   "_nedeclarate": [
     "AES/TLS/Jurnal (d31), Germania -> Frankfurt (d42), hartia (poarta-juridica-40-41): text in elemente care raman (piloni 4, specificatii 4, ciclu 5, insigne 6, carduri 4, intrebari 6); nu sunt randuri de forma.",
     "Reglementare: insignele raman 6 si cardurile 4, ca pe RO. Legatura de partajare cu termen si exportul zip al originalelor n-au intrare confirmata in registrul de afirmatii EN, deci sloturile lor (insignele 2 si 5, cardurile 3-4) iau fapte confirmate: raspunsul cu sursa citata si legea americana (CLOUD Act); text in elemente care raman, nu rand de forma.",
-    "Verificarea din browser ramane (intrebarea 9, decizia 59), cu textul care spune ca masoara acest site, nu platforma.",
+    "Verificarea din browser ramane pe /about (intrebarea 9, decizia 59; repusa de decizia Marian 04.11.2026, „4 repune”), cu textul care spune ca masoara acest site, nu platforma. Pe /ro/securitate a iesit (p11-ro.json).",
     "Ancorele `security` si `limits`: doua marcaje goale, fara clasa, in afara radacinilor de sectiune (componenta nu are proprietate de ancora); nu schimba nici radacinile, nici clasele.",
     "Pagina nu are bloc de final, ca pagina RO (seiful ii tine locul acolo, iar seiful iese)."
   ]

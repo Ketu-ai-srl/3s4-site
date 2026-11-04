@@ -173,15 +173,17 @@ describe('(3) observatiile criticului de limba', () => {
       if (Array.isArray(x)) x.forEach(aduna)
       else if (x !== null && typeof x === 'object') {
         const o = x as Record<string, unknown>
-        if (o.titlu === 'Locul datelor') toate.push(o as (typeof toate)[number])
+        // Felia 164: titlul cardului e "Unde sunt datele" (documentul lui Adrian Mihai, 03.11.2026).
+        if (o.titlu === 'Unde sunt datele') toate.push(o as (typeof toate)[number])
         Object.values(o).forEach(aduna)
       }
     }
     aduna(carduri)
     expect(toate).toHaveLength(1)
     const c = toate[0]
-    // Forma unica „cu regiunea principală la Frankfurt” si numele unificat al paginii (audit de limba, 09.10).
-    expect(c.text).toBe('Fișierele sunt găzduite în UE, cu regiunea principală la Frankfurt. Pagina Despre 3S și securitate numește furnizorul și explică efectul legii americane asupra datelor.')
+    // Felia 164: formula Frankfurt o singura data pe pagina (documentul lui Adrian Mihai: 25 de aparitii pe site); aici
+    // ramane "în UE", iar numele unificat al paginii (audit de limba, 09.10) ramane neschimbat.
+    expect(c.text).toBe('Fișierele stau pe servere din UE. Pagina Despre 3S și securitate spune cine este furnizorul și ce înseamnă legea americană pentru date.')
     expect(c.legaturaInText).toEqual({ text: 'Pagina Despre 3S și securitate', href: '/ro/securitate#security' })
     expect(c.text).toContain(c.legaturaInText!.text)
   })
@@ -191,7 +193,8 @@ describe('(3) observatiile criticului de limba', () => {
     const i = PLATFORMA_RO_MD.intrebari!.intrebari.find((x) => x.intrebare === 'Pot stabili cât timp se păstrează documentele?')
     expect(i).toBeDefined()
     expect(i!.raspuns).toBe(
-      'Da. Pentru fiecare dosar alegi un termen de păstrare, valabil pentru toate documentele din el. Ghidurile noastre citează sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.',
+      // Felia 164 (documentul lui Adrian Mihai, 03.11.2026): "citează sursele" -> "arată sursele"; legaturile raman.
+      'Da. Pentru fiecare dosar alegi cât timp se păstrează, iar termenul este valabil pentru toate documentele din el. Ghidurile noastre arată sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.',
     )
     expect(i!.legaturiInText).toEqual([
       { text: 'termenele de păstrare în Moldova', href: '/ro/ghiduri/termene-pastrare-moldova' },

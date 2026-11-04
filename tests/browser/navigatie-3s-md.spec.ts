@@ -7,6 +7,7 @@ import { ECHIVALENTE } from '../../src/content/echivalente'
 import { expect, test } from './ajutor/baza'
 import { mediuProfil3sMd } from './ajutor/copie-3s-md'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsApp, abateriWhatsAppRo } from './ajutor/whatsapp-ro'
 
 /**
  * Navigatia pe editie pe site-ul 3s.md (felia navigatie-pe-editie): antetul si subsolul EN pe pagina de negasit
@@ -186,7 +187,6 @@ const SCHEMA_APEL = 'te' + 'l:'
 const fataApel = (hs: string[]) => hs.filter((h) => h.toLowerCase().startsWith(SCHEMA_APEL))
 /** Randul cu numarul de WhatsApp din subsol: prefixul tarii si grupele, cu spatii. */
 const RAND_NUMAR = /^WhatsApp: \+\d{3} \d{2} \d{3} \d{3}$/
-const ref = (cod: string) => '%5Bref%3A' + cod + '%5D'
 
 /** Perechea /ro a fiecarei cai EN, din tabelul de echivalente (nu din contractul RO-MD pe care il masuram). */
 const PE_RO = new Map(Object.values(ECHIVALENTE).flatMap((p) => (p.en && p['ro-MD'] ? [[p.en, p['ro-MD']] as const] : [])))
@@ -239,8 +239,9 @@ test.describe('3s.md: antetul si subsolul EN', () => {
       expect(antet).toContain('aria-label="Main menu"')
       const ctaAntet = hrefuri(antet).filter((h) => h.startsWith(WA))
       expect(ctaAntet).toHaveLength(1)
-      // O adresa fara intrare in tabelul de canale (negasit, pagina de proba) foloseste textul paginii de start.
-      expect(ctaAntet[0]).toContain(ref('en-home'))
+      // O adresa fara intrare in tabelul de canale (negasit, pagina de proba) foloseste textul paginii de start. Felia 164
+      // (decizia Marian 04.11.2026, „1 da”): textul pleaca fara [ref:...], atribuit paginii in evenimentul Umami `contact`.
+      expect(abateriWhatsApp(ctaAntet, { numar: CANALE.whatsapp, ref: 'en-home', adresaPaginii: copie.baza + cale, limba: 'en' })).toEqual([])
       const hs = hrefuri(subsol)
       expect(hs.some((h) => h.startsWith(WA))).toBe(true)
       expect(fataApel(hrefuri(html))).toEqual([])
@@ -314,7 +315,9 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     expect(subsol).not.toBe('')
     const cta = hrefuri(antet).filter((h) => h.startsWith(WA))
     expect(cta).toHaveLength(1)
-    expect(cta[0]).toContain(ref('ro-md-juridic'))
+    // Felia 164 (GO Marian 04.11.2026, documentul lui Adrian Mihai din 04.11): pe paginile in romana mesajul pleaca fara
+    // [ref:...]. "Textul paginilor juridice" se cere acum exact, fara marcaj, cu atribuirea in evenimentul Umami `contact`.
+    expect(abateriWhatsAppRo(cta, { numar: CANALE.whatsapp, ref: 'ro-md-juridic', adresaPaginii: copie.baza + CALE_JURIDIC_RO })).toEqual([])
     expect(antet).toContain('Scrie-ne pe WhatsApp')
     expect(subsol).toContain('>Juridic</h2>')
     expect(hrefuri(subsol)).toContain(CALE_JURIDIC_RO)

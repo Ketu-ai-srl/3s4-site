@@ -54,7 +54,7 @@ export const EROU_COMPARATIE_RO_MD: { fir: NivelFir[]; titlu: string; subtitlu: 
   ],
   titlu: H1,
   subtitlu:
-    "Dacă documentele firmei sunt deja în Google Drive, încearcă întâi Gemini. Alege 3S pentru un pilot asistat pe documentele tale. Dacă ai nevoie de anumite certificări, întreabă-ne.",
+    "Dacă documentele companiei sunt deja în Google Drive, iată ce îți dă Gemini și ce îți dă 3S în plus: răspunsuri cu documentul-sursă, jurnalul deschiderilor, termene pe dosar, e-facturile din SPV și un test asistat de echipa noastră. Dacă ai nevoie de anumite certificări, întreabă-ne.",
 };
 
 export const DIVIZAT_COMPARATIE_RO_MD: CardDivizatProps = {
@@ -62,17 +62,17 @@ export const DIVIZAT_COMPARATIE_RO_MD: CardDivizatProps = {
   stanga: {
     titlu: "Când 3S nu este prima alegere",
     elemente: ["Auditorul sau banca cer certificări anume", "Ai nevoie de multe integrări gata făcute", "Semnezi electronic direct în arhivă"],
-    nota: "Google Drive acoperă o parte din ele: verifică-l întâi.",
+    nota: "Google Drive acoperă o parte din acestea.",
   },
   dreapta: {
     titlu: "Când se potrivește 3S",
     elemente: [
-      "Ai nevoie să testezi 3S pe documentele firmei",
+      "Vrei să testezi 3S pe documentele companiei tale înainte să decizi",
       // Numele sistemului nu se rupe: spatiu nedespartitor dupa "RO" si legatorul de cuvinte U+2060 dupa cratima (cratima
       // ramane cea simpla; la 390 si la 768 px se rupea in "RO e-" / "Factura").
       "Descarci e-facturile ca XML din RO\u00a0e-\u2060Factura",
-      "Fiecare răspuns trebuie să indice sursa",
-      "Ai nevoie de ajutor la primele documente",
+      "Vrei ca fiecare răspuns să vină cu documentul din care provine",
+      "Vrei pe cineva lângă tine la primele documente",
     ],
   },
 };
@@ -93,7 +93,7 @@ const G_JURNAL: SursaOficiala = {
 
 export const TABEL_COMPARATIE_RO_MD: TabelComparatie = {
   // comparatii.ts:286-300.
-  titlu: "Funcție cu funcție: Drive și 3S",
+  titlu: "Drive și 3S, față în față",
   capFunctie: "Funcția",
   // Numele produsului pe doua randuri, ca pe RO si pe EN.
   coloaneTerti: ["Google\nDrive"],
@@ -101,11 +101,11 @@ export const TABEL_COMPARATIE_RO_MD: TabelComparatie = {
   latimeMinima: 420,
   latimeColoana: 136,
   latimeColoanaMica: 88,
-  titluSurse: "De unde vin marcajele pentru Google Drive",
+  titluSurse: "De unde știm ce face Google Drive",
   notaSurse:
-    "Marcajele urmează documentația publică Google, citită pe " +
+    "Am luat informațiile din documentația publică Google, citită pe " +
     DATA_CITIRII_MARCAJE_RO_MD +
-    ". Mai multe funcții depind de planul Google Workspace ales.",
+    ". Multe funcții depind de planul Google Workspace pe care îl ai.",
   randuri: [
     {
       // comparatii.ts:327-331.
@@ -113,7 +113,7 @@ export const TABEL_COMPARATIE_RO_MD: TabelComparatie = {
       terti: [
         {
           marcaj: "da",
-          nota: "Cu funcțiile Gemini din Workspace, căutarea din Drive dă un răspuns rezumat din fișiere, cu legături spre sursele folosite.",
+          nota: "Cu funcțiile Gemini din Workspace, căutarea din Drive dă un răspuns rezumat din fișiere, cu linkuri spre fișierele folosite.",
           surse: [G_CAUTARE, G_PRODUS],
         },
       ],
@@ -125,7 +125,7 @@ export const TABEL_COMPARATIE_RO_MD: TabelComparatie = {
       terti: [
         {
           marcaj: "partial",
-          nota: "Administratorul vede evenimentele din Drive în consola de administrare; cele mai multe se înregistrează doar pentru planurile care le includ.",
+          nota: "Administratorul vede ce s-a întâmplat cu fișierele în consola de administrare, dar numai la planurile care includ jurnalul.",
           surse: [G_JURNAL],
         },
       ],
@@ -160,7 +160,7 @@ export const SURSE_CARD_COMPARATIE_RO_MD: SurseSuplimentare[] = [
 /** Cutia de incheiere (comparatii.ts:453-454, :185); butonul il rezolva pagina (tinta WhatsApp). */
 export const CUTIE_CTA_COMPARATIE_RO_MD = {
   titlu: "Nu știi dacă 3S se potrivește? Întreabă-ne.",
-  text: "Spune-ne ce documente ai și unde se află. Îți spunem direct dacă 3S se potrivește sau ce să încerci întâi.",
+  text: "Spune-ne ce documente ai și unde sunt. Îți spunem sincer dacă 3S ți se potrivește.",
   butonText: ETICHETA_BUTON_CANAL_RO_MD,
 };
 
@@ -171,7 +171,7 @@ export const PAGINA_COMPARATIE_RO_MD: PaginaReferinta = {
   cta: {
     ref: "ro-md-comparatie",
     textWhatsapp:
-      "Bună ziua, 3S. Am citit comparația dintre 3S și Google Drive [ref:ro-md-comparatie]. Aș dori să aflu dacă 3S se potrivește firmei noastre.",
+      "Bună ziua! Am citit comparația cu Google Drive și aș vrea să aflu dacă 3S se potrivește companiei noastre. [ref:ro-md-comparatie]",
     subiectEmail: "Întrebare 3S [ref:ro-md-comparatie]",
   },
   jsonLd: [

@@ -105,9 +105,9 @@ export const pagina: PaginaContinut = {
   ],
   cta: {
     ref: "ro-md-enterprise",
-    titluBloc: "Discută cu noi cerințele organizației",
+    titluBloc: "Spune-ne ce cerințe are compania ta",
     textWhatsapp:
-      "Bună ziua, 3S. Am citit pagina despre 3S Enterprise [ref:ro-md-enterprise]. Aș dori să discutăm cerințele organizației noastre.",
+      "Bună ziua! Ne interesează 3S Enterprise. Aș vrea să discutăm cerințele organizației noastre. [ref:ro-md-enterprise]",
     subiectEmail: "Întrebare 3S Enterprise [ref:ro-md-enterprise]",
   },
   jsonLd: [

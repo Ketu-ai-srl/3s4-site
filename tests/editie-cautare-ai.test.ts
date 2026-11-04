@@ -349,11 +349,14 @@ describe('pagina EN /features/search', () => {
     expect(m).not.toMatch(/inregistrare/)
   })
 
-  it('un singur buton de canal, in CTA: wa.me cu textul precompletat al paginii si [ref:en-search]', () => {
+  it('un singur buton de canal, in CTA: wa.me cu textul precompletat al paginii, fara [ref:en-search]', () => {
+    // Felia 164 (decizia Marian 04.11.2026, „1 da, 2 da”): mesajul si subiectul pleaca FARA codul [ref:...] si pe EN;
+    // textul sursa il poarta mai departe (validarea legaturii), legatura il scoate.
     const m = mainEn()
     const wa = [...m.matchAll(/<a\b[^>]*\shref="(https:\/\/wa\.me\/[^"]*)"/g)].map((x) => decodeaza(x[1]))
     expect(wa).toHaveLength(1)
-    expect(new URL(wa[0]).searchParams.get('text')).toBe(EN.pagina.cta.textWhatsapp)
+    expect(new URL(wa[0]).searchParams.get('text')).toBe(EN.pagina.cta.textWhatsapp.split(' [ref:' + EN.pagina.cta.ref + ']').join(''))
+    expect(new URL(wa[0]).searchParams.get('text')).not.toContain('[ref:')
     expect(EN.pagina.cta.textWhatsapp).toContain('[ref:' + EN.pagina.cta.ref + ']')
   })
 

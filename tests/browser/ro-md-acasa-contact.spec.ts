@@ -10,6 +10,7 @@ import { masoaraRaspunsul, type DeclaratieRaspuns } from './ajutor/geo'
 import { asteaptaHidratarea } from './ajutor/hidratare'
 import { RADACINA } from './ajutor/proiect'
 import { entitatiCuNumarul, LOC_NUMAR } from './ajutor/raspunsuri'
+import { abateriWhatsAppRo, legaturaProba, MARCAJ, texteRoMd } from './ajutor/whatsapp-ro'
 
 /**
  * Paginile RO-MD de prezentare (felia ro-md-acasa-contact), `/ro` si `/ro/contact`, pe COPIA 3s.md
@@ -18,8 +19,9 @@ import { entitatiCuNumarul, LOC_NUMAR } from './ajutor/raspunsuri'
  *
  * Ce se cere, pe HTML-ul servit (fara JavaScript), pe fiecare pagina: 200, `<html lang="ro">`, `Content-Language` al
  * editiei ro-MD din catalog, un singur H1, noindex pe staging, zero `<form`, zero RON; in `<main>` legaturile WhatsApp
- * poarta `[ref:<ref>]` al paginii (start: eroul si blocul final; contact: caseta, randul canalului si blocul final),
- * CTA-ul din antet are eticheta deciziei 35 si acelasi ref, iar subsolul are numarul de WhatsApp ca text, fara nicio legatura de apel (decizia 56),
+ * poarta textul paginii, FARA marcajul ref, atribuit paginii prin evenimentul Umami `contact` (felia 164,
+ * `ajutor/whatsapp-ro.ts`; start: eroul si blocul final; contact: caseta, randul canalului si blocul final),
+ * CTA-ul din antet are eticheta deciziei 35 si acelasi text, iar subsolul are numarul de WhatsApp ca text, fara nicio legatura de apel (decizia 56),
  * si legatura spre informatiile legale RO. Apoi:
  * hreflang reciproc intre `/` si `/ro` si intre `/contact` si `/ro/contact`; selectorul EN | RO pe toate patru
  * paginile, cu martorul negativ pe o pagina EN fara pereche; zero forme de politete, zero fraze despre asistentul pe
@@ -108,11 +110,6 @@ function hrefuri(html: string): string[] {
   return [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"/g)].map((m) => m[1].split('&amp;').join('&'))
 }
 
-/** Textul precompletat al unei legaturi wa.me, decodat. */
-function textWa(href: string): string {
-  return decodeURIComponent(href.slice(WA.length))
-}
-
 /** Alternatele din `<head>`: hreflang -> adresa. */
 function alternate(html: string): Record<string, string> {
   const rezultat: Record<string, string> = {}
@@ -137,14 +134,24 @@ function textVazut(html: string): string {
     .replace(/&nbsp;/g, ' ')
 }
 
-/** Formele de politete (decizia 35) si frazele interzise (deciziile 43 si 49), asamblate din bucati. */
+/**
+ * Formele de politete (decizia 35) si frazele interzise (deciziile 43 si 49), asamblate din bucati.
+ * EXCEPTIA "angajați" (felia 164, documentul lui Adrian Mihai din 03.11.2026, GO Marian 04.11: oamenii companiei sunt
+ * "angajați", nu "colegi"): substantivul la plural are terminatia verbului la persoana a II-a plural, deci tiparul
+ * terminatiei il lua drept politete. Iese numai forma exacta; limita declarata: imperativul omonim ("angajați un om")
+ * nu mai e prins, iar orice alt verb la persoana a II-a plural ramane prins (martorul de mai jos).
+ */
+const SUBSTANTIV_ANGAJATI = 'angaja' + 'ți'
 const POLITETE = new RegExp(
-  '(?<!\\p{L})(' + ['dumnea' + 'voastră', 'dv' + 's', 'v' + 'ă', 'voas' + 'tră', 'vos' + 'tru'].join('|') + ')(?!\\p{L})|\\p{L}+(ați|eți|iți|âți)(?!\\p{L})',
+  '(?<!\\p{L})(' + ['dumnea' + 'voastră', 'dv' + 's', 'v' + 'ă', 'voas' + 'tră', 'vos' + 'tru'].join('|') + ')(?!\\p{L})|(?<!\\p{L})(?!' + SUBSTANTIV_ANGAJATI + '(?!\\p{L}))\\p{L}+(ați|eți|iți|âți)(?!\\p{L})',
   'giu',
 )
 const NUME_WA = 'Whats' + 'App'
 // "gasesti numarul/adresa" (omul gaseste datele de contact, decizia 56 pune WhatsApp langa ele) nu e asistentul.
-const ASISTENT_RO = ['întreb\\p{L}*', 'întreab\\p{L}*', 'răspun\\p{L}*', 'asistent\\p{L}*', 'chat\\p{L}*', 'caut\\p{L}*', 'căut\\p{L}*', 'găse\\p{L}*(?!\\p{L})(?! (adresa|numărul)(?!\\p{L}))', 'primești', 'trimit\\p{L}*', 'în testare'].join('|')
+// "Ne găsești pe WhatsApp" (felia 164, subtitlul paginii de contact din documentul lui Adrian Mihai, 03.11.2026) e tot
+// omul care gaseste canalul echipei, nu asistentul un document: forma cu "ne" in fata nu acuza; "găsești documentul"
+// ramane prinsa (martorul de mai jos).
+const ASISTENT_RO = ['întreb\\p{L}*', 'întreab\\p{L}*', 'răspun\\p{L}*', 'asistent\\p{L}*', 'chat\\p{L}*', 'caut\\p{L}*', 'căut\\p{L}*', '(?<!(?<!\\p{L})ne )găse\\p{L}*(?!\\p{L})(?! (adresa|numărul)(?!\\p{L}))', 'primești', 'trimit\\p{L}*', 'în testare'].join('|')
 /** Schema legaturii de apel, asamblata la rulare (decizia 56: nicio legatura de apel). */
 const SCHEMA_APEL = 'te' + 'l:'
 const ASISTENT_WA = new RegExp(
@@ -201,9 +208,12 @@ for (const r of ruteFelie()) {
     expect(RON.test(html)).toBe(false)
   })
 
-  test(r.cale + ': WhatsApp cu ref-ul paginii in <main> si in antet (eticheta deciziei 35), numarul de WhatsApp si informatiile legale in subsol, fara apel', async () => {
+  test(r.cale + ': WhatsApp cu textul paginii, fara marcaj, atribuit paginii in Umami, in <main> si in antet (eticheta deciziei 35), numarul de WhatsApp si informatiile legale in subsol, fara apel', async () => {
     const { html } = await servit(r.cale)
-    const ref = '[ref:' + REF.get(r.cale) + ']'
+    // Felia 164 (GO Marian 04.11.2026, documentul lui Adrian Mihai din 04.11): mesajul pleaca fara [ref:...]; pe paginile in
+    // romana marcajul din text (decizia 35) se inlocuieste cu: absenta lui, textul exact al paginii si evenimentul Umami
+    // `contact` cu `pagina` (`ajutor/whatsapp-ro.ts`). Eticheta butonului din antet (decizia 35) ramane ceruta mai jos.
+    const asteptare = { numar: CANALE.whatsapp, ref: REF.get(r.cale) ?? '(fara ref)', adresaPaginii: copie.baza + r.cale }
     const main = bucata(html, /<main\b/, '</main>')
     const antet = bucata(html, /<header\b/, '</header>')
     const subsol = bucata(html, /<footer\b/, '</footer>')
@@ -215,15 +225,12 @@ for (const r of ruteFelie()) {
     // felia paginii): /ro/contact randa modulul prin CorpPagina, cu o singura legatura WhatsApp, in cardul canalului.
     // Pagina compune acum componentele paginii de contact RO (decizia 53), cu WhatsApp in cele trei locuri ale
     // canalului de acolo: butonul casetei, randul din panoul de canale (numarul) si butonul blocului de final. Faptul
-    // pazit (fiecare legatura poarta ref-ul paginii, o singura data) ramane mai jos, neschimbat.
+    // pazit (fiecare legatura poarta mesajul paginii ei) ramane mai jos; din felia 164 fara marcaj, atribuit prin Umami.
     expect(wa.length, 'legaturi WhatsApp in <main>').toBe(r.cale === '/ro/contact' ? 3 : 2)
-    for (const h of wa) {
-      expect(textWa(h)).toContain(ref)
-      expect(textWa(h).split('[ref:').length - 1).toBe(1)
-    }
+    expect(abateriWhatsAppRo(wa, asteptare)).toEqual([])
     const cta = hrefuri(antet).filter((h) => h.startsWith(WA))
     expect(cta).toHaveLength(1)
-    expect(textWa(cta[0])).toContain(ref)
+    expect(abateriWhatsAppRo(cta, asteptare)).toEqual([])
     expect(antet).toContain('Scrie-ne pe ' + NUME_WA)
     expect(subsol).toContain('>WhatsApp: +')
     expect(hrefuri(html).filter((h) => h.toLowerCase().startsWith(SCHEMA_APEL))).toEqual([])
@@ -235,7 +242,8 @@ for (const r of ruteFelie()) {
     const text = textVazut(bucata(html, /<header\b/, '</header>') + bucata(html, /<main\b/, '</main>') + bucata(html, /<footer\b/, '</footer>'))
     // Controlul extragerii: textul vazut are butonul de contact si microtextul paginii.
     expect(text).toContain('Scrie-ne pe ' + NUME_WA)
-    expect(text).toContain('Îți răspunde o persoană din echipa 3S')
+    // Felia 164 (documentul lui Adrian Mihai, 03.11.2026): pe WhatsApp raspunde "un consultant din echipa 3S".
+    expect(text).toContain('Îți răspunde un consultant din echipa 3S')
     expect(gasite(POLITETE, text)).toEqual([])
     expect(gasite(ASISTENT_WA, text)).toEqual([])
     expect(gasite(DECIZIA_43, text)).toEqual([])
@@ -312,6 +320,23 @@ test('martor POZITIV al tiparelor: fraze fabricate sunt prinse, contactul cu o p
   expect(gasite(ASISTENT_WA, 'Pe ' + NUME_WA + ' găsești documentul cu pagina lui.')).toHaveLength(1)
   expect(gasite(ASISTENT_WA, 'Dacă preferi o convorbire pe ' + NUME_WA + ', găsești numărul pe pagina de contact.')).toEqual([])
   expect(gasite(POLITETE, 'Poți contacta echipa 3S; situații, informații, aplicații.')).toEqual([])
+  // Felia 164: exceptiile numite nu acuza, dar vecinii lor raman prinsi.
+  expect(gasite(POLITETE, 'În 3S, toți ' + SUBSTANTIV_ANGAJATI + 'i care au cont; vin ' + SUBSTANTIV_ANGAJATI + ' noi.')).toEqual([])
+  expect(gasite(POLITETE, 'Scrie' + 'ți-ne, ' + SUBSTANTIV_ANGAJATI + 'lor.')).toEqual(['Scrie' + 'ți'])
+  expect(gasite(ASISTENT_WA, 'Ne găse' + 'ști pe ' + NUME_WA + ', cu mesaj sau apel.')).toEqual([])
+  expect(gasite(ASISTENT_WA, 'Pe ' + NUME_WA + ' îl găse' + 'ști documentul.')).toHaveLength(1)
+})
+
+// Martorii detectorului WhatsApp al paginilor in romana (felia 164, `ajutor/whatsapp-ro.ts`), pe legaturi asamblate la
+// rulare din tabelul real de canale.
+test('martor POZITIV al detectorului WhatsApp: marcajul repus si textul altei pagini sunt prinse pe /ro/contact', () => {
+  const texte = texteRoMd()
+  const text = texte.get('ro-md-contact') ?? ''
+  expect(text, 'controlul: tabelul are textul paginii').not.toBe('')
+  const o = { numar: CANALE.whatsapp, ref: 'ro-md-contact', adresaPaginii: 'http://127.0.0.1:1/ro/contact' }
+  expect(abateriWhatsAppRo([legaturaProba(CANALE.whatsapp, text + ' ' + MARCAJ + 'ro-md-contact]')], o).join(' | ')).toContain('marcajul')
+  expect(abateriWhatsAppRo([legaturaProba(CANALE.whatsapp, texte.get('ro-md-acasa') ?? '')], o).join(' | ')).toContain('alt text')
+  expect(abateriWhatsAppRo([legaturaProba(CANALE.whatsapp, text)], o)).toEqual([])
 })
 
 for (const p of PERECHI) {

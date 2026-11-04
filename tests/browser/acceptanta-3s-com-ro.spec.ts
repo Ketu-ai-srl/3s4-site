@@ -5,6 +5,7 @@ import { expect, test } from './ajutor/baza'
 import { mediuProfil3sComRo, pornesteCopia3sComRo, type Copie3sComRo, type Mutatie } from './ajutor/copie-3s-com-ro'
 import { asteaptaHidratarea } from './ajutor/hidratare'
 import { RADACINA } from './ajutor/proiect'
+import { abateriWhatsApp, legaturaProba, MARCAJ, texteEn, texteRoMd } from './ajutor/whatsapp-ro'
 import { BAZA_RUNDA_3, ETICHETA_CU_MASURARE, MASURARE, ancore, faraEvadari, formePolitete, scripturi, texteCap } from './ajutor/juridic-servit'
 import { DESCRIERE_MD, DOCUMENTE_JURIDICE, SLUGURI_JURIDICE } from '../../src/content/juridic/publicare'
 import { ECHIVALENTE } from '../../src/content/echivalente'
@@ -22,7 +23,8 @@ import { ECHIVALENTE } from '../../src/content/echivalente'
  *   - paleta Ctrl+K, pe `/` si pe `/en`: fiecare rezultat (fara interogare si cu "contact") e o cale servita care
  *     raspunde 200; pe `/en`, rezultatul de contact duce la `/en/contact`, pe `/` la `/contact`;
  *   - bara mobila si legaturile de canal pe `/contact` si `/en/contact`: WhatsApp spre numarul profilului, cu codul
- *     `ref` al paginii SURSA (tabelele de texte precompletate din sursa, citite ca text);
+ *     `ref` al paginii SURSA (tabelele de texte precompletate din sursa, citite ca text); din felia 164, pe ambele pagini,
+ *     ref-ul alege textul paginii, trimis FARA marcaj si atribuit paginii in Umami (`ajutor/whatsapp-ro.ts`);
  *   - starea activa din antet pe `/en/pricing` (si pe `/preturi`, controlul);
  *   - zero legaturi de apel (decizia 56), pe HTML-ul servit al tuturor paginilor cu pereche si in DOM-ul hidratat;
  *   - bannerul de consimtamant cu legaturile spre politicile SERVITE (`/juridic/...` pe romana, `/en/legal/...` pe engleza);
@@ -39,7 +41,6 @@ import { ECHIVALENTE } from '../../src/content/echivalente'
 
 const PROFIL = mediuProfil3sComRo()
 const CANALE = JSON.parse(PROFIL.CANALE_JSON) as { whatsapp: string }
-const WA = 'https://wa.me/' + CANALE.whatsapp
 /** Schema legaturii de apel, asamblata la rulare (proba nu poarta literal ce vaneaza). */
 const SCHEMA_APEL = 'te' + 'l:'
 const TIPAR_APEL = new RegExp('(?<![a-z])' + SCHEMA_APEL, 'gi')
@@ -105,19 +106,6 @@ function problemeSelector(cale: string, p: Pereche, optiuni: Optiune[]): string[
   for (const h of hrefuri) if (h === PREFIX_RO_SURSA || h.startsWith(PREFIX_RO_SURSA + '/')) probleme.push('optiune spre adresa sursa ' + h)
   const active = optiuni.filter((o) => o.activa).map((o) => o.href)
   if (active.length !== 1 || active[0] !== cale) probleme.push('optiunea activa ' + JSON.stringify(active) + ', asteptat ' + cale)
-  return probleme
-}
-
-/** Problemele legaturilor WhatsApp ale unei pagini: numarul profilului si codul `ref` asteptat, pe fiecare. */
-function problemeWhatsApp(hrefuri: string[], ref: string): string[] {
-  if (hrefuri.length === 0) return ['nicio legatura WhatsApp']
-  const probleme: string[] = []
-  for (const h of hrefuri) {
-    if (!(h === WA || h.startsWith(WA + '?'))) probleme.push('alt numar: ' + h)
-    const text = new URL(h).searchParams.get('text') ?? ''
-    const coduri = [...text.matchAll(/\[ref:([a-z0-9-]+)\]/g)].map((m) => m[1])
-    if (coduri.length !== 1 || coduri[0] !== ref) probleme.push('ref ' + JSON.stringify(coduri) + ', asteptat ' + ref + ' (' + h + ')')
-  }
   return probleme
 }
 
@@ -264,8 +252,14 @@ test('bara mobila si legaturile de canal pe /contact si /en/contact: WhatsApp sp
     const bara = await page.locator('[data-bara-mobil] a').getAttribute('href')
     const toate = await page.locator('a[href^="https://wa.me/"]').evaluateAll((n) => n.map((a) => a.getAttribute('href') ?? ''))
     console.log('[acceptanta-3s-com-ro] ' + cale + ': ' + toate.length + ' legaturi WhatsApp, ref asteptat ' + ref)
-    for (const x of problemeWhatsApp([bara ?? ''], ref as string)) probleme.push(cale + ' bara: ' + x)
-    for (const x of problemeWhatsApp(toate, ref as string)) probleme.push(cale + ': ' + x)
+    // Felia 164 (GO Marian 04.11.2026, documentul lui Adrian Mihai din 04.11): pe paginile in romana mesajul pleaca fara
+    // [ref:...]; ref-ul sursei alege doar randul tabelului de canale ro-MD, iar atribuirea o poarta evenimentul Umami
+    // `contact` cu calea SERVITA (`ajutor/whatsapp-ro.ts`). Decizia Marian 04.11.2026 („1 da”): la fel pe pagina engleza,
+    // cu textul randului din tabelul EN.
+    const limba = cale.startsWith(PREFIX_EN + '/') ? ('en' as const) : ('ro' as const)
+    const detector = (hs: string[]) => abateriWhatsApp(hs, { numar: CANALE.whatsapp, ref: ref as string, adresaPaginii: copie.baza + cale, limba })
+    for (const x of detector([bara ?? ''])) probleme.push(cale + ' bara: ' + x)
+    for (const x of detector(toate)) probleme.push(cale + ': ' + x)
     const canal = await page.locator('main a[data-canal="whatsapp"]').count()
     if (canal === 0) probleme.push(cale + ': nicio LegaturaCanal in corpul paginii')
   }
@@ -512,12 +506,19 @@ test('martor POZITIV: fiecare detector prinde defectul lui, pe date asamblate la
   expect(problemeSelector('/a', p, [{ href: PREFIX_RO_SURSA + '/a', activa: true }, { href: p.en, activa: false }]).join(' | ')).toContain('adresa sursa')
   expect(problemeSelector('/a', p, [{ href: '/a', activa: true }]).join(' | ')).toContain('optiunile')
   expect(problemeSelector('/a', p, [{ href: '/a', activa: false }, { href: p.en, activa: true }]).join(' | ')).toContain('optiunea activa')
-  // WhatsApp: alt numar, alt ref, niciun ref, nicio legatura.
-  const text = (ref: string) => '?text=' + encodeURIComponent('Text [ref:' + ref + ']')
-  expect(problemeWhatsApp(['https://wa.me/' + '37' + '300000000' + text('x')], 'x').join(' | ')).toContain('alt numar')
-  expect(problemeWhatsApp([WA + text('y')], 'x').join(' | ')).toContain('ref ["y"]')
-  expect(problemeWhatsApp([WA + '?text=Text'], 'x').join(' | ')).toContain('ref []')
-  expect(problemeWhatsApp([], 'x')).toEqual(['nicio legatura WhatsApp'])
+  // WhatsApp (felia 164, decizia Marian 04.11.2026, „1 da”: mesajul fara [ref:...] pe ambele limbi): alt numar, marcajul
+  // repus, textul altei pagini, nicio legatura.
+  const ro = texteRoMd().get('ro-md-contact') ?? ''
+  const en = texteEn().get('en-contact') ?? ''
+  expect(ro, 'controlul: tabelul ro-MD are textul paginii').not.toBe('')
+  expect(en, 'controlul: tabelul EN are textul paginii').not.toBe('')
+  const peRo = { numar: CANALE.whatsapp, ref: 'ro-md-contact', adresaPaginii: 'http://127.0.0.1:1/contact', limba: 'ro' as const }
+  const peEn = { numar: CANALE.whatsapp, ref: 'en-contact', adresaPaginii: 'http://127.0.0.1:1/en/contact', limba: 'en' as const }
+  expect(abateriWhatsApp([legaturaProba('37' + '300000000', ro)], peRo).join(' | ')).toContain('alt numar')
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, ro + ' ' + MARCAJ + 'ro-md-contact]')], peRo).join(' | ')).toContain('marcajul')
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, en.replace('contact page.', 'contact page ' + MARCAJ + 'en-contact].'))], peEn).join(' | ')).toContain('marcajul')
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, en)], peRo).join(' | ')).toContain('alt text')
+  expect(abateriWhatsApp([], peRo)).toEqual(['nicio legatura WhatsApp'])
   // Schema de apel: in legatura, in text cu majuscule.
   expect(aparitiiApel('<a href="' + SCHEMA_APEL + '+' + CANALE.whatsapp + '">x</a>')).toBe(1)
   expect(aparitiiApel('<p>' + SCHEMA_APEL.toUpperCase() + '+40</p>')).toBe(1)
@@ -531,7 +532,8 @@ test('martor NEGATIV: date corecte nu sunt acuzate', () => {
   const p: Pereche = { ro: '/a', en: PREFIX_EN + '/a', sursaRo: PREFIX_RO_SURSA + '/a', sursaEn: '/a' }
   expect(problemeSelector('/a', p, [{ href: '/a', activa: true }, { href: p.en, activa: false }])).toEqual([])
   expect(problemeSelector(p.en, p, [{ href: '/a', activa: false }, { href: p.en, activa: true }])).toEqual([])
-  expect(problemeWhatsApp([WA + '?text=' + encodeURIComponent('Text [ref:x]')], 'x')).toEqual([])
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, texteRoMd().get('ro-md-contact') ?? '')], { numar: CANALE.whatsapp, ref: 'ro-md-contact', adresaPaginii: 'http://127.0.0.1:1/contact' })).toEqual([])
+  expect(abateriWhatsApp([legaturaProba(CANALE.whatsapp, texteEn().get('en-contact') ?? '')], { numar: CANALE.whatsapp, ref: 'en-contact', adresaPaginii: 'http://127.0.0.1:1/en/contact', limba: 'en' })).toEqual([])
   // Cuvintele care doar se termina in literele schemei nu sunt apel; nici o cale care incepe cu /ro altfel (/romana).
   expect(aparitiiApel('<p>Ho' + SCHEMA_APEL + ' x, mo' + SCHEMA_APEL + ' y</p>')).toBe(0)
   expect(caiSursa(['/romana', '/', PREFIX_EN + '/contact'])).toEqual([])

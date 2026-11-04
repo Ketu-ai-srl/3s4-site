@@ -452,7 +452,7 @@ export const PAGINA_EFACTURARE_RO_MD: PaginaReferinta = {
   h1: H1,
   cta: {
     ref: "ro-md-einv",
-    textWhatsapp: "Bună ziua, 3S. Am citit ghidul despre arhivarea e-facturilor [ref:ro-md-einv]. Aș dori să întreb despre un pilot.",
+    textWhatsapp: "Bună ziua! Am citit ghidul despre arhivarea e-facturilor și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-einv]",
     subiectEmail: "Întrebare 3S [ref:ro-md-einv]",
   },
   jsonLd: [

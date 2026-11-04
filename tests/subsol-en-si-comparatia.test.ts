@@ -67,7 +67,8 @@ describe('M7 ramas: etichetele si textele care duc la comparatie numesc numai Go
     expect(peStartRo).toEqual(['3S comparat cu Google Drive'])
   })
 
-  it('textul precompletat wa.me (navigatia EN si cutia paginii): "your comparison with Google Drive", cu [ref:en-vs] pastrat', () => {
+  it('textul precompletat wa.me (navigatia EN si cutia paginii): "your comparison with Google Drive", cu [ref:en-vs] pastrat in sursa', () => {
+    // Felia 164 (decizia Marian 04.11.2026, „1 da”): marcajul ramane in textul SURSA, legatura il scoate (`legaturaWhatsApp`).
     const peNavigatie = TEXTE_WHATSAPP_EN.filter((t) => t.cale === CALE_COMPARATIE)
     expect(peNavigatie).toHaveLength(1)
     const asteptat = 'Hello 3S, I read your comparison with Google Drive [ref:en-vs]. I would like to ask whether 3S fits our case.'

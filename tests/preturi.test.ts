@@ -335,7 +335,8 @@ describe('orele afisate pe editiile en si ro-MD: o zecimala sub 100, intregi de 
     // Runda 2: "about" / "circa", cifra si unitatea raman pe acelasi rand (spatii nedespartitoare).
     // Felia 150: fraza teaserului are subiect ("4 people ... add up to about"), nu "With ... totals about".
     expect(textTeaserEn().rezultat).toBe('add up to about\u00a036.7\u00a0h a month')
-    expect(textTeaserRoMd().rezultat).toBe('se adună circa\u00a036,7\u00a0ore lunar') // "circa" lipit de cifra (felia 143)
+    // Felia 164: corectura obligatorie (documentul lui Adrian Mihai, 03.11.2026): ora intreaga, cu "cam" si "de".
+    expect(textTeaserRoMd().rezultat).toBe('se adună cam\u00a037\u00a0de\u00a0ore pe lună')
     // Martorul de editie: teaserul ro-RO ramane pe ora intreaga, cu "de" (cazul de mai sus, `textTeaser`).
     expect(textTeaser().rezultat).toBe('se adună 37 de ore lunar')
   })
@@ -440,6 +441,7 @@ describe('contractul de continut', () => {
     expect(BIROU.scena(36, 9)).toBe('Desen: un birou cu 36 de dispozitive pe 9 mese')
     expect(BIROU.locuri(20)).toBe('20 de conturi, câte unul pentru fiecare coleg')
     expect(BIROU.locuri(5)).toBe('5 conturi, câte unul pentru fiecare coleg')
+    // Felia 164: pe RO-MD "angajat" in loc de "coleg" (documentul lui Adrian Mihai, 03.11.2026); BIROU e cel RO, neschimbat.
   })
 
   it('textele vizibile ale componentelor vin din contract: niciun sir cu diacritice in src/components/preturi', () => {

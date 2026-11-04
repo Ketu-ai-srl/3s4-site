@@ -195,7 +195,7 @@ export const PAGINA_TERMENE_RO_MD: PaginaReferinta = {
   cta: {
     ref: "ro-md-termene-moldova",
     textWhatsapp:
-      "Bună ziua, 3S. Am citit ghidul despre termenele de păstrare în Moldova [ref:ro-md-termene-moldova]. Aș dori să întreb despre un pilot.",
+      "Bună ziua! Am citit ghidul despre termenele de păstrare în Moldova și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-termene-moldova]",
     subiectEmail: "Întrebare 3S [ref:ro-md-termene-moldova]",
   },
   jsonLd: [

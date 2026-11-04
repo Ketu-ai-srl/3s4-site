@@ -57,6 +57,9 @@ describe('detectorul pilotului de 30 de zile: martori asamblati la rulare', () =
     for (const f of forme) expect(pilot30(f), f).toEqual([])
     expect(pilot14('Every start is a free 14-day pilot.')).toHaveLength(1)
     expect(pilot14('Pilot gratuit de 14 zile, asistat.')).toHaveLength(1)
+    // Felia 164: numele nou al pilotului pe paginile in romana; martorul pozitiv al formei de 30 de zile, sub numele nou.
+    expect(pilot14('Test gratuit de 14 zile, asistat.')).toHaveLength(1)
+    expect(pilot30('Testul gratuit durează ' + TREI_ZECI + ' de zile.')).toHaveLength(1)
   })
 })
 

@@ -42,29 +42,29 @@ const CARDURI_RO_MD: CardSubiect[] = [
   },
   {
     iconita: "shield-check",
-    titlu: "Operator și găzduire",
-    descriere: "Cine operează 3S și unde sunt stocate fișierele: în UE, cu regiunea principală la Frankfurt.",
+    titlu: "Cine suntem și unde sunt datele",
+    descriere: "Cine este în spatele 3S și unde stau fișierele: în UE, cu regiunea principală la Frankfurt.",
     legatura: cale("/ro/securitate"),
   },
   {
     iconita: "layers",
     titlu: "Cum funcționează platforma",
-    descriere: "De la fișierul încărcat la răspunsul care indică documentul din care provine.",
+    descriere: "De la fișierul încărcat la răspunsul care vine cu documentul-sursă.",
     legatura: cale("/ro/platforma"),
   },
   {
     iconita: "calendar-clock",
-    titlu: "Termene de păstrare a actelor",
-    descriere: "Facturi, state de salarii și contracte: cât timp le păstrează firmele din Republica Moldova.",
+    titlu: "Termene de păstrare a documentelor",
+    descriere: "Facturi, state de salarii și contracte: cât timp le păstrează companiile din Republica Moldova.",
     legatura: cale("/ro/ghiduri/termene-pastrare-moldova"),
   },
 ];
 
 /** Bucatile subtitlului din erou: prima si a treia propozitie ale capsulei aprobate, cu canalele aplicatiei. */
 export const SUBTITLU_RO_MD = {
-  inainte: "Poți contacta echipa 3S pe WhatsApp, prin mesaj sau apel, la ",
+  inainte: "Ne găsești pe WhatsApp, cu mesaj sau apel, la ",
   inainteDeEmail: ", ori prin e-mail, la ",
-  final: ". Îți răspunde o persoană din echipă, în română sau în engleză.",
+  final: ". Îți răspunde un consultant din echipa 3S, în română sau în engleză.",
 };
 
 /** Subtitlul eroului: fara adresa (inainte de P-40) sau cu ea. */
@@ -88,43 +88,43 @@ export const LEGATURA_INFORMATII_LEGALE_RO_MD = { text: "Informații legale", hr
 /** Continutul paginii; subtitlul eroului se completeaza cu `subtitluContactRoMd`. */
 export const CONTACT_RO_MD: ContinutPaginaContact = {
   fir: { acasa: "Acasă", pagina: "Contact", caleAcasa: "/ro", calePagina: "/ro/contact" },
-  erou: { titlu: "Contactează echipa 3S", subtitlu: "" },
+  erou: { titlu: "Scrie-ne", subtitlu: "" },
   caseta: {
     titlu: "Întrebări despre 3S",
-    text: "Sunt suficiente câteva rânduri: ce documente păstrează firma, în ce țară și în ce limbă, și ce vrei să regăsești în ele.",
+    text: "Ne ajung câteva rânduri: ce documente are compania, în ce țară și în ce limbă sunt și ce vrei să găsești în ele.",
     butonFormular: BUTON_WHATSAPP_RO_MD,
     nota: "Fără formular și fără cont.",
   },
   subiecte: {
-    titlu: "Răspunsuri disponibile deja pe site",
-    text: "Unele întrebări au un răspuns publicat. Fiecare legătură deschide pagina dedicată subiectului.",
+    titlu: "Răspunsuri pe care le găsești deja pe site",
+    text: "La unele întrebări am răspuns deja. Fiecare link duce la pagina lui.",
     carduri: CARDURI_RO_MD,
   },
   canale: {
     titlu: "Prin ce canale pot contacta 3S?",
     text: "Canalele prin care ne poți contacta astăzi. Nu publicăm un program de lucru și nu ne angajăm la un termen de răspuns.",
-    notaEticheta: "De reținut:",
+    notaEticheta: "Un singur lucru:",
     // O singura fraza pentru ambele stari: pe 3s.md nu exista formular, deci nici comutatorul lui.
-    notaInchis: "nu trimite documente sau date cu caracter personal în primul mesaj.",
-    notaDeschis: "nu trimite documente sau date cu caracter personal în primul mesaj.",
+    notaInchis: "nu ne trimite documente sau date personale în primul mesaj.",
+    notaDeschis: "nu ne trimite documente sau date personale în primul mesaj.",
   },
   marca: {
-    titlu: "Marca și platforma 3S",
-    text: "3S este operat din Republica Moldova. Datele firmei operatoare sunt publicate pe pagina Informații legale.",
+    titlu: "Cine este în spatele 3S",
+    text: "3S este dezvoltat în parteneriat cu grupul Adria Arhivare din România și administrat de o companie din Republica Moldova. Datele complete sunt pe pagina Informații legale.",
     carduri: [
       {
         titlu: "Marca 3S",
         rol: "Scan, Store, Solve",
         fapte: [
           { eticheta: "Denumirea completă", valoare: "3S Scan Store Solve", mono: false },
-          { eticheta: "Rol", valoare: "Arhivă digitală, răspunsuri cu sursa", mono: false },
-          { eticheta: "Acces", valoare: "Din browser", mono: false },
+          { eticheta: "Ce face", valoare: "Arhivă digitală, răspunsuri cu documentul-sursă", mono: false },
+          { eticheta: "Unde lucrezi", valoare: "Din browser, fără instalare", mono: false },
         ],
       },
       {
         titlu: "Platforma 3S",
         rol: "Unde sunt stocate fișierele",
-        fapte: [{ eticheta: "Găzduire", valoare: "AWS, UE, cu regiunea principală la Frankfurt", mono: false }],
+        fapte: [{ eticheta: "Găzduire", valoare: "Pe serverele Amazon, în UE", mono: false }],
       },
     ],
   },

@@ -133,5 +133,23 @@
     "sursa": "oglinda RO-MD a intrarii en-operator-din-moldova (src/content/afirmatii/en-nucleu.json): mosteneste starea si sursa (decizia D1 si decizia 5 ale owner-ului). Fraza apare pe pagina numai dupa inregistrarea firmei operatoare (OPERATOR_JSON fara model).",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
     "data": "2026-09-30"
+  },
+  {
+    "id": "ro-md-partener-adria",
+    "text": "3S este dezvoltată în parteneriat cu grupul Adria Arhivare din România și administrată de o companie din Republica Moldova (afirmație despre partener și despre operator, nu despre funcțiile platformei)",
+    "unde": "src/content/ro-md/securitate.ts, src/content/ro-md/securitate-componente.ts, src/content/ro-md/contact.ts, src/content/ro-md/contact-componente.ts",
+    "stare": "confirmat",
+    "sursa": "formula de brand din documentul lui Adrian Mihai (asociat 3S), „Site 3s.com.ro - structura, informatia, marketingul”, 04.11.2026: „3S, dezvoltată în parteneriat cu grupul Adria Arhivare”; decizia Marian 04.11.2026, „baga adria”, care înlocuiește D10 (25.09.2026); operatorul din Republica Moldova este cel din OPERATOR_JSON (decizia 84)",
+    "confirmat_de": "Marian Negru (owner), 2026-11-04, prin dispecerul feliei 164",
+    "data": "2026-11-04"
+  },
+  {
+    "id": "ro-md-partener-adria-hartie",
+    "text": "Arhiva pe hârtie a clientului o preia și o scanează partenerul 3S, grupul Adria Arhivare din România; platforma 3S nu scanează (afirmație despre partener, fără cifre: ani, volume sau autorizații nu se scriu)",
+    "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/acasa-componente.ts, src/content/ro-md/platforma.ts, src/content/ro-md/platforma-componente.ts",
+    "stare": "neconfirmat",
+    "sursa": "Adrian Mihai, 04.11.2026: documentul „Site 3s.com.ro - structura, informatia, marketingul”, propunerea 6 („Pasul zero pe acasă și pe Platforma: Preluăm și scanăm arhiva pe hârtie, cu Adria”); decizia Marian 04.11.2026, „baga adria”. De confirmat: condițiile serviciului de preluare (contract, preț, zonă) și raportul cu poarta juridică a deciziilor 40-41",
+    "confirmat_de": "",
+    "data": "2026-11-04"
   }
 ]

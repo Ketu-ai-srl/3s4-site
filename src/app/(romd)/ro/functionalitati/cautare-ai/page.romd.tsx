@@ -107,7 +107,9 @@ export default function Pagina() {
           ),
           metrici: c.acum.metrici,
         }}
-        punte={{ eticheta: c.punteDe + SEMNE_CAUTARE_RO_MD.sageata + c.punteLa, mono: true }}
+        // Eticheta puntii ("manual -> citat") a iesit: nota de lucru ramasa in pagina (felia 164, documentul lui Adrian
+        // Mihai). Elementul ramane gol, ca structura si clasele paginii sa ramana cele ale perechii RO (congruenta P03).
+        punte={{ eticheta: "", mono: true }}
       />
 
       <CtaCinema
