@@ -31,6 +31,7 @@ import { CHEI_MD, caleMd } from "./juridic/md/registru";
 import { OPERATOR, type Operator } from "@/lib/operator";
 import { LIMBI_3S_MD } from "./navigatie-en";
 import {
+  ADRESA_CONECTARE_PLATFORMA,
   ANTET,
   PALETA,
   SERTAR,
@@ -195,7 +196,7 @@ export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null
         { ...legatura("Despre 3S și securitate", "/ro/securitate"), foaie: null },
       ],
       cautare: ANTET.cautare,
-      autentificare: { text: "", href: null, ruta: null },
+      autentificare: { text: "Intră în cont", href: ADRESA_CONECTARE_PLATFORMA, ruta: null },
       descarca: null,
       cta:
         whatsapp === null

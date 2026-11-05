@@ -20,6 +20,7 @@ import { CAI_EXISTENTE } from '../src/content/cai'
 import { codifica, type Canale } from '../src/content/canale'
 import { CHEI_MD, caleMd } from '../src/content/juridic/md/registru'
 import {
+  ADRESA_CONECTARE_PLATFORMA,
   ANTET,
   LIMBI,
   NAVIGATIE_RO,
@@ -204,7 +205,9 @@ describe('contractul EN (navigatie-en.ts)', () => {
     const interzise = /\/inregistrare|\/descarca|0 RON/
     expect(valori(NAVIGATIE_RO).some((v) => interzise.test(v))).toBe(true)
     expect(valori(en).filter((v) => interzise.test(v))).toEqual([])
-    expect(en.antet.autentificare.href).toBeNull()
+    // Felia 167: autentificarea duce la pagina de conectare a aplicatiei (externa), nu la /inregistrare.
+    expect(en.antet.autentificare).toEqual({ text: 'Log in', href: ADRESA_CONECTARE_PLATFORMA, ruta: null })
+    expect(navigatieRoMd().antet.autentificare).toEqual({ text: 'Intră în cont', href: ADRESA_CONECTARE_PLATFORMA, ruta: null })
     expect(en.antet.descarca).toBeNull()
     // Fara "Solutions": paginile de segment au iesit de la lansare (decizia 38); proba grupului e in tests/en-nucleu.test.ts.
     expect(en.antet.legaturi.map((l) => l.text)).toEqual(['Product', 'Guides', 'Pricing', 'About & security'])
@@ -249,12 +252,14 @@ describe('contractul EN (navigatie-en.ts)', () => {
     expect(htmlRo).toContain('data-cookie-settings="">' + TEXT_LEGATURA_SUBSOL + '</button>')
   })
 
-  it('antetul EN: CTA-ul WhatsApp, fara autentificare si fara Descarca', () => {
+  it('antetul EN: CTA-ul WhatsApp, conectarea la aplicatie (felia 167), fara Descarca', () => {
     const html = renderToStaticMarkup(createElement(Antet, { navigatie: en, cai: toateCaile(en) }))
     expect(hrefuri(html).some((x) => x.startsWith('https://wa.me/'))).toBe(true)
     expect(html).toContain(ETICHETA_WHATSAPP_EN)
     expect(html).toContain('aria-label="Main menu"')
     expect(html).not.toContain(ANTET.autentificare.text)
+    expect(hrefuri(html)).toContain(ADRESA_CONECTARE_PLATFORMA)
+    expect(html).toContain('>Log in</a>')
     expect(html).not.toContain(ANTET.descarca.text)
   })
 

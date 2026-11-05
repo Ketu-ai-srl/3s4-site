@@ -183,7 +183,10 @@ export default function PaginaContact({
           <div className={s.bloc}>
             <CapBloc id="contact-subiecte" titlu={c.subiecte.titlu} text={c.subiecte.text} marimeText={16} margineJos={0} />
           </div>
-          <ul className={s.grila} role="list">
+          {/* Patru carduri pe o grila de trei lasau unul singur pe randul al doilea (felia 167): doua cate doua, pe latimea blocului.
+              Atribut, nu clasa: congruenta compara clasele de modul cu perechea RO. Pus prin spread, ca pe RO (7 carduri)
+              sa nu apara nici ca `$undefined` in RSC: invarianta cere HTML-ul RO identic cu baza. */}
+          <ul className={s.grila} role="list" {...(c.subiecte.carduri.length === 4 ? { "data-coloane": "2" } : {})}>
             {c.subiecte.carduri.map((card) => {
               const Ic = ICONITE[card.iconita];
               return (

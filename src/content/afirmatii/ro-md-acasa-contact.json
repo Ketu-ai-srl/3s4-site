@@ -100,12 +100,12 @@
   },
   {
     "id": "ro-md-raspunde-o-persoana",
-    "text": "Răspunde o persoană din echipa 3S, în română sau în engleză, fără program și fără termen de răspuns publicat; nu e nevoie de formular sau de cont",
+    "text": "Răspunde o persoană din echipa 3S, în română sau în engleză, de luni până vineri între 9:00 și 18:00, de obicei în aceeași zi; nu e nevoie de formular sau de cont",
     "unde": "src/content/ro-md/acasa.ts, src/content/ro-md/contact.ts, src/content/ro-md/enterprise.ts, src/content/ro-md/platforma.ts, src/content/ro-md/preturi.ts, src/content/ro-md/cautare-ai.ts, src/content/ro-md/comparatie-componente.ts",
     "stare": "confirmat",
-    "sursa": "decizia 3 a owner-ului (contactul pe 3s.md e WhatsApp si telefonul, fara formulare; fara program si fara termen de raspuns); oglinda RO-MD a intrarii en-canale-de-contact (src/content/afirmatii/en-nucleu.json).",
-    "confirmat_de": "owner-ul proiectului 3S, 2026-09-30",
-    "data": "2026-09-30"
+    "sursa": "decizia 3 a owner-ului (contactul pe 3s.md e WhatsApp si telefonul, fara formulare); programul si termenul de raspuns din propunerea lui Adrian Mihai (04.11.2026), alese de owner pe 05.11.2026 („L-V 9-18, aceeași zi”), numai pe editia RO; oglinda RO-MD a intrarii en-canale-de-contact (src/content/afirmatii/en-nucleu.json).",
+    "confirmat_de": "owner-ul proiectului 3S, 2026-11-05",
+    "data": "2026-11-05"
   },
   {
     "id": "ro-md-canale-de-contact",

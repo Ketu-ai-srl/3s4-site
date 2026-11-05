@@ -70,6 +70,18 @@
   list-style: none;
 }
 
+/* Patru carduri: doua cate doua, pe latimea blocului (880), ca sa nu ramana unul singur pe randul al doilea. */
+.grila[data-coloane="2"] {
+  max-width: 880px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 639px) {
+  .grila[data-coloane="2"] {
+    grid-template-columns: 1fr;
+  }
+}
+
 .celula {
   display: flex;
 }

@@ -18,6 +18,7 @@ import { CAI_EXISTENTE } from "./cai";
 import { CANALE, randNumarWhatsApp, type Canale } from "./canale";
 import { caleMd, type CheieMd } from "./juridic/md/registru";
 import {
+  ADRESA_CONECTARE_PLATFORMA,
   PALETA,
   seVede,
   type CaiExistente,
@@ -184,7 +185,7 @@ export function navigatieEn(canale: Canale = CANALE, cai: CaiExistente = CAI_EXI
         { ...legatura("About & security", "/about"), foaie: null },
       ],
       cautare: { eticheta: "Open search", tasta: "Ctrl K" },
-      autentificare: { text: "", href: null, ruta: null },
+      autentificare: { text: "Log in", href: ADRESA_CONECTARE_PLATFORMA, ruta: null },
       descarca: null,
       cta:
         whatsapp === null

@@ -548,6 +548,12 @@ export function ctaPeCale(cta: CtaAntet, cale: string): Legatura {
   return peCale === undefined ? legatura : { ...legatura, href: alegePeCale(peCale, cale) };
 }
 
+/**
+ * Intrarea clientilor existenti in platforma (felia 167, propunerea 2 a lui Adrian Mihai din 04.11.2026): pagina de
+ * conectare a aplicatiei, pe ambele editii 3s.md (antetul RO oglindeste EN, decizia 59). Adresa externa: `ruta` null.
+ */
+export const ADRESA_CONECTARE_PLATFORMA = "https://app.3s.com.ro/login";
+
 export const ANTET: ContractAntet & { descarca: { text: string } } = {
   // Rol: eticheta accesibila a siglei 3S (imaginea e activ de produs, nu text).
   sigla: { text: "3S Scan Store Solve, pagina de start", href: "/", ruta: "/" },

@@ -26,7 +26,7 @@ export const BUTON_WHATSAPP_RO_MD = "Scrie-ne pe WhatsApp";
  */
 const cale = (c: string) => ({ text: c, href: c, ruta: c });
 
-/** Cinci carduri din sapte, in ordinea RO; fiecare duce la perechea /ro a paginii (decizia 59). */
+/** Patru carduri din sapte (felia 166 a scos Termenele), in ordinea RO; fiecare duce la perechea /ro a paginii (decizia 59). */
 const CARDURI_RO_MD: CardSubiect[] = [
   {
     iconita: "building-2",
@@ -68,8 +68,8 @@ export function subtitluContactRoMd(numar: string, email: string): string {
 }
 
 /**
- * Randurile panoului de canale: WhatsApp in locul formularului, e-mailul dupa P-40. Fara stare: textul panoului spune
- * ca nu publicam un program, deci un "Deschis" cu ceas langa canal ar contrazice fraza.
+ * Randurile panoului de canale: WhatsApp in locul formularului, e-mailul dupa P-40. Fara stare "Deschis" cu ceas: programul
+ * (L-V 9-18, decizia lui Marian din 05.11.2026) sta in textul panoului, fara fus orar pe pagina.
  */
 export const CANALE_RO_MD = {
   whatsapp: "WhatsApp, mesaje și apeluri",
@@ -96,7 +96,7 @@ export const CONTACT_RO_MD: ContinutPaginaContact = {
   },
   canale: {
     titlu: "Prin ce canale pot contacta 3S?",
-    text: "Canalele prin care ne poți contacta astăzi. Nu publicăm un program de lucru și nu ne angajăm la un termen de răspuns.",
+    text: "Îți răspundem de luni până vineri, între 9:00 și 18:00, de obicei în aceeași zi.",
     notaEticheta: "Un singur lucru:",
     // O singura fraza pentru ambele stari: pe 3s.md nu exista formular, deci nici comutatorul lui.
     notaInchis: "nu ne trimite documente sau date personale în primul mesaj.",
