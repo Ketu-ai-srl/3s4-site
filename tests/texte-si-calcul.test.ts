@@ -364,9 +364,10 @@ describe('M9: cardurile de contact nu afiseaza cai brute; legatura ramane calea 
   // Caile sursa din date (aceleasi pe ambele domenii) si caile servite pe 3s.com.ro (romana la radacina, engleza sub
   // /en: deciziile 71-72), scrise aici, nu calculate de codul probat.
   const SURSA_EN = ['/enterprise', '/pricing', '/about', '/platform', '/guides/records-retention-moldova']
-  const SURSA_RO = ['/ro/enterprise', '/ro/preturi', '/ro/securitate', '/ro/platforma', '/ro/ghiduri/termene-pastrare-moldova']
+  // Felia 166: pe romana cardul ghidului Moldovei a iesit (ghidurile nu mai sunt pe /ro, decizia lui Adrian Mihai).
+  const SURSA_RO = ['/ro/enterprise', '/ro/preturi', '/ro/securitate', '/ro/platforma']
   const SERVITE_EN = SURSA_EN.map((c) => '/en' + c)
-  const SERVITE_RO = ['/enterprise', '/preturi', '/securitate', '/platforma', '/ghiduri/termene-pastrare-moldova']
+  const SERVITE_RO = ['/enterprise', '/preturi', '/securitate', '/platforma']
 
   it('martorul masurii, pe HTML asamblat la rulare: o cale scrisa ca text e prinsa, ce sta sub aria-hidden nu, un text obisnuit e frunza', () => {
     const card = (href: string, interior: string) =>

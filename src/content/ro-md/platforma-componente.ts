@@ -149,8 +149,8 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
       { dimensiune: "Găsirea unei informații", alternativa: "Fișier după fișier", noi: "O întrebare, cu sursa" },
       { dimensiune: "Termenul de păstrare", alternativa: "Ținut minte de cineva", noi: "Stabilit pe dosar" },
     ],
-    nota: "Regulile de păstrare a facturilor electronice diferă de la o țară la alta; ghidul nostru arată sursa oficială și data verificării.",
-    legatura: { text: "E-facturare", href: "/ro/ghiduri/arhivare-e-facturi-ue", ruta: "/ro/ghiduri/arhivare-e-facturi-ue" },
+    // Felia 166: fara trimiterea la ghidul e-facturilor (ghidurile au iesit din editia romana, decizia lui Adrian Mihai).
+    nota: "Termenul de păstrare îl stabilești tu, pe fiecare dosar, după regulile care se aplică în țara ta.",
     etichetaCriteriu: "Criteriu",
   },
   suveranitate: {
@@ -176,7 +176,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
       },
       {
         titlu: "Termenul, pe dosar",
-        text: "Termenul de păstrare îl alegi pe dosar și se aplică tuturor documentelor din el. Ghidurile arată sursele oficiale pentru Moldova și pentru facturile electronice din UE.",
+        text: "Termenul de păstrare îl alegi pe dosar și se aplică tuturor documentelor din el.",
       },
     ],
   },
@@ -232,13 +232,7 @@ export const PLATFORMA_RO_MD: ContinutPaginaPlatforma = {
       },
       {
         intrebare: "Pot stabili cât timp se păstrează documentele?",
-        // Site-ul nu are o pagina-index a ghidurilor, deci fraza numeste cele doua ghiduri si le leaga pe fiecare.
-        raspuns:
-          "Da. Pentru fiecare dosar alegi cât timp se păstrează, iar termenul este valabil pentru toate documentele din el. Ghidurile noastre arată sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.",
-        legaturiInText: [
-          { text: "termenele de păstrare în Moldova", href: "/ro/ghiduri/termene-pastrare-moldova" },
-          { text: "arhivarea e-facturilor în UE", href: "/ro/ghiduri/arhivare-e-facturi-ue" },
-        ],
+        raspuns: "Da. Pentru fiecare dosar alegi cât timp se păstrează, iar termenul este valabil pentru toate documentele din el.",
       },
     ],
   },

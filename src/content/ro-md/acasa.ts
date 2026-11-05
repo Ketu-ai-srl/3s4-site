@@ -38,7 +38,10 @@ export const INAINTE_DE_EMAIL = "Ne poți scrie și la ";
 /** Caile celor trei pagini de referinta (G1-G3) spre care trimite pagina: perechile lor /ro (decizia 59). */
 export const CAI_GHIDURI = ["/ro/ghiduri/termene-pastrare-moldova", "/ro/ghiduri/arhivare-e-facturi-ue", "/ro/comparatie-drive"] as const;
 
-/** Ghidurile sunt publicate: toate trei rutele exista in manifestul acestui build. */
+/**
+ * Ghidurile sunt publicate: toate trei rutele exista in manifestul acestui build. Din felia 166 ghidurile G1 si G2 nu
+ * mai au ruta pe /ro (decizia lui Adrian Mihai, 03.11.2026), deci pagina serveste forma fara ghiduri.
+ */
 export function ghiduriPublicate(rute: readonly { cale: string }[] = RUTE): boolean {
   return CAI_GHIDURI.every((c) => rute.some((r) => r.cale === c));
 }

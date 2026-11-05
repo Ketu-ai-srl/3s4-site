@@ -65,6 +65,10 @@
     "go-curatenie-04-11": {
       "fel": "regula",
       "rezumat": "GO owner 04.11.2026 („go pe curatenie si corecturi”) pe documentele lui Adrian Mihai din 03-04.11.2026: curatenia paginilor 3s.md (felia 164), intre care iesirea verificarii conexiunii din browser de pe paginile despre 3S. Se inlocuieste cu numarul deciziei cand il primeste."
+    },
+    "ghiduri-retrase-ro": {
+      "fel": "regula",
+      "rezumat": "Decizia lui Adrian Mihai din 03.11.2026 (documentul „fraze de rescris”), GO Marian 05.11.2026 (felia 166): ghidurile pentru Moldova si UE ies din editia romana pana exista unul pentru Romania, iar paginile /ro nu mai trimit la ele; engleza le pastreaza. Se inlocuieste cu numarul deciziei cand il primeste."
     }
   }
 }

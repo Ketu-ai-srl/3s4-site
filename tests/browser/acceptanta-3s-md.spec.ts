@@ -331,14 +331,17 @@ test('paginile cu pereche hreflang = echivalentele cu doua editii ale profilului
 })
 
 // Felia ro-md-oglinda (decizia 59): fiecare pagina EN are acum oglinda ei /ro. Cifrele de mai jos se numara din
-// sursa la rulare (echivalente si manifestul RO-MD), nu se scriu de mana; proba cere ca cele opt oglinzi sa fie in
-// harta si sa aiba pereche, si ca nicio cale EN a hartii sa nu ramana fara pereche.
-test('oglinzile /ro: cele opt pagini ale feliei sunt in harta, cu pereche; nicio pagina EN fara pereche', async () => {
+// sursa la rulare (echivalente si manifestul RO-MD), nu se scriu de mana; proba cere ca oglinzile sa fie in harta si
+// sa aiba pereche, si ca nicio cale EN a hartii sa nu ramana fara pereche. EXCEPTIE NUMITA (felia 166, decizia lui
+// Adrian Mihai din 03.11.2026): cele doua ghiduri au iesit din editia romana, deci raman sase oglinzi, iar ghidurile EN
+// sunt singurele pagini EN fara pereche; martorul cere ca ele chiar sa fie in harta (altfel exceptia ar fi veche).
+const GHIDURI_FARA_PERECHE = ['/guides/e-invoice-archiving-eu', '/guides/records-retention-moldova']
+test('oglinzile /ro: cele sase pagini ale feliei sunt in harta, cu pereche; fara pereche numai ghidurile EN', async () => {
   const text = readFileSync(join(RADACINA, 'src', 'content', 'rute-ro-md.ts'), 'utf8')
   const start = text.indexOf('<<felie:ro-md-oglinda>>')
   const urmator = start < 0 ? -1 : text.indexOf('<<felie:', start + 1)
   const oglinzi = start < 0 ? [] : [...text.slice(start, urmator < 0 ? text.indexOf('\n];', start) : urmator).matchAll(/cale:\s*"([^"]+)"/g)].map((m) => m[1])
-  expect(oglinzi).toHaveLength(8)
+  expect(oglinzi).toHaveLength(6)
   const asteptate = paginiCuPerecheAsteptate()
   for (const o of oglinzi) {
     expect(cai, o).toContain(o)
@@ -349,7 +352,7 @@ test('oglinzile /ro: cele opt pagini ale feliei sunt in harta, cu pereche; nicio
   console.log('[acceptanta-3s-md] cai in harta: ' + cai.length + ' (EN ' + (cai.length - roInHarta.length) + ', /ro ' + roInHarta.length + '); pagini cu pereche asteptate: ' + asteptate.size + '; EN fara pereche: ' + enFaraPereche.length)
   // Controlul: harta are pagini EN, deci lista goala de mai jos e o masura, nu o cautare in gol.
   expect(cai.length - roInHarta.length).toBeGreaterThan(5)
-  expect(enFaraPereche).toEqual([])
+  expect(enFaraPereche.sort()).toEqual([...GHIDURI_FARA_PERECHE].sort())
 })
 
 for (const cale of INTERZISE) {

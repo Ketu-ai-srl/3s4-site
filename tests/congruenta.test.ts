@@ -58,9 +58,20 @@ function refuzuri(rand: unknown, coduri: Set<string>): string[] {
     else for (const k of Object.keys(rad)) if (!CHEI_RADACINA.has(k)) motive.push('cheie necunoscuta in radacina: ' + k)
   } else if (r.tip === 'clasa') {
     if (typeof r.clasa !== 'string' || !CLASA_MODUL.test(r.clasa) || CU_HASH.test(r.clasa)) motive.push('clasa nu e un nume de modul fara hash')
+    // Felia 166: restrangerea la pagini, cand exista, e o lista nevida de cai.
+    if (r.pagini !== undefined && (!Array.isArray(r.pagini) || r.pagini.length === 0 || !r.pagini.every((c) => typeof c === 'string' && c.startsWith('/')))) {
+      motive.push('clasa are `pagini`, dar nu e o lista nevida de cai')
+    }
   } else if (r.tip === 'camp') {
     if (typeof r.selector !== 'string' || r.selector.trim() === '') motive.push('campul nu are selector')
     if (!numarNatural(r.ro) || !numarNatural(r.en)) motive.push('campul nu are numaratorile RO si EN')
+    // Felia 166: numaratoarea pe o pagina anume, cand exista, e un obiect nevid cale -> numar natural.
+    if (r.en_pe_pagina !== undefined) {
+      const e = r.en_pe_pagina as Record<string, unknown>
+      if (e === null || typeof e !== 'object' || Object.keys(e).length === 0 || !Object.entries(e).every(([c, n]) => c.startsWith('/') && numarNatural(n))) {
+        motive.push('campul are `en_pe_pagina`, dar nu e un obiect nevid cale -> numar')
+      }
+    }
   } else {
     motive.push('tip necunoscut: ' + JSON.stringify(r.tip))
   }
@@ -161,6 +172,11 @@ describe('listele perechilor', () => {
       const randuri = lista.randuri as unknown[]
       expect(Array.isArray(randuri)).toBe(true)
       expect(randuri.flatMap((r, i) => refuzuri(r, CODURI).map((m) => 'randul ' + i + ': ' + m))).toEqual([])
+      // O restrangere la pagini (felia 166) numeste numai pagini 3s.md ale perechii, altfel n-ar restrange nimic.
+      for (const x of randuri as Json[]) {
+        const numite = [...((x.pagini as string[] | undefined) ?? []), ...Object.keys((x.en_pe_pagina as Record<string, number> | undefined) ?? {})]
+        for (const c of numite) expect(pagini, 'pagina restransa ' + c).toContain(c)
+      }
       // Un selector sau o clasa declarate de doua ori ar numara acelasi lucru de doua ori.
       const chei = randuri.map((r) => {
         const x = r as Json
@@ -193,6 +209,16 @@ describe('controlul (f): randul fara cod, cu un cod din afara listei sau un camp
     expect(refuzuri({ ...bun, cod: ['d' + '43', strain] }, CODURI).join('\n')).toContain('nu e in lista inchisa')
     // Numarul gol "(43)" se scrie `d43`; forma fara prefix nu e in lista.
     expect(refuzuri({ ...bun, cod: '43' }, CODURI).join('\n')).toContain('nu e in lista inchisa')
+  })
+
+  it('restrangerile la pagini (felia 166): forma buna trece, forma stricata e refuzata', () => {
+    const clasa = { tip: 'clasa', clasa: 'platforma_' + 'martor', cod: 'd' + '43', motiv: 'Un rand-martor asamblat la rulare.' }
+    expect(refuzuri({ ...clasa, pagini: ['/ro/platforma'] }, CODURI)).toEqual([])
+    expect(refuzuri({ ...clasa, pagini: [] }, CODURI).join(' | ')).toContain('`pagini`')
+    expect(refuzuri({ ...clasa, pagini: ['ro/platforma'] }, CODURI).join(' | ')).toContain('`pagini`')
+    expect(refuzuri({ ...bun, en_pe_pagina: { '/ro/contact': 4 } }, CODURI)).toEqual([])
+    expect(refuzuri({ ...bun, en_pe_pagina: {} }, CODURI).join(' | ')).toContain('`en_pe_pagina`')
+    expect(refuzuri({ ...bun, en_pe_pagina: { '/ro/contact': -1 } }, CODURI).join(' | ')).toContain('`en_pe_pagina`')
   })
 
   it('un camp fara selector sau fara numaratori: refuzat', () => {

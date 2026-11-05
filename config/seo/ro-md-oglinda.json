@@ -22,14 +22,6 @@
       "intrebare": "Ce este 3S și unde sunt păstrate documentele firmei?",
       "entitati": ["3S", "Adria Arhivare", "Frankfurt", "Amazon Web Services", "CLOUD Act"]
     },
-    "/ro/ghiduri/arhivare-e-facturi-ue": {
-      "intrebare": "Cât timp se păstrează e-facturile în UE?",
-      "entitati": ["arhivarea", "e-facturilor", "Germania", "Franța", "Polonia", "Belgia", "România"]
-    },
-    "/ro/ghiduri/termene-pastrare-moldova": {
-      "intrebare": "Cât timp se păstrează actele firmei în Moldova?",
-      "entitati": ["Moldova", "facturile", "6 ani", "287/2017", "57/2016"]
-    },
     "/ro/comparatie-drive": {
       "intrebare": "Aleg 3S sau Google Drive cu Gemini?",
       "fara_regula_paragrafului": "G3 are forma eroului perechii RO /comparatie-drive (decizia 53), ca pagina EN (config/seo/en-referinta.json): sub titlu sta un subtitlu scurt (27 de cuvinte), nu un paragraf de raspuns de 30-80. Raspunsul paginii e titlul impreuna cu subtitlul si cu cardul divizat de dedesubt; entitatile se verifica in fereastra de 400 de cuvinte, ca pe orice ruta.",

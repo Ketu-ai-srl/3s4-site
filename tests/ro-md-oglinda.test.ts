@@ -16,8 +16,6 @@ import * as comparatie from '../src/content/ro-md/comparatie-componente'
 import * as contactComp from '../src/content/ro-md/contact-componente'
 import * as enterprise from '../src/content/ro-md/enterprise'
 import * as enterpriseComp from '../src/content/ro-md/enterprise-componente'
-import * as efacturare from '../src/content/ro-md/ghid-e-facturare-componente'
-import * as termene from '../src/content/ro-md/ghid-termene-moldova-componente'
 import * as platforma from '../src/content/ro-md/platforma'
 import * as platformaComp from '../src/content/ro-md/platforma-componente'
 import * as preturi from '../src/content/ro-md/preturi'
@@ -65,8 +63,6 @@ const MODULE: { nume: string; modul: Record<string, unknown> }[] = [
   { nume: 'src/content/ro-md/enterprise-componente.ts', modul: enterpriseComp },
   { nume: 'src/content/ro-md/securitate.ts', modul: securitate },
   { nume: 'src/content/ro-md/securitate-componente.ts', modul: securitateComp },
-  { nume: 'src/content/ro-md/ghid-e-facturare-componente.ts', modul: efacturare },
-  { nume: 'src/content/ro-md/ghid-termene-moldova-componente.ts', modul: termene },
   { nume: 'src/content/ro-md/comparatie-componente.ts', modul: comparatie },
 ]
 
@@ -88,7 +84,6 @@ function textModul(m: Record<string, unknown>): string {
   }
   if (m === securitateComp) for (const o of [false, true]) extra.push(...siruri(securitateComp.securitateRoMd(o)))
   if (m === securitate) for (const o of [false, true]) extra.push(...siruri(securitate.paginaSecuritate(o)))
-  if (m === termene) extra.push(termene.PANOU_TERMENE_RO_MD.contor(6, 7))
   return [...siruri(Object.values(m)), ...extra].join('\n')
 }
 
@@ -122,14 +117,13 @@ function incalcari(text: string): string[] {
 describe('manifestul, echivalentele si navigatia', () => {
   const rute = ruteFelie()
 
-  it('opt rute sub marcajul feliei, fiecare cu pagina pe disc, in harta, editia ro-MD, in modulul importat', () => {
+  // Felia 166: G1 si G2 au iesit din editia romana (decizia lui Adrian Mihai, 03.11.2026), deci raman sase rute.
+  it('sase rute sub marcajul feliei, fiecare cu pagina pe disc, in harta, editia ro-MD, in modulul importat', () => {
     expect(rute.map((r) => r.cale).sort()).toEqual(
       [
         '/ro/comparatie-drive',
         '/ro/enterprise',
         '/ro/functionalitati/cautare-ai',
-        '/ro/ghiduri/arhivare-e-facturi-ue',
-        '/ro/ghiduri/termene-pastrare-moldova',
         '/ro/platforma',
         '/ro/preturi',
         '/ro/securitate',
@@ -162,8 +156,6 @@ describe('manifestul, echivalentele si navigatia', () => {
       '/ro/preturi': preturi.pagina.cta,
       '/ro/enterprise': enterprise.pagina.cta,
       '/ro/securitate': securitate.pagina.cta,
-      '/ro/ghiduri/arhivare-e-facturi-ue': efacturare.PAGINA_EFACTURARE_RO_MD.cta,
-      '/ro/ghiduri/termene-pastrare-moldova': termene.PAGINA_TERMENE_RO_MD.cta,
       '/ro/comparatie-drive': comparatie.PAGINA_COMPARATIE_RO_MD.cta,
     }
     for (const r of rute) {
@@ -191,8 +183,6 @@ describe('registrul de afirmatii', () => {
     { nume: 'src/content/ro-md/preturi.ts', afirmatii: preturi.pagina.afirmatii },
     { nume: 'src/content/ro-md/enterprise.ts', afirmatii: enterprise.pagina.afirmatii },
     { nume: 'src/content/ro-md/securitate.ts', afirmatii: securitate.paginaSecuritate(true).afirmatii },
-    { nume: 'src/content/ro-md/ghid-e-facturare-componente.ts', afirmatii: efacturare.PAGINA_EFACTURARE_RO_MD.afirmatii },
-    { nume: 'src/content/ro-md/ghid-termene-moldova-componente.ts', afirmatii: termene.PAGINA_TERMENE_RO_MD.afirmatii },
     { nume: 'src/content/ro-md/comparatie-componente.ts', afirmatii: comparatie.PAGINA_COMPARATIE_RO_MD.afirmatii },
   ]
 
@@ -329,13 +319,14 @@ describe('ce nu ajunge in modulele feliei', () => {
     const tinteRele = (carduri: readonly { legatura: { href: string | null; ruta?: string | null } }[]) =>
       carduri.flatMap((c) => [c.legatura.href ?? '', c.legatura.ruta ?? c.legatura.href ?? '']).filter((h) => !cai.has(h.split('#')[0]))
     const subiecte = contactComp.CONTACT_RO_MD.subiecte
-    expect(subiecte.carduri).toHaveLength(5)
+    // 4 dupa felia 166: cardul ghidului Moldovei a iesit odata cu ghidurile /ro (decizia lui Adrian Mihai, 03.11.2026).
+    expect(subiecte.carduri).toHaveLength(4)
     expect(tinteRele(subiecte.carduri)).toEqual([])
 
     const scriseRele = (sursa: string) =>
       [...sursa.matchAll(/(?:(?:href|cale|ruta):\s*|cale\()"(\/[^"]*)"/g)].map((m) => m[1]).filter((h) => !cai.has(h.split('#')[0]))
     const sursa = citeste('src', 'content', 'ro-md', 'contact-componente.ts')
-    expect([...sursa.matchAll(/cale\("\/ro\//g)].length).toBe(5)
+    expect([...sursa.matchAll(/cale\("\/ro\//g)].length).toBe(4)
     expect(scriseRele(sursa)).toEqual([])
 
     const marcaj = new RegExp('în ' + 'engleză', 'u')
@@ -371,8 +362,6 @@ describe('decizia 63: pe paginile /ro, legea SUA se spune impreuna cu cadrul UE'
     preturiComp,
     enterprise: enterprise.pagina,
     enterpriseComp,
-    efacturare,
-    termene,
     comparatie,
     acasa: acasa.pagina,
     acasaComp,

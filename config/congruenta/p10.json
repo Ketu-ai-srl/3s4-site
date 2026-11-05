@@ -23,9 +23,13 @@
       "en": 5,
       "cod": [
         "d43",
-        "d38"
+        "d38",
+        "ghiduri-retrase-ro"
       ],
-      "motiv": "Subiecte: ies cardurile spre /integrari ('Legaturi cu alte programe') si spre /solutii ('3S in domeniul tau')."
+      "motiv": "Subiecte: ies cardurile spre /integrari ('Legaturi cu alte programe') si spre /solutii ('3S in domeniul tau'). Pe /ro/contact iese in plus cardul ghidului Moldovei (felia 166, ghidurile au iesit din editia romana): 4 carduri.",
+      "en_pe_pagina": {
+        "/ro/contact": 4
+      }
     },
     {
       "tip": "camp",

@@ -80,9 +80,14 @@ type Radacina = { tag?: string; clasa?: string; eticheta?: string; ariaLabel?: b
 type Cod = string | string[]
 type Rand =
   | { tip: 'componenta'; radacina: Radacina; cod: Cod; motiv: string }
-  | { tip: 'clasa'; clasa: string; cod: Cod; motiv: string }
-  /** `clase`: numai cu `ro: 0`, clasele de modul (fara hash) ale elementului adaugat pe 3s.md, una cu una. */
-  | { tip: 'camp'; selector: string; ro: number; en: number; clase?: string[]; cod: Cod; motiv: string }
+  /** `pagini`: clasa e declarata scoasa NUMAI pe aceste pagini 3s.md ale perechii; fara cheie, pe toate. */
+  | { tip: 'clasa'; clasa: string; pagini?: string[]; cod: Cod; motiv: string }
+  /**
+   * `clase`: numai cu `ro: 0`, clasele de modul (fara hash) ale elementului adaugat pe 3s.md, una cu una.
+   * `en_pe_pagina`: numaratoarea 3s.md a unei pagini anume, cand ea difera de `en` (felia 166: /ro nu mai oglindeste EN
+   * peste tot, decizia lui Adrian Mihai din 03.11.2026); celelalte pagini ale perechii raman pe `en`.
+   */
+  | { tip: 'camp'; selector: string; ro: number; en: number; en_pe_pagina?: Record<string, number>; clase?: string[]; cod: Cod; motiv: string }
 type Pereche = { pereche: string; ro: string; pagini_3s_md: string[]; randuri: Rand[] }
 
 function citesteJson<T>(nume: string): T {
@@ -308,15 +313,29 @@ function verificaPeRo(p: Pereche, ro: Semnatura): { abateri: string[]; scoase: n
   return { abateri, scoase }
 }
 
-/** Comparatia unei pagini 3s.md migrate cu perechea ei RO, prin lista. Lista goala = congruenta. */
-function compara(p: Pereche, ro: Semnatura, en: Semnatura, scoase: number[]): string[] {
+/**
+ * Clasele scoase pe o pagina simulata: numai randurile generale (fara `pagini`), aceeasi regula pe care `compara` o
+ * aplica fara `cale`. O clasa restransa la o pagina anume (felia 166) ramane pe copia simulata.
+ */
+function claseGenerale(p: Pereche): string[] {
+  return p.randuri.flatMap((r) => (r.tip === 'clasa' && r.pagini === undefined ? [r.clasa] : []))
+}
+
+/**
+ * Comparatia unei pagini 3s.md migrate cu perechea ei RO, prin lista. Lista goala = congruenta. `cale` = pagina 3s.md
+ * masurata: alege randurile restranse la ea (`pagini` pe o clasa, `en_pe_pagina` pe un camp); fara ea se aplica numai
+ * randurile generale, ca la martorii pe pagini simulate.
+ */
+function compara(p: Pereche, ro: Semnatura, en: Semnatura, scoase: number[], cale?: string): string[] {
   const abateri: string[] = []
   const asteptate = ro.radacini.filter((_, i) => !scoase.includes(i)).map(scrieTuplu)
   const gasite = en.radacini.map(scrieTuplu)
   if (asteptate.join('\n') !== gasite.join('\n')) {
     abateri.push('secventa radacinilor difera:\n  RO (fara cele declarate): ' + asteptate.join(' | ') + '\n  3s.md: ' + gasite.join(' | '))
   }
-  const claseDeclarate = new Set(p.randuri.flatMap((r) => (r.tip === 'clasa' ? [r.clasa] : [])))
+  const claseDeclarate = new Set(
+    p.randuri.flatMap((r) => (r.tip === 'clasa' && (r.pagini === undefined || (cale !== undefined && r.pagini.includes(cale))) ? [r.clasa] : [])),
+  )
   const claseRo = new Set([...ro.claseInAfara, ...ro.clasePeRadacina.flatMap((c, i) => (scoase.includes(i) ? [] : c))])
   const claseEn = new Set([...en.claseInAfara, ...en.clasePeRadacina.flat()])
   const lipsaNedeclarate = [...claseRo].filter((c) => !claseEn.has(c) && !claseDeclarate.has(c))
@@ -331,8 +350,10 @@ function compara(p: Pereche, ro: Semnatura, en: Semnatura, scoase: number[]): st
   if (declarateDarPrezente.length > 0) abateri.push('clase declarate scoase, dar prezente pe 3s.md: ' + declarateDarPrezente.join(', '))
   if (inPlus.length > 0) abateri.push('clase de modul pe 3s.md care nu exista pe RO: ' + inPlus.join(', '))
   for (const r of p.randuri) {
-    if (r.tip === 'camp' && en.numaratori[r.selector] !== r.en) {
-      abateri.push('campul ' + r.selector + ' are ' + en.numaratori[r.selector] + ' elemente pe 3s.md, lista spune ' + r.en)
+    if (r.tip !== 'camp') continue
+    const asteptat = (cale !== undefined ? r.en_pe_pagina?.[cale] : undefined) ?? r.en
+    if (en.numaratori[r.selector] !== asteptat) {
+      abateri.push('campul ' + r.selector + ' are ' + en.numaratori[r.selector] + ' elemente pe 3s.md, lista spune ' + asteptat)
     }
   }
   return abateri
@@ -470,7 +491,7 @@ test('semnatura de forma pe fiecare pereche: partea RO a listei se aplica; perec
         continue
       }
       migrate++
-      const d = compara(p, ro, en, scoase)
+      const d = compara(p, ro, en, scoase, cale)
       raport(p.pereche + ' ' + cale + ' <-> ' + p.ro + ': MIGRAT, ' + (d.length === 0 ? 'congruent' : d.length + ' abateri'))
       abateri.push(...d.map((x) => p.pereche + ' ' + cale + ': ' + x))
     }
@@ -493,7 +514,7 @@ async function simulata(
   const htmlEn = await (await analizor(browser)).evaluate(migrareInPagina, {
     html: htmlRo,
     scoase,
-    clase: p.randuri.flatMap((r) => (r.tip === 'clasa' ? [r.clasa] : [])),
+    clase: claseGenerale(p),
     campuri: extra.campuri ?? p.randuri.flatMap((r) => (r.tip === 'camp' ? [{ selector: r.selector, en: r.en }] : [])),
     extraScoase: extra.extraScoase ?? [],
     pastrate: extra.pastrate ?? [],
@@ -702,7 +723,7 @@ test('martor POZITIV (e2): o migrare simulata rosie ramane rosie cu un article[d
   const htmlRosie = await (await analizor(browser)).evaluate(migrareInPagina, {
     html: await html(baseURL + p.ro),
     scoase,
-    clase: p.randuri.flatMap((r) => (r.tip === 'clasa' ? [r.clasa] : [])),
+    clase: claseGenerale(p),
     campuri: p.randuri.flatMap((r) => (r.tip === 'camp' ? [{ selector: r.selector, en: r.en }] : [])),
     extraScoase: [nedeclarata],
     pastrate: [],

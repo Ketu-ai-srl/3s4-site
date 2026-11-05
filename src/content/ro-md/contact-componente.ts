@@ -52,12 +52,6 @@ const CARDURI_RO_MD: CardSubiect[] = [
     descriere: "De la fișierul încărcat la răspunsul care vine cu documentul-sursă.",
     legatura: cale("/ro/platforma"),
   },
-  {
-    iconita: "calendar-clock",
-    titlu: "Termene de păstrare a documentelor",
-    descriere: "Facturi, state de salarii și contracte: cât timp le păstrează companiile din Republica Moldova.",
-    legatura: cale("/ro/ghiduri/termene-pastrare-moldova"),
-  },
 ];
 
 /** Bucatile subtitlului din erou: prima si a treia propozitie ale capsulei aprobate, cu canalele aplicatiei. */

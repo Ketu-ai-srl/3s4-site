@@ -95,6 +95,24 @@
       "clasa": "platforma_legaturaCentrata",
       "cod": "d38",
       "motiv": "Clasa legaturii 'Vezi solutiile pe domenii' de sub cazuri, scoasa odata cu ea."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "platforma_legaturaInNota",
+      "pagini": [
+        "/ro/platforma"
+      ],
+      "cod": "ghiduri-retrase-ro",
+      "motiv": "Legatura din nota comparatiei (spre ghidul e-facturilor) iese de pe /ro/platforma odata cu ghidurile /ro; pe /platform (EN) ramane."
+    },
+    {
+      "tip": "clasa",
+      "clasa": "primitive_inText168",
+      "pagini": [
+        "/ro/platforma"
+      ],
+      "cod": "ghiduri-retrase-ro",
+      "motiv": "Clasa marimii 16,8 a aceleiasi legaturi din nota comparatiei, scoasa odata cu ea numai pe /ro/platforma."
     }
   ],
   "_nedeclarate": [

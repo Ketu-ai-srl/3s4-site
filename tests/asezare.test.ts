@@ -64,9 +64,7 @@ const ASTEPTAT_RO: Readonly<Record<string, string>> = {
   '/about': '/en/about',
   '/ro/securitate': '/securitate',
   '/guides/e-invoice-archiving-eu': '/en/guides/e-invoice-archiving-eu',
-  '/ro/ghiduri/arhivare-e-facturi-ue': '/ghiduri/arhivare-e-facturi-ue',
   '/guides/records-retention-moldova': '/en/guides/records-retention-moldova',
-  '/ro/ghiduri/termene-pastrare-moldova': '/ghiduri/termene-pastrare-moldova',
   '/compare/3s-vs-google-drive': '/en/compare/3s-vs-google-drive',
   '/ro/comparatie-drive': '/comparatie-drive',
   // Felia ro-md-e-factura: pagina numai pe editia ro-MD, cheia `e-factura` cu o singura cale in echivalente.
@@ -142,11 +140,19 @@ describe('catalogul asezarii', () => {
       { source: '/ro', destination: '/', permanent: true },
       { source: '/ro/:cale*', destination: '/:cale*', permanent: true },
       { source: '/en' + VECHE, destination: '/en' + NOUA, permanent: true },
+      // Felia 166: ghidurile retrase din romana duc la pagina de start a editiei (la radacina pe 3s.com.ro).
+      { source: '/ghiduri/arhivare-e-facturi-ue', destination: '/', permanent: true },
+      { source: '/ghiduri/termene-pastrare-moldova', destination: '/', permanent: true },
     ])
   })
 
-  it('redirectarile: pe md (3s.md) numai adresa mutata, la radacina; pe ro-RO niciuna', () => {
-    expect(redirectariAsezare('md', ['en', 'ro-MD'])).toEqual([{ source: VECHE, destination: NOUA, permanent: true }])
+  it('redirectarile: pe md (3s.md) adresa mutata si ghidurile retrase din romana; pe ro-RO niciuna', () => {
+    expect(redirectariAsezare('md', ['en', 'ro-MD'])).toEqual([
+      { source: VECHE, destination: NOUA, permanent: true },
+      // Felia 166: ghidurile retrase din romana duc la startul editiei, `/ro` pe 3s.md (nu `/ro/`).
+      { source: '/ro/ghiduri/arhivare-e-facturi-ue', destination: '/ro', permanent: true },
+      { source: '/ro/ghiduri/termene-pastrare-moldova', destination: '/ro', permanent: true },
+    ])
     expect(redirectariAsezare('md', ['ro-RO'])).toEqual([])
   })
 

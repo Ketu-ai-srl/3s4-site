@@ -199,7 +199,7 @@ export function securitateRoMd(operator: boolean): ContinutPaginaSecuritate {
         {
           intrebare: "De ce nu avem recenzii de la clienți?",
           raspuns:
-            "Nu publicăm nume de clienți, cifre sau recenzii. Poți verifica 3S, în schimb, prin ghidurile cu surse și printr-un test gratuit pe documentele companiei tale.",
+            "Nu publicăm nume de clienți, cifre sau recenzii. Poți verifica 3S, în schimb, printr-un test gratuit pe documentele companiei tale.",
         },
         {
           intrebare: "Cine stabilește cât timp se păstrează un document?",

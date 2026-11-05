@@ -188,19 +188,16 @@ describe('(3) observatiile criticului de limba', () => {
     expect(c.text).toContain(c.legaturaInText!.text)
   })
 
-  it('(d) raspunsul despre ghiduri de pe /platforma: subiectul scurt, ambele texte de legatura neschimbate si in fraza', async () => {
+  // Felia 166 (decizia lui Adrian Mihai, 03.11.2026): ghidurile au iesit din editia romana, deci raspunsul se opreste
+  // la termenul pe dosar si nu mai poarta legaturi spre ele.
+  it('(d) raspunsul despre termenul de pastrare de pe /platforma: fraza fara ghiduri si fara legaturi', async () => {
     const { PLATFORMA_RO_MD } = await import('../src/content/ro-md/platforma-componente')
     const i = PLATFORMA_RO_MD.intrebari!.intrebari.find((x) => x.intrebare === 'Pot stabili cât timp se păstrează documentele?')
     expect(i).toBeDefined()
     expect(i!.raspuns).toBe(
-      // Felia 164 (documentul lui Adrian Mihai, 03.11.2026): "citează sursele" -> "arată sursele"; legaturile raman.
-      'Da. Pentru fiecare dosar alegi cât timp se păstrează, iar termenul este valabil pentru toate documentele din el. Ghidurile noastre arată sursele: unul despre termenele de păstrare în Moldova, altul despre arhivarea e-facturilor în UE.',
+      'Da. Pentru fiecare dosar alegi cât timp se păstrează, iar termenul este valabil pentru toate documentele din el.',
     )
-    expect(i!.legaturiInText).toEqual([
-      { text: 'termenele de păstrare în Moldova', href: '/ro/ghiduri/termene-pastrare-moldova' },
-      { text: 'arhivarea e-facturilor în UE', href: '/ro/ghiduri/arhivare-e-facturi-ue' },
-    ])
-    for (const l of i!.legaturiInText!) expect(i!.raspuns).toContain(l.text)
+    expect(i!.legaturiInText).toBeUndefined()
   })
 
   it('(e) comentariul de la raspunsul gazduirii citeaza legatura fara diacritice', () => {

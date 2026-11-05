@@ -175,7 +175,6 @@ export function paginaSecuritate(operator: boolean = OPERATOR_SECURITATE_BUILD):
       "ro-md-termene-si-jurnal",
       "ro-md-engleza-si-pagina-in-testare",
       "ro-md-semnatura-in-curs",
-      "ro-md-ghiduri-cu-surse",
       "ro-md-pilot-asistat",
       "ro-md-partener-adria",
       ...(operator ? ["ro-md-operator-din-moldova"] : []),

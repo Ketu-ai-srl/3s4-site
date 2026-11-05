@@ -131,13 +131,11 @@ test.afterAll(async () => {
   await copie?.opreste()
 })
 
-test('preconditia: 8 rute sub marcajul feliei, fiecare cu ref, pereche EN si declaratie G-AI-02', () => {
+test('preconditia: 6 rute sub marcajul feliei (G1 si G2 au iesit in felia 166), fiecare cu ref, pereche EN si declaratie G-AI-02', () => {
   expect(RUTE.map((r) => r.cale).sort()).toEqual([
     '/ro/comparatie-drive',
     '/ro/enterprise',
     '/ro/functionalitati/cautare-ai',
-    '/ro/ghiduri/arhivare-e-facturi-ue',
-    '/ro/ghiduri/termene-pastrare-moldova',
     '/ro/platforma',
     '/ro/preturi',
     '/ro/securitate',
@@ -259,7 +257,7 @@ const SECTIUNI_FAQ: Record<string, string> = {
   platform: 'platforma-intrebari',
   pricing: 'intrebari-preturi-titlu',
   about: 'securitate-intrebari',
-  'guides-e-invoice-archiving-eu': 'efacturare-intrebari',
+  // Felia 166: ghidul e-facturilor (cu sectiunea lui de intrebari) a iesit din editia romana.
 }
 
 type NodFaq = { mainEntity: { name: string; acceptedAnswer: { text: string } }[] }

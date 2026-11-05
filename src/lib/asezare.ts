@@ -161,9 +161,22 @@ export const ADRESE_MUTATE: readonly { readonly editie: EditieAsezata; readonly 
 ];
 
 /**
+ * ADRESELE RETRASE: pagini scoase dintr-o editie asezata, fara inlocuitor. Adresa lor e indexata si poate fi in
+ * favoritele cuiva, deci duce permanent la pagina de start a editiei, nu la un 404. Caile sunt RELATIVE la prefixul
+ * editiei (pe `md` romana sta sub `/ro`, pe `ro` la radacina). Felia 166 (decizia lui Adrian Mihai, 03.11.2026, GO
+ * Marian 05.11.2026): ghidurile pentru Moldova si UE ies din editia romana pana exista unul pentru Romania; perechile
+ * lor engleze raman.
+ */
+export const ADRESE_RETRASE: readonly { readonly editie: EditieAsezata; readonly vechi: string }[] = [
+  { editie: "ro-MD", vechi: "/ghiduri/arhivare-e-facturi-ue" },
+  { editie: "ro-MD", vechi: "/ghiduri/termene-pastrare-moldova" },
+];
+
+/**
  * Redirectarile permanente ale asezarii, in forma cheii `redirects` din `next.config.ts`. Pe `ro`, vechile adrese ale
  * romanei (`/ro`, `/ro/...`) duc la adresele de la radacina. Pe orice asezare, adresele mutate ale editiilor construite
- * duc la cele noi (`ADRESE_MUTATE`). Lista goala = cheia nici nu se scrie.
+ * duc la cele noi (`ADRESE_MUTATE`), iar cele retrase la pagina de start a editiei (`ADRESE_RETRASE`). Lista goala =
+ * cheia nici nu se scrie.
  */
 export function redirectariAsezare(
   asezare: CodAsezare,
@@ -173,12 +186,17 @@ export function redirectariAsezare(
     const prefix = prefixServit(m.editie, asezare);
     return { source: prefix + m.vechi, destination: prefix + m.noua, permanent: true as const };
   });
-  if (asezare === "md") return mutate;
+  const retrase = ADRESE_RETRASE.filter((r) => editii.includes(r.editie)).map((r) => {
+    const prefix = prefixServit(r.editie, asezare);
+    return { source: prefix + r.vechi, destination: prefix === "" ? "/" : prefix, permanent: true as const };
+  });
+  if (asezare === "md") return [...mutate, ...retrase];
   const vechi = EDITII["ro-MD"].prefix;
   return [
     { source: vechi, destination: "/", permanent: true },
     { source: vechi + "/:cale*", destination: "/:cale*", permanent: true },
     ...mutate,
+    ...retrase,
   ];
 }
 

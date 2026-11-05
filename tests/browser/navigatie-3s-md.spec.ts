@@ -28,7 +28,7 @@ import { abateriWhatsApp, abateriWhatsAppRo } from './ajutor/whatsapp-ro'
  *
  * MENIUL ANTETULUI /ro (felia meniu-antet-ro, decizia 59: /ro oglindeste EN): pe `/ro`, meniul principal are atatea
  * intrari cate are cel EN pe `/`, in aceeasi ordine, fiecare tinta fiind perechea /ro (tabelul de echivalente) a
- * tintei EN si raspunzand 200 pe copie; la fel elementele foilor (Produs, Ghiduri), deschise la hover pe 1440, si
+ * tintei EN si raspunzand 200 pe copie; la fel elementele foilor (Produs; Ghiduri numai pe EN din felia 166), deschise la hover pe 1440, si
  * grupurile sertarului pe 390. Inainte meniul /ro avea numai "Contact".
  *
  * CONTROALE, fiecare cu esec zgomotos: injectia a aterizat (fisierul copiei contine marcajul probei), build-ul
@@ -336,7 +336,12 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     // Controlul: EN are meniu (nu comparam doua liste goale) si tabelul cunoaste startul.
     expect(meniuEn.length).toBeGreaterThan(1)
     expect(pereche('/')).toBe('/ro')
-    expect(meniuRo).toEqual(meniuEn.map(pereche))
+    // EXCEPTIE NUMITA (felia 166, decizia lui Adrian Mihai din 03.11.2026; aceeasi ca in `tests/navigatie-editii.test.ts`):
+    // ghidurile au iesit din editia romana, deci declansatorul EN "Guides" (tinta lui e un ghid) nu are pereche pe /ro.
+    // Martorul: EN chiar are o singura intrare de meniu spre un ghid.
+    const meniuEnFaraGhiduri = meniuEn.filter((h) => !h.startsWith('/guides/'))
+    expect(meniuEn.length - meniuEnFaraGhiduri.length).toBe(1)
+    expect(meniuRo).toEqual(meniuEnFaraGhiduri.map(pereche))
     for (const t of meniuRo) expect((await servit(t)).status, '/ro -> ' + t).toBe(200)
   })
 
@@ -352,8 +357,18 @@ test.describe('3s.md: antetul si subsolul RO-MD', () => {
     const NUMAI_RO_MD = '/ro/e-factura'
     expect(ECHIVALENTE['e-factura']?.en).toBeUndefined()
     expect(foiRo.flat()).toContain(NUMAI_RO_MD)
-    const foiRoComparate = foiRo.map((f) => (f[f.length - 1] === NUMAI_RO_MD ? f.slice(0, -1) : f))
-    expect(foiRoComparate).toEqual(foiEn.map((f) => f.map(pereche)))
+    // A DOUA EXCEPTIE NUMITA (felia 166, decizia lui Adrian Mihai din 03.11.2026): foaia EN "Guides" nu are pereche pe
+    // /ro, iar comparatia cu Google Drive, singurul ei element ramas, sta in foaia Produs /ro, penultima. Se scot foaia
+    // EN cu ghiduri si, din foaia Produs /ro, comparatia si pagina numai-RO, numai din pozitia lor.
+    const MUTATA_RO_MD = '/ro/comparatie-drive'
+    const foiEnFaraGhiduri = foiEn.filter((f) => !f.some((h) => h.startsWith('/guides/')))
+    expect(foiEn.length - foiEnFaraGhiduri.length).toBe(1)
+    expect(foiEn.flat().map(pereche)).toContain(MUTATA_RO_MD)
+    const foiRoComparate = foiRo.map((f) =>
+      f[f.length - 1] === NUMAI_RO_MD && f[f.length - 2] === MUTATA_RO_MD ? f.slice(0, -2) : f,
+    )
+    expect(foiRo[0].slice(-2)).toEqual([MUTATA_RO_MD, NUMAI_RO_MD])
+    expect(foiRoComparate).toEqual(foiEnFaraGhiduri.map((f) => f.map(pereche)))
     for (const t of foiRo.flat()) expect((await servit(t)).status, 'foaie /ro -> ' + t).toBe(200)
 
     // Sertarul ia meniul din acelasi contract: pe 390 contine fiecare tinta a meniului si a foilor.

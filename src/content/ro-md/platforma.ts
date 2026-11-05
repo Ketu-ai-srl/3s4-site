@@ -18,8 +18,6 @@ import { adresaSite } from "@/lib/site";
 
 /** Caile paginilor citate in proza; stau in constante (poarta de limba citeste proza, nu adresele). */
 const CALE_CAUTARE = "/ro/functionalitati/cautare-ai";
-const CALE_GHID_MOLDOVA = "/ro/ghiduri/termene-pastrare-moldova";
-const CALE_GHID_EFACTURARE = "/ro/ghiduri/arhivare-e-facturi-ue";
 
 const BAZA = adresaSite();
 const ID = iduri(BAZA);
@@ -50,11 +48,7 @@ export const pagina: PaginaContinut = {
       blocuri: [
         {
           paragrafe: [
-            "Da. Pentru fiecare dosar alegi un termen de păstrare, iar el se aplică tuturor documentelor din dosarul respectiv. Regulile de păstrare diferă de la o țară la alta, de aceea ghidurile noastre indică sursa primară și data verificării: pentru [Republica Moldova](" +
-              CALE_GHID_MOLDOVA +
-              ") și pentru [arhivarea facturilor electronice în UE](" +
-              CALE_GHID_EFACTURARE +
-              ").",
+            "Da. Pentru fiecare dosar alegi un termen de păstrare, iar el se aplică tuturor documentelor din dosarul respectiv.",
           ],
         },
       ],
@@ -129,7 +123,6 @@ export const pagina: PaginaContinut = {
     "ro-md-termene-si-jurnal",
     "ro-md-arhiva-cu-sursa",
     "ro-md-engleza-si-pagina-in-testare",
-    "ro-md-ghiduri-cu-surse",
     "ro-md-gazduire-ue-frankfurt",
     "ro-md-amazon-sediu-sua",
     "ro-md-pilot-asistat",

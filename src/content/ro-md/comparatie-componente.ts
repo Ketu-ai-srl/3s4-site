@@ -25,10 +25,38 @@ import type { SurseSuplimentare } from "@/components/comparatii/TabelMarcaje";
 import type { NivelFir } from "@/components/primitive/FirPagina";
 import type { Marcaj, SursaOficiala, TabelComparatie } from "@/content/comparatii";
 import type { PaginaReferinta } from "@/content/en/referinta-comun";
+import type { ContinutCtaFinal } from "@/components/primitive/CtaFinalInchis";
 import { atributeLimba } from "@/lib/asezare";
-import { ETICHETA_BUTON_CANAL_RO_MD } from "./ghid-e-facturare-componente";
 
 const CALE = "/ro/comparatie-drive";
+
+// Eticheta butonului de canal si blocul de final ale paginilor /ro de referinta (aceasta pagina si Arhiva e-Factura).
+// Au stat in modulul ghidului e-facturilor pana la felia 166, cand ghidurile au iesit din editia romana (decizia lui
+// Adrian Mihai, 03.11.2026); s-au mutat aici, la singura pagina de referinta /ro ramasa. Microtextul si vizualul
+// urmeaza cuvintele alese de Adrian in documentul "fraze de rescris" (03.11.2026): consultant, "Recunoscut ca factură",
+// "Gata de căutare".
+
+/** Eticheta butonului de canal (WhatsApp) din erou si din blocul de final, pe paginile /ro de referinta (decizia 35). */
+export const ETICHETA_BUTON_CANAL_RO_MD = "Scrie-ne pe WhatsApp";
+
+/** Blocul de final al unei pagini /ro de referinta: titlul si subtitlul paginii, restul comun (vizualul de pe /ro). */
+export function ctaFinalReferintaRoMd(titlu: string, subtitlu: string): ContinutCtaFinal {
+  return {
+    titlu,
+    subtitlu,
+    // Folosit numai daca pagina nu da `butoane`; paginile pun butonul WhatsApp.
+    butonPrincipal: { text: ETICHETA_BUTON_CANAL_RO_MD, href: null, ruta: null },
+    microtext: "Îți răspunde un consultant din echipa 3S.",
+    vizual: {
+      declaratie: "Exemplu cu date fictive",
+      pasi: [
+        { iconita: "laptop", text: "Încărcat pe web", ora: "09:41" },
+        { iconita: "tag", text: "Recunoscut ca factură", ora: "09:41" },
+      ],
+      rezultat: { fisier: "Factura_0415_exemplu.pdf", stare: "Gata de căutare", ora: "09:42" },
+    },
+  };
+}
 
 /** Ziua in care s-au citit marcajele Google (citirea paginii RO, aceeasi documentatie, in romana). */
 export const DATA_CITIRII_MARCAJE_RO_MD = "25 septembrie 2026";

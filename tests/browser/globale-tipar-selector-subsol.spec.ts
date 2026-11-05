@@ -583,7 +583,12 @@ test.describe('subsolul pe desktop', () => {
     await deschide(page, comro.baza + '/preturi', 1440)
     const lasate = await page.evaluate(() => {
       const grila = (document.querySelector('footer [data-subsol-contact]') as HTMLElement).parentElement as HTMLElement
-      grila.style.gridTemplateColumns = '1.8fr repeat(var(--coloane-subsol), 1fr)'
+      // Felia 166: subsolul /ro a pierdut coloana Ghiduri, deci coloanele egale ale asezarii vechi au iesit mai late si
+      // "Politica de cookie-uri" (subiectul martorului) nu se mai rupea. Martorul repune si latimea de dinainte: o pista
+      // goala in plus, ca fiecare coloana sa aiba latimea pe care o avea cu patru coloane de legaturi.
+      const coloane = Number(getComputedStyle(grila).getPropertyValue('--coloane-subsol').trim())
+      if (!Number.isInteger(coloane) || coloane < 1) throw new Error('NEMASURAT: --coloane-subsol lipseste pe grila subsolului')
+      grila.style.gridTemplateColumns = '1.8fr repeat(' + (coloane + 1) + ', 1fr)'
       const bucati = [...document.querySelectorAll<HTMLElement>('footer span')].filter((e) => getComputedStyle(e).whiteSpace === 'nowrap')
       for (const b of bucati) b.style.whiteSpace = 'normal'
       for (const a of document.querySelectorAll<HTMLElement>('footer nav li > a')) a.style.whiteSpace = 'normal'

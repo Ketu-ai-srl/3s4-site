@@ -66,14 +66,16 @@ describe('potrivesteInterogarea: cuvinte, orice ordine, fara diacritice si fara 
 })
 
 describe('paleta pe datele reale ale editiilor', () => {
-  it('ro-MD: "termene păstrare" si variantele gasesc exact ce gaseste "termene de păstrare"; martorul fara pereche, nimic', () => {
-    const paleta = navigatieRoMd(undefined, undefined, caiDin(RUTE_RO_MD)).paleta
+  // Felia 166: ghidul "Termene de păstrare în Moldova" a iesit din editia romana (decizia lui Adrian Mihai,
+  // 03.11.2026), deci controlul ro-MD trece pe titlul "Căutare cu sursa citată", tot cu un cuvant de legatura ("cu").
+  it('ro-MD: "căutare sursa citată" si variantele gasesc exact ce gaseste "căutare cu sursa citată"; martorul fara pereche, nimic', () => {
+    const paleta = navigatieRoMd(undefined, undefined).paleta
     const ruleaza = (q: string) => cai(continutPaletaContract(paleta, q, caiDin(RUTE_RO_MD), RUTE_RO_MD, []))
-    const control = ruleaza('termene de păstrare')
+    const control = ruleaza('căutare cu sursa citată')
     expect(control.length, 'controlul gaseste ceva').toBeGreaterThan(0)
-    for (const q of ['termene păstrare', 'termene pastrare', 'pastrare termene']) expect(ruleaza(q), q).toEqual(control)
+    for (const q of ['căutare sursa citată', 'cautare sursa citata', 'sursa citata cautare']) expect(ruleaza(q), q).toEqual(control)
     expect(ruleaza('qzxv wplk')).toEqual([])
-    expect(ruleaza('termene qzxv')).toEqual([])
+    expect(ruleaza('cautare qzxv')).toEqual([])
   })
 
   it('en: "retention of records" gaseste ce gaseste "records retention"', () => {

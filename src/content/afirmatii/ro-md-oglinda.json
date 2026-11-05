@@ -54,84 +54,12 @@
     "data": "2026-10-05"
   },
   {
-    "id": "ro-md-referinta-efacturare-ue-art-247",
-    "text": "Fiecare stat membru stabilește cât timp se păstrează facturile; statul poate cere forma originală și datele care garantează autenticitatea și integritatea și poate limita păstrarea în state fără acces online sau asistență reciprocă (Directiva 2006/112/CE, art. 247-249)",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "neconfirmat",
-    "sursa": "oglinda RO-MD a intrarii en-referinta-efacturare-ue-art-247 (src/content/afirmatii/en-referinta.json): mosteneste starea si sursa (Directiva 2006/112/CE consolidata, art. 247-249, citita pe 30.09.2026); neconfirmata pana la reverificarea dinaintea portii B",
-    "confirmat_de": "",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-efacturare-arhivare-pe-tari",
-    "text": "Termenele de păstrare a facturilor: Germania 8 ani, Franța 10 ani pentru documentele contabile, Polonia 10 ani în KSeF, Belgia 7 ani, România 5 ani, fiecare cu regula lui de calcul",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "neconfirmat",
-    "sursa": "oglinda RO-MD a intrarilor en-referinta-efacturare-arhivare-de-8-ani, -fr-10-ani-comercial, -fr-fiscal-6-10-ani, -pl-ksef-10-ani, -pl-in-afara-ksef, -be-7-ani si en-referinta-termene-ro-facturi-5-ani (src/content/afirmatii/en-referinta.json): mostenesc starea (neconfirmat) si sursele lor, citite pe 30.09.2026; cifrele raman neconfirmate pana la reverificarea dinaintea portii B",
-    "confirmat_de": "",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-efacturare-format",
-    "text": "Germania și Franța cer păstrarea fișierului electronic original, de regulă XML-ul; în Polonia factura este XML-ul din KSeF; Belgia și România acceptă și alte formate, dacă sunt garantate autenticitatea și integritatea",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "neconfirmat",
-    "sursa": "oglinda RO-MD a intrarilor en-referinta-efacturare-format-original-de-fr, en-referinta-efacturare-format-pl-ro-be si en-referinta-efacturare-ro-format (src/content/afirmatii/en-referinta.json); starea cea mai slaba dintre ele (neconfirmat), cu sursele lor, citite pe 30.09.2026",
-    "confirmat_de": "",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-efacturare-stocare-locatie",
-    "text": "Germania, Franța, Polonia, Belgia și România permit păstrarea electronică a facturilor în afara teritoriului, în anumite condiții, în principal cu acces online pentru autoritatea fiscală",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "neconfirmat",
-    "sursa": "oglinda RO-MD a intrarii en-referinta-efacturare-stocare-locatie (src/content/afirmatii/en-referinta.json): mosteneste starea si sursele, citite pe 30.09.2026",
-    "confirmat_de": "",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-efacturare-ro-60-zile",
-    "text": "În România, RO e-Factura păstrează XML-ul disponibil pentru descărcare 60 de zile de la publicare, apoi îl arhivează electronic și îl eliberează la cerere",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "confirmat",
-    "sursa": "oglinda RO-MD a intrarii en-referinta-efacturare-ro-60-zile (src/content/afirmatii/en-referinta.json): mosteneste starea si sursa (ANAF, Ghid privind utilizarea sistemului national RO e-Factura, cap. III pct. 5)",
-    "confirmat_de": "verificat la sursa oficiala de felia flux-efacturare, 2026-09-25 (oglinda); recitit pe 2026-09-30",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-efacturare-calendar",
-    "text": "Datele de aplicare a e-facturării în Germania (primirea din 2025), Franța (2026 și 2027), Polonia (februarie și aprilie 2026), Belgia (2026) și România (2024)",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "confirmat",
-    "sursa": "oglinda RO-MD a intrarilor en-referinta-efacturare-de-calendar, -fr-calendar, -pl-calendar, -be-calendar si -ro-etape-2024 (src/content/afirmatii/en-referinta.json): mostenesc starea (confirmat) si sursele oficiale, recitite pe 30.09.2026",
-    "confirmat_de": "verificat la sursa oficiala de felia flux-efacturare, 2026-09-25 (oglinda); recitit pe 2026-09-30",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-efacturare-ue-vida",
-    "text": "Directiva (UE) 2025/516 aduce facturarea electronică și raportarea digitală pentru livrările dintre statele membre de la 1 iulie 2030",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts",
-    "stare": "neconfirmat",
-    "sursa": "oglinda RO-MD a intrarii en-referinta-efacturare-ue-vida (src/content/afirmatii/en-referinta.json): mosteneste starea si sursa (art. 6 alin. (5) al Directivei (UE) 2025/516, EUR-Lex, citit pe 30.09.2026)",
-    "confirmat_de": "",
-    "data": "2026-10-05"
-  },
-  {
     "id": "ro-md-referinta-efacturare-incarcare-xml",
     "text": "Facturile descărcate ca fișiere XML din RO e-Factura se încarcă în arhiva 3S, ca orice alt fișier",
-    "unde": "src/content/ro-md/ghid-e-facturare-componente.ts, src/content/ro-md/comparatie-componente.ts",
+    "unde": "src/content/ro-md/comparatie-componente.ts",
     "stare": "confirmat",
     "sursa": "oglinda RO-MD a intrarii en-referinta-efacturare-canale-3s (src/content/afirmatii/en-referinta.json): mosteneste starea si sursa (incarcarea manuala a fisierelor, decizia D4b; ingustata prin deciziile 43 si 49). Nu se afirma nicio integrare directa cu ANAF sau KSeF",
     "confirmat_de": "owner-ul proiectului 3S, 2026-09-24 (decizia D4b); ingustata prin deciziile 43 si 49",
-    "data": "2026-10-05"
-  },
-  {
-    "id": "ro-md-referinta-termene-moldova",
-    "text": "Republica Moldova: facturile și celelalte acte primare, registrele contabile, contractele și extrasele bancare se păstrează 6 ani; statele de salarii 6-75 de ani; dosarele de personal 75 de ani minus vârsta; declarațiile de impozit pe venit 7 ani (Indicatorul aprobat prin Ordinul nr. 57/2016; Legea nr. 287/2017, art. 17)",
-    "unde": "src/content/ro-md/ghid-termene-moldova-componente.ts",
-    "stare": "neconfirmat",
-    "sursa": "oglinda RO-MD a intrarilor en-referinta-termene-md-* (src/content/afirmatii/en-referinta.json): mostenesc starea (neconfirmat pe ghidurile lui 3s.md) si sursele (legis.md, recitite pe 30.09.2026); cifrele raman neconfirmate pana la recitirea art. 228, 236, 257 si 262 dinaintea portii B",
-    "confirmat_de": "",
     "data": "2026-10-05"
   },
   {
@@ -142,5 +70,5 @@
     "sursa": "decizia 11 a owner-ului (30.09.2026: 3S numeste Google si Box, cu sursa si data pe fiecare celula); comparatia de azi numeste numai Google Drive (decizia 59, intrebarea 7 a specificatiei de congruenta), Box AI a ramas in fisa; oglinda RO-MD a intrarilor en-referinta-comparatii-publicitate-comparativa (confirmat) si en-referinta-comparatii-marcaje-gemini-drive (neconfirmat), cu starea cea mai slaba; marcajele se recitesc la sursa inainte de poarta B",
     "confirmat_de": "",
     "data": "2026-10-05"
-    }
+  }
 ]

@@ -241,10 +241,16 @@ describe('manifestul de rute pe editie', () => {
     // 3s.md are randul ei) si ca `alternatePagina` sa lege cele doua domenii ale aceleiasi editii (3s.md `/ro/e-factura`
     // si 3s.com.ro `/e-factura`, decizia 55). Se scuteste numai mesajul "o singura editie" al acestei chei; calea ei se
     // verifica in continuare. Dispare cand pagina primeste pereche EN.
-    const scutite = new Set(['e-factura: o singura editie'])
+    // A DOUA EXCEPTIE NUMITA (felia 166, decizia lui Adrian Mihai din 03.11.2026): ghidurile au iesit din editia romana,
+    // deci cheile lor raman numai cu calea EN, ca fiecare ruta EN sa aiba randul ei. Dispare cand ghidurile revin pe /ro.
+    const scutite = new Set([
+      'e-factura: o singura editie',
+      'guides-e-invoice-archiving-eu: o singura editie',
+      'guides-records-retention-moldova: o singura editie',
+    ])
     expect(orfane(ECHIVALENTE).filter((o) => !scutite.has(o))).toEqual([])
-    // Martorul scutirii: ea chiar e folosita (altfel ar fi ramas in urma si s-ar sterge).
-    expect(orfane(ECHIVALENTE)).toEqual(['e-factura: o singura editie'])
+    // Martorul scutirilor: fiecare chiar e folosita (altfel ar fi ramas in urma si s-ar sterge).
+    expect(orfane(ECHIVALENTE).sort()).toEqual([...scutite].sort())
     const marcaj = (felie: string) => '// <<' + 'felie:' + felie + '>>'
     const grupuri: Record<string, string> = { nucleu: 'en-nucleu', produs: 'en-produs', segmente: 'en-segmente', referinta: 'en-referinta', juridic: 'juridic-pagini-3s-md' }
     for (const [grup, felie] of Object.entries(grupuri)) {

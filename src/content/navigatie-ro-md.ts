@@ -5,10 +5,10 @@
 //     paginilor RO-MD, decizia 35; eticheta neutra de la fundatie a fost aliniata de felia paginilor RO-MD de
 //     start si de contact).
 //   - Meniul antetului (felia meniu-antet-ro, decizia 59: /ro oglindeste EN): aceleasi intrari, in aceeasi ordine,
-//     ca antetul EN din `navigatie-en.ts` - Produs (foaia Platforma, Cautare cu sursa citata, Enterprise), Ghiduri
-//     (foaia celor trei ghiduri, declansatorul duce la primul care exista), Preturi, Despre 3S si securitate - cu
+//     ca antetul EN din `navigatie-en.ts` - Produs (foaia Platforma, Cautare cu sursa citata, Enterprise), Preturi,
+//     Despre 3S si securitate - cu
 //     perechile /ro din `echivalente.ts`. Etichetele sunt cele deja folosite in subsolul si in paleta /ro, nu text
-//     nou; coloanele Produs si Ghiduri ale subsolului se iau din aceleasi foi, ca pe EN. Contact nu e in meniu
+//     nou; coloana Produs a subsolului se ia din aceeasi foaie, ca pe EN. Contact nu e in meniu
 //     (nici pe EN): sta in subsol, in paleta si in CTA. Sertarul mobil ia meniul din acelasi contract.
 //   - Textele precompletate, pe cale: `/ro` (ro-md-acasa), `/ro/contact` (ro-md-contact), `/ro/juridic/...`
 //     (ro-md-juridic) si paginile oglinzii (felia ro-md-oglinda), fiecare cu `ref`-ul si textul fisei ei. Orice alta
@@ -18,13 +18,13 @@
 //     "Contact" (WhatsApp; numarul de WhatsApp ca text, fara legatura de apel, decizia 56; e-mailul numai
 //     cu `CANALE.email` nevid).
 //   - Oglinda (felia ro-md-oglinda): paleta numeste paginile /ro ca pe EN, iar subsolul primeste coloanele EN
-//     (Produs, Ghiduri, Companie) cu perechile /ro.
+//     (Produs, Companie) cu perechile /ro. Felia 166: fara Ghiduri pe /ro (decizia lui Adrian Mihai, 03.11.2026);
+//     comparatia cu Google Drive sta in foaia Produs.
 // Totul se ascunde singur pana exista ruta (filtrul pe `RUTE`).
 //
 // Se construieste PE SERVER (`navigatieRoMd()`): canalele (`CANALE_JSON`) si operatorul (`OPERATOR_JSON`)
 // nu exista in pachetul de browser.
 
-import { CAI_EXISTENTE } from "./cai";
 import { CANALE, randNumarWhatsApp, type Canale } from "./canale";
 import { texteJuridice } from "./juridic";
 import { CHEI_MD, caleMd } from "./juridic/md/registru";
@@ -34,14 +34,11 @@ import {
   ANTET,
   PALETA,
   SERTAR,
-  seVede,
-  type CaiExistente,
   type ColoanaSubsol,
   type ContractNavigatie,
   type ElementMeniu,
   type FoaieMeniu,
   type Legatura,
-  type LegaturaAntet,
 } from "./navigatie";
 import { emailPePagina, propozitieFaraMarcaj, whatsappPePagina, type TextPePagina } from "@/components/canale/pe-pagina";
 
@@ -101,16 +98,6 @@ export const TEXTE_WHATSAPP_RO_MD: readonly TextPePagina[] = [
     text: "Bună ziua! Am o întrebare despre unde sunt păstrate datele în 3S. [ref:ro-md-securitate]",
   },
   {
-    cale: "/ro/ghiduri/arhivare-e-facturi-ue",
-    ref: "ro-md-einv",
-    text: "Bună ziua! Am citit ghidul despre arhivarea e-facturilor și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-einv]",
-  },
-  {
-    cale: "/ro/ghiduri/termene-pastrare-moldova",
-    ref: "ro-md-termene-moldova",
-    text: "Bună ziua! Am citit ghidul despre termenele de păstrare în Moldova și aș vrea să aflu cum pot testa 3S pe documentele noastre. [ref:ro-md-termene-moldova]",
-  },
-  {
     cale: "/ro/comparatie-drive",
     ref: "ro-md-comparatie",
     text: "Bună ziua! Am citit comparația cu Google Drive și aș vrea să aflu dacă 3S se potrivește companiei noastre. [ref:ro-md-comparatie]",
@@ -136,26 +123,16 @@ function foaie(eticheta: string, elemente: ElementMeniu[]): FoaieMeniu {
   return { eticheta, lider: null, elemente, subsol: { text: "", href: null, ruta: null } };
 }
 
-/** Declansatorul unui meniu fara pagina-index (Ghiduri), ca pe EN: duce la primul element care exista. */
-function declansator(text: string, f: FoaieMeniu, cai: CaiExistente): LegaturaAntet {
-  const prima = f.elemente.find((e) => seVede(e, cai)) ?? f.elemente[0];
-  return { text, href: prima.href, ruta: prima.ruta, foaie: f };
-}
-
 /** Foaia Produs, pereche a foii EN "3S product", cu iconitele ei. */
 const FOAIE_PRODUS = foaie("Produs", [
   element("Platforma", "/ro/platforma", "box"),
   element("Căutare cu sursa citată", "/ro/functionalitati/cautare-ai", "search"),
   element("Enterprise", "/ro/enterprise", "building-2"),
+  // Felia 166 (decizia lui Adrian Mihai, 03.11.2026): ghidurile ies din editia romana, iar comparatia cu Google Drive
+  // ramane, mutata la Produs. Meniul /ro nu mai are foaia Ghiduri; engleza o pastreaza (`navigatie-en.ts`).
+  element("3S și Google Drive", "/ro/comparatie-drive", "chart-column"),
   // Felia ro-md-e-factura: pagina serviciului de arhivare a facturilor din RO e-Factura, numai pe /ro (fara pereche EN).
   element("Arhiva e-Factura", "/ro/e-factura", "file-badge"),
-]);
-
-/** Foaia Ghiduri, pereche a foii EN "Guides", cu iconitele ei. */
-const FOAIE_GHIDURI = foaie("Ghiduri", [
-  element("Arhivarea e-facturilor în UE", "/ro/ghiduri/arhivare-e-facturi-ue", "file-text"),
-  element("Termene de păstrare în Moldova", "/ro/ghiduri/termene-pastrare-moldova", "archive"),
-  element("3S și Google Drive", "/ro/comparatie-drive", "chart-column"),
 ]);
 
 const faraIconita = ({ text, href, ruta }: ElementMeniu): Legatura => ({ text, href, ruta });
@@ -163,7 +140,6 @@ const faraIconita = ({ text, href, ruta }: ElementMeniu): Legatura => ({ text, h
 /** Coloanele de subsol ale oglinzii, aceleasi ca pe EN (`navigatie-en.ts`), cu perechile /ro. */
 const COLOANE_OGLINDA: ColoanaSubsol[] = [
   { titlu: "Produs", legaturi: FOAIE_PRODUS.elemente.map(faraIconita) },
-  { titlu: "Ghiduri", legaturi: FOAIE_GHIDURI.elemente.map(faraIconita) },
   {
     titlu: "Companie",
     legaturi: [
@@ -201,12 +177,8 @@ export function coloanaJuridic(operator: Operator | null = OPERATOR): ColoanaSub
   return { titlu: "Juridic", legaturi };
 }
 
-/** Contractul RO-MD, cu canalele domeniului si caile existente ale build-ului. */
-export function navigatieRoMd(
-  canale: Canale = CANALE,
-  operator: Operator | null = OPERATOR,
-  cai: CaiExistente = CAI_EXISTENTE,
-): ContractNavigatie {
+/** Contractul RO-MD, cu canalele domeniului. Ce nu are ruta in build se ascunde la randare (`seVede`). */
+export function navigatieRoMd(canale: Canale = CANALE, operator: Operator | null = OPERATOR): ContractNavigatie {
   const juridic = coloanaJuridic(operator);
   // Mesajul si subiectul pleaca fara codul `ref` (felia 164); atribuirea paginii o pastreaza evenimentul Umami `contact`.
   const whatsapp = whatsappPePagina(TEXTE_WHATSAPP_RO_MD, "/ro", canale);
@@ -219,7 +191,6 @@ export function navigatieRoMd(
       meniu: ANTET.meniu,
       legaturi: [
         { text: "Produs", href: "/ro/platforma", ruta: "/ro/platforma", foaie: FOAIE_PRODUS },
-        declansator("Ghiduri", FOAIE_GHIDURI, cai),
         { ...legatura("Prețuri", "/ro/preturi"), foaie: null },
         { ...legatura("Despre 3S și securitate", "/ro/securitate"), foaie: null },
       ],

@@ -112,22 +112,6 @@ export const RUTE_RO_MD: RutaEditie<"ro-MD">[] = [
     cheie: "about",
   },
   {
-    cale: "/ro/ghiduri/arhivare-e-facturi-ue",
-    scurt: "Arhivarea e-facturilor în UE",
-    descriere: "Termenul de păstrare și formatul e-facturilor, pe țări, cu surse primare și data verificării.",
-    inHarta: true,
-    editie: "ro-MD",
-    cheie: "guides-e-invoice-archiving-eu",
-  },
-  {
-    cale: "/ro/ghiduri/termene-pastrare-moldova",
-    scurt: "Termene de păstrare în Moldova",
-    descriere: "Cât timp păstrezi facturile, registrele, statele de salarii, contractele și declarațiile în Moldova.",
-    inHarta: true,
-    editie: "ro-MD",
-    cheie: "guides-records-retention-moldova",
-  },
-  {
     cale: "/ro/comparatie-drive",
     scurt: "3S și Google Drive",
     descriere: "Comparația cu Google Drive, cu situațiile în care 3S nu este prima alegere.",

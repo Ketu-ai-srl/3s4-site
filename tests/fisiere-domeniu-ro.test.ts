@@ -228,7 +228,7 @@ describe("asezarea md (3s.md): fisierele domeniului, neschimbate", () => {
     expect(JSON.stringify(noduri).split('"ro-MD"').length - 1).toBe(2);
   });
 
-  it("martorul JSON-LD-ului servit: pe 3s.md fiecare pagina ro-MD poarta `ro-MD` ca inainte (19 pe 11 pagini)", async () => {
+  it("martorul JSON-LD-ului servit: pe 3s.md fiecare pagina ro-MD poarta `ro-MD` ca inainte (14 pe 9 pagini; felia 166 a scos ghidurile /ro, 5 noduri pe 2 pagini)", async () => {
     const pe = await jsonLdPaginiRoMd("md");
     // Numaratoarea de dinainte, scrisa de mana (masurata pe arborele de baza): limba editiei ramane `ro-MD` pe 3s.md.
     const asteptat: Record<string, number> = {
@@ -239,8 +239,6 @@ describe("asezarea md (3s.md): fisierele domeniului, neschimbate", () => {
       "/ro/e-factura": 2,
       "/ro/enterprise": 1,
       "/ro/functionalitati/cautare-ai": 0,
-      "/ro/ghiduri/arhivare-e-facturi-ue": 3,
-      "/ro/ghiduri/termene-pastrare-moldova": 2,
       "/ro/platforma": 2,
       "/ro/preturi": 2,
       "/ro/securitate": 2,
@@ -383,8 +381,9 @@ describe("asezarea ro (3s.com.ro): fisierele domeniului", () => {
     const peRo = await jsonLdPaginiRoMd("ro");
     M = await incarca("ro");
     expect(Object.keys(peRo)).toEqual(Object.keys(peMd));
-    // 11 = cele 10 pagini de dinainte plus /ro/e-factura (felia ro-md-e-factura).
-    expect(Object.keys(peRo).length).toBe(11);
+    // 11 = cele 10 pagini de dinainte plus /ro/e-factura (felia ro-md-e-factura); 9 dupa felia 166, care a scos cele
+    // doua ghiduri din editia romana (decizia lui Adrian Mihai, 03.11.2026).
+    expect(Object.keys(peRo).length).toBe(9);
     for (const cale of Object.keys(peRo)) {
       expect([cale, aparitii(peRo[cale], COD_ROMD)]).toEqual([cale, 0]);
       // Aceleasi blocuri, iar fiecare `ro-MD` de pe 3s.md e un `ro-RO` pe 3s.com.ro (nimic scos, nimic adaugat).

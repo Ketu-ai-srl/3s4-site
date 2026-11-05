@@ -16,7 +16,7 @@
 // Modulul e numai date. Il citesc pagina (`src/app/(romd)/ro/e-factura/page.romd.tsx`) si modulul paginii (`e-factura.ts`).
 
 import type { ContinutCtaFinal } from "@/components/primitive/CtaFinalInchis";
-import { ctaFinalReferintaRoMd } from "@/content/ro-md/ghid-e-facturare-componente";
+import { ctaFinalReferintaRoMd } from "@/content/ro-md/comparatie-componente";
 
 /** Calea SURSA a paginii (pe 3s.com.ro e servita fara prefix, `src/lib/asezare.ts`). */
 export const CALE_EFACTURA_RO_MD = "/ro/e-factura";

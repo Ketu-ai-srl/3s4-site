@@ -56,9 +56,7 @@ async function cuProfil(nume: '3s-md' | '3s-com-ro') {
     servite: new Set(RUTE.map((r) => String(hrefTinta(r.cale)))),
     StartEn: (await import('../src/app/(en)/page.en')).default,
     StartRoMd: (await import('../src/app/(romd)/ro/page.romd')).default,
-    GhidEfacturiRoMd: (await import('../src/app/(romd)/ro/ghiduri/arhivare-e-facturi-ue/page.romd')).default,
     GhidEfacturiEn: (await import('../src/app/(en)/guides/e-invoice-archiving-eu/page.en')).default,
-    GhidMoldovaRoMd: (await import('../src/app/(romd)/ro/ghiduri/termene-pastrare-moldova/page.romd')).default,
     foaie: await import('../src/components/preturi/ListaPdfVedere'),
     pretEn: await import('../src/content/en/pricing-componente'),
     pretRoMd: await import('../src/content/ro-md/preturi-componente'),
@@ -438,12 +436,10 @@ describe('(8) ghidul e-facturilor: legatura "România" e externa, iar eroul nu p
   }
 
   for (const nume of ['3s-com-ro', '3s-md'] as const) {
-    it(nume + ': RO si EN, iconita externa pe legatura tarii, spre documentul ANAF', async () => {
+    // Felia 166: ghidul /ro a iesit (decizia lui Adrian Mihai, 03.11.2026); ramane ghidul EN, pe ambele domenii.
+    it(nume + ': EN, iconita externa pe legatura tarii, spre documentul ANAF', async () => {
       const p = await cuProfil(nume)
-      for (const [C, tara] of [
-        [p.GhidEfacturiRoMd, 'România'],
-        [p.GhidEfacturiEn, 'Romania'],
-      ] as const) {
+      for (const [C, tara] of [[p.GhidEfacturiEn, 'Romania']] as const) {
         const l = legaturaTara(randeaza(C), tara)
         expect(l.href).toMatch(/^https:\/\/static\.anaf\.ro\//)
         expect(l.html).toContain('lucide-external-link')
@@ -459,17 +455,6 @@ describe('(8) ghidul e-facturilor: legatura "România" e externa, iar eroul nu p
     const l = legaturaTara(randeaza(EfacturareRo), 'România')
     expect(l.html).toContain('lucide-arrow-right')
     expect(l.html).not.toContain('lucide-external-link')
-  })
-
-  it('eroul si descrierea: fara promisiunea temeiului si a datei pe fiecare termen sau rand', async () => {
-    const { EFACTURARE_RO_MD, PAGINA_EFACTURARE_RO_MD } = await import('../src/content/ro-md/ghid-e-facturare-componente')
-    const promisiune = /temeiul legal|fiecărui rând|pentru fiecare termen/i
-    expect(EFACTURARE_RO_MD.erou.subtitlu).not.toMatch(promisiune)
-    expect(PAGINA_EFACTURARE_RO_MD.meta.descriere).not.toMatch(promisiune)
-    expect(JSON.stringify(PAGINA_EFACTURARE_RO_MD.jsonLd)).not.toMatch(/fiecărui rând/)
-    // Controlul: data verificarii ramane, una singura, sub tabel.
-    expect(EFACTURARE_RO_MD.tabel.dataVerificariiText).not.toBe('')
-    expect('Pentru fiecare termen, ghidul indică ' + 'temeiul legal și data verificării.').toMatch(promisiune)
   })
 
   it('EN, aliniat la RO: nicio sursa nu mai promite o data pe fiecare rand (ghidurile arata o singura data)', () => {
@@ -517,14 +502,6 @@ describe('(9) cu o singura tara, pastila selectorului nu e buton', () => {
     expect(doua).toContain('aria-pressed="true"')
   })
 
-  for (const nume of ['3s-com-ro', '3s-md'] as const) {
-    it(nume + ': ghidul Moldovei /ro nu mai are niciun buton apasat', async () => {
-      const p = await cuProfil(nume)
-      const html = randeaza(p.GhidMoldovaRoMd)
-      expect(html).toContain('Republica Moldova')
-      expect(html).not.toContain('aria-pressed')
-    })
-  }
 })
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -563,16 +540,12 @@ describe('(11) /platforma si /enterprise: numele paginilor din raspunsuri sunt l
   const asteptat = {
     '3s-com-ro': {
       despreRo: '/securitate#security',
-      moldovaRo: '/ghiduri/termene-pastrare-moldova',
-      efacturiRo: '/ghiduri/arhivare-e-facturi-ue',
       aboutEn: '/en/about#security',
       moldovaEn: '/en/guides/records-retention-moldova',
       efacturiEn: '/en/guides/e-invoice-archiving-eu',
     },
     '3s-md': {
       despreRo: '/ro/securitate#security',
-      moldovaRo: '/ro/ghiduri/termene-pastrare-moldova',
-      efacturiRo: '/ro/ghiduri/arhivare-e-facturi-ue',
       aboutEn: '/about#security',
       moldovaEn: '/guides/records-retention-moldova',
       efacturiEn: '/guides/e-invoice-archiving-eu',
@@ -590,9 +563,8 @@ describe('(11) /platforma si /enterprise: numele paginilor din raspunsuri sunt l
       const perechi = (html: string, id: string) => legaturi(sectiune(html, id)).map((l) => [l.text, l.href])
       // Numele paginii e unificat pe forma din meniu si subsol, „Despre 3S și securitate” (audit de limba, 09.10).
       expect(perechi(randeaza(PlatformaRo), 'platforma-intrebari')).toEqual([
+        // Felia 166: raspunsul despre termene nu mai trimite la ghidurile /ro (au iesit din editia romana).
         ['Pagina Despre 3S și securitate', a.despreRo],
-        ['termenele de păstrare în Moldova', a.moldovaRo],
-        ['arhivarea e-facturilor în UE', a.efacturiRo],
       ])
       expect(perechi(randeaza(PlatformaEn), 'platforma-intrebari')).toEqual([
         ['About page', a.aboutEn],

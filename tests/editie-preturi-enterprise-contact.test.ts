@@ -209,9 +209,11 @@ describe('enterprise si contact pe editie', () => {
     const cai = ['/enterprise', '/pricing', '/about', '/platform', '/guides/records-retention-moldova']
     expect(contactEn.CONTACT_EN.subiecte.carduri.map((c) => c.legatura.href)).toEqual(cai)
     // Pe /ro/contact acelasi card duce la perechea /ro a paginii EN (decizia 59), citita din tabelul echivalentelor.
+    // Felia 166 (decizia lui Adrian Mihai, 03.11.2026): ghidul Moldovei n-are pereche /ro, deci cardul lui lipseste
+    // de pe /ro/contact; celelalte patru raman, in aceeasi ordine.
     const peRo = cai.map((c) => Object.values(ECHIVALENTE).find((e) => e.en === c)?.['ro-MD'])
-    expect(peRo).toEqual(['/ro/enterprise', '/ro/preturi', '/ro/securitate', '/ro/platforma', '/ro/ghiduri/termene-pastrare-moldova'])
-    expect(contactRoMd.CONTACT_RO_MD.subiecte.carduri.map((c) => c.legatura.href)).toEqual(peRo)
+    expect(peRo).toEqual(['/ro/enterprise', '/ro/preturi', '/ro/securitate', '/ro/platforma', undefined])
+    expect(contactRoMd.CONTACT_RO_MD.subiecte.carduri.map((c) => c.legatura.href)).toEqual(peRo.slice(0, 4))
   })
 
   it('subtitlul de contact: numarul si adresa vin din canale; fara adresa (inainte de P-40) nu numeste e-mailul', () => {

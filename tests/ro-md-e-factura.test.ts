@@ -76,7 +76,7 @@ describe('ruta, paginile si navigatia', () => {
   })
 
   it('meniul Produs si subsolul au pagina, iar textul precompletat al antetului e cel al paginii', () => {
-    const nav = navigatieRoMd(undefined, null, new Set(RUTE_RO_MD.map((r) => r.cale)))
+    const nav = navigatieRoMd(undefined, null)
     const produs = nav.antet.legaturi.find((l) => l.text === 'Produs')
     expect(produs?.foaie?.elemente.map((e) => [e.text, e.href])).toContainEqual(['Arhiva e-Factura', CALE])
     const coloana = nav.subsol.coloane.find((c) => c.titlu === 'Produs')

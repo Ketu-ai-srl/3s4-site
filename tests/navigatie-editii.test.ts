@@ -299,7 +299,6 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     // intrare cu intrare in cazul urmator; faptul pazit aici ramane: sigla si CTA-ul cu textul paginii.
     expect(md.antet.legaturi.map((l) => [l.text, l.href])).toEqual([
       ['Produs', '/ro/platforma'],
-      ['Ghiduri', '/ro/ghiduri/arhivare-e-facturi-ue'],
       ['Prețuri', '/ro/preturi'],
       ['Despre 3S și securitate', '/ro/securitate'],
     ])
@@ -326,19 +325,28 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     // inainte. Dispare cand pagina primeste pereche EN (atunci intra in foaia EN si in comparatie).
     const NUMAI_RO_MD = '/ro/e-factura'
     expect(Object.values(ECHIVALENTE).some((p) => p['ro-MD'] === NUMAI_RO_MD && p.en === undefined)).toBe(true)
+    // A DOUA EXCEPTIE NUMITA (felia 166, decizia lui Adrian Mihai din 03.11.2026, GO Marian 05.11.2026): ghidurile ies
+    // din editia romana, deci foaia EN "Guides" nu are pereche pe /ro, iar comparatia cu Google Drive, singurul ei
+    // element care ramane, sta pe /ro in foaia Produs, penultima (inaintea paginii numai-RO). Se scot: intrarea EN
+    // "Guides" si, din foaia Produs /ro, comparatia si pagina numai-RO, fiecare numai din pozitia ei.
+    const MUTATA_RO_MD = '/ro/comparatie-drive'
+    const enFaraGhiduri = en.filter((l) => l.text !== 'Guides')
+    // Martorul: EN chiar are foaia Guides, iar comparatia e in ea (altfel exceptia ar fi ramas in urma).
+    expect(en.length - enFaraGhiduri.length).toBe(1)
+    expect(en.find((l) => l.text === 'Guides')!.foaie!.elemente.map((e) => peRo.get(e.href ?? ''))).toContain(MUTATA_RO_MD)
     const md = navigatieRoMd(CANALE_3S_MD, null).antet.legaturi.map((l) => {
       if (!l.foaie) return l
-      const ultim = l.foaie.elemente[l.foaie.elemente.length - 1]
-      if (ultim?.href !== NUMAI_RO_MD) return l
-      return { ...l, foaie: { ...l.foaie, elemente: l.foaie.elemente.slice(0, -1) } }
+      const el = l.foaie.elemente
+      if (el[el.length - 1]?.href !== NUMAI_RO_MD || el[el.length - 2]?.href !== MUTATA_RO_MD) return l
+      return { ...l, foaie: { ...l.foaie, elemente: el.slice(0, -2) } }
     })
-    // Martorul exceptiei: instanta chiar e in foaia Produs (altfel exceptia ar fi ramas in urma).
-    expect(navigatieRoMd(CANALE_3S_MD, null).antet.legaturi[0].foaie!.elemente.map((e) => e.href)).toContain(NUMAI_RO_MD)
+    // Martorul exceptiilor: amandoua instantele chiar sunt in foaia Produs, la coada, in aceasta ordine.
+    expect(navigatieRoMd(CANALE_3S_MD, null).antet.legaturi[0].foaie!.elemente.slice(-2).map((e) => e.href)).toEqual([MUTATA_RO_MD, NUMAI_RO_MD])
     // Controlul: EN are meniu (nu comparam doua liste goale), iar tabelul cunoaste macar startul.
-    expect(en.length).toBeGreaterThan(1)
+    expect(enFaraGhiduri.length).toBeGreaterThan(1)
     expect(peRo.get('/')).toBe('/ro')
-    expect(md).toHaveLength(en.length)
-    en.forEach((l, i) => {
+    expect(md).toHaveLength(enFaraGhiduri.length)
+    enFaraGhiduri.forEach((l, i) => {
       expect(md[i].href, 'intrarea ' + i + ' (' + l.text + ')').toBe(peRo.get(l.href ?? '') ?? '(fara pereche: ' + l.href + ')')
       expect(md[i].foaie === null, 'foaia intrarii ' + i).toBe(l.foaie === null)
       if (l.foaie && md[i].foaie) {
@@ -354,15 +362,12 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     const existente = new Set([
       // titlurile coloanelor de subsol
       'Produs',
-      'Ghiduri',
       'Companie',
       // coloana Produs
       'Platforma',
       'Căutare cu sursa citată',
       'Enterprise',
-      // coloana Ghiduri
-      'Arhivarea e-facturilor în UE',
-      'Termene de păstrare în Moldova',
+      // fosta coloana Ghiduri: din felia 166 comparatia sta in coloana Produs (ghidurile au iesit de pe /ro)
       '3S și Google Drive',
       // coloana Companie
       'Despre 3S și securitate',
@@ -380,9 +385,9 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
     ])
     const intreg = navigatieRoMd(CANALE_3S_MD, null).antet.legaturi
     const etichete = intreg.flatMap((l) => [l.text, ...(l.foaie ? [l.foaie.eticheta, ...l.foaie.elemente.map((e) => e.text)] : [])])
-    // Controlul: meniul are etichete (nu filtram o lista goala): 4 intrari + 2 foi x (eticheta + 3 elemente), plus
-    // Arhiva e-Factura in foaia Produs (felia ro-md-e-factura).
-    expect(etichete).toHaveLength(13)
+    // Controlul: meniul are etichete (nu filtram o lista goala): 3 intrari + foaia Produs (eticheta + 3 elemente), plus
+    // Arhiva e-Factura (felia ro-md-e-factura) si comparatia mutata din Ghiduri (felia 166) in foaia Produs.
+    expect(etichete).toHaveLength(9)
     expect(etichete.filter((t) => !existente.has(t))).toEqual([])
     // Lista fixa nu a ramas in urma contractului: fiecare eticheta de subsol si paleta de azi e tot in ea
     // (coloana Juridic are titlurile documentelor, verificate in alta parte, deci se exclude).
@@ -392,13 +397,6 @@ describe('contractul RO-MD (navigatie-ro-md.ts, planul valului §11 pct. 2b)', (
       ...full.paleta.grupuri.flatMap((g) => g.elemente.map((x) => x.text)),
     ]
     expect(azi.filter((t) => !existente.has(t))).toEqual([])
-  })
-
-  it('meniul antetului /ro: declansatorul Ghiduri duce la primul ghid care exista, ca pe EN', () => {
-    const ghiduri = (cai: Set<string>) => navigatieRoMd(CANALE_3S_MD, null, cai).antet.legaturi[1]
-    expect(ghiduri(new Set(['/ro/ghiduri/termene-pastrare-moldova', '/ro/comparatie-drive'])).href).toBe('/ro/ghiduri/termene-pastrare-moldova')
-    // Fara niciun ghid, tinta ramane pe primul (care nu exista), deci declansatorul nu se randeaza.
-    expect(ghiduri(new Set()).href).toBe('/ro/ghiduri/arhivare-e-facturi-ue')
   })
 
   it('coloana Juridic: cele 8 documente, adresele editiei ro, titlurile documentelor (nu scrise de mana)', () => {

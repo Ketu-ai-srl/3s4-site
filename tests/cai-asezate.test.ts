@@ -287,8 +287,11 @@ describe("asezarea ro (3s.com.ro): emiterea si citirea caii", () => {
     expect(JSON.stringify(M.rute.RUTE)).not.toContain("servita");
   });
 
-  it("ghiduriPublicate ramane true: RUTE.cale e sursa (martor: fara rute e false)", () => {
-    expect(M.acasaRoMd.ghiduriPublicate()).toBe(true);
+  // Felia 166: ghidurile G1 si G2 nu mai au ruta pe /ro (decizia lui Adrian Mihai, 03.11.2026), deci pe manifestul
+  // real raspunsul e false; martorul cu cele trei cai SURSA arata ca functia inca le recunoaste in forma datelor.
+  it("ghiduriPublicate citeste RUTE.cale in forma sursa: false pe manifestul fara ghiduri, true pe cele trei cai sursa", () => {
+    expect(M.acasaRoMd.ghiduriPublicate()).toBe(false);
+    expect(M.acasaRoMd.ghiduriPublicate(M.acasaRoMd.CAI_GHIDURI.map((cale: string) => ({ cale })))).toBe(true);
     expect(M.acasaRoMd.ghiduriPublicate([])).toBe(false);
   });
 
