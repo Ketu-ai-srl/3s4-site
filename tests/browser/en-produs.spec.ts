@@ -382,6 +382,26 @@ function caractereSubCard(): CaractereCitate | null {
   return r
 }
 
+/**
+ * `caractereSubCard` dupa ce pagina s-a asezat: fonturile gata, reteaua linistita, apoi doua citiri la rand IDENTICE.
+ * De ce: pagina RO (`/functionalitati/cautare-ai`) a dat citatul 1 ascuns intreg (79 de caractere ascunse) la prima
+ * incercare a CI 41839816557 si vizibil (52) la reluarea ei, pe ACELASI arbore; la fel 52 in 41802934979 si
+ * 41822856990. O citire facuta imediat dupa `goto` prinde uneori pagina inainte de asezarea finala (fonturi, imagini,
+ * hidratare), deci raspunsul depindea de moment, nu de asezare. Contractul ramane acelasi: se compara asezarea
+ * STABILA. Daca sapte citiri la rand nu dau doua identice consecutiv, proba pica si arata ultima citire.
+ */
+async function caractereStabile(page: Page): Promise<CaractereCitate | null> {
+  await page.evaluate(() => document.fonts.ready.then(() => true))
+  await page.waitForLoadState('networkidle')
+  let inainte = await page.evaluate(caractereSubCard)
+  for (let i = 0; i < 6; i++) {
+    const acum = await page.evaluate(caractereSubCard)
+    if (JSON.stringify(acum) === JSON.stringify(inainte)) return acum
+    inainte = acum
+  }
+  throw new Error('citatele nu s-au asezat dupa 7 citiri; ultima: ' + JSON.stringify(inainte))
+}
+
 /** Perechea RO a paginii, pe build-ul romanesc al probelor (baseURL). */
 const PERECHE_RO = '/functionalitati/cautare-ai'
 
@@ -389,7 +409,7 @@ const PERECHE_RO = '/functionalitati/cautare-ai'
 async function caractereRo(page: Page): Promise<CaractereCitate> {
   await page.goto(PERECHE_RO)
   await page.addStyleTag({ content: FORTEAZA_CITATE })
-  const ro = await page.evaluate(caractereSubCard)
+  const ro = await caractereStabile(page)
   expect(ro?.citate).toBe(5)
   expect(ro!.litere).toBeGreaterThanOrEqual(80)
   return ro!
@@ -485,7 +505,7 @@ for (const latime of [390, 1440] as const) {
       await page.goto(copie.baza + cautare.meta.cale)
       expect(await page.evaluate(() => innerWidth)).toBe(latime)
       await page.addStyleTag({ content: FORTEAZA_CITATE })
-      const en = await page.evaluate(caractereSubCard)
+      const en = await caractereStabile(page)
       console.log('[caractere ' + latime + '] RO ' + JSON.stringify(ro) + ' | EN ' + JSON.stringify(en))
       expect(en?.citate).toBe(5)
       expect(en!.litere).toBeGreaterThanOrEqual(80)
@@ -500,7 +520,7 @@ for (const latime of [390, 1440] as const) {
       await page.goto(copie.baza + cautare.meta.cale)
       await page.addStyleTag({ content: FORTEAZA_CITATE })
       expect(await page.evaluate(impingeCitatPeCard)).toBe(true)
-      const en = await page.evaluate(caractereSubCard)
+      const en = await caractereStabile(page)
       console.log('[caractere martor ' + latime + '] RO ' + JSON.stringify(ro) + ' | EN ' + JSON.stringify(en))
       expect(ascunseInParte(en!).caractere).toBeGreaterThan(ascunseInParte(ro).caractere)
     })

@@ -396,6 +396,14 @@ type MasuraInainte = {
 }
 
 /**
+ * Cat se asteapta aparitia bannerului dupa `load`. Bannerul e o bucata lenesa care se arata la un cadru dupa hidratare
+ * (`Consimtamant.tsx`, `requestAnimationFrame`); pe masina CI incarcata, la CI 41839816557 (reluare), pe /inregistrare
+ * al copiei cu operator, sectiunea era in DOM cu `hidden` si nu se aratase in cele 10 s implicite, desi aceeasi proba
+ * trecuse pe acelasi arbore la prima incercare. Se cere tot ca bannerul sa APARA; se schimba doar cat se asteapta.
+ */
+const ASTEPTARE_BANNER = 30_000
+
+/**
  * Starea unei pagini INAINTE de orice alegere: context nou, nimic atins, dupa linistea retelei.
  * Aceeasi functie masoara build-ul real si copia. `asteaptaBannerul` asteapta hidratarea (bannerul
  * devine vizibil numai dupa ce componenta citeste ca nu exista o alegere pastrata).
@@ -410,7 +418,7 @@ async function masoaraInainteDeAlegere(
   const raspuns = await pagina.goto(baza + cale, { waitUntil: 'load' })
   const servit = raspuns ? await raspuns.text() : ''
   if (asteaptaBannerul) {
-    await expect(pagina.locator('[data-consimtamant]'), 'bannerul nu apare pe ' + baza + cale).toBeVisible()
+    await expect(pagina.locator('[data-consimtamant]'), 'bannerul nu apare pe ' + baza + cale).toBeVisible({ timeout: ASTEPTARE_BANNER })
   }
   await asteaptaLinistea(pagina)
   const js = await jsIncarcat(retea)
@@ -539,7 +547,7 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
   }) => {
     const { context, pagina, retea } = await contextPazit(browser, copie.baza)
     await pagina.goto(copie.baza + '/', { waitUntil: 'load' })
-    await expect(pagina.locator('[data-consimtamant]')).toBeVisible()
+    await expect(pagina.locator('[data-consimtamant]')).toBeVisible({ timeout: ASTEPTARE_BANNER })
     await asteaptaLinistea(pagina, 500)
     expect(google(retea), 'Google cerut inainte de accept').toEqual([])
     const jsInainte = await jsIncarcat(retea)
@@ -592,7 +600,7 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
   }) => {
     const { context, pagina, retea } = await contextPazit(browser, copie.baza)
     await pagina.goto(copie.baza + '/', { waitUntil: 'load' })
-    await expect(pagina.locator('[data-consimtamant]')).toBeVisible()
+    await expect(pagina.locator('[data-consimtamant]')).toBeVisible({ timeout: ASTEPTARE_BANNER })
     await asteaptaLinistea(pagina, 500)
 
     // G-CONS-02 si gdprscan SITE-04, la doua latimi, cu innerWidth citit: acelasi element, aceeasi
@@ -656,7 +664,7 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
   test('nicio caseta bifata: panoul se deschide cu statistica oprita', async ({ browser }) => {
     const { context, pagina, retea } = await contextPazit(browser, copie.baza)
     await pagina.goto(copie.baza + '/', { waitUntil: 'load' })
-    await expect(pagina.locator('[data-consimtamant]')).toBeVisible()
+    await expect(pagina.locator('[data-consimtamant]')).toBeVisible({ timeout: ASTEPTARE_BANNER })
     await pagina.locator('[data-consimtamant] [data-setari]').click()
     const panou = pagina.locator('dialog[data-consimtamant-setari]')
     await expect(panou).toBeVisible()
@@ -683,7 +691,7 @@ test.describe('comutatorul pornit: copie cu operator si GA4 sintetice', () => {
     const { context, pagina } = await contextPazit(browser, copie.baza)
     await pagina.setViewportSize({ width: 1440, height: 900 })
     await pagina.goto(copie.baza + '/', { waitUntil: 'load' })
-    await expect(pagina.locator('[data-consimtamant]')).toBeVisible()
+    await expect(pagina.locator('[data-consimtamant]')).toBeVisible({ timeout: ASTEPTARE_BANNER })
     await pagina.locator('[data-consimtamant] [data-setari]').click()
     const panou = pagina.locator('dialog[data-consimtamant-setari]')
     await expect(panou).toBeVisible()
